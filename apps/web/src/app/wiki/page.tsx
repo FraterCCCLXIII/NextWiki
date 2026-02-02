@@ -34,10 +34,10 @@ export default function WikiPagesPage({
 
   return (
     <MainLayout>
-      <div className="space-y-6 p-4">
+      <div className="mx-auto w-full max-w-4xl space-y-6 p-6">
         {!hasSearch && (
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Wiki Pages</h1>
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold">All Pages</h1>
           </div>
         )}
 

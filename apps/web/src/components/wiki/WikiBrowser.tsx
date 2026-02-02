@@ -1,76 +1,86 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { WikiFolderTree } from "./WikiFolderTree";
-import { SearchIcon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { useTRPC } from "~/server/client";
 import { useQuery } from "@tanstack/react-query";
 import { PageLocationEditor } from "./PageLocationEditor";
 import { Button } from "@repo/ui";
-import { SkeletonText } from "@repo/ui";
 import { ClientRequirePermission } from "../auth/permission/client";
 
-interface WikiBrowserProps {
-  /**
-   * Initial search query
-   */
-  initialSearch?: string;
+interface FolderNode {
+  name: string;
+  path: string;
+  type: "folder" | "page";
+  children: FolderNode[];
+  id?: number;
+  title?: string;
 }
 
-export function WikiBrowser({ initialSearch = "" }: WikiBrowserProps) {
-  const [searchQuery, setSearchQuery] = useState(initialSearch);
-  const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+// Recursive component to render folder structure as headers
+function FolderSection({ node, depth = 0 }: { node: FolderNode; depth?: number }) {
+  const pages = node.children.filter((child) => child.type === "page");
+  const folders = node.children.filter((child) => child.type === "folder");
+
+  // Determine heading level based on depth (h2 for top level, h3 for nested, h4 for deeper)
+  const HeadingTag = depth === 0 ? "h2" : depth === 1 ? "h3" : "h4";
+  const headingClass = 
+    depth === 0 
+      ? "text-2xl font-bold text-text-primary mb-4 mt-8 first:mt-0" 
+      : depth === 1
+      ? "text-xl font-semibold text-text-primary mb-3 mt-6"
+      : "text-lg font-medium text-text-primary mb-2 mt-4";
+
+  return (
+    <div className={depth > 0 ? "ml-6" : ""}>
+      {/* Folder name as header (skip root) */}
+      {depth > 0 && node.type === "folder" && (
+        <HeadingTag className={headingClass}>
+          {node.title || node.name}
+        </HeadingTag>
+      )}
+
+      {/* Pages in this folder */}
+      {pages.length > 0 && (
+        <ul className="space-y-2 mb-6">
+          {pages.map((page) => (
+            <li key={page.path}>
+              <Link
+                href={`/${page.path}`}
+                className="text-primary hover:underline text-base"
+              >
+                {page.title || page.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Subfolders */}
+      {folders.map((folder) => (
+        <FolderSection key={folder.path} node={folder} depth={depth + 1} />
+      ))}
+    </div>
+  );
+}
+
+export function WikiBrowser() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
-  // Debounce search input
-  const handleSearchChange = (value: string) => {
-    setSearchQuery(value);
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-    searchTimeoutRef.current = setTimeout(() => {
-      setDebouncedSearch(value);
-    }, 300);
-  };
-
   const trpc = useTRPC();
 
-  // Fetch search results if search is active
-  const { data: searchResults, isLoading: isSearching } = useQuery(
-    trpc.wiki.list.queryOptions(
-      {
-        limit: 20,
-        search: debouncedSearch,
-        sortBy: "title",
-        sortOrder: "asc",
-      },
-      {
-        enabled: debouncedSearch.length > 0,
-      }
-    )
+  // Fetch folder structure
+  const { data: folderStructure, isLoading } = useQuery(
+    trpc.wiki.getFolderStructure.queryOptions()
   );
 
   return (
-    <div className="space-y-6">
-      {/* Search bar */}
-      <div className="mb-6 flex items-center">
-        <div className="relative max-w-md flex-1">
-          <SearchIcon className="text-text-secondary absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform" />
-          <input
-            type="search"
-            placeholder="Search wiki..."
-            className="border-border-default focus:ring-primary w-full rounded-md border py-2 pl-10 pr-4 focus:outline-none focus:ring-2"
-            value={searchQuery}
-            onChange={(e) => handleSearchChange(e.target.value)}
-          />
-        </div>
-
+    <>
+      {/* Create button */}
+      <div className="mb-6 flex items-center justify-end">
         <ClientRequirePermission permission="wiki:page:create">
           <Button
             onClick={() => setIsCreateModalOpen(true)}
-            className="ml-4"
             size="default"
           >
             <PlusIcon className="mr-2 h-4 w-4" />
@@ -79,60 +89,20 @@ export function WikiBrowser({ initialSearch = "" }: WikiBrowserProps) {
         </ClientRequirePermission>
       </div>
 
-      {/* Search results */}
-      {debouncedSearch && (
-        <div className="mb-6">
-          <h2 className="mb-3 text-lg font-medium">Search Results</h2>
-
-          {isSearching ? (
-            <div className="py-6">
-              <SkeletonText lines={3} className="mb-2" />
-              <SkeletonText lines={3} className="mb-2" />
-              <SkeletonText lines={3} className="mb-2" />
-            </div>
-          ) : searchResults?.pages.length === 0 ? (
-            <div className="text-text-secondary py-6 text-center">
-              No results found for &ldquo;{debouncedSearch}&rdquo;
-            </div>
-          ) : (
-            <div className="border-border-light overflow-hidden rounded-lg border shadow-sm">
-              <ul
-                className="divide-border-light divide-y"
-                style={{ paddingLeft: "0", marginLeft: "0" }}
-              >
-                {searchResults?.pages.map((page) => (
-                  <li key={page.id}>
-                    <Link
-                      href={`/${page.path}`}
-                      className="hover:bg-background-paper block px-5 py-4"
-                    >
-                      <div className="text-primary text-lg font-medium">
-                        {page.title}
-                      </div>
-                      <div className="text-text-secondary mt-1 text-sm">
-                        /{page.path}
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+      {/* Wiki folder structure as headers */}
+      {isLoading ? (
+        <div className="text-text-secondary py-8 text-center">
+          Loading wiki structure...
         </div>
-      )}
-
-      {/* Wiki folder structure */}
-      {!debouncedSearch && (
-        <div className="w-full">
-          <WikiFolderTree
-            title="Wiki Structure"
-            showRoot={true}
-            showPageCount={true}
-            openDepth={2}
-            className="w-full"
-            showActions={true}
-            mode="navigation"
-          />
+      ) : folderStructure ? (
+        <div className="max-w-none">
+          {folderStructure.children.map((node) => (
+            <FolderSection key={node.path} node={node} depth={0} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-text-secondary py-8 text-center">
+          No pages found. Create your first page to get started.
         </div>
       )}
 
@@ -142,6 +112,6 @@ export function WikiBrowser({ initialSearch = "" }: WikiBrowserProps) {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
       />
-    </div>
+    </>
   );
 }
