@@ -33,7 +33,7 @@ function FolderSection({ node, depth = 0 }: { node: FolderNode; depth?: number }
       : "text-lg font-medium text-text-primary mb-2 mt-4";
 
   return (
-    <div className={depth > 0 ? "ml-6" : ""}>
+    <div>
       {/* Folder name as header (skip root) */}
       {depth > 0 && node.type === "folder" && (
         <HeadingTag className={headingClass}>
@@ -43,18 +43,18 @@ function FolderSection({ node, depth = 0 }: { node: FolderNode; depth?: number }
 
       {/* Pages in this folder */}
       {pages.length > 0 && (
-        <ul className="space-y-2 mb-6">
+        <div className="space-y-2 mb-6">
           {pages.map((page) => (
-            <li key={page.path}>
+            <div key={page.path}>
               <Link
                 href={`/${page.path}`}
                 className="text-primary hover:underline text-base"
               >
                 {page.title || page.name}
               </Link>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
 
       {/* Subfolders */}
