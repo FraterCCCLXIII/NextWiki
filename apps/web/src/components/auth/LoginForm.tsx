@@ -126,7 +126,7 @@ export function LoginForm() {
         <div className="text-sm">
           <Link
             href="/forgot-password"
-            className="text-primary hover:text-primary/90 font-medium"
+            className="text-text-primary hover:text-text-secondary font-medium underline decoration-text-secondary hover:decoration-text-primary transition-colors"
           >
             Forgot your password?
           </Link>
@@ -135,7 +135,7 @@ export function LoginForm() {
           <div className="text-sm">
             <Link
               href="/register"
-              className="text-primary hover:text-primary/90 font-medium"
+              className="text-text-primary hover:text-text-secondary font-medium underline decoration-text-secondary hover:decoration-text-primary transition-colors"
             >
               Create an account
             </Link>
