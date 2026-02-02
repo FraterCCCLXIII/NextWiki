@@ -76,7 +76,7 @@ export function SearchResults() {
               <Link
                 key={page.id}
                 href={`/${page.path}`}
-                className="hover:bg-background-level1 block rounded-lg border border-border-light p-5 transition-colors"
+                className="hover:bg-background-level1 block rounded-lg p-5 transition-colors"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
