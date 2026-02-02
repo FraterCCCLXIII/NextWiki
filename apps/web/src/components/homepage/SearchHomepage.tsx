@@ -83,12 +83,6 @@ export function SearchHomepage({ siteTitle, siteLogo }: SearchHomepageProps) {
             />
           </div>
           <div className="mt-6 flex justify-center gap-3">
-            <button
-              type="submit"
-              className="hover:border-border-default bg-background-level1 hover:shadow-sm rounded-md border border-transparent px-6 py-2 text-sm font-medium transition-all"
-            >
-              Search Wiki
-            </button>
             <a
               href="/wiki"
               className="hover:border-border-default bg-background-level1 hover:shadow-sm rounded-md border border-transparent px-6 py-2 text-sm font-medium transition-all"
