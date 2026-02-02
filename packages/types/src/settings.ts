@@ -75,6 +75,9 @@ export interface SettingsDefinitions {
   >;
   "appearance.accentColor": SettingDefinition<StringSetting>;
   "appearance.showSidebar": SettingDefinition<BooleanSetting>;
+  "appearance.homepageStyle": SettingDefinition<
+    SelectSetting<"wiki" | "search">
+  >;
 
   // Editor settings
   "editor.defaultType": SettingDefinition<SelectSetting<"markdown" | "html">>;
@@ -216,6 +219,14 @@ export const DEFAULT_SETTINGS: {
     description: "Show sidebar navigation by default",
     category: "appearance",
     defaultValue: true,
+  },
+  "appearance.homepageStyle": {
+    type: "select",
+    value: "wiki",
+    options: ["wiki", "search"],
+    description: "Homepage style: wiki content or minimal search page",
+    category: "appearance",
+    defaultValue: "wiki",
   },
 
   // Editor settings

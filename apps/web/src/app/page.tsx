@@ -5,11 +5,26 @@ import { Suspense } from "react";
 import { getWikiPageByPath } from "./[...path]/page";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "~/lib/auth";
+import { getSettingValue } from "~/lib/utils/settings";
+import { SearchHomepage } from "~/components/homepage/SearchHomepage";
 
 export const revalidate = 900; // Revalidate every 15 minutes
 export const dynamic = "force-static";
 
 export default async function Home() {
+  // Get homepage style setting
+  const homepageStyle = await getSettingValue("appearance.homepageStyle");
+  
+  // Get site info for search homepage
+  const siteTitle = await getSettingValue("site.title");
+  const siteLogo = await getSettingValue("site.logo");
+
+  // If search homepage is enabled, render that instead
+  if (homepageStyle === "search") {
+    return <SearchHomepage siteTitle={siteTitle} siteLogo={siteLogo} />;
+  }
+
+  // Otherwise, show wiki content homepage
   // Fetch the root page ("index")
   const rootPage = await getWikiPageByPath(["index"]);
 
