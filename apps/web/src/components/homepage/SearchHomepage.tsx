@@ -199,7 +199,7 @@ export function SearchHomepage({ siteTitle, siteLogo }: SearchHomepageProps) {
             {showResults && (
               <div
                 ref={resultsRef}
-                className="absolute top-full mt-2 w-full rounded-2xl border border-border-default bg-background-paper shadow-lg z-20"
+                className="absolute top-full mt-2 w-full rounded-2xl border border-border-default bg-background-paper shadow-lg z-20 max-h-[60vh] overflow-y-auto"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center py-8">
@@ -228,20 +228,6 @@ export function SearchHomepage({ siteTitle, siteLogo }: SearchHomepageProps) {
                         </div>
                       </button>
                     ))}
-                    <div className="border-t border-border-light mt-2 pt-2 px-6 pb-2">
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setShowResults(false);
-                          router.push(
-                            `/wiki?search=${encodeURIComponent(searchQuery.trim())}`
-                          );
-                        }}
-                        className="text-primary text-sm hover:underline"
-                      >
-                        View all results for &quot;{searchQuery}&quot;
-                      </button>
-                    </div>
                   </div>
                 ) : (
                   <div className="text-text-secondary py-8 text-center text-sm">
