@@ -16,11 +16,11 @@
   --color-text-primary: var(--color-light-text-primary);
   --color-text-secondary: var(--color-light-text-secondary);
   --color-text-tertiary: var(--color-light-text-tertiary);
-  --color-text-accent: var(--color-accent-700);
+  --color-text-accent: var(--color-text-primary);
   --color-border-default: var(--color-light-border-default);
   --color-border-light: var(--color-light-border-light);
   --color-border-dark: var(--color-light-border-dark);
-  --color-border-accent: var(--color-accent-600);
+  --color-border-accent: var(--color-border-dark);
   --color-scrollbar-track: var(--color-light-scrollbar-track);
   --color-scrollbar-thumb: var(--color-light-scrollbar-thumb);
 
@@ -35,11 +35,11 @@
   --color-light-text-primary: #212529;
   --color-light-text-secondary: #495057;
   --color-light-text-tertiary: #6c757d;
-  --color-light-text-accent: var(--color-accent-700);
+  --color-light-text-accent: var(--color-light-text-primary);
   --color-light-border-default: #adb5bd;
   --color-light-border-light: #ced4da;
   --color-light-border-dark: #868e96;
-  --color-light-border-accent: var(--color-accent-600);
+  --color-light-border-accent: var(--color-light-border-dark);
   --color-light-scrollbar-track: #f1f3f5;
   --color-light-scrollbar-thumb: #adb5bd;
 
@@ -54,11 +54,11 @@
   --color-dark-text-primary: #f8f9fa;
   --color-dark-text-secondary: #e0e0e0;
   --color-dark-text-tertiary: #a0a7ae;
-  --color-dark-text-accent: var(--color-accent-300);
+  --color-dark-text-accent: var(--color-dark-text-primary);
   --color-dark-border-default: #404040;
   --color-dark-border-light: #5a5a5a;
   --color-dark-border-dark: #303030;
-  --color-dark-border-accent: var(--color-accent-300);
+  --color-dark-border-accent: var(--color-dark-border-light);
   --color-dark-scrollbar-track: #1f1f1f;
   --color-dark-scrollbar-thumb: #4a4a4a;
 
@@ -72,14 +72,14 @@
   /* Code colors */
   --color-code: #f1f3f5;
   --color-code-foreground: #343a40;
-  --color-inline-code: var(--color-primary-100);
-  --color-inline-code-foreground: var(--color-primary-900);
+  --color-inline-code: var(--color-neutral-100);
+  --color-inline-code-foreground: var(--color-neutral-900);
 
   /* Dark code colors */
   --color-dark-code: #151515; /* Align with new dark bg */
   --color-dark-code-foreground: #e9ecef;
   --color-dark-inline-code: var(--color-background-level2);
-  --color-dark-inline-code-foreground: var(--color-primary-200);
+  --color-dark-inline-code-foreground: var(--color-neutral-200);
 
   /* Popover colors */
   --color-popover: var(
@@ -102,68 +102,68 @@
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.75;
 
-  /* Neon Accents */
-  --color-neon-primary: #ffdd00;
-  --color-neon-secondary: #ff9933;
-  --color-neon-accent: #00ffee;
-  --color-neon-complementary: #ff2d2d;
+  /* Neutral Accents (Replacing Neon) */
+  --color-neon-primary: var(--color-neutral-700);
+  --color-neon-secondary: var(--color-neutral-600);
+  --color-neon-accent: var(--color-neutral-500);
+  --color-neon-complementary: var(--color-neutral-400);
 
-  /* Neon glows - using the actual neon colors instead of the main palette */
-  --color-neon-glow-primary: 0 0 20px #ffdd00, 0 0 40px #ffdd0066;
-  --color-neon-glow-secondary: 0 0 20px #ff9933, 0 0 40px #ff993366;
-  --color-neon-glow-accent: 0 0 20px #00ffee, 0 0 40px #00ffee66;
-  --color-neon-glow-complementary: 0 0 20px #ff2d2d, 0 0 40px #ff2d2d66;
+  /* Subtle shadows (Replacing Neon glows) */
+  --color-neon-glow-primary: 0 0 10px rgba(0, 0, 0, 0.1);
+  --color-neon-glow-secondary: 0 0 10px rgba(0, 0, 0, 0.08);
+  --color-neon-glow-accent: 0 0 10px rgba(0, 0, 0, 0.06);
+  --color-neon-glow-complementary: 0 0 10px rgba(0, 0, 0, 0.04);
 
-  /* Primary colors (Magenta - #FF00FF) */
-  --color-primary-50: #fff0ff;
-  --color-primary-100: #ffe0ff;
-  --color-primary-200: #ffb3ff;
-  --color-primary-300: #ff80ff;
-  --color-primary-400: #ff4dff;
-  --color-primary-500: #ff00ff;
-  --color-primary-600: #e600e6;
-  --color-primary-700: #b300b3;
-  --color-primary-800: #800080;
-  --color-primary-900: #4d004d;
-  --color-primary-1000: #330033;
-  --color-primary-1100: #1a001a;
-  --color-primary-1200: #0d000d;
-  --color-primary: var(--color-primary-500);
-  --color-primary-foreground: #ffffff;
+  /* Primary colors (Zinc/Slate - Monochromatic) */
+  --color-primary-50: #fafafa;
+  --color-primary-100: #f4f4f5;
+  --color-primary-200: #e4e4e7;
+  --color-primary-300: #d4d4d8;
+  --color-primary-400: #a1a1aa;
+  --color-primary-500: #71717a;
+  --color-primary-600: #52525b;
+  --color-primary-700: #3f3f46;
+  --color-primary-800: #27272a;
+  --color-primary-900: #18181b;
+  --color-primary-1000: #141414;
+  --color-primary-1100: #0f0f0f;
+  --color-primary-1200: #0a0a0a;
+  --color-primary: var(--color-primary-900);
+  --color-primary-foreground: #fafafa;
 
-  /* Secondary colors (Orange - #FFA500) */
-  --color-secondary-50: #fff8e6;
-  --color-secondary-100: #ffedb3;
-  --color-secondary-200: #ffe080;
-  --color-secondary-300: #ffd44d;
-  --color-secondary-400: #ffc71a;
-  --color-secondary-500: #ffa500;
-  --color-secondary-600: #e69500;
-  --color-secondary-700: #b37400;
-  --color-secondary-800: #805300;
-  --color-secondary-900: #4d3200;
-  --color-secondary-1000: #332100;
-  --color-secondary-1100: #1a1100;
-  --color-secondary-1200: #0d0800;
-  --color-secondary: var(--color-secondary-500);
-  --color-secondary-foreground: #ffffff; /* White foreground might be low contrast, adjust if needed */
+  /* Secondary colors (Slate - Monochromatic) */
+  --color-secondary-50: #f8fafc;
+  --color-secondary-100: #f1f5f9;
+  --color-secondary-200: #e2e8f0;
+  --color-secondary-300: #cbd5e1;
+  --color-secondary-400: #94a3b8;
+  --color-secondary-500: #64748b;
+  --color-secondary-600: #475569;
+  --color-secondary-700: #334155;
+  --color-secondary-800: #1e293b;
+  --color-secondary-900: #0f172a;
+  --color-secondary-1000: #0c1321;
+  --color-secondary-1100: #080d19;
+  --color-secondary-1200: #04070d;
+  --color-secondary: var(--color-secondary-600);
+  --color-secondary-foreground: #f8fafc;
 
-  /* Accent colors (Purple-Blue mix - #7f5aff) */
-  --color-accent-50: #e6e6ff;
-  --color-accent-100: #ccccff;
-  --color-accent-200: #9999ff;
-  --color-accent-300: #6666ff;
-  --color-accent-400: #3333ff;
-  --color-accent-500: #0000ff;
-  --color-accent-600: #0000cc;
-  --color-accent-700: #000099;
-  --color-accent-800: #000066;
-  --color-accent-900: #000033;
-  --color-accent-1000: #00001a;
+  /* Accent colors (Neutral Gray - Monochromatic) */
+  --color-accent-50: #fafafa;
+  --color-accent-100: #f5f5f5;
+  --color-accent-200: #e5e5e5;
+  --color-accent-300: #d4d4d4;
+  --color-accent-400: #a3a3a3;
+  --color-accent-500: #737373;
+  --color-accent-600: #525252;
+  --color-accent-700: #404040;
+  --color-accent-800: #262626;
+  --color-accent-900: #171717;
+  --color-accent-1000: #121212;
   --color-accent: var(
-    --color-accent-600
+    --color-accent-900
   ); /* Use a slightly darker shade for default accent */
-  --color-accent-foreground: #ffffff;
+  --color-accent-foreground: #fafafa;
 
   /* Muted colors */
   --color-muted: #f5f5f5;
@@ -173,22 +173,22 @@
   --color-muted-foreground-darker: #2f2f35;
   --color-muted-foreground-lighter: #7d7d85;
 
-  /* Complementary colors (Light Yellow - Base #FFD700) - Increased contrast */
-  --color-complementary-50: #fff9e6;
-  --color-complementary-100: #fff3cc;
-  --color-complementary-200: #ffe699;
-  --color-complementary-300: #ffd966;
-  --color-complementary-400: #ffcc33;
-  --color-complementary-500: #ffd700;
-  --color-complementary-600: #e6c200;
-  --color-complementary-700: #ccad00;
-  --color-complementary-800: #997f00;
-  --color-complementary-900: #665500;
-  --color-complementary-1000: #4d4000;
-  --color-complementary-1100: #332a00;
-  --color-complementary-1200: #1a1500;
-  --color-complementary: var(--color-complementary-500);
-  --color-complementary-foreground: #000000; /* Black needed for contrast */
+  /* Complementary colors (Stone - Monochromatic) */
+  --color-complementary-50: #fafaf9;
+  --color-complementary-100: #f5f5f4;
+  --color-complementary-200: #e7e5e4;
+  --color-complementary-300: #d6d3d1;
+  --color-complementary-400: #a8a29e;
+  --color-complementary-500: #78716c;
+  --color-complementary-600: #57534e;
+  --color-complementary-700: #44403c;
+  --color-complementary-800: #292524;
+  --color-complementary-900: #1c1917;
+  --color-complementary-1000: #161413;
+  --color-complementary-1100: #100f0e;
+  --color-complementary-1200: #0a0908;
+  --color-complementary: var(--color-complementary-700);
+  --color-complementary-foreground: #fafaf9;
 
   /* Success colors - expanded with darker tones */
   --color-success-50: #e6f7e6;
@@ -293,27 +293,27 @@
   --color-neutral-foreground: #ffffff;
 
   /* Markdown specific colors */
-  --color-markdown-h1: var(--color-complementary-400);
-  --color-markdown-h2: var(--color-primary-400);
+  --color-markdown-h1: var(--color-text-primary);
+  --color-markdown-h2: var(--color-text-primary);
   --color-markdown-h3: var(--color-text-primary);
   --color-markdown-h4: var(--color-text-secondary);
   --color-markdown-text: var(--color-text-primary);
-  --color-markdown-link: var(--color-accent-500);
+  --color-markdown-link: var(--color-text-primary);
   --color-markdown-codebg: var(--color-code);
   --color-markdown-codetext: var(--color-code-foreground);
   --color-markdown-inlinecodebg: var(--color-inline-code);
   --color-markdown-inlinecodetext: var(--color-inline-code-foreground);
   --color-markdown-blockquote: var(--color-muted-foreground-lighter);
-  --color-markdown-listmarker: var(--color-accent-400);
+  --color-markdown-listmarker: var(--color-text-secondary);
 
   /* Border and input colors */
   --color-border: var(--color-border-default);
   --color-border-hover: var(--color-border-dark);
-  --color-border-focus: var(--color-accent-400);
+  --color-border-focus: var(--color-neutral-700);
   --color-input: var(--color-background-level1);
   --color-input-hover: var(--color-background-level2);
   --color-input-focus: var(--color-background-level2);
-  --color-ring: var(--color-accent-500);
+  --color-ring: var(--color-neutral-900);
 
   /* Gradients */
   --gradient-light-1: linear-gradient(
@@ -328,13 +328,13 @@
   );
   --gradient-accent-1: linear-gradient(
     to bottom right,
-    var(--color-accent-500),
-    var(--color-primary-500)
+    var(--color-neutral-200),
+    var(--color-neutral-300)
   );
   --gradient-accent-2: linear-gradient(
     to bottom right,
-    var(--color-accent-600),
-    var(--color-primary-600)
+    var(--color-neutral-300),
+    var(--color-neutral-400)
   );
 
   /* Shadow effects */
@@ -399,18 +399,18 @@
     --color-muted-foreground: #adb5bd;
 
     /* Update markdown-specific colors for dark mode */
-    --color-markdown-h1: var(--color-complementary-400);
-    --color-markdown-h2: var(--color-primary-400);
+    --color-markdown-h1: var(--color-text-primary);
+    --color-markdown-h2: var(--color-text-primary);
     --color-markdown-h3: var(--color-text-primary);
     --color-markdown-h4: var(--color-text-secondary);
     --color-markdown-text: var(--color-text-primary);
-    --color-markdown-link: var(--color-accent-400);
+    --color-markdown-link: var(--color-text-primary);
     --color-markdown-codebg: var(--color-dark-code);
     --color-markdown-codetext: var(--color-dark-code-foreground);
     --color-markdown-inlinecodebg: var(--color-dark-inline-code);
     --color-markdown-inlinecodetext: var(--color-dark-inline-code-foreground);
     --color-markdown-blockquote: var(--color-muted-foreground);
-    --color-markdown-listmarker: var(--color-accent-400);
+    --color-markdown-listmarker: var(--color-text-secondary);
 
     /* Update input colors for dark mode */
     --color-input: var(--color-background-level1);

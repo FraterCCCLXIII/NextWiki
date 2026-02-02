@@ -42,7 +42,7 @@ const badgeVariants = cva(
     },
     defaultVariants: {
       variant: "default",
-      color: "secondary",
+      color: "neutral",
     },
   }
 );

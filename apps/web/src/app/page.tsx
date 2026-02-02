@@ -93,7 +93,7 @@ export default async function Home() {
                   </p>
                   <Link
                     href="/create?path=index"
-                    className="bg-primary hover:bg-primary/90 focus:ring-primary/90 rounded-md px-4 py-2 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   >
                     Create Homepage
                   </Link>
@@ -140,9 +140,9 @@ export default async function Home() {
                     >
                       <Link
                         href={`/${page.path}`}
-                        className="dark:bg-background-level1 bg-background-paper hover:bg-primary/10 flex items-center justify-between rounded-md py-1 text-xs"
+                        className="dark:bg-background-level1 bg-background-paper hover:bg-muted flex items-center justify-between rounded-md py-1 text-xs"
                       >
-                        <span className="text-primary dark:text-text-primary ml-2 font-medium">
+                        <span className="text-foreground ml-2 font-medium">
                           {page.title}
                         </span>
                         <span className="text-text-secondary mr-2 shrink-0">
@@ -163,7 +163,7 @@ export default async function Home() {
                 )}
                 <Link
                   href="/wiki"
-                  className="text-primary mt-2 inline-block text-xs font-medium hover:underline"
+                  className="text-foreground mt-2 inline-block text-xs font-medium hover:underline"
                 >
                   View All
                 </Link>
@@ -178,7 +178,7 @@ export default async function Home() {
                 <div className="grid grid-cols-4 gap-2">
                   <Link
                     href="/wiki/getting-started"
-                    className="text-text-secondary hover:bg-primary/10 flex flex-col items-center rounded-md p-1.5 text-center text-xs"
+                    className="text-text-secondary hover:bg-muted flex flex-col items-center rounded-md p-1.5 text-center text-xs"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +198,7 @@ export default async function Home() {
                   </Link>
                   <Link
                     href="/create"
-                    className="text-text-secondary hover:bg-primary/10 flex flex-col items-center rounded-md p-1.5 text-center text-xs"
+                    className="text-text-secondary hover:bg-muted flex flex-col items-center rounded-md p-1.5 text-center text-xs"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -218,7 +218,7 @@ export default async function Home() {
                   </Link>
                   <Link
                     href="/tags"
-                    className="text-text-secondary hover:bg-primary/10 flex flex-col items-center rounded-md p-1.5 text-center text-xs"
+                    className="text-text-secondary hover:bg-muted flex flex-col items-center rounded-md p-1.5 text-center text-xs"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -238,7 +238,7 @@ export default async function Home() {
                   </Link>
                   <Link
                     href="/profile"
-                    className="text-text-secondary hover:bg-primary/10 flex flex-col items-center rounded-md p-1.5 text-center text-xs"
+                    className="text-text-secondary hover:bg-muted flex flex-col items-center rounded-md p-1.5 text-center text-xs"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -291,7 +291,7 @@ export default async function Home() {
                       <Link
                         key={relation.tag.id}
                         href={`/tags/${relation.tag.name}`}
-                        className="bg-accent/20 hover:bg-accent/30 rounded px-2 py-0.5 text-xs"
+                        className="bg-muted hover:bg-muted-darker rounded px-2 py-0.5 text-xs"
                       >
                         {relation.tag.name}
                       </Link>

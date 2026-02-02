@@ -97,7 +97,7 @@ const buttonVariants = cva(
     defaultVariants: {
       variant: "default",
       size: "default",
-      color: "primary",
+      color: "neutral",
       rounded: "md",
       elevation: "none",
     },
