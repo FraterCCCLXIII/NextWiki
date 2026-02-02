@@ -5,9 +5,10 @@ import { AdminButton } from "~/components/layout/AdminButton";
 import { PageMetadata } from "./MainLayout";
 import Link from "next/link";
 import { WikiLockInfo } from "~/components/wiki/WikiLockInfo";
-import { MoveIcon, PencilIcon } from "lucide-react";
+import { MoveIcon, PencilIcon, Search } from "lucide-react";
 import { ClientRequirePermission } from "~/components/auth/permission/client";
 import { getSettingValue } from "~/lib/utils/settings";
+import { SearchTrigger } from "./SearchTrigger";
 
 export async function Header({
   pageMetadata,
@@ -22,10 +23,10 @@ export async function Header({
   return (
     <header
       className={
-        "border-border-default flex h-16 items-center justify-between border-b px-4 shadow-md"
+        "border-border-default flex h-16 items-center justify-between gap-4 border-b px-4 shadow-md"
       }
     >
-      <div className="flex items-center">
+      <div className="flex items-center flex-shrink-0">
         {isHomePage && (
           <div className="mr-3 hidden md:block">
             <Link href="/" className="flex items-center">
@@ -94,7 +95,12 @@ export async function Header({
         )}
       </div>
 
-      <div className="flex items-center space-x-3">
+      {/* Center: Search Bar */}
+      <div className="flex-1 max-w-2xl mx-auto hidden md:block">
+        <SearchTrigger />
+      </div>
+
+      <div className="flex items-center space-x-3 flex-shrink-0">
         {/* Tags removed from here */}
         {/* {env.NODE_ENV === "development" && <RandomNumberDisplay />} */}
         <ThemeToggle />
