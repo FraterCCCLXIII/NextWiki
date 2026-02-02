@@ -7,6 +7,7 @@ import { listItemComponent } from "./ListItemComponent";
 import { listComponent } from "./ListComponent";
 import { linkComponent } from "./LinkComponent";
 import { h1Component, h2Component, h3Component, h4Component, h5Component, h6Component } from "./HeadingComponent";
+import { blockquoteComponent } from "./BlockquoteComponent";
 import type { Components } from "react-markdown";
 
 /**
@@ -23,4 +24,5 @@ export const markdownComponents: Components = {
   h4: h4Component,
   h5: h5Component,
   h6: h6Component,
+  blockquote: blockquoteComponent,
 };

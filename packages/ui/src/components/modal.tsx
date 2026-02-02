@@ -79,7 +79,7 @@ const Modal: React.FC<ModalProps> = ({
     : createPortal(
         <div
           className={cn(
-            "fixed inset-0 z-[60] flex min-h-screen justify-center bg-black/40 backdrop-blur-sm transition-opacity",
+            "fixed inset-0 z-[60] flex min-h-screen justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-150",
             positionClasses[position],
             overlayClassName
           )}

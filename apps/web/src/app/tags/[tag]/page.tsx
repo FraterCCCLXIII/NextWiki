@@ -52,16 +52,16 @@ export default async function TagPage({
 
   return (
     <MainLayout>
-      <div className="space-y-6 p-4">
+      <div className="mx-auto max-w-5xl space-y-6 p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="flex items-center text-2xl font-bold">
+            <h1 className="text-text-primary flex items-center text-3xl font-bold">
               Pages tagged:
-              <span className="bg-muted ml-2 rounded-full px-3 py-1 text-sm">
+              <span className="bg-background-level2 ml-2 rounded-full px-3 py-1 text-sm">
                 {tag}
               </span>
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-text-secondary mt-2 text-sm">
               Found {filteredPages?.pages.length}{" "}
               {filteredPages?.pages.length === 1 ? "page" : "pages"} with this
               tag.

@@ -420,6 +420,58 @@
 }
 
 @layer {
+  /* Animation keyframes with GPU acceleration */
+  @keyframes dropdownIn {
+    from {
+      opacity: 0;
+      transform: scale3d(0.95, 0.95, 1) translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: scale3d(1, 1, 1) translateY(0);
+    }
+  }
+
+  @keyframes dropdownOut {
+    from {
+      opacity: 1;
+      transform: scale3d(1, 1, 1) translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: scale3d(0.95, 0.95, 1) translateY(-4px);
+    }
+  }
+
+  /* Fast and subtle animations for dropdowns and modals */
+  [data-radix-popper-content-wrapper] {
+    isolation: isolate;
+    contain: layout style;
+  }
+
+  /* Only animate the content elements, not triggers */
+  [role="dialog"][data-state="open"],
+  [role="menu"][data-state="open"],
+  [role="listbox"][data-state="open"],
+  div[data-radix-popper-content-wrapper][data-state="open"] > * {
+    animation: dropdownIn 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  [role="dialog"][data-state="closed"],
+  [role="menu"][data-state="closed"],
+  [role="listbox"][data-state="closed"],
+  div[data-radix-popper-content-wrapper][data-state="closed"] > * {
+    animation: dropdownOut 0.1s cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+
+  /* Ensure trigger buttons don't get animated or flicker */
+  [data-radix-popover-trigger],
+  [data-radix-dropdown-menu-trigger],
+  [data-radix-dialog-trigger],
+  button[data-state] {
+    animation: none !important;
+  }
+
   /* Style for the scroll indicator container */
   .scroll-indicator-container::after {
     content: "";

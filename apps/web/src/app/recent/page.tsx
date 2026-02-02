@@ -19,7 +19,7 @@ export default async function RecentChangesPage() {
     <MainLayout>
       <div className="mx-auto max-w-5xl space-y-6 p-6">
         {/* Header */}
-        <div className="border-b pb-4">
+        <div>
           <h1 className="text-3xl font-bold text-text-primary">Recent Changes</h1>
           <p className="text-text-secondary mt-2 text-sm">
             Chronological list of all wiki page updates

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, ChevronRight, Home, BookOpen, Tag, Folder, File, Clock } from "lucide-react";
@@ -68,6 +68,7 @@ function WikiTreeItem({ item, activeItemPath }: { item: FolderNode; activeItemPa
 
 export function NavigationDropdown({ siteTitle, siteLogo }: { siteTitle?: string; siteLogo?: string }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
   const pathname = usePathname();
   const trpc = useTRPC();
 
@@ -76,6 +77,18 @@ export function NavigationDropdown({ siteTitle, siteLogo }: { siteTitle?: string
   );
 
   const tree = folderStructure?.children || [];
+
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRender(true);
+    } else {
+      // Wait for animation to finish before unmounting
+      const timer = setTimeout(() => {
+        setShouldRender(false);
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
 
   return (
     <div className="relative">
@@ -117,7 +130,7 @@ export function NavigationDropdown({ siteTitle, siteLogo }: { siteTitle?: string
         <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
       </button>
 
-      {isOpen && (
+      {shouldRender && (
         <>
           {/* Backdrop */}
           <div
@@ -126,7 +139,11 @@ export function NavigationDropdown({ siteTitle, siteLogo }: { siteTitle?: string
           />
 
           {/* Dropdown content */}
-          <div className="absolute left-0 top-full mt-2 w-80 z-50 rounded-lg border border-border-default bg-background-paper shadow-lg max-h-[80vh] overflow-hidden flex flex-col">
+          <div 
+            role="menu"
+            data-state={isOpen ? "open" : "closed"}
+            className="absolute left-0 top-full mt-2 w-80 z-50 rounded-lg border border-border-default bg-background-paper shadow-lg max-h-[80vh] overflow-hidden flex flex-col will-change-[opacity,transform]"
+          >
             {/* Navigation Links */}
             <nav className="space-y-1 p-3 border-b border-border-default">
               <Link

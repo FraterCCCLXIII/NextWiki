@@ -58,7 +58,7 @@
   }
 
   blockquote {
-    @apply bg-background-level1 rounded-lg py-2 pl-4;
+    @apply bg-background-level1 py-2 pl-4 border-l-4 border-border-default;
   }
 
   blockquote p {
@@ -74,52 +74,43 @@
   }
 
   blockquote.is-info {
-    @apply bg-info/10;
+    @apply bg-info/10 border-info;
   }
 
-  blockquote.is-info::before {
+  blockquote.is-info svg {
     @apply text-info;
   }
 
   blockquote.is-warning {
-    @apply bg-warning/10;
+    @apply bg-warning/10 border-warning;
   }
 
-  blockquote.is-warning::before {
+  blockquote.is-warning svg {
     @apply text-warning;
   }
 
   blockquote.is-danger {
-    @apply bg-error/10;
+    @apply bg-error/10 border-error;
   }
 
-  blockquote.is-danger::before {
+  blockquote.is-danger svg {
     @apply text-error;
   }
 
   blockquote.is-success {
-    @apply bg-success/10;
+    @apply bg-success/10 border-success;
   }
 
-  blockquote.is-success::before {
+  blockquote.is-success svg {
     @apply text-success;
   }
 
   blockquote.is-quote {
-    @apply bg-text-secondary/10;
+    @apply bg-text-secondary/10 border-text-secondary;
   }
 
-  blockquote.is-quote::before {
-    content: "Quote";
+  blockquote.is-quote svg {
     @apply text-text-secondary;
-  }
-
-  blockquote.is-quote p::before {
-    content: "“";
-  }
-
-  blockquote.is-quote p::after {
-    content: "”";
   }
 
   /* Lists */
