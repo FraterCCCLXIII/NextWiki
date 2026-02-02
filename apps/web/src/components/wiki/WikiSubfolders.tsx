@@ -66,7 +66,7 @@ export function WikiSubfolders({
       maxDepth={maxDepth}
       showRoot={false}
       showOnlyChildren={true}
-      title="Subpages"
+      title="Contents"
       className={`${className}`}
       showPageCount={true}
       openDepth={openDepth}

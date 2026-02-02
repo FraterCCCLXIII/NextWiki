@@ -550,8 +550,8 @@ export function WikiFolderTree({
     <div className={className}>
       <Card
         className={cn(
-          "border-border-light bg-transparent",
-          !card ? "border-0 shadow-none" : "shadow-md"
+          "border-border-light bg-transparent shadow-none",
+          !card && "border-0"
         )}
       >
         <CardContent className={cn(card ? "p-3" : "m-0 p-0")}>

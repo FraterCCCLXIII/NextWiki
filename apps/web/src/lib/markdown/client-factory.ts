@@ -11,6 +11,7 @@ import remarkEmoji from "remark-emoji";
 import remarkDirective from "remark-directive";
 import remarkDirectiveRehype from "remark-directive-rehype";
 import rehypeHighlight from "rehype-highlight";
+import rehypeSlug from "rehype-slug";
 import { customPlugins } from "./plugins";
 import { markdownOptions } from "./core/config";
 import { markdownComponents } from "./components";
@@ -31,6 +32,7 @@ export const clientRemarkPlugins: PluggableList = [
  * Rehype plugins safe for client-side use
  */
 export const clientRehypePlugins: PluggableList = [
+  rehypeSlug, // Add IDs to headings for anchor links
   rehypeHighlight,
   // Add other client-safe rehype plugins here
 ];

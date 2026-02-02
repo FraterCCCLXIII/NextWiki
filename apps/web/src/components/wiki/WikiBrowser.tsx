@@ -1,13 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { PlusIcon } from "lucide-react";
 import { useTRPC } from "~/server/client";
 import { useQuery } from "@tanstack/react-query";
-import { PageLocationEditor } from "./PageLocationEditor";
-import { Button } from "@repo/ui";
-import { ClientRequirePermission } from "../auth/permission/client";
 
 interface FolderNode {
   name: string;
@@ -37,7 +32,12 @@ function FolderSection({ node, depth = 0 }: { node: FolderNode; depth?: number }
       {/* Folder name as header (skip root) */}
       {depth > 0 && node.type === "folder" && (
         <HeadingTag className={headingClass}>
-          {node.title || node.name}
+          <Link 
+            href={`/${node.path}`}
+            className="hover:text-primary transition-colors cursor-pointer inline-block"
+          >
+            {node.title || node.name}
+          </Link>
         </HeadingTag>
       )}
 
@@ -66,7 +66,6 @@ function FolderSection({ node, depth = 0 }: { node: FolderNode; depth?: number }
 }
 
 export function WikiBrowser() {
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const trpc = useTRPC();
 
   // Fetch folder structure
@@ -76,19 +75,6 @@ export function WikiBrowser() {
 
   return (
     <>
-      {/* Create button */}
-      <div className="mb-6 flex items-center justify-end">
-        <ClientRequirePermission permission="wiki:page:create">
-          <Button
-            onClick={() => setIsCreateModalOpen(true)}
-            size="default"
-          >
-            <PlusIcon className="mr-2 h-4 w-4" />
-            New Page
-          </Button>
-        </ClientRequirePermission>
-      </div>
-
       {/* Wiki folder structure as headers */}
       {isLoading ? (
         <div className="text-text-secondary py-8 text-center">
@@ -105,13 +91,6 @@ export function WikiBrowser() {
           No pages found. Create your first page to get started.
         </div>
       )}
-
-      {/* Page Location Editor Modal */}
-      <PageLocationEditor
-        mode="create"
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-      />
     </>
   );
 }

@@ -8,11 +8,11 @@ import { WikiSubfolders } from "./WikiSubfolders";
 import { Breadcrumbs } from "./Breadcrumbs";
 import { useTRPC } from "~/server/client";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Modal } from "@repo/ui";
+import { Modal, Popover, PopoverTrigger, PopoverContent, Button } from "@repo/ui";
 import { PageLocationEditor } from "./PageLocationEditor";
 import { ScrollArea } from "@repo/ui";
 import { TableOfContents } from "./TableOfContents";
-import { PencilIcon, MoveIcon } from "lucide-react";
+import { PencilIcon, MoveIcon, MoreVertical } from "lucide-react";
 import { ClientRequirePermission } from "~/components/auth/permission/client";
 
 interface WikiPageProps {
@@ -131,31 +131,44 @@ export function WikiPage({
 
           {/* Center Column: Main Content */}
           <div className="min-w-0 max-w-4xl flex-1 px-8 py-4">
-            {/* Page Title with Action Buttons */}
+            {/* Page Title with Actions Dropdown */}
             <div className="mb-6 flex items-start justify-between gap-4">
               <h1 className="text-text-primary text-3xl font-bold tracking-tight flex-1">
                 {title}
               </h1>
-              <div className="flex items-center space-x-2 flex-shrink-0">
-                <ClientRequirePermission permission="wiki:page:update">
-                  <Link
-                    href={`/${path}?edit=true`}
-                    className="text-text-secondary hover:text-primary hover:border-accent/20 flex items-center rounded border border-transparent px-2 py-1 text-xs"
-                  >
-                    <PencilIcon className="mr-1 h-3.5 w-3.5" />
-                    Edit
-                  </Link>
-                  {path !== "index" && (
-                    <Link
-                      href={`/${path}?move=true`}
-                      className="text-text-secondary hover:text-primary hover:border-accent/20 flex items-center rounded border border-transparent px-2 py-1 text-xs"
+              <ClientRequirePermission permission="wiki:page:update">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 flex-shrink-0"
                     >
-                      <MoveIcon className="mr-1 h-3.5 w-3.5" />
-                      Move
-                    </Link>
-                  )}
-                </ClientRequirePermission>
-              </div>
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-40 p-1 bg-background-paper border-border-default">
+                    <div className="space-y-0.5">
+                      <Link
+                        href={`/${path}?edit=true`}
+                        className="text-text-primary hover:bg-background-level1 flex items-center rounded-md px-3 py-2 text-sm transition-colors"
+                      >
+                        <PencilIcon className="mr-2 h-4 w-4" />
+                        Edit
+                      </Link>
+                      {path !== "index" && (
+                        <Link
+                          href={`/${path}?move=true`}
+                          className="text-text-primary hover:bg-background-level1 flex items-center rounded-md px-3 py-2 text-sm transition-colors"
+                        >
+                          <MoveIcon className="mr-2 h-4 w-4" />
+                          Move
+                        </Link>
+                      )}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </ClientRequirePermission>
             </div>
 
             {/* Article content - hide first h1 since we show it above */}
@@ -174,7 +187,7 @@ export function WikiPage({
             )}
 
             {/* Footer: Breadcrumbs, Metadata, and Tags */}
-            <div className="mt-12 bg-gray-100 dark:bg-gray-800 rounded-lg p-6">
+            <div className="mt-12 bg-background-level1 rounded-lg p-6">
               {/* Breadcrumbs */}
               {/* <Breadcrumbs path={path} className="mb-3" /> */}
 
@@ -208,7 +221,7 @@ export function WikiPage({
                     <Link
                       key={tag.id}
                       href={`/tags/${tag.name}`}
-                      className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-text-secondary hover:text-text-primary rounded-full px-2.5 py-0.5 text-xs transition-colors"
+                      className="bg-background-level2 hover:bg-background-level3 text-text-secondary hover:text-text-primary rounded-full px-2.5 py-0.5 text-xs transition-colors"
                     >
                       {tag.name}
                     </Link>
