@@ -80,7 +80,7 @@ export function SearchResults() {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-primary mb-1 text-xl font-semibold hover:underline">
+                    <h3 className="text-primary mb-1 text-xl font-semibold">
                       {page.title}
                     </h3>
                     <p className="text-text-secondary mb-2 truncate text-sm">
