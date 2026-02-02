@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, ChevronRight, Home, BookOpen, Tag, Folder, File } from "lucide-react";
+import { ChevronDown, ChevronRight, Home, BookOpen, Tag, Folder, File, Clock } from "lucide-react";
 import { useTRPC } from "~/server/client";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "~/lib/utils";
@@ -152,6 +152,14 @@ export function NavigationDropdown({ siteTitle, siteLogo }: { siteTitle?: string
               >
                 <Tag className="text-text-primary mr-3 h-4 w-4" />
                 Tags
+              </Link>
+              <Link
+                href="/recent"
+                onClick={() => setIsOpen(false)}
+                className="text-text-primary flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-background-level1"
+              >
+                <Clock className="text-text-primary mr-3 h-4 w-4" />
+                Recent Changes
               </Link>
             </nav>
 
