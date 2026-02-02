@@ -1058,7 +1058,10 @@ export const wikiRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       const { pageId, revisionId, changeSummary } = input;
-      const userId = ctx.user.id;
+      const userId = parseInt(ctx.session.user.id);
+
+      logger.info(`[REVERT] Starting revert for page ${pageId} to revision ${revisionId}`);
+      logger.info(`[REVERT] User ID: ${userId}`);
 
       // Get the revision to revert to
       const revision = await db.query.wikiPageRevisions.findFirst({
@@ -1069,63 +1072,135 @@ export const wikiRouter = router({
       });
 
       if (!revision) {
+        logger.error(`[REVERT] Revision ${revisionId} not found`);
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Revision not found",
         });
       }
 
+      logger.info(`[REVERT] Found revision:`, {
+        id: revision.id,
+        title: revision.title,
+        path: revision.path,
+        contentLength: revision.content?.length,
+        editorType: revision.editorType,
+        isPublished: revision.isPublished,
+        revisionMetadata: revision.revisionMetadata,
+      });
+
       // Get current page to extract tags
       const currentPage = await wikiService.getById(pageId);
       if (!currentPage) {
+        logger.error(`[REVERT] Current page ${pageId} not found`);
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Page not found",
         });
       }
 
+      logger.info(`[REVERT] Current page found:`, {
+        id: currentPage.id,
+        title: currentPage.title,
+        path: currentPage.path,
+        tagsCount: currentPage.tags?.length || 0,
+        tags: currentPage.tags?.map(pt => ({ tagId: pt.tag?.id, tagName: pt.tag?.name })),
+      });
+
       // Extract tags safely
       let tags: string[] = [];
       try {
         // Try to get tags from revision metadata first
         const revisionMetadata = revision.revisionMetadata as Record<string, unknown> | null;
+        logger.info(`[REVERT] Revision metadata:`, revisionMetadata);
+        
         if (revisionMetadata?.tags && Array.isArray(revisionMetadata.tags)) {
           tags = revisionMetadata.tags as string[];
+          logger.info(`[REVERT] Using tags from revision metadata:`, tags);
         } else if (currentPage.tags && Array.isArray(currentPage.tags)) {
           // Fall back to current page tags
+          logger.info(`[REVERT] Falling back to current page tags`);
           tags = currentPage.tags
-            .filter((pt) => pt.tag && pt.tag.name) // Filter out invalid entries
+            .filter((pt) => {
+              const isValid = pt.tag && pt.tag.name;
+              if (!isValid) {
+                logger.warn(`[REVERT] Invalid tag entry:`, pt);
+              }
+              return isValid;
+            })
             .map((pt) => pt.tag.name);
+          logger.info(`[REVERT] Extracted tags from current page:`, tags);
+        } else {
+          logger.info(`[REVERT] No tags found, using empty array`);
         }
       } catch (error) {
-        logger.error("Error extracting tags for revert:", error);
+        logger.error("[REVERT] Error extracting tags:", error);
         tags = []; // Default to empty array if extraction fails
       }
 
-      const updatedPage = await wikiService.update(pageId, {
+      logger.info(`[REVERT] Final tags to use:`, tags);
+      logger.info(`[REVERT] Calling wikiService.update with:`, {
+        pageId,
         path: revision.path || currentPage.path,
         title: revision.title || currentPage.title,
-        content: revision.content,
+        contentLength: revision.content?.length,
         isPublished: revision.isPublished ?? currentPage.isPublished ?? false,
-        editorType: (revision.editorType as "markdown" | "html" | undefined) || undefined,
+        editorType: revision.editorType,
+        tagsCount: tags.length,
         tags,
         userId,
-        changeSummary: changeSummary || `Reverted to revision #${revisionId}`,
       });
 
-      // Update the newly created revision to mark it as a restoration
-      await db
-        .update(wikiPageRevisions)
-        .set({ revisionType: "restored" })
-        .where(
-          eq(
-            wikiPageRevisions.id,
-            sql`(SELECT id FROM wiki_page_revisions WHERE page_id = ${pageId} ORDER BY created_at DESC LIMIT 1)`
-          )
-        );
+      try {
+        const updatedPage = await wikiService.update(pageId, {
+          path: revision.path || currentPage.path,
+          title: revision.title || currentPage.title,
+          content: revision.content,
+          isPublished: revision.isPublished ?? currentPage.isPublished ?? false,
+          editorType: (revision.editorType as "markdown" | "html" | undefined) || undefined,
+          tags,
+          userId,
+          changeSummary: changeSummary || `Reverted to revision #${revisionId}`,
+        });
 
-      return updatedPage;
-    }),
+        if (!updatedPage) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to update page during revert",
+          });
+        }
+
+        logger.info(`[REVERT] Successfully updated page ${pageId}`);
+        logger.info(`[REVERT] Updated page:`, {
+          id: updatedPage.id,
+          title: updatedPage.title,
+          path: updatedPage.path,
+        });
+
+        // Update the newly created revision to mark it as a restoration
+        logger.info(`[REVERT] Marking new revision as 'restored'`);
+        await db
+          .update(wikiPageRevisions)
+          .set({ revisionType: "restored" })
+          .where(
+            eq(
+              wikiPageRevisions.id,
+              sql`(SELECT id FROM wiki_page_revisions WHERE page_id = ${pageId} ORDER BY created_at DESC LIMIT 1)`
+            )
+          );
+
+        logger.info(`[REVERT] Revert completed successfully for page ${pageId}`);
+        return updatedPage;
+      } catch (error) {
+        logger.error(`[REVERT] Error during revert:`, {
+          error: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+          pageId,
+          revisionId,
+        });
+        throw error;
+      }
+    })
 });
 
 // Helper function to build folder structure

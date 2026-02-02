@@ -250,6 +250,10 @@ export const wikiService = {
         await this.updatePageTags(tx, id, tags);
       }
 
+      if (!updatedPage) {
+        throw new Error("Failed to update page");
+      }
+
       // Create a revision with the NEW state (after the update)
       // Ensure we use the updated content, not undefined
       const revisionContent = content !== undefined ? content : (updatedPage.content || "");
@@ -650,6 +654,11 @@ export const wikiService = {
    * @param tagNames Array of tag names to set on the page
    */
   async updatePageTags(tx: Transaction, pageId: number, tagNames: string[]) {
+    logger.info(`[UPDATE_TAGS] Starting updatePageTags for page ${pageId}`, {
+      tagNames,
+      tagCount: tagNames.length,
+    });
+
     // Step 1: Get existing tag IDs for this page
     const existingTagAssociations: Array<{
       tagId: number;
@@ -659,6 +668,14 @@ export const wikiService = {
       with: {
         tag: true,
       },
+    });
+
+    logger.info(`[UPDATE_TAGS] Existing associations:`, {
+      count: existingTagAssociations.length,
+      associations: existingTagAssociations.map(a => ({
+        tagId: a.tagId,
+        tagName: a.tag?.name,
+      })),
     });
 
     const existingTagNames = existingTagAssociations.map(
@@ -674,9 +691,17 @@ export const wikiService = {
         (assoc) => !tagNames.includes(assoc.tag.name)
       );
 
+    logger.info(`[UPDATE_TAGS] Tags to add:`, tagsToAdd);
+    logger.info(`[UPDATE_TAGS] Tags to remove:`, tagsToRemove.map(a => a.tag.name));
+
     // Step 3: Remove tags that are no longer associated with the page
     if (tagsToRemove.length > 0) {
+      logger.info(`[UPDATE_TAGS] Removing ${tagsToRemove.length} tag associations`);
       for (const assoc of tagsToRemove) {
+        logger.info(`[UPDATE_TAGS] Removing association for tag:`, {
+          tagId: assoc.tagId,
+          tagName: assoc.tag.name,
+        });
         await tx
           .delete(wikiPageToTag)
           .where(
@@ -688,33 +713,86 @@ export const wikiService = {
 
     // Step 4: Add new tags
     if (tagsToAdd.length > 0) {
+      logger.info(`[UPDATE_TAGS] Adding ${tagsToAdd.length} new tag associations`);
       for (const tagName of tagsToAdd) {
+        logger.info(`[UPDATE_TAGS] Processing tag: "${tagName}"`);
+        
         // Get or create the tag
         let tag = await tx.query.wikiTags.findFirst({
           where: eq(wikiTags.name, tagName),
         });
 
+        logger.info(`[UPDATE_TAGS] Existing tag lookup result:`, {
+          found: !!tag,
+          tagId: tag?.id,
+          tagName: tag?.name,
+        });
+
         if (!tag) {
           // Create new tag if it doesn't exist
-          const [newTag] = await tx
-            .insert(wikiTags)
-            .values({ name: tagName })
-            .returning();
-          tag = newTag;
+          logger.info(`[UPDATE_TAGS] Creating new tag: "${tagName}"`);
+          try {
+            const newTags = await tx
+              .insert(wikiTags)
+              .values({ name: tagName })
+              .returning();
+            
+            logger.info(`[UPDATE_TAGS] Insert returned:`, {
+              length: newTags.length,
+              firstTag: newTags[0],
+            });
+            
+            tag = newTags[0];
+            
+            logger.info(`[UPDATE_TAGS] Created new tag:`, {
+              id: tag?.id,
+              name: tag?.name,
+            });
+          } catch (error) {
+            logger.error(`[UPDATE_TAGS] Error creating tag "${tagName}":`, {
+              error: error instanceof Error ? error.message : String(error),
+              stack: error instanceof Error ? error.stack : undefined,
+            });
+            throw error;
+          }
         }
 
         // Ensure tag exists before creating association
         if (!tag || !tag.id) {
-          logger.error(`Failed to get or create tag: ${tagName}`);
+          logger.error(`[UPDATE_TAGS] Failed to get or create tag: "${tagName}"`, {
+            tag,
+            hasTag: !!tag,
+            hasId: tag?.id,
+          });
           continue; // Skip this tag and continue with others
         }
 
         // Add association between page and tag
-        await tx
-          .insert(wikiPageToTag)
-          .values({ pageId, tagId: tag.id })
-          .onConflictDoNothing(); // Ignore if already exists
+        logger.info(`[UPDATE_TAGS] Creating association:`, {
+          pageId,
+          tagId: tag.id,
+          tagName: tag.name,
+        });
+        
+        try {
+          await tx
+            .insert(wikiPageToTag)
+            .values({ pageId, tagId: tag.id })
+            .onConflictDoNothing(); // Ignore if already exists
+          
+          logger.info(`[UPDATE_TAGS] Successfully created association for tag "${tagName}"`);
+        } catch (error) {
+          logger.error(`[UPDATE_TAGS] Error creating association for tag "${tagName}":`, {
+            error: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+            pageId,
+            tagId: tag.id,
+          });
+          throw error;
+        }
       }
     }
+    
+    logger.info(`[UPDATE_TAGS] Completed updatePageTags for page ${pageId}`);
   },
 };
