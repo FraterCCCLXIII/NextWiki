@@ -41,7 +41,7 @@ export function SearchResults() {
   const hasMoreResults = totalResults === RESULTS_PER_PAGE;
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto w-full max-w-4xl space-y-6">
       {/* Results count and info */}
       {searchQuery && (
         <div className="flex items-center justify-between">
