@@ -12,6 +12,8 @@ import { Modal } from "@repo/ui";
 import { PageLocationEditor } from "./PageLocationEditor";
 import { ScrollArea } from "@repo/ui";
 import { TableOfContents } from "./TableOfContents";
+import { PencilIcon, MoveIcon } from "lucide-react";
+import { ClientRequirePermission } from "~/components/auth/permission/client";
 
 interface WikiPageProps {
   id: number;
@@ -129,10 +131,50 @@ export function WikiPage({
 
           {/* Center Column: Main Content */}
           <div className="min-w-0 max-w-4xl flex-1 px-8 py-4">
-            <article>{content}</article>
+            {/* Page Title with Action Buttons */}
+            <div className="mb-6 flex items-start justify-between gap-4">
+              <h1 className="text-text-primary text-3xl font-bold tracking-tight flex-1">
+                {title}
+              </h1>
+              <div className="flex items-center space-x-2 flex-shrink-0">
+                <ClientRequirePermission permission="wiki:page:update">
+                  <Link
+                    href={`/${path}?edit=true`}
+                    className="text-text-secondary hover:text-primary hover:border-accent/20 flex items-center rounded border border-transparent px-2 py-1 text-xs"
+                  >
+                    <PencilIcon className="mr-1 h-3.5 w-3.5" />
+                    Edit
+                  </Link>
+                  {path !== "index" && (
+                    <Link
+                      href={`/${path}?move=true`}
+                      className="text-text-secondary hover:text-primary hover:border-accent/20 flex items-center rounded border border-transparent px-2 py-1 text-xs"
+                    >
+                      <MoveIcon className="mr-1 h-3.5 w-3.5" />
+                      Move
+                    </Link>
+                  )}
+                </ClientRequirePermission>
+              </div>
+            </div>
+
+            {/* Article content - hide first h1 since we show it above */}
+            <article className="[&>*:first-child:is(h1)]:hidden">{content}</article>
+
+            {/* Subpages Section - Moved to bottom */}
+            {hasSubpages && (
+              <div className="mt-12">
+                <WikiSubfolders
+                  path={path}
+                  maxDepth={3}
+                  openDepth={1}
+                  showLegend={false}
+                />
+              </div>
+            )}
 
             {/* Footer: Breadcrumbs, Metadata, and Tags */}
-            <div className="mt-12 bg-gray-50/60 dark:bg-gray-700/60 rounded-lg p-6">
+            <div className="mt-12 bg-gray-100 dark:bg-gray-800 rounded-lg p-6">
               {/* Breadcrumbs */}
               {/* <Breadcrumbs path={path} className="mb-3" /> */}
 
@@ -166,7 +208,7 @@ export function WikiPage({
                     <Link
                       key={tag.id}
                       href={`/tags/${tag.name}`}
-                      className="bg-muted hover:bg-muted/80 text-text-secondary hover:text-text-primary rounded-full px-2.5 py-0.5 text-xs transition-colors"
+                      className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-text-secondary hover:text-text-primary rounded-full px-2.5 py-0.5 text-xs transition-colors"
                     >
                       {tag.name}
                     </Link>
@@ -176,18 +218,9 @@ export function WikiPage({
             </div>
           </div>
 
-          {/* Right Column: Subfolders or Empty Space */}
+          {/* Right Column: Empty Space (Subfolders moved to bottom) */}
           <aside className="hidden xl:block w-[280px] flex-shrink-0 py-4">
-            {hasSubpages && (
-              <div className="sticky top-4">
-                <WikiSubfolders
-                  path={path}
-                  maxDepth={3}
-                  openDepth={1}
-                  showLegend={true}
-                />
-              </div>
-            )}
+            {/* Subfolders now appear at the bottom of the main content */}
           </aside>
         </div>
       </ScrollArea>

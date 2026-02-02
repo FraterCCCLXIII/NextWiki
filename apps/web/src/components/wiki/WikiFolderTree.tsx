@@ -18,8 +18,6 @@ import { Button, Card, CardContent, cn, Modal } from "@repo/ui";
 import { PageLocationEditor } from "./PageLocationEditor";
 import { ClientRequirePermission } from "../auth/permission/client";
 
-const DOUBLE_CLICK_THRESHOLD = 500; // milliseconds
-
 // Recursive interface for folder structure
 interface FolderNode {
   name: string;
@@ -140,10 +138,6 @@ export function WikiFolderTree({
   const [internalSelectedPath, setInternalSelectedPath] = useState<
     string | null
   >(selectedPath || null);
-  const [lastClickInfo, setLastClickInfo] = useState<{
-    path: string;
-    timestamp: number;
-  } | null>(null);
   const [showPageLocationEditor, setShowPageLocationEditor] = useState(false);
   const [newFolderPath, setNewFolderPath] = useState("");
   const [renamingNode, setRenamingNode] = useState<FolderNode | null>(null);
@@ -234,35 +228,16 @@ export function WikiFolderTree({
 
   // Unified click handler for nodes
   const handleNodeClick = (node: FolderNode, e: React.MouseEvent) => {
-    const now = Date.now();
-
     // Prevent default link behavior immediately if it's a link event
     // For div/button events, this prevents potential parent handlers if stopPropagation wasn't used
     e.preventDefault();
 
-    // --- Shift+Click Check for immediate navigation ---
-    if (e.shiftKey) {
+    // Single click: Navigate immediately in navigation mode
+    if (mode === "navigation") {
       setInternalSelectedPath(node.path); // Select visually
-      setLastClickInfo(null); // Reset double-click tracking
       router.push(`/${node.path}`); // Navigate immediately
-      return; // Skip normal logic
-    }
-    // --- End Shift+Click Check ---
-
-    // Check for double click
-    if (
-      mode === "navigation" &&
-      lastClickInfo &&
-      lastClickInfo.path === node.path &&
-      now - lastClickInfo.timestamp < DOUBLE_CLICK_THRESHOLD
-    ) {
-      // Double click detected: Navigate
-      setLastClickInfo(null); // Reset click info
-      setInternalSelectedPath(node.path); // Ensure it's selected visually
-      router.push(`/${node.path}`); // Navigate
     } else {
-      // Single click: Select and potentially expand folder
-      setLastClickInfo({ path: node.path, timestamp: now });
+      // Selection mode: Select and potentially expand folder
       setInternalSelectedPath(node.path);
 
       // If it's a folder, toggle its expansion
@@ -272,7 +247,7 @@ export function WikiFolderTree({
       }
 
       // If in selection mode, also call the callback
-      if (mode === "selection" && onSelectPath) {
+      if (onSelectPath) {
         onSelectPath(node.path);
       }
     }
@@ -383,12 +358,6 @@ export function WikiFolderTree({
     // Update isSelected to use internal state
     const isSelected = internalSelectedPath === node.path;
 
-    // Count the direct children by type
-    const pageCount = node.children.filter((c) => c.type === "page").length;
-    const folderCount = node.children.filter(
-      (c) => c.type === "folder" || c.children.length > 0
-    ).length;
-
     // Get full path for tooltip
     const fullPath = node.path ? `/${node.path}` : "/";
 
@@ -412,7 +381,7 @@ export function WikiFolderTree({
           <FileTextIcon className="text-text-secondary mr-2 h-5 w-5 flex-shrink-0" />
         )}
 
-        {/* Name, Path, Counts */}
+        {/* Name, Path */}
         <div className="flex min-w-0 flex-grow flex-row items-center gap-2">
           <span className="truncate font-medium">
             {node.title || node.name}
@@ -421,26 +390,6 @@ export function WikiFolderTree({
           <span className="text-text-tertiary max-w-[40%] truncate text-xs">
             /{node.path} {/* Added leading slash */}
           </span>
-          {isFolder && (
-            <div className="text-text-primary flex flex-shrink-0 space-x-1 text-xs font-bold">
-              {showPageCount && pageCount > 0 && (
-                <span
-                  title={`${pageCount} page${pageCount !== 1 ? "s" : ""}`}
-                  className="bg-complementary/30 rounded-md px-1.5 py-0.5"
-                >
-                  {pageCount}p
-                </span>
-              )}
-              {folderCount > 0 && (
-                <span
-                  title={`${folderCount} folder${folderCount !== 1 ? "s" : ""}`}
-                  className="bg-complementary/30 rounded-md px-1.5 py-0.5"
-                >
-                  {folderCount}f
-                </span>
-              )}
-            </div>
-          )}
         </div>
 
         {/* Action Buttons (ensure stopPropagation is handled by callers) */}
@@ -640,19 +589,10 @@ export function WikiFolderTree({
                 <FileTextIcon className="mr-1 h-4 w-4" /> = Page
               </div>
               {mode === "navigation" && (
-                <>
-                  <div className="bg-background-level1 hover:bg-background-level2 flex items-center rounded-md px-2 py-1">
-                    <InfoIcon className="text-text-tertiary mr-1 h-4 w-4" />
-                    Double click a folder to navigate
-                  </div>
-                  <div className="bg-background-level1 hover:bg-background-level2 flex items-center rounded-md px-2 py-1">
-                    <InfoIcon className="text-text-tertiary mr-1 h-4 w-4" />
-                    <kbd className="text-text-tertiary bg-background-level3 border-border dark:border-border-light rounded-md border-b px-1 py-0.5 text-xs font-bold shadow-sm">
-                      Shift
-                    </kbd>
-                    + Click a folder to navigate immediately
-                  </div>
-                </>
+                <div className="bg-background-level1 hover:bg-background-level2 flex items-center rounded-md px-2 py-1">
+                  <InfoIcon className="text-text-tertiary mr-1 h-4 w-4" />
+                  Click any item to navigate
+                </div>
               )}
             </div>
           )}

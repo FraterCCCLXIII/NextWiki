@@ -27,7 +27,7 @@ export function SearchTrigger() {
       >
         <Search className="text-text-secondary mr-2 h-4 w-4" />
         <span className={currentSearch ? "text-text-primary" : ""}>
-          {currentSearch || "Search wiki..."}
+          {currentSearch || "Search..."}
         </span>
         <div className="ml-auto flex items-center">
           <kbd className="bg-background-level1 text-text-secondary border-border-default hidden sm:flex items-center rounded-md border px-2 py-1 text-xs">

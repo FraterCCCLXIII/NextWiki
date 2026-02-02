@@ -197,8 +197,14 @@ export function TableOfContents() {
     });
   };
 
-  if (headings.length === 0) {
-    return null;
+  // Check if TOC should be hidden (no headings or only one heading with no subheadings)
+  const shouldHideToc =
+    headings.length === 0 ||
+    (headings.length === 1 && headings[0].children.length === 0);
+
+  // Return empty spacer to maintain layout centering
+  if (shouldHideToc) {
+    return <div className="h-full w-[280px]" aria-hidden="true" />;
   }
 
   return (
