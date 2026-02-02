@@ -100,7 +100,7 @@ function TocItemComponent({
         </div>
       </div>
       {hasChildren && isExpanded && (
-        <ul className="ml-4 mt-2 space-y-2">
+        <ul className="ml-4 mt-2 space-y-2 list-none">
           {item.children.map((child) => (
             <TocItemComponent
               key={child.id}
@@ -175,7 +175,7 @@ export function TableOfContents() {
 
   return (
     <nav className="bg-surface-base h-full w-[280px] overflow-y-auto px-6 pb-32 pt-8 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior:contain]">
-      <ul className="space-y-2 text-sm">
+      <ul className="space-y-2 text-sm list-none">
         {headings.map((heading) => (
           <TocItemComponent
             key={heading.id}
