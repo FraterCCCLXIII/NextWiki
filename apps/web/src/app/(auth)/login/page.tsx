@@ -24,7 +24,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight">
-            Sign in to NextWiki
+            Sign in
           </h2>
           {!hasWikiReadPermission && (
             <p className="text-text-secondary mt-2 text-center text-sm">
