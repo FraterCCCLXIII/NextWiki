@@ -61,7 +61,26 @@ function TocItemComponent({
     e.preventDefault();
     const element = document.getElementById(item.id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Find the ScrollArea viewport (the actual scrollable container)
+      const scrollContainer = document.querySelector('[data-radix-scroll-area-viewport]');
+      
+      if (scrollContainer) {
+        // Get the position of the element relative to the scroll container
+        const elementRect = element.getBoundingClientRect();
+        const containerRect = scrollContainer.getBoundingClientRect();
+        const scrollTop = scrollContainer.scrollTop;
+        const targetScrollTop = scrollTop + elementRect.top - containerRect.top - 80; // 80px offset from top
+        
+        // Smooth scroll the container
+        scrollContainer.scrollTo({
+          top: targetScrollTop,
+          behavior: "smooth"
+        });
+      } else {
+        // Fallback to regular scrollIntoView
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      
       // Update URL without jumping
       window.history.pushState(null, "", `#${item.id}`);
     }
@@ -77,7 +96,7 @@ function TocItemComponent({
             "min-w-0 flex-1 transition-colors",
             isActive
               ? "text-foreground font-medium"
-              : "text-muted-foreground/60 hover:text-foreground"
+              : "text-muted-foreground/40 hover:text-foreground"
           )}
         >
           {item.text}
