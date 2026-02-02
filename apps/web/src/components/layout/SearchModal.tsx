@@ -155,6 +155,10 @@ export function SearchModal({
             throw new Error("Path is undefined");
           }
           handleResultClick(paginatedResults[focusedIndex].path);
+        } else if (searchQuery.trim()) {
+          // No result selected, go to search results page
+          router.push(`/wiki?search=${encodeURIComponent(searchQuery.trim())}`);
+          onClose();
         }
       }
     };
