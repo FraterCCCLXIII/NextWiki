@@ -307,6 +307,14 @@ export function WikiEditor({
       onSuccess: (data) => {
         notification.success("Page created successfully");
         setUnsavedChanges(false);
+        
+        // Invalidate page history cache for the new page
+        if (data.id) {
+          queryClient.invalidateQueries({ 
+            queryKey: trpc.wiki.getPageHistory.queryKey({ pageId: data.id })
+          });
+        }
+        
         // Navigate to new page
         router.push(`/${data.path}`);
       },
@@ -323,6 +331,14 @@ export function WikiEditor({
       onSuccess: () => {
         notification.success("Page updated successfully");
         setUnsavedChanges(false);
+        
+        // Invalidate page history cache to show new revision
+        if (pageId) {
+          queryClient.invalidateQueries({ 
+            queryKey: trpc.wiki.getPageHistory.queryKey({ pageId })
+          });
+        }
+        
         if (pagePath) {
           router.push(`/${pagePath}`);
         } else {

@@ -6,9 +6,10 @@ import { ChevronRightIcon, HomeIcon } from "lucide-react";
 interface BreadcrumbsProps {
   path: string;
   className?: string;
+  currentPage?: string;
 }
 
-export function Breadcrumbs({ path, className = "" }: BreadcrumbsProps) {
+export function Breadcrumbs({ path, className = "", currentPage }: BreadcrumbsProps) {
   // If path is empty, just show home
   if (!path) {
     return (
@@ -34,6 +35,7 @@ export function Breadcrumbs({ path, className = "" }: BreadcrumbsProps) {
       label: <HomeIcon className="h-4 w-4" />,
       path: "/",
       key: "home",
+      isLast: false,
     },
     // Generate path segments
     ...segments.map((segment, index) => {
@@ -43,9 +45,20 @@ export function Breadcrumbs({ path, className = "" }: BreadcrumbsProps) {
         label: segment,
         path: segmentPath,
         key: segmentPath,
+        isLast: !currentPage && index === segments.length - 1,
       };
     }),
   ];
+
+  // Add current page if provided (non-clickable)
+  if (currentPage) {
+    items.push({
+      label: currentPage,
+      path: "", // No path for current page
+      key: "current",
+      isLast: true,
+    });
+  }
 
   return (
     <div className={`flex flex-wrap items-center text-sm ${className}`}>
@@ -55,16 +68,24 @@ export function Breadcrumbs({ path, className = "" }: BreadcrumbsProps) {
             <ChevronRightIcon className="text-secondary mx-1.5 h-4 w-4" />
           )}
 
-          <Link
-            href={item.path}
-            className={`hover:underline ${
-              index === items.length - 1
-                ? "text-secondary-600 font-medium"
-                : "text-secondary-600 hover:text-secondary-400"
-            }`}
-          >
-            {item.label}
-          </Link>
+          {item.isLast && !item.path ? (
+            // Current page - non-clickable
+            <span className="text-secondary-600 font-medium">
+              {item.label}
+            </span>
+          ) : (
+            // Clickable breadcrumb
+            <Link
+              href={item.path}
+              className={`hover:underline ${
+                item.isLast
+                  ? "text-secondary-600 font-medium"
+                  : "text-secondary-600 hover:text-secondary-400"
+              }`}
+            >
+              {item.label}
+            </Link>
+          )}
         </div>
       ))}
     </div>

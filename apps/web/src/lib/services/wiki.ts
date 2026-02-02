@@ -117,8 +117,9 @@ export const wikiService = {
     isPublished?: boolean;
     userId: number;
     tags?: string[];
+    editorType?: "markdown" | "html";
   }) {
-    const { path, title, content, isPublished, userId, tags = [] } = data;
+    const { path, title, content, isPublished, userId, tags = [], editorType } = data;
 
     // Use a transaction to create the page and associate tags
     const newPage = await db.transaction(async (tx) => {
@@ -129,6 +130,7 @@ export const wikiService = {
           path: path.toLowerCase(),
           title,
           content,
+          editorType,
           isPublished: isPublished ?? false,
           createdById: userId,
           updatedById: userId,
@@ -138,6 +140,20 @@ export const wikiService = {
       if (!page) {
         throw new Error("Failed to create page");
       }
+
+      // Create initial revision snapshot
+      await tx.insert(wikiPageRevisions).values({
+        pageId: page.id,
+        content: content || "",
+        title: title,
+        path: path.toLowerCase(),
+        editorType: editorType,
+        isPublished: isPublished ?? false,
+        revisionType: "created",
+        revisionMetadata: tags.length > 0 ? { tags } : null,
+        changeSummary: "Initial page creation",
+        createdById: userId,
+      });
 
       // If there are tags to add, process them
       if (tags.length > 0) {
@@ -178,20 +194,40 @@ export const wikiService = {
       isPublished?: boolean;
       userId: number;
       tags?: string[];
+      editorType?: "markdown" | "html";
+      changeSummary?: string;
     }
   ) {
-    const { path, title, content, isPublished, userId, tags } = data;
+    const { path, title, content, isPublished, userId, tags, editorType, changeSummary } = data;
 
     // Use a transaction to update the page and handle tags
     const updatedPageResult = await db.transaction(async (tx) => {
-      // Create a page revision before updating
+      // Get current page state before updating
       const page = await this.getById(id);
-      if (page) {
-        await tx.insert(wikiPageRevisions).values({
-          pageId: id,
-          content: page.content || "",
-          createdById: userId,
-        });
+      if (!page) {
+        throw new Error("Page not found");
+      }
+      
+      // Determine revision type based on changes
+      let revisionType: "updated" | "moved" = "updated";
+      if (page.path !== path.toLowerCase()) {
+        revisionType = "moved";
+      }
+
+      // Generate auto-summary if none provided
+      let finalSummary = changeSummary;
+      if (!finalSummary) {
+        const changes: string[] = [];
+        if (page.title !== title) changes.push(`title from "${page.title}" to "${title}"`);
+        if (page.path !== path.toLowerCase()) changes.push(`path from "${page.path}" to "${path.toLowerCase()}"`);
+        if (page.isPublished !== isPublished) {
+          changes.push(isPublished ? "published page" : "unpublished page");
+        }
+        if (page.content !== content && content !== undefined) changes.push("content");
+        
+        finalSummary = changes.length > 0 
+          ? `Updated ${changes.join(", ")}` 
+          : "Updated page";
       }
 
       // Update the page
@@ -201,6 +237,7 @@ export const wikiService = {
           path: path.toLowerCase(),
           title,
           content,
+          editorType,
           isPublished,
           updatedById: userId,
           updatedAt: new Date(),
@@ -212,6 +249,29 @@ export const wikiService = {
       if (tags !== undefined) {
         await this.updatePageTags(tx, id, tags);
       }
+
+      // Create a revision with the NEW state (after the update)
+      // Ensure we use the updated content, not undefined
+      const revisionContent = content !== undefined ? content : (updatedPage.content || "");
+      
+      logger.info(`Creating revision for page ${id}:`, {
+        contentLength: revisionContent.length,
+        contentPreview: revisionContent.substring(0, 100),
+        changeSummary: finalSummary,
+      });
+      
+      await tx.insert(wikiPageRevisions).values({
+        pageId: id,
+        content: revisionContent,
+        title: title,
+        path: path.toLowerCase(),
+        editorType: editorType || updatedPage.editorType,
+        isPublished: isPublished ?? updatedPage.isPublished ?? false,
+        revisionType,
+        revisionMetadata: tags && tags.length > 0 ? { tags } : null,
+        changeSummary: finalSummary,
+        createdById: userId,
+      });
 
       return updatedPage;
     });
@@ -641,6 +701,12 @@ export const wikiService = {
             .values({ name: tagName })
             .returning();
           tag = newTag;
+        }
+
+        // Ensure tag exists before creating association
+        if (!tag || !tag.id) {
+          logger.error(`Failed to get or create tag: ${tagName}`);
+          continue; // Skip this tag and continue with others
         }
 
         // Add association between page and tag

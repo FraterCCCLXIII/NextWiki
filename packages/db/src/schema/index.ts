@@ -319,6 +319,13 @@ export const wikiPageEditorTypeEnum = pgEnum("editor_type", [
   "html",
 ]);
 
+export const wikiPageRevisionTypeEnum = pgEnum("revision_type", [
+  "created",
+  "updated",
+  "restored",
+  "moved",
+]);
+
 // Pages table
 export const wikiPages = pgTable(
   "wiki_pages",
@@ -388,6 +395,13 @@ export const wikiPageRevisions = pgTable("wiki_page_revisions", {
     .references(() => wikiPages.id)
     .notNull(),
   content: text("content").notNull(),
+  title: varchar("title", { length: 255 }),
+  path: varchar("path", { length: 1000 }),
+  editorType: wikiPageEditorTypeEnum("editor_type"),
+  isPublished: boolean("is_published").default(false),
+  revisionMetadata: jsonb("revision_metadata"),
+  changeSummary: text("change_summary"),
+  revisionType: wikiPageRevisionTypeEnum("revision_type").default("updated"),
   createdById: integer("created_by_id").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
 });

@@ -126,6 +126,72 @@ export default async function WikiPageView({
     redirect("/");
   }
 
+  // Check if this is a history route
+  const pathSegments = resolvedParams.path || [];
+  const lastSegment = pathSegments[pathSegments.length - 1];
+  const secondToLastSegment = pathSegments[pathSegments.length - 2];
+
+  // Handle /path/to/page/history or /path/to/page/history/123
+  if (lastSegment === "history" || secondToLastSegment === "history") {
+    // Import history components dynamically
+    const { HistoryList } = await import("~/components/wiki/HistoryList");
+    const { RevisionDetail } = await import("~/components/wiki/RevisionDetail");
+    const { Breadcrumbs } = await import("~/components/wiki/Breadcrumbs");
+    
+    // Remove "history" and potential revision ID from path to get actual page path
+    const actualPathSegments = secondToLastSegment === "history" 
+      ? pathSegments.slice(0, -2)
+      : pathSegments.slice(0, -1);
+    
+    const actualPath = actualPathSegments.length > 0 
+      ? actualPathSegments.join("/") 
+      : "index";
+
+    const page = await getWikiPageByPath(actualPathSegments.length > 0 ? actualPathSegments : ["index"]);
+
+    if (!page) {
+      notFound();
+    }
+
+    // If it's /path/to/page/history/123, show revision detail
+    if (secondToLastSegment === "history" && lastSegment && !isNaN(parseInt(lastSegment, 10))) {
+      const revisionId = parseInt(lastSegment, 10);
+      
+      return (
+        <MainLayout>
+          <div className="container mx-auto max-w-6xl px-4 py-8">
+            <div className="mb-6">
+              <Breadcrumbs path={actualPath} currentPage={`Revision #${revisionId}`} />
+            </div>
+            <RevisionDetail revisionId={revisionId} pagePath={actualPath} />
+          </div>
+        </MainLayout>
+      );
+    }
+
+    // Otherwise, show history list
+    return (
+      <MainLayout>
+        <div className="container mx-auto max-w-6xl px-4 py-8">
+          <div className="mb-6">
+            <Breadcrumbs path={actualPath} currentPage="History" />
+          </div>
+
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-text-primary mb-2">
+              Page History
+            </h1>
+            <p className="text-text-secondary">
+              Viewing history for <span className="font-medium">{page.title}</span>
+            </p>
+          </div>
+
+          <HistoryList pageId={page.id} />
+        </div>
+      </MainLayout>
+    );
+  }
+
   const page = await getWikiPageByPath(resolvedParams.path);
 
   if (!page) {

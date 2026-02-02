@@ -10,6 +10,8 @@ import {
 } from "..";
 import { dbService, wikiService } from "~/lib/services";
 import { logger } from "@repo/logger";
+import { compareRevisions, getChangeSummary } from "~/lib/services/revision-diff";
+import { wikiPageRevisions } from "@repo/db";
 
 // Wiki page input validation schema
 const pageInputSchema = z.object({
@@ -854,6 +856,275 @@ export const wikiRouter = router({
         });
       }
       return page; // Return the cleaned-up page data
+    }),
+
+  /**
+   * Get page history - returns all revisions for a page
+   */
+  getPageHistory: permissionGuestProcedure("wiki:page:read")
+    .input(
+      z.object({
+        pageId: z.number(),
+        limit: z.number().min(1).max(100).default(50),
+        offset: z.number().min(0).default(0),
+      })
+    )
+    .query(async ({ input }) => {
+      const { pageId, limit, offset } = input;
+
+      const revisions = await db.query.wikiPageRevisions.findMany({
+        where: eq(wikiPageRevisions.pageId, pageId),
+        orderBy: [desc(wikiPageRevisions.createdAt)],
+        limit,
+        offset,
+        with: {
+          createdBy: {
+            columns: { id: true, name: true, email: true, image: true },
+          },
+        },
+      });
+
+      // Get total count for pagination
+      const totalResult = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(wikiPageRevisions)
+        .where(eq(wikiPageRevisions.pageId, pageId));
+
+      const total = Number(totalResult[0]?.count || 0);
+
+      return {
+        revisions,
+        total,
+        hasMore: offset + revisions.length < total,
+      };
+    }),
+
+  /**
+   * Get a specific revision by ID
+   */
+  getRevisionById: permissionGuestProcedure("wiki:page:read")
+    .input(z.object({ revisionId: z.number() }))
+    .query(async ({ input }) => {
+      const revision = await db.query.wikiPageRevisions.findFirst({
+        where: eq(wikiPageRevisions.id, input.revisionId),
+        with: {
+          createdBy: {
+            columns: { id: true, name: true, email: true, image: true },
+          },
+          page: {
+            columns: { id: true, path: true, title: true },
+          },
+        },
+      });
+
+      if (!revision) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Revision not found",
+        });
+      }
+
+      return revision;
+    }),
+
+  /**
+   * Compare a revision with the current page state
+   */
+  compareRevisions: permissionGuestProcedure("wiki:page:read")
+    .input(
+      z.object({
+        revisionId: z.number(),
+        compareWithCurrent: z.boolean().default(true),
+      })
+    )
+    .query(async ({ input }) => {
+      const { revisionId, compareWithCurrent } = input;
+
+      // Get the revision
+      const revision = await db.query.wikiPageRevisions.findFirst({
+        where: eq(wikiPageRevisions.id, revisionId),
+        with: {
+          page: true,
+          createdBy: {
+            columns: { id: true, name: true, email: true, image: true },
+          },
+        },
+      });
+
+      if (!revision) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Revision not found",
+        });
+      }
+
+      if (!compareWithCurrent) {
+        // If not comparing with current, just return the revision
+        return {
+          revision,
+          comparison: null,
+        };
+      }
+
+      // Get the previous revision to compare what THIS revision changed
+      // Find the revision with the next highest ID for the same page
+      const previousRevision = await db.query.wikiPageRevisions.findFirst({
+        where: and(
+          eq(wikiPageRevisions.pageId, revision.pageId),
+          sql`${wikiPageRevisions.id} < ${revisionId}`
+        ),
+        orderBy: [desc(wikiPageRevisions.id)],
+      });
+
+      // Debug logging
+      logger.info(`Comparing revision ${revisionId}:`, {
+        revisionId: revisionId,
+        revisionCreatedAt: revision.createdAt,
+        revisionContentLength: revision.content?.length || 0,
+        revisionContentPreview: revision.content?.substring(0, 100),
+        previousRevisionId: previousRevision?.id,
+        previousRevisionContentLength: previousRevision?.content?.length || 0,
+        previousRevisionContentPreview: previousRevision?.content?.substring(0, 100),
+      });
+
+      if (!previousRevision) {
+        // This is the first revision - compare with itself to show only content was added
+        // Don't show metadata as "changed" since it was just set initially
+        logger.info(`Revision ${revisionId} is the first revision`);
+        const comparison = compareRevisions(
+          {
+            content: "",
+            title: revision.title, // Use SAME title to not show as changed
+            path: revision.path,   // Use SAME path to not show as changed
+            isPublished: revision.isPublished, // Use SAME status
+            editorType: revision.editorType,   // Use SAME editor
+            revisionMetadata: revision.revisionMetadata, // Use SAME metadata
+          },
+          {
+            content: revision.content, // Only content shows as "added"
+            title: revision.title,
+            path: revision.path,
+            isPublished: revision.isPublished,
+            editorType: revision.editorType,
+            revisionMetadata: revision.revisionMetadata,
+          }
+        );
+
+        return {
+          revision,
+          comparison,
+          changeSummary: "Initial page creation",
+        };
+      }
+
+      // Compare previous revision with this revision to show what changed
+      // Handle case where old revisions don't have metadata fields (use current values as fallback)
+      const comparison = compareRevisions(
+        {
+          content: previousRevision.content,
+          title: previousRevision.title ?? revision.title, // Fallback if old revision has no title
+          path: previousRevision.path ?? revision.path,     // Fallback if old revision has no path
+          isPublished: previousRevision.isPublished ?? revision.isPublished,
+          editorType: previousRevision.editorType ?? revision.editorType,
+          revisionMetadata: previousRevision.revisionMetadata ?? revision.revisionMetadata,
+        },
+        {
+          content: revision.content,
+          title: revision.title,
+          path: revision.path,
+          isPublished: revision.isPublished,
+          editorType: revision.editorType,
+          revisionMetadata: revision.revisionMetadata,
+        }
+      );
+
+      return {
+        revision,
+        comparison,
+        changeSummary: getChangeSummary(comparison),
+      };
+    }),
+
+  /**
+   * Revert page to a previous revision
+   */
+  revertToRevision: permissionProtectedProcedure("wiki:page:update")
+    .input(
+      z.object({
+        pageId: z.number(),
+        revisionId: z.number(),
+        changeSummary: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { pageId, revisionId, changeSummary } = input;
+      const userId = ctx.user.id;
+
+      // Get the revision to revert to
+      const revision = await db.query.wikiPageRevisions.findFirst({
+        where: and(
+          eq(wikiPageRevisions.id, revisionId),
+          eq(wikiPageRevisions.pageId, pageId)
+        ),
+      });
+
+      if (!revision) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Revision not found",
+        });
+      }
+
+      // Get current page to extract tags
+      const currentPage = await wikiService.getById(pageId);
+      if (!currentPage) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Page not found",
+        });
+      }
+
+      // Extract tags safely
+      let tags: string[] = [];
+      try {
+        // Try to get tags from revision metadata first
+        const revisionMetadata = revision.revisionMetadata as Record<string, unknown> | null;
+        if (revisionMetadata?.tags && Array.isArray(revisionMetadata.tags)) {
+          tags = revisionMetadata.tags as string[];
+        } else if (currentPage.tags && Array.isArray(currentPage.tags)) {
+          // Fall back to current page tags
+          tags = currentPage.tags
+            .filter((pt) => pt.tag && pt.tag.name) // Filter out invalid entries
+            .map((pt) => pt.tag.name);
+        }
+      } catch (error) {
+        logger.error("Error extracting tags for revert:", error);
+        tags = []; // Default to empty array if extraction fails
+      }
+
+      const updatedPage = await wikiService.update(pageId, {
+        path: revision.path || currentPage.path,
+        title: revision.title || currentPage.title,
+        content: revision.content,
+        isPublished: revision.isPublished ?? currentPage.isPublished ?? false,
+        editorType: (revision.editorType as "markdown" | "html" | undefined) || undefined,
+        tags,
+        userId,
+        changeSummary: changeSummary || `Reverted to revision #${revisionId}`,
+      });
+
+      // Update the newly created revision to mark it as a restoration
+      await db
+        .update(wikiPageRevisions)
+        .set({ revisionType: "restored" })
+        .where(
+          eq(
+            wikiPageRevisions.id,
+            sql`(SELECT id FROM wiki_page_revisions WHERE page_id = ${pageId} ORDER BY created_at DESC LIMIT 1)`
+          )
+        );
+
+      return updatedPage;
     }),
 });
 

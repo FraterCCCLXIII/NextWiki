@@ -1,4 +1,4 @@
-@layer {
+@layer components {
   /* External links */
   .external-link::after {
     content: "↗";

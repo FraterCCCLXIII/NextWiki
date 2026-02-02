@@ -15,6 +15,13 @@
       "when": 1745447221512,
       "tag": "0001_colorful_orphan",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1770058684293,
+      "tag": "0002_spotty_bruce_banner",
+      "breakpoints": true
     }
   ]
 }
