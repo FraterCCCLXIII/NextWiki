@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchIcon, ChevronLeft, ChevronRight } from "lucide-react";
@@ -18,14 +17,7 @@ export function SearchResults() {
   const pageParam = searchParams.get("page");
   const currentPage = pageParam ? parseInt(pageParam, 10) : 1;
   
-  const [query, setQuery] = useState(searchQuery);
-  
   const trpc = useTRPC();
-
-  // Sync input with URL search param
-  useEffect(() => {
-    setQuery(searchQuery);
-  }, [searchQuery]);
 
   // Fetch search results with pagination
   const { data: searchResults, isLoading } = useQuery(
@@ -37,13 +29,6 @@ export function SearchResults() {
       cursor: currentPage > 1 ? (currentPage - 1) * RESULTS_PER_PAGE : undefined,
     })
   );
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      router.push(`/wiki?search=${encodeURIComponent(query.trim())}`);
-    }
-  };
 
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams();
@@ -57,21 +42,6 @@ export function SearchResults() {
 
   return (
     <div className="space-y-6">
-      {/* Search bar */}
-      <form onSubmit={handleSearch} className="mb-6">
-        <div className="relative max-w-2xl">
-          <SearchIcon className="text-text-secondary absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2" />
-          <input
-            type="search"
-            placeholder="Search..."
-            className="border-border-default focus:ring-primary w-full rounded-lg border py-3 pl-11 pr-4 text-lg focus:outline-none focus:ring-2"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            autoFocus
-          />
-        </div>
-      </form>
-
       {/* Results count and info */}
       {searchQuery && (
         <div className="flex items-center justify-between">
