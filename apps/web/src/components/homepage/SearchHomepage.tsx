@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ThemeToggle } from "~/components/layout/theme-toggle";
 import { UserMenu } from "~/components/auth/UserMenu";
-import { SearchIcon, FileTextIcon } from "lucide-react";
+import { SearchIcon, FileTextIcon, X } from "lucide-react";
 import { useTRPC } from "~/server/client";
 import { useQuery } from "@tanstack/react-query";
 
@@ -178,9 +178,22 @@ export function SearchHomepage({ siteTitle, siteLogo }: SearchHomepageProps) {
               onKeyDown={handleKeyDown}
               onFocus={() => debouncedSearch.length > 0 && setShowResults(true)}
               placeholder="Search wiki..."
-              className="border-border-default focus:border-primary hover:shadow-md focus:shadow-lg w-full rounded-full border bg-background-paper py-4 pl-12 pr-4 text-lg shadow-sm transition-shadow focus:outline-none"
+              className="border-border-default focus:border-primary hover:shadow-md focus:shadow-lg w-full rounded-full border bg-background-paper py-4 pl-12 pr-12 text-lg shadow-sm transition-shadow focus:outline-none"
               autoFocus
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  setShowResults(false);
+                }}
+                className="text-text-tertiary hover:text-text-primary absolute right-4 top-1/2 -translate-y-1/2 z-10 rounded-full p-1 hover:bg-background-level1 transition-colors"
+                aria-label="Clear search"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            )}
 
             {/* Typeahead Results Dropdown */}
             {showResults && (
