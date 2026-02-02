@@ -177,7 +177,7 @@ export function SearchHomepage({ siteTitle, siteLogo }: SearchHomepageProps) {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               onFocus={() => debouncedSearch.length > 0 && setShowResults(true)}
-              placeholder="Search wiki..."
+              placeholder="Search..."
               className="border-border-default focus:border-primary hover:shadow-md focus:shadow-lg w-full rounded-full border bg-background-paper py-4 pl-12 pr-12 text-lg shadow-sm transition-shadow focus:outline-none [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
               autoFocus
             />
