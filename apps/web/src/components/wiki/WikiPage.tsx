@@ -122,11 +122,15 @@ export function WikiPage({
       <div className="flex space-x-8 p-4">
         {/* Main content */}
         <div className="min-w-0 flex-1 space-y-6">
-          <div className="mb-6 border-b pb-4">
+          {/* FIXME: Temporary fix for content overflow */}
+          <div className="max-w-[calc(100vw-20rem)]">{content}</div>
+
+          {/* Footer: Breadcrumbs, Metadata, and Tags */}
+          <div className="mt-12 border-t pt-6">
             {/* Breadcrumbs */}
             <Breadcrumbs path={path} className="mb-3" />
 
-            {/* Page metadata - simpler now */}
+            {/* Page metadata */}
             <div className="text-muted-foreground flex items-center space-x-4 text-sm">
               <div className="flex items-center">
                 <svg
@@ -149,8 +153,7 @@ export function WikiPage({
               </div>
             </div>
 
-            {/* Tags shown only on mobile */}
-            {/* Tags display moved below metadata */}
+            {/* Tags */}
             {tags.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-1">
                 <span className="text-text-secondary mr-2 text-sm font-medium">
@@ -168,9 +171,6 @@ export function WikiPage({
               </div>
             )}
           </div>
-
-          {/* FIXME: Temporary fix for content overflow */}
-          <div className="max-w-[calc(100vw-20rem)]">{content}</div>
         </div>
 
         {/* Subfolders sidebar - only shown if page has subpages */}
