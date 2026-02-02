@@ -11,7 +11,7 @@
   }
 
   ul.links-list li {
-    @apply bg-background-paper/50 dark:bg-background-level2 hover:border-complementary/50 dark:hover:bg-background-level3 dark:border-border-dark border-l-secondary hover:border-l-secondary flex items-start rounded-lg border border-l-4 border-transparent shadow-lg transition-all duration-200 hover:shadow-xl dark:shadow-none;
+    @apply bg-background-paper/50 dark:bg-background-level2 hover:border-complementary/50 dark:hover:bg-background-level3 border-neutral-300 dark:border-neutral-700 flex items-start rounded-lg border transition-all duration-200 hover:shadow-md dark:shadow-none dark:hover:shadow-none;
   }
 
   /* Emoji styling */
@@ -41,7 +41,7 @@
   }
 
   a.wiki-link-exists {
-    @apply text-complementary no-underline hover:underline;
+    @apply text-text-primary no-underline hover:underline;
   }
 
   a.wiki-link-missing {
@@ -49,7 +49,7 @@
   }
 
   ul.links-list li:has(a.wiki-link-missing) {
-    @apply hover:border-error/50 border-l-error hover:border-l-error border border-l-4;
+    @apply hover:border-error/50 border-error/50 border;
   }
 
   ul.links-list li a.wiki-link-missing::after {
@@ -58,7 +58,7 @@
   }
 
   blockquote {
-    @apply bg-background-level1 rounded-lg border-l-2 py-2 pl-4;
+    @apply bg-background-level1 rounded-lg py-2 pl-4;
   }
 
   blockquote p {
@@ -74,7 +74,7 @@
   }
 
   blockquote.is-info {
-    @apply border-info bg-info/10;
+    @apply bg-info/10;
   }
 
   blockquote.is-info::before {
@@ -82,7 +82,7 @@
   }
 
   blockquote.is-warning {
-    @apply border-warning bg-warning/10;
+    @apply bg-warning/10;
   }
 
   blockquote.is-warning::before {
@@ -90,7 +90,7 @@
   }
 
   blockquote.is-danger {
-    @apply border-error bg-error/10;
+    @apply bg-error/10;
   }
 
   blockquote.is-danger::before {
@@ -98,7 +98,7 @@
   }
 
   blockquote.is-success {
-    @apply border-success bg-success/10;
+    @apply bg-success/10;
   }
 
   blockquote.is-success::before {
@@ -106,7 +106,7 @@
   }
 
   blockquote.is-quote {
-    @apply border-text-secondary bg-text-secondary/10;
+    @apply bg-text-secondary/10;
   }
 
   blockquote.is-quote::before {

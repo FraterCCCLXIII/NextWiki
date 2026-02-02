@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, ChevronRight, Home, BookOpen, Tag, Folder, File, Menu } from "lucide-react";
+import { ChevronDown, ChevronRight, Home, BookOpen, Tag, Folder, File } from "lucide-react";
 import { useTRPC } from "~/server/client";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "~/lib/utils";
@@ -66,7 +66,7 @@ function WikiTreeItem({ item, activeItemPath }: { item: FolderNode; activeItemPa
   );
 }
 
-export function NavigationDropdown() {
+export function NavigationDropdown({ siteTitle, siteLogo }: { siteTitle?: string; siteLogo?: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const trpc = useTRPC();
@@ -83,8 +83,37 @@ export function NavigationDropdown() {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-text-primary hover:bg-background-level1 transition-colors"
       >
-        <Menu className="h-5 w-5" />
-        <span className="hidden md:inline">Menu</span>
+        {siteLogo ? (
+          <>
+            {/* Light theme logo */}
+            <img
+              src={siteLogo}
+              alt={siteTitle || "Wiki Logo"}
+              className="h-6 w-6 object-contain dark:hidden"
+            />
+            {/* Dark theme logo */}
+            <img
+              src="/assets/images/logo-white.svg"
+              alt={siteTitle || "Wiki Logo"}
+              className="hidden h-6 w-6 object-contain dark:block"
+            />
+          </>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-primary h-6 w-6"
+          >
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+          </svg>
+        )}
+        <span>{siteTitle || "NextWiki"}</span>
         <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
       </button>
 

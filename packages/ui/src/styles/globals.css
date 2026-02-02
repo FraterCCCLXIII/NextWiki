@@ -443,4 +443,9 @@
   .scroll-indicator-container.is-scrollable[data-scroll-bottom="false"]::after {
     opacity: 1;
   }
+
+  /* Remove left thick border from sonner notifications */
+  [data-sonner-toast] {
+    border-left: none !important;
+  }
 }

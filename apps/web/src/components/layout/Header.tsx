@@ -18,47 +18,19 @@ export async function Header({
 }) {
   const isHomePage = pageMetadata?.path === "index";
 
-  // Get site title from settings
+  // Get site title and logo from settings
   const siteTitle = await getSettingValue("site.title");
+  const siteLogo = await getSettingValue("site.logo");
 
   return (
     <header
       className={
-        "border-border-default flex h-16 items-center justify-between gap-4 border-b px-4 shadow-md"
+        "border-border-default flex h-16 items-center justify-between gap-4 px-4"
       }
     >
       <div className="flex items-center flex-shrink-0 gap-2">
-        {/* Logo */}
-        <div className="mr-1">
-          <Link href="/" className="flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-primary h-8 w-8"
-            >
-              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-            </svg>
-          </Link>
-        </div>
-
         {/* Navigation Dropdown */}
-        <NavigationDropdown />
-
-        {pageMetadata?.title && (
-          <div>
-            <h1
-              className={`font-medium ${isHomePage ? "text-text-primary text-xl" : "text-text-primary text-lg"}`}
-            >
-              {siteTitle}
-            </h1>
-          </div>
-        )}
+        <NavigationDropdown siteTitle={siteTitle} siteLogo={siteLogo} />
 
         {/* Page action buttons - moved closer to title */}
         {pageMetadata?.path && pageMetadata.id && (

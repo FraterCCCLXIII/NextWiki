@@ -1,10 +1,32 @@
 "use client";
 
 import React, { useState } from "react";
-import { Moon, Sun, MonitorSmartphone } from "lucide-react";
+import { Moon, Sun, MonitorSmartphone, Check } from "lucide-react";
 import { Button } from "@repo/ui";
 import { Popover, PopoverTrigger, PopoverContent } from "@repo/ui";
 import { useTheme } from "~/providers/theme-provider";
+import { cn } from "~/lib/utils";
+
+const themeOptions = [
+  {
+    value: "light",
+    label: "Light",
+    description: "Light mode",
+    icon: Sun,
+  },
+  {
+    value: "dark",
+    label: "Dark",
+    description: "Dark mode",
+    icon: Moon,
+  },
+  {
+    value: "system",
+    label: "System",
+    description: "Follow system preference",
+    icon: MonitorSmartphone,
+  },
+] as const;
 
 export function ThemeToggle() {
   const [open, setOpen] = useState(false);
@@ -25,55 +47,39 @@ export function ThemeToggle() {
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        align="center"
+        align="end"
         side="bottom"
-        className="bg-background-default w-auto rounded-lg p-0"
+        className="bg-background-paper w-[200px] rounded-lg border border-border-default p-2 shadow-lg"
       >
-        <div className="flex items-center gap-1">
-          <Button
-            variant={theme === "light" ? "solid" : "ghost"}
-            size="sm"
-            onClick={() => {
-              setTheme("light");
-              setOpen(false);
-            }}
-            className="flex-1 justify-center"
-            color={theme === "light" ? "primary" : "neutral"}
-            aria-label="Light Mode"
-          >
-            <Sun className="h-4 w-4" />
-            <span className="sr-only md:not-sr-only md:ml-2">Light</span>
-          </Button>
-
-          <Button
-            variant={theme === "system" ? "solid" : "ghost"}
-            size="sm"
-            onClick={() => {
-              setTheme("system");
-              setOpen(false);
-            }}
-            className="flex-1 justify-center"
-            color={theme === "system" ? "primary" : "neutral"}
-            aria-label="System Theme"
-          >
-            <MonitorSmartphone className="h-4 w-4" />
-            <span className="sr-only md:not-sr-only md:ml-2">Auto</span>
-          </Button>
-
-          <Button
-            variant={theme === "dark" ? "solid" : "ghost"}
-            size="sm"
-            onClick={() => {
-              setTheme("dark");
-              setOpen(false);
-            }}
-            className="flex-1 justify-center"
-            color={theme === "dark" ? "primary" : "neutral"}
-            aria-label="Dark Mode"
-          >
-            <Moon className="h-4 w-4" />
-            <span className="sr-only md:not-sr-only md:ml-2">Dark</span>
-          </Button>
+        <div className="space-y-1">
+          {themeOptions.map((option) => {
+            const Icon = option.icon;
+            const isActive = theme === option.value;
+            
+            return (
+              <button
+                key={option.value}
+                onClick={() => {
+                  setTheme(option.value);
+                  setOpen(false);
+                }}
+                className={cn(
+                  "w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-left transition-colors text-text-primary",
+                  "hover:bg-background-level1",
+                  isActive && "bg-primary/10 dark:bg-primary/20"
+                )}
+              >
+                <Icon className="h-4 w-4 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium">{option.label}</div>
+                  <div className="text-xs text-text-secondary">{option.description}</div>
+                </div>
+                {isActive && (
+                  <Check className="h-4 w-4 flex-shrink-0" />
+                )}
+              </button>
+            );
+          })}
         </div>
       </PopoverContent>
     </Popover>
