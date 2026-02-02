@@ -44,28 +44,24 @@ function TocItemComponent({
   expandedIds,
   toggleExpanded,
   level = 0,
+  isTopLevel = false,
 }: {
   item: TocNode;
   activeId: string;
   expandedIds: Set<string>;
   toggleExpanded: (id: string) => void;
   level?: number;
+  isTopLevel?: boolean;
 }) {
   const isActive = activeId === item.id;
   const hasChildren = item.children.length > 0;
-  const isExpanded = expandedIds.has(item.id);
+  const isExpanded = isTopLevel || expandedIds.has(item.id);
 
   return (
     <li className="overflow-hidden">
-      <div className="flex items-start gap-2">
-        <div
-          className={cn(
-            "bg-foreground mt-[0.5rem] h-1 w-1 flex-shrink-0 transition-opacity",
-            isActive ? "opacity-100" : "opacity-0"
-          )}
-        />
+      <div className="flex items-start gap-1">
         <div className="flex min-w-0 flex-1 items-center gap-1">
-          {hasChildren && (
+          {hasChildren && !isTopLevel && (
             <button
               onClick={() => toggleExpanded(item.id)}
               className="flex-shrink-0 p-0.5 hover:bg-muted rounded transition-colors"
@@ -82,7 +78,7 @@ function TocItemComponent({
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 className={cn(
-                  "text-muted-foreground transition-transform",
+                  "text-muted-foreground/50 transition-transform",
                   isExpanded ? "rotate-90" : ""
                 )}
               >
@@ -96,7 +92,7 @@ function TocItemComponent({
               "min-w-0 flex-1 transition-colors",
               isActive
                 ? "text-foreground font-medium"
-                : "text-muted-foreground hover:text-foreground"
+                : "text-muted-foreground/60 hover:text-foreground"
             )}
           >
             {item.text}
@@ -104,7 +100,7 @@ function TocItemComponent({
         </div>
       </div>
       {hasChildren && isExpanded && (
-        <ul className="ml-4 mt-2 space-y-2 border-l border-border pl-3">
+        <ul className="ml-4 mt-2 space-y-2">
           {item.children.map((child) => (
             <TocItemComponent
               key={child.id}
@@ -113,6 +109,7 @@ function TocItemComponent({
               expandedIds={expandedIds}
               toggleExpanded={toggleExpanded}
               level={level + 1}
+              isTopLevel={false}
             />
           ))}
         </ul>
@@ -186,6 +183,7 @@ export function TableOfContents() {
             activeId={activeId}
             expandedIds={expandedIds}
             toggleExpanded={toggleExpanded}
+            isTopLevel={true}
           />
         ))}
       </ul>
