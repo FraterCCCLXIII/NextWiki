@@ -20,13 +20,14 @@ interface MainLayoutProps {
 export function MainLayout({ children, pageMetadata }: MainLayoutProps) {
   return (
     <div className="flex h-screen">
-      <Suspense
+      {/* Sidebar hidden - kept for potential later use */}
+      {/* <Suspense
         fallback={
           <div className="h-screen w-64 animate-pulse bg-gray-100 dark:bg-gray-800"></div>
         }
       >
         <Sidebar />
-      </Suspense>
+      </Suspense> */}
       <div className="flex flex-1 flex-col overflow-hidden">
         <Header pageMetadata={pageMetadata} />
         <Suspense fallback={<div>Loading...</div>}>

@@ -9,6 +9,7 @@ import { MoveIcon, PencilIcon, Search } from "lucide-react";
 import { ClientRequirePermission } from "~/components/auth/permission/client";
 import { getSettingValue } from "~/lib/utils/settings";
 import { SearchTrigger } from "./SearchTrigger";
+import { NavigationDropdown } from "./NavigationDropdown";
 
 export async function Header({
   pageMetadata,
@@ -26,26 +27,28 @@ export async function Header({
         "border-border-default flex h-16 items-center justify-between gap-4 border-b px-4 shadow-md"
       }
     >
-      <div className="flex items-center flex-shrink-0">
-        {isHomePage && (
-          <div className="mr-3 hidden md:block">
-            <Link href="/" className="flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-primary h-8 w-8"
-              >
-                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-              </svg>
-            </Link>
-          </div>
-        )}
+      <div className="flex items-center flex-shrink-0 gap-2">
+        {/* Logo */}
+        <div className="mr-1">
+          <Link href="/" className="flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-primary h-8 w-8"
+            >
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+          </Link>
+        </div>
+
+        {/* Navigation Dropdown */}
+        <NavigationDropdown />
 
         {pageMetadata?.title && (
           <div>
