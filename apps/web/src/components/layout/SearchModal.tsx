@@ -175,7 +175,7 @@ export function SearchModal({
       onClose={onClose}
       size="lg" // Zod uses a large modal
       animation="fade" // Fade is common for command palettes
-      className="bg-background-paper/95 dark:bg-background-level1/95 border-border-default flex max-h-[80vh] max-w-3xl flex-col border p-0 shadow-2xl backdrop-blur-sm"
+      className="bg-background-paper/95 dark:bg-background-level1/95 border-border-default flex max-h-[80vh] w-full max-w-3xl flex-col border p-0 shadow-2xl backdrop-blur-sm"
       overlayClassName="pt-16 md:pt-20"
       position="top"
       showCloseButton={true} // Now showing close button
@@ -201,7 +201,7 @@ export function SearchModal({
         id="search-results-list"
       >
         {isLoading && !paginatedResults.length ? (
-          <div className="text-text-secondary flex items-center justify-center p-8 text-center">
+          <div className="text-text-secondary flex min-h-[400px] items-center justify-center p-8 text-center">
             {/* Simplified Loader */}
             <svg className="h-6 w-6 animate-spin" viewBox="0 0 24 24">
               <circle
@@ -264,14 +264,14 @@ export function SearchModal({
             ))}
           </ul>
         ) : searchQuery.length >= 1 ? (
-          <div className="text-text-secondary flex flex-col items-center justify-center p-8 text-center">
+          <div className="text-text-secondary flex min-h-[400px] flex-col items-center justify-center p-8 text-center">
             <p className="text-base">No results found</p>
             <p className="text-text-secondary/80 mt-1 text-sm">
               Try narrowing your search?
             </p>
           </div>
         ) : (
-          <div className="text-text-secondary flex flex-col items-center justify-center p-8 text-center">
+          <div className="text-text-secondary flex min-h-[400px] flex-col items-center justify-center p-8 text-center">
             <p className="text-base">Search for pages or content</p>
             <p className="text-text-secondary/80 mt-1 text-sm">
               Start typing to see results.
