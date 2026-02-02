@@ -71,10 +71,11 @@ export function NavigationDropdown() {
   const pathname = usePathname();
   const trpc = useTRPC();
 
-  const { data: tree, isLoading } = useQuery({
-    queryKey: ["wiki", "tree"],
-    queryFn: () => trpc.wiki.getTree.query(),
-  });
+  const { data: folderStructure, isLoading } = useQuery(
+    trpc.wiki.getFolderStructure.queryOptions()
+  );
+
+  const tree = folderStructure?.children || [];
 
   return (
     <div className="relative">
@@ -134,7 +135,7 @@ export function NavigationDropdown() {
                 <div className="flex items-center justify-center py-8">
                   <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-full" />
                 </div>
-              ) : tree && tree.length > 0 ? (
+              ) : tree.length > 0 ? (
                 <div className="space-y-1">
                   {tree.map((item) => (
                     <div key={item.path} onClick={() => setIsOpen(false)}>
