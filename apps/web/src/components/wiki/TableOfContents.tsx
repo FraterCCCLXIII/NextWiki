@@ -57,50 +57,59 @@ function TocItemComponent({
   const hasChildren = item.children.length > 0;
   const isExpanded = isTopLevel || expandedIds.has(item.id);
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const element = document.getElementById(item.id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Update URL without jumping
+      window.history.pushState(null, "", `#${item.id}`);
+    }
+  };
+
   return (
-    <li className="overflow-hidden">
-      <div className="flex items-start gap-1">
-        <div className="flex min-w-0 flex-1 items-center gap-1">
-          {hasChildren && !isTopLevel && (
-            <button
-              onClick={() => toggleExpanded(item.id)}
-              className="flex-shrink-0 p-0.5 hover:bg-muted rounded transition-colors"
-              aria-label={isExpanded ? "Collapse section" : "Expand section"}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={cn(
-                  "text-muted-foreground/50 transition-transform",
-                  isExpanded ? "rotate-90" : ""
-                )}
-              >
-                <path d="m9 18 6-6-6-6" />
-              </svg>
-            </button>
+    <li className="overflow-hidden list-none" style={{ listStyle: "none" }}>
+      <div className="flex items-center justify-between gap-2">
+        <a
+          href={`#${item.id}`}
+          onClick={handleClick}
+          className={cn(
+            "min-w-0 flex-1 transition-colors",
+            isActive
+              ? "text-foreground font-medium"
+              : "text-muted-foreground/60 hover:text-foreground"
           )}
-          <a
-            href={`#${item.id}`}
-            className={cn(
-              "min-w-0 flex-1 transition-colors",
-              isActive
-                ? "text-foreground font-medium"
-                : "text-muted-foreground/60 hover:text-foreground"
-            )}
+        >
+          {item.text}
+        </a>
+        {hasChildren && !isTopLevel && (
+          <button
+            onClick={() => toggleExpanded(item.id)}
+            className="flex-shrink-0 p-0.5 hover:bg-muted rounded transition-colors"
+            aria-label={isExpanded ? "Collapse section" : "Expand section"}
           >
-            {item.text}
-          </a>
-        </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={cn(
+                "text-muted-foreground/50 transition-transform",
+                isExpanded ? "rotate-90" : ""
+              )}
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+        )}
       </div>
       {hasChildren && isExpanded && (
-        <ul className="ml-4 mt-2 space-y-2 list-none">
+        <ul className="ml-4 mt-2 space-y-2" style={{ listStyle: "none", paddingLeft: 0 }}>
           {item.children.map((child) => (
             <TocItemComponent
               key={child.id}
@@ -175,7 +184,7 @@ export function TableOfContents() {
 
   return (
     <nav className="bg-surface-base h-full w-[280px] overflow-y-auto px-6 pb-32 pt-8 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior:contain]">
-      <ul className="space-y-2 text-sm list-none">
+      <ul className="space-y-2 text-sm" style={{ listStyle: "none", paddingLeft: 0 }}>
         {headings.map((heading) => (
           <TocItemComponent
             key={heading.id}
