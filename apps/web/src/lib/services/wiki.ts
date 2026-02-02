@@ -57,6 +57,57 @@ export const wikiService = {
   },
 
   /**
+   * List wiki pages with sorting and pagination
+   */
+  async list(options: {
+    limit?: number;
+    sortBy?: "title" | "updatedAt";
+    sortOrder?: "asc" | "desc";
+  } = {}) {
+    const {
+      limit = 100,
+      sortBy = "updatedAt",
+      sortOrder = "desc",
+    } = options;
+
+    // Determine order by clause
+    const orderByClause =
+      sortBy === "title"
+        ? sortOrder === "asc"
+          ? wikiPages.title
+          : desc(wikiPages.title)
+        : sortOrder === "asc"
+          ? wikiPages.updatedAt
+          : desc(wikiPages.updatedAt);
+
+    const pages = await db.query.wikiPages.findMany({
+      columns: {
+        search: false, // Exclude search vector
+        lockedById: false,
+        createdById: false,
+        updatedById: false,
+      },
+      orderBy: [orderByClause],
+      limit,
+      with: {
+        createdBy: {
+          columns: { id: true, name: true, email: true, image: true },
+        },
+        updatedBy: {
+          columns: { id: true, name: true, email: true, image: true },
+        },
+        tags: {
+          with: {
+            tag: true,
+          },
+        },
+      },
+    });
+
+    return { pages };
+  },
+
+  /**
    * Create a new wiki page
    */
   async create(data: {

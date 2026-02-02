@@ -70,7 +70,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           >
             {!collapsed && (
               <h1 className="text-text-primary text-lg font-semibold">
-                NextWiki Admin
+                Admin
               </h1>
             )}
             <button

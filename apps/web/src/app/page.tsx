@@ -162,7 +162,7 @@ export default async function Home() {
                   </p>
                 )}
                 <Link
-                  href="/wiki"
+                  href="/recent"
                   className="text-foreground mt-2 inline-block text-xs font-medium hover:underline"
                 >
                   View All
