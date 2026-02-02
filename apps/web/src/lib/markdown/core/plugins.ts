@@ -9,6 +9,7 @@ import remarkEmoji from "remark-emoji";
 import remarkDirective from "remark-directive";
 import remarkDirectiveRehype from "remark-directive-rehype";
 import rehypeHighlight from "rehype-highlight";
+import rehypeSlug from "rehype-slug";
 import type { PluggableList } from "unified";
 import { logger } from "@repo/logger";
 
@@ -85,7 +86,7 @@ export async function loadServerRehypePlugins(): Promise<PluggableList> {
  * Rehype plugins to be applied during HTML processing
  * Basic plugins that work in both client and server
  */
-export const baseRehypePlugins: PluggableList = [rehypeHighlight];
+export const baseRehypePlugins: PluggableList = [rehypeSlug, rehypeHighlight];
 
 /**
  * Get rehype plugins for the target environment

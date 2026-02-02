@@ -11,6 +11,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Modal } from "@repo/ui";
 import { PageLocationEditor } from "./PageLocationEditor";
 import { ScrollArea } from "@repo/ui";
+import { TableOfContents } from "./TableOfContents";
 
 interface WikiPageProps {
   id: number;
@@ -118,74 +119,83 @@ export function WikiPage({
   }, [folderStructure, path]);
 
   return (
-    <ScrollArea className="h-[calc(100vh-4rem)]">
-      <div className="flex space-x-8 p-4">
-        {/* Main content */}
-        <div className="min-w-0 flex-1 space-y-6">
-          {/* FIXME: Temporary fix for content overflow */}
-          <div className="max-w-[calc(100vw-20rem)]">{content}</div>
+    <>
+      <ScrollArea className="h-[calc(100vh-4rem)]">
+        <div className="flex justify-center w-full">
+          {/* Left Column: Table of Contents */}
+          <aside className="hidden xl:block sticky top-0 h-[calc(100vh-4rem)] flex-shrink-0">
+            <TableOfContents />
+          </aside>
 
-          {/* Footer: Breadcrumbs, Metadata, and Tags */}
-          <div className="mt-12 border-t pt-6">
-            {/* Breadcrumbs */}
-            <Breadcrumbs path={path} className="mb-3" />
+          {/* Center Column: Main Content */}
+          <div className="min-w-0 max-w-4xl flex-1 px-8 py-4">
+            <article>{content}</article>
 
-            {/* Page metadata */}
-            <div className="text-muted-foreground flex items-center space-x-4 text-sm">
-              <div className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="mr-1 h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
-                Updated {formatDistanceToNow(updatedAt, { addSuffix: true })}
-                {updatedBy ? ` by ${updatedBy.name}` : ""}
-              </div>
-              <div>
-                Created {formatDistanceToNow(createdAt, { addSuffix: true })}
-                {createdBy ? ` by ${createdBy.name}` : ""}
-              </div>
-            </div>
+            {/* Footer: Breadcrumbs, Metadata, and Tags */}
+            <div className="mt-12 border-t pt-6">
+              {/* Breadcrumbs */}
+              <Breadcrumbs path={path} className="mb-3" />
 
-            {/* Tags */}
-            {tags.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-1">
-                <span className="text-text-secondary mr-2 text-sm font-medium">
-                  Tags:
-                </span>
-                {tags.map((tag) => (
-                  <Link
-                    key={tag.id}
-                    href={`/tags/${tag.name}`}
-                    className="bg-muted hover:bg-muted/80 text-text-secondary hover:text-text-primary rounded-full px-2.5 py-0.5 text-xs transition-colors"
+              {/* Page metadata */}
+              <div className="text-muted-foreground flex items-center space-x-4 text-sm">
+                <div className="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="mr-1 h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
                   >
-                    {tag.name}
-                  </Link>
-                ))}
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  Updated {formatDistanceToNow(updatedAt, { addSuffix: true })}
+                  {updatedBy ? ` by ${updatedBy.name}` : ""}
+                </div>
+                <div>
+                  Created {formatDistanceToNow(createdAt, { addSuffix: true })}
+                  {createdBy ? ` by ${createdBy.name}` : ""}
+                </div>
+              </div>
+
+              {/* Tags */}
+              {tags.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-1">
+                  <span className="text-text-secondary mr-2 text-sm font-medium">
+                    Tags:
+                  </span>
+                  {tags.map((tag) => (
+                    <Link
+                      key={tag.id}
+                      href={`/tags/${tag.name}`}
+                      className="bg-muted hover:bg-muted/80 text-text-secondary hover:text-text-primary rounded-full px-2.5 py-0.5 text-xs transition-colors"
+                    >
+                      {tag.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column: Subfolders or Empty Space */}
+          <aside className="hidden xl:block w-[280px] flex-shrink-0 py-4">
+            {hasSubpages && (
+              <div className="sticky top-4">
+                <WikiSubfolders
+                  path={path}
+                  maxDepth={3}
+                  openDepth={1}
+                  showLegend={true}
+                />
               </div>
             )}
-          </div>
+          </aside>
         </div>
+      </ScrollArea>
 
-        {/* Subfolders sidebar - only shown if page has subpages */}
-        {hasSubpages && (
-          <div className="w-72 shrink-0">
-            <WikiSubfolders
-              path={path}
-              maxDepth={3}
-              openDepth={1}
-              showLegend={true}
-            />
-          </div>
-        )}
-
-        {/* Rename Modal */}
+      {/* Rename Modal */}
         {showRenameModal && (
           <Modal
             onClose={() => setShowRenameModal(false)}
@@ -267,7 +277,6 @@ export function WikiPage({
             initialName={title.split("/").pop() || title}
           />
         )}
-      </div>
-    </ScrollArea>
+    </>
   );
 }
