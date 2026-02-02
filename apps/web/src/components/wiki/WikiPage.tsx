@@ -132,9 +132,9 @@ export function WikiPage({
             <article>{content}</article>
 
             {/* Footer: Breadcrumbs, Metadata, and Tags */}
-            <div className="mt-12 border-t pt-6">
+            <div className="mt-12 bg-gray-50/60 dark:bg-gray-700/60 rounded-lg p-6">
               {/* Breadcrumbs */}
-              <Breadcrumbs path={path} className="mb-3" />
+              {/* <Breadcrumbs path={path} className="mb-3" /> */}
 
               {/* Page metadata */}
               <div className="text-muted-foreground flex items-center space-x-4 text-sm">
@@ -162,9 +162,6 @@ export function WikiPage({
               {/* Tags */}
               {tags.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-1">
-                  <span className="text-text-secondary mr-2 text-sm font-medium">
-                    Tags:
-                  </span>
                   {tags.map((tag) => (
                     <Link
                       key={tag.id}
