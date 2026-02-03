@@ -9,7 +9,14 @@ import { PlusIcon, UserCircle, LogOut, Settings } from "lucide-react";
 import { PageLocationEditor } from "~/components/wiki/PageLocationEditor";
 import { usePermissions } from "~/components/auth/permission/client";
 
-export function UserMenu() {
+type UserMenuProps = {
+  adminLinkOverride?: {
+    href: string;
+    label: string;
+  };
+};
+
+export function UserMenu({ adminLinkOverride }: UserMenuProps) {
   const { data: session, status } = useSession();
   const { hasPermission } = usePermissions();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -76,11 +83,11 @@ export function UserMenu() {
             )}
             {session.user.isAdmin && (
               <Link
-                href="/admin/dashboard"
+                href={adminLinkOverride?.href ?? "/admin/dashboard"}
                 className="text-text-primary hover:bg-background-level1 flex items-center rounded-md px-3 py-2 text-sm transition-colors"
               >
                 <Settings className="mr-2 h-4 w-4 flex-shrink-0" />
-                Admin Dashboard
+                {adminLinkOverride?.label ?? "Admin Dashboard"}
               </Link>
             )}
             <Link

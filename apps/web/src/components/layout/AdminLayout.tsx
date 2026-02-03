@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { env } from "~/env";
 import { cn, ScrollArea } from "@repo/ui";
+import { ThemeToggle } from "~/components/layout/theme-toggle";
+import { UserMenu } from "~/components/auth/UserMenu";
 import {
   HomeIcon,
   BookOpenIcon,
@@ -146,6 +148,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               <span className="text-text-secondary text-sm">
                 Welcome, Admin
               </span>
+              <ThemeToggle />
+              <UserMenu adminLinkOverride={{ href: "/", label: "Go to site" }} />
             </div>
           </div>
         </header>
