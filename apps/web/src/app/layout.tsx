@@ -8,6 +8,7 @@ import RegisterPage from "./(auth)/register/page";
 import { Suspense } from "react";
 import { Skeleton } from "@repo/ui";
 import { Providers } from "~/providers";
+import { getServerAuthSession } from "~/lib/auth";
 // import { seed } from "@repo/db";
 import { PermissionGate } from "~/components/auth/permission/server";
 import { LogOutButton } from "~/components/auth/LogOutButton";
@@ -28,6 +29,8 @@ export const metadata: Metadata = {
   description:
     "An open-source wiki system built with Next.js, Drizzle, tRPC, and NextAuth",
 };
+
+export const dynamic = "force-dynamic";
 
 let userCount: number | null = null;
 
@@ -82,11 +85,13 @@ async function RootLayoutContent({ children }: { children: React.ReactNode }) {
   return children;
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerAuthSession();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -126,7 +131,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} bg-background-default text-text-primary overflow-y-hidden font-sans antialiased`}
       >
-        <Providers>
+        <Providers session={session ?? undefined}>
           <Suspense fallback={<Skeleton className="h-full w-full" />}>
             <PermissionGate
               permission="wiki:page:read"

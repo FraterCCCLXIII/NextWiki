@@ -83,7 +83,7 @@ const buttonVariants = cva(
         danger:
           "[--btn-color:var(--color-error-500)] [--btn-hover:var(--color-error-600)] [--btn-active:var(--color-error-700)] [--btn-focus:var(--color-error-300)] [--btn-text:var(--color-error-50)] [--btn-text-hover:var(--color-error-50)] [--btn-text-active:var(--color-error-100)]",
         neutral:
-          "[--btn-color:var(--color-text-primary)] [--btn-hover:color-mix(in srgb, var(--color-text-primary) 90%, var(--color-background-default))] [--btn-active:color-mix(in srgb, var(--color-text-primary) 80%, var(--color-background-default))] [--btn-focus:color-mix(in srgb, var(--color-text-primary) 35%, var(--color-background-default))] [--btn-text:var(--color-background-default)] [--btn-text-hover:var(--color-background-default)] [--btn-text-active:var(--color-background-default)]",
+          "[--btn-color:var(--color-text-primary)] [--btn-hover:var(--color-text-secondary)] [--btn-active:var(--color-text-tertiary)] [--btn-focus:var(--color-text-secondary)] [--btn-text:var(--color-background-default)] [--btn-text-hover:var(--color-background-default)] [--btn-text-active:var(--color-background-default)]",
         complementary:
           "[--btn-color:var(--color-complementary-500)] [--btn-hover:var(--color-complementary-600)] [--btn-active:var(--color-complementary-700)] [--btn-focus:var(--color-complementary-300)] [--btn-text:#ffffff] [--btn-text-hover:#ffffff] [--btn-text-active:#ffffff]",
       },

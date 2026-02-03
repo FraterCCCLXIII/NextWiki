@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import type { Session } from "next-auth";
 import { TRPCClientProvider } from "~/server/providers";
 import { ThemeProvider } from "~/providers/theme-provider";
 import { ModalProvider } from "@repo/ui";
@@ -11,6 +12,7 @@ import { AuthProvider } from "~/components/auth/AuthProvider";
 
 interface ProvidersProps {
   children: ReactNode;
+  session?: Session;
 }
 
 // Create an inner component to render the Toaster and use the theme hook
@@ -32,10 +34,10 @@ function ToasterWithTheme() {
   );
 }
 
-export function Providers({ children }: ProvidersProps) {
+export function Providers({ children, session }: ProvidersProps) {
   return (
     <ThemeProvider>
-      <AuthProvider>
+      <AuthProvider session={session}>
         <TRPCClientProvider>
           <PermissionProvider>
             <ModalProvider>
