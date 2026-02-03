@@ -190,8 +190,8 @@ export function blockquoteComponent({
   return (
     <blockquote className={blockquoteClassName} {...props}>
       {Icon ? (
-        <div className="flex items-start gap-2">
-          <Icon className="h-5 w-5 flex-shrink-0 self-start mt-0.5" />
+        <div className="flex items-center gap-2">
+          <Icon className="h-5 w-5 flex-shrink-0" />
           <div className="flex-1">{content}</div>
         </div>
       ) : (

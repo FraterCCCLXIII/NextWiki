@@ -121,6 +121,14 @@
     @apply text-text-secondary;
   }
 
+  blockquote.is-tip {
+    @apply bg-background-level1 border-border-default;
+  }
+
+  blockquote.is-tip svg {
+    @apply text-text-secondary;
+  }
+
   /* Lists */
   ul {
     @apply list-inside list-disc gap-0 pl-4;
