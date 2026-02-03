@@ -368,9 +368,10 @@ export function WikiFolderTree({
         {/* Folder/File Icon */}
         {isFolder ? (
           <FolderIcon
-            className={`mr-2 h-5 w-5 flex-shrink-0 ${
-              node.id ? "text-primary" : "text-secondary-700"
-            }`}
+            className={cn(
+              "mr-2 h-5 w-5 flex-shrink-0",
+              node.id ? "text-text-secondary" : "text-text-tertiary"
+            )}
             aria-label={
               node.id
                 ? "Real folder with content"
@@ -564,7 +565,7 @@ export function WikiFolderTree({
                 <ClientRequirePermission permission="wiki:page:create">
                   <button
                     onClick={(e) => handleNewFolder("", e)} // Create at root
-                    className="text-primary hover:text-primary/80 text-xs"
+                    className="text-text-secondary hover:text-text-primary text-xs transition-colors"
                     title="Create new root folder/page"
                   >
                     + New Root Item
@@ -578,11 +579,11 @@ export function WikiFolderTree({
           {showLegend && !hideHeader && (
             <div className="text-text-secondary border-border-light mt-2 grid grid-cols-1 gap-2 border-t pt-2 text-xs">
               <div className="bg-background-level1 hover:bg-background-level2 flex items-center rounded-md px-2 py-1">
-                <FolderIcon className="text-primary mr-1 h-4 w-4" /> = Folder
-                with Content
+                <FolderIcon className="text-text-secondary mr-1 h-4 w-4" /> =
+                Folder with Content
               </div>
               <div className="bg-background-level1 hover:bg-background-level2 flex items-center rounded-md px-2 py-1">
-                <FolderIcon className="text-secondary-700 mr-1 h-4 w-4" /> =
+                <FolderIcon className="text-text-tertiary mr-1 h-4 w-4" /> =
                 Virtual Folder
               </div>
               <div className="bg-background-level1 hover:bg-background-level2 flex items-center rounded-md px-2 py-1">

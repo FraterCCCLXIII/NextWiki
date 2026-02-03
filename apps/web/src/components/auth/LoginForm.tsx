@@ -7,7 +7,8 @@ import { signIn } from "next-auth/react";
 import { Alert, AlertDescription } from "@repo/ui";
 import { Button } from "@repo/ui";
 import { Input } from "@repo/ui";
-import { useSetting } from "~/lib/hooks/use-settings";
+import { useQuery } from "@tanstack/react-query";
+import { useTRPC } from "~/server/client";
 import { usePermissions } from "./permission/client";
 
 // Create a separate component to read searchParams to work with Suspense
@@ -34,7 +35,14 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { value: allowRegistration } = useSetting("auth.allowRegistration");
+  const trpc = useTRPC();
+  const { data: registrationSettings } = useQuery(
+    trpc.auth.getRegistrationSettings.queryOptions(undefined, {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      refetchOnWindowFocus: false,
+    })
+  );
+  const allowRegistration = registrationSettings?.allowRegistration ?? false;
   const { reloadPermissions } = usePermissions();
 
   const handleSubmit = async (e: React.FormEvent) => {

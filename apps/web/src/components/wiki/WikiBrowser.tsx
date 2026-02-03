@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTRPC } from "~/server/client";
 import { useQuery } from "@tanstack/react-query";
+import { LoadingSpinner } from "~/components/ui/LoadingSpinner";
 
 interface FolderNode {
   name: string;
@@ -34,7 +35,7 @@ function FolderSection({ node, depth = 0 }: { node: FolderNode; depth?: number }
         <HeadingTag className={headingClass}>
           <Link 
             href={`/${node.path}`}
-            className="hover:text-primary transition-colors cursor-pointer inline-block"
+            className="hover:text-text-secondary transition-colors cursor-pointer inline-block"
           >
             {node.title || node.name}
           </Link>
@@ -48,7 +49,7 @@ function FolderSection({ node, depth = 0 }: { node: FolderNode; depth?: number }
             <div key={page.path}>
               <Link
                 href={`/${page.path}`}
-                className="text-primary hover:underline text-base"
+                className="text-text-primary hover:underline text-base"
               >
                 {page.title || page.name}
               </Link>
@@ -77,8 +78,8 @@ export function WikiBrowser() {
     <>
       {/* Wiki folder structure as headers */}
       {isLoading ? (
-        <div className="text-text-secondary py-8 text-center">
-          Loading wiki structure...
+        <div className="flex items-center justify-center py-8">
+          <LoadingSpinner label="Loading wiki structure" />
         </div>
       ) : folderStructure ? (
         <div className="max-w-none">

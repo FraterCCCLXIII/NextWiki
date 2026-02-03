@@ -28,10 +28,13 @@ export async function Header({
 
       {/* Center: Search Bar */}
       <div className="flex-1 max-w-2xl mx-auto hidden md:block">
-        <SearchTrigger />
+        <SearchTrigger variant="full" />
       </div>
 
       <div className="flex items-center space-x-3 flex-shrink-0">
+        <div className="md:hidden">
+          <SearchTrigger variant="icon" />
+        </div>
         {/* Tags removed from here */}
         {/* {env.NODE_ENV === "development" && <RandomNumberDisplay />} */}
         <ThemeToggle />

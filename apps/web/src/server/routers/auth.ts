@@ -4,6 +4,7 @@
 import { z } from "zod";
 import { router, guestProcedure, publicProcedure } from "~/server";
 import { authorizationService } from "~/lib/services";
+import { getSetting } from "~/lib/services/settings";
 import { PermissionIdentifier, validatePermissionId } from "@repo/db";
 
 // Create a Zod schema for permission identifier
@@ -18,6 +19,12 @@ const permissionIdentifierSchema = z.string().refine(
 );
 
 export const authRouter = router({
+  // Public auth settings for unauthenticated pages
+  getRegistrationSettings: publicProcedure.query(async () => {
+    const allowRegistration = await getSetting("auth.allowRegistration");
+    return { allowRegistration };
+  }),
+
   // Get the current user's permissions
   getMyPermissions: publicProcedure.query(async ({ ctx }) => {
     let userId = undefined;

@@ -1,5 +1,6 @@
 import { publicProcedure, protectedProcedure, router } from "..";
 import { dbService } from "~/lib/services";
+import { getSetting } from "~/lib/services/settings";
 import { hash } from "bcryptjs";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
@@ -66,7 +67,16 @@ export const usersRouter = router({
         const userCount = await dbService.users.count();
         const isFirstUser = userCount === 0;
 
-        // 2. Check if email already exists using dbService
+        // 2. Check if registration is allowed (allow first user bootstrap)
+        const allowRegistration = await getSetting("auth.allowRegistration");
+        if (!isFirstUser && !allowRegistration) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Registration is disabled",
+          });
+        }
+
+        // 3. Check if email already exists using dbService
         const existingUser = await dbService.users.findByEmail(input.email);
 
         if (existingUser) {
@@ -76,10 +86,10 @@ export const usersRouter = router({
           });
         }
 
-        // 3. Hash the password
+        // 4. Hash the password
         const hashedPassword = await hash(input.password, saltRounds);
 
-        // 4. Create the user using dbService
+        // 5. Create the user using dbService
         const newUser = await dbService.users.create({
           name: input.name,
           email: input.email,
@@ -93,7 +103,7 @@ export const usersRouter = router({
           });
         }
 
-        // 5. If it's the first user, assign to Administrators group
+        // 6. If it's the first user, assign to Administrators group
         if (isFirstUser) {
           const adminGroup =
             await dbService.groups.findByName("Administrators");

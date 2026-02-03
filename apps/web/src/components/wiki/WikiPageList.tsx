@@ -126,7 +126,7 @@ export function WikiPageList({
                   <td className="px-4 py-3">
                     <Link
                       href={`/${page.path}`}
-                      className="text-primary hover:underline"
+                      className="text-text-primary hover:underline"
                     >
                       {page.title}
                     </Link>

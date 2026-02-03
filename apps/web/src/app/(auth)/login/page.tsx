@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { usePermissions } from "~/components/auth/permission/client";
 import { Button } from "@repo/ui";
 import { ArrowLeftIcon } from "lucide-react";
+import { ThemeToggle } from "~/components/layout/theme-toggle";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,7 +21,10 @@ export default function LoginPage() {
   const hasWikiReadPermission = hasPermission("wiki:page:read");
 
   return (
-    <div className="bg-background-paper flex min-h-screen flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+    <div className="bg-background-paper flex min-h-screen flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8 relative">
+      <div className="absolute right-4 top-4">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight">

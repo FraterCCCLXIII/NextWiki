@@ -21,6 +21,7 @@ function WikiTreeItem({ item, activeItemPath }: { item: FolderNode; activeItemPa
   const [isExpanded, setIsExpanded] = useState(activeItemPath.startsWith(`/${item.path}`));
   const isActive = activeItemPath === `/${item.path}`;
   const hasChildren = item.children && item.children.length > 0;
+  const iconTone = isActive ? "text-text-primary" : "text-text-secondary";
 
   return (
     <div className="relative space-y-1">
@@ -28,7 +29,10 @@ function WikiTreeItem({ item, activeItemPath }: { item: FolderNode; activeItemPa
         <div className="flex min-w-0 flex-1 items-center">
           {hasChildren && (
             <button
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={(event) => {
+                event.stopPropagation();
+                setIsExpanded(!isExpanded);
+              }}
               className="mr-0.5 flex flex-shrink-0 items-center justify-center px-0.5 py-1.5 focus:outline-none"
             >
               {isExpanded ? (
@@ -43,13 +47,13 @@ function WikiTreeItem({ item, activeItemPath }: { item: FolderNode; activeItemPa
             href={`/${item.path}`}
             className={cn(
               "text-text-primary flex min-w-0 flex-1 items-center rounded px-2 py-1.5 text-sm font-medium transition-colors hover:bg-card-hover",
-              isActive && "bg-primary/10 text-primary font-semibold"
+              isActive && "bg-primary/10 text-text-primary font-semibold"
             )}
           >
             {item.type === "folder" ? (
-              <Folder className={cn("text-primary mr-2 h-4 w-4 flex-shrink-0", isActive && "text-primary")} />
+              <Folder className={cn("mr-2 h-4 w-4 flex-shrink-0", iconTone)} />
             ) : (
-              <File className="text-accent-600 dark:text-accent-400 mr-2 h-4 w-4 flex-shrink-0" />
+              <File className={cn("mr-2 h-4 w-4 flex-shrink-0", iconTone)} />
             )}
             <span className="truncate">{item.title || item.name}</span>
           </Link>
@@ -181,9 +185,9 @@ export function NavigationDropdown({ siteTitle, siteLogo }: { siteTitle?: string
             </nav>
 
             {/* Wiki Structure */}
-            <div className="flex-1 overflow-auto p-3">
+            <div className="custom-scrollbar flex-1 overflow-auto p-3">
               <h3 className="text-text-secondary/80 mb-2 px-2 text-xs font-semibold uppercase">
-                Wiki Structure
+                Contents
               </h3>
               {isLoading ? (
                 <div className="flex items-center justify-center py-8">

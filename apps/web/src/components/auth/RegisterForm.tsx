@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTRPC } from "~/server/client";
 import { signIn } from "next-auth/react";
-import { Input } from "@repo/ui";
+import { Button, Input } from "@repo/ui";
 import { useMutation } from "@tanstack/react-query";
 import { logger } from "@repo/logger";
 
@@ -159,15 +159,16 @@ export function RegisterForm({ isFirstUser }: RegisterFormProps) {
         </div>
 
         <div>
-          <button
+          <Button
             type="submit"
             disabled={isLoading || registerMutation.isPending}
-            className="bg-primary hover:bg-primary/90 focus:ring-primary group relative flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full"
+            size="default"
           >
             {isLoading || registerMutation.isPending
               ? "Registering..."
               : "Register"}
-          </button>
+          </Button>
         </div>
       </form>
 
@@ -177,7 +178,7 @@ export function RegisterForm({ isFirstUser }: RegisterFormProps) {
             Already have an account?{" "}
             <Link
               href="/login"
-              className="text-primary hover:text-primary/90 font-medium"
+              className="text-text-primary hover:text-text-secondary font-medium underline decoration-text-secondary hover:decoration-text-primary transition-colors"
             >
               Sign in
             </Link>

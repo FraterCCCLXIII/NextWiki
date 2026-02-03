@@ -61,6 +61,7 @@ function WikiTreeItem({
   const isActive = item.path === activeItemPath;
   const isExpanded = expandedFolders.has(item.path);
   const hasChildren = item.children && item.children.length > 0;
+  const iconTone = isActive ? "text-text-primary" : "text-text-secondary";
 
   // Check if this is the parent of the active item
   const activeParentPath = (activeItemPath ?? "")
@@ -217,14 +218,16 @@ function WikiTreeItem({
                 href={`/${item.path}`}
                 className={`text-text-primary flex min-w-0 flex-1 items-center rounded px-2 py-1.5 text-sm font-medium transition-colors ${
                   isActive
-                    ? "bg-primary/10 text-primary font-semibold"
+                    ? "bg-primary/10 text-text-primary font-semibold"
                     : "hover:bg-card-hover"
                 }`}
               >
                 {item.type === "folder" ? (
-                  <Folder className="text-primary mr-2 h-4 w-4 flex-shrink-0" />
+                  <Folder
+                    className={`${iconTone} mr-2 h-4 w-4 flex-shrink-0`}
+                  />
                 ) : (
-                  <File className="text-accent-600 dark:text-accent-400 mr-2 h-4 w-4 flex-shrink-0" />
+                  <File className={`${iconTone} mr-2 h-4 w-4 flex-shrink-0`} />
                 )}
                 <span className="truncate">{item.title || item.name}</span>
               </Link>
@@ -687,7 +690,7 @@ export function Sidebar() {
 
           {isLoading ? (
             <div className="flex items-center justify-center py-4">
-              <Loader2 className="text-primary h-5 w-5 animate-spin" />
+              <Loader2 className="text-text-secondary h-5 w-5 animate-spin" />
             </div>
           ) : rootItems.length === 0 ? (
             <p className="text-text-secondary/80 py-2 text-sm">No pages yet</p>

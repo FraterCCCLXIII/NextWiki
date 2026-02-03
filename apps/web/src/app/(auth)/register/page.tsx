@@ -1,5 +1,6 @@
 import RegisterClientPage from "./register-page";
 import { getSettingValue } from "~/lib/utils/settings";
+import { ThemeToggle } from "~/components/layout/theme-toggle";
 
 export default async function RegisterPage({
   isFirstUser = false,
@@ -23,7 +24,10 @@ export default async function RegisterPage({
   }
 
   return (
-    <div className="bg-background-paper flex h-screen flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+    <div className="bg-background-paper flex h-screen flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8 relative">
+      <div className="absolute right-4 top-4">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight">
@@ -35,8 +39,8 @@ export default async function RegisterPage({
             </p>
           )}
         </div>
+        <RegisterClientPage isFirstUser={isFirstUser} />
       </div>
-      <RegisterClientPage isFirstUser={isFirstUser} />
     </div>
   );
 }
