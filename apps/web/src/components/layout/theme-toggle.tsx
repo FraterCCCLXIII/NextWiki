@@ -38,11 +38,11 @@ export function ThemeToggle() {
         <Button
           size="icon"
           variant="ghost"
-          className="h-9 w-9"
+          className="h-9 w-9 rounded-full hover:bg-background-level1 text-text-primary hover:text-text-primary"
           aria-label="Toggle theme"
         >
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-text-primary" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-text-primary" />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </PopoverTrigger>

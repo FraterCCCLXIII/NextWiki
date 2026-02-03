@@ -53,6 +53,9 @@ export function MarkdownProse({
 
         // Blockquote styling
         "prose-blockquote:text-markdown-blockquote prose-blockquote:border-l-4 prose-blockquote:border-primary-300 prose-blockquote:pl-spacing-sm dark:prose-blockquote:border-primary-600",
+        "prose-blockquote:before:content-none prose-blockquote:after:content-none",
+        "[&_blockquote]:before:content-none [&_blockquote]:after:content-none [&_blockquote_p]:before:content-none [&_blockquote_p]:after:content-none",
+        "[&_blockquote.is-info]:border-info [&_blockquote.is-tip]:border-info [&_blockquote.is-warning]:border-warning [&_blockquote.is-danger]:border-error [&_blockquote.is-success]:border-success [&_blockquote.is-quote]:border-text-secondary",
 
         // Add any custom className passed as prop
         className

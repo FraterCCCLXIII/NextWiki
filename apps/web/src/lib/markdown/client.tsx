@@ -95,7 +95,7 @@ export function HighlightedMarkdown({
           </button>
         </div>
       )}
-      <div className={`prose dark:prose-invert max-w-none ${className || ""}`}>
+      <MarkdownProse className={className}>
         <div ref={contentRef}>
           <ReactMarkdown
             remarkPlugins={clientMarkdownConfig.remarkPlugins}
@@ -105,7 +105,7 @@ export function HighlightedMarkdown({
             {content}
           </ReactMarkdown>
         </div>
-      </div>
+      </MarkdownProse>
     </>
   );
 }
@@ -128,6 +128,8 @@ export function HighlightedContent({
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const highlightTerm = searchParams.get("highlight");
+  const hasBlockquote = /(^|\n)>\s/.test(content);
+  const shouldUseRenderedHtml = Boolean(renderedHtml) && !hasBlockquote;
   const router = useRouter();
   const isInitialRender = useRef(true);
 
@@ -190,7 +192,7 @@ export function HighlightedContent({
     };
 
     // Only add this listener if we're using pre-rendered HTML
-    if (renderedHtml && contentRef.current) {
+    if (shouldUseRenderedHtml && contentRef.current) {
       contentRef.current.addEventListener("click", handleLinkClick);
     }
 
@@ -199,7 +201,7 @@ export function HighlightedContent({
         contentRef.current.removeEventListener("click", handleLinkClick);
       }
     };
-  }, [router, renderedHtml]);
+  }, [router, shouldUseRenderedHtml]);
 
   // Method to clear highlights
   const clearHighlights = () => {
@@ -237,7 +239,7 @@ export function HighlightedContent({
       )}
       <MarkdownProse className={className}>
         <div ref={contentRef}>
-          {renderedHtml ? (
+          {shouldUseRenderedHtml ? (
             <div dangerouslySetInnerHTML={{ __html: renderedHtml }} />
           ) : (
             <ReactMarkdown

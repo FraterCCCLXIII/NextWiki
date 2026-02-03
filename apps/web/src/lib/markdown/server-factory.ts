@@ -10,6 +10,7 @@ import remarkEmoji from "remark-emoji";
 import remarkDirective from "remark-directive";
 import remarkDirectiveRehype from "remark-directive-rehype";
 import rehypeHighlight from "rehype-highlight";
+import rehypeSlug from "rehype-slug";
 import { customPlugins } from "./plugins";
 import { markdownOptions } from "./core/config";
 import { logger } from "@repo/logger";
@@ -30,6 +31,7 @@ export const serverRemarkPlugins: PluggableList = [
  * Base rehype plugins for server-side use
  */
 export const baseRehypePlugins: PluggableList = [
+  rehypeSlug, // Add IDs to headings for anchor links and TOC
   rehypeHighlight,
   // Add other base rehype plugins here
 ];

@@ -133,7 +133,11 @@ export function WikiPage({
           <div className="min-w-0 max-w-4xl flex-1 px-8 py-4">
             {/* Page Title with Actions Dropdown */}
             <div className="mb-6 flex items-start justify-between gap-4">
-              <h1 className="text-text-primary text-3xl font-bold tracking-tight flex-1">
+              <h1
+                id="page-title"
+                data-wiki-page-title
+                className="text-text-primary text-3xl font-bold tracking-tight flex-1"
+              >
                 {title}
               </h1>
               <ClientRequirePermission permission="wiki:page:update">

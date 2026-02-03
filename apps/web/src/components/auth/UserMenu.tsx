@@ -37,8 +37,8 @@ export function UserMenu() {
     <>
       <Popover>
         <PopoverTrigger asChild>
-          <button className="flex items-center space-x-2 focus:outline-none">
-            <div className="border-border relative h-9 w-9 overflow-hidden rounded-full border">
+          <button className="flex items-center space-x-2 rounded-md px-3 py-2 hover:bg-background-level1 transition-colors focus:outline-none">
+            <div className="border-border relative h-7 w-7 overflow-hidden rounded-full border">
               {session.user.image ? (
                 <Image
                   src={session.user.image}
@@ -47,7 +47,7 @@ export function UserMenu() {
                   className="object-cover"
                 />
               ) : (
-                <div className="bg-primary flex h-full w-full items-center justify-center font-medium text-white">
+                <div className="bg-primary flex h-full w-full items-center justify-center text-xs font-medium text-white">
                   {session.user.name?.charAt(0) ||
                     session.user.email?.charAt(0) ||
                     "U"}

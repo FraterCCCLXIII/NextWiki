@@ -7,11 +7,11 @@
 
   /* Links list styling */
   ul.links-list {
-    @apply flex flex-col gap-2;
+    @apply flex flex-col gap-2 list-none p-0 m-0;
   }
 
   ul.links-list li {
-    @apply bg-background-paper/50 dark:bg-background-level2 hover:border-complementary/50 dark:hover:bg-background-level3 border-neutral-300 dark:border-neutral-700 flex items-start rounded-lg border transition-all duration-200 hover:shadow-md dark:shadow-none dark:hover:shadow-none;
+    @apply bg-background-paper/50 dark:bg-background-level2 hover:border-complementary/50 dark:hover:bg-background-level3 border-neutral-300 dark:border-neutral-700 flex items-start rounded-lg border transition-all duration-200 hover:shadow-md dark:shadow-none dark:hover:shadow-none list-none;
   }
 
   /* Emoji styling */
@@ -62,7 +62,7 @@
   }
 
   blockquote p {
-    @apply text-text-secondary text-sm font-normal not-italic;
+    @apply text-text-secondary text-sm font-normal not-italic m-0 leading-5;
   }
 
   blockquote p::before {
@@ -71,6 +71,14 @@
 
   blockquote p::after {
     content: "";
+  }
+
+  blockquote::before {
+    content: none;
+  }
+
+  blockquote::after {
+    content: none;
   }
 
   blockquote.is-info {
