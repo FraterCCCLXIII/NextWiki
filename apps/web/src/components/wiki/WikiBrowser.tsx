@@ -14,6 +14,9 @@ interface FolderNode {
   title?: string;
 }
 
+const normalizeTitle = (value?: string) =>
+  value ? value.replace(/^\/+/, "") : value;
+
 // Recursive component to render folder structure as headers
 function FolderSection({ node, depth = 0 }: { node: FolderNode; depth?: number }) {
   const pages = node.children.filter((child) => child.type === "page");
@@ -37,7 +40,7 @@ function FolderSection({ node, depth = 0 }: { node: FolderNode; depth?: number }
             href={`/${node.path}`}
             className="hover:text-text-secondary transition-colors cursor-pointer inline-block"
           >
-            {node.title || node.name}
+            {normalizeTitle(node.title) || node.name}
           </Link>
         </HeadingTag>
       )}
@@ -51,7 +54,7 @@ function FolderSection({ node, depth = 0 }: { node: FolderNode; depth?: number }
                 href={`/${page.path}`}
                 className="text-text-primary hover:underline text-base"
               >
-                {page.title || page.name}
+                {normalizeTitle(page.title) || page.name}
               </Link>
             </div>
           ))}
@@ -71,7 +74,11 @@ export function WikiBrowser() {
 
   // Fetch folder structure
   const { data: folderStructure, isLoading } = useQuery(
-    trpc.wiki.getFolderStructure.queryOptions()
+    trpc.wiki.getFolderStructure.queryOptions(undefined, {
+      staleTime: 0,
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+    })
   );
 
   return (
@@ -83,9 +90,37 @@ export function WikiBrowser() {
         </div>
       ) : folderStructure ? (
         <div className="max-w-none">
-          {folderStructure.children.map((node) => (
-            <FolderSection key={node.path} node={node} depth={0} />
-          ))}
+          {(() => {
+            const rootPages = folderStructure.children.filter(
+              (node) => node.type === "page"
+            );
+            const rootFolders = folderStructure.children.filter(
+              (node) => node.type === "folder"
+            );
+
+            return (
+              <>
+                {rootPages.length > 0 && (
+                  <div className="space-y-2 mb-6">
+                    {rootPages.map((page) => (
+                      <div key={page.path}>
+                        <Link
+                          href={`/${page.path}`}
+                          className="text-text-primary hover:underline text-base"
+                        >
+                          {normalizeTitle(page.title) || page.name}
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {rootFolders.map((node) => (
+                  <FolderSection key={node.path} node={node} depth={0} />
+                ))}
+              </>
+            );
+          })()}
         </div>
       ) : (
         <div className="text-text-secondary py-8 text-center">

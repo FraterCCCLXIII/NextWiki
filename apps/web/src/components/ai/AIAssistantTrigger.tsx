@@ -16,33 +16,27 @@ export function AIAssistantTrigger({
   mode = "view",
 }: AIAssistantTriggerProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const isViewMode = mode === "view";
 
   return (
     <>
       <Button
         type="button"
-        variant="ghost"
+        variant={isOpen ? "soft" : "ghost"}
         size="icon"
+        className="h-9 w-9 rounded-full hover:bg-background-level1 text-text-primary hover:text-text-primary focus-visible:ring-0 focus-visible:ring-offset-0"
         aria-label="Open AI assistant"
         onClick={() => {
-          if (isViewMode) {
-            window.dispatchEvent(new CustomEvent("ai:view-panel:toggle"));
-            return;
-          }
-          setIsOpen(true);
+          setIsOpen((prev) => !prev);
         }}
       >
         <Sparkles className="h-4 w-4" />
       </Button>
-      {!isViewMode && (
-        <AIAssistantDrawer
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          pageMetadata={pageMetadata}
-          mode={mode}
-        />
-      )}
+      <AIAssistantDrawer
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        pageMetadata={pageMetadata}
+        mode={mode}
+      />
     </>
   );
 }

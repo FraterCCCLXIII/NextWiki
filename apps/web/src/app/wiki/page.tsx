@@ -26,12 +26,13 @@ function WikiPageContentInner() {
   return <SearchResults />;
 }
 
-export default function WikiPagesPage({
+export default async function WikiPagesPage({
   searchParams,
 }: {
-  searchParams: { search?: string };
+  searchParams: Promise<{ search?: string }>;
 }) {
-  const hasSearch = searchParams?.search;
+  const resolvedSearchParams = await searchParams;
+  const hasSearch = Boolean(resolvedSearchParams?.search);
 
   return (
     <MainLayout>

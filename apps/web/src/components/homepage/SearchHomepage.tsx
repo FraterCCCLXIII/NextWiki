@@ -8,7 +8,6 @@ import { SearchIcon, FileTextIcon, X } from "lucide-react";
 import { useTRPC } from "~/server/client";
 import { useQuery } from "@tanstack/react-query";
 import { AIAssistantTrigger } from "~/components/ai/AIAssistantTrigger";
-import { AIAssistantPanel } from "~/components/ai/AIAssistantDrawer";
 
 interface SearchHomepageProps {
   siteTitle?: string;
@@ -20,7 +19,6 @@ export function SearchHomepage({ siteTitle, siteLogo }: SearchHomepageProps) {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showResults, setShowResults] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [isAiPanelOpen, setIsAiPanelOpen] = useState(false);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -143,11 +141,7 @@ export function SearchHomepage({ siteTitle, siteLogo }: SearchHomepageProps) {
       </header>
 
       {/* Main Content - Centered */}
-      <div
-        className={`flex flex-1 flex-col items-center justify-center px-4 pb-32 ${
-          isAiPanelOpen ? "xl:pr-[320px]" : ""
-        }`}
-      >
+      <div className="flex flex-1 flex-col items-center justify-center px-4 pb-32">
         {/* Logo */}
         <div className="mb-12 flex flex-col items-center">
           {siteLogo ? (
@@ -266,13 +260,6 @@ export function SearchHomepage({ siteTitle, siteLogo }: SearchHomepageProps) {
         </form>
       </div>
 
-      {isAiPanelOpen && (
-        <aside className="hidden xl:block fixed right-0 top-0 h-screen w-[320px] border-l border-border-default bg-background-paper z-20">
-          <div className="h-full overflow-y-auto">
-            <AIAssistantPanel mode="view" onClose={() => setIsAiPanelOpen(false)} />
-          </div>
-        </aside>
-      )}
     </div>
   );
 }

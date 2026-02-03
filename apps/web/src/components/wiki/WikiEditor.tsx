@@ -157,6 +157,7 @@ export function WikiEditor({
 
   const queryClient = useQueryClient();
   const assetsQueryKey = trpc.assets.getPaginated.queryKey();
+  const folderStructureQueryKey = trpc.wiki.getFolderStructure.queryKey();
 
   // TRPC mutation for uploading assets
   const uploadAssetMutation = useMutation(
@@ -328,6 +329,10 @@ export function WikiEditor({
         notification.success("Page created successfully");
         setUnsavedChanges(false);
         
+        queryClient.invalidateQueries({
+          queryKey: folderStructureQueryKey,
+        });
+
         // Invalidate page history cache for the new page
         if (data.id) {
           queryClient.invalidateQueries({ 
@@ -352,6 +357,10 @@ export function WikiEditor({
         notification.success("Page updated successfully");
         setUnsavedChanges(false);
         
+        queryClient.invalidateQueries({
+          queryKey: folderStructureQueryKey,
+        });
+
         // Invalidate page history cache to show new revision
         if (pageId) {
           queryClient.invalidateQueries({ 
@@ -623,16 +632,20 @@ export function WikiEditor({
   // Save & cancel handlers
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim()) {
+    const normalizedTitle = title.trim().replace(/^\/+/, "");
+    if (!normalizedTitle) {
       notification.error("Please enter a title for the page");
       return;
     }
 
     setIsSaving(true);
+    if (normalizedTitle !== title) {
+      setTitle(normalizedTitle);
+    }
 
     if (mode === "create") {
       createPageMutation.mutate({
-        title,
+        title: normalizedTitle,
         content,
         path: pagePath,
         isPublished: true,
@@ -642,7 +655,7 @@ export function WikiEditor({
       updatePageMutation.mutate({
         id: pageId,
         path: pagePath,
-        title,
+        title: normalizedTitle,
         content,
         isPublished: true,
         tags,
