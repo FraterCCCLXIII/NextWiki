@@ -300,6 +300,55 @@ export const aiRouter = router({
       return { page: updatedPage };
     }),
 
+  generateContent: permissionProtectedProcedure("wiki:page:update")
+    .input(
+      z.object({
+        pageId: z.number().optional(),
+        path: z.string().optional(),
+        prompt: z.string().min(1),
+      })
+    )
+    .mutation(async ({ input }) => {
+      await assertAIWriteAllowed();
+      if (!input.pageId && !input.path) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Missing pageId or path.",
+        });
+      }
+
+      let pageId = input.pageId;
+      if (!pageId && input.path) {
+        const resolved = await db.query.wikiPages.findFirst({
+          where: eq(wikiPages.path, input.path),
+          columns: { id: true },
+        });
+        if (!resolved?.id) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Page not found.",
+          });
+        }
+        pageId = resolved.id;
+      }
+
+      const page = await wikiService.getById(pageId!);
+      if (!page) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Page not found." });
+      }
+
+      const response = await runChatCompletion({
+        messages: [
+          {
+            role: "user",
+            content: `Write new markdown content to add to the wiki page based on the request below. Return only the new content without commentary.\n\nRequest:\n${input.prompt}\n\nPage title: ${page.title}\nPage path: ${page.path}\nExisting content:\n${page.content ?? ""}`,
+          },
+        ],
+      });
+
+      return { content: response };
+    }),
+
   draftPage: permissionProtectedProcedure("wiki:page:create")
     .input(
       z.object({

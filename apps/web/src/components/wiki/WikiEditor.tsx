@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useTRPC } from "~/server/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNotification } from "~/lib/hooks/useNotification";
@@ -33,6 +33,7 @@ import {
 import { Input } from "@repo/ui";
 import { Label } from "@repo/ui";
 import { ThemeToggle } from "../layout/theme-toggle";
+import { AIAssistantTrigger } from "~/components/ai/AIAssistantTrigger";
 import {
   X,
   ChevronDown,
@@ -92,7 +93,7 @@ const markdownHighlightStyle = HighlightStyle.define([
 ]);
 
 // Enhanced extensions for better markdown handling
-const editorExtensions = [
+const baseEditorExtensions = [
   markdown({
     base: markdownLanguage,
     codeLanguages: languages,
@@ -132,6 +133,7 @@ export function WikiEditor({
   const [showAssetManager, setShowAssetManager] = useState(false);
   const [editingTitle, setEditingTitle] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [isAiTyping, setIsAiTyping] = useState(false);
   const editorRef = useRef<ReactCodeMirrorRef>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
@@ -142,6 +144,14 @@ export function WikiEditor({
       ? document.documentElement.classList.contains("dark")
       : false;
   const trpc = useTRPC();
+  const contentRef = useRef(content);
+  const aiQueueRef = useRef<string[]>([]);
+  const aiTypingRef = useRef(false);
+  const aiIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const aiBaseContentRef = useRef("");
+  const aiTypedContentRef = useRef("");
+  const aiIndexRef = useRef(0);
+  const normalizedPagePath = pagePath?.replace(/^\/+/, "");
 
   const debouncedTagInput = useDebounce(tagInput, 300);
 
@@ -294,11 +304,21 @@ export function WikiEditor({
     },
   });
 
+  const editorExtensions = useMemo(
+    () => [
+      ...baseEditorExtensions,
+      cmEventHandlers,
+      EditorView.editable.of(!isAiTyping),
+    ],
+    [cmEventHandlers, isAiTyping]
+  );
+
   // Content change tracking
   useEffect(() => {
     if (content !== initialContent) {
       setUnsavedChanges(true);
     }
+    contentRef.current = content;
   }, [content, initialContent]);
 
   // Create page mutation
@@ -445,6 +465,84 @@ export function WikiEditor({
       }
     };
   }, [mode, isLocked, pageId]);
+
+  const startAiTyping = useCallback(() => {
+    if (aiTypingRef.current) return;
+    const next = aiQueueRef.current.shift();
+    if (!next) return;
+
+    const prefix = contentRef.current.trim() ? "\n\n" : "";
+    const typedContent = `${prefix}${next.trim()}\n`;
+
+    aiBaseContentRef.current = contentRef.current;
+    aiTypedContentRef.current = typedContent;
+    aiIndexRef.current = 0;
+
+    setActiveTab("editor");
+    setIsAiTyping(true);
+    aiTypingRef.current = true;
+
+    if (aiIntervalRef.current) {
+      clearInterval(aiIntervalRef.current);
+    }
+
+    aiIntervalRef.current = setInterval(() => {
+      const chunkSize = 3;
+      aiIndexRef.current = Math.min(
+        aiIndexRef.current + chunkSize,
+        aiTypedContentRef.current.length
+      );
+      const nextValue = `${aiBaseContentRef.current}${aiTypedContentRef.current.slice(
+        0,
+        aiIndexRef.current
+      )}`;
+      setContent(nextValue);
+
+      if (aiIndexRef.current >= aiTypedContentRef.current.length) {
+        if (aiIntervalRef.current) {
+          clearInterval(aiIntervalRef.current);
+          aiIntervalRef.current = null;
+        }
+        aiTypingRef.current = false;
+        setIsAiTyping(false);
+        setUnsavedChanges(true);
+        if (aiQueueRef.current.length > 0) {
+          startAiTyping();
+        }
+      }
+    }, 16);
+  }, []);
+
+  const enqueueAiContent = useCallback(
+    (contentToAdd: string) => {
+      if (!contentToAdd.trim()) return;
+      aiQueueRef.current.push(contentToAdd);
+      if (!aiTypingRef.current) {
+        startAiTyping();
+      }
+    },
+    [startAiTyping]
+  );
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const customEvent = event as CustomEvent<{
+        content: string;
+        mode: "append" | "replace";
+        path?: string;
+      }>;
+      const detail = customEvent.detail;
+      if (!detail?.content) return;
+      if (detail.path && detail.path !== normalizedPagePath) return;
+
+      enqueueAiContent(detail.content);
+    };
+
+    window.addEventListener("ai:live-edit", handler);
+    return () => {
+      window.removeEventListener("ai:live-edit", handler);
+    };
+  }, [enqueueAiContent, normalizedPagePath]);
 
   // Fetch tag suggestions when debounced input changes
   const { data: fetchedSuggestions } = useQuery({
@@ -767,6 +865,21 @@ export function WikiEditor({
               )}
             </Button>
 
+            <AIAssistantTrigger
+              pageMetadata={{
+                id: pageId,
+                path: pagePath,
+                title,
+                isLocked,
+              }}
+            />
+
+            {isAiTyping && (
+              <Badge variant="secondary" color="info">
+                AI editing...
+              </Badge>
+            )}
+
             {/* Theme Toggle */}
             <ThemeToggle />
           </div>
@@ -925,7 +1038,7 @@ export function WikiEditor({
                 value={content}
                 height="100%"
                 width="100%"
-                extensions={[...editorExtensions, cmEventHandlers]}
+                extensions={editorExtensions}
                 onChange={(value) => setContent(value)}
                 className="h-full overflow-hidden"
                 placeholder="Write your content using Markdown..."
@@ -958,7 +1071,7 @@ export function WikiEditor({
                   value={content}
                   height="100%"
                   width="100%"
-                  extensions={[...editorExtensions, cmEventHandlers]}
+                  extensions={editorExtensions}
                   onChange={(value) => setContent(value)}
                   className="h-full overflow-hidden"
                   placeholder="Write your content using Markdown..."

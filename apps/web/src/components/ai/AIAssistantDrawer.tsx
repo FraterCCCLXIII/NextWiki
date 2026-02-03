@@ -76,6 +76,19 @@ const isAddThatIntent = (prompt: string) =>
 const isWriteToPageIntent = (prompt: string) =>
   /(write|add|insert|update).*(page|content)/i.test(prompt);
 
+const dispatchLiveEdit = (detail: {
+  content: string;
+  mode: "append" | "replace";
+  path?: string;
+}) => {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(
+    new CustomEvent("ai:live-edit", {
+      detail,
+    })
+  );
+};
+
 const getErrorMessage = (error: unknown, fallback: string) => {
   if (error && typeof error === "object" && "message" in error) {
     const message = (error as { message?: string }).message;
@@ -108,6 +121,9 @@ export function AIAssistantDrawer({
   const draftPageMutation = useMutation(trpc.ai.draftPage.mutationOptions());
   const appendPageMutation = useMutation(trpc.ai.appendToPage.mutationOptions());
   const writeToPageMutation = useMutation(trpc.ai.writeToPage.mutationOptions());
+  const generateContentMutation = useMutation(
+    trpc.ai.generateContent.mutationOptions()
+  );
   const summarizeMutation = useMutation(
     trpc.ai.summarizePage.mutationOptions()
   );
@@ -148,8 +164,11 @@ export function AIAssistantDrawer({
       }
 
       const explicitPath = extractPath(trimmed);
-      const targetPath = explicitPath ?? pageMetadata?.path?.replace(/^\/+/, "");
+      const normalizedPagePath = pageMetadata?.path?.replace(/^\/+/, "");
+      const targetPath = explicitPath ?? normalizedPagePath;
       const targetPageId = explicitPath ? undefined : pageMetadata?.id;
+      const isCurrentPageTarget =
+        !explicitPath || explicitPath === normalizedPagePath;
 
       if (isAddThatIntent(trimmed)) {
         if (!lastAssistantContent?.trim()) {
@@ -171,31 +190,64 @@ export function AIAssistantDrawer({
           return;
         }
 
-        const result = await appendPageMutation.mutateAsync({
-          pageId: targetPageId,
-          path: targetPath,
-          content: lastAssistantContent,
-        });
+        if (isCurrentPageTarget && targetPageId) {
+          dispatchLiveEdit({
+            content: lastAssistantContent,
+            mode: "append",
+            path: normalizedPagePath,
+          });
+          appendMessage({
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content:
+              "Inserted the content into the editor. Review and save when ready.",
+          });
+        } else {
+          const result = await appendPageMutation.mutateAsync({
+            pageId: targetPageId,
+            path: targetPath,
+            content: lastAssistantContent,
+          });
 
-        appendMessage({
-          id: crypto.randomUUID(),
-          role: "assistant",
-          content: `Added content to /${result.page.path}.`,
-        });
+          appendMessage({
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content: `Added content to /${result.page.path}.`,
+          });
+        }
         return;
       }
 
       if (isWriteToPageIntent(trimmed) && (targetPageId || targetPath)) {
-        const result = await writeToPageMutation.mutateAsync({
-          pageId: targetPageId,
-          path: targetPath,
-          prompt: trimmed,
-        });
-        appendMessage({
-          id: crypto.randomUUID(),
-          role: "assistant",
-          content: `Added content to /${result.page.path}.`,
-        });
+        if (isCurrentPageTarget && targetPageId) {
+          const result = await generateContentMutation.mutateAsync({
+            pageId: targetPageId,
+            path: targetPath,
+            prompt: trimmed,
+          });
+          dispatchLiveEdit({
+            content: result.content,
+            mode: "append",
+            path: normalizedPagePath,
+          });
+          appendMessage({
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content:
+              "Inserted the content into the editor. Review and save when ready.",
+          });
+        } else {
+          const result = await writeToPageMutation.mutateAsync({
+            pageId: targetPageId,
+            path: targetPath,
+            prompt: trimmed,
+          });
+          appendMessage({
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content: `Added content to /${result.page.path}.`,
+          });
+        }
         return;
       }
 
@@ -357,7 +409,8 @@ export function AIAssistantDrawer({
                 chatMutation.isPending ||
                 draftPageMutation.isPending ||
                 appendPageMutation.isPending ||
-                writeToPageMutation.isPending
+                writeToPageMutation.isPending ||
+                generateContentMutation.isPending
               }
               onClick={handleSend}
             >
