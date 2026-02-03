@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "~/lib/auth";
 import { getSettingValue } from "~/lib/utils/settings";
 import { SearchHomepage } from "~/components/homepage/SearchHomepage";
+import { WikiPagesLayout } from "~/components/wiki/WikiPagesLayout";
 
 export const revalidate = 900; // Revalidate every 15 minutes
 export const dynamic = "force-static";
@@ -69,36 +70,33 @@ export default async function Home() {
           : undefined
       }
     >
-      <div className="relative flex flex-col gap-3 p-3">
-        {/* Main Content Area */}
-        <div className="mx-auto w-full max-w-4xl">
-          {rootPage ? (
-            <div className="prose prose-sm dark:prose-invert max-w-none">
-              <Suspense fallback={<div>Loading content...</div>}>
-                <HighlightedContent
-                  content={rootPage.content || ""}
-                  renderedHtml={renderedHtml}
-                />
-              </Suspense>
-            </div>
-          ) : (
-            <div className="flex h-full min-h-[200px] flex-col items-center justify-center text-center">
-              <h2 className="text-text-primary mb-4 text-xl font-semibold">
-                No Homepage Content Yet
-              </h2>
-              <p className="text-text-secondary mb-6">
-                Create an index page to display welcome information here.
-              </p>
-              <Link
-                href="/create?path=index"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-              >
-                Create Homepage
-              </Link>
-            </div>
-          )}
-        </div>
-      </div>
+      <WikiPagesLayout showTitle={false}>
+        {rootPage ? (
+          <div className="prose prose-sm dark:prose-invert max-w-none">
+            <Suspense fallback={<div>Loading content...</div>}>
+              <HighlightedContent
+                content={rootPage.content || ""}
+                renderedHtml={renderedHtml}
+              />
+            </Suspense>
+          </div>
+        ) : (
+          <div className="flex h-full min-h-[200px] flex-col items-center justify-center text-center">
+            <h2 className="text-text-primary mb-4 text-xl font-semibold">
+              No Homepage Content Yet
+            </h2>
+            <p className="text-text-secondary mb-6">
+              Create an index page to display welcome information here.
+            </p>
+            <Link
+              href="/create?path=index"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            >
+              Create Homepage
+            </Link>
+          </div>
+        )}
+      </WikiPagesLayout>
     </MainLayout>
   );
 }

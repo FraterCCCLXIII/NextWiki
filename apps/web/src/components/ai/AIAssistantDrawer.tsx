@@ -76,9 +76,31 @@ const isAddThatIntent = (prompt: string) =>
 const isWriteToPageIntent = (prompt: string) =>
   /(write|add|insert|update).*(page|content)/i.test(prompt);
 
+const parseRemoveLineIntent = (prompt: string) => {
+  if (
+    !/remove (this|that|the)( bottom)? line|delete (this|that|the)( bottom)? line/i.test(
+      prompt
+    )
+  ) {
+    return null;
+  }
+
+  const quoted = prompt.match(/["']([^"']+)["']/);
+  if (quoted?.[1]?.trim()) {
+    return quoted[1].trim();
+  }
+
+  const after = prompt
+    .replace(/remove (this|that|the)( bottom)? line[:]?/i, "")
+    .replace(/delete (this|that|the)( bottom)? line[:]?/i, "")
+    .trim();
+  return after || null;
+};
+
 const dispatchLiveEdit = (detail: {
-  content: string;
-  mode: "append" | "replace";
+  content?: string;
+  text?: string;
+  mode: "append" | "replace" | "remove";
   path?: string;
 }) => {
   if (typeof window === "undefined") return;
@@ -99,17 +121,17 @@ const getErrorMessage = (error: unknown, fallback: string) => {
   return fallback;
 };
 
-interface AIAssistantDrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
+interface AIAssistantPanelProps {
   pageMetadata?: PageMetadata;
+  mode?: "edit" | "view";
+  onClose?: () => void;
 }
 
-export function AIAssistantDrawer({
-  isOpen,
-  onClose,
+export function AIAssistantPanel({
   pageMetadata,
-}: AIAssistantDrawerProps) {
+  mode = "view",
+  onClose,
+}: AIAssistantPanelProps) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [lastAssistantContent, setLastAssistantContent] = useState<string | null>(
@@ -123,6 +145,9 @@ export function AIAssistantDrawer({
   const writeToPageMutation = useMutation(trpc.ai.writeToPage.mutationOptions());
   const generateContentMutation = useMutation(
     trpc.ai.generateContent.mutationOptions()
+  );
+  const removeLineMutation = useMutation(
+    trpc.ai.removeFromPage.mutationOptions()
   );
   const summarizeMutation = useMutation(
     trpc.ai.summarizePage.mutationOptions()
@@ -169,6 +194,47 @@ export function AIAssistantDrawer({
       const targetPageId = explicitPath ? undefined : pageMetadata?.id;
       const isCurrentPageTarget =
         !explicitPath || explicitPath === normalizedPagePath;
+      const isEditMode = mode === "edit";
+      const removeLine = parseRemoveLineIntent(trimmed);
+
+        if (removeLine && (targetPageId || targetPath)) {
+        try {
+            if (isCurrentPageTarget && !isEditMode) {
+              dispatchLiveEdit({
+                text: removeLine,
+                mode: "remove",
+                path: normalizedPagePath,
+              });
+            }
+          const result = await removeLineMutation.mutateAsync({
+            pageId: targetPageId,
+            path: targetPath,
+            text: removeLine,
+          });
+          if (isCurrentPageTarget && !isEditMode) {
+            dispatchLiveEdit({
+              content: result.content,
+              mode: "replace",
+              path: normalizedPagePath,
+            });
+          }
+          appendMessage({
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content: `Removed the line from /${result.page.path}. You can undo in history.`,
+          });
+        } catch (error) {
+          appendMessage({
+            id: crypto.randomUUID(),
+            role: "assistant",
+            content: `Error: ${getErrorMessage(
+              error,
+              "Unable to remove that line."
+            )}`,
+          });
+        }
+        return;
+      }
 
       if (isAddThatIntent(trimmed)) {
         if (!lastAssistantContent?.trim()) {
@@ -199,9 +265,13 @@ export function AIAssistantDrawer({
           appendMessage({
             id: crypto.randomUUID(),
             role: "assistant",
-            content:
-              "Inserted the content into the editor. Review and save when ready.",
+            content: isEditMode
+              ? "Inserted the content into the editor. Review and save when ready."
+              : "Writing to the page now. You can undo via page history.",
           });
+          if (!isEditMode) {
+            return;
+          }
         } else {
           const result = await appendPageMutation.mutateAsync({
             pageId: targetPageId,
@@ -233,9 +303,13 @@ export function AIAssistantDrawer({
           appendMessage({
             id: crypto.randomUUID(),
             role: "assistant",
-            content:
-              "Inserted the content into the editor. Review and save when ready.",
+            content: isEditMode
+              ? "Inserted the content into the editor. Review and save when ready."
+              : "Writing to the page now. You can undo via page history.",
           });
+          if (!isEditMode) {
+            return;
+          }
         } else {
           const result = await writeToPageMutation.mutateAsync({
             pageId: targetPageId,
@@ -326,99 +400,133 @@ export function AIAssistantDrawer({
   };
 
   return (
-    <Drawer isOpen={isOpen} onClose={onClose} size="lg">
-      <div className="flex h-full flex-col">
-        <div className="border-border-default flex items-center gap-2 border-b px-5 py-4">
-          <div className="bg-background-level1 text-text-primary flex h-9 w-9 items-center justify-center rounded-full">
-            <Sparkles className="h-4 w-4" />
-          </div>
-          <div>
-            <div className="text-base font-semibold">AI Assistant</div>
-            <div className="text-text-secondary text-sm">
-              Ask questions or draft content for your wiki.
-            </div>
+    <div className="flex h-full flex-col">
+      <div className="border-border-default flex items-center gap-2 border-b px-5 py-4">
+        <div className="bg-background-level1 text-text-primary flex h-9 w-9 items-center justify-center rounded-full">
+          <Sparkles className="h-4 w-4" />
+        </div>
+        <div className="flex-1">
+          <div className="text-base font-semibold">AI Assistant</div>
+          <div className="text-text-secondary text-sm">
+            Ask questions or draft content for your wiki.
           </div>
         </div>
-
-        <div className="border-border-default flex items-center gap-2 border-b px-5 py-3">
+        {onClose && (
           <Button
             type="button"
-            size="sm"
+            variant="ghost"
+            size="icon"
+            aria-label="Close AI assistant"
+            onClick={onClose}
+          >
+            ✕
+          </Button>
+        )}
+      </div>
+
+      <div className="border-border-default flex items-center gap-2 border-b px-5 py-3">
+        <Button
+          type="button"
+          size="sm"
+          variant="soft"
+          onClick={handleSummarize}
+          disabled={!pageMetadata?.id || summarizeMutation.isPending}
+        >
+          <FileText className="mr-2 h-3.5 w-3.5" />
+          Summarize page
+        </Button>
+        <Button
+          type="button"
+          size="sm"
+          variant="outlined"
+          onClick={handleImprove}
+          disabled={!pageMetadata?.id || improveMutation.isPending}
+        >
+          <Wand2 className="mr-2 h-3.5 w-3.5" />
+          Improve page
+        </Button>
+        {pageContextLabel && (
+          <Badge variant="outline" className="ml-auto">
+            {pageContextLabel}
+          </Badge>
+        )}
+      </div>
+
+      <ScrollArea className="flex-1 px-5 py-4">
+        {messages.length === 0 ? (
+          <div className="text-text-secondary text-sm">
+            Start a conversation to summarize, improve, or draft wiki content.
+          </div>
+        ) : (
+          <div className="space-y-4 text-sm">
+            {messages.map((item) => (
+              <div
+                key={item.id}
+                className={
+                  item.role === "user"
+                    ? "bg-background-level1 text-text-primary rounded-md px-3 py-2"
+                    : "bg-background-paper text-text-primary rounded-md border px-3 py-2"
+                }
+              >
+                {item.content}
+              </div>
+            ))}
+          </div>
+        )}
+      </ScrollArea>
+
+      <div className="border-border-default border-t px-5 py-4">
+        <div className="flex items-end gap-2">
+          <Textarea
+            value={message}
+            onChange={(event) => setMessage(event.target.value)}
+            placeholder="Ask the assistant..."
+            className="min-h-[80px]"
+          />
+          <Button
+            type="button"
             variant="soft"
-            onClick={handleSummarize}
-            disabled={!pageMetadata?.id || summarizeMutation.isPending}
+            size="icon"
+            aria-label="Send message"
+            disabled={
+              !message.trim() ||
+              chatMutation.isPending ||
+              draftPageMutation.isPending ||
+              appendPageMutation.isPending ||
+              writeToPageMutation.isPending ||
+                generateContentMutation.isPending ||
+                removeLineMutation.isPending
+            }
+            onClick={handleSend}
           >
-            <FileText className="mr-2 h-3.5 w-3.5" />
-            Summarize page
+            <Send className="h-4 w-4" />
           </Button>
-          <Button
-            type="button"
-            size="sm"
-            variant="outlined"
-            onClick={handleImprove}
-            disabled={!pageMetadata?.id || improveMutation.isPending}
-          >
-            <Wand2 className="mr-2 h-3.5 w-3.5" />
-            Improve page
-          </Button>
-          {pageContextLabel && (
-            <Badge variant="outline" className="ml-auto">
-              {pageContextLabel}
-            </Badge>
-          )}
-        </div>
-
-        <ScrollArea className="flex-1 px-5 py-4">
-          {messages.length === 0 ? (
-            <div className="text-text-secondary text-sm">
-              Start a conversation to summarize, improve, or draft wiki content.
-            </div>
-          ) : (
-            <div className="space-y-4 text-sm">
-              {messages.map((item) => (
-                <div
-                  key={item.id}
-                  className={
-                    item.role === "user"
-                      ? "bg-background-level1 text-text-primary rounded-md px-3 py-2"
-                      : "bg-background-paper text-text-primary rounded-md border px-3 py-2"
-                  }
-                >
-                  {item.content}
-                </div>
-              ))}
-            </div>
-          )}
-        </ScrollArea>
-
-        <div className="border-border-default border-t px-5 py-4">
-          <div className="flex items-end gap-2">
-            <Textarea
-              value={message}
-              onChange={(event) => setMessage(event.target.value)}
-              placeholder="Ask the assistant..."
-              className="min-h-[80px]"
-            />
-            <Button
-              type="button"
-              variant="soft"
-              size="icon"
-              aria-label="Send message"
-              disabled={
-                !message.trim() ||
-                chatMutation.isPending ||
-                draftPageMutation.isPending ||
-                appendPageMutation.isPending ||
-                writeToPageMutation.isPending ||
-                generateContentMutation.isPending
-              }
-              onClick={handleSend}
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+interface AIAssistantDrawerProps {
+  isOpen: boolean;
+  onClose: () => void;
+  pageMetadata?: PageMetadata;
+  mode?: "edit" | "view";
+}
+
+export function AIAssistantDrawer({
+  isOpen,
+  onClose,
+  pageMetadata,
+  mode = "view",
+}: AIAssistantDrawerProps) {
+  return (
+    <Drawer isOpen={isOpen} onClose={onClose} size="lg">
+      <AIAssistantPanel
+        pageMetadata={pageMetadata}
+        mode={mode}
+        onClose={onClose}
+      />
     </Drawer>
   );
 }

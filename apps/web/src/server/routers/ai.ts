@@ -349,12 +349,112 @@ export const aiRouter = router({
       return { content: response };
     }),
 
+  removeFromPage: permissionProtectedProcedure("wiki:page:update")
+    .input(
+      z.object({
+        pageId: z.number().optional(),
+        path: z.string().optional(),
+        text: z.string().min(1),
+      })
+    )
+    .mutation(async ({ input }) => {
+      await assertAIWriteAllowed();
+      if (!input.pageId && !input.path) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Missing pageId or path.",
+        });
+      }
+
+      let pageId = input.pageId;
+      if (!pageId && input.path) {
+        const resolved = await db.query.wikiPages.findFirst({
+          where: eq(wikiPages.path, input.path),
+          columns: { id: true },
+        });
+        if (!resolved?.id) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Page not found.",
+          });
+        }
+        pageId = resolved.id;
+      }
+
+      const page = await wikiService.getById(pageId!);
+      if (!page) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Page not found." });
+      }
+
+      const target = input.text.trim();
+      const content = page.content ?? "";
+
+      const normalize = (value: string) =>
+        value
+          .toLowerCase()
+          .replace(/[`*_~>#\[\]\(\)-]+/g, " ")
+          .replace(/[^\w\s]/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+
+      const normalizedTarget = normalize(target);
+      const lines = content.split(/\r?\n/);
+      let filtered = lines.filter(
+        (line) => normalize(line) !== normalizedTarget
+      );
+
+      if (filtered.length === lines.length) {
+        filtered = lines.filter(
+          (line) => !normalize(line).includes(normalizedTarget)
+        );
+      }
+
+      let nextContent = filtered.join("\n").trimEnd() + "\n";
+
+      if (filtered.length === lines.length) {
+        const normalizedContent = normalize(content);
+        if (normalizedContent.includes(normalizedTarget)) {
+          const escaped = target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          const flexible = escaped.replace(/\s+/g, "\\s+");
+          const regex = new RegExp(flexible, "i");
+          nextContent = content.replace(regex, "").trimEnd() + "\n";
+        }
+      }
+
+      if (filtered.length === lines.length && nextContent === content) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Text not found on page.",
+        });
+      }
+
+      const tags =
+        page.tags
+          ?.map((pageTag) => pageTag.tag?.name)
+          .filter((tag): tag is string => Boolean(tag)) ?? [];
+
+      const aiUserId = await getAIUserId();
+      const updatedPage = await wikiService.update(page.id, {
+        path: page.path,
+        title: page.title,
+        content: nextContent,
+        isPublished: page.isPublished ?? false,
+        editorType: page.editorType ?? undefined,
+        tags,
+        userId: aiUserId,
+        changeSummary: "AI edit: removed line",
+      });
+
+      return { page: updatedPage, content: nextContent };
+    }),
+
   draftPage: permissionProtectedProcedure("wiki:page:create")
     .input(
       z.object({
         path: z.string().min(1),
         title: z.string().min(1),
         context: z.string().optional(),
+        publish: z.boolean().optional(),
       })
     )
     .mutation(async ({ input }) => {
@@ -377,7 +477,32 @@ export const aiRouter = router({
         path: input.path,
         title: input.title,
         content: response,
-        isPublished: false,
+        isPublished: input.publish ?? false,
+        userId: aiUserId,
+        editorType: "markdown",
+        changeSummary: "AI draft: initial page creation",
+      });
+
+      return { page, content: response };
+    }),
+
+  createPageFromContent: permissionProtectedProcedure("wiki:page:create")
+    .input(
+      z.object({
+        path: z.string().min(1),
+        title: z.string().min(1),
+        content: z.string().min(1),
+        publish: z.boolean().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      await assertAIWriteAllowed();
+      const aiUserId = await getAIUserId();
+      const page = await wikiService.create({
+        path: input.path,
+        title: input.title,
+        content: input.content,
+        isPublished: input.publish ?? false,
         userId: aiUserId,
         editorType: "markdown",
         changeSummary: "AI draft: initial page creation",

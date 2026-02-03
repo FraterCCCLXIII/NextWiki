@@ -8,10 +8,15 @@ import type { PageMetadata } from "~/components/layout/MainLayout";
 
 interface AIAssistantTriggerProps {
   pageMetadata?: PageMetadata;
+  mode?: "edit" | "view";
 }
 
-export function AIAssistantTrigger({ pageMetadata }: AIAssistantTriggerProps) {
+export function AIAssistantTrigger({
+  pageMetadata,
+  mode = "view",
+}: AIAssistantTriggerProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const isViewMode = mode === "view";
 
   return (
     <>
@@ -20,15 +25,24 @@ export function AIAssistantTrigger({ pageMetadata }: AIAssistantTriggerProps) {
         variant="ghost"
         size="icon"
         aria-label="Open AI assistant"
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          if (isViewMode) {
+            window.dispatchEvent(new CustomEvent("ai:view-panel:toggle"));
+            return;
+          }
+          setIsOpen(true);
+        }}
       >
         <Sparkles className="h-4 w-4" />
       </Button>
-      <AIAssistantDrawer
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        pageMetadata={pageMetadata}
-      />
+      {!isViewMode && (
+        <AIAssistantDrawer
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          pageMetadata={pageMetadata}
+          mode={mode}
+        />
+      )}
     </>
   );
 }

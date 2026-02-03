@@ -303,6 +303,7 @@ export default async function WikiPageView({
             />
           </Suspense>
         }
+        rawContent={page.content || ""}
         createdAt={new Date(page.createdAt ?? new Date())}
         updatedAt={new Date(page.updatedAt ?? new Date())}
         createdBy={

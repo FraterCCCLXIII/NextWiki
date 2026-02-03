@@ -2,7 +2,7 @@
 
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
-import { ReactNode, useState, useEffect } from "react";
+import { ReactNode, useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { WikiSubfolders } from "./WikiSubfolders";
 import { Breadcrumbs } from "./Breadcrumbs";
@@ -14,11 +14,14 @@ import { ScrollArea } from "@repo/ui";
 import { TableOfContents } from "./TableOfContents";
 import { PencilIcon, MoveIcon, MoreVertical } from "lucide-react";
 import { ClientRequirePermission } from "~/components/auth/permission/client";
+import { HighlightedMarkdown } from "~/lib/markdown/client";
+import { AIAssistantPanel } from "~/components/ai/AIAssistantDrawer";
 
 interface WikiPageProps {
   id: number;
   title: string;
   content: ReactNode;
+  rawContent?: string;
   createdBy?: { name: string; id: number };
   updatedBy?: { name: string; id: number };
   lockedBy?: { name: string; id: number } | null;
@@ -35,6 +38,7 @@ export function WikiPage({
   id,
   title,
   content,
+  rawContent = "",
   createdBy,
   updatedBy,
   createdAt,
@@ -48,7 +52,20 @@ export function WikiPage({
   const [newName, setNewName] = useState("");
   const [showMoveModal, setShowMoveModal] = useState(false);
   const [renameConflict, setRenameConflict] = useState(false);
+  const [liveContent, setLiveContent] = useState("");
+  const [isAiTyping, setIsAiTyping] = useState(false);
+  const [baseContent, setBaseContent] = useState(rawContent);
+  const [isAiPanelOpen, setIsAiPanelOpen] = useState(false);
   const trpc = useTRPC();
+  const appendMutation = useMutation(trpc.ai.appendToPage.mutationOptions());
+  const aiQueueRef = useRef<string[]>([]);
+  const aiTypingRef = useRef(false);
+  const aiIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const liveContentRef = useRef("");
+  const aiBaseContentRef = useRef("");
+  const aiTypedContentRef = useRef("");
+  const aiIndexRef = useRef(0);
+  const aiCurrentSaveRef = useRef<string | null>(null);
 
   // Create a mutation for updating a wiki page
   const updateMutation = useMutation(
@@ -119,6 +136,153 @@ export function WikiPage({
       );
     }
   }, [folderStructure, path]);
+
+  useEffect(() => {
+    setBaseContent(rawContent);
+  }, [rawContent]);
+
+  useEffect(() => {
+    const handler = () => {
+      setIsAiPanelOpen((prev) => !prev);
+    };
+    window.addEventListener("ai:view-panel:toggle", handler);
+    return () => {
+      window.removeEventListener("ai:view-panel:toggle", handler);
+    };
+  }, []);
+
+  useEffect(() => {
+    liveContentRef.current = liveContent;
+  }, [liveContent]);
+
+  const startAiTyping = useCallback(() => {
+    if (aiTypingRef.current) return;
+    const next = aiQueueRef.current.shift();
+    if (!next) return;
+
+    const prefix = liveContentRef.current.trim() ? "\n\n" : "";
+    const typedContent = `${prefix}${next.trim()}\n`;
+
+    aiBaseContentRef.current = liveContentRef.current;
+    aiTypedContentRef.current = typedContent;
+    aiIndexRef.current = 0;
+    aiCurrentSaveRef.current = next;
+    setIsAiTyping(true);
+    aiTypingRef.current = true;
+
+    if (aiIntervalRef.current) {
+      clearInterval(aiIntervalRef.current);
+    }
+
+    aiIntervalRef.current = setInterval(() => {
+      const chunkSize = 3;
+      aiIndexRef.current = Math.min(
+        aiIndexRef.current + chunkSize,
+        aiTypedContentRef.current.length
+      );
+      const nextValue = `${aiBaseContentRef.current}${aiTypedContentRef.current.slice(
+        0,
+        aiIndexRef.current
+      )}`;
+      setLiveContent(nextValue);
+
+      if (aiIndexRef.current >= aiTypedContentRef.current.length) {
+        if (aiIntervalRef.current) {
+          clearInterval(aiIntervalRef.current);
+          aiIntervalRef.current = null;
+        }
+        aiTypingRef.current = false;
+        setIsAiTyping(false);
+        const saveContent = aiCurrentSaveRef.current;
+        if (saveContent) {
+          appendMutation.mutate(
+            {
+              pageId: id,
+              path,
+              content: saveContent,
+              changeSummary: "AI live edit: appended content",
+            },
+            {
+              onSuccess: () => {
+                const prefix = baseContent.trim() ? "\n\n" : "";
+                setBaseContent(`${baseContent}${prefix}${saveContent}\n`);
+                setLiveContent("");
+              },
+            }
+          );
+          aiCurrentSaveRef.current = null;
+        }
+
+        if (aiQueueRef.current.length > 0) {
+          startAiTyping();
+        }
+      }
+    }, 16);
+  }, [appendMutation, id, path]);
+
+  const enqueueAiContent = useCallback(
+    (contentToAdd: string) => {
+      if (!contentToAdd.trim()) return;
+      aiQueueRef.current.push(contentToAdd);
+      if (!aiTypingRef.current) {
+        startAiTyping();
+      }
+    },
+    [startAiTyping]
+  );
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const customEvent = event as CustomEvent<{
+        content?: string;
+        text?: string;
+        mode: "append" | "replace" | "remove";
+        path?: string;
+      }>;
+      const detail = customEvent.detail;
+      if (detail.path && detail.path !== path) return;
+      if (detail.mode === "remove" && detail.text) {
+        const normalize = (value: string) =>
+          value
+            .toLowerCase()
+            .replace(/[`*_~>#\[\]\(\)-]+/g, " ")
+            .replace(/[^\w\s]/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+        const normalizedTarget = normalize(detail.text);
+        const lines = baseContent.split(/\r?\n/);
+        let filtered = lines.filter(
+          (line) => normalize(line) !== normalizedTarget
+        );
+        if (filtered.length === lines.length) {
+          filtered = lines.filter(
+            (line) => !normalize(line).includes(normalizedTarget)
+          );
+        }
+        const nextContent = filtered.join("\n").trimEnd() + "\n";
+        setBaseContent(nextContent);
+        setLiveContent("");
+        setIsAiTyping(false);
+        return;
+      }
+      if (detail.mode === "replace") {
+        if (detail.content) {
+          setBaseContent(detail.content);
+        }
+        setLiveContent("");
+        setIsAiTyping(false);
+        return;
+      }
+      if (detail.content) {
+        enqueueAiContent(detail.content);
+      }
+    };
+
+    window.addEventListener("ai:live-edit", handler);
+    return () => {
+      window.removeEventListener("ai:live-edit", handler);
+    };
+  }, [enqueueAiContent, path]);
 
   return (
     <>
@@ -195,8 +359,24 @@ export function WikiPage({
               </ClientRequirePermission>
             </div>
 
+            {isAiTyping && (
+              <div className="mb-3 text-sm text-text-secondary">
+                AI is editing...
+              </div>
+            )}
+
             {/* Article content - hide first h1 since we show it above */}
-            <article className="[&>*:first-child:is(h1)]:hidden">{content}</article>
+            <article className="[&>*:first-child:is(h1)]:hidden">
+              {liveContent ? (
+                <HighlightedMarkdown
+                  content={`${baseContent}${
+                    baseContent.trim() ? "\n\n" : ""
+                  }${liveContent.trim()}\n`}
+                />
+              ) : (
+                content
+              )}
+            </article>
 
             {/* Subpages Section - Moved to bottom */}
             {hasSubpages && (
@@ -255,9 +435,19 @@ export function WikiPage({
             </div>
           </div>
 
-          {/* Right Column: Empty Space (Subfolders moved to bottom) */}
-          <aside className="hidden xl:block w-[280px] flex-shrink-0 py-4">
-            {/* Subfolders now appear at the bottom of the main content */}
+          {/* Right Column: AI Panel */}
+          <aside className="hidden xl:block w-[320px] flex-shrink-0">
+            {isAiPanelOpen && (
+              <div className="sticky top-0 h-[calc(100vh-4rem)] overflow-hidden border-l border-border-default bg-background-paper">
+                <div className="h-full overflow-y-auto">
+                  <AIAssistantPanel
+                    pageMetadata={{ id, title, path }}
+                    mode="view"
+                    onClose={() => setIsAiPanelOpen(false)}
+                  />
+                </div>
+              </div>
+            )}
           </aside>
         </div>
       </ScrollArea>

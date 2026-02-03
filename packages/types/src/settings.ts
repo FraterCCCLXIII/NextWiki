@@ -106,6 +106,8 @@ export interface SettingsDefinitions {
   "ai.maxTokens": SettingDefinition<NumberSetting>;
   "ai.systemPrompt": SettingDefinition<StringSetting>;
   "ai.userRole": SettingDefinition<SelectSetting<"viewer" | "editor" | "admin">>;
+  "ai.showGenerateOnEmptyPage": SettingDefinition<BooleanSetting>;
+  "ai.publishGeneratedPages": SettingDefinition<BooleanSetting>;
 }
 
 /**
@@ -374,6 +376,20 @@ export const DEFAULT_SETTINGS: {
     description: "Role used by the AI when performing actions",
     category: "ai",
     defaultValue: "editor",
+  },
+  "ai.showGenerateOnEmptyPage": {
+    type: "boolean",
+    value: true,
+    description: "Show AI generate button on empty pages",
+    category: "ai",
+    defaultValue: true,
+  },
+  "ai.publishGeneratedPages": {
+    type: "boolean",
+    value: true,
+    description: "Publish pages immediately after AI generation",
+    category: "ai",
+    defaultValue: true,
   },
 };
 

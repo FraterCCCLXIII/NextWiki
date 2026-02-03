@@ -38,7 +38,7 @@ export async function Header({
         </div>
         {/* Tags removed from here */}
         {/* {env.NODE_ENV === "development" && <RandomNumberDisplay />} */}
-        <AIAssistantTrigger pageMetadata={pageMetadata} />
+        <AIAssistantTrigger pageMetadata={pageMetadata} mode="view" />
         <ThemeToggle />
         {/* Wrap client components needing session in Suspense */}
         <Suspense

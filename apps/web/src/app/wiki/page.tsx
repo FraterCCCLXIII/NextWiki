@@ -2,6 +2,7 @@ import { MainLayout } from "~/components/layout/MainLayout";
 import { WikiBrowser } from "~/components/wiki/WikiBrowser";
 import { SearchResults } from "~/components/wiki/SearchResults";
 import { Suspense } from "react";
+import { WikiPagesLayout } from "~/components/wiki/WikiPagesLayout";
 
 function WikiPageContent() {
   return (
@@ -34,15 +35,9 @@ export default function WikiPagesPage({
 
   return (
     <MainLayout>
-      <div className="mx-auto w-full max-w-4xl space-y-6 p-6">
-        {!hasSearch && (
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold">All Pages</h1>
-          </div>
-        )}
-
+      <WikiPagesLayout showTitle={!hasSearch} title="All Pages">
         {hasSearch ? <WikiPageContent /> : <WikiBrowser />}
-      </div>
+      </WikiPagesLayout>
     </MainLayout>
   );
 }

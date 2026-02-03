@@ -872,6 +872,7 @@ export function WikiEditor({
                 title,
                 isLocked,
               }}
+              mode="edit"
             />
 
             {isAiTyping && (

@@ -3,7 +3,6 @@
 import { PropsWithChildren, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TRPCProvider } from "./client";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createWSClient, httpBatchLink, wsLink, splitLink } from "@trpc/client";
 import { createTRPCClient } from "@trpc/client";
 import { AppRouter } from "./routers";
@@ -79,7 +78,6 @@ export function TRPCClientProvider({ children }: PropsWithChildren) {
       <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
         {children}
       </TRPCProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }
