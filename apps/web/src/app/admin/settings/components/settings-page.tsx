@@ -31,6 +31,7 @@ const CATEGORIES: SettingCategory[] = [
   "editor",
   "search",
   "advanced",
+  "ai",
 ];
 
 // Map of category names to display names
@@ -41,6 +42,7 @@ const CATEGORY_NAMES: Record<SettingCategory, string> = {
   editor: "Editor",
   search: "Search",
   advanced: "Advanced",
+  ai: "AI",
 };
 
 // Map of category names to descriptions
@@ -51,6 +53,7 @@ const CATEGORY_DESCRIPTIONS: Record<SettingCategory, string> = {
   editor: "Content editor behavior and defaults",
   search: "Search functionality and performance",
   advanced: "Advanced configuration and storage settings",
+  ai: "AI provider configuration and assistant behavior",
 };
 
 export function SettingsPage() {

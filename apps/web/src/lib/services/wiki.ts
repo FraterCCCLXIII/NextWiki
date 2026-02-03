@@ -118,8 +118,18 @@ export const wikiService = {
     userId: number;
     tags?: string[];
     editorType?: "markdown" | "html";
+    changeSummary?: string;
   }) {
-    const { path, title, content, isPublished, userId, tags = [], editorType } = data;
+    const {
+      path,
+      title,
+      content,
+      isPublished,
+      userId,
+      tags = [],
+      editorType,
+      changeSummary,
+    } = data;
 
     // Use a transaction to create the page and associate tags
     const newPage = await db.transaction(async (tx) => {
@@ -151,7 +161,7 @@ export const wikiService = {
         isPublished: isPublished ?? false,
         revisionType: "created",
         revisionMetadata: tags.length > 0 ? { tags } : null,
-        changeSummary: "Initial page creation",
+        changeSummary: changeSummary ?? "Initial page creation",
         createdById: userId,
       });
 

@@ -25,7 +25,17 @@ export const settingsRouter = router({
   getAll: permissionProtectedProcedure("system:settings:read").query(
     async () => {
       const settings = await getAllSettings();
-      return settings;
+      const sanitized = { ...settings } as typeof settings;
+
+      for (const [key, definition] of Object.entries(DEFAULT_SETTINGS)) {
+        if (definition.isSecret && key in sanitized) {
+          // Never return secret values to the client
+          // @ts-expect-error - dynamic key assignment
+          sanitized[key] = "";
+        }
+      }
+
+      return sanitized;
     }
   ),
 
@@ -40,10 +50,11 @@ export const settingsRouter = router({
     )
     .query(async ({ input }) => {
       const value = await getSetting(input.key as SettingKey);
+      const meta = DEFAULT_SETTINGS[input.key as SettingKey];
       return {
         key: input.key,
-        value,
-        meta: DEFAULT_SETTINGS[input.key as SettingKey],
+        value: meta.isSecret ? "" : value,
+        meta,
       };
     }),
 
@@ -146,6 +157,7 @@ export const settingsRouter = router({
           "editor",
           "search",
           "advanced",
+          "ai",
         ]),
       })
     )
@@ -163,9 +175,10 @@ export const settingsRouter = router({
         })
         .map(([key]) => {
           const typedKey = key as SettingKey;
+          const meta = DEFAULT_SETTINGS[typedKey];
 
           // Use getSetting to get the value with proper defaults if not in database
-          const defaultValue = DEFAULT_SETTINGS[typedKey].value;
+          const defaultValue = meta.value;
           const value =
             typedKey in allSettings
               ? allSettings[typedKey as keyof typeof allSettings]
@@ -173,8 +186,8 @@ export const settingsRouter = router({
 
           return {
             key: typedKey,
-            value,
-            meta: DEFAULT_SETTINGS[typedKey],
+            value: meta.isSecret ? "" : value,
+            meta,
           };
         });
 

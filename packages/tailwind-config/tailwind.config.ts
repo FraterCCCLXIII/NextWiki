@@ -308,6 +308,14 @@ const sharedConfig: Omit<Config, "content"> = {
           "0%": { transform: "translateY(-10px)", opacity: "0" },
           "100%": { transform: "translateY(0)", opacity: "1" },
         },
+        slideInRight: {
+          "0%": { transform: "translateX(20px)", opacity: "0" },
+          "100%": { transform: "translateX(0)", opacity: "1" },
+        },
+        slideInLeft: {
+          "0%": { transform: "translateX(-20px)", opacity: "0" },
+          "100%": { transform: "translateX(0)", opacity: "1" },
+        },
       },
       animation: {
         shimmer: "shimmer 1.5s ease-in-out infinite",
@@ -317,6 +325,8 @@ const sharedConfig: Omit<Config, "content"> = {
         scaleOut: "scaleOut 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
         slideInUp: "slideInUp 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
         slideInDown: "slideInDown 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+        slideInRight: "slideInRight 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+        slideInLeft: "slideInLeft 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
       },
     },
   },

@@ -16,6 +16,7 @@ import {
   PhotoIcon,
   CogIcon,
   BeakerIcon,
+  SparklesIcon,
   ArrowLeftOnRectangleIcon,
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
@@ -41,6 +42,7 @@ const navigationItems: NavItem[] = [
     icon: BeakerIcon,
     condition: env.NEXT_PUBLIC_NODE_ENV === "development",
   },
+  { href: "/admin/ai", label: "AI", icon: SparklesIcon },
   { href: "/admin/settings", label: "Settings", icon: CogIcon },
 ];
 

@@ -7,6 +7,7 @@ import { assetsRouter } from "./assets";
 import { authRouter } from "./auth";
 import { tagsRouter } from "./tags";
 import { adminRouter } from "./admin";
+import { aiRouter } from "./ai";
 
 export const appRouter = router({
   ping: publicProcedure
@@ -31,6 +32,7 @@ export const appRouter = router({
   assets: assetsRouter,
   auth: authRouter,
   tags: tagsRouter,
+  ai: aiRouter,
 });
 
 // Export type router type signature,

@@ -36,7 +36,8 @@ export type SettingCategory =
   | "appearance"
   | "editor"
   | "search"
-  | "advanced";
+  | "advanced"
+  | "ai";
 
 /**
  * Combined setting definition with value and metadata
@@ -95,6 +96,16 @@ export interface SettingsDefinitions {
   >;
   "advanced.storageConfig": SettingDefinition<JsonSetting>;
   "advanced.maxUploadSize": SettingDefinition<NumberSetting>;
+
+  // AI settings
+  "ai.enabled": SettingDefinition<BooleanSetting>;
+  "ai.provider": SettingDefinition<SelectSetting<"openai">>;
+  "ai.openaiApiKey": SettingDefinition<StringSetting>;
+  "ai.model": SettingDefinition<StringSetting>;
+  "ai.temperature": SettingDefinition<NumberSetting>;
+  "ai.maxTokens": SettingDefinition<NumberSetting>;
+  "ai.systemPrompt": SettingDefinition<StringSetting>;
+  "ai.userRole": SettingDefinition<SelectSetting<"viewer" | "editor" | "admin">>;
 }
 
 /**
@@ -300,6 +311,69 @@ export const DEFAULT_SETTINGS: {
     description: "Maximum file upload size in bytes",
     category: "advanced",
     defaultValue: 5242880,
+  },
+
+  // AI settings
+  "ai.enabled": {
+    type: "boolean",
+    value: false,
+    description: "Enable AI assistant features",
+    category: "ai",
+    defaultValue: false,
+  },
+  "ai.provider": {
+    type: "select",
+    value: "openai",
+    options: ["openai"],
+    description: "AI provider to use",
+    category: "ai",
+    defaultValue: "openai",
+  },
+  "ai.openaiApiKey": {
+    type: "string",
+    value: "",
+    description: "OpenAI API key",
+    category: "ai",
+    defaultValue: "",
+    isSecret: true,
+  },
+  "ai.model": {
+    type: "string",
+    value: "gpt-4o-mini",
+    description: "Default model for AI requests",
+    category: "ai",
+    defaultValue: "gpt-4o-mini",
+  },
+  "ai.temperature": {
+    type: "number",
+    value: 0.2,
+    description: "Creativity level for AI responses",
+    category: "ai",
+    defaultValue: 0.2,
+  },
+  "ai.maxTokens": {
+    type: "number",
+    value: 1200,
+    description: "Max tokens per AI response",
+    category: "ai",
+    defaultValue: 1200,
+  },
+  "ai.systemPrompt": {
+    type: "string",
+    value:
+      "You are a helpful assistant for a wiki. Be concise, cite relevant sections, and draft markdown content when asked. If a user asks to create or update a page, provide the content needed to do so.",
+    description: "System prompt for AI behavior",
+    category: "ai",
+    defaultValue:
+      "You are a helpful assistant for a wiki. Be concise, cite relevant sections, and draft markdown content when asked. If a user asks to create or update a page, provide the content needed to do so.",
+  },
+  "ai.userRole": {
+    type: "select",
+    value: "editor",
+    options: ["viewer", "editor", "admin"],
+    description: "Role used by the AI when performing actions",
+    category: "ai",
+    defaultValue: "editor",
   },
 };
 

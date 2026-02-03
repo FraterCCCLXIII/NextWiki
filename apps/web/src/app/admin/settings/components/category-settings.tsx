@@ -233,14 +233,16 @@ export function CategorySettings({
 
   if (isLoading || isLoadingSettings) {
     return (
-      <div className="space-y-4">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="flex items-center space-x-4">
-            <Skeleton className="h-4 w-40" />
-            <Skeleton className="h-10 w-60" />
-          </div>
-        ))}
-      </div>
+      <TooltipProvider>
+        <div className="space-y-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="flex items-center space-x-4">
+              <Skeleton className="h-4 w-40" />
+              <Skeleton className="h-10 w-60" />
+            </div>
+          ))}
+        </div>
+      </TooltipProvider>
     );
   }
 
@@ -249,32 +251,32 @@ export function CategorySettings({
   }
 
   return (
-    <div className="space-y-6">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[250px]">Setting</TableHead>
-            <TableHead>Value</TableHead>
-            <TableHead className="w-[200px]">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {settings.map((setting) => {
-            const key = setting.key;
-            const isEdited = key in editedValues;
-            const isUpdating =
-              updateSetting.isPending && updateSetting.variables?.key === key;
-            const isResetting =
-              resetSetting.isPending && resetSetting.variables?.key === key;
-            const requiresRestart = setting.meta.requiresRestart;
+    <TooltipProvider>
+      <div className="space-y-6">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[250px]">Setting</TableHead>
+              <TableHead>Value</TableHead>
+              <TableHead className="w-[200px]">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {settings.map((setting) => {
+              const key = setting.key;
+              const isEdited = key in editedValues;
+              const isUpdating =
+                updateSetting.isPending && updateSetting.variables?.key === key;
+              const isResetting =
+                resetSetting.isPending && resetSetting.variables?.key === key;
+              const requiresRestart = setting.meta.requiresRestart;
 
-            return (
-              <TableRow key={key}>
-                <TableCell>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 font-medium">
-                      {key}
-                      <TooltipProvider>
+              return (
+                <TableRow key={key}>
+                  <TableCell>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 font-medium">
+                        {key}
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button
@@ -289,170 +291,170 @@ export function CategorySettings({
                             <p>{setting.meta.description}</p>
                           </TooltipContent>
                         </Tooltip>
-                      </TooltipProvider>
-                      {requiresRestart && (
-                        <Badge variant="outline" className="ml-2 text-xs">
-                          Requires restart
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="text-text-secondary text-xs">
-                      {setting.meta.description}
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {renderSettingInput(setting)}
-                  {isEdited && (
-                    <p className="text-text-secondary mt-1 text-xs">
-                      Modified - Save to apply changes
-                    </p>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="soft"
-                      size="sm"
-                      onClick={() => handleSave(key)}
-                      disabled={!isEdited || isUpdating || isResetting}
-                      className="h-8"
-                    >
-                      {isUpdating ? (
-                        <>
-                          <Skeleton className="mr-2 h-4 w-4 animate-spin rounded-full" />
-                          Saving...
-                        </>
-                      ) : (
-                        <>
-                          <Save className="mr-1 h-3.5 w-3.5" />
-                          Save
-                        </>
-                      )}
-                    </Button>
-
-                    <Button
-                      variant="outlined"
-                      size="sm"
-                      onClick={() => handleReset(key)}
-                      disabled={isUpdating || isResetting}
-                      className="h-8"
-                    >
-                      {isResetting ? (
-                        <>
-                          <Skeleton className="mr-2 h-4 w-4 animate-spin rounded-full" />
-                          Resetting...
-                        </>
-                      ) : (
-                        <>
-                          <RotateCw className="mr-1 h-3.5 w-3.5" />
-                          Reset
-                        </>
-                      )}
-                    </Button>
-
-                    <Dialog
-                      open={historyKey === key}
-                      onOpenChange={(open) => !open && setHistoryKey(null)}
-                    >
-                      <DialogTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => setHistoryKey(key)}
-                        >
-                          <History className="h-4 w-4" />
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Setting History</DialogTitle>
-                          <DialogDescription>
-                            History of changes for setting: {key}
-                          </DialogDescription>
-                        </DialogHeader>
-
-                        {isLoadingHistory ? (
-                          <div className="space-y-2">
-                            {Array.from({ length: 3 }).map((_, i) => (
-                              <Skeleton key={i} className="h-16 w-full" />
-                            ))}
-                          </div>
-                        ) : history && history.length > 0 ? (
-                          <div className="max-h-[400px] overflow-y-auto">
-                            {history.map((entry) => (
-                              <div
-                                key={entry.id}
-                                className="space-y-1 border-b py-3 last:border-b-0"
-                              >
-                                <div className="flex justify-between">
-                                  <div className="flex items-center gap-1 font-medium">
-                                    <Clock className="text-text-secondary h-4 w-4" />
-                                    <span>
-                                      {format(
-                                        new Date(entry.changedAt),
-                                        "MMM d, yyyy h:mm a"
-                                      )}
-                                    </span>
-                                  </div>
-                                  <div>
-                                    {entry.changedById ? (
-                                      <span className="text-text-secondary text-sm">
-                                        User ID: {entry.changedById}
-                                      </span>
-                                    ) : (
-                                      <span className="text-text-secondary text-sm">
-                                        System
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-
-                                {entry.changeReason && (
-                                  <div className="text-sm">
-                                    Reason: {entry.changeReason}
-                                  </div>
-                                )}
-
-                                <div className="mt-1 text-sm font-medium">
-                                  Previous value:
-                                </div>
-                                <div className="bg-background-paper overflow-auto rounded-md p-2 text-sm">
-                                  {typeof entry.previousValue === "object"
-                                    ? JSON.stringify(
-                                        entry.previousValue,
-                                        null,
-                                        2
-                                      )
-                                    : String(entry.previousValue)}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-muted-foreground py-4 text-center">
-                            No history available for this setting
-                          </p>
+                        {requiresRestart && (
+                          <Badge variant="outline" className="ml-2 text-xs">
+                            Requires restart
+                          </Badge>
                         )}
+                      </div>
+                      <div className="text-text-secondary text-xs">
+                        {setting.meta.description}
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {renderSettingInput(setting)}
+                    {isEdited && (
+                      <p className="text-text-secondary mt-1 text-xs">
+                        Modified - Save to apply changes
+                      </p>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="soft"
+                        size="sm"
+                        onClick={() => handleSave(key)}
+                        disabled={!isEdited || isUpdating || isResetting}
+                        className="h-8"
+                      >
+                        {isUpdating ? (
+                          <>
+                            <Skeleton className="mr-2 h-4 w-4 animate-spin rounded-full" />
+                            Saving...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="mr-1 h-3.5 w-3.5" />
+                            Save
+                          </>
+                        )}
+                      </Button>
 
-                        <DialogFooter>
+                      <Button
+                        variant="outlined"
+                        size="sm"
+                        onClick={() => handleReset(key)}
+                        disabled={isUpdating || isResetting}
+                        className="h-8"
+                      >
+                        {isResetting ? (
+                          <>
+                            <Skeleton className="mr-2 h-4 w-4 animate-spin rounded-full" />
+                            Resetting...
+                          </>
+                        ) : (
+                          <>
+                            <RotateCw className="mr-1 h-3.5 w-3.5" />
+                            Reset
+                          </>
+                        )}
+                      </Button>
+
+                      <Dialog
+                        open={historyKey === key}
+                        onOpenChange={(open) => !open && setHistoryKey(null)}
+                      >
+                        <DialogTrigger asChild>
                           <Button
-                            variant="outlined"
-                            onClick={() => setHistoryKey(null)}
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => setHistoryKey(key)}
                           >
-                            Close
+                            <History className="h-4 w-4" />
                           </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </div>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Setting History</DialogTitle>
+                            <DialogDescription>
+                              History of changes for setting: {key}
+                            </DialogDescription>
+                          </DialogHeader>
+
+                          {isLoadingHistory ? (
+                            <div className="space-y-2">
+                              {Array.from({ length: 3 }).map((_, i) => (
+                                <Skeleton key={i} className="h-16 w-full" />
+                              ))}
+                            </div>
+                          ) : history && history.length > 0 ? (
+                            <div className="max-h-[400px] overflow-y-auto">
+                              {history.map((entry) => (
+                                <div
+                                  key={entry.id}
+                                  className="space-y-1 border-b py-3 last:border-b-0"
+                                >
+                                  <div className="flex justify-between">
+                                    <div className="flex items-center gap-1 font-medium">
+                                      <Clock className="text-text-secondary h-4 w-4" />
+                                      <span>
+                                        {format(
+                                          new Date(entry.changedAt),
+                                          "MMM d, yyyy h:mm a"
+                                        )}
+                                      </span>
+                                    </div>
+                                    <div>
+                                      {entry.changedById ? (
+                                        <span className="text-text-secondary text-sm">
+                                          User ID: {entry.changedById}
+                                        </span>
+                                      ) : (
+                                        <span className="text-text-secondary text-sm">
+                                          System
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {entry.changeReason && (
+                                    <div className="text-sm">
+                                      Reason: {entry.changeReason}
+                                    </div>
+                                  )}
+
+                                  <div className="mt-1 text-sm font-medium">
+                                    Previous value:
+                                  </div>
+                                  <div className="bg-background-paper overflow-auto rounded-md p-2 text-sm">
+                                    {typeof entry.previousValue === "object"
+                                      ? JSON.stringify(
+                                          entry.previousValue,
+                                          null,
+                                          2
+                                        )
+                                      : String(entry.previousValue)}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-muted-foreground py-4 text-center">
+                              No history available for this setting
+                            </p>
+                          )}
+
+                          <DialogFooter>
+                            <Button
+                              variant="outlined"
+                              onClick={() => setHistoryKey(null)}
+                            >
+                              Close
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
+    </TooltipProvider>
   );
 }

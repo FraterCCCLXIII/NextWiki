@@ -5,6 +5,7 @@ import { PageMetadata } from "./MainLayout";
 import { getSettingValue } from "~/lib/utils/settings";
 import { SearchTrigger } from "./SearchTrigger";
 import { NavigationDropdown } from "./NavigationDropdown";
+import { AIAssistantTrigger } from "~/components/ai/AIAssistantTrigger";
 
 export async function Header({
   pageMetadata,
@@ -37,6 +38,7 @@ export async function Header({
         </div>
         {/* Tags removed from here */}
         {/* {env.NODE_ENV === "development" && <RandomNumberDisplay />} */}
+        <AIAssistantTrigger pageMetadata={pageMetadata} />
         <ThemeToggle />
         {/* Wrap client components needing session in Suspense */}
         <Suspense
