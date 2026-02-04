@@ -30,8 +30,12 @@ import {
   PopoverContent,
   PopoverAnchor,
 } from "@repo/ui";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@repo/ui";
 import { Input } from "@repo/ui";
-import { Label } from "@repo/ui";
 import { ThemeToggle } from "../layout/theme-toggle";
 import { AIAssistantTrigger } from "~/components/ai/AIAssistantTrigger";
 import {
@@ -808,6 +812,139 @@ export function WikiEditor({
           </div>
 
           <div className="flex items-center gap-2">
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outlined_simple"
+                  size="sm"
+                  className="h-8 text-xs gap-1"
+                >
+                  <span>Tags{tags.length > 0 ? ` (${tags.length})` : ""}</span>
+                  <ChevronDown className="h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="start"
+                className="w-80 p-3 bg-background-paper text-text-primary"
+              >
+                <div className="space-y-3">
+                  <div className="text-text-secondary text-xs font-semibold">
+                    Tags
+                  </div>
+                  <div className="flex items-center">
+                    {/* Tag Input with Suggestions Popover */}
+                    <div className="relative">
+                      <Popover
+                        open={
+                          showSuggestions &&
+                          tagInput.length > 0 &&
+                          tagSuggestions.length > 0
+                        }
+                        onOpenChange={setShowSuggestions}
+                      >
+                        {/* Anchor the popover to the input field */}
+                        <PopoverAnchor asChild>
+                          <Input
+                            value={tagInput}
+                            onChange={(e) => {
+                              setTagInput(e.target.value);
+                              setShowSuggestions(true); // Try to show suggestions on input change
+                            }}
+                            onKeyDown={handleKeyDown}
+                            onFocus={() => setShowSuggestions(true)} // Show on focus
+                            onBlur={(event) => {
+                              // Check if focus moved to the popover content
+                              const relatedTarget =
+                                event.relatedTarget as HTMLElement | null;
+                              if (popoverContentRef.current?.contains(relatedTarget)) {
+                                return; // Don't hide if focus is inside popover
+                              }
+                              // Hide after delay if focus moves elsewhere
+                              setTimeout(() => setShowSuggestions(false), 150);
+                            }}
+                            placeholder="Add tag..."
+                            className="h-7 w-40 text-xs"
+                            aria-autocomplete="list"
+                            aria-controls="tag-suggestions"
+                          />
+                        </PopoverAnchor>
+
+                        <PopoverContent
+                          ref={popoverContentRef}
+                          className="mt-1 w-48 p-0 bg-background-paper text-text-primary"
+                          align="start"
+                          side="bottom"
+                          id="tag-suggestions"
+                        >
+                          <Command>
+                            <CommandList>
+                              <CommandEmpty>No matching tags found.</CommandEmpty>
+                              {tagSuggestions.map((suggestion) => (
+                                <CommandItem
+                                  key={suggestion}
+                                  value={suggestion}
+                                  onSelect={() => {
+                                    // Use the suggestion value directly
+                                    if (suggestion && !tags.includes(suggestion)) {
+                                      setTags([...tags, suggestion]);
+                                      setTagInput("");
+                                      setTagSuggestions([]);
+                                      setShowSuggestions(false);
+                                      setUnsavedChanges(true);
+                                    }
+                                  }}
+                                >
+                                  {suggestion}
+                                </CommandItem>
+                              ))}
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+
+                    <Button
+                      type="button"
+                      onClick={handleAddTag}
+                      variant="ghost"
+                      color="primary"
+                      size="sm"
+                      className="ml-1 h-7 text-xs"
+                      disabled={!tagInput.trim()}
+                    >
+                      Add
+                    </Button>
+                  </div>
+
+                  {tags.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {tags.map((tag) => (
+                        <Badge
+                          key={tag}
+                          variant="secondary"
+                          color="primary"
+                          className="flex items-center gap-1 px-2 py-1"
+                        >
+                          {tag}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveTag(tag)}
+                            className="hover:bg-primary-100 hover:text-primary-700 rounded-full"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex items-center">
+                      <span className="text-text-tertiary text-sm">No tags</span>
+                    </div>
+                  )}
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {/* Asset Management Button with Dropdown */}
             <Popover>
               <PopoverTrigger asChild>
@@ -900,125 +1037,6 @@ export function WikiEditor({
         </div>
       </header>
 
-      {/* Metadata Section */}
-      <div className="bg-background-level1 border-border border-b px-6 py-4">
-        <div className="mb-2 flex flex-wrap gap-3">
-          <Label className="text-text-secondary flex items-center text-sm font-medium">
-            Tags:
-          </Label>
-
-          <div className="flex items-center">
-            {/* Tag Input with Suggestions Popover */}
-            <div className="relative">
-              <Popover
-                open={
-                  showSuggestions &&
-                  tagInput.length > 0 &&
-                  tagSuggestions.length > 0
-                }
-                onOpenChange={setShowSuggestions}
-              >
-                {/* Anchor the popover to the input field */}
-                <PopoverAnchor asChild>
-                  <Input
-                    value={tagInput}
-                    onChange={(e) => {
-                      setTagInput(e.target.value);
-                      setShowSuggestions(true); // Try to show suggestions on input change
-                    }}
-                    onKeyDown={handleKeyDown}
-                    onFocus={() => setShowSuggestions(true)} // Show on focus
-                    onBlur={(event) => {
-                      // Check if focus moved to the popover content
-                      const relatedTarget =
-                        event.relatedTarget as HTMLElement | null;
-                      if (popoverContentRef.current?.contains(relatedTarget)) {
-                        return; // Don't hide if focus is inside popover
-                      }
-                      // Hide after delay if focus moves elsewhere
-                      setTimeout(() => setShowSuggestions(false), 150);
-                    }}
-                    placeholder="Add tag..."
-                    className="h-7 w-40 text-xs"
-                    aria-autocomplete="list"
-                    aria-controls="tag-suggestions"
-                  />
-                </PopoverAnchor>
-
-                <PopoverContent
-                  ref={popoverContentRef}
-                  className="mt-1 w-48 p-0"
-                  align="start"
-                  side="bottom"
-                  id="tag-suggestions"
-                >
-                  <Command>
-                    <CommandList>
-                      <CommandEmpty>No matching tags found.</CommandEmpty>
-                      {tagSuggestions.map((suggestion) => (
-                        <CommandItem
-                          key={suggestion}
-                          value={suggestion}
-                          onSelect={() => {
-                            // Use the suggestion value directly
-                            if (suggestion && !tags.includes(suggestion)) {
-                              setTags([...tags, suggestion]);
-                              setTagInput("");
-                              setTagSuggestions([]);
-                              setShowSuggestions(false);
-                              setUnsavedChanges(true);
-                            }
-                          }}
-                        >
-                          {suggestion}
-                        </CommandItem>
-                      ))}
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <Button
-              type="button"
-              onClick={handleAddTag}
-              variant="ghost"
-              color="primary"
-              size="sm"
-              className="ml-1 h-7 text-xs"
-              disabled={!tagInput.trim()}
-            >
-              Add
-            </Button>
-          </div>
-
-          {tags.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <Badge
-                  key={tag}
-                  variant="secondary"
-                  color="primary"
-                  className="flex items-center gap-1 px-2 py-1"
-                >
-                  {tag}
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveTag(tag)}
-                    className="hover:bg-primary-100 hover:text-primary-700 rounded-full"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
-          ) : (
-            <div className="flex items-center">
-              <span className="text-text-tertiary text-sm">No tags</span>
-            </div>
-          )}
-        </div>
-      </div>
 
       {/* Editor Tabs and Content */}
       <div className="flex flex-1 flex-col overflow-hidden">
@@ -1027,8 +1045,8 @@ export function WikiEditor({
           onValueChange={setActiveTab}
           className="flex flex-1 flex-col overflow-hidden"
         >
-          <div className="border-border bg-card border-b">
-            <TabsList className="ml-4 mt-1 bg-transparent p-0">
+          <div className="border-border bg-card border-b flex justify-center">
+            <TabsList className="mt-2 mb-3 bg-transparent p-0">
               <TabsTrigger value="editor" className="px-4 py-2">
                 Editor
               </TabsTrigger>

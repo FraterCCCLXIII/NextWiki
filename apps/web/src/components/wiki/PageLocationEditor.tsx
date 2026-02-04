@@ -1,15 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { WikiFolderTree } from "./WikiFolderTree";
 import { useTRPC } from "~/server/client";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNotification } from "~/lib/hooks/useNotification";
 import { Modal } from "@repo/ui";
 import { Radio, RadioGroup } from "@repo/ui";
 import { Checkbox } from "@repo/ui";
 import { Button } from "@repo/ui";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@repo/ui";
+
+interface FolderNode {
+  name: string;
+  path: string;
+  type: "folder" | "page";
+  children: FolderNode[];
+  id?: number;
+  title?: string;
+  updatedAt?: Date | string | null;
+  isPublished?: boolean | null;
+}
 
 interface PageLocationEditorProps {
   mode: "create" | "move";
@@ -45,6 +62,36 @@ export function PageLocationEditor({
   const pathname = usePathname();
 
   const trpc = useTRPC();
+  const rootValue = "__root__";
+  const queryClient = useQueryClient();
+
+  const folderStructureQueryKey = trpc.wiki.getFolderStructure.queryKey();
+  const { data: folderStructure, isLoading: isFoldersLoading } = useQuery(
+    trpc.wiki.getFolderStructure.queryOptions(undefined, {
+      staleTime: 0,
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+    })
+  );
+
+  const folderOptions = useMemo(() => {
+    const options: Array<{ value: string; label: string }> = [
+      { value: rootValue, label: "Root" },
+    ];
+
+    if (!folderStructure) return options;
+
+    const collectFolders = (node: FolderNode) => {
+      if (node.type === "folder" && node.path) {
+        options.push({ value: node.path, label: `/${node.path}` });
+      }
+      node.children?.forEach(collectFolders);
+    };
+
+    folderStructure.children.forEach(collectFolders);
+    options.sort((a, b) => a.label.localeCompare(b.label));
+    return options;
+  }, [folderStructure]);
 
   // For checking name conflicts
   const subpagesList = useQuery(
@@ -66,6 +113,9 @@ export function PageLocationEditor({
     trpc.wiki.createFolder.mutationOptions({
       onSuccess: (data) => {
         notification.success("Folder created successfully");
+        queryClient.invalidateQueries({
+          queryKey: folderStructureQueryKey,
+        });
         onClose();
         router.push(`/${data.path}`);
       },
@@ -81,6 +131,9 @@ export function PageLocationEditor({
     trpc.wiki.movePages.mutationOptions({
       onSuccess: () => {
         notification.success("Page moved successfully");
+        queryClient.invalidateQueries({
+          queryKey: folderStructureQueryKey,
+        });
         onClose();
         const newPath = pageName
           ? selectedPath
@@ -183,123 +236,117 @@ export function PageLocationEditor({
   if (!isOpen) return null;
 
   return (
-    <Modal onClose={onClose} className="w-full max-w-6xl">
-      <div className="">
+    <Modal onClose={onClose} className="w-full max-w-2xl">
+      <div className="space-y-5">
         <h1 className="text-text-primary text-2xl font-bold">
-          {mode === "create" ? "Create New Wiki Page" : `Move: ${pageTitle}`}
+          {mode === "create" ? "New Page" : `Move: ${pageTitle}`}
         </h1>
-
-        <div className="bg-background-paper mb-6 rounded-lg p-2">
-          <div className="grid grid-cols-[3fr_2fr] gap-6">
-            <div className="pr-6">
-              {mode === "move" && (
-                <div className="text-text-secondary text-sm">
-                  Current path: {initialPath}
-                </div>
-              )}
-
-              <h2 className="text-text-primary mb-4 text-lg font-medium">
-                {mode === "create"
-                  ? "Select Location"
-                  : "Select Destination Folder"}
-              </h2>
-
-              <div className="mb-6">
-                <div className="relative">
-                  <label
-                    htmlFor="pageName"
-                    className="text-text-primary mb-2 block text-sm font-medium"
-                  >
-                    {mode === "create" ? "Page Name" : "New Name"}
-                  </label>
-                  {conflict && (
-                    <div className="text-error absolute right-0 top-0 text-sm">
-                      A page already exists at this location. Please choose a
-                      different name.
-                    </div>
-                  )}
-                </div>
-                <div className="flex items-center">
-                  {selectedPath && (
-                    <span className="text-text-secondary border-border-default bg-background-level2 inline-flex items-center rounded-l-md border border-r-0 px-3 py-2 text-sm">
-                      {selectedPath}/
-                    </span>
-                  )}
-                  <input
-                    type="text"
-                    id="pageName"
-                    value={pageName}
-                    onChange={(e) => setPageName(e.target.value.toLowerCase())}
-                    className={`border-border-default focus:ring-primary focus:border-primary block w-full min-w-0 flex-1 rounded-md border px-3 py-2 focus:outline-none ${
-                      selectedPath ? "rounded-l-none" : ""
-                    }`}
-                    placeholder={
-                      mode === "create" ? "my-new-page" : "page-name"
-                    }
-                  />
-                </div>
-              </div>
+        <div className="space-y-4">
+          {mode === "move" && (
+            <div className="text-text-secondary text-sm">
+              Current path: {initialPath}
             </div>
+          )}
 
-            {/* Folder options section - only shown when moving a page with children */}
-            {mode === "move" && hasChildren && (
-              <div className="bg-warning-50 border-warning-200 dark:bg-warning-900/50 dark:border-warning-800 mb-6 ml-4 rounded-md border p-4">
-                <h3 className="text-warning-800 dark:text-warning-200 mb-2 text-sm font-medium">
-                  This page has child pages
-                </h3>
-                <div className="mb-2 flex items-center">
-                  <Checkbox
-                    id="moveRecursively"
-                    checked={moveRecursively}
-                    onChange={(e) => setMoveRecursively(e.target.checked)}
-                    label="Move all child pages recursively"
-                    color="warning"
-                  />
-                </div>
-                <p className="text-error-800 dark:text-error-500 text-xs">
-                  {moveRecursively
-                    ? "All child pages will be moved to maintain the hierarchy."
-                    : "Only this page will be moved, which could create gaps in your wiki structure."}
-                </p>
+          <div className="space-y-2">
+            <label
+              htmlFor="pageName"
+              className="text-text-primary block text-sm font-medium"
+            >
+              {mode === "create" ? "Page Name" : "New Name"}
+            </label>
+            {conflict && (
+              <div className="text-error text-sm">
+                A page already exists at this location. Please choose a
+                different name.
               </div>
             )}
-
-            {mode === "create" && (
-              <div className="mb-6">
-                <label className="text-text-primary mb-2 block text-sm font-medium">
-                  Create Type
-                </label>
-                <RadioGroup
-                  orientation="horizontal"
-                  value={creationType}
-                  onChange={(value) =>
-                    setCreationType(value as "page" | "folder")
-                  }
-                  name="creationType"
-                >
-                  <Radio value="page" label="Page" color="primary" />
-                  <Radio value="folder" label="Folder" color="primary" />
-                </RadioGroup>
-              </div>
-            )}
+            <div className="flex items-center">
+              {selectedPath && (
+                <span className="text-text-secondary border-border-default bg-background-level2 inline-flex h-9 items-center rounded-l-md border border-r-0 px-3 text-sm">
+                  {selectedPath}/
+                </span>
+              )}
+              <input
+                type="text"
+                id="pageName"
+                value={pageName}
+                onChange={(e) => setPageName(e.target.value.toLowerCase())}
+                className={`border-border-default focus:ring-primary focus:border-primary block h-9 w-full min-w-0 flex-1 rounded-md border px-3 text-sm focus:outline-none ${
+                  selectedPath ? "rounded-l-none" : ""
+                }`}
+                placeholder={mode === "create" ? "my-new-page" : "page-name"}
+              />
+            </div>
           </div>
 
-          <div className="mb-6">
-            <label className="text-text-primary mb-2 block text-sm font-medium">
+          <div className="space-y-2">
+            <label className="text-text-primary block text-sm font-medium">
               Parent Folder
             </label>
-            <WikiFolderTree
-              title="Select Location"
-              mode="selection"
-              onSelectPath={setSelectedPath}
-              selectedPath={selectedPath}
-              showActions={false}
-              maxDepth={0}
-              showPageCount={true}
-              showLegend={false}
-              openDepth={3}
-            />
+            <Select
+              value={selectedPath ? selectedPath : rootValue}
+              onValueChange={(value) =>
+                setSelectedPath(value === rootValue ? "" : value)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue
+                  placeholder={
+                    isFoldersLoading ? "Loading folders..." : "Select a folder"
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent className="z-[70]">
+                {folderOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+
+          {mode === "create" && (
+            <div className="space-y-2">
+              <label className="text-text-primary block text-sm font-medium">
+                Create Type
+              </label>
+              <RadioGroup
+                orientation="horizontal"
+                value={creationType}
+                onChange={(value) =>
+                  setCreationType(value as "page" | "folder")
+                }
+                name="creationType"
+              >
+                <Radio value="page" label="Page" color="primary" />
+                <Radio value="folder" label="Folder" color="primary" />
+              </RadioGroup>
+            </div>
+          )}
+
+          {mode === "move" && hasChildren && (
+            <div className="rounded-md border border-warning/20 bg-warning/10 p-3">
+              <h3 className="text-warning-800 dark:text-warning-200 mb-2 text-sm font-medium">
+                This page has child pages
+              </h3>
+              <div className="mb-2 flex items-center">
+                <Checkbox
+                  id="moveRecursively"
+                  checked={moveRecursively}
+                  onChange={(e) => setMoveRecursively(e.target.checked)}
+                  label="Move all child pages recursively"
+                  color="warning"
+                />
+              </div>
+              <p className="text-error-800 dark:text-error-500 text-xs">
+                {moveRecursively
+                  ? "All child pages will be moved to maintain the hierarchy."
+                  : "Only this page will be moved, which could create gaps in your wiki structure."}
+              </p>
+            </div>
+          )}
 
           <div className="flex items-center justify-end">
             <Button
