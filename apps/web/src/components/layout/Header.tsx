@@ -1,8 +1,10 @@
 import { UserMenu } from "../auth/UserMenu";
 import { Suspense } from "react";
+import { unstable_noStore as noStore } from "next/cache";
 import { ThemeToggle } from "~/components/layout/theme-toggle";
 import { PageMetadata } from "./MainLayout";
 import { getSettingValue } from "~/lib/utils/settings";
+import { getSetting } from "~/lib/services/settings";
 import { SearchTrigger } from "./SearchTrigger";
 import { NavigationDropdown } from "./NavigationDropdown";
 import { AIAssistantTrigger } from "~/components/ai/AIAssistantTrigger";
@@ -12,9 +14,11 @@ export async function Header({
 }: {
   pageMetadata?: PageMetadata;
 }) {
+  noStore();
   // Get site title and logo from settings
   const siteTitle = await getSettingValue("site.title");
   const siteLogo = await getSettingValue("site.logo");
+  const aiEnabled = await getSetting("ai.enabled");
 
   return (
     <header
@@ -38,7 +42,9 @@ export async function Header({
         </div>
         {/* Tags removed from here */}
         {/* {env.NODE_ENV === "development" && <RandomNumberDisplay />} */}
-        <AIAssistantTrigger pageMetadata={pageMetadata} mode="view" />
+        {aiEnabled && (
+          <AIAssistantTrigger pageMetadata={pageMetadata} mode="view" />
+        )}
         <ThemeToggle />
         {/* Wrap client components needing session in Suspense */}
         <Suspense

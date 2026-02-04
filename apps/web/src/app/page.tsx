@@ -19,10 +19,17 @@ export default async function Home() {
   // Get site info for search homepage
   const siteTitle = await getSettingValue("site.title");
   const siteLogo = await getSettingValue("site.logo");
+  const aiEnabled = await getSettingValue("ai.enabled");
 
   // If search homepage is enabled, render that instead
   if (homepageStyle === "search") {
-    return <SearchHomepage siteTitle={siteTitle} siteLogo={siteLogo} />;
+    return (
+      <SearchHomepage
+        siteTitle={siteTitle}
+        siteLogo={siteLogo}
+        aiEnabled={aiEnabled}
+      />
+    );
   }
 
   // Otherwise, show wiki content homepage

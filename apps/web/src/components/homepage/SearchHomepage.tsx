@@ -12,9 +12,14 @@ import { AIAssistantTrigger } from "~/components/ai/AIAssistantTrigger";
 interface SearchHomepageProps {
   siteTitle?: string;
   siteLogo?: string;
+  aiEnabled?: boolean;
 }
 
-export function SearchHomepage({ siteTitle, siteLogo }: SearchHomepageProps) {
+export function SearchHomepage({
+  siteTitle,
+  siteLogo,
+  aiEnabled = true,
+}: SearchHomepageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showResults, setShowResults] = useState(false);
@@ -135,7 +140,7 @@ export function SearchHomepage({ siteTitle, siteLogo }: SearchHomepageProps) {
     <div className="flex min-h-screen flex-col bg-background">
       {/* Minimal Top Nav */}
       <header className="flex items-center justify-end gap-3 p-4">
-        <AIAssistantTrigger mode="view" />
+        {aiEnabled && <AIAssistantTrigger mode="view" />}
         <ThemeToggle />
         <UserMenu />
       </header>
