@@ -63,7 +63,9 @@ function processLeadingChild(
     return { node, continueScanning: false };
   }
 
-  if (React.isValidElement(node)) {
+  if (
+    React.isValidElement<{ className?: string; children?: React.ReactNode }>(node)
+  ) {
     const classNameValue = String(node.props?.className ?? "");
     const isEmojiElement = classNameValue.split(" ").includes("emoji");
     if (isEmojiElement) {
@@ -119,7 +121,9 @@ export function blockquoteComponent({
       return result.text;
     }
 
-    if (React.isValidElement(node)) {
+    if (
+      React.isValidElement<{ className?: string; children?: React.ReactNode }>(node)
+    ) {
       const classNameValue = String(node.props?.className ?? "");
       const isEmojiElement = classNameValue.split(" ").includes("emoji");
       if (isEmojiElement) {
@@ -135,7 +139,10 @@ export function blockquoteComponent({
       }
     }
 
-    if (React.isValidElement(node) && node.props.children) {
+    if (
+      React.isValidElement<{ className?: string; children?: React.ReactNode }>(node)
+      && node.props.children
+    ) {
       return React.cloneElement(node, {
         ...node.props,
         children: processChildren(node.props.children),

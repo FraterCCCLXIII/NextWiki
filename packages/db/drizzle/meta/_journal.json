@@ -22,6 +22,13 @@
       "when": 1770058684293,
       "tag": "0002_spotty_bruce_banner",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791140000000,
+      "tag": "0003_add_wiki_page_chunks",
+      "breakpoints": true
     }
   ]
 }

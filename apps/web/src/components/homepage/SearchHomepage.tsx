@@ -66,16 +66,6 @@ export function SearchHomepage({
     setSelectedIndex(-1);
   }, [debouncedSearch]);
 
-  useEffect(() => {
-    const handler = () => {
-      setIsAiPanelOpen((prev) => !prev);
-    };
-    window.addEventListener("ai:view-panel:toggle", handler);
-    return () => {
-      window.removeEventListener("ai:view-panel:toggle", handler);
-    };
-  }, []);
-
   // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

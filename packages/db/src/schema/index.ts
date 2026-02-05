@@ -30,6 +30,31 @@ export const tsvector = customType<{
   },
 });
 
+const DEFAULT_EMBEDDING_DIMENSIONS = 1536;
+
+export const vector = customType<{
+  data: number[];
+  driverData: string;
+}>({
+  dataType() {
+    return `vector(${DEFAULT_EMBEDDING_DIMENSIONS})`;
+  },
+  toDriver(value) {
+    return `[${value.join(",")}]`;
+  },
+  fromDriver(value) {
+    if (typeof value === "string") {
+      return value
+        .replace(/^\[/, "")
+        .replace(/\]$/, "")
+        .split(",")
+        .filter(Boolean)
+        .map((entry) => Number(entry.trim()));
+    }
+    return value as number[];
+  },
+});
+
 // Users table
 export const users = pgTable(
   "users",
@@ -366,6 +391,28 @@ export const wikiPages = pgTable(
   ]
 );
 
+export const wikiPageChunks = pgTable(
+  "wiki_page_chunks",
+  {
+    id: serial("id").primaryKey(),
+    pageId: integer("page_id")
+      .references(() => wikiPages.id)
+      .notNull(),
+    chunkIndex: integer("chunk_index").notNull(),
+    content: text("content").notNull(),
+    contentHash: varchar("content_hash", { length: 64 }).notNull(),
+    embedding: vector("embedding").notNull(),
+    embeddingModel: varchar("embedding_model", { length: 100 }).notNull(),
+    tokenCount: integer("token_count"),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (t) => [
+    index("wiki_page_chunks_page_idx").on(t.pageId),
+    uniqueIndex("wiki_page_chunks_page_chunk_idx").on(t.pageId, t.chunkIndex),
+  ]
+);
+
 // Page relations
 export const wikiPagesRelations = relations(wikiPages, ({ one, many }) => ({
   createdBy: one(users, {
@@ -386,6 +433,14 @@ export const wikiPagesRelations = relations(wikiPages, ({ one, many }) => ({
   revisions: many(wikiPageRevisions),
   tags: many(wikiPageToTag),
   assets: many(assetsToPages),
+  chunks: many(wikiPageChunks),
+}));
+
+export const wikiPageChunksRelations = relations(wikiPageChunks, ({ one }) => ({
+  page: one(wikiPages, {
+    fields: [wikiPageChunks.pageId],
+    references: [wikiPages.id],
+  }),
 }));
 
 // Page revisions table

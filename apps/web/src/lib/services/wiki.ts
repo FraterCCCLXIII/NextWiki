@@ -7,6 +7,7 @@ import {
 } from "@repo/db";
 import { desc, eq, sql } from "drizzle-orm";
 import { lockService } from "~/lib/services";
+import { syncPageEmbeddings } from "~/lib/services/ai";
 import { Transaction } from "~/types/db";
 import { logger } from "@repo/logger";
 import { revalidatePath } from "next/cache";
@@ -187,6 +188,18 @@ export const wikiService = {
           err
         );
       }
+
+      try {
+        await syncPageEmbeddings({
+          pageId: newPage.id,
+          content: newPage.content ?? "",
+        });
+      } catch (err) {
+        logger.error(
+          `Error syncing embeddings for created page ${newPage.path}:`,
+          err
+        );
+      }
     }
 
     return newPage;
@@ -302,6 +315,18 @@ export const wikiService = {
       } catch (err) {
         logger.error(
           `Error triggering revalidation for path ${updatedPageResult.path}:`,
+          err
+        );
+      }
+
+      try {
+        await syncPageEmbeddings({
+          pageId: updatedPageResult.id,
+          content: updatedPageResult.content ?? "",
+        });
+      } catch (err) {
+        logger.error(
+          `Error syncing embeddings for updated page ${updatedPageResult.path}:`,
           err
         );
       }

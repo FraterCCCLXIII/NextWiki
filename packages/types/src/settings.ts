@@ -104,6 +104,11 @@ export interface SettingsDefinitions {
   "ai.model": SettingDefinition<StringSetting>;
   "ai.temperature": SettingDefinition<NumberSetting>;
   "ai.maxTokens": SettingDefinition<NumberSetting>;
+  "ai.embeddingModel": SettingDefinition<StringSetting>;
+  "ai.embeddingDimensions": SettingDefinition<NumberSetting>;
+  "ai.embeddingChunkSize": SettingDefinition<NumberSetting>;
+  "ai.embeddingChunkOverlap": SettingDefinition<NumberSetting>;
+  "ai.embeddingMaxChunks": SettingDefinition<NumberSetting>;
   "ai.systemPrompt": SettingDefinition<StringSetting>;
   "ai.userRole": SettingDefinition<SelectSetting<"viewer" | "editor" | "admin">>;
   "ai.showGenerateOnEmptyPage": SettingDefinition<BooleanSetting>;
@@ -359,6 +364,41 @@ export const DEFAULT_SETTINGS: {
     description: "Max tokens per AI response",
     category: "ai",
     defaultValue: 1200,
+  },
+  "ai.embeddingModel": {
+    type: "string",
+    value: "text-embedding-3-small",
+    description: "Embedding model used for vector search",
+    category: "ai",
+    defaultValue: "text-embedding-3-small",
+  },
+  "ai.embeddingDimensions": {
+    type: "number",
+    value: 1536,
+    description: "Embedding vector dimensions (must match embedding model)",
+    category: "ai",
+    defaultValue: 1536,
+  },
+  "ai.embeddingChunkSize": {
+    type: "number",
+    value: 1200,
+    description: "Maximum chunk size (characters) for embeddings",
+    category: "ai",
+    defaultValue: 1200,
+  },
+  "ai.embeddingChunkOverlap": {
+    type: "number",
+    value: 200,
+    description: "Chunk overlap size (characters) for embeddings",
+    category: "ai",
+    defaultValue: 200,
+  },
+  "ai.embeddingMaxChunks": {
+    type: "number",
+    value: 24,
+    description: "Maximum number of chunks to embed per page",
+    category: "ai",
+    defaultValue: 24,
   },
   "ai.systemPrompt": {
     type: "string",

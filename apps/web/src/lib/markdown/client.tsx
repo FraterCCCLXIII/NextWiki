@@ -240,7 +240,7 @@ export function HighlightedContent({
       <MarkdownProse className={className}>
         <div ref={contentRef}>
           {shouldUseRenderedHtml ? (
-            <div dangerouslySetInnerHTML={{ __html: renderedHtml }} />
+            <div dangerouslySetInnerHTML={{ __html: renderedHtml ?? "" }} />
           ) : (
             <ReactMarkdown
               remarkPlugins={clientMarkdownConfig.remarkPlugins}

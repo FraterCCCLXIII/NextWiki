@@ -21,89 +21,6 @@ type ChatMessage = {
   content: string;
 };
 
-const slugify = (value: string) => {
-  const normalized = value
-    .toLowerCase()
-    .trim()
-    .replace(/['"]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-  return normalized || "new-page";
-};
-
-const parseCreatePageIntent = (prompt: string) => {
-  const normalized = prompt.trim();
-  if (!/create\s+(a\s+)?(new\s+)?page/i.test(normalized)) {
-    return null;
-  }
-
-  const explicitPath = extractPath(normalized);
-  const calledMatch = normalized.match(
-    /(?:called|titled|named)\s+["']?([^"']+?)["']?(?:$|[.?!,]| and )/i
-  );
-  const quotedMatch = normalized.match(/["']([^"']+)["']/);
-  const tailFallback = normalized
-    .replace(/.*page/i, "")
-    .split(" and ")[0]
-    .trim();
-  const title =
-    calledMatch?.[1]?.trim() || quotedMatch?.[1]?.trim() || tailFallback;
-
-  if (!title && !explicitPath) return null;
-
-  if (explicitPath && !title) {
-    const segments = explicitPath.split("/").filter(Boolean);
-    const lastSegment = segments[segments.length - 1] || "new-page";
-    const inferredTitle = lastSegment
-      .replace(/[-_]/g, " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase());
-    return {
-      title: inferredTitle,
-      path: explicitPath,
-    };
-  }
-
-  return {
-    title: title!,
-    path: explicitPath ?? slugify(title!),
-  };
-};
-
-const extractPath = (prompt: string) => {
-  const match = prompt.match(/\/[a-z0-9][a-z0-9\-\/]*/i);
-  if (!match) return null;
-  const cleaned = match[0].replace(/[.,!?;:]+$/g, "");
-  return cleaned.replace(/^\/+/, "");
-};
-
-const isAddThatIntent = (prompt: string) =>
-  /add (that|this|it) (to|into|on) (the )?page|add (that|this|it) to \//i.test(
-    prompt
-  );
-
-const isWriteToPageIntent = (prompt: string) =>
-  /(write|add|insert|update).*(page|content)/i.test(prompt);
-
-const parseRemoveLineIntent = (prompt: string) => {
-  if (
-    !/remove (this|that|the)( bottom)? line|delete (this|that|the)( bottom)? line/i.test(
-      prompt
-    )
-  ) {
-    return null;
-  }
-
-  const quoted = prompt.match(/["']([^"']+)["']/);
-  if (quoted?.[1]?.trim()) {
-    return quoted[1].trim();
-  }
-
-  const after = prompt
-    .replace(/remove (this|that|the)( bottom)? line[:]?/i, "")
-    .replace(/delete (this|that|the)( bottom)? line[:]?/i, "")
-    .trim();
-  return after || null;
-};
 
 const dispatchLiveEdit = (detail: {
   content?: string;
@@ -147,16 +64,7 @@ export function AIAssistantPanel({
   );
   const trpc = useTRPC();
 
-  const chatMutation = useMutation(trpc.ai.chat.mutationOptions());
-  const draftPageMutation = useMutation(trpc.ai.draftPage.mutationOptions());
-  const appendPageMutation = useMutation(trpc.ai.appendToPage.mutationOptions());
-  const writeToPageMutation = useMutation(trpc.ai.writeToPage.mutationOptions());
-  const generateContentMutation = useMutation(
-    trpc.ai.generateContent.mutationOptions()
-  );
-  const removeLineMutation = useMutation(
-    trpc.ai.removeFromPage.mutationOptions()
-  );
+  const dispatchMutation = useMutation(trpc.ai.dispatch.mutationOptions());
   const summarizeMutation = useMutation(
     trpc.ai.summarizePage.mutationOptions()
   );
@@ -502,162 +410,21 @@ export function AIAssistantPanel({
     clearInput();
 
     try {
-      const createIntent = parseCreatePageIntent(trimmed);
-      if (createIntent) {
-        const result = await draftPageMutation.mutateAsync({
-          path: createIntent.path,
-          title: createIntent.title,
-          context: trimmed,
-        });
-        appendMessage({
-          id: crypto.randomUUID(),
-          role: "assistant",
-          content: `Created draft page "${result.page.title}" at /${result.page.path}.`,
-        });
-        return;
-      }
-
-      const explicitPath = extractPath(trimmed);
-      const normalizedPagePath = pageMetadata?.path?.replace(/^\/+/, "");
-      const targetPath = explicitPath ?? normalizedPagePath;
-      const targetPageId = explicitPath ? undefined : pageMetadata?.id;
-      const isCurrentPageTarget =
-        !explicitPath || explicitPath === normalizedPagePath;
-      const isEditMode = mode === "edit";
-      const removeLine = parseRemoveLineIntent(trimmed);
-
-        if (removeLine && (targetPageId || targetPath)) {
-        try {
-            if (isCurrentPageTarget && !isEditMode) {
-              dispatchLiveEdit({
-                text: removeLine,
-                mode: "remove",
-                path: normalizedPagePath,
-              });
-            }
-          const result = await removeLineMutation.mutateAsync({
-            pageId: targetPageId,
-            path: targetPath,
-            text: removeLine,
-          });
-          if (isCurrentPageTarget && !isEditMode) {
-            dispatchLiveEdit({
-              content: result.content,
-              mode: "replace",
-              path: normalizedPagePath,
-            });
-          }
-          appendMessage({
-            id: crypto.randomUUID(),
-            role: "assistant",
-            content: `Removed the line from /${result.page.path}. You can undo in history.`,
-          });
-        } catch (error) {
-          appendMessage({
-            id: crypto.randomUUID(),
-            role: "assistant",
-            content: `Error: ${getErrorMessage(
-              error,
-              "Unable to remove that line."
-            )}`,
-          });
-        }
-        return;
-      }
-
-      if (isAddThatIntent(trimmed)) {
-        if (!lastAssistantContent?.trim()) {
-          appendMessage({
-            id: crypto.randomUUID(),
-            role: "assistant",
-            content: "I don’t have any recent content to add to the page.",
-          });
-          return;
-        }
-
-        if (!targetPageId && !targetPath) {
-          appendMessage({
-            id: crypto.randomUUID(),
-            role: "assistant",
-            content:
-              "Please specify which page to update (e.g., “add that to /zen”).",
-          });
-          return;
-        }
-
-        if (isCurrentPageTarget && targetPageId) {
-          dispatchLiveEdit({
-            content: lastAssistantContent,
-            mode: "append",
-            path: normalizedPagePath,
-          });
-          appendMessage({
-            id: crypto.randomUUID(),
-            role: "assistant",
-            content: isEditMode
-              ? "Inserted the content into the editor. Review and save when ready."
-              : "Writing to the page now. You can undo via page history.",
-          });
-          if (!isEditMode) {
-            return;
-          }
-        } else {
-          const result = await appendPageMutation.mutateAsync({
-            pageId: targetPageId,
-            path: targetPath,
-            content: lastAssistantContent,
-          });
-
-          appendMessage({
-            id: crypto.randomUUID(),
-            role: "assistant",
-            content: `Added content to /${result.page.path}.`,
-          });
-        }
-        return;
-      }
-
-      if (isWriteToPageIntent(trimmed) && (targetPageId || targetPath)) {
-        if (isCurrentPageTarget && targetPageId) {
-          const result = await generateContentMutation.mutateAsync({
-            pageId: targetPageId,
-            path: targetPath,
-            prompt: trimmed,
-          });
-          dispatchLiveEdit({
-            content: result.content,
-            mode: "append",
-            path: normalizedPagePath,
-          });
-          appendMessage({
-            id: crypto.randomUUID(),
-            role: "assistant",
-            content: isEditMode
-              ? "Inserted the content into the editor. Review and save when ready."
-              : "Writing to the page now. You can undo via page history.",
-          });
-          if (!isEditMode) {
-            return;
-          }
-        } else {
-          const result = await writeToPageMutation.mutateAsync({
-            pageId: targetPageId,
-            path: targetPath,
-            prompt: trimmed,
-          });
-          appendMessage({
-            id: crypto.randomUUID(),
-            role: "assistant",
-            content: `Added content to /${result.page.path}.`,
-          });
-        }
-        return;
-      }
-
-      const response = await chatMutation.mutateAsync({
+      const response = await dispatchMutation.mutateAsync({
         prompt: trimmed,
         pageId: pageMetadata?.id,
+        mode,
+        lastAssistantContent: lastAssistantContent ?? undefined,
       });
+
+      if ("liveEdit" in response && response.liveEdit) {
+        const liveEdit = response.liveEdit;
+        const mode = liveEdit.mode;
+        if (mode === "append" || mode === "replace" || mode === "remove") {
+          dispatchLiveEdit({ ...liveEdit, mode });
+        }
+      }
+
       appendMessage({
         id: crypto.randomUUID(),
         role: "assistant",
@@ -730,12 +497,7 @@ export function AIAssistantPanel({
 
   const isSendDisabled =
     !message.trim() ||
-    chatMutation.isPending ||
-    draftPageMutation.isPending ||
-    appendPageMutation.isPending ||
-    writeToPageMutation.isPending ||
-    generateContentMutation.isPending ||
-    removeLineMutation.isPending;
+    dispatchMutation.isPending;
 
   return (
     <div className="flex h-full flex-col overflow-x-hidden">
