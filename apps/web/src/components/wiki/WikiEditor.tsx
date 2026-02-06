@@ -646,10 +646,10 @@ export function WikiEditor({
             <div className="flex min-w-0 items-center gap-4">
             <Button
               size="sm"
-              variant="outlined"
+              variant="outlined_simple"
               color="neutral"
               onClick={handleCancel}
-              className="flex items-center gap-1"
+              className="flex h-8 items-center gap-1"
             >
               <ArrowLeft className="h-4 w-4" />
               <span>Back</span>
@@ -668,7 +668,7 @@ export function WikiEditor({
               />
             ) : (
               <h2
-                className="text-text-primary hover:text-primary max-w-md cursor-pointer truncate text-xl font-medium"
+                className="text-text-primary hover:text-primary max-w-2xl cursor-pointer truncate text-xl font-medium"
                 onClick={() => setEditingTitle(true)}
                 title="Click to edit title"
               >
@@ -676,27 +676,15 @@ export function WikiEditor({
               </h2>
             )}
 
-            {mode === "edit" && isLocked && (
-              <Badge variant="default" color="success">
-                Editing
-              </Badge>
-            )}
-
             {pagePath && (
               <Badge variant="secondary" color="neutral" className="text-xs">
                 {pagePath}
               </Badge>
             )}
-
-            {unsavedChanges && (
-              <Badge variant="secondary" color="warning">
-                Unsaved Changes
-              </Badge>
-            )}
           </div>
 
             <div className="flex items-center justify-center">
-              <TabsList className="border-border-default bg-transparent inline-flex overflow-hidden rounded-md border px-1 py-1.5">
+              <TabsList className="border-border-default bg-transparent inline-flex h-8 items-center overflow-hidden rounded-md border px-1">
                 <TabsTrigger
                   value="rich-text"
                   className="rounded-sm px-2.5 py-1.5 shadow-none data-[state=active]:shadow-none data-[state=active]:bg-background-level2"
@@ -860,15 +848,15 @@ export function WikiEditor({
               <PopoverTrigger asChild>
                 <Button
                   size="sm"
-                  variant="soft"
-                  color="accent"
-                  className="flex items-center gap-1"
+                  variant="outlined_simple"
+                  color="neutral"
+                  className="flex h-8 items-center gap-1 text-xs"
                 >
                   <span>Assets</span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-48 p-2">
+              <PopoverContent className="w-48 p-2 bg-background-paper text-text-primary border-border-default">
                 <div className="flex flex-col gap-2">
                   <Button
                     size="sm"
@@ -910,7 +898,7 @@ export function WikiEditor({
               type="button"
               onClick={handleSave}
               disabled={isSaving || !unsavedChanges}
-              className="flex min-w-20 items-center gap-1"
+              className="flex h-8 min-w-20 items-center gap-1"
             >
               {isSaving ? (
                 <>

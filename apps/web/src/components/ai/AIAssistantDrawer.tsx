@@ -500,8 +500,8 @@ export function AIAssistantPanel({
     dispatchMutation.isPending;
 
   return (
-    <div className="flex h-full flex-col overflow-x-hidden">
-      <ScrollArea className="flex-1 px-5 py-4">
+    <div className="flex h-full w-full min-h-0 flex-col overflow-x-hidden">
+      <ScrollArea className="flex-1 min-h-0 w-full px-5 py-4">
         {messages.length === 0 ? (
           <div className="text-text-secondary text-sm">
             Start a conversation to summarize, improve, or draft wiki content.
@@ -663,7 +663,7 @@ export function AIAssistantDrawer({
       showCloseButton={false}
       lockScroll={false}
       disableAnimation={true}
-      className="h-[calc(100vh-4rem-2rem)] w-[320px] rounded-2xl border border-border-default"
+      className="h-[calc(100vh-4rem-2rem)] w-[360px] min-w-[360px] rounded-2xl border border-border-default"
       overlayClassName="fixed right-0 top-16 bottom-0 z-50 flex justify-end p-4"
     >
       <AIAssistantPanel
