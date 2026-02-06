@@ -105,13 +105,15 @@ const Drawer: React.FC<DrawerProps> = ({
           role="dialog"
           aria-modal="true"
           data-state={animationState}
+          data-disable-animation={disableAnimation ? "true" : undefined}
         >
           <div
             ref={drawerRef}
             className={cn(
               "bg-background-paper border-border-default relative h-full w-full overflow-y-auto border shadow-xl pointer-events-auto",
-              !disableAnimation &&
-                "will-change-transform data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=left]:slide-in-from-right-2 data-[side=left]:slide-out-to-right-2 data-[side=right]:slide-in-from-left-2 data-[side=right]:slide-out-to-left-2 duration-150",
+              // Animation classes intentionally disabled for now.
+              // !disableAnimation &&
+              //   "will-change-transform data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=left]:slide-in-from-right-2 data-[side=left]:slide-out-to-right-2 data-[side=right]:slide-in-from-left-2 data-[side=right]:slide-out-to-left-2 duration-150",
               sizeClasses[size],
               className
             )}

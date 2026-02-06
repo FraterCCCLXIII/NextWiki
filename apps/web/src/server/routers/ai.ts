@@ -2,9 +2,12 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router, permissionProtectedProcedure, protectedProcedure } from "..";
 import {
+  type AIAction,
   assertAIWriteAllowed,
   getAIUserId,
   getRelevantChunks,
+  hasExplicitWriteIntent,
+  isAIWriteAction,
   runChatCompletion,
   selectAIAction,
 } from "~/lib/services/ai";
@@ -526,6 +529,13 @@ const requirePermission = async (userId: number, permission: string) => {
   }
 };
 
+const applyWriteIntentGuard = (action: AIAction, prompt: string): AIAction => {
+  if (isAIWriteAction(action.action) && !hasExplicitWriteIntent(prompt)) {
+    return { action: "chat", args: {} };
+  }
+  return action;
+};
+
 export const aiRouter = router({
   chat: permissionProtectedProcedure("wiki:page:read")
     .input(chatInputSchema)
@@ -626,6 +636,7 @@ export const aiRouter = router({
         hasAssistantContent: Boolean(input.lastAssistantContent?.trim()),
         conversationContext,
       });
+      action = applyWriteIntentGuard(action, input.prompt);
       const mode = input.mode ?? "view";
       const currentPath = page?.path?.replace(/^\/+/, "");
       const selectedPath =
@@ -1204,6 +1215,7 @@ export const aiRouter = router({
           hasAssistantContent: Boolean(input.lastAssistantContent?.trim()),
           conversationContext: loopContext,
         });
+        action = applyWriteIntentGuard(action, decision.prompt);
 
         lastResponse = await executeAction(action);
       }

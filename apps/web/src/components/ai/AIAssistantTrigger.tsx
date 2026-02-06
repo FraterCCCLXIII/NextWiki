@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@repo/ui";
 import { Sparkles } from "lucide-react";
 import { AIAssistantDrawer } from "./AIAssistantDrawer";
 import type { PageMetadata } from "~/components/layout/MainLayout";
+
+const AI_DRAWER_OPEN_STORAGE_KEY = "ai:drawer:open";
 
 interface AIAssistantTriggerProps {
   pageMetadata?: PageMetadata;
@@ -16,6 +18,19 @@ export function AIAssistantTrigger({
   mode = "view",
 }: AIAssistantTriggerProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stored = window.localStorage.getItem(AI_DRAWER_OPEN_STORAGE_KEY);
+    if (stored === "true") {
+      setIsOpen(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(AI_DRAWER_OPEN_STORAGE_KEY, String(isOpen));
+  }, [isOpen]);
 
   return (
     <>

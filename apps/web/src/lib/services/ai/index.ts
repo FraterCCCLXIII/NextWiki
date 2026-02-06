@@ -205,6 +205,40 @@ const actionSchema = z.discriminatedUnion("action", [
 
 export type AIAction = z.infer<typeof actionSchema>;
 
+const AI_WRITE_ACTIONS = new Set<AIAction["action"]>([
+  "draftPage",
+  "writeToPage",
+  "appendToPage",
+  "removeFromPage",
+  "replaceInPage",
+  "improvePage",
+]);
+
+const WRITE_VERB_PATTERN =
+  /\b(edit|update|modify|change|write|add|append|remove|delete|replace|improve|draft|create|rewrite|revise|insert)\b/i;
+const WRITE_TARGET_PATTERN =
+  /\b(page|wiki|document|doc|entry|article|section|paragraph|line|title|content)\b/i;
+const EXPLICIT_PATH_PATTERN = /(^|\s)@?\/[a-z0-9][a-z0-9\-/]*\b/i;
+
+const CREATE_PAGE_PATTERN =
+  /\b(new|create|draft|start)\b.*\b(page|wiki|document|doc|entry|article)\b/i;
+const EDIT_PAGE_PATTERN =
+  /\b(edit|update|modify|change|rewrite|revise|improve|add|append|remove|delete|replace|insert|write)\b.*\b(page|wiki|document|doc|entry|article|section|paragraph|line|title|content)\b/i;
+
+export const isAIWriteAction = (action: AIAction["action"]) =>
+  AI_WRITE_ACTIONS.has(action);
+
+export const hasExplicitWriteIntent = (prompt: string) => {
+  const normalized = prompt.trim();
+  if (!normalized) return false;
+  if (CREATE_PAGE_PATTERN.test(normalized)) return true;
+  if (EDIT_PAGE_PATTERN.test(normalized)) return true;
+  if (WRITE_VERB_PATTERN.test(normalized) && EXPLICIT_PATH_PATTERN.test(normalized)) {
+    return true;
+  }
+  return false;
+};
+
 const ACTION_SELECTION_PROMPT = `You are an action router for a wiki assistant.
 Return ONLY JSON that matches this schema:
 {
@@ -222,12 +256,13 @@ Return ONLY JSON that matches this schema:
 }
 Rules:
 - Prefer "draftPage" when the user asks to create a new page.
-- Prefer "writeToPage" when the user asks to add or update content on a page.
+- Prefer "writeToPage" when the user explicitly asks to add or update content on a page.
 - Use "appendToPage" only when the user wants to add existing assistant content and prior assistant content is available.
 - Use "removeFromPage" when the user asks to delete a specific line/phrase.
 - Use "replaceInPage" when the user asks to edit or rewrite a specific paragraph or quoted text.
 - Use "summarizePage" or "improvePage" for explicit summarize/improve requests.
 - Use "chat" for general questions or when intent is unclear.
+- Never select a write action unless the user explicitly requested a page edit or creation.
 - If the user specified a path like /foo/bar, set args.path to "foo/bar" (no leading slash).
 - If the target is the current page, omit args.path.
 - If removeFromPage is selected, extract the exact text to remove when possible.`;

@@ -24,6 +24,13 @@ type ChatMessage = {
   content: string;
 };
 
+type ChatStorageState = {
+  conversationId: string;
+  messages: ChatMessage[];
+  lastAssistantContent: string | null;
+};
+
+const AI_CHAT_STORAGE_KEY = "ai:chat:state";
 
 const dispatchLiveEdit = (detail: {
   content?: string;
@@ -72,6 +79,7 @@ export function AIAssistantPanel({
       ? crypto.randomUUID()
       : `${Date.now()}-${Math.random().toString(16).slice(2)}`
   );
+  const hasLoadedStoredState = useRef(false);
 
   const dispatchMutation = useMutation(trpc.ai.dispatch.mutationOptions());
   const summarizeMutation = useMutation(
@@ -388,6 +396,47 @@ export function AIAssistantPanel({
   const handleMentionSelect = (title: string, path: string) => {
     insertMention(title, path);
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined" || hasLoadedStoredState.current) return;
+    const stored = window.localStorage.getItem(AI_CHAT_STORAGE_KEY);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored) as Partial<ChatStorageState>;
+        if (parsed.conversationId) {
+          conversationIdRef.current = parsed.conversationId;
+        }
+        if (Array.isArray(parsed.messages)) {
+          const sanitized = parsed.messages.filter(
+            (item): item is ChatMessage =>
+              Boolean(item) &&
+              typeof item.id === "string" &&
+              (item.role === "user" || item.role === "assistant") &&
+              typeof item.content === "string"
+          );
+          if (sanitized.length > 0) {
+            setMessages(sanitized);
+          }
+        }
+        if (typeof parsed.lastAssistantContent === "string") {
+          setLastAssistantContent(parsed.lastAssistantContent);
+        }
+      } catch {
+        // Ignore invalid stored state.
+      }
+    }
+    hasLoadedStoredState.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !hasLoadedStoredState.current) return;
+    const state: ChatStorageState = {
+      conversationId: conversationIdRef.current,
+      messages,
+      lastAssistantContent,
+    };
+    window.localStorage.setItem(AI_CHAT_STORAGE_KEY, JSON.stringify(state));
+  }, [messages, lastAssistantContent]);
 
   useEffect(() => {
     if (!pageContextLabel) return;

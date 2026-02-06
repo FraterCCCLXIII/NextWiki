@@ -470,6 +470,10 @@
     animation: dropdownOut 0.1s cubic-bezier(0.4, 0, 1, 1) forwards;
   }
 
+  [role="dialog"][data-disable-animation="true"] {
+    animation: none !important;
+  }
+
   /* Ensure trigger buttons don't get animated or flicker */
   [data-radix-popover-trigger],
   [data-radix-dropdown-menu-trigger],
