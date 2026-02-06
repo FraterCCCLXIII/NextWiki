@@ -1,26 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useTRPC } from "~/server/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNotification } from "~/lib/hooks/useNotification";
-import { MarkdownProse } from "./MarkdownProse";
-import CodeMirror, {
-  EditorView,
-  type ReactCodeMirrorRef,
-} from "@uiw/react-codemirror";
-import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
-import { languages } from "@codemirror/language-data";
-import {
-  syntaxHighlighting,
-  defaultHighlightStyle,
-  HighlightStyle,
-} from "@codemirror/language";
-import { tags } from "@lezer/highlight";
-import { xcodeLight, xcodeDark } from "@uiw/codemirror-theme-xcode";
-import { HighlightedMarkdown } from "~/lib/markdown/client";
 import { AssetManager } from "./AssetManager";
+import { TiptapEditor } from "./TiptapEditor";
+import { MarkdownTextEditor } from "./MarkdownTextEditor";
 import { Button } from "@repo/ui";
 import { Badge } from "@repo/ui";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@repo/ui";
@@ -69,43 +56,6 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
-// Custom highlight style for markdown
-// TODO: Try to use nested styles
-const markdownHighlightStyle = HighlightStyle.define([
-  { tag: tags.heading, fontWeight: "bold", color: "var(--color-primary)" },
-  { tag: tags.heading1, fontSize: "1.6em", color: "var(--color-accent)" },
-  { tag: tags.heading2, fontSize: "1.4em", color: "var(--color-accent)" },
-  { tag: tags.heading3, fontSize: "1.2em", color: "var(--color-secondary)" },
-  { tag: tags.strong, fontWeight: "bold", color: "var(--color-complementary)" },
-  {
-    tag: tags.emphasis,
-    fontStyle: "italic",
-    color: "var(--color-text-secondary)",
-  },
-  { tag: tags.link, color: "var(--color-complementary)" },
-  { tag: tags.url, color: "var(--color-complementary)" },
-  { tag: tags.escape, color: "var(--color-complementary)" },
-  { tag: tags.list, color: "var(--color-text-secondary)" },
-  { tag: tags.quote, color: "var(--color-primary)" },
-  { tag: tags.comment, color: "var(--color-accent)" },
-  {
-    tag: tags.monospace,
-    color: "var(--color-text-primary)",
-    backgroundColor: "var(--color-background-level3)",
-  },
-  { tag: tags.meta, color: "var(--color-text-secondary)" },
-]);
-
-// Enhanced extensions for better markdown handling
-const baseEditorExtensions = [
-  markdown({
-    base: markdownLanguage,
-    codeLanguages: languages,
-  }),
-  syntaxHighlighting(markdownHighlightStyle),
-  syntaxHighlighting(defaultHighlightStyle),
-];
-
 interface WikiEditorProps {
   mode: "create" | "edit";
   pageId?: number;
@@ -133,20 +83,15 @@ export function WikiEditor({
   const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState<string>("editor");
+  const [activeTab, setActiveTab] = useState<string>("rich-text");
   const [showAssetManager, setShowAssetManager] = useState(false);
   const [editingTitle, setEditingTitle] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [isAiTyping, setIsAiTyping] = useState(false);
-  const editorRef = useRef<ReactCodeMirrorRef>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const popoverContentRef = useRef<HTMLDivElement>(null);
   const lockAcquiredRef = useRef(false);
-  const isDarkMode =
-    typeof window !== "undefined"
-      ? document.documentElement.classList.contains("dark")
-      : false;
   const trpc = useTRPC();
   const contentRef = useRef(content);
   const aiQueueRef = useRef<string[]>([]);
@@ -162,6 +107,11 @@ export function WikiEditor({
   const queryClient = useQueryClient();
   const assetsQueryKey = trpc.assets.getPaginated.queryKey();
   const folderStructureQueryKey = trpc.wiki.getFolderStructure.queryKey();
+
+  const appendMarkdown = useCallback((markdownSnippet: string) => {
+    setContent((current) => current + "\n" + markdownSnippet + "\n");
+    setUnsavedChanges(true);
+  }, []);
 
   // TRPC mutation for uploading assets
   const uploadAssetMutation = useMutation(
@@ -220,10 +170,8 @@ export function WikiEditor({
                   assetMarkdown = `[${asset.fileName}](/api/assets/${asset.id})`; // Standard link
                 }
 
-                // Insert at current cursor position or append to content
-                // TODO: Implement inserting at cursor position using editorRef
-                setContent((current) => current + "\n" + assetMarkdown + "\n");
-                setUnsavedChanges(true);
+                // Append to content (cursor insertion TODO retained for future)
+                appendMarkdown(assetMarkdown);
                 return `Asset ${asset.fileName} uploaded successfully`; // Return success message
               },
               error: (error) => {
@@ -241,81 +189,14 @@ export function WikiEditor({
         queryClient.invalidateQueries({ queryKey: assetsQueryKey });
       }
     },
-    [pageId, notification, uploadAssetMutation, queryClient, assetsQueryKey] // Added dependencies
-  );
-
-  // CodeMirror event handler extension for paste and drop
-  const cmEventHandlers = EditorView.domEventHandlers({
-    paste: (event: ClipboardEvent, view: EditorView) => {
-      logger.debug("CodeMirror paste event triggered");
-      logger.debug("Pasted into view:", view); // Example use of view to satisfy linter
-      const files = Array.from(event.clipboardData?.files || []);
-      const items = Array.from(event.clipboardData?.items || []);
-
-      // Optional: Log detected items for debugging
-      logger.debug(
-        "CM Clipboard Files:",
-        files.map((f) => ({ name: f.name, type: f.type, size: f.size }))
-      );
-      logger.debug(
-        "CM Clipboard Items:",
-        items.map((item) => ({ kind: item.kind, type: item.type }))
-      );
-
-      // Prioritize actual files
-      if (files.length > 0) {
-        // Check if the first file is suitable (could be image or other type)
-        const fileToUpload = files[0];
-        if (fileToUpload) {
-          logger.log("CM: Found file in files:", fileToUpload.name);
-          event.preventDefault();
-          handleFileUpload(fileToUpload);
-          return true; // Indicate we handled the event
-        }
-      }
-
-      // Fallback: check items
-      const imageItem = items.find(
-        (item) => item.kind === "file" // Find any file item, regardless of type
-      );
-
-      if (imageItem) {
-        logger.log("CM: Found file item (kind=file)", imageItem.type);
-        event.preventDefault();
-        const file = imageItem.getAsFile();
-        if (file) {
-          logger.log("CM: Got file from image item:", file.name);
-          handleFileUpload(file); // Use the renamed file upload handler
-          return true; // Indicate we handled the event
-        }
-      }
-      logger.log(
-        "CM: No suitable file found in clipboard data, allowing default paste."
-      );
-      return false; // Allow default paste if no image found/handled
-    },
-    drop: (event: DragEvent, view: EditorView) => {
-      logger.log("CodeMirror drop event triggered");
-      logger.log("Dropped onto view:", view); // Example use of view to satisfy linter
-      event.preventDefault();
-      const file = event.dataTransfer?.files[0];
-      // Handle any dropped file type
-      if (file) {
-        logger.log("CM: Handling dropped image:", file.name);
-        handleFileUpload(file); // Use the renamed file upload handler
-        return true; // Indicate we handled the event
-      }
-      return false; // Allow default drop if not handled
-    },
-  });
-
-  const editorExtensions = useMemo(
-    () => [
-      ...baseEditorExtensions,
-      cmEventHandlers,
-      EditorView.editable.of(!isAiTyping),
-    ],
-    [cmEventHandlers, isAiTyping]
+    [
+      pageId,
+      notification,
+      uploadAssetMutation,
+      queryClient,
+      assetsQueryKey,
+      appendMarkdown,
+    ] // Added dependencies
   );
 
   // Content change tracking
@@ -491,7 +372,7 @@ export function WikiEditor({
     aiTypedContentRef.current = typedContent;
     aiIndexRef.current = 0;
 
-    setActiveTab("editor");
+    setActiveTab("rich-text");
     setIsAiTyping(true);
     aiTypingRef.current = true;
 
@@ -725,16 +606,11 @@ export function WikiEditor({
       ? `![${assetName}](${assetUrl})`
       : `[${assetName}](${assetUrl})`;
 
-    // Insert at cursor position or append to content
-    setContent((current) => current + "\n" + markdownLink + "\n");
-    setUnsavedChanges(true);
+    // Append to content (cursor insertion TODO retained for future)
+    appendMarkdown(markdownLink);
 
     // Close the asset manager
     setShowAssetManager(false);
-  };
-
-  const getEditorTheme = () => {
-    return isDarkMode ? xcodeDark : xcodeLight;
   };
 
   // If we're waiting for lock acquisition in edit mode, show loading
@@ -756,10 +632,15 @@ export function WikiEditor({
 
   return (
     <div className="bg-background flex h-screen flex-col">
-      {/* Header Bar */}
-      <header className="bg-card border-border sticky top-0 z-10 border-b">
-        <div className="flex h-16 items-center justify-between px-6 py-2">
-          <div className="flex items-center gap-4">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="flex flex-1 flex-col overflow-hidden"
+      >
+        {/* Header Bar */}
+        <header className="bg-card border-border sticky top-0 z-10 border-b">
+          <div className="grid h-16 grid-cols-3 items-center gap-4 px-6 py-2">
+            <div className="flex min-w-0 items-center gap-4">
             <Button
               size="sm"
               variant="outlined"
@@ -811,7 +692,21 @@ export function WikiEditor({
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center">
+              <TabsList className="bg-transparent p-0">
+                <TabsTrigger value="rich-text" className="px-4 py-2">
+                  Rich Text
+                </TabsTrigger>
+                <TabsTrigger value="markdown" className="px-4 py-2">
+                  Markdown
+                </TabsTrigger>
+                <TabsTrigger value="split" className="px-4 py-2">
+                  Split View
+                </TabsTrigger>
+              </TabsList>
+            </div>
+
+            <div className="flex items-center justify-end gap-2">
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -1033,62 +928,40 @@ export function WikiEditor({
 
             {/* Theme Toggle */}
             <ThemeToggle />
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-
-      {/* Editor Tabs and Content */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Tabs
-          value={activeTab}
-          onValueChange={setActiveTab}
-          className="flex flex-1 flex-col overflow-hidden"
-        >
-          <div className="border-border bg-card border-b flex justify-center">
-            <TabsList className="mt-2 mb-3 bg-transparent p-0">
-              <TabsTrigger value="editor" className="px-4 py-2">
-                Editor
-              </TabsTrigger>
-              <TabsTrigger value="preview" className="px-4 py-2">
-                Preview
-              </TabsTrigger>
-              <TabsTrigger value="split" className="px-4 py-2">
-                Split View
-              </TabsTrigger>
-            </TabsList>
-          </div>
-
-          {/* Editor Tab */}
+        {/* Editor Tabs and Content */}
+        <div className="flex flex-1 flex-col overflow-hidden">
+          {/* Rich Text Tab */}
           <TabsContent
-            value="editor"
+            value="rich-text"
             className="m-0 flex-1 overflow-hidden p-0"
           >
-            <div className="h-full">
-              <CodeMirror
-                ref={editorRef}
-                value={content}
-                height="100%"
-                width="100%"
-                extensions={editorExtensions}
-                onChange={(value) => setContent(value)}
-                className="h-full overflow-hidden"
-                placeholder="Write your content using Markdown..."
-                theme={getEditorTheme()}
-                lang="markdown"
-              />
-            </div>
+            <TiptapEditor
+              content={content}
+              onContentChange={setContent}
+              onFileUpload={handleFileUpload}
+              editable={!isAiTyping}
+              placeholder="Write your content using Markdown..."
+              showToolbar
+              className="h-full"
+            />
           </TabsContent>
 
-          {/* Preview Tab */}
-          <TabsContent value="preview" className="m-0 flex-1 overflow-auto p-0">
-            <div className="bg-background-level1 h-full overflow-auto p-6">
-              <MarkdownProse>
-                <HighlightedMarkdown
-                  content={content || "*No content to preview*"}
-                />
-              </MarkdownProse>
-            </div>
+          {/* Markdown Tab */}
+          <TabsContent
+            value="markdown"
+            className="m-0 flex-1 overflow-hidden p-0"
+          >
+            <MarkdownTextEditor
+              value={content}
+              onChange={setContent}
+              disabled={isAiTyping}
+              placeholder="Write your content using Markdown..."
+              className="h-full"
+            />
           </TabsContent>
 
           {/* Split View Tab */}
@@ -1099,32 +972,31 @@ export function WikiEditor({
             <div className="flex h-full flex-1 overflow-hidden">
               {/* Editor Panel */}
               <div className="border-border h-full w-1/2 overflow-hidden border-r">
-                <CodeMirror
+                <MarkdownTextEditor
                   value={content}
-                  height="100%"
-                  width="100%"
-                  extensions={editorExtensions}
-                  onChange={(value) => setContent(value)}
-                  className="h-full overflow-hidden"
+                  onChange={setContent}
+                  disabled={isAiTyping}
                   placeholder="Write your content using Markdown..."
-                  theme={getEditorTheme()}
+                  className="h-full"
                 />
               </div>
 
-              {/* Preview Panel */}
-              <div className="bg-background-level1 h-full w-1/2 overflow-auto">
-                <div className="p-6">
-                  <MarkdownProse>
-                    <HighlightedMarkdown
-                      content={content || "*No content to preview*"}
-                    />
-                  </MarkdownProse>
-                </div>
+              {/* Rich Text Panel */}
+              <div className="bg-background-level1 h-full w-1/2 overflow-hidden">
+                <TiptapEditor
+                  content={content}
+                  onContentChange={setContent}
+                  onFileUpload={handleFileUpload}
+                  editable={!isAiTyping}
+                  placeholder="Write your content using Markdown..."
+                  showToolbar={false}
+                  className="h-full"
+                />
               </div>
             </div>
           </TabsContent>
-        </Tabs>
-      </div>
+        </div>
+      </Tabs>
 
       {/* Asset Manager Modal */}
       <AssetManager

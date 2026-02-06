@@ -257,6 +257,12 @@ const sharedConfig: Omit<Config, "content"> = {
         normal: "var(--line-height-normal)",
         relaxed: "var(--line-height-relaxed)",
       },
+      spacing: {
+        xs: "var(--spacing-xs)",
+        sm: "var(--spacing-sm)",
+        md: "var(--spacing-md)",
+        lg: "var(--spacing-lg)",
+      },
       borderRadius: {
         sm: "var(--radius-sm)",
         DEFAULT: "var(--radius-md)",

@@ -163,4 +163,21 @@
     content: "📄 [Asset]"; /* File emoji */
     @apply text-text-tertiary mr-1 inline-block font-normal;
   }
+
+  .tiptap-editor .ProseMirror {
+    @apply min-h-full w-full outline-none;
+  }
+
+  .tiptap-editor .ProseMirror.is-editor-empty::before {
+    content: attr(data-placeholder);
+    @apply text-text-tertiary pointer-events-none float-left h-0;
+  }
+
+  .tiptap-editor .ProseMirror img {
+    @apply max-w-full rounded-md;
+  }
+
+  .tiptap-editor .ProseMirror pre {
+    @apply bg-markdown-codebg rounded-md p-sm;
+  }
 }
