@@ -4,10 +4,11 @@ import { router, permissionProtectedProcedure, protectedProcedure } from "..";
 import {
   assertAIWriteAllowed,
   getAIUserId,
+  getRelevantChunks,
   runChatCompletion,
   selectAIAction,
 } from "~/lib/services/ai";
-import { searchService } from "~/lib/services/search";
+import { searchService, type SearchResultItem } from "~/lib/services/search";
 import { wikiService } from "~/lib/services";
 import { authorizationService } from "~/lib/services/authorization";
 import { getSetting } from "~/lib/services/settings";
@@ -92,6 +93,130 @@ const extractSearchQuery = (prompt: string) => {
   return tokens.slice(0, 6).join(" ");
 };
 
+const normalizePath = (path: string) => path.replace(/^\/+/, "").toLowerCase();
+
+const formatPath = (path: string) => `/${normalizePath(path)}`;
+
+const scoreFromDistance = (distance: number) =>
+  Number.isFinite(distance) ? 1 / (1 + Math.max(0, distance)) : 0;
+
+type ChunkSource = {
+  type: "chunk";
+  title: string;
+  path: string;
+  content: string;
+  chunkIndex: number;
+  score: number;
+};
+
+type PageSource = {
+  type: "page";
+  title: string;
+  path: string;
+  content: string;
+  score: number;
+};
+
+type HybridSource = ChunkSource | PageSource;
+
+const buildChunkSources = (chunks: Awaited<ReturnType<typeof getRelevantChunks>>) =>
+  chunks.map((chunk) => ({
+    type: "chunk" as const,
+    title: chunk.title,
+    path: chunk.path,
+    content: chunk.content,
+    chunkIndex: chunk.chunkIndex,
+    score: scoreFromDistance(chunk.distance),
+  }));
+
+const buildPageSources = (items: SearchResultItem[]) =>
+  items.map((item) => ({
+    type: "page" as const,
+    title: item.title,
+    path: item.path,
+    content: item.excerpt,
+    score: Math.min(1, Math.max(0, item.relevance / 4)),
+  }));
+
+const mergeSources = (chunks: ChunkSource[], pages: PageSource[], limit: number) => {
+  const combined = [...chunks, ...pages].sort((a, b) => b.score - a.score);
+  const seenPaths = new Set<string>();
+  const results: HybridSource[] = [];
+
+  for (const source of combined) {
+    const key = normalizePath(source.path);
+    if (seenPaths.has(key)) continue;
+    seenPaths.add(key);
+    results.push(source);
+    if (results.length >= limit) break;
+  }
+
+  return results;
+};
+
+const formatSourcesForPrompt = (sources: HybridSource[]) =>
+  sources
+    .map((source, index) => {
+      const label = `Source ${index + 1}: ${source.title} (${formatPath(
+        source.path
+      )})`;
+      if (source.type === "chunk") {
+        return `${label} [Chunk ${source.chunkIndex + 1}]\n${source.content}`;
+      }
+      return `${label} [Excerpt]\n${source.content}`;
+    })
+    .join("\n\n");
+
+const getChunkSourcesForPrompt = async (prompt: string, limit = 6) => {
+  const trimmed = prompt.trim();
+  const fallbackQuery = extractSearchQuery(trimmed);
+  const queries = fallbackQuery && fallbackQuery !== trimmed
+    ? [trimmed, fallbackQuery]
+    : [trimmed];
+
+  for (const query of queries) {
+    if (!query) continue;
+    const chunks = await getRelevantChunks({ query, limit });
+    if (chunks.length > 0) return buildChunkSources(chunks);
+  }
+
+  return [];
+};
+
+const getHybridSourcesForPrompt = async (prompt: string, options?: {
+  chunkLimit?: number;
+  searchLimit?: number;
+  mergedLimit?: number;
+}) => {
+  const trimmed = prompt.trim();
+  const fallbackQuery = extractSearchQuery(trimmed);
+  const queries = fallbackQuery && fallbackQuery !== trimmed
+    ? [trimmed, fallbackQuery]
+    : [trimmed];
+
+  const chunkLimit = options?.chunkLimit ?? 8;
+  const searchLimit = options?.searchLimit ?? 3;
+  const mergedLimit = options?.mergedLimit ?? 8;
+
+  for (const query of queries) {
+    if (!query) continue;
+    const [chunks, searchResults] = await Promise.all([
+      getRelevantChunks({ query, limit: chunkLimit }),
+      searchService.searchPaginated(query, { page: 1, pageSize: searchLimit }),
+    ]);
+    const sources = mergeSources(
+      buildChunkSources(chunks),
+      buildPageSources(searchResults.items),
+      mergedLimit
+    );
+    if (sources.length > 0 || searchResults.items.length > 0) {
+      return { sources, searchResults };
+    }
+  }
+
+  return { sources: [], searchResults: { items: [], totalItems: 0 } };
+};
+
 const buildChatResponse = async (prompt: string, pageId?: number) => {
   const messages: Array<{
     role: "system" | "user" | "assistant";
@@ -101,73 +226,69 @@ const buildChatResponse = async (prompt: string, pageId?: number) => {
   messages.push({
     role: "system",
     content:
-      "Use provided sources when answering. If sources are missing or irrelevant, say you could not find a matching page. When possible, provide wiki links as /path.",
+      "Use provided sources when answering. If sources are missing or irrelevant, say you could not find a matching page. Cite sources using their /path when possible.",
   });
 
   const explicitPath = extractPath(prompt);
   const wantsQuote = wantsExactQuote(prompt);
 
-  if (pageId || explicitPath) {
+  const pageContext =
+    pageId || explicitPath
+      ? pageId
+        ? await wikiService.getById(pageId)
+        : await db.query.wikiPages.findFirst({
+            where: eq(wikiPages.path, explicitPath!),
+          })
+      : null;
+
+  if (pageContext) {
     const page = pageId
-      ? await wikiService.getById(pageId)
-      : await db.query.wikiPages.findFirst({
-          where: eq(wikiPages.path, explicitPath!),
-        });
-
-    if (page) {
-      const content = page.content ?? "";
-      const tail = wantsQuote ? content.slice(-800) : content;
-      messages.push({
-        role: "user",
-        content: `Context page:\nTitle: ${page.title}\nPath: ${page.path}\nContent:\n${tail}`,
-      });
-    }
-  } else {
-    const searchResults = await searchService.searchPaginated(prompt, {
-      page: 1,
-      pageSize: 3,
+      ? pageContext
+      : pageContext;
+    const content = page.content ?? "";
+    const tail = wantsQuote ? content.slice(-800) : content;
+    messages.push({
+      role: "user",
+      content: `Context page:\nTitle: ${page.title}\nPath: ${page.path}\nContent:\n${tail}`,
     });
+  }
 
-    let resolvedResults = searchResults;
-    if (resolvedResults.items.length === 0) {
-      const fallbackQuery = extractSearchQuery(prompt);
-      if (fallbackQuery && fallbackQuery !== prompt) {
-        resolvedResults = await searchService.searchPaginated(fallbackQuery, {
-          page: 1,
-          pageSize: 3,
+  const { sources, searchResults } = await getHybridSourcesForPrompt(prompt);
+  const normalizedPagePath = pageContext?.path
+    ? normalizePath(pageContext.path)
+    : null;
+  const filteredSources = normalizedPagePath
+    ? sources.filter((source) => normalizePath(source.path) !== normalizedPagePath)
+    : sources;
+
+  if (filteredSources.length > 0) {
+    messages.push({
+      role: "user",
+      content: `Additional sources:\n${formatSourcesForPrompt(filteredSources)}`,
+    });
+  }
+
+  if (!pageContext && wantsQuote) {
+    const top = searchResults.items[0];
+    if (top) {
+      const page = await wikiService.getById(top.id);
+      if (page) {
+        const content = page.content ?? "";
+        messages.push({
+          role: "user",
+          content: `Top result full content tail for exact quoting:\nTitle: ${page.title}\nPath: ${page.path}\nContent tail:\n${content.slice(
+            -800
+          )}`,
         });
       }
-    }
-
-    if (resolvedResults.items.length > 0) {
-      const sources = resolvedResults.items
-        .map(
-          (item, index) =>
-            `${index + 1}. ${item.title} (/` +
-            `${item.path})\nExcerpt: ${item.excerpt}`
-        )
-        .join("\n\n");
-
+    } else if (sources[0]?.type === "chunk") {
+      const topChunk = sources[0];
       messages.push({
         role: "user",
-        content: `Search results:\n${sources}`,
+        content: `Top semantic source chunk for quoting:\nTitle: ${topChunk.title}\nPath: ${formatPath(
+          topChunk.path
+        )}\nContent:\n${topChunk.content}`,
       });
-
-      if (wantsQuote) {
-        const top = resolvedResults.items[0];
-        if (top) {
-          const page = await wikiService.getById(top.id);
-          if (page) {
-            const content = page.content ?? "";
-            messages.push({
-              role: "user",
-              content: `Top result full content tail for exact quoting:\nTitle: ${page.title}\nPath: ${page.path}\nContent tail:\n${content.slice(
-                -800
-              )}`,
-            });
-          }
-        }
-      }
     }
   }
 
@@ -176,30 +297,43 @@ const buildChatResponse = async (prompt: string, pageId?: number) => {
   return runChatCompletion({ messages });
 };
 
+const buildRetrievalContext = async (prompt: string) => {
+  const sources = await getChunkSourcesForPrompt(prompt);
+  if (sources.length === 0) return "";
+  return `Relevant wiki sources:\n${formatSourcesForPrompt(sources)}`;
+};
+
 const buildWriteContent = async (input: {
   prompt: string;
   page: { title: string; path: string; content: string | null };
-}) =>
-  runChatCompletion({
+}) => {
+  const retrievalContext = await buildRetrievalContext(input.prompt);
+  const sourcesBlock = retrievalContext ? `${retrievalContext}\n\n` : "";
+  return runChatCompletion({
     messages: [
       {
         role: "user",
-        content: `Write new markdown content to add to the wiki page based on the request below. Return only the new content without commentary. Do not wrap the response in code fences.\n\nRequest:\n${input.prompt}\n\nPage title: ${input.page.title}\nPage path: ${input.page.path}\nExisting content:\n${input.page.content ?? ""}`,
+        content: `${sourcesBlock}Write new markdown content to add to the wiki page based on the request below. Return only the new content without commentary. Do not wrap the response in code fences.\n\nRequest:\n${input.prompt}\n\nPage title: ${input.page.title}\nPage path: ${input.page.path}\nExisting content:\n${input.page.content ?? ""}`,
       },
     ],
   });
+};
 
 const buildDraftContent = async (input: {
   path: string;
   title: string;
   context?: string;
 }) => {
-  const context = input.context ? `Context:\n${input.context}\n\n` : "";
+  const retrievalQuery =
+    input.context?.trim() || `${input.title} ${input.path}`;
+  const retrievalContext = await buildRetrievalContext(retrievalQuery);
+  const sourcesBlock = retrievalContext ? `${retrievalContext}\n\n` : "";
+  const context = input.context ? `Request:\n${input.context}\n\n` : "";
   return runChatCompletion({
     messages: [
       {
         role: "user",
-        content: `${context}Draft a new wiki page in markdown. Return only the content without explanations. Do not wrap the response in code fences.\nTitle: ${input.title}\nPath: ${input.path}`,
+        content: `${sourcesBlock}${context}Draft a new wiki page in markdown. Return only the content without explanations. Do not wrap the response in code fences.\nTitle: ${input.title}\nPath: ${input.path}`,
       },
     ],
   });
@@ -710,12 +844,21 @@ export const aiRouter = router({
         const goals = action.args.goals
           ? `Goals:\n${action.args.goals}\n\n`
           : "";
+        const retrievalQuery = [
+          action.args.goals,
+          input.prompt,
+          targetPage.title,
+        ]
+          .filter(Boolean)
+          .join(" ");
+        const retrievalContext = await buildRetrievalContext(retrievalQuery);
+        const sourcesBlock = retrievalContext ? `${retrievalContext}\n\n` : "";
 
         const response = await runChatCompletion({
           messages: [
             {
               role: "user",
-              content: `${goals}Improve the following wiki page. Return only the updated content in the same format, without explanations. Do not wrap the response in code fences.\nTitle: ${targetPage.title}\nPath: ${targetPage.path}\nContent:\n${targetPage.content ?? ""}`,
+              content: `${sourcesBlock}${goals}Improve the following wiki page. Return only the updated content in the same format, without explanations. Do not wrap the response in code fences.\nTitle: ${targetPage.title}\nPath: ${targetPage.path}\nContent:\n${targetPage.content ?? ""}`,
             },
           ],
         });
@@ -783,12 +926,15 @@ export const aiRouter = router({
       const goals = input.goals
         ? `Goals:\n${input.goals}\n\n`
         : "";
+      const retrievalQuery = [input.goals, page.title].filter(Boolean).join(" ");
+      const retrievalContext = await buildRetrievalContext(retrievalQuery);
+      const sourcesBlock = retrievalContext ? `${retrievalContext}\n\n` : "";
 
       const response = await runChatCompletion({
         messages: [
           {
             role: "user",
-            content: `${goals}Improve the following wiki page. Return only the updated content in the same format, without explanations. Do not wrap the response in code fences.\nTitle: ${page.title}\nPath: ${page.path}\nContent:\n${page.content ?? ""}`,
+            content: `${sourcesBlock}${goals}Improve the following wiki page. Return only the updated content in the same format, without explanations. Do not wrap the response in code fences.\nTitle: ${page.title}\nPath: ${page.path}\nContent:\n${page.content ?? ""}`,
           },
         ],
       });

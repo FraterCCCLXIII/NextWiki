@@ -5,7 +5,7 @@ import crypto from "crypto";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { getSettings } from "~/lib/services/settings";
-import { db, users, wikiPageChunks } from "@repo/db";
+import { db, users, wikiPageChunks, wikiPages } from "@repo/db";
 import { eq, sql } from "drizzle-orm";
 
 const AI_USER_EMAIL = "ai@nextwiki.system";
@@ -478,10 +478,21 @@ export async function syncPageEmbeddings(input: {
   }
 }
 
+export type RelevantChunk = {
+  pageId: number;
+  chunkIndex: number;
+  content: string;
+  embeddingModel: string;
+  tokenCount: number | null;
+  distance: number;
+  title: string;
+  path: string;
+};
+
 export async function getRelevantChunks(input: {
   query: string;
   limit?: number;
-}) {
+}): Promise<RelevantChunk[]> {
   const settings = await getAISettings();
   if (!settings.enabled) return [];
 
@@ -494,24 +505,40 @@ export async function getRelevantChunks(input: {
 
   const result = await db.execute(sql`
     select
-      page_id,
-      chunk_index,
-      content,
-      embedding_model,
-      token_count,
-      (embedding <=> ${embeddingLiteral}::vector) as distance
-    from ${wikiPageChunks}
-    where embedding_model = ${settings.embeddingModel}
-    order by embedding <=> ${embeddingLiteral}::vector
+      chunks.page_id,
+      chunks.chunk_index,
+      chunks.content,
+      chunks.embedding_model,
+      chunks.token_count,
+      (chunks.embedding <=> ${embeddingLiteral}::vector) as distance,
+      pages.title as page_title,
+      pages.path as page_path
+    from ${wikiPageChunks} as chunks
+    join ${wikiPages} as pages on pages.id = chunks.page_id
+    where chunks.embedding_model = ${settings.embeddingModel}
+    order by chunks.embedding <=> ${embeddingLiteral}::vector
     limit ${limit}
   `);
 
-  return result.rows as Array<{
+  const rows = result.rows as Array<{
     page_id: number;
     chunk_index: number;
     content: string;
     embedding_model: string;
     token_count: number | null;
     distance: number;
+    page_title: string;
+    page_path: string;
   }>;
+
+  return rows.map((row) => ({
+    pageId: row.page_id,
+    chunkIndex: row.chunk_index,
+    content: row.content,
+    embeddingModel: row.embedding_model,
+    tokenCount: row.token_count,
+    distance: row.distance,
+    title: row.page_title,
+    path: row.page_path,
+  }));
 }
