@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import {
   Button,
   Drawer,
@@ -14,6 +15,8 @@ import { ArrowUp, Wand2, FileText } from "lucide-react";
 import { useTRPC } from "~/server/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { PageMetadata } from "~/components/layout/MainLayout";
+import { createClientMarkdownProcessor } from "~/lib/markdown/client-factory";
+import { MarkdownProse } from "~/components/wiki/MarkdownProse";
 
 type ChatMessage = {
   id: string;
@@ -62,7 +65,13 @@ export function AIAssistantPanel({
   const [lastAssistantContent, setLastAssistantContent] = useState<string | null>(
     null
   );
+  const markdownConfig = useMemo(() => createClientMarkdownProcessor(), []);
   const trpc = useTRPC();
+  const conversationIdRef = useRef<string>(
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(16).slice(2)}`
+  );
 
   const dispatchMutation = useMutation(trpc.ai.dispatch.mutationOptions());
   const summarizeMutation = useMutation(
@@ -401,6 +410,21 @@ export function AIAssistantPanel({
     }
   };
 
+  const appendAssistantPlaceholder = (content: string) => {
+    const id = crypto.randomUUID();
+    setMessages((prev) => [
+      ...prev,
+      { id, role: "assistant", content },
+    ]);
+    return id;
+  };
+
+  const updateMessageContent = (id: string, content: string) => {
+    setMessages((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, content } : item))
+    );
+  };
+
   const handleSend = async () => {
     const trimmed = inputRef.current
       ? serializeInput(inputRef.current).trim()
@@ -408,6 +432,7 @@ export function AIAssistantPanel({
     if (!trimmed) return;
     appendMessage({ id: crypto.randomUUID(), role: "user", content: trimmed });
     clearInput();
+    const placeholderId = appendAssistantPlaceholder("Thinking...");
 
     try {
       const response = await dispatchMutation.mutateAsync({
@@ -415,6 +440,7 @@ export function AIAssistantPanel({
         pageId: pageMetadata?.id,
         mode,
         lastAssistantContent: lastAssistantContent ?? undefined,
+        conversationId: conversationIdRef.current,
       });
 
       if ("liveEdit" in response && response.liveEdit) {
@@ -425,43 +451,33 @@ export function AIAssistantPanel({
         }
       }
 
-      appendMessage({
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: response.message,
-      });
+      updateMessageContent(placeholderId, response.message);
+      setLastAssistantContent(response.message);
     } catch (error) {
-      appendMessage({
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: `Error: ${getErrorMessage(
+      updateMessageContent(
+        placeholderId,
+        `Error: ${getErrorMessage(
           error,
           "Something went wrong while contacting the AI service."
-        )}`,
-      });
+        )}`
+      );
     }
   };
 
   const handleSummarize = async () => {
     if (!pageMetadata?.id) return;
+    const placeholderId = appendAssistantPlaceholder("Reading...");
     try {
       const response = await summarizeMutation.mutateAsync({
         pageId: pageMetadata.id,
       });
-      appendMessage({
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: response.summary,
-      });
+      updateMessageContent(placeholderId, response.summary);
+      setLastAssistantContent(response.summary);
     } catch (error) {
-      appendMessage({
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: `Error: ${getErrorMessage(
-          error,
-          "Unable to summarize the page right now."
-        )}`,
-      });
+      updateMessageContent(
+        placeholderId,
+        `Error: ${getErrorMessage(error, "Unable to summarize the page right now.")}`
+      );
     }
   };
 
@@ -475,23 +491,18 @@ export function AIAssistantPanel({
         : true;
     if (!proceed) return;
 
+    const placeholderId = appendAssistantPlaceholder("Researching...");
     try {
       await improveMutation.mutateAsync({ pageId: pageMetadata.id });
-      appendMessage({
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content:
-          "The page was updated with AI-generated improvements. Review the history for details.",
-      });
+      const message =
+        "The page was updated with AI-generated improvements. Review the history for details.";
+      updateMessageContent(placeholderId, message);
+      setLastAssistantContent(message);
     } catch (error) {
-      appendMessage({
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: `Error: ${getErrorMessage(
-          error,
-          "Unable to update the page right now."
-        )}`,
-      });
+      updateMessageContent(
+        placeholderId,
+        `Error: ${getErrorMessage(error, "Unable to update the page right now.")}`
+      );
     }
   };
 
@@ -517,7 +528,19 @@ export function AIAssistantPanel({
                     : "bg-background-paper text-text-primary rounded-md px-3 py-2"
                 }
               >
-                {item.content}
+                {item.role === "assistant" ? (
+                  <MarkdownProse className="prose-sm [&_p]:my-1 [&_ul]:my-1 [&_ol]:my-1">
+                    <ReactMarkdown
+                      remarkPlugins={markdownConfig.remarkPlugins}
+                      rehypePlugins={markdownConfig.rehypePlugins}
+                      components={markdownConfig.components}
+                    >
+                      {item.content}
+                    </ReactMarkdown>
+                  </MarkdownProse>
+                ) : (
+                  <div className="whitespace-pre-wrap">{item.content}</div>
+                )}
               </div>
             ))}
           </div>

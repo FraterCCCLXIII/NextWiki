@@ -249,6 +249,7 @@ export async function selectAIAction(input: {
   pageContext?: { title: string; path: string };
   explicitPath?: string | null;
   hasAssistantContent: boolean;
+  conversationContext?: string;
 }) {
   const context = [
     input.pageContext
@@ -256,6 +257,9 @@ export async function selectAIAction(input: {
       : "Current page: none",
     input.explicitPath ? `Explicit path in prompt: ${input.explicitPath}` : null,
     `Has prior assistant content: ${input.hasAssistantContent ? "yes" : "no"}`,
+    input.conversationContext
+      ? `Conversation context:\n${input.conversationContext}`
+      : null,
   ]
     .filter(Boolean)
     .join("\n");

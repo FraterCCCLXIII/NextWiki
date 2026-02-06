@@ -45,7 +45,7 @@ export function SearchTrigger({
         <button
           type="button"
           onClick={() => setIsSearchOpen(true)}
-          className={`bg-background-default dark:bg-background-level1 border-border-default hover:border-border-dark dark:hover:border-border-light text-text-secondary flex w-full cursor-pointer items-center rounded-md border px-3 py-2 text-sm transition-colors ${className ?? ""}`}
+          className={`bg-background-default dark:bg-background-level1 border-border-default hover:border-border-dark dark:hover:border-border-light text-text-secondary flex w-full cursor-pointer items-center rounded-full border px-3 py-2 text-sm transition-colors ${className ?? ""}`}
         >
           <Search className="text-text-secondary mr-2 h-4 w-4" />
           <span className={currentSearch ? "text-text-primary" : ""}>

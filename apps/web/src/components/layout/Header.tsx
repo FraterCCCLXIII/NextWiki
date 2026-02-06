@@ -32,7 +32,7 @@ export async function Header({
       </div>
 
       {/* Center: Search Bar */}
-      <div className="flex-1 max-w-2xl mx-auto hidden md:block">
+      <div className="flex-1 max-w-[18.75rem] mx-auto hidden md:block">
         <SearchTrigger variant="full" />
       </div>
 

@@ -14,10 +14,21 @@ import { authorizationService } from "~/lib/services/authorization";
 import { getSetting } from "~/lib/services/settings";
 import { db, wikiPages } from "@repo/db";
 import { eq } from "drizzle-orm";
+import {
+  appendConversationMessage,
+  buildSummaryPromptInput,
+  condenseConversationIfNeeded,
+  getConversationContextSnapshot,
+  getOrCreateConversationSession,
+  updateLastReferencedPage,
+  updateLastRetrievedSources,
+  updateLastWriteTarget,
+} from "~/lib/services/ai/conversation";
 
 const chatInputSchema = z.object({
   prompt: z.string().min(1),
   pageId: z.number().optional(),
+  conversationId: z.string().min(1).optional(),
 });
 
 const extractPath = (prompt: string) => {
@@ -99,6 +110,71 @@ const formatPath = (path: string) => `/${normalizePath(path)}`;
 
 const scoreFromDistance = (distance: number) =>
   Number.isFinite(distance) ? 1 / (1 + Math.max(0, distance)) : 0;
+
+const isVagueFollowup = (prompt: string) =>
+  prompt.trim().split(/\s+/).length <= 6 ||
+  /\b(it|this|that|they|them|he|she|her|his|their|there|that one)\b/i.test(
+    prompt
+  );
+
+const formatConversationContext = (snapshot: ReturnType<
+  typeof getConversationContextSnapshot
+>) => {
+  const summary = snapshot.summary
+    ? `Summary:\n${snapshot.summary}`
+    : null;
+  const recentMessages = snapshot.messages
+    .map((message) => {
+      const label =
+        message.role === "tool"
+          ? `Tool${message.toolName ? ` (${message.toolName})` : ""}`
+          : message.role === "assistant"
+            ? "Assistant"
+            : "User";
+      return `${label}: ${message.content}`;
+    })
+    .join("\n");
+  return [summary, recentMessages].filter(Boolean).join("\n\n");
+};
+
+const buildConversationMessages = (snapshot: ReturnType<
+  typeof getConversationContextSnapshot
+>) =>
+  snapshot.messages.map((message) => ({
+    role: message.role === "tool" ? "assistant" : message.role,
+    content:
+      message.role === "tool"
+        ? `Tool result${message.toolName ? ` (${message.toolName})` : ""}:\n${message.content}`
+        : message.content,
+  }));
+
+const LOOP_DECISION_PROMPT = `You are a controller deciding if the assistant should take another action.
+Return ONLY JSON:
+{
+  "continue": boolean,
+  "prompt"?: string // if continue is true, provide the next action instruction
+}
+Rules:
+- Only continue if the previous action did not fully satisfy the user.
+- If the previous action already answered the request, set continue=false.
+- Keep the follow-up prompt concise and specific.`;
+
+const loopDecisionSchema = z.object({
+  continue: z.boolean(),
+  prompt: z.string().optional(),
+});
+
+const extractJson = (value: string) => {
+  const start = value.indexOf("{");
+  const end = value.lastIndexOf("}");
+  if (start === -1 || end === -1 || end <= start) return null;
+  const slice = value.slice(start, end + 1);
+  try {
+    return JSON.parse(slice);
+  } catch {
+    return null;
+  }
+};
 
 type ChunkSource = {
   type: "chunk";
@@ -217,16 +293,25 @@ const getHybridSourcesForPrompt = async (prompt: string, options?: {
   return { sources: [], searchResults: { items: [], totalItems: 0 } };
 };
 
-const buildChatResponse = async (prompt: string, pageId?: number) => {
+const buildChatResponse = async (input: {
+  prompt: string;
+  pageId?: number;
+  session?: ReturnType<typeof getOrCreateConversationSession>;
+}) => {
+  const { prompt, pageId, session } = input;
   const messages: Array<{
     role: "system" | "user" | "assistant";
     content: string;
   }> = [];
 
+  const snapshot = session ? getConversationContextSnapshot(session) : null;
+  const conversationContext = snapshot ? formatConversationContext(snapshot) : null;
+  const contextMessages = snapshot ? buildConversationMessages(snapshot) : [];
+
   messages.push({
     role: "system",
     content:
-      "Use provided sources when answering. If sources are missing or irrelevant, say you could not find a matching page. Cite sources using their /path when possible.",
+      `Use provided sources when answering. If sources are missing or irrelevant, say you could not find a matching page. Cite sources using their /path when possible.${conversationContext ? `\n\nConversation context:\n${conversationContext}` : ""}`,
   });
 
   const explicitPath = extractPath(prompt);
@@ -251,6 +336,13 @@ const buildChatResponse = async (prompt: string, pageId?: number) => {
       role: "user",
       content: `Context page:\nTitle: ${page.title}\nPath: ${page.path}\nContent:\n${tail}`,
     });
+    if (session) {
+      updateLastReferencedPage(session, {
+        id: page.id,
+        title: page.title,
+        path: page.path,
+      });
+    }
   }
 
   const { sources, searchResults } = await getHybridSourcesForPrompt(prompt);
@@ -266,6 +358,31 @@ const buildChatResponse = async (prompt: string, pageId?: number) => {
       role: "user",
       content: `Additional sources:\n${formatSourcesForPrompt(filteredSources)}`,
     });
+    if (session) {
+      updateLastRetrievedSources(
+        session,
+        filteredSources.map((source) => ({
+          title: source.title,
+          path: source.path,
+          content: source.content,
+        }))
+      );
+    }
+  }
+
+  if (!pageContext && session && isVagueFollowup(prompt)) {
+    const lastPage = session.lastReferencedPage;
+    if (lastPage?.path) {
+      const page = await resolvePageByPath(lastPage.path);
+      if (page) {
+        const content = page.content ?? "";
+        const tail = wantsQuote ? content.slice(-800) : content;
+        messages.push({
+          role: "user",
+          content: `Prior context page:\nTitle: ${page.title}\nPath: ${page.path}\nContent:\n${tail}`,
+        });
+      }
+    }
   }
 
   if (!pageContext && wantsQuote) {
@@ -292,9 +409,42 @@ const buildChatResponse = async (prompt: string, pageId?: number) => {
     }
   }
 
+  if (contextMessages.length > 0) {
+    messages.push(...contextMessages);
+  }
   messages.push({ role: "user", content: prompt });
 
   return runChatCompletion({ messages });
+};
+
+const decideLoopContinuation = async (input: {
+  userPrompt: string;
+  action: string;
+  responseMessage: string;
+  conversationContext?: string;
+}) => {
+  const contextBlock = input.conversationContext
+    ? `Conversation context:\n${input.conversationContext}\n\n`
+    : "";
+  const decision = await runChatCompletion({
+    systemPrompt: LOOP_DECISION_PROMPT,
+    messages: [
+      {
+        role: "user",
+        content: `${contextBlock}User prompt:\n${input.userPrompt}\n\nAction taken:\n${input.action}\n\nAssistant response:\n${input.responseMessage}\n\nReturn JSON only.`,
+      },
+    ],
+    temperature: 0.1,
+    maxTokens: 200,
+  });
+
+  const parsed = extractJson(decision);
+  const result = parsed ? loopDecisionSchema.safeParse(parsed) : null;
+  if (!result || !result.success) {
+    return { continue: false, prompt: undefined };
+  }
+
+  return result.data;
 };
 
 const buildRetrievalContext = async (prompt: string) => {
@@ -379,8 +529,44 @@ const requirePermission = async (userId: number, permission: string) => {
 export const aiRouter = router({
   chat: permissionProtectedProcedure("wiki:page:read")
     .input(chatInputSchema)
-    .mutation(async ({ input }) => {
-      const response = await buildChatResponse(input.prompt, input.pageId);
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      const session = input.conversationId
+        ? getOrCreateConversationSession(userId, input.conversationId)
+        : undefined;
+      if (session) {
+        appendConversationMessage(session, {
+          role: "user",
+          content: input.prompt,
+          createdAt: new Date(),
+        });
+        await condenseConversationIfNeeded(session, {
+          generateSummary: async (summaryInput) =>
+            runChatCompletion({
+              messages: [
+                {
+                  role: "user",
+                  content: buildSummaryPromptInput(summaryInput),
+                },
+              ],
+              temperature: 0.1,
+              maxTokens: 200,
+            }),
+        });
+      }
+
+      const response = await buildChatResponse({
+        prompt: input.prompt,
+        pageId: input.pageId,
+        session,
+      });
+      if (session) {
+        appendConversationMessage(session, {
+          role: "assistant",
+          content: response,
+          createdAt: new Date(),
+        });
+      }
 
       return { message: response };
     }),
@@ -392,6 +578,7 @@ export const aiRouter = router({
         pageId: z.number().optional(),
         mode: z.enum(["edit", "view"]).optional(),
         lastAssistantContent: z.string().optional(),
+        conversationId: z.string().min(1).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -403,14 +590,42 @@ export const aiRouter = router({
             ? await resolvePageByPath(explicitPath)
             : null;
 
-      const action = await selectAIAction({
+      const userId = parseInt(ctx.session.user.id);
+      const session = input.conversationId
+        ? getOrCreateConversationSession(String(userId), input.conversationId)
+        : undefined;
+      if (session) {
+        appendConversationMessage(session, {
+          role: "user",
+          content: input.prompt,
+          createdAt: new Date(),
+        });
+        await condenseConversationIfNeeded(session, {
+          generateSummary: async (summaryInput) =>
+            runChatCompletion({
+              messages: [
+                {
+                  role: "user",
+                  content: buildSummaryPromptInput(summaryInput),
+                },
+              ],
+              temperature: 0.1,
+              maxTokens: 200,
+            }),
+        });
+      }
+
+      const conversationContext = session
+        ? formatConversationContext(getConversationContextSnapshot(session))
+        : undefined;
+
+      let action = await selectAIAction({
         prompt: input.prompt,
         pageContext: page ? { title: page.title, path: page.path } : undefined,
         explicitPath,
         hasAssistantContent: Boolean(input.lastAssistantContent?.trim()),
+        conversationContext,
       });
-
-      const userId = parseInt(ctx.session.user.id);
       const mode = input.mode ?? "view";
       const currentPath = page?.path?.replace(/^\/+/, "");
       const selectedPath =
@@ -421,7 +636,8 @@ export const aiRouter = router({
       const isCurrentPageTarget =
         Boolean(page) && (!normalizedPath || normalizedPath === currentPath);
 
-      if (action.action === "draftPage") {
+      const executeAction = async (action: AIAction) => {
+        if (action.action === "draftPage") {
         await requirePermission(userId, "wiki:page:create");
         await assertAIWriteAllowed();
 
@@ -443,6 +659,13 @@ export const aiRouter = router({
           editorType: "markdown",
           changeSummary: "AI draft: initial page creation",
         });
+          if (session) {
+            updateLastWriteTarget(session, {
+              id: createdPage.id,
+              title: createdPage.title,
+              path: createdPage.path,
+            });
+          }
 
         return {
           action: action.action,
@@ -455,7 +678,7 @@ export const aiRouter = router({
         };
       }
 
-      if (action.action === "appendToPage") {
+        if (action.action === "appendToPage") {
         await requirePermission(userId, "wiki:page:update");
         await assertAIWriteAllowed();
 
@@ -518,6 +741,13 @@ export const aiRouter = router({
           userId: aiUserId,
           changeSummary: "AI edit: appended content",
         });
+        if (session) {
+          updateLastWriteTarget(session, {
+            id: updatedPage.id,
+            title: updatedPage.title,
+            path: updatedPage.path,
+          });
+        }
 
         return {
           action: action.action,
@@ -528,9 +758,9 @@ export const aiRouter = router({
           },
           message: `Added content to /${updatedPage.path}.`,
         };
-      }
+        }
 
-      if (action.action === "writeToPage") {
+        if (action.action === "writeToPage") {
         await requirePermission(userId, "wiki:page:update");
         await assertAIWriteAllowed();
 
@@ -593,6 +823,13 @@ export const aiRouter = router({
           userId: aiUserId,
           changeSummary: "AI edit: added content",
         });
+        if (session) {
+          updateLastWriteTarget(session, {
+            id: updatedPage.id,
+            title: updatedPage.title,
+            path: updatedPage.path,
+          });
+        }
 
         return {
           action: action.action,
@@ -603,9 +840,9 @@ export const aiRouter = router({
           },
           message: `Added content to /${updatedPage.path}.`,
         };
-      }
+        }
 
-      if (action.action === "removeFromPage") {
+        if (action.action === "removeFromPage") {
         await requirePermission(userId, "wiki:page:update");
         await assertAIWriteAllowed();
 
@@ -687,6 +924,13 @@ export const aiRouter = router({
           userId: aiUserId,
           changeSummary: "AI edit: removed line",
         });
+        if (session) {
+          updateLastWriteTarget(session, {
+            id: updatedPage.id,
+            title: updatedPage.title,
+            path: updatedPage.path,
+          });
+        }
 
         return {
           action: action.action,
@@ -705,9 +949,9 @@ export const aiRouter = router({
               : undefined,
           message: `Removed the line from /${updatedPage.path}. You can undo in history.`,
         };
-      }
+        }
 
-      if (action.action === "replaceInPage") {
+        if (action.action === "replaceInPage") {
         await requirePermission(userId, "wiki:page:update");
         await assertAIWriteAllowed();
 
@@ -782,6 +1026,13 @@ export const aiRouter = router({
           userId: aiUserId,
           changeSummary: "AI edit: replaced paragraph",
         });
+        if (session) {
+          updateLastWriteTarget(session, {
+            id: updatedPage.id,
+            title: updatedPage.title,
+            path: updatedPage.path,
+          });
+        }
 
         return {
           action: action.action,
@@ -800,9 +1051,9 @@ export const aiRouter = router({
               : undefined,
           message: `Updated the paragraph on /${updatedPage.path}.`,
         };
-      }
+        }
 
-      if (action.action === "summarizePage") {
+        if (action.action === "summarizePage") {
         await requirePermission(userId, "wiki:page:read");
         const targetPage =
           page?.id && isCurrentPageTarget
@@ -825,9 +1076,9 @@ export const aiRouter = router({
         });
 
         return { action: action.action, message: response };
-      }
+        }
 
-      if (action.action === "improvePage") {
+        if (action.action === "improvePage") {
         await requirePermission(userId, "wiki:page:update");
         await assertAIWriteAllowed();
         const targetPage =
@@ -875,6 +1126,13 @@ export const aiRouter = router({
           userId: aiUserId,
           changeSummary: "AI edit: improved content",
         });
+        if (session) {
+          updateLastWriteTarget(session, {
+            id: updatedPage.id,
+            title: updatedPage.title,
+            path: updatedPage.path,
+          });
+        }
 
         return {
           action: action.action,
@@ -886,12 +1144,78 @@ export const aiRouter = router({
           message:
             "The page was updated with AI-generated improvements. Review the history for details.",
         };
+        }
+
+        await requirePermission(userId, "wiki:page:read");
+        const response = await buildChatResponse({
+          prompt: input.prompt,
+          pageId: input.pageId,
+          session,
+        });
+
+        return { action: "chat", message: response };
+      };
+
+      const maxIterations = 3;
+      let lastResponse = await executeAction(action);
+      for (let iteration = 0; iteration < maxIterations - 1; iteration += 1) {
+        if (!session || lastResponse.action === "chat") {
+          if (session) {
+            appendConversationMessage(session, {
+              role: "assistant",
+              content: lastResponse.message,
+              createdAt: new Date(),
+            });
+          }
+          return lastResponse;
+        }
+
+        appendConversationMessage(session, {
+          role: "tool",
+          content: lastResponse.message,
+          createdAt: new Date(),
+          toolName: lastResponse.action,
+        });
+
+        const loopContext = formatConversationContext(
+          getConversationContextSnapshot(session)
+        );
+        const decision = await decideLoopContinuation({
+          userPrompt: input.prompt,
+          action: lastResponse.action,
+          responseMessage: lastResponse.message,
+          conversationContext: loopContext,
+        });
+
+        if (!decision.continue || !decision.prompt) {
+          return lastResponse;
+        }
+
+        appendConversationMessage(session, {
+          role: "user",
+          content: decision.prompt,
+          createdAt: new Date(),
+        });
+
+        action = await selectAIAction({
+          prompt: decision.prompt,
+          pageContext: page ? { title: page.title, path: page.path } : undefined,
+          explicitPath,
+          hasAssistantContent: Boolean(input.lastAssistantContent?.trim()),
+          conversationContext: loopContext,
+        });
+
+        lastResponse = await executeAction(action);
       }
 
-      await requirePermission(userId, "wiki:page:read");
-      const response = await buildChatResponse(input.prompt, input.pageId);
-
-      return { action: "chat", message: response };
+      if (session) {
+        appendConversationMessage(session, {
+          role: "assistant",
+          content: lastResponse.message,
+          createdAt: new Date(),
+        });
+      }
+      return lastResponse;
     }),
 
   summarizePage: permissionProtectedProcedure("wiki:page:read")
