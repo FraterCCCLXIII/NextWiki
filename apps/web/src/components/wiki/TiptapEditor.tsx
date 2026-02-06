@@ -2,19 +2,28 @@
 
 import { useEffect, useMemo } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
+import { BubbleMenu, FloatingMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
+import Underline from "@tiptap/extension-underline";
+import Highlight from "@tiptap/extension-highlight";
+import { TextStyle } from "@tiptap/extension-text-style";
+import Color from "@tiptap/extension-color";
+import TaskList from "@tiptap/extension-task-list";
+import TaskItem from "@tiptap/extension-task-item";
 import { Markdown } from "tiptap-markdown";
 import { MarkdownProse } from "./MarkdownProse";
 import { logger } from "@repo/logger";
 import { cn } from "~/lib/utils";
-import { Button } from "@repo/ui";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@repo/ui";
 import {
   Bold,
   Italic,
   Strikethrough,
+  Underline as UnderlineIcon,
+  Highlighter,
   Code,
   List,
   ListOrdered,
@@ -26,6 +35,9 @@ import {
   Unlink,
   Image as ImageIcon,
   Minus,
+  Paintbrush,
+  ListChecks,
+  RemoveFormatting,
 } from "lucide-react";
 
 interface TiptapEditorProps {
@@ -35,6 +47,7 @@ interface TiptapEditorProps {
   editable?: boolean;
   onFileUpload?: (file: File) => void;
   showToolbar?: boolean;
+  showInlineMenus?: boolean;
   className?: string;
 }
 
@@ -45,11 +58,23 @@ export function TiptapEditor({
   editable = true,
   onFileUpload,
   showToolbar = false,
+  showInlineMenus,
   className,
 }: TiptapEditorProps) {
+  const inlineMenusEnabled = showInlineMenus ?? showToolbar;
   const extensions = useMemo(
     () => [
       StarterKit,
+      Underline,
+      Highlight.configure({
+        multicolor: true,
+      }),
+      TextStyle,
+      Color,
+      TaskList,
+      TaskItem.configure({
+        nested: true,
+      }),
       Link.configure({
         openOnClick: false,
         autolink: true,
@@ -162,6 +187,18 @@ export function TiptapEditor({
     editor.chain().focus().setImage({ src: url }).run();
   };
 
+  const colorOptions = [
+    { label: "Default", value: "var(--color-text-primary)" },
+    { label: "Primary", value: "var(--color-primary-600)" },
+    { label: "Secondary", value: "var(--color-secondary-600)" },
+    { label: "Accent", value: "var(--color-accent-600)" },
+    { label: "Success", value: "var(--color-success-600)" },
+    { label: "Warning", value: "var(--color-warning-600)" },
+    { label: "Error", value: "var(--color-error-600)" },
+  ];
+
+  const highlightColor = "var(--color-accent-100)";
+
   return (
     <div
       className={cn(
@@ -200,6 +237,18 @@ export function TiptapEditor({
             size="sm"
             variant="ghost"
             color="primary"
+            aria-label="Underline"
+            aria-pressed={editor.isActive("underline")}
+            className={cn(editor.isActive("underline") && "bg-background-level2")}
+            onClick={() => editor.chain().focus().toggleUnderline().run()}
+          >
+            <UnderlineIcon className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            color="primary"
             aria-label="Strikethrough"
             aria-pressed={editor.isActive("strike")}
             className={cn(editor.isActive("strike") && "bg-background-level2")}
@@ -212,12 +261,76 @@ export function TiptapEditor({
             size="sm"
             variant="ghost"
             color="primary"
+            aria-label="Highlight"
+            aria-pressed={editor.isActive("highlight")}
+            className={cn(editor.isActive("highlight") && "bg-background-level2")}
+            onClick={() =>
+              editor
+                .chain()
+                .focus()
+                .toggleHighlight({ color: highlightColor })
+                .run()
+            }
+          >
+            <Highlighter className="h-4 w-4" />
+          </Button>
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                color="primary"
+                aria-label="Text color"
+              >
+                <Paintbrush className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-44 p-1">
+              {colorOptions.map((option) => (
+                <Button
+                  key={option.label}
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  color="primary"
+                  className="w-full justify-start"
+                  onClick={() =>
+                    editor.chain().focus().setColor(option.value).run()
+                  }
+                >
+                  <span
+                    className="mr-2 inline-flex h-3 w-3 rounded-full border border-border-default"
+                    style={{ backgroundColor: option.value }}
+                  />
+                  {option.label}
+                </Button>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            color="primary"
             aria-label="Inline code"
             aria-pressed={editor.isActive("code")}
             className={cn(editor.isActive("code") && "bg-background-level2")}
             onClick={() => editor.chain().focus().toggleCode().run()}
           >
             <Code className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            color="primary"
+            aria-label="Clear formatting"
+            onClick={() =>
+              editor.chain().focus().unsetAllMarks().clearNodes().run()
+            }
+          >
+            <RemoveFormatting className="h-4 w-4" />
           </Button>
           <span className="text-border-dark">|</span>
           <Button
@@ -299,6 +412,20 @@ export function TiptapEditor({
             size="sm"
             variant="ghost"
             color="primary"
+            aria-label="Task list"
+            aria-pressed={editor.isActive("taskList")}
+            className={cn(
+              editor.isActive("taskList") && "bg-background-level2"
+            )}
+            onClick={() => editor.chain().focus().toggleTaskList().run()}
+          >
+            <ListChecks className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            color="primary"
             aria-label="Blockquote"
             aria-pressed={editor.isActive("blockquote")}
             className={cn(
@@ -364,6 +491,220 @@ export function TiptapEditor({
             <ImageIcon className="h-4 w-4" />
           </Button>
         </div>
+      )}
+      {inlineMenusEnabled && editor && (
+        <>
+          <BubbleMenu
+            editor={editor}
+            tippyOptions={{ duration: 150 }}
+            className="border-border flex items-center gap-1 rounded-md border bg-background-level1 p-1 shadow-md"
+          >
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              color="primary"
+              aria-label="Bold"
+              aria-pressed={editor.isActive("bold")}
+              onClick={() => editor.chain().focus().toggleBold().run()}
+            >
+              <Bold className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              color="primary"
+              aria-label="Italic"
+              aria-pressed={editor.isActive("italic")}
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+            >
+              <Italic className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              color="primary"
+              aria-label="Underline"
+              aria-pressed={editor.isActive("underline")}
+              onClick={() => editor.chain().focus().toggleUnderline().run()}
+            >
+              <UnderlineIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              color="primary"
+              aria-label="Highlight"
+              aria-pressed={editor.isActive("highlight")}
+              onClick={() =>
+                editor
+                  .chain()
+                  .focus()
+                  .toggleHighlight({ color: highlightColor })
+                  .run()
+              }
+            >
+              <Highlighter className="h-4 w-4" />
+            </Button>
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  color="primary"
+                  aria-label="Text color"
+                >
+                  <Paintbrush className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-44 p-1">
+                {colorOptions.map((option) => (
+                  <Button
+                    key={option.label}
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    color="primary"
+                    className="w-full justify-start"
+                    onClick={() =>
+                      editor.chain().focus().setColor(option.value).run()
+                    }
+                  >
+                    <span
+                      className="mr-2 inline-flex h-3 w-3 rounded-full border border-border-default"
+                      style={{ backgroundColor: option.value }}
+                    />
+                    {option.label}
+                  </Button>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              color="primary"
+              aria-label="Link"
+              onClick={handleSetLink}
+            >
+              <Link2 className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              color="primary"
+              aria-label="Clear formatting"
+              onClick={() =>
+                editor.chain().focus().unsetAllMarks().clearNodes().run()
+              }
+            >
+              <RemoveFormatting className="h-4 w-4" />
+            </Button>
+          </BubbleMenu>
+          <FloatingMenu
+            editor={editor}
+            tippyOptions={{ duration: 150 }}
+            className="border-border flex items-center gap-1 rounded-md border bg-background-level1 p-1 shadow-md"
+          >
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              color="primary"
+              aria-label="Paragraph"
+              aria-pressed={editor.isActive("paragraph")}
+              onClick={() => editor.chain().focus().setParagraph().run()}
+            >
+              <span className="px-1 text-xs font-semibold">P</span>
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              color="primary"
+              aria-label="Heading 1"
+              aria-pressed={editor.isActive("heading", { level: 1 })}
+              onClick={() =>
+                editor.chain().focus().toggleHeading({ level: 1 }).run()
+              }
+            >
+              <Heading1 className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              color="primary"
+              aria-label="Heading 2"
+              aria-pressed={editor.isActive("heading", { level: 2 })}
+              onClick={() =>
+                editor.chain().focus().toggleHeading({ level: 2 }).run()
+              }
+            >
+              <Heading2 className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              color="primary"
+              aria-label="Bullet list"
+              aria-pressed={editor.isActive("bulletList")}
+              onClick={() => editor.chain().focus().toggleBulletList().run()}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              color="primary"
+              aria-label="Ordered list"
+              aria-pressed={editor.isActive("orderedList")}
+              onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            >
+              <ListOrdered className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              color="primary"
+              aria-label="Task list"
+              aria-pressed={editor.isActive("taskList")}
+              onClick={() => editor.chain().focus().toggleTaskList().run()}
+            >
+              <ListChecks className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              color="primary"
+              aria-label="Blockquote"
+              aria-pressed={editor.isActive("blockquote")}
+              onClick={() => editor.chain().focus().toggleBlockquote().run()}
+            >
+              <Quote className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              color="primary"
+              aria-label="Code block"
+              aria-pressed={editor.isActive("codeBlock")}
+              onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+            >
+              <Code className="h-4 w-4" />
+            </Button>
+          </FloatingMenu>
+        </>
       )}
       <MarkdownProse className="h-full">
         <div className="mx-auto h-full w-full max-w-4xl px-8 py-6">

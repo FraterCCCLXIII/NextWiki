@@ -33,6 +33,9 @@ import {
   Save,
   ArrowLeft,
   Loader2,
+  Type,
+  Code,
+  Columns2,
 } from "lucide-react";
 import { Command, CommandList, CommandItem, CommandEmpty } from "@repo/ui";
 import { logger } from "@repo/logger";
@@ -693,15 +696,27 @@ export function WikiEditor({
           </div>
 
             <div className="flex items-center justify-center">
-              <TabsList className="bg-transparent p-0">
-                <TabsTrigger value="rich-text" className="px-4 py-2">
-                  Rich Text
+              <TabsList className="border-border-default bg-transparent inline-flex overflow-hidden rounded-md border px-1 py-1.5">
+                <TabsTrigger
+                  value="rich-text"
+                  className="rounded-sm px-2.5 py-1.5 shadow-none data-[state=active]:shadow-none data-[state=active]:bg-background-level2"
+                  aria-label="Rich Text"
+                >
+                  <Type className="h-4 w-4" />
                 </TabsTrigger>
-                <TabsTrigger value="markdown" className="px-4 py-2">
-                  Markdown
+                <TabsTrigger
+                  value="markdown"
+                  className="rounded-sm px-2.5 py-1.5 shadow-none data-[state=active]:shadow-none data-[state=active]:bg-background-level2"
+                  aria-label="Markdown"
+                >
+                  <Code className="h-4 w-4" />
                 </TabsTrigger>
-                <TabsTrigger value="split" className="px-4 py-2">
-                  Split View
+                <TabsTrigger
+                  value="split"
+                  className="rounded-sm px-2.5 py-1.5 shadow-none data-[state=active]:shadow-none data-[state=active]:bg-background-level2"
+                  aria-label="Split View"
+                >
+                  <Columns2 className="h-4 w-4" />
                 </TabsTrigger>
               </TabsList>
             </div>

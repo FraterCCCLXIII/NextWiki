@@ -131,11 +131,11 @@
 
   /* Lists */
   ul {
-    @apply list-inside list-disc gap-0 pl-4;
+    @apply list-outside list-disc gap-0 pl-6;
   }
 
   ol {
-    @apply list-inside list-decimal gap-0 pl-4;
+    @apply list-outside list-decimal gap-0 pl-6;
   }
 
   ul li {
