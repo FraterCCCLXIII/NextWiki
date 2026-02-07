@@ -11,9 +11,9 @@ import {
   PopoverTrigger,
   ScrollArea,
 } from "@repo/ui";
-import { ArrowUp, Wand2, FileText } from "lucide-react";
-import { useTRPC } from "~/server/client";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { ArrowLeft, ArrowUp, Square, Wand2, FileText } from "lucide-react";
+import { useTRPC, useTRPCClient } from "~/server/client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { PageMetadata } from "~/components/layout/MainLayout";
 import { createClientMarkdownProcessor } from "~/lib/markdown/client-factory";
 import { MarkdownProse } from "~/components/wiki/MarkdownProse";
@@ -68,24 +68,63 @@ export function AIAssistantPanel({
   onClose,
 }: AIAssistantPanelProps) {
   const [message, setMessage] = useState("");
+  const [view, setView] = useState<"chat" | "list">("chat");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [lastAssistantContent, setLastAssistantContent] = useState<string | null>(
     null
   );
+  const [sessionMetrics, setSessionMetrics] = useState<{
+    summaryAgeMinutes: number | null;
+    messageCount: number;
+    sourceCount: number;
+    loopCount: number;
+  } | null>(null);
   const markdownConfig = useMemo(() => createClientMarkdownProcessor(), []);
   const trpc = useTRPC();
-  const conversationIdRef = useRef<string>(
+  const trpcClient = useTRPCClient();
+  const createConversationId = () =>
     typeof crypto !== "undefined" && "randomUUID" in crypto
       ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random().toString(16).slice(2)}`
+      : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const [conversationId, setConversationId] = useState<string>(
+    createConversationId()
   );
   const hasLoadedStoredState = useRef(false);
+  const queryClient = useQueryClient();
 
-  const dispatchMutation = useMutation(trpc.ai.dispatch.mutationOptions());
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const pendingMessageIdRef = useRef<string | null>(null);
+  const stopRequestedRef = useRef(false);
+
+  const dispatchMutation = useMutation({
+    mutationFn: async (input: {
+      prompt: string;
+      pageId?: number;
+      mode: "edit" | "view";
+      lastAssistantContent?: string;
+      conversationId: string;
+    }) => {
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+      return trpcClient.ai.dispatch.mutate(input, { signal: controller.signal });
+    },
+    onSettled: () => {
+      abortControllerRef.current = null;
+    },
+  });
   const summarizeMutation = useMutation(
     trpc.ai.summarizePage.mutationOptions()
   );
   const improveMutation = useMutation(trpc.ai.improvePage.mutationOptions());
+  const createConversationMutation = useMutation(
+    trpc.ai.createConversation.mutationOptions()
+  );
+  const conversationListQueryKey = trpc.ai.listConversations.queryKey({
+    limit: 30,
+  });
+  const { data: conversationList } = useQuery(
+    trpc.ai.listConversations.queryOptions({ limit: 30 })
+  );
 
   const pageContextLabel = useMemo(() => {
     if (!pageMetadata?.id) return null;
@@ -404,7 +443,7 @@ export function AIAssistantPanel({
       try {
         const parsed = JSON.parse(stored) as Partial<ChatStorageState>;
         if (parsed.conversationId) {
-          conversationIdRef.current = parsed.conversationId;
+          setConversationId(parsed.conversationId);
         }
         if (Array.isArray(parsed.messages)) {
           const sanitized = parsed.messages.filter(
@@ -431,12 +470,12 @@ export function AIAssistantPanel({
   useEffect(() => {
     if (typeof window === "undefined" || !hasLoadedStoredState.current) return;
     const state: ChatStorageState = {
-      conversationId: conversationIdRef.current,
+      conversationId,
       messages,
       lastAssistantContent,
     };
     window.localStorage.setItem(AI_CHAT_STORAGE_KEY, JSON.stringify(state));
-  }, [messages, lastAssistantContent]);
+  }, [conversationId, messages, lastAssistantContent]);
 
   useEffect(() => {
     if (!pageContextLabel) return;
@@ -457,6 +496,13 @@ export function AIAssistantPanel({
     if (next.role === "assistant") {
       setLastAssistantContent(next.content);
     }
+  };
+
+  const resetConversationState = (nextConversationId: string) => {
+    setConversationId(nextConversationId);
+    setMessages([]);
+    setLastAssistantContent(null);
+    setSessionMetrics(null);
   };
 
   const appendAssistantPlaceholder = (content: string) => {
@@ -482,6 +528,8 @@ export function AIAssistantPanel({
     appendMessage({ id: crypto.randomUUID(), role: "user", content: trimmed });
     clearInput();
     const placeholderId = appendAssistantPlaceholder("Thinking...");
+    pendingMessageIdRef.current = placeholderId;
+    stopRequestedRef.current = false;
 
     try {
       const response = await dispatchMutation.mutateAsync({
@@ -489,8 +537,13 @@ export function AIAssistantPanel({
         pageId: pageMetadata?.id,
         mode,
         lastAssistantContent: lastAssistantContent ?? undefined,
-        conversationId: conversationIdRef.current,
+        conversationId,
       });
+      if (stopRequestedRef.current) return;
+
+      if ("sessionMetrics" in response && response.sessionMetrics) {
+        setSessionMetrics(response.sessionMetrics);
+      }
 
       if ("liveEdit" in response && response.liveEdit) {
         const liveEdit = response.liveEdit;
@@ -503,6 +556,9 @@ export function AIAssistantPanel({
       updateMessageContent(placeholderId, response.message);
       setLastAssistantContent(response.message);
     } catch (error) {
+      if (stopRequestedRef.current || isAbortError(error)) {
+        return;
+      }
       updateMessageContent(
         placeholderId,
         `Error: ${getErrorMessage(
@@ -510,6 +566,19 @@ export function AIAssistantPanel({
           "Something went wrong while contacting the AI service."
         )}`
       );
+    } finally {
+      pendingMessageIdRef.current = null;
+      stopRequestedRef.current = false;
+    }
+  };
+
+  const handleStop = () => {
+    if (!isWorking) return;
+    stopRequestedRef.current = true;
+    abortControllerRef.current?.abort();
+    const pendingId = pendingMessageIdRef.current;
+    if (pendingId) {
+      updateMessageContent(pendingId, "Stopped.");
     }
   };
 
@@ -555,13 +624,122 @@ export function AIAssistantPanel({
     }
   };
 
-  const isSendDisabled =
-    !message.trim() ||
-    dispatchMutation.isPending;
+  const handleNewConversation = async () => {
+    const nextId = createConversationId();
+    resetConversationState(nextId);
+    await createConversationMutation.mutateAsync({ conversationId: nextId });
+    await queryClient.invalidateQueries({ queryKey: conversationListQueryKey });
+    setView("chat");
+  };
+
+  const handleSelectConversation = async (id: string) => {
+    resetConversationState(id);
+    const data = await queryClient.fetchQuery(
+      trpc.ai.getConversation.queryOptions({ conversationId: id })
+    );
+    if (data?.messages?.length) {
+      const mapped: ChatMessage[] = data.messages.map(
+        (item: { role: string; content: string }) => ({
+          id: crypto.randomUUID(),
+          role: item.role === "assistant" ? "assistant" : "user",
+          content:
+            item.role === "tool"
+              ? `Tool result:\n${item.content}`
+              : item.content,
+        })
+      );
+      setMessages(mapped);
+      const lastAssistant = mapped
+        .slice()
+        .reverse()
+        .find((item) => item.role === "assistant");
+      setLastAssistantContent(lastAssistant?.content ?? null);
+    }
+    setView("chat");
+  };
+
+  const isWorking = dispatchMutation.isPending;
+  const isSendDisabled = !message.trim();
+
+  const isAbortError = (error: unknown) => {
+    if (!error || typeof error !== "object") return false;
+    if ("name" in error && (error as { name?: string }).name === "AbortError") {
+      return true;
+    }
+    if ("cause" in error) {
+      const cause = (error as { cause?: unknown }).cause;
+      return (
+        !!cause &&
+        typeof cause === "object" &&
+        "name" in cause &&
+        (cause as { name?: string }).name === "AbortError"
+      );
+    }
+    return false;
+  };
 
   return (
     <div className="flex h-full w-full min-h-0 flex-col overflow-x-hidden">
-      <ScrollArea className="flex-1 min-h-0 w-full px-5 py-4">
+      <div className="border-border-default flex h-12 items-center justify-between border-b px-4 py-2">
+        <div className="flex items-center gap-2">
+          {view === "chat" && (
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => setView("list")}
+              className="h-8 w-8"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          )}
+          <span className="text-sm font-medium">
+            {view === "chat" ? "Conversation" : "Conversations"}
+          </span>
+        </div>
+      </div>
+
+      <ScrollArea className="flex-1 min-h-0 w-full px-5 py-0">
+        {view === "list" ? (
+          <div className="space-y-4">
+            <div className="text-text-secondary mt-2 text-xs">
+              Start a new conversation or pick a previous one.
+            </div>
+            <div className="space-y-2">
+              {(conversationList ?? []).map((item) => (
+                <button
+                  key={item.conversationId}
+                  type="button"
+                  onClick={() => handleSelectConversation(item.conversationId)}
+                  className="border-border-default hover:bg-background-level1 w-full rounded-md border px-3 py-2 text-left text-sm"
+                >
+                  <div className="font-medium">
+                    {item.lastReferencedPage?.title ??
+                      item.lastReferencedPage?.path ??
+                      "Conversation"}
+                  </div>
+                  <div className="text-text-secondary text-xs">
+                    {item.summary?.slice(0, 120) || "No summary yet"}
+                  </div>
+                </button>
+              ))}
+              {conversationList?.length === 0 && (
+                <div className="text-text-secondary text-sm">
+                  No previous conversations yet.
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <>
+        {sessionMetrics ? (
+          <div className="text-text-secondary mb-3 text-xs">
+            Context: {sessionMetrics.messageCount} msgs ·{" "}
+            {sessionMetrics.sourceCount} sources · loops {sessionMetrics.loopCount}
+            {sessionMetrics.summaryAgeMinutes !== null
+              ? ` · summary ${sessionMetrics.summaryAgeMinutes}m`
+              : ""}
+          </div>
+        ) : null}
         {messages.length === 0 ? (
           <div className="text-text-secondary text-sm">
             Start a conversation to summarize, improve, or draft wiki content.
@@ -594,122 +772,138 @@ export function AIAssistantPanel({
             ))}
           </div>
         )}
+          </>
+        )}
       </ScrollArea>
-
-      <div className="border-border-default border-t px-2 py-2">
-        <div className="relative">
-          <Popover
-            open={isMentionOpen}
-            onOpenChange={(open) => {
-              if (!open) setIsMentionOpen(false);
-            }}
-          >
-            <PopoverAnchor asChild>
-              <span className="absolute left-3 bottom-11 h-0 w-0" />
-            </PopoverAnchor>
-            <PopoverContent side="top" align="start" className="w-72 p-2">
-              {mentionQuery.trim().length === 0 ? (
-                <div className="text-text-secondary px-2 py-2 text-xs">
-                  Type to search pages.
-                </div>
-              ) : mentionItems.length > 0 ? (
-                <div className="flex flex-col gap-1">
-                  {mentionItems.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className="hover:bg-background-level1 text-text-primary flex items-center gap-2 rounded-md px-2 py-2 text-left text-sm"
-                      onMouseDown={(event) => {
-                        event.preventDefault();
-                        handleMentionSelect(item.title, item.path);
-                      }}
-                    >
-                      <FileText className="text-text-secondary h-4 w-4" />
-                      <div className="min-w-0">
-                        <div className="truncate font-medium">{item.title}</div>
-                        <div className="text-text-secondary truncate text-xs">
-                          /{item.path}
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-text-secondary px-2 py-2 text-xs">
-                  No pages found.
-                </div>
-              )}
-            </PopoverContent>
-          </Popover>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
-                className="absolute bottom-1 left-1 px-1"
-              >
-                Tools
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              align="start"
-              side="top"
-              className="w-48 p-1 bg-background-paper border-border-default"
-            >
-              <div className="space-y-0.5">
-                <button
-                  onClick={handleSummarize}
-                  disabled={!pageMetadata?.id || summarizeMutation.isPending}
-                  className="text-text-primary hover:bg-background-level1 flex w-full items-center rounded-md px-3 py-2 text-sm transition-colors disabled:opacity-50"
-                >
-                  <FileText className="mr-2 h-4 w-4" />
-                  Summarize page
-                </button>
-                <button
-                  onClick={handleImprove}
-                  disabled={!pageMetadata?.id || improveMutation.isPending}
-                  className="text-text-primary hover:bg-background-level1 flex w-full items-center rounded-md px-3 py-2 text-sm transition-colors disabled:opacity-50"
-                >
-                  <Wand2 className="mr-2 h-4 w-4" />
-                  Improve page
-                </button>
-              </div>
-            </PopoverContent>
-          </Popover>
-          <div
-            ref={inputRef}
-            role="textbox"
-            aria-multiline="true"
-            aria-label="Ask the assistant"
-            contentEditable
-            suppressContentEditableWarning
-            onInput={handleInput}
-            onKeyDown={handleInputKeyDown}
-            onKeyUp={handleInputKeyUp}
-            onPaste={handleInputPaste}
-            onClick={ensureCaretPosition}
-            onFocus={ensureCaretPosition}
-            className="min-h-[72px] w-full bg-transparent px-2 pb-6 pl-3 pr-9 pt-1.5 text-base focus:outline-none md:text-sm whitespace-pre-wrap cursor-text"
-          />
-          {!message.trim() && (
-            <div className="text-text-secondary/70 pointer-events-none absolute left-3 top-1.5 text-sm">
-              Ask the assistant...
-            </div>
-          )}
-          <Button
-            type="button"
-            variant="soft"
-            size="icon"
-            aria-label="Send message"
-            className="absolute bottom-1 right-1 rounded-full"
-            disabled={isSendDisabled}
-            onClick={handleSend}
-          >
-            <ArrowUp className="h-4 w-4" />
+      {view === "list" && (
+        <div className="border-border-default flex items-center border-t px-4 py-3">
+          <Button className="w-full" onClick={handleNewConversation}>
+            New Conversation
           </Button>
         </div>
-      </div>
+      )}
+
+      {view === "chat" && (
+        <div className="border-border-default border-t">
+          <div className="px-2 pt-2">
+            <div className="relative">
+              <Popover
+                open={isMentionOpen}
+                onOpenChange={(open) => {
+                  if (!open) setIsMentionOpen(false);
+                }}
+              >
+                <PopoverAnchor asChild>
+                  <span className="absolute left-3 bottom-2 h-0 w-0" />
+                </PopoverAnchor>
+                <PopoverContent side="top" align="start" className="w-72 p-2">
+                  {mentionQuery.trim().length === 0 ? (
+                    <div className="text-text-secondary px-2 py-2 text-xs">
+                      Type to search pages.
+                    </div>
+                  ) : mentionItems.length > 0 ? (
+                    <div className="flex flex-col gap-1">
+                      {mentionItems.map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          className="hover:bg-background-level1 text-text-primary flex items-center gap-2 rounded-md px-2 py-2 text-left text-sm"
+                          onMouseDown={(event) => {
+                            event.preventDefault();
+                            handleMentionSelect(item.title, item.path);
+                          }}
+                        >
+                          <FileText className="text-text-secondary h-4 w-4" />
+                          <div className="min-w-0">
+                            <div className="truncate font-medium">
+                              {item.title}
+                            </div>
+                            <div className="text-text-secondary truncate text-xs">
+                              /{item.path}
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-text-secondary px-2 py-2 text-xs">
+                      No pages found.
+                    </div>
+                  )}
+                </PopoverContent>
+              </Popover>
+              <div
+                ref={inputRef}
+                role="textbox"
+                aria-multiline="true"
+                aria-label="Ask the assistant"
+                contentEditable
+                suppressContentEditableWarning
+                onInput={handleInput}
+                onKeyDown={handleInputKeyDown}
+                onKeyUp={handleInputKeyUp}
+                onPaste={handleInputPaste}
+                onClick={ensureCaretPosition}
+                onFocus={ensureCaretPosition}
+                className="custom-scrollbar min-h-[48px] max-h-[12rem] w-full overflow-y-auto bg-transparent px-2 pb-3 pl-3 pr-3 pt-1.5 text-base focus:outline-none md:text-sm whitespace-pre-wrap cursor-text"
+              />
+              {!message.trim() && (
+                <div className="text-text-secondary/70 pointer-events-none absolute left-3 top-1.5 text-sm">
+                  Ask the assistant...
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center justify-between gap-2 px-2 pb-2">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button type="button" size="sm" variant="ghost" className="px-1">
+                  Tools
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                align="start"
+                side="top"
+                className="w-48 p-1 bg-background-paper border-border-default"
+              >
+                <div className="space-y-0.5">
+                  <button
+                    onClick={handleSummarize}
+                    disabled={!pageMetadata?.id || summarizeMutation.isPending}
+                    className="text-text-primary hover:bg-background-level1 flex w-full items-center rounded-md px-3 py-2 text-sm transition-colors disabled:opacity-50"
+                  >
+                    <FileText className="mr-2 h-4 w-4" />
+                    Summarize page
+                  </button>
+                  <button
+                    onClick={handleImprove}
+                    disabled={!pageMetadata?.id || improveMutation.isPending}
+                    className="text-text-primary hover:bg-background-level1 flex w-full items-center rounded-md px-3 py-2 text-sm transition-colors disabled:opacity-50"
+                  >
+                    <Wand2 className="mr-2 h-4 w-4" />
+                    Improve page
+                  </button>
+                </div>
+              </PopoverContent>
+            </Popover>
+            <Button
+              type="button"
+              variant="soft"
+              size="icon"
+              aria-label={isWorking ? "Stop response" : "Send message"}
+              className="h-8 w-8 rounded-full"
+              disabled={isWorking ? false : isSendDisabled}
+              onClick={isWorking ? handleStop : handleSend}
+            >
+              {isWorking ? (
+                <Square className="h-3.5 w-3.5" fill="currentColor" />
+              ) : (
+                <ArrowUp className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
