@@ -29,6 +29,24 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: "/widget/ai/launcher",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: "frame-ancestors *;",
+          },
+        ],
+      },
+      {
+        source: "/widget/ai/messenger",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: "frame-ancestors *;",
+          },
+        ],
+      },
     ];
   },
 };

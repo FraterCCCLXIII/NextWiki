@@ -526,11 +526,13 @@ export type RelevantChunk = {
   distance: number;
   title: string;
   path: string;
+  updatedAt: Date | null;
 };
 
 export async function getRelevantChunks(input: {
   query: string;
   limit?: number;
+  pageId?: number;
 }): Promise<RelevantChunk[]> {
   const settings = await getAISettings();
   if (!settings.enabled) return [];
@@ -542,6 +544,9 @@ export async function getRelevantChunks(input: {
   const embeddingLiteral = `[${firstEmbedding.join(",")}]`;
   const limit = input.limit ?? 6;
 
+  const pageFilter = input.pageId
+    ? sql`and chunks.page_id = ${input.pageId}`
+    : sql``;
   const result = await db.execute(sql`
     select
       chunks.page_id,
@@ -551,10 +556,12 @@ export async function getRelevantChunks(input: {
       chunks.token_count,
       (chunks.embedding <=> ${embeddingLiteral}::vector) as distance,
       pages.title as page_title,
-      pages.path as page_path
+      pages.path as page_path,
+      pages.updated_at as page_updated_at
     from ${wikiPageChunks} as chunks
     join ${wikiPages} as pages on pages.id = chunks.page_id
     where chunks.embedding_model = ${settings.embeddingModel}
+    ${pageFilter}
     order by chunks.embedding <=> ${embeddingLiteral}::vector
     limit ${limit}
   `);
@@ -568,6 +575,7 @@ export async function getRelevantChunks(input: {
     distance: number;
     page_title: string;
     page_path: string;
+    page_updated_at: Date | null;
   }>;
 
   return rows.map((row) => ({
@@ -579,5 +587,6 @@ export async function getRelevantChunks(input: {
     distance: row.distance,
     title: row.page_title,
     path: row.page_path,
+    updatedAt: row.page_updated_at,
   }));
 }

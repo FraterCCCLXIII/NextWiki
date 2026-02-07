@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NextWiki AI Widget Test</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #0f1115;
+        color: #e6e6e6;
+      }
+
+      .page {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        padding: 20px 28px;
+        background: #151823;
+        border-bottom: 1px solid #242938;
+      }
+
+      main {
+        flex: 1;
+        padding: 24px;
+        display: grid;
+        grid-template-columns: minmax(240px, 1fr) minmax(320px, 520px);
+        gap: 24px;
+      }
+
+      .card {
+        background: #151823;
+        border: 1px solid #242938;
+        border-radius: 12px;
+        padding: 20px;
+      }
+
+      .card h2 {
+        margin: 0 0 12px;
+        font-size: 18px;
+      }
+
+      .iframe-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      iframe {
+        width: 100%;
+        height: 640px;
+        border: 1px solid #242938;
+        border-radius: 12px;
+        background: #0b0d12;
+      }
+
+      code {
+        display: inline-block;
+        padding: 2px 6px;
+        border-radius: 6px;
+        background: #0b0d12;
+        border: 1px solid #242938;
+      }
+
+      @media (max-width: 960px) {
+        main {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <h1>NextWiki AI Widget Test</h1>
+        <p>
+          This page lives in <code>apps/web/public/widget-test.html</code> and
+          loads the embeddable widget via iframe.
+        </p>
+      </header>
+      <main>
+        <section class="card">
+          <h2>Instructions</h2>
+          <ol>
+            <li>Start the web app: <code>pnpm run dev:web</code></li>
+            <li>
+              Enable the widget in Admin → AI Settings
+              (<code>ai.widget.enabled</code>)
+            </li>
+            <li>
+              Ensure guest read permission if using public query-only access
+            </li>
+            <li>
+              Visit <code>http://localhost:4000/widget-test.html</code>
+              (or the current dev server port)
+            </li>
+          </ol>
+          <p>
+            This test page loads the Intercom-style embed script. It injects
+            a launcher iframe and a messenger iframe on the page.
+          </p>
+        </section>
+        <section class="card">
+          <h2>Widget Preview</h2>
+          <p>
+            You should see the AI launcher button in the bottom-right corner of
+            this page.
+          </p>
+        </section>
+      </main>
+    </div>
+    <script async src="/ai-widget.js" data-nextwiki-widget></script>
+  </body>
+</html>

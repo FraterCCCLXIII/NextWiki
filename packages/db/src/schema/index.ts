@@ -413,6 +413,49 @@ export const wikiPageChunks = pgTable(
   ]
 );
 
+export const aiConversations = pgTable(
+  "ai_conversations",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id),
+    conversationId: varchar("conversation_id", { length: 100 }).notNull(),
+    summary: text("summary"),
+    summaryUpdatedAt: timestamp("summary_updated_at"),
+    lastReferencedPage: jsonb("last_referenced_page"),
+    lastWriteTarget: jsonb("last_write_target"),
+    lastRetrievedSources: jsonb("last_retrieved_sources"),
+    recentEntities: jsonb("recent_entities"),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("ai_conversations_user_session_idx").on(
+      t.userId,
+      t.conversationId
+    ),
+  ]
+);
+
+export const aiMessages = pgTable(
+  "ai_messages",
+  {
+    id: serial("id").primaryKey(),
+    conversationId: integer("conversation_id")
+      .notNull()
+      .references(() => aiConversations.id),
+    role: varchar("role", { length: 20 }).notNull(),
+    content: text("content").notNull(),
+    toolName: varchar("tool_name", { length: 100 }),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (t) => [
+    index("ai_messages_conversation_idx").on(t.conversationId),
+    index("ai_messages_created_at_idx").on(t.createdAt),
+  ]
+);
+
 // Page relations
 export const wikiPagesRelations = relations(wikiPages, ({ one, many }) => ({
   createdBy: one(users, {
@@ -440,6 +483,24 @@ export const wikiPageChunksRelations = relations(wikiPageChunks, ({ one }) => ({
   page: one(wikiPages, {
     fields: [wikiPageChunks.pageId],
     references: [wikiPages.id],
+  }),
+}));
+
+export const aiConversationsRelations = relations(
+  aiConversations,
+  ({ one, many }) => ({
+    user: one(users, {
+      fields: [aiConversations.userId],
+      references: [users.id],
+    }),
+    messages: many(aiMessages),
+  })
+);
+
+export const aiMessagesRelations = relations(aiMessages, ({ one }) => ({
+  conversation: one(aiConversations, {
+    fields: [aiMessages.conversationId],
+    references: [aiConversations.id],
   }),
 }));
 

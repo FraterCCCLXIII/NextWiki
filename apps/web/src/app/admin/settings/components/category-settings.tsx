@@ -135,6 +135,7 @@ export function CategorySettings({
   };
 
   const renderSettingInput = (setting: any) => {
+    const fieldWidthClass = "w-full min-w-[12rem] max-w-md";
     const key = setting.key;
     const value = key in editedValues ? editedValues[key] : setting.value;
     const type = setting.meta.type;
@@ -149,7 +150,7 @@ export function CategorySettings({
               value={value}
               type={isSecret ? "password" : "text"}
               onChange={(e) => handleValueChange(key, e.target.value)}
-              className="max-w-sm"
+              className={fieldWidthClass}
             />
             {isSecret && (
               <Tooltip>
@@ -172,7 +173,7 @@ export function CategorySettings({
             value={value}
             type="number"
             onChange={(e) => handleValueChange(key, Number(e.target.value))}
-            className="max-w-xs"
+            className={fieldWidthClass}
           />
         );
 
@@ -190,7 +191,7 @@ export function CategorySettings({
             value={value}
             onValueChange={(value) => handleValueChange(key, value)}
           >
-            <SelectTrigger className="max-w-xs">
+            <SelectTrigger className={fieldWidthClass}>
               <SelectValue placeholder="Select option" />
             </SelectTrigger>
             <SelectContent className="bg-background-level1">

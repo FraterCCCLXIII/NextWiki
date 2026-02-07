@@ -321,7 +321,7 @@ export default function AdminWikiPage() {
             placeholder="Search by title or path..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-xs"
+            className="w-full min-w-[12rem] max-w-sm"
           />
           <Link href="/create" passHref>
             <Button>Create Page</Button>

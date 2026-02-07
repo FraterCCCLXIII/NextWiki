@@ -65,7 +65,22 @@ export async function RequirePermission({
     // Try various headers to get the path
     const referer = headersList.get("referer") || "";
     const xUrl = headersList.get("x-url") || "";
-    const pathname = referer ? new URL(referer).pathname : xUrl ? xUrl : "/";
+    const host = headersList.get("host") || "";
+    let pathname = "/";
+    if (referer) {
+      try {
+        const refererUrl = new URL(referer);
+        if (refererUrl.host === host) {
+          pathname = refererUrl.pathname;
+        } else if (xUrl) {
+          pathname = xUrl;
+        }
+      } catch {
+        pathname = xUrl || "/";
+      }
+    } else {
+      pathname = xUrl || "/";
+    }
     isPublic = isPublicPath(pathname, publicPaths);
   }
 

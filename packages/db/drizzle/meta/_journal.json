@@ -29,6 +29,13 @@
       "when": 1791140000000,
       "tag": "0003_add_wiki_page_chunks",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1801963800000,
+      "tag": "0004_ai_conversations",
+      "breakpoints": true
     }
   ]
 }

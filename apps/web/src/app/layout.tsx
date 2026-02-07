@@ -135,7 +135,7 @@ export default async function RootLayout({
           <Suspense fallback={<Skeleton className="h-full w-full" />}>
             <PermissionGate
               permission="wiki:page:read"
-              publicPaths={["/login", "/register", "/api/*"]}
+              publicPaths={["/login", "/register", "/api/*", "/widget/*"]}
               allowGuests={true}
             >
               <PermissionGate.Authorized>

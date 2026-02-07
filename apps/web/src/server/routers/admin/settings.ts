@@ -10,9 +10,52 @@ import {
 } from "~/lib/services/settings";
 import { DEFAULT_SETTINGS, type SettingKey } from "@repo/types";
 
+const DEFAULT_WIDGET_SETTINGS = {
+  "ai.widget.enabled": {
+    type: "boolean",
+    value: false,
+    description: "Enable the embeddable AI widget",
+    category: "ai",
+    defaultValue: false,
+  },
+  "ai.widget.tools.create": {
+    type: "boolean",
+    value: false,
+    description: "Allow the widget to create new pages",
+    category: "ai",
+    defaultValue: false,
+  },
+  "ai.widget.tools.edit": {
+    type: "boolean",
+    value: false,
+    description: "Allow the widget to edit existing pages",
+    category: "ai",
+    defaultValue: false,
+  },
+  "ai.widget.tools.summarize": {
+    type: "boolean",
+    value: false,
+    description: "Allow the widget to summarize pages",
+    category: "ai",
+    defaultValue: false,
+  },
+  "ai.widget.tools.search": {
+    type: "boolean",
+    value: true,
+    description: "Allow the widget to search and answer questions",
+    category: "ai",
+    defaultValue: true,
+  },
+} as const;
+
+const SETTINGS_DEFINITIONS = {
+  ...DEFAULT_SETTINGS,
+  ...DEFAULT_WIDGET_SETTINGS,
+};
+
 // Create a Zod schema for setting keys
 const SettingKeySchema = z.enum(
-  Object.keys(DEFAULT_SETTINGS) as [string, ...string[]]
+  Object.keys(SETTINGS_DEFINITIONS) as [string, ...string[]]
 );
 
 /**
@@ -27,7 +70,7 @@ export const settingsRouter = router({
       const settings = await getAllSettings();
       const sanitized = { ...settings } as typeof settings;
 
-      for (const [key, definition] of Object.entries(DEFAULT_SETTINGS)) {
+      for (const [key, definition] of Object.entries(SETTINGS_DEFINITIONS)) {
         if (definition.isSecret && key in sanitized) {
           // Never return secret values to the client
           // @ts-expect-error - dynamic key assignment
@@ -50,7 +93,7 @@ export const settingsRouter = router({
     )
     .query(async ({ input }) => {
       const value = await getSetting(input.key as SettingKey);
-      const meta = DEFAULT_SETTINGS[input.key as SettingKey];
+      const meta = SETTINGS_DEFINITIONS[input.key as SettingKey];
       return {
         key: input.key,
         value: meta.isSecret ? "" : value,
@@ -74,7 +117,7 @@ export const settingsRouter = router({
       const typedKey = key as SettingKey;
 
       // Validate the value matches the expected type
-      const expectedType = DEFAULT_SETTINGS[typedKey].type;
+      const expectedType = SETTINGS_DEFINITIONS[typedKey].type;
 
       // Simple type validation
       const valueType = typeof value;
@@ -85,8 +128,8 @@ export const settingsRouter = router({
         // For select, we need to check if the value is in the options
         (expectedType === "select" &&
           !(
-            "options" in DEFAULT_SETTINGS[typedKey] &&
-            (DEFAULT_SETTINGS[typedKey].options as string[]).includes(value)
+            "options" in SETTINGS_DEFINITIONS[typedKey] &&
+            (SETTINGS_DEFINITIONS[typedKey].options as string[]).includes(value)
           )) ||
         // For JSON, we need to check if it's an object
         (expectedType === "json" && (valueType !== "object" || value === null))
@@ -166,7 +209,7 @@ export const settingsRouter = router({
       const allSettings = await getAllSettings();
 
       // Filter settings by category and add metadata
-      const categorySettings = Object.entries(DEFAULT_SETTINGS)
+      const categorySettings = Object.entries(SETTINGS_DEFINITIONS)
         .filter(([_, setting]) => {
           void _;
           // Type assertion to access category property
@@ -175,7 +218,7 @@ export const settingsRouter = router({
         })
         .map(([key]) => {
           const typedKey = key as SettingKey;
-          const meta = DEFAULT_SETTINGS[typedKey];
+          const meta = SETTINGS_DEFINITIONS[typedKey];
 
           // Use getSetting to get the value with proper defaults if not in database
           const defaultValue = meta.value;

@@ -70,6 +70,15 @@ const getErrorMessage = (error: unknown, fallback: string) => {
   return fallback;
 };
 
+const getWidgetPageHref = (href: string) => {
+  const trimmed = href.trim();
+  if (!trimmed) return href;
+  if (trimmed.startsWith("#")) return href;
+  if (/^(https?:|mailto:|tel:)/i.test(trimmed)) return href;
+  const normalized = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+  return `/widget/page${normalized}`;
+};
+
 interface AIAssistantPanelProps {
   pageMetadata?: PageMetadata;
   mode?: "edit" | "view";
@@ -104,6 +113,19 @@ export function AIAssistantPanel({
     loopCount: number;
   } | null>(null);
   const markdownConfig = useMemo(() => createClientMarkdownProcessor(), []);
+  const linkComponents = useMemo(() => {
+    if (apiVariant !== "widget") {
+      return markdownConfig.components;
+    }
+    return {
+      ...markdownConfig.components,
+      a: ({ href = "", children, ...props }) => (
+        <a href={getWidgetPageHref(String(href))} {...props}>
+          {children}
+        </a>
+      ),
+    };
+  }, [apiVariant, markdownConfig.components]);
   const trpc = useTRPC();
   const trpcClient = useTRPCClient();
   const createConversationId = () =>
@@ -812,7 +834,7 @@ export function AIAssistantPanel({
                     <ReactMarkdown
                       remarkPlugins={markdownConfig.remarkPlugins}
                       rehypePlugins={markdownConfig.rehypePlugins}
-                      components={markdownConfig.components}
+                      components={linkComponents}
                     >
                       {item.content}
                     </ReactMarkdown>

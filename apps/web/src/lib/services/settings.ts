@@ -11,6 +11,24 @@ import type {
 import { eq, desc } from "drizzle-orm";
 import { cache } from "react";
 
+const FALLBACK_SETTINGS_META: Record<string, { description: string }> = {
+  "ai.widget.enabled": {
+    description: "Enable the embeddable AI widget",
+  },
+  "ai.widget.tools.create": {
+    description: "Allow the widget to create new pages",
+  },
+  "ai.widget.tools.edit": {
+    description: "Allow the widget to edit existing pages",
+  },
+  "ai.widget.tools.summarize": {
+    description: "Allow the widget to summarize pages",
+  },
+  "ai.widget.tools.search": {
+    description: "Allow the widget to search and answer questions",
+  },
+};
+
 /**
  * Get a single setting by key
  * @param key The setting key
@@ -27,8 +45,24 @@ export async function getSetting<K extends SettingKey>(
   // If the setting doesn't exist in the database, return the default value
   if (!result) {
     // Note: We're doing a dynamic import here to avoid circular dependencies
-    const { getDefaultSetting } = await import("@repo/types");
-    return getDefaultSetting(key);
+    // Fallback defaults for newly added settings until types package is rebuilt
+    const fallbackDefaults: Partial<Record<SettingKey, SettingValue<SettingKey>>> =
+      {
+        "ai.widget.enabled": false,
+        "ai.widget.tools.create": false,
+        "ai.widget.tools.edit": false,
+        "ai.widget.tools.summarize": false,
+        "ai.widget.tools.search": true,
+      };
+    try {
+      const { getDefaultSetting } = await import("@repo/types");
+      return getDefaultSetting(key);
+    } catch {
+      if (key in fallbackDefaults) {
+        return fallbackDefaults[key] as SettingValue<K>;
+      }
+      throw new Error(`Missing default setting for key: ${key}`);
+    }
   }
 
   return result.value as SettingValue<K>;
@@ -106,13 +140,21 @@ export async function updateSetting<K extends SettingKey>(
     }
 
     // 3. Update or insert the setting
+    const definitions = (await import("@repo/types")).DEFAULT_SETTINGS as Record<
+      string,
+      { description?: string }
+    >;
+    const fallbackMeta = FALLBACK_SETTINGS_META[key as string];
+    const description =
+      definitions[key as string]?.description ??
+      fallbackMeta?.description ??
+      `Setting ${key}`;
     await tx
       .insert(settings)
       .values({
         key: key,
         value: value as any, // Type cast needed due to DB Jsonb vs specific types
-        description: (await import("@repo/types")).DEFAULT_SETTINGS[key]
-          .description,
+        description,
         updatedAt: new Date(),
       })
       .onConflictDoUpdate({
