@@ -98,6 +98,21 @@ An open-source wiki system built with modern web technologies, inspired by WikiJ
 
 6. Open [http://localhost:3000](http://localhost:3000) in your browser to see the wiki.
 
+## Embeddable AI Widget
+
+NextWiki includes an embeddable AI widget for query-focused assistance.
+
+1. Configure AI settings:
+   - Set your AI provider and API key in the Admin → AI Settings page.
+2. Enable the widget:
+   - In Admin → AI Settings, toggle `ai.widget.enabled` and choose which tools to allow.
+3. Copy the embed code:
+   - Use the generated iframe snippet and paste it into your site.
+
+Notes:
+- The MVP widget uses public query-only access. Ensure the guest group has `wiki:page:read` permission if you want anonymous queries.
+- Create/edit/summarize tools are gated by both the widget settings and permissions.
+
 ## Search Features
 
 NextWiki includes a powerful search system with several capabilities:

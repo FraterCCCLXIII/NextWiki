@@ -30,6 +30,20 @@ type ChatStorageState = {
   lastAssistantContent: string | null;
 };
 
+export type AIAssistantToolAccess = {
+  canSearch: boolean;
+  canSummarize: boolean;
+  canCreate: boolean;
+  canEdit: boolean;
+};
+
+const defaultToolAccess: AIAssistantToolAccess = {
+  canSearch: true,
+  canSummarize: true,
+  canCreate: true,
+  canEdit: true,
+};
+
 const AI_CHAT_STORAGE_KEY = "ai:chat:state";
 
 const dispatchLiveEdit = (detail: {
@@ -60,13 +74,23 @@ interface AIAssistantPanelProps {
   pageMetadata?: PageMetadata;
   mode?: "edit" | "view";
   onClose?: () => void;
+  apiVariant?: "default" | "widget";
+  enableConversationHistory?: boolean;
+  toolAccess?: Partial<AIAssistantToolAccess>;
 }
 
 export function AIAssistantPanel({
   pageMetadata,
   mode = "view",
   onClose,
+  apiVariant = "default",
+  enableConversationHistory = true,
+  toolAccess,
 }: AIAssistantPanelProps) {
+  const effectiveToolAccess = useMemo(
+    () => ({ ...defaultToolAccess, ...(toolAccess ?? {}) }),
+    [toolAccess]
+  );
   const [message, setMessage] = useState("");
   const [view, setView] = useState<"chat" | "list">("chat");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -106,6 +130,11 @@ export function AIAssistantPanel({
     }) => {
       const controller = new AbortController();
       abortControllerRef.current = controller;
+      if (apiVariant === "widget") {
+        return trpcClient.ai.widgetDispatch.mutate(input, {
+          signal: controller.signal,
+        });
+      }
       return trpcClient.ai.dispatch.mutate(input, { signal: controller.signal });
     },
     onSettled: () => {
@@ -113,9 +142,15 @@ export function AIAssistantPanel({
     },
   });
   const summarizeMutation = useMutation(
-    trpc.ai.summarizePage.mutationOptions()
+    apiVariant === "widget"
+      ? trpc.ai.widgetSummarizePage.mutationOptions()
+      : trpc.ai.summarizePage.mutationOptions()
   );
-  const improveMutation = useMutation(trpc.ai.improvePage.mutationOptions());
+  const improveMutation = useMutation(
+    apiVariant === "widget"
+      ? trpc.ai.widgetImprovePage.mutationOptions()
+      : trpc.ai.improvePage.mutationOptions()
+  );
   const createConversationMutation = useMutation(
     trpc.ai.createConversation.mutationOptions()
   );
@@ -123,7 +158,10 @@ export function AIAssistantPanel({
     limit: 30,
   });
   const { data: conversationList } = useQuery(
-    trpc.ai.listConversations.queryOptions({ limit: 30 })
+    trpc.ai.listConversations.queryOptions(
+      { limit: 30 },
+      { enabled: enableConversationHistory && apiVariant === "default" }
+    )
   );
 
   const pageContextLabel = useMemo(() => {
@@ -521,6 +559,14 @@ export function AIAssistantPanel({
   };
 
   const handleSend = async () => {
+    if (!effectiveToolAccess.canSearch) {
+      appendMessage({
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: "Search is disabled for this widget.",
+      });
+      return;
+    }
     const trimmed = inputRef.current
       ? serializeInput(inputRef.current).trim()
       : message.trim();
@@ -583,6 +629,7 @@ export function AIAssistantPanel({
   };
 
   const handleSummarize = async () => {
+    if (!effectiveToolAccess.canSummarize) return;
     if (!pageMetadata?.id) return;
     const placeholderId = appendAssistantPlaceholder("Reading...");
     try {
@@ -600,6 +647,7 @@ export function AIAssistantPanel({
   };
 
   const handleImprove = async () => {
+    if (!effectiveToolAccess.canEdit) return;
     if (!pageMetadata?.id) return;
     const proceed =
       typeof window !== "undefined"
@@ -625,6 +673,7 @@ export function AIAssistantPanel({
   };
 
   const handleNewConversation = async () => {
+    if (!enableConversationHistory || apiVariant !== "default") return;
     const nextId = createConversationId();
     resetConversationState(nextId);
     await createConversationMutation.mutateAsync({ conversationId: nextId });
@@ -633,6 +682,7 @@ export function AIAssistantPanel({
   };
 
   const handleSelectConversation = async (id: string) => {
+    if (!enableConversationHistory || apiVariant !== "default") return;
     resetConversationState(id);
     const data = await queryClient.fetchQuery(
       trpc.ai.getConversation.queryOptions({ conversationId: id })
@@ -660,6 +710,8 @@ export function AIAssistantPanel({
 
   const isWorking = dispatchMutation.isPending;
   const isSendDisabled = !message.trim();
+  const showTools =
+    effectiveToolAccess.canSummarize || effectiveToolAccess.canEdit;
 
   const isAbortError = (error: unknown) => {
     if (!error || typeof error !== "object") return false;
@@ -682,7 +734,7 @@ export function AIAssistantPanel({
     <div className="flex h-full w-full min-h-0 flex-col overflow-x-hidden">
       <div className="border-border-default flex h-12 items-center justify-between border-b px-4 py-2">
         <div className="flex items-center gap-2">
-          {view === "chat" && (
+          {enableConversationHistory && view === "chat" && (
             <Button
               size="icon"
               variant="ghost"
@@ -699,7 +751,7 @@ export function AIAssistantPanel({
       </div>
 
       <ScrollArea className="flex-1 min-h-0 w-full px-5 py-0">
-        {view === "list" ? (
+        {enableConversationHistory && view === "list" ? (
           <div className="space-y-4">
             <div className="text-text-secondary mt-2 text-xs">
               Start a new conversation or pick a previous one.
@@ -775,7 +827,7 @@ export function AIAssistantPanel({
           </>
         )}
       </ScrollArea>
-      {view === "list" && (
+      {enableConversationHistory && view === "list" && (
         <div className="border-border-default flex items-center border-t px-4 py-3">
           <Button className="w-full" onClick={handleNewConversation}>
             New Conversation
@@ -855,37 +907,43 @@ export function AIAssistantPanel({
             </div>
           </div>
           <div className="flex items-center justify-between gap-2 px-2 pb-2">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button type="button" size="sm" variant="ghost" className="px-1">
-                  Tools
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                align="start"
-                side="top"
-                className="w-48 p-1 bg-background-paper border-border-default"
-              >
-                <div className="space-y-0.5">
-                  <button
-                    onClick={handleSummarize}
-                    disabled={!pageMetadata?.id || summarizeMutation.isPending}
-                    className="text-text-primary hover:bg-background-level1 flex w-full items-center rounded-md px-3 py-2 text-sm transition-colors disabled:opacity-50"
-                  >
-                    <FileText className="mr-2 h-4 w-4" />
-                    Summarize page
-                  </button>
-                  <button
-                    onClick={handleImprove}
-                    disabled={!pageMetadata?.id || improveMutation.isPending}
-                    className="text-text-primary hover:bg-background-level1 flex w-full items-center rounded-md px-3 py-2 text-sm transition-colors disabled:opacity-50"
-                  >
-                    <Wand2 className="mr-2 h-4 w-4" />
-                    Improve page
-                  </button>
-                </div>
-              </PopoverContent>
-            </Popover>
+            {showTools && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button type="button" size="sm" variant="ghost" className="px-1">
+                    Tools
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  align="start"
+                  side="top"
+                  className="w-48 p-1 bg-background-paper border-border-default"
+                >
+                  <div className="space-y-0.5">
+                    {effectiveToolAccess.canSummarize && (
+                      <button
+                        onClick={handleSummarize}
+                        disabled={!pageMetadata?.id || summarizeMutation.isPending}
+                        className="text-text-primary hover:bg-background-level1 flex w-full items-center rounded-md px-3 py-2 text-sm transition-colors disabled:opacity-50"
+                      >
+                        <FileText className="mr-2 h-4 w-4" />
+                        Summarize page
+                      </button>
+                    )}
+                    {effectiveToolAccess.canEdit && (
+                      <button
+                        onClick={handleImprove}
+                        disabled={!pageMetadata?.id || improveMutation.isPending}
+                        className="text-text-primary hover:bg-background-level1 flex w-full items-center rounded-md px-3 py-2 text-sm transition-colors disabled:opacity-50"
+                      >
+                        <Wand2 className="mr-2 h-4 w-4" />
+                        Improve page
+                      </button>
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
             <Button
               type="button"
               variant="soft"

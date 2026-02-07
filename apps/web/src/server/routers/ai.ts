@@ -1,6 +1,11 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { router, permissionProtectedProcedure, protectedProcedure } from "..";
+import {
+  router,
+  permissionGuestProcedure,
+  permissionProtectedProcedure,
+  protectedProcedure,
+} from "..";
 import {
   type AIAction,
   assertAIWriteAllowed,
@@ -21,8 +26,12 @@ import {
   appendConversationMessage,
   buildSummaryPromptInput,
   condenseConversationIfNeeded,
+  ensureConversationForUser,
   getConversationContextSnapshot,
+  getConversationForUser,
   getOrCreateConversationSession,
+  incrementLoopCount,
+  listConversationsForUser,
   updateLastReferencedPage,
   updateLastRetrievedSources,
   updateLastWriteTarget,
@@ -114,6 +123,18 @@ const formatPath = (path: string) => `/${normalizePath(path)}`;
 const scoreFromDistance = (distance: number) =>
   Number.isFinite(distance) ? 1 / (1 + Math.max(0, distance)) : 0;
 
+const scoreFromRecency = (updatedAt?: Date | string | null) => {
+  if (!updatedAt) return 0;
+  const date =
+    updatedAt instanceof Date ? updatedAt : new Date(updatedAt);
+  if (Number.isNaN(date.getTime())) return 0;
+  const days = Math.max(
+    0,
+    (Date.now() - date.getTime()) / (1000 * 60 * 60 * 24)
+  );
+  return 1 / (1 + days);
+};
+
 const isVagueFollowup = (prompt: string) =>
   prompt.trim().split(/\s+/).length <= 6 ||
   /\b(it|this|that|they|them|he|she|her|his|their|there|that one)\b/i.test(
@@ -126,6 +147,19 @@ const formatConversationContext = (snapshot: ReturnType<
   const summary = snapshot.summary
     ? `Summary:\n${snapshot.summary}`
     : null;
+  const summaryDate = snapshot.summaryUpdatedAt
+    ? new Date(snapshot.summaryUpdatedAt)
+    : null;
+  const summaryAge =
+    snapshot.summary && summaryDate && !Number.isNaN(summaryDate.getTime())
+      ? Math.max(0, Math.round((Date.now() - summaryDate.getTime()) / 60000))
+      : null;
+  const summaryMeta =
+    summaryAge !== null ? `Summary age: ${summaryAge} minutes` : null;
+  const entities =
+    snapshot.recentEntities.length > 0
+      ? `Entities: ${snapshot.recentEntities.join(", ")}`
+      : null;
   const recentMessages = snapshot.messages
     .map((message) => {
       const label =
@@ -137,7 +171,9 @@ const formatConversationContext = (snapshot: ReturnType<
       return `${label}: ${message.content}`;
     })
     .join("\n");
-  return [summary, recentMessages].filter(Boolean).join("\n\n");
+  return [summary, summaryMeta, entities, recentMessages]
+    .filter(Boolean)
+    .join("\n\n");
 };
 
 const buildConversationMessages = (snapshot: ReturnType<
@@ -150,6 +186,28 @@ const buildConversationMessages = (snapshot: ReturnType<
         ? `Tool result${message.toolName ? ` (${message.toolName})` : ""}:\n${message.content}`
         : message.content,
   }));
+
+const buildSessionMetrics = (
+  session?: Awaited<ReturnType<typeof getOrCreateConversationSession>>
+) => {
+  if (!session) return undefined;
+  const snapshot = getConversationContextSnapshot(session);
+  const summaryAgeMinutes =
+    snapshot.summary && snapshot.summaryUpdatedAt
+      ? Math.max(
+          0,
+          Math.round(
+            (Date.now() - snapshot.summaryUpdatedAt.getTime()) / 60000
+          )
+        )
+      : null;
+  return {
+    summaryAgeMinutes,
+    messageCount: session.messages.length,
+    sourceCount: session.lastRetrievedSources.length,
+    loopCount: session.loopCount,
+  };
+};
 
 const LOOP_DECISION_PROMPT = `You are a controller deciding if the assistant should take another action.
 Return ONLY JSON:
@@ -205,7 +263,9 @@ const buildChunkSources = (chunks: Awaited<ReturnType<typeof getRelevantChunks>>
     path: chunk.path,
     content: chunk.content,
     chunkIndex: chunk.chunkIndex,
-    score: scoreFromDistance(chunk.distance),
+    score:
+      scoreFromDistance(chunk.distance) * 0.7 +
+      scoreFromRecency(chunk.updatedAt) * 0.3,
   }));
 
 const buildPageSources = (items: SearchResultItem[]) =>
@@ -214,7 +274,9 @@ const buildPageSources = (items: SearchResultItem[]) =>
     title: item.title,
     path: item.path,
     content: item.excerpt,
-    score: Math.min(1, Math.max(0, item.relevance / 4)),
+    score:
+      Math.min(1, Math.max(0, item.relevance / 4)) * 0.7 +
+      scoreFromRecency(item.updatedAt) * 0.3,
   }));
 
 const mergeSources = (chunks: ChunkSource[], pages: PageSource[], limit: number) => {
@@ -299,7 +361,7 @@ const getHybridSourcesForPrompt = async (prompt: string, options?: {
 const buildChatResponse = async (input: {
   prompt: string;
   pageId?: number;
-  session?: ReturnType<typeof getOrCreateConversationSession>;
+  session?: Awaited<ReturnType<typeof getOrCreateConversationSession>>;
 }) => {
   const { prompt, pageId, session } = input;
   const messages: Array<{
@@ -314,7 +376,7 @@ const buildChatResponse = async (input: {
   messages.push({
     role: "system",
     content:
-      `Use provided sources when answering. If sources are missing or irrelevant, say you could not find a matching page. Cite sources using their /path when possible.${conversationContext ? `\n\nConversation context:\n${conversationContext}` : ""}`,
+      `Use provided sources when answering. If sources are missing or irrelevant, say you could not find a matching page. Cite sources using their /path when possible. Answer concisely; do not dump full page content unless explicitly asked.${conversationContext ? `\n\nConversation context:\n${conversationContext}` : ""}`,
   });
 
   const explicitPath = extractPath(prompt);
@@ -340,7 +402,7 @@ const buildChatResponse = async (input: {
       content: `Context page:\nTitle: ${page.title}\nPath: ${page.path}\nContent:\n${tail}`,
     });
     if (session) {
-      updateLastReferencedPage(session, {
+      await updateLastReferencedPage(session, {
         id: page.id,
         title: page.title,
         path: page.path,
@@ -349,28 +411,56 @@ const buildChatResponse = async (input: {
   }
 
   const { sources, searchResults } = await getHybridSourcesForPrompt(prompt);
+  const focusPageId = session?.lastReferencedPage?.id;
+  const focusPageSources =
+    focusPageId && !explicitPath
+      ? buildChunkSources(
+          await getRelevantChunks({
+            query: prompt,
+            limit: 4,
+            pageId: focusPageId,
+          })
+        )
+      : [];
   const normalizedPagePath = pageContext?.path
     ? normalizePath(pageContext.path)
     : null;
   const filteredSources = normalizedPagePath
     ? sources.filter((source) => normalizePath(source.path) !== normalizedPagePath)
     : sources;
+  const combinedSources = mergeSources(
+    [...focusPageSources, ...filteredSources],
+    [],
+    8
+  );
 
-  if (filteredSources.length > 0) {
+  if (combinedSources.length > 0) {
     messages.push({
       role: "user",
-      content: `Additional sources:\n${formatSourcesForPrompt(filteredSources)}`,
+      content: `Additional sources:\n${formatSourcesForPrompt(combinedSources)}`,
     });
     if (session) {
-      updateLastRetrievedSources(
+      await updateLastRetrievedSources(
         session,
-        filteredSources.map((source) => ({
+        combinedSources.map((source) => ({
           title: source.title,
           path: source.path,
           content: source.content,
         }))
       );
     }
+  } else if (session && session.lastRetrievedSources.length > 0) {
+    messages.push({
+      role: "user",
+      content: `Prior sources:\n${session.lastRetrievedSources
+        .map(
+          (source, index) =>
+            `Source ${index + 1}: ${source.title} (${formatPath(
+              source.path
+            )})\n${source.content}`
+        )
+        .join("\n\n")}`,
+    });
   }
 
   if (!pageContext && session && isVagueFollowup(prompt)) {
@@ -383,6 +473,17 @@ const buildChatResponse = async (input: {
         messages.push({
           role: "user",
           content: `Prior context page:\nTitle: ${page.title}\nPath: ${page.path}\nContent:\n${tail}`,
+        });
+      }
+    }
+    const lastWrite = session.lastWriteTarget;
+    if (lastWrite?.path && lastWrite.path !== lastPage?.path) {
+      const page = await resolvePageByPath(lastWrite.path);
+      if (page) {
+        const content = page.content ?? "";
+        messages.push({
+          role: "user",
+          content: `Last edited page:\nTitle: ${page.title}\nPath: ${page.path}\nContent:\n${content.slice(-800)}`,
         });
       }
     }
@@ -516,7 +617,10 @@ const collectTags = (page: {
     ?.map((pageTag) => pageTag.tag?.name)
     .filter((tag): tag is string => Boolean(tag)) ?? [];
 
-const requirePermission = async (userId: number, permission: string) => {
+const requirePermission = async (
+  userId: number | undefined,
+  permission: string
+) => {
   const allowed = await authorizationService.hasPermission(
     userId,
     permission as any
@@ -536,16 +640,106 @@ const applyWriteIntentGuard = (action: AIAction, prompt: string): AIAction => {
   return action;
 };
 
+type WidgetToolConfig = {
+  enabled: boolean;
+  canCreate: boolean;
+  canEdit: boolean;
+  canSummarize: boolean;
+  canSearch: boolean;
+};
+
+const getWidgetToolConfig = async (): Promise<WidgetToolConfig> => {
+  const [enabled, canCreate, canEdit, canSummarize, canSearch] =
+    await Promise.all([
+      getSetting("ai.widget.enabled"),
+      getSetting("ai.widget.tools.create"),
+      getSetting("ai.widget.tools.edit"),
+      getSetting("ai.widget.tools.summarize"),
+      getSetting("ai.widget.tools.search"),
+    ]);
+
+  return {
+    enabled,
+    canCreate,
+    canEdit,
+    canSummarize,
+    canSearch,
+  };
+};
+
+const assertWidgetEnabled = (config: WidgetToolConfig) => {
+  if (!config.enabled) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "The AI widget is disabled.",
+    });
+  }
+};
+
+const assertWidgetToolEnabled = (
+  tool: "search" | "summarize" | "create" | "edit",
+  config: WidgetToolConfig
+) => {
+  assertWidgetEnabled(config);
+  if (tool === "search" && !config.canSearch) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Search is disabled for this widget.",
+    });
+  }
+  if (tool === "summarize" && !config.canSummarize) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Summarization is disabled for this widget.",
+    });
+  }
+  if (tool === "create" && !config.canCreate) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Page creation is disabled for this widget.",
+    });
+  }
+  if (tool === "edit" && !config.canEdit) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Page editing is disabled for this widget.",
+    });
+  }
+};
+
 export const aiRouter = router({
+  listConversations: permissionProtectedProcedure("wiki:page:read")
+    .input(z.object({ limit: z.number().min(1).max(100).optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const userId = parseInt(ctx.session.user.id);
+      const limit = input?.limit ?? 25;
+      return listConversationsForUser(userId, limit);
+    }),
+
+  getConversation: permissionProtectedProcedure("wiki:page:read")
+    .input(z.object({ conversationId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const userId = parseInt(ctx.session.user.id);
+      return getConversationForUser(userId, input.conversationId);
+    }),
+
+  createConversation: permissionProtectedProcedure("wiki:page:read")
+    .input(z.object({ conversationId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = parseInt(ctx.session.user.id);
+      await ensureConversationForUser(userId, input.conversationId);
+      return { conversationId: input.conversationId };
+    }),
+
   chat: permissionProtectedProcedure("wiki:page:read")
     .input(chatInputSchema)
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id;
+      const userId = parseInt(ctx.session.user.id);
       const session = input.conversationId
-        ? getOrCreateConversationSession(userId, input.conversationId)
+        ? await getOrCreateConversationSession(userId, input.conversationId)
         : undefined;
       if (session) {
-        appendConversationMessage(session, {
+        await appendConversationMessage(session, {
           role: "user",
           content: input.prompt,
           createdAt: new Date(),
@@ -571,14 +765,14 @@ export const aiRouter = router({
         session,
       });
       if (session) {
-        appendConversationMessage(session, {
+        await appendConversationMessage(session, {
           role: "assistant",
           content: response,
           createdAt: new Date(),
         });
       }
 
-      return { message: response };
+      return { message: response, sessionMetrics: buildSessionMetrics(session) };
     }),
 
   dispatch: protectedProcedure
@@ -602,10 +796,10 @@ export const aiRouter = router({
 
       const userId = parseInt(ctx.session.user.id);
       const session = input.conversationId
-        ? getOrCreateConversationSession(String(userId), input.conversationId)
+        ? await getOrCreateConversationSession(userId, input.conversationId)
         : undefined;
       if (session) {
-        appendConversationMessage(session, {
+        await appendConversationMessage(session, {
           role: "user",
           content: input.prompt,
           createdAt: new Date(),
@@ -671,7 +865,7 @@ export const aiRouter = router({
           changeSummary: "AI draft: initial page creation",
         });
           if (session) {
-            updateLastWriteTarget(session, {
+            await updateLastWriteTarget(session, {
               id: createdPage.id,
               title: createdPage.title,
               path: createdPage.path,
@@ -753,7 +947,7 @@ export const aiRouter = router({
           changeSummary: "AI edit: appended content",
         });
         if (session) {
-          updateLastWriteTarget(session, {
+          await updateLastWriteTarget(session, {
             id: updatedPage.id,
             title: updatedPage.title,
             path: updatedPage.path,
@@ -835,7 +1029,7 @@ export const aiRouter = router({
           changeSummary: "AI edit: added content",
         });
         if (session) {
-          updateLastWriteTarget(session, {
+          await updateLastWriteTarget(session, {
             id: updatedPage.id,
             title: updatedPage.title,
             path: updatedPage.path,
@@ -936,7 +1130,7 @@ export const aiRouter = router({
           changeSummary: "AI edit: removed line",
         });
         if (session) {
-          updateLastWriteTarget(session, {
+          await updateLastWriteTarget(session, {
             id: updatedPage.id,
             title: updatedPage.title,
             path: updatedPage.path,
@@ -1038,7 +1232,7 @@ export const aiRouter = router({
           changeSummary: "AI edit: replaced paragraph",
         });
         if (session) {
-          updateLastWriteTarget(session, {
+          await updateLastWriteTarget(session, {
             id: updatedPage.id,
             title: updatedPage.title,
             path: updatedPage.path,
@@ -1138,7 +1332,7 @@ export const aiRouter = router({
           changeSummary: "AI edit: improved content",
         });
         if (session) {
-          updateLastWriteTarget(session, {
+          await updateLastWriteTarget(session, {
             id: updatedPage.id,
             title: updatedPage.title,
             path: updatedPage.path,
@@ -1167,21 +1361,41 @@ export const aiRouter = router({
         return { action: "chat", message: response };
       };
 
+      const attachMetrics = <T extends { action: string; message: string }>(
+        response: T
+      ) =>
+        session
+          ? ({
+              ...response,
+              sessionMetrics: buildSessionMetrics(session),
+            } as T & { sessionMetrics: ReturnType<typeof buildSessionMetrics> })
+          : response;
+
       const maxIterations = 3;
       let lastResponse = await executeAction(action);
+      const responseHistory = new Map<string, number>();
+      const recordResponse = (response: { action: string; message: string }) => {
+        const key = `${response.action}::${response.message}`;
+        const count = (responseHistory.get(key) ?? 0) + 1;
+        responseHistory.set(key, count);
+        return count;
+      };
+      recordResponse(lastResponse);
+
       for (let iteration = 0; iteration < maxIterations - 1; iteration += 1) {
         if (!session || lastResponse.action === "chat") {
           if (session) {
-            appendConversationMessage(session, {
+            await appendConversationMessage(session, {
               role: "assistant",
               content: lastResponse.message,
               createdAt: new Date(),
             });
           }
-          return lastResponse;
+          return attachMetrics(lastResponse);
         }
 
-        appendConversationMessage(session, {
+        await incrementLoopCount(session);
+        await appendConversationMessage(session, {
           role: "tool",
           content: lastResponse.message,
           createdAt: new Date(),
@@ -1199,10 +1413,10 @@ export const aiRouter = router({
         });
 
         if (!decision.continue || !decision.prompt) {
-          return lastResponse;
+          return attachMetrics(lastResponse);
         }
 
-        appendConversationMessage(session, {
+        await appendConversationMessage(session, {
           role: "user",
           content: decision.prompt,
           createdAt: new Date(),
@@ -1218,21 +1432,586 @@ export const aiRouter = router({
         action = applyWriteIntentGuard(action, decision.prompt);
 
         lastResponse = await executeAction(action);
+        const repeatCount = recordResponse(lastResponse);
+        if (repeatCount >= 2) {
+          const stopMessage = `${lastResponse.message}\n\nI stopped to avoid repeating the same action. If you want me to continue, please clarify what should change.`;
+          lastResponse = { ...lastResponse, message: stopMessage };
+          break;
+        }
       }
 
       if (session) {
-        appendConversationMessage(session, {
+        await appendConversationMessage(session, {
           role: "assistant",
           content: lastResponse.message,
           createdAt: new Date(),
         });
       }
-      return lastResponse;
+      return attachMetrics(lastResponse);
+    }),
+
+  widgetDispatch: permissionGuestProcedure("wiki:page:read")
+    .input(
+      z.object({
+        prompt: z.string().min(1),
+        pageId: z.number().optional(),
+        mode: z.enum(["edit", "view"]).optional(),
+        lastAssistantContent: z.string().optional(),
+        conversationId: z.string().min(1).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const widgetConfig = await getWidgetToolConfig();
+      assertWidgetEnabled(widgetConfig);
+
+      const explicitPath = extractPath(input.prompt);
+      const page =
+        input.pageId !== undefined
+          ? await wikiService.getById(input.pageId)
+          : explicitPath
+            ? await resolvePageByPath(explicitPath)
+            : null;
+
+      const userId = ctx.session?.user ? parseInt(ctx.session.user.id) : undefined;
+
+      let action = await selectAIAction({
+        prompt: input.prompt,
+        pageContext: page ? { title: page.title, path: page.path } : undefined,
+        explicitPath,
+        hasAssistantContent: Boolean(input.lastAssistantContent?.trim()),
+        conversationContext: undefined,
+      });
+      action = applyWriteIntentGuard(action, input.prompt);
+      const mode = input.mode ?? "view";
+      const currentPath = page?.path?.replace(/^\/+/, "");
+      const selectedPath =
+        "path" in action.args && action.args.path
+          ? action.args.path
+          : explicitPath ?? undefined;
+      const normalizedPath = selectedPath?.replace(/^\/+/, "").toLowerCase();
+      const isCurrentPageTarget =
+        Boolean(page) && (!normalizedPath || normalizedPath === currentPath);
+
+      const executeAction = async (action: AIAction) => {
+        if (action.action === "draftPage") {
+          assertWidgetToolEnabled("create", widgetConfig);
+          await requirePermission(userId, "wiki:page:create");
+          await assertAIWriteAllowed();
+
+          const publishGenerated = await getSetting("ai.publishGeneratedPages");
+          const path = (normalizedPath ?? slugify(action.args.title)).toLowerCase();
+          const response = await buildDraftContent({
+            path,
+            title: action.args.title,
+            context: input.prompt,
+          });
+
+          const aiUserId = await getAIUserId();
+          const createdPage = await wikiService.create({
+            path,
+            title: action.args.title,
+            content: response,
+            isPublished: action.args.publish ?? publishGenerated,
+            userId: aiUserId,
+            editorType: "markdown",
+            changeSummary: "AI draft: initial page creation",
+          });
+
+          return {
+            action: action.action,
+            page: {
+              id: createdPage.id,
+              path: createdPage.path,
+              title: createdPage.title,
+            },
+            message: `Created draft page \"${createdPage.title}\" at /${createdPage.path}.`,
+          };
+        }
+
+        if (action.action === "appendToPage") {
+          assertWidgetToolEnabled("edit", widgetConfig);
+          await requirePermission(userId, "wiki:page:update");
+          await assertAIWriteAllowed();
+
+          const assistantContent = input.lastAssistantContent?.trim();
+          if (!assistantContent) {
+            return {
+              action: action.action,
+              message: "I don’t have any recent content to add to the page.",
+            };
+          }
+
+          if (!page?.id && !normalizedPath) {
+            return {
+              action: action.action,
+              message:
+                "Please specify which page to update (e.g., “add that to /zen”).",
+            };
+          }
+
+          if (isCurrentPageTarget && page?.id) {
+            return {
+              action: action.action,
+              liveEdit: {
+                content: assistantContent,
+                mode: "append",
+                path: currentPath,
+              },
+              message:
+                mode === "edit"
+                  ? "Inserted the content into the editor. Review and save when ready."
+                  : "Writing to the page now. You can undo via page history.",
+            };
+          }
+
+          const pageId = isCurrentPageTarget
+            ? page?.id
+            : (await resolvePageByPath(normalizedPath!))?.id;
+          if (!pageId) {
+            throw new TRPCError({ code: "NOT_FOUND", message: "Page not found." });
+          }
+
+          const targetPage = await wikiService.getById(pageId);
+          if (!targetPage) {
+            throw new TRPCError({ code: "NOT_FOUND", message: "Page not found." });
+          }
+
+          const existingContent = targetPage.content ?? "";
+          const nextContent = `${existingContent}${
+            existingContent.trim() ? "\n\n" : ""
+          }${assistantContent}\n`;
+
+          const tags = collectTags(targetPage);
+          const aiUserId = await getAIUserId();
+          const updatedPage = await wikiService.update(targetPage.id, {
+            path: targetPage.path,
+            title: targetPage.title,
+            content: nextContent,
+            isPublished: targetPage.isPublished ?? false,
+            editorType: targetPage.editorType ?? undefined,
+            tags,
+            userId: aiUserId,
+            changeSummary: "AI edit: appended content",
+          });
+
+          return {
+            action: action.action,
+            page: {
+              id: updatedPage.id,
+              path: updatedPage.path,
+              title: updatedPage.title,
+            },
+            message: `Added content to /${updatedPage.path}.`,
+          };
+        }
+
+        if (action.action === "writeToPage") {
+          assertWidgetToolEnabled("edit", widgetConfig);
+          await requirePermission(userId, "wiki:page:update");
+          await assertAIWriteAllowed();
+
+          if (!page?.id && !normalizedPath) {
+            return {
+              action: action.action,
+              message: "Please specify which page to update (e.g., “write to /zen”).",
+            };
+          }
+
+          const targetPage =
+            page?.id && isCurrentPageTarget
+              ? page
+              : normalizedPath
+                ? await resolvePageByPath(normalizedPath)
+                : null;
+
+          if (!targetPage) {
+            throw new TRPCError({ code: "NOT_FOUND", message: "Page not found." });
+          }
+
+          const content = await buildWriteContent({
+            prompt: input.prompt,
+            page: {
+              title: targetPage.title,
+              path: targetPage.path,
+              content: targetPage.content ?? "",
+            },
+          });
+
+          if (isCurrentPageTarget && page?.id) {
+            return {
+              action: action.action,
+              liveEdit: {
+                content,
+                mode: "append",
+                path: currentPath,
+              },
+              message:
+                mode === "edit"
+                  ? "Inserted the content into the editor. Review and save when ready."
+                  : "Writing to the page now. You can undo via page history.",
+            };
+          }
+
+          const existingContent = targetPage.content ?? "";
+          const nextContent = `${existingContent}${
+            existingContent.trim() ? "\n\n" : ""
+          }${content.trim()}\n`;
+
+          const tags = collectTags(targetPage);
+          const aiUserId = await getAIUserId();
+          const updatedPage = await wikiService.update(targetPage.id, {
+            path: targetPage.path,
+            title: targetPage.title,
+            content: nextContent,
+            isPublished: targetPage.isPublished ?? false,
+            editorType: targetPage.editorType ?? undefined,
+            tags,
+            userId: aiUserId,
+            changeSummary: "AI edit: added content",
+          });
+
+          return {
+            action: action.action,
+            page: {
+              id: updatedPage.id,
+              path: updatedPage.path,
+              title: updatedPage.title,
+            },
+            message: `Added content to /${updatedPage.path}.`,
+          };
+        }
+
+        if (action.action === "removeFromPage") {
+          assertWidgetToolEnabled("edit", widgetConfig);
+          await requirePermission(userId, "wiki:page:update");
+          await assertAIWriteAllowed();
+
+          if (!action.args.text) {
+            return {
+              action: action.action,
+              message: "Please specify the line or text to remove.",
+            };
+          }
+
+          if (!page?.id && !normalizedPath) {
+            return {
+              action: action.action,
+              message:
+                "Please specify which page to update (e.g., “remove from /zen”).",
+            };
+          }
+
+          const targetPage =
+            page?.id && isCurrentPageTarget
+              ? page
+              : normalizedPath
+                ? await resolvePageByPath(normalizedPath)
+                : null;
+
+          if (!targetPage) {
+            throw new TRPCError({ code: "NOT_FOUND", message: "Page not found." });
+          }
+
+          const target = action.args.text.trim();
+          const content = targetPage.content ?? "";
+          const normalize = (value: string) =>
+            value
+              .toLowerCase()
+              .replace(/[`*_~>#\[\]\(\)-]+/g, " ")
+              .replace(/[^\w\s]/g, " ")
+              .replace(/\s+/g, " ")
+              .trim();
+
+          const normalizedTarget = normalize(target);
+          const lines = content.split(/\r?\n/);
+          let filtered = lines.filter(
+            (line) => normalize(line) !== normalizedTarget
+          );
+
+          if (filtered.length === lines.length) {
+            filtered = lines.filter(
+              (line) => !normalize(line).includes(normalizedTarget)
+            );
+          }
+
+          let nextContent = filtered.join("\n").trimEnd() + "\n";
+
+          if (filtered.length === lines.length) {
+            const normalizedContent = normalize(content);
+            if (normalizedContent.includes(normalizedTarget)) {
+              const escaped = target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+              const flexible = escaped.replace(/\s+/g, "\\s+");
+              const regex = new RegExp(flexible, "i");
+              nextContent = content.replace(regex, "").trimEnd() + "\n";
+            }
+          }
+
+          if (filtered.length === lines.length && nextContent === content) {
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "Text not found on page.",
+            });
+          }
+
+          const tags = collectTags(targetPage);
+          const aiUserId = await getAIUserId();
+          const updatedPage = await wikiService.update(targetPage.id, {
+            path: targetPage.path,
+            title: targetPage.title,
+            content: nextContent,
+            isPublished: targetPage.isPublished ?? false,
+            editorType: targetPage.editorType ?? undefined,
+            tags,
+            userId: aiUserId,
+            changeSummary: "AI edit: removed line",
+          });
+
+          return {
+            action: action.action,
+            page: {
+              id: updatedPage.id,
+              path: updatedPage.path,
+              title: updatedPage.title,
+            },
+            liveEdit:
+              isCurrentPageTarget && mode !== "edit"
+                ? {
+                    content: nextContent,
+                    mode: "replace",
+                    path: currentPath,
+                  }
+                : undefined,
+            message: `Removed the line from /${updatedPage.path}. You can undo in history.`,
+          };
+        }
+
+        if (action.action === "replaceInPage") {
+          assertWidgetToolEnabled("edit", widgetConfig);
+          await requirePermission(userId, "wiki:page:update");
+          await assertAIWriteAllowed();
+
+          if (!action.args.target) {
+            return {
+              action: action.action,
+              message: "Please specify the paragraph or text to replace.",
+            };
+          }
+
+          if (!page?.id && !normalizedPath) {
+            return {
+              action: action.action,
+              message:
+                "Please specify which page to update (e.g., “edit that paragraph on /zen”).",
+            };
+          }
+
+          const targetPage =
+            page?.id && isCurrentPageTarget
+              ? page
+              : normalizedPath
+                ? await resolvePageByPath(normalizedPath)
+                : null;
+
+          if (!targetPage) {
+            throw new TRPCError({ code: "NOT_FOUND", message: "Page not found." });
+          }
+
+          const target = action.args.target.trim();
+          const replacement =
+            action.args.replacement?.trim() ??
+            (await buildReplacementContent({
+              prompt: input.prompt,
+              target,
+              page: {
+                title: targetPage.title,
+                path: targetPage.path,
+                content: targetPage.content ?? "",
+              },
+            })).trim();
+
+          const content = targetPage.content ?? "";
+          let nextContent = content;
+
+          if (content.includes(target)) {
+            nextContent = content.replace(target, replacement);
+          } else {
+            const escaped = target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            const flexible = escaped.replace(/\s+/g, "\\s+");
+            const regex = new RegExp(flexible, "i");
+            if (regex.test(content)) {
+              nextContent = content.replace(regex, replacement);
+            } else {
+              return {
+                action: action.action,
+                message:
+                  "I couldn’t find that exact paragraph on the page. Please quote it or paste the exact text to replace.",
+              };
+            }
+          }
+
+          const tags = collectTags(targetPage);
+          const aiUserId = await getAIUserId();
+          const updatedPage = await wikiService.update(targetPage.id, {
+            path: targetPage.path,
+            title: targetPage.title,
+            content: nextContent,
+            isPublished: targetPage.isPublished ?? false,
+            editorType: targetPage.editorType ?? undefined,
+            tags,
+            userId: aiUserId,
+            changeSummary: "AI edit: replaced paragraph",
+          });
+
+          return {
+            action: action.action,
+            page: {
+              id: updatedPage.id,
+              path: updatedPage.path,
+              title: updatedPage.title,
+            },
+            liveEdit:
+              isCurrentPageTarget && mode !== "edit"
+                ? {
+                    content: nextContent,
+                    mode: "replace",
+                    path: currentPath,
+                  }
+                : undefined,
+            message: `Updated the paragraph on /${updatedPage.path}.`,
+          };
+        }
+
+        if (action.action === "summarizePage") {
+          assertWidgetToolEnabled("summarize", widgetConfig);
+          await requirePermission(userId, "wiki:page:read");
+          const targetPage =
+            page?.id && isCurrentPageTarget
+              ? page
+              : normalizedPath
+                ? await resolvePageByPath(normalizedPath)
+                : null;
+
+          if (!targetPage) {
+            throw new TRPCError({ code: "NOT_FOUND", message: "Page not found." });
+          }
+
+          const response = await runChatCompletion({
+            messages: [
+              {
+                role: "user",
+                content: `Summarize this wiki page in 5-7 bullet points:\nTitle: ${targetPage.title}\nPath: ${targetPage.path}\nContent:\n${targetPage.content ?? ""}`,
+              },
+            ],
+          });
+
+          return { action: action.action, message: response };
+        }
+
+        if (action.action === "improvePage") {
+          assertWidgetToolEnabled("edit", widgetConfig);
+          await requirePermission(userId, "wiki:page:update");
+          await assertAIWriteAllowed();
+          const targetPage =
+            page?.id && isCurrentPageTarget
+              ? page
+              : normalizedPath
+                ? await resolvePageByPath(normalizedPath)
+                : null;
+
+          if (!targetPage) {
+            throw new TRPCError({ code: "NOT_FOUND", message: "Page not found." });
+          }
+
+          const goals = action.args.goals
+            ? `Goals:\n${action.args.goals}\n\n`
+            : "";
+          const retrievalQuery = [
+            action.args.goals,
+            input.prompt,
+            targetPage.title,
+          ]
+            .filter(Boolean)
+            .join(" ");
+          const retrievalContext = await buildRetrievalContext(retrievalQuery);
+          const sourcesBlock = retrievalContext ? `${retrievalContext}\n\n` : "";
+
+          const response = await runChatCompletion({
+            messages: [
+              {
+                role: "user",
+                content: `${sourcesBlock}${goals}Improve the following wiki page. Return only the updated content in the same format, without explanations. Do not wrap the response in code fences.\nTitle: ${targetPage.title}\nPath: ${targetPage.path}\nContent:\n${targetPage.content ?? ""}`,
+              },
+            ],
+          });
+
+          const tags = collectTags(targetPage);
+          const aiUserId = await getAIUserId();
+          const updatedPage = await wikiService.update(targetPage.id, {
+            path: targetPage.path,
+            title: targetPage.title,
+            content: response,
+            isPublished: targetPage.isPublished ?? false,
+            editorType: targetPage.editorType ?? undefined,
+            tags,
+            userId: aiUserId,
+            changeSummary: "AI edit: improved content",
+          });
+
+          return {
+            action: action.action,
+            page: {
+              id: updatedPage.id,
+              path: updatedPage.path,
+              title: updatedPage.title,
+            },
+            message:
+              "The page was updated with AI-generated improvements. Review the history for details.",
+          };
+        }
+
+        assertWidgetToolEnabled("search", widgetConfig);
+        await requirePermission(userId, "wiki:page:read");
+        const response = await buildChatResponse({
+          prompt: input.prompt,
+          pageId: input.pageId,
+          session: undefined,
+        });
+
+        return { action: "chat", message: response };
+      };
+
+      return executeAction(action);
     }),
 
   summarizePage: permissionProtectedProcedure("wiki:page:read")
     .input(z.object({ pageId: z.number() }))
     .mutation(async ({ input }) => {
+      const page = await wikiService.getById(input.pageId);
+      if (!page) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Page not found." });
+      }
+
+      const response = await runChatCompletion({
+        messages: [
+          {
+            role: "user",
+            content: `Summarize this wiki page in 5-7 bullet points:\nTitle: ${page.title}\nPath: ${page.path}\nContent:\n${page.content ?? ""}`,
+          },
+        ],
+      });
+
+      return { summary: response };
+    }),
+
+  widgetSummarizePage: permissionGuestProcedure("wiki:page:read")
+    .input(z.object({ pageId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const widgetConfig = await getWidgetToolConfig();
+      assertWidgetToolEnabled("summarize", widgetConfig);
+      await requirePermission(
+        ctx.session?.user ? parseInt(ctx.session.user.id) : undefined,
+        "wiki:page:read"
+      );
       const page = await wikiService.getById(input.pageId);
       if (!page) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Page not found." });
@@ -1262,6 +2041,55 @@ export const aiRouter = router({
       const goals = input.goals
         ? `Goals:\n${input.goals}\n\n`
         : "";
+      const retrievalQuery = [input.goals, page.title].filter(Boolean).join(" ");
+      const retrievalContext = await buildRetrievalContext(retrievalQuery);
+      const sourcesBlock = retrievalContext ? `${retrievalContext}\n\n` : "";
+
+      const response = await runChatCompletion({
+        messages: [
+          {
+            role: "user",
+            content: `${sourcesBlock}${goals}Improve the following wiki page. Return only the updated content in the same format, without explanations. Do not wrap the response in code fences.\nTitle: ${page.title}\nPath: ${page.path}\nContent:\n${page.content ?? ""}`,
+          },
+        ],
+      });
+
+      const tags =
+        page.tags
+          ?.map((pageTag) => pageTag.tag?.name)
+          .filter((tag): tag is string => Boolean(tag)) ?? [];
+
+      const aiUserId = await getAIUserId();
+      const updatedPage = await wikiService.update(page.id, {
+        path: page.path,
+        title: page.title,
+        content: response,
+        isPublished: page.isPublished ?? false,
+        editorType: page.editorType ?? undefined,
+        tags,
+        userId: aiUserId,
+        changeSummary: "AI edit: improved content",
+      });
+
+      return { page: updatedPage };
+    }),
+
+  widgetImprovePage: permissionGuestProcedure("wiki:page:update")
+    .input(z.object({ pageId: z.number(), goals: z.string().optional() }))
+    .mutation(async ({ ctx, input }) => {
+      const widgetConfig = await getWidgetToolConfig();
+      assertWidgetToolEnabled("edit", widgetConfig);
+      await requirePermission(
+        ctx.session?.user ? parseInt(ctx.session.user.id) : undefined,
+        "wiki:page:update"
+      );
+      await assertAIWriteAllowed();
+      const page = await wikiService.getById(input.pageId);
+      if (!page) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Page not found." });
+      }
+
+      const goals = input.goals ? `Goals:\n${input.goals}\n\n` : "";
       const retrievalQuery = [input.goals, page.title].filter(Boolean).join(" ");
       const retrievalContext = await buildRetrievalContext(retrievalQuery);
       const sourcesBlock = retrievalContext ? `${retrievalContext}\n\n` : "";

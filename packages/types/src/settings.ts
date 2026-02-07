@@ -113,6 +113,11 @@ export interface SettingsDefinitions {
   "ai.userRole": SettingDefinition<SelectSetting<"viewer" | "editor" | "admin">>;
   "ai.showGenerateOnEmptyPage": SettingDefinition<BooleanSetting>;
   "ai.publishGeneratedPages": SettingDefinition<BooleanSetting>;
+  "ai.widget.enabled": SettingDefinition<BooleanSetting>;
+  "ai.widget.tools.create": SettingDefinition<BooleanSetting>;
+  "ai.widget.tools.edit": SettingDefinition<BooleanSetting>;
+  "ai.widget.tools.summarize": SettingDefinition<BooleanSetting>;
+  "ai.widget.tools.search": SettingDefinition<BooleanSetting>;
 }
 
 /**
@@ -428,6 +433,41 @@ export const DEFAULT_SETTINGS: {
     type: "boolean",
     value: true,
     description: "Publish pages immediately after AI generation",
+    category: "ai",
+    defaultValue: true,
+  },
+  "ai.widget.enabled": {
+    type: "boolean",
+    value: false,
+    description: "Enable the embeddable AI widget",
+    category: "ai",
+    defaultValue: false,
+  },
+  "ai.widget.tools.create": {
+    type: "boolean",
+    value: false,
+    description: "Allow the widget to create new pages",
+    category: "ai",
+    defaultValue: false,
+  },
+  "ai.widget.tools.edit": {
+    type: "boolean",
+    value: false,
+    description: "Allow the widget to edit existing pages",
+    category: "ai",
+    defaultValue: false,
+  },
+  "ai.widget.tools.summarize": {
+    type: "boolean",
+    value: false,
+    description: "Allow the widget to summarize pages",
+    category: "ai",
+    defaultValue: false,
+  },
+  "ai.widget.tools.search": {
+    type: "boolean",
+    value: true,
+    description: "Allow the widget to search and answer questions",
     category: "ai",
     defaultValue: true,
   },
