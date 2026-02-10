@@ -5,7 +5,10 @@ import { Button } from "@repo/ui";
 import { ArrowUp, Sparkles } from "lucide-react";
 import { AIAssistantDrawer } from "./AIAssistantDrawer";
 import type { PageMetadata } from "~/components/layout/MainLayout";
-import { AI_DRAWER_OPEN_STORAGE_KEY, AI_EXTERNAL_PROMPT_EVENT } from "./constants";
+import {
+  AI_DRAWER_OPEN_STORAGE_KEY,
+  AI_EXTERNAL_PROMPT_EVENT,
+} from "./constants";
 
 interface AIAssistantTriggerProps {
   pageMetadata?: PageMetadata;
@@ -14,19 +17,19 @@ interface AIAssistantTriggerProps {
 
 interface FloatingAssistantInputProps {
   isActive: boolean;
+  onSubmitPrompt: (prompt: string) => void;
 }
 
-function FloatingAssistantInput({ isActive }: FloatingAssistantInputProps) {
+function FloatingAssistantInput({
+  isActive,
+  onSubmitPrompt,
+}: FloatingAssistantInputProps) {
   const [value, setValue] = useState("");
 
   const submitPrompt = () => {
     const trimmed = value.trim();
-    if (!trimmed || typeof window === "undefined") return;
-    window.dispatchEvent(
-      new CustomEvent(AI_EXTERNAL_PROMPT_EVENT, {
-        detail: { prompt: trimmed },
-      })
-    );
+    if (!trimmed) return;
+    onSubmitPrompt(trimmed);
     setValue("");
   };
 
@@ -34,14 +37,14 @@ function FloatingAssistantInput({ isActive }: FloatingAssistantInputProps) {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-4">
-      <div className="pointer-events-auto border-border-default bg-background-paper w-full max-w-3xl rounded-xl border shadow-lg">
+      <div className="pointer-events-auto border-border-default bg-background-paper w-full max-w-[400px] rounded-xl border shadow-lg">
         <div className="relative">
           <textarea
             id="chat-assistant-textarea"
             aria-label="Ask a question..."
             autoComplete="off"
             placeholder="Ask a question..."
-            className="chat-assistant-input w-full bg-transparent border-0 peer/input text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 !outline-none focus:!outline-none focus:ring-0 py-2.5 pl-3.5 pr-10 font-bodyWeight text-sm"
+            className="chat-assistant-input w-full overflow-y-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-transparent border-0 peer/input text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 !outline-none focus:!outline-none focus:ring-0 py-2.5 pl-3.5 pr-10 font-bodyWeight text-sm"
             style={{ resize: "none", height: "60px" }}
             value={value}
             onChange={(event) => setValue(event.target.value)}
@@ -74,6 +77,7 @@ export function AIAssistantTrigger({
   mode = "view",
 }: AIAssistantTriggerProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [queuedPrompt, setQueuedPrompt] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -87,6 +91,22 @@ export function AIAssistantTrigger({
     if (typeof window === "undefined") return;
     window.localStorage.setItem(AI_DRAWER_OPEN_STORAGE_KEY, String(isOpen));
   }, [isOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !isOpen || !queuedPrompt) return;
+    const timeoutId = window.setTimeout(() => {
+      window.dispatchEvent(
+        new CustomEvent(AI_EXTERNAL_PROMPT_EVENT, {
+          detail: { prompt: queuedPrompt },
+        })
+      );
+      setQueuedPrompt(null);
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [isOpen, queuedPrompt]);
 
   return (
     <>
@@ -108,7 +128,13 @@ export function AIAssistantTrigger({
         pageMetadata={pageMetadata}
         mode={mode}
       />
-      <FloatingAssistantInput isActive={isOpen} />
+      <FloatingAssistantInput
+        isActive={!isOpen}
+        onSubmitPrompt={(prompt) => {
+          setQueuedPrompt(prompt);
+          setIsOpen(true);
+        }}
+      />
     </>
   );
 }
