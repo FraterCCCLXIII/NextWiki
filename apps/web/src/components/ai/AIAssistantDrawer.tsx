@@ -17,6 +17,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { PageMetadata } from "~/components/layout/MainLayout";
 import { createClientMarkdownProcessor } from "~/lib/markdown/client-factory";
 import { MarkdownProse } from "~/components/wiki/MarkdownProse";
+import { AI_EXTERNAL_PROMPT_EVENT } from "./constants";
 
 type ChatMessage = {
   id: string;
@@ -68,6 +69,23 @@ const getErrorMessage = (error: unknown, fallback: string) => {
     }
   }
   return fallback;
+};
+
+const isAbortError = (error: unknown) => {
+  if (!error || typeof error !== "object") return false;
+  if ("name" in error && (error as { name?: string }).name === "AbortError") {
+    return true;
+  }
+  if ("cause" in error) {
+    const cause = (error as { cause?: unknown }).cause;
+    return (
+      !!cause &&
+      typeof cause === "object" &&
+      "name" in cause &&
+      (cause as { name?: string }).name === "AbortError"
+    );
+  }
+  return false;
 };
 
 const getWidgetPageHref = (href: string) => {
@@ -496,6 +514,11 @@ export function AIAssistantPanel({
     insertMention(title, path);
   };
 
+  const isWorking = dispatchMutation.isPending;
+  const isSendDisabled = !message.trim();
+  const showTools =
+    effectiveToolAccess.canSummarize || effectiveToolAccess.canEdit;
+
   useEffect(() => {
     if (typeof window === "undefined" || hasLoadedStoredState.current) return;
     const stored = window.localStorage.getItem(AI_CHAT_STORAGE_KEY);
@@ -551,6 +574,23 @@ export function AIAssistantPanel({
     updateMessageFromInput();
   }, [pageContextLabel, pageMetadata?.path, pageMetadata?.title]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handler = (event: Event) => {
+      const customEvent = event as CustomEvent<{ prompt?: string }>;
+      const prompt = customEvent.detail?.prompt?.trim();
+      if (!prompt || isWorking) return;
+      if (view !== "chat") {
+        setView("chat");
+      }
+      void submitPrompt(prompt);
+    };
+    window.addEventListener(AI_EXTERNAL_PROMPT_EVENT, handler as EventListener);
+    return () => {
+      window.removeEventListener(AI_EXTERNAL_PROMPT_EVENT, handler as EventListener);
+    };
+  }, [isWorking, submitPrompt, view]);
+
   const appendMessage = (next: ChatMessage) => {
     setMessages((prev) => [...prev, next]);
     if (next.role === "assistant") {
@@ -580,7 +620,7 @@ export function AIAssistantPanel({
     );
   };
 
-  const handleSend = async () => {
+  async function submitPrompt(trimmedPrompt: string) {
     if (!effectiveToolAccess.canSearch) {
       appendMessage({
         id: crypto.randomUUID(),
@@ -589,19 +629,15 @@ export function AIAssistantPanel({
       });
       return;
     }
-    const trimmed = inputRef.current
-      ? serializeInput(inputRef.current).trim()
-      : message.trim();
-    if (!trimmed) return;
-    appendMessage({ id: crypto.randomUUID(), role: "user", content: trimmed });
-    clearInput();
+    if (!trimmedPrompt) return;
+    appendMessage({ id: crypto.randomUUID(), role: "user", content: trimmedPrompt });
     const placeholderId = appendAssistantPlaceholder("Thinking...");
     pendingMessageIdRef.current = placeholderId;
     stopRequestedRef.current = false;
 
     try {
       const response = await dispatchMutation.mutateAsync({
-        prompt: trimmed,
+        prompt: trimmedPrompt,
         pageId: pageMetadata?.id,
         mode,
         lastAssistantContent: lastAssistantContent ?? undefined,
@@ -638,6 +674,15 @@ export function AIAssistantPanel({
       pendingMessageIdRef.current = null;
       stopRequestedRef.current = false;
     }
+  }
+
+  const handleSend = async () => {
+    const trimmed = inputRef.current
+      ? serializeInput(inputRef.current).trim()
+      : message.trim();
+    if (!trimmed) return;
+    clearInput();
+    await submitPrompt(trimmed);
   };
 
   const handleStop = () => {
@@ -728,28 +773,6 @@ export function AIAssistantPanel({
       setLastAssistantContent(lastAssistant?.content ?? null);
     }
     setView("chat");
-  };
-
-  const isWorking = dispatchMutation.isPending;
-  const isSendDisabled = !message.trim();
-  const showTools =
-    effectiveToolAccess.canSummarize || effectiveToolAccess.canEdit;
-
-  const isAbortError = (error: unknown) => {
-    if (!error || typeof error !== "object") return false;
-    if ("name" in error && (error as { name?: string }).name === "AbortError") {
-      return true;
-    }
-    if ("cause" in error) {
-      const cause = (error as { cause?: unknown }).cause;
-      return (
-        !!cause &&
-        typeof cause === "object" &&
-        "name" in cause &&
-        (cause as { name?: string }).name === "AbortError"
-      );
-    }
-    return false;
   };
 
   return (
