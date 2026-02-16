@@ -14,17 +14,24 @@ An open-source wiki system built with modern web technologies, inspired by WikiJ
 
 ## 🚀 Features
 
-- **Modern Stack**: Built with Next.js 15, React 19, Drizzle ORM, tRPC, NextAuth, Tailwind CSS, Codemirror, Shadcn UI, and more
-- **Markdown Support**: Write content using simple Markdown syntax
+- **Modern Stack**: Built with Next.js 15, React 19, Drizzle ORM, tRPC, NextAuth, Tailwind CSS, Tiptap, Shadcn UI, and more
+- **Dual Editing Experience**: Markdown-first editing with a rich Tiptap interface (toolbar, floating menus, inline formatting, task lists, links, and images) that still stores clean Markdown
 - **Direct Image Upload**: Upload images directly with paste or drag and drop
 - **Syntax Highlighting**: Syntax highlighting for code blocks
+- **AI Assistant (Context-Aware)**: Search-aware assistant with retrieval grounding, page context awareness, and multi-step action handling
+- **Persistent AI Conversations**: Conversation state, summaries, and previous context are used to improve follow-up responses
+- **AI Writing Actions**: Draft, append, replace, remove, summarize, and improve page content with permission and write-intent guards
+- **Live AI Edits in Editor**: AI can inject or replace content directly during editing flows for faster review-and-save workflows
+- **Embeddable AI Widget**: Public script-based widget with launcher + messenger iframe, configurable per-tool access, and permission-aware behavior
+- **AI Admin Controls**: Configure provider/model settings, embedding behavior, generate-on-empty-page behavior, publish defaults, and widget tool access
 - **Page/Folder Moving Functionality**: Move/rename pages and folders to different locations
 - **Authentication**: Secure login with credentials or OAuth providers (only password login is implemented for now)
 - **Advanced Search**: Full-text and fuzzy search
 - **Tags & Categories**: Organize your content effectively
 - **Asset Manager**: Upload, delete, and manage assets (images, videos, PDFs, etc.)
 - **Permissions**: Group and granular permission based access control
-- **Settings**: Centralized settings for the wiki, manageable by the admin
+- **Themes**: Built-in light/dark/system theme support
+- **Settings**: Centralized settings (including AI and widget controls), manageable by admins
 
 ## 🛠️ Tech Stack
 
@@ -44,10 +51,8 @@ An open-source wiki system built with modern web technologies, inspired by WikiJ
 
 - [ ] **S3 Asset Storage**: Store assets in S3 or somewhere else
 - [ ] **Version history**: Track changes and revert to previous versions
-- [ ] **Visual editor**: A visual editor for creating and editing pages
 - [ ] **Real-time Collaboration**: Multiple users can edit pages simultaneously using Yjs
 - [ ] **Better Settings**: Better settings, ability to manage authentication providers, etc.
-- [ ] **Different theme support**: Ability to switch between different themes
 - [ ] **Import/Export**: Ability to import and export pages from and to other wiki systems
 
 ## 📦 Getting Started
@@ -106,12 +111,21 @@ NextWiki includes an embeddable AI widget for query-focused assistance.
    - Set your AI provider and API key in the Admin → AI Settings page.
 2. Enable the widget:
    - In Admin → AI Settings, toggle `ai.widget.enabled` and choose which tools to allow.
-3. Copy the embed code:
-   - Use the generated iframe snippet and paste it into your site.
+3. Add the embed script to your site:
+   - Use the generated script tag and paste it before `</body>`:
+   ```html
+   <script
+     async
+     src="https://your-nextwiki-domain.com/ai-widget.js"
+     data-nextwiki-widget
+     data-base-url="https://your-nextwiki-domain.com"
+   ></script>
+   ```
 
 Notes:
-- The MVP widget uses public query-only access. Ensure the guest group has `wiki:page:read` permission if you want anonymous queries.
-- Create/edit/summarize tools are gated by both the widget settings and permissions.
+- The widget renders a floating launcher button and opens the messenger in an iframe panel.
+- Anonymous users can query only when guest access has `wiki:page:read`.
+- Create/edit/summarize capabilities are gated by both widget settings and permission checks.
 
 ## Search Features
 
