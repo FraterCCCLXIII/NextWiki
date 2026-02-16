@@ -1,7 +1,5 @@
 # NextWiki
 
-![NextWiki Main Page Dark](./assets/nextwiki-home-dark.png)
-
 <p align="center">
   <a href="https://next-wiki.com" target="_blank">
     <img src="https://img.shields.io/badge/Live%20Demo-Visit%20Now-blue?style=for-the-badge&logo=vercel" alt="Live Demo">
@@ -165,23 +163,6 @@ This project uses a Turborepo monorepo structure:
 ├── docs/                # Project documentation
 └── ... configuration files (pnpm, turbo, prettier, etc.)
 ```
-
-## Screenshots
-
-![NextWiki Main Page](./assets/nextwiki-home.png)
-![NextWiki Main Page Dark](./assets/nextwiki-home-dark.png)
-![NextWiki Main Page Admin](./assets/nextwiki-home-admin.png)
-
-![NextWiki Search](./assets/nextwiki-search.png)
-
-![NextWiki Page](./assets/nextwiki-page.png)
-![NextWiki Edit Page](./assets/nextwiki-edit.png)
-
-![NextWiki Browser](./assets/nextwiki-browser.png)
-![NextWiki Move Page](./assets/nextwiki-move.png)
-
-![NextWiki Admin Dashboard](./assets/nextwiki-admin-dashboard.png)
-![NextWiki Settings](./assets/nextwiki-admin-settings.png)
 
 ## 🤝 Contributing
 
