@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Telescope FX lab</title>
+<style>
+html,body{margin:0;height:100%;background:#000;color:#bbb;font:12px/1.35 ui-monospace,Menlo,monospace;overflow:hidden}
+canvas{display:block;width:100vw;height:100vh;cursor:grab}
+#ui{position:fixed;top:8px;left:8px;width:230px;max-height:calc(100vh - 16px);overflow:auto;background:#000a;padding:8px;border:1px solid #333;border-radius:4px}
+#ui h4{margin:8px 0 3px;font-size:11px;color:#8ab;text-transform:uppercase}
+#ui label{display:grid;grid-template-columns:78px 1fr 40px;gap:4px;align-items:center}
+#ui input[type=range]{width:100%;margin:0}
+#ui button,#ui select{background:#222;color:#ccc;border:1px solid #444;border-radius:3px;padding:2px 5px;margin:1px;font:inherit;cursor:pointer}
+#ui button.on{background:#356;color:#fff}
+#hud{position:fixed;right:8px;bottom:8px;background:#000a;padding:4px 8px;border-radius:3px}
+</style></head><body>
+<canvas id="c"></canvas><div id="ui"></div><div id="hud"></div>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { blackbodyRGB, magToFlux, cosmoDistances, redshiftedColor, telescopeStarMaterial, galaxyInstances, hubbleGalaxy, galaxyParamsFromCatalog,
+  toneMapPass, starPeaks, autoExposure, ZP } from './telescope-fx.js';
+
+const cv = document.getElementById('c'), renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: false, powerPreference: 'high-performance' });
+const DPR = Math.min(window.devicePixelRatio || 1, 2); renderer.setPixelRatio(DPR); renderer.setSize(innerWidth, innerHeight, false);
+const camera = new THREE.PerspectiveCamera(2.4, innerWidth / innerHeight, 1, 1e6);
+const post = toneMapPass(THREE, renderer);
+const q = new URLSearchParams(location.search);
+
+// ------------------------------------------------------------------ synthetic field
+let seed = 7; const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+const gauss = () => Math.sqrt(-2 * Math.log(1 - rnd())) * Math.cos(6.2831853 * rnd());
+const R0 = 1000, ARC = Math.PI / 180 / 60;                      // reference distance; one arcminute in radians
+function starTemp(m) {                                          // bright stars skew hot/giant; faint field is mostly K/M dwarfs
+  const hot = m < 11 ? 0.35 : 0.1, u = rnd();
+  return u < hot ? 7000 + rnd() * 18000 : u < hot + 0.25 ? 5300 + rnd() * 1500 : u < hot + 0.6 ? 3900 + rnd() * 1400 : 2800 + rnd() * 1100;
+}
+function genStars(n, wDeg, hDeg, mMin = 6.5, mMax = 21, slope = 0.35, eight = false) {
+  const pos = new Float32Array(n * 3), col = new Float32Array(n * 3), flux = new Float32Array(n), phase = new Float32Array(n), spk = new Float32Array(n), dist = new Float32Array(n), c = [0, 0, 0];
+  const A = Math.pow(10, slope * (mMax - mMin)) - 1;
+  for (let i = 0; i < n; i++) {
+    const m = mMin + Math.log10(1 + rnd() * A) / slope, d = R0 * (0.6 + 0.9 * rnd());
+    const tx = (rnd() - 0.5) * wDeg * Math.PI / 180, ty = (rnd() - 0.5) * hDeg * Math.PI / 180;
+    pos.set([d * Math.tan(tx), d * Math.tan(ty), -d], i * 3); blackbodyRGB(starTemp(m), { sat: 0.9 }, c); col.set(c, i * 3);
+    flux[i] = magToFlux(m) * (d / R0) ** 2; phase[i] = rnd() * 6.28; dist[i] = d;
+    spk[i] = m < 10 ? (rnd() < 0.7 ? 4 : rnd() < 0.6 ? 6 : 8) : m < 11.5 ? (rnd() < 0.5 ? 4 : 0) : 0;
+  }
+  if (eight) { pos.set([-60, 10, -R0], 0); flux[0] = magToFlux(8.6); spk[0] = 8; col.set([1, 0.95, 0.9], 0); dist[0] = R0; }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  g.setAttribute('flux', new THREE.BufferAttribute(flux, 1)); g.setAttribute('phase', new THREE.BufferAttribute(phase, 1)); g.setAttribute('spk', new THREE.BufferAttribute(spk, 1));
+  g.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1e6); g.userData = { flux, dist };
+  return g;
+}
+function galRow(ax, ay, d, o) {                                    // o: re (arcmin), mag, + shape
+  const re = o.re * ARC * d, rgb = o.rgb;
+  return { x: d * Math.tan(ax * ARC), y: d * Math.tan(ay * ARC), z: -d, re, flux: magToFlux(o.mag) * (d / R0) ** 2, q: o.q, pa: o.pa ?? rnd() * 3.14, n: o.n, bt: o.bt, arm: o.arm ?? 0, dust: o.dust ?? 0, rgb };
+}
+function genGalaxies(wDeg, hDeg, nTiny = 9000, nSmall = 900, nMid = 70) {
+  const rows = [], W = wDeg * 60, H = hDeg * 60, c = [0, 0, 0];
+  const cl = () => [gauss() * 28, gauss() * 20], uni = () => [(rnd() - 0.5) * W, (rnd() - 0.5) * H];
+  const giants = [[-6, 3, 8.9, 3.6, 0.9, 5100], [14, -9, 9.6, 2.6, 0.7, 5300], [-30, -16, 10.2, 2.0, 0.8, 5000], [26, 15, 10.4, 1.8, 0.55, 5400], [2, -26, 10.8, 1.5, 0.95, 5200]];
+  giants.forEach(([x, y, mag, re, qq, T], i) => rows.push(galRow(x, y, R0, { re, mag, q: qq, n: 3.4 + rnd() * 0.9, bt: 1, rgb: blackbodyRGB(T, { sat: 0.8 }, [0, 0, 0]) })));
+  rows.push(galRow(-18, 12, R0, { re: 2.2, mag: 10.0, q: 0.12, n: 1.5, bt: 0.25, dust: 0.85, pa: 0.5, rgb: blackbodyRGB(6000, { sat: 0.8 }, [0, 0, 0]) }));   // edge-on streak
+  for (let i = 0; i < nMid; i++) {
+    const [x, y] = cl(), spiral = rnd() < 0.7, inc = Math.acos(rnd()), qq = Math.max(0.12, Math.cos(inc)), mag = 12 + rnd() * 3.5, re = 0.25 + rnd() * 0.9;
+    rows.push(galRow(x, y, R0 * (0.9 + 0.2 * rnd()), spiral ? { re, mag, q: qq, n: 1.2 + rnd(), bt: 0.1 + rnd() * 0.3, arm: qq > 0.5 ? 0.45 * qq : 0.05, dust: qq < 0.3 ? 0.8 : 0, rgb: blackbodyRGB(6200 + rnd() * 5500, { sat: 0.9 }, [0, 0, 0]) }
+      : { re: re * 0.7, mag: mag + 0.5, q: 0.5 + rnd() * 0.5, n: 3 + rnd(), bt: 1, rgb: blackbodyRGB(4300 + rnd() * 700, { sat: 0.85 }, [0, 0, 0]) }));
+  }
+  for (let i = 0; i < nSmall; i++) {
+    const [x, y] = rnd() < 0.5 ? cl() : uni(), z = 0.03 + rnd() * 0.2, spiral = rnd() < 0.55, qq = Math.max(0.15, Math.cos(Math.acos(rnd())));
+    rows.push(galRow(x, y, R0, { re: 0.12 + rnd() * 0.3, mag: 15.5 + rnd() * 2.5, q: qq, n: spiral ? 1.3 : 3, bt: spiral ? 0.15 : 1, arm: spiral && qq > 0.5 ? 0.3 : 0, rgb: redshiftedColor(spiral ? 8000 : 4600, z, { sat: 0.9 }) }));
+  }
+  for (let i = 0; i < nTiny; i++) {                               // distant: z 0.3-1.3, red/orange after the Wien shift (sizes from the angular diameter distance)
+    const [x, y] = uni(), z = 0.3 + rnd() * 1.0, blue = rnd() < 0.3, dA = cosmoDistances(z).dA;
+    rows.push(galRow(x, y, R0, { re: 6 / dA * 1.0, mag: 18.5 + rnd() * 4, q: 0.25 + rnd() * 0.75, n: blue ? 1 : 2.5, bt: blue ? 0 : 0.8, rgb: redshiftedColor(blue ? 9500 : 5000, z, { sat: 1 }) }));
+  }
+  return rows;
+}
+
+// ------------------------------------------------------------------ scenes
+const starMat = telescopeStarMaterial(THREE, { dpr: DPR }); starMat.userData.u.uDpr.value = DPR;
+const U = starMat.userData.u;
+const W_DEG = 8, H_DEG = 5.5;
+const fieldScene = new THREE.Scene(), starGeo = genStars(110000, W_DEG, H_DEG);
+const stars = new THREE.Points(starGeo, starMat); stars.frustumCulled = false; fieldScene.add(stars);
+const rows = genGalaxies(W_DEG, H_DEG); const gals = galaxyInstances(THREE, rows); fieldScene.add(gals);
+
+const galleryScene = new THREE.Scene(), galStarGeo = genStars(3500, 7, 4.6, 7.5, 20, 0.32, true);
+const galStars = new THREE.Points(galStarGeo, starMat); galStars.frustumCulled = false; galleryScene.add(galStars);
+const bgRows = genGalaxies(7, 4.6, 600, 0, 0).slice(6); const galBg = galaxyInstances(THREE, bgRows); galleryScene.add(galBg);
+const catalog = [
+  { name: 'NGC 1300-like face-on', row: { morph: 'SB(rs)bc', radius_m: 26, incl: 12, pa: 100, bv: 0.6, seed: 3 }, at: [-45, 36] },
+  { name: 'same, inclined 70', row: { morph: 'SB(rs)bc', radius_m: 26, incl: 70, pa: 100, bv: 0.6, seed: 3 }, at: [45, 36] },
+  { name: 'elliptical E2', row: { morph: 'E2', radius_m: 26, pa: 40, bv: 0.95, seed: 5 }, at: [-45, -36] },
+  { name: 'irregular dwarf', row: { morph: 'Im', radius_m: 22, pa: 20, bv: 0.4, seed: 9 }, at: [45, -36] },
+];
+const hub = catalog.map(c => { const p = galaxyParamsFromCatalog(c.row), m = hubbleGalaxy(THREE, p); m.scale.setScalar(p.R); m.position.set(c.at[0], c.at[1], -R0); m.userData.paramsUsed = p; galleryScene.add(m); return m; });
+window.hub = hub;
+
+// naive (current FX engine style) for before/after
+function naive() {
+  const S = 128, cvs = document.createElement('canvas'); cvs.width = cvs.height = S; const g = cvs.getContext('2d'), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.1, 'rgba(255,255,255,.7)'); gr.addColorStop(0.35, 'rgba(255,255,255,.12)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, S, S);
+  const mk = (geo, sizeFn, rowsOrNull) => {
+    const n = geo.getAttribute('position').count, sz = new Float32Array(n), col = new Float32Array(n * 3), f = geo.userData.flux;
+    for (let i = 0; i < n; i++) { const b = Math.min(1, Math.pow(f[i], 0.3) * 0.5); sz[i] = sizeFn(i, f[i]); for (let k = 0; k < 3; k++) col[i * 3 + k] = geo.getAttribute('color').array[i * 3 + k] * b; }
+    const g2 = new THREE.BufferGeometry(); g2.setAttribute('position', geo.getAttribute('position')); g2.setAttribute('color', new THREE.BufferAttribute(col, 3)); g2.setAttribute('aSize', new THREE.BufferAttribute(sz, 1));
+    const m = new THREE.PointsMaterial({ size: 1, map: new THREE.CanvasTexture(cvs), vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: false });
+    m.onBeforeCompile = sh => { sh.vertexShader = 'attribute float aSize;\n' + sh.vertexShader.replace('gl_PointSize = size;', 'gl_PointSize = aSize * ' + DPR.toFixed(2) + ';'); };
+    const p = new THREE.Points(g2, m); p.frustumCulled = false; return p;
+  };
+  const sc = new THREE.Scene(); sc.add(mk(starGeo, (i, f) => 4 + 26 * Math.min(1, Math.pow(f, 0.35) * 0.5)));
+  // galaxies as plain soft points sized by radius (the old "galaxy cloud" look)
+  const n = rows.length, pos = new Float32Array(n * 3), col = new Float32Array(n * 3), sz = new Float32Array(n);
+  rows.forEach((r, i) => { pos.set([r.x, r.y, r.z], i * 3); const b = Math.min(1, Math.pow(r.flux, 0.3) * 0.45); col.set(r.rgb.map(v => v * b), i * 3); sz[i] = 4 + r.re / R0 / ARC * 14; });
+  const g3 = new THREE.BufferGeometry(); g3.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g3.setAttribute('color', new THREE.BufferAttribute(col, 3)); g3.setAttribute('aSize', new THREE.BufferAttribute(sz, 1));
+  const mm = sc.children[0].material.clone(); const pg = new THREE.Points(g3, mm); pg.frustumCulled = false; sc.add(pg); return sc;
+}
+const naiveScene = naive();
+
+// ------------------------------------------------------------------ state, camera, UI
+const S = { mode: 'field', look: 'telescope', yaw: 0, pitch: 0, fov: 2.4, dist: 1, auto: false, exposure: 1, stops: 0 };
+function view(name) {
+  S.mode = name === 'field' ? 'field' : 'gallery';
+  if (name === 'field') { S.yaw = S.pitch = 0; S.fov = 2.4; }
+  else if (name === 'all') { S.yaw = S.pitch = 0; S.fov = 8.2; }
+  else { const c = catalog[+name]; S.yaw = Math.atan2(-c.at[0], R0) * 180 / Math.PI; S.pitch = Math.atan2(c.at[1], R0) * 180 / Math.PI; S.fov = 4.4; }
+  dirty = true;
+}
+let dirty = true;
+function setupCam() {
+  camera.fov = S.fov; camera.aspect = innerWidth / innerHeight; camera.rotation.set(S.pitch * Math.PI / 180, S.yaw * Math.PI / 180, 0, 'YXZ'); camera.updateProjectionMatrix(); camera.updateMatrixWorld();
+  for (const m of [gals, galBg, ...hub]) m.userData.setViewport(innerWidth, innerHeight);
+  const ex = S.exposure * Math.pow(2, S.stops);
+  for (const m of [gals, galBg]) { m.material.userData.u.uDist.value = S.dist; m.material.userData.u.uExposure.value = ex; }
+  for (const h of hub) h.material.userData.u.uExposure.value = ex;
+  U.uDist.value = S.dist; U.uExposure.value = ex;
+  post.uniforms.uBgOffset.value.set(S.yaw * 0.25, -S.pitch * 0.25);
+}
+let peaksRef = null;
+function peaksNow(s) {
+  const sp = starPeaks(starGeo.userData.flux, { fwhm: U.uFwhm.value, distances: starGeo.userData.dist, dist: s }), gp = gals.userData.peaks(camera, innerHeight, s), a = new Float32Array(sp.length + gp.length); a.set(sp); a.set(gp, sp.length); return a;
+}
+function updateAuto() { if (!S.auto) { S.exposure = 1; return; } camera.updateMatrixWorld(); peaksRef ||= (() => { const f = S.fov, d = S.dist; S.dist = 1; setupCam(); const r = peaksNow(1); S.dist = d; return r; })(); S.exposure = autoExposure(peaksNow(S.dist), peaksRef, 40); }
+
+const ui = document.getElementById('ui'); const addH = t => ui.insertAdjacentHTML('beforeend', `<h4>${t}</h4>`);
+function slider(label, min, max, step, val, fn) {
+  const l = document.createElement('label'), r = document.createElement('input'), o = document.createElement('span'); r.type = 'range'; r.min = min; r.max = max; r.step = step; r.value = val; o.textContent = val;
+  r.oninput = () => { o.textContent = (+r.value).toFixed(step < 0.01 ? 4 : step < 1 ? 2 : 0); fn(+r.value); dirty = true; }; l.append(label, r, o); ui.append(l);
+}
+function btns(list, fn) { const d = document.createElement('div'); for (const [k, t] of list) { const b = document.createElement('button'); b.textContent = t; b.onclick = () => { fn(k); [...d.children].forEach(x => x.classList.toggle('on', x === b)); dirty = true; }; d.append(b); } ui.append(d); }
+addH('View'); btns([['field', 'Virgo-like field'], ['all', 'Galaxies x4'], ['0', 'Barred'], ['1', 'Incl 70'], ['2', 'Elliptical'], ['3', 'Irregular']], view);
+addH('Look'); btns([['telescope', 'Telescope'], ['naive', 'Before (sprites)']], k => S.look = k);
+addH('Stars (PSF)'); slider('FWHM px', 1.2, 5, 0.1, 2.2, v => starMat.userData.setPsf(v)); slider('halo', 0, 0.01, 0.0002, 0.0012, v => U.uHaloAmp.value = v); slider('halo R', 3, 30, 1, 9, v => U.uHaloR.value = v);
+slider('spike amp', 0, 0.3, 0.01, 0.06, v => U.uSpikeAmp.value = v); btns([[0, 'per-star'], [4, '4'], [6, '6'], [8, '8']], k => U.uSpikeN.value = k); slider('twinkle', 0, 1, 0.05, 0, v => U.uTwinkle.value = v);
+addH('Tone'); slider('exposure st', -4, 4, 0.1, 0, v => S.stops = v); slider('asinh a', 20, 2000, 10, 300, v => post.uniforms.uSoft.value = v); slider('white pt', 0.3, 20, 0.1, 1.5, v => post.uniforms.uWhite.value = v);
+slider('saturation', 0.5, 2, 0.05, 1.15, v => post.uniforms.uSat.value = v); slider('noise', 0, 3, 0.1, 0.9, v => post.uniforms.uShot.value = v); slider('dust glow', 0, 0.015, 0.0005, 0.0035, v => post.uniforms.uDust.value = v);
+slider('nebula demo', 0, 3, 0.1, 0, v => post.uniforms.uNeb.value = v); btns([[0, 'natural'], [1, 'Hubble SHO'], [2, 'HOO']], k => post.uniforms.uNebPal.value = k);
+addH('Distance'); slider('pull back x', 1, 300, 1, 1, v => { S.dist = v; }); btns([[0, 'fixed exposure'], [1, 'auto exposure']], k => S.auto = !!k);
+addH('Perf'); const bb = document.createElement('button'); bb.textContent = 'Benchmark'; bb.onclick = () => { document.getElementById('hud').textContent = JSON.stringify(window.bench()); }; ui.append(bb);
+
+// drag / wheel
+let drag = null;
+cv.onpointerdown = e => { drag = [e.clientX, e.clientY]; cv.setPointerCapture(e.pointerId); };
+cv.onpointermove = e => { if (!drag) return; const k = S.fov / innerHeight; S.yaw += (e.clientX - drag[0]) * k; S.pitch += (e.clientY - drag[1]) * k; drag = [e.clientX, e.clientY]; dirty = true; };
+cv.onpointerup = () => drag = null;
+cv.onwheel = e => { S.fov = Math.min(Math.max(S.fov * Math.exp(e.deltaY * 0.001), 0.2), 12); dirty = true; e.preventDefault(); };
+addEventListener('resize', () => { renderer.setSize(innerWidth, innerHeight, false); post.setSize(); dirty = true; });
+
+function draw() {
+  setupCam(); if (S.auto) { updateAuto(); setupCam(); } else S.exposure = 1;
+  const sc = S.mode === 'field' ? fieldScene : galleryScene;
+  if (S.look === 'naive' && S.mode === 'field') { renderer.setRenderTarget(null); renderer.setClearColor(0x000000, 1); renderer.clear(); renderer.render(naiveScene, camera); }
+  else post.render(sc, camera);
+}
+window.bench = (n = 60) => { const gl = renderer.getContext(); draw(); gl.finish(); const t = performance.now(); for (let i = 0; i < n; i++) draw(); gl.finish(); const ms = (performance.now() - t) / n; return { ms: +ms.toFixed(2), mode: S.mode, stars: starGeo.getAttribute('position').count, galaxies: rows.length, w: innerWidth, h: innerHeight, dpr: DPR }; };
+window.S = S; window.view = view; window.post = post; window.U = U; window.rows = rows; window.setDirty = () => dirty = true;
+if (q.get('view')) view(q.get('view')); if (q.get('look')) S.look = q.get('look'); if (q.get('dist')) S.dist = +q.get('dist'); if (q.get('auto')) S.auto = true;
+(function loop() { requestAnimationFrame(loop); if (dirty) { draw(); dirty = false; } })();
+</script></body></html>
