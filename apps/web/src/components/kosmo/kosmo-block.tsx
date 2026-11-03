@@ -79,7 +79,10 @@ function formatDataField(raw: unknown): { value: string; source: string | null }
 function RefLink({ name, path }: { name: string; path: string | null }) {
   if (!path) return <span className="text-kosmo-text">{name}</span>;
   return (
-    <Link href={path} className="text-kosmo-mint underline-offset-2 hover:underline">
+    <Link
+      href={path.startsWith("/") ? path : `/${path}`}
+      className="text-kosmo-mint underline-offset-2 hover:underline"
+    >
       {name}
     </Link>
   );
