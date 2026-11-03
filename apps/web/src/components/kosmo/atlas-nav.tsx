@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { NAV_GROUPS, isNavActive, type NavGroup } from "~/lib/kosmo/nav";
+import { useScrollFade } from "~/lib/hooks/use-scroll-fade";
 
 function NavGroupSection({ group }: { group: NavGroup }) {
   const pathname = usePathname() ?? "";
@@ -57,10 +58,12 @@ function NavGroupSection({ group }: { group: NavGroup }) {
 }
 
 export function AtlasNav() {
+  const fadeRef = useScrollFade<HTMLElement>();
   return (
     <nav
+      ref={fadeRef}
       aria-label="Atlas"
-      className="w-full bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-6.25rem)] md:w-60 md:shrink-0 md:overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="w-full bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-6.25rem)] md:w-60 md:shrink-0 md:overflow-y-auto kosmo-scroll scroll-fade"
     >
       {NAV_GROUPS.map((group) => (
         <NavGroupSection key={group.name} group={group} />

@@ -75,7 +75,7 @@ export function KosmoMenu({ siteLogo }: { siteLogo?: string | null }) {
       <DropdownMenuContent
         align="start"
         sideOffset={10}
-        className="max-h-[80vh] w-[min(920px,calc(100vw-2rem))] rounded-xl border border-kosmo-line2 bg-kosmo-panel p-5 shadow-2xl [scrollbar-color:#303133_transparent] [scrollbar-width:thin]"
+        className="max-h-[80vh] w-[min(920px,calc(100vw-2rem))] rounded-xl border border-kosmo-line2 bg-kosmo-panel p-5 shadow-2xl kosmo-scroll"
       >
         <div className="grid grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-5">
           {mainGroups.map((group) => (

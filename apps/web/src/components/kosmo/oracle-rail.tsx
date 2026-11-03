@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "~/lib/utils";
 import { ORACLE_GROUPS } from "~/lib/kosmo/oracle-nav";
+import { useScrollFade } from "~/lib/hooks/use-scroll-fade";
 
 /**
  * Left rail for the Oracle lab pages: the lab's five groups as a vertical list.
@@ -12,12 +13,14 @@ import { ORACLE_GROUPS } from "~/lib/kosmo/oracle-nav";
  */
 export function OracleRail() {
   const pathname = usePathname() ?? "";
+  const fadeRef = useScrollFade<HTMLElement>();
   if (!/^\/kosmo\/tools\/oracle(?:-|$)/.test(pathname)) return null;
 
   return (
     <nav
+      ref={fadeRef}
       aria-label="Oracle sections"
-      className="w-full shrink-0 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-6.25rem)] md:w-48"
+      className="w-full shrink-0 overflow-y-auto kosmo-scroll scroll-fade bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-6.25rem)] md:w-48"
     >
       <p className="mb-4 text-[13px] font-semibold uppercase tracking-[0.28em] text-kosmo-text">
         Oracle

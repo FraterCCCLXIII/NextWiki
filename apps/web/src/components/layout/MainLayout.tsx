@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { SiteFooter } from "./SiteFooter";
+import { ScrollFeather } from "./ScrollFeather";
 
 export interface PageMetadata {
   title?: string;
@@ -29,8 +30,9 @@ export function MainLayout({ children, pageMetadata }: MainLayoutProps) {
       >
         <Sidebar />
       </Suspense> */}
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="relative flex flex-1 flex-col overflow-hidden">
         <Header pageMetadata={pageMetadata} />
+        <ScrollFeather />
         <Suspense fallback={<div>Loading...</div>}>
           <main className="flex-1 overflow-auto">{children}</main>
         </Suspense>

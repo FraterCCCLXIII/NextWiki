@@ -556,3 +556,25 @@ html.embedded .orbwrap { flex-direction: column; gap: 10px; align-items: flex-en
 html.embedded #navTime { top: 21px; }
 html.embedded body.navdrawer-open .orbwrap { right: 416px; }
 
+/* Thin, hover-only scrollbars everywhere (the app and the embedded Kosmographica pages share this look). */
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-corner { background: transparent; }
+*::-webkit-scrollbar-thumb { background: transparent; border-radius: 999px; min-height: 28px; }
+*:hover::-webkit-scrollbar-thumb { background: #3a3b3d; }
+@supports not selector(::-webkit-scrollbar) {
+  * { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+  *:hover { scrollbar-color: #3a3b3d transparent; }
+}
+
+/* Scroll fade: .scroll-fade containers dissolve at the top once scrolled down (.fade-t) and at the bottom while
+   there is more below (.fade-b). The classes are toggled by useScrollFade (app) and kosmo-scrollfade.js (embedded pages). */
+@property --fade-top { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --fade-bottom { syntax: "<length>"; inherits: false; initial-value: 0px; }
+.scroll-fade {
+  transition: --fade-top .2s ease, --fade-bottom .2s ease;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-top), #000 calc(100% - var(--fade-bottom)), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-top), #000 calc(100% - var(--fade-bottom)), transparent 100%);
+}
+.scroll-fade.fade-t { --fade-top: 32px; }
+.scroll-fade.fade-b { --fade-bottom: 32px; }
