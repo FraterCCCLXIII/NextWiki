@@ -242,6 +242,12 @@
   #helm button { padding: 3px 8px; font-size: 12px; } #helm button.on { color: var(--accent); border-color: var(--accent); }
   #helm .hcourse { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; }
   #helmClose { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; padding: 0; line-height: 1; border-radius: 50%; background: transparent; border: 0; color: var(--muted); cursor: pointer; }
+  #pilot { position: absolute; left: 50%; top: 50%; width: 0; height: 0; z-index: 6; pointer-events: none; }
+  #pilot .pr { position: absolute; left: -26px; top: -26px; width: 52px; height: 52px; border: 1px solid rgba(160,205,255,0.55); border-radius: 50%; }
+  #pilot .pr::before, #pilot .pr::after { content: ""; position: absolute; background: rgba(160,205,255,0.55); } #pilot .pr::before { left: 50%; top: -9px; width: 1px; height: 8px; } #pilot .pr::after { top: 50%; left: -9px; height: 1px; width: 8px; }
+  #pilot .ps { position: absolute; left: -5px; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: rgba(255,211,122,0.9); transform: translate(var(--sx, 0), var(--sy, 0)); opacity: 0; box-shadow: 0 0 8px rgba(255,211,122,0.7); } #pilot.held .ps { opacity: 1; }
+  #pilot .ph { position: absolute; left: 50%; top: 40px; transform: translateX(-50%); font: 10px ui-monospace, Menlo, monospace; letter-spacing: 0.1em; color: rgba(160,205,255,0.55); white-space: nowrap; text-transform: uppercase; }
+  #pilot[hidden] { display: none; }
   #course { position: absolute; z-index: 7; pointer-events: none; transform: translate(-50%, -50%); }
   #course .cm { display: block; width: 22px; height: 22px; border: 1.5px solid var(--accent); transform: rotate(45deg); margin: 0 auto; box-shadow: 0 0 10px var(--accent); }
   #course .cl { display: block; margin-top: 6px; font-size: 12px; color: var(--accent); white-space: nowrap; text-align: center; text-shadow: 0 0 6px #000; }
@@ -466,7 +472,7 @@
   <button id="helmClose" type="button" title="Close the helm" aria-label="Close the helm">×</button>
   <div class="hudk">Helm</div>
   <div class="hrow">
-    <div class="hlever"><span class="navtag">full</span><input type="range" id="hThr" min="0" max="15" step="1" aria-label="Throttle: pick a speed gear"><span class="navtag">stop</span></div>
+    <div class="hlever"><span class="navtag">full</span><input type="range" id="hThr" min="0" max="15" step="any" aria-label="Throttle: pick a speed gear"><span class="navtag">stop</span></div>
     <div class="hread">
       <div id="hGear" class="hgear">Stop</div><div id="hSpeed" class="hsub"></div><div id="hVelo" class="hsub"></div>
       <div class="hbtns"><button id="hRev" type="button" title="Reverse thrust">reverse</button><button id="hStop" type="button" title="Throttle to zero (B)">all stop</button></div>
@@ -480,6 +486,7 @@
     <label class="hsub"><input type="checkbox" id="hZoom" checked> scale the view to the speed</label>
   </div>
 </div>
+<div id="pilot" hidden><span class="pr"></span><span class="ps"></span><span class="ph">drag = stick · arrows pitch/yaw · Q E roll · W S throttle</span></div>
 <div id="course" hidden><span class="cm"></span><span class="cl"></span></div>
 <div id="timehud" class="glass" aria-label="Simulation clock">
   <div class="trow">
@@ -861,7 +868,7 @@ controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIG
 scene.add(new THREE.AmbientLight(0xffffff, 0.45));
 const sunLight = new THREE.PointLight(0xfff2d0, 2.5, 0, 0); scene.add(sunLight);
 // the wheel travels in scale (not a camera dolly), so every level keeps its true size
-renderer.domElement.addEventListener('wheel', e => { e.preventDefault(); if (fly.on) { fly.speed = clamp(fly.speed * Math.exp(-Math.sign(e.deltaY) * 0.18), 0.005, 40); flySync(); return; } state.zoom = clamp(state.zoom + Math.sign(e.deltaY) * 0.08, 6.5, 27); sync('zoom', 2); travel = null; }, { passive: false });
+renderer.domElement.addEventListener('wheel', e => { e.preventDefault(); if (helm.on) { helm.thr = clamp(helm.thr - Math.sign(e.deltaY) * 0.4, 0, GEARS.length - 1); return; } if (fly.on) { fly.speed = clamp(fly.speed * Math.exp(-Math.sign(e.deltaY) * 0.18), 0.005, 40); flySync(); return; } state.zoom = clamp(state.zoom + Math.sign(e.deltaY) * 0.08, 6.5, 27); sync('zoom', 2); travel = null; }, { passive: false });
 renderer.domElement.addEventListener('contextmenu', e => e.preventDefault());
 
 let seed = 12345;
@@ -1645,24 +1652,39 @@ function setFlight(on) {
 // ---- helm: a throttle lever of speed gears (walking pace to a gigalight-year per second), a course, align and autopilot ----
 const GEARS = [['Stop', 0], ['Walking', 1.4], ['Car · 100 km/h', 27.8], ['Jet airliner', 250], ['Orbital speed', 7.8e3], ['Solar escape', 6.2e5], ['1% light speed', 3e6], ['10% light speed', 3e7], ['Light speed', 299792458],
   ['Warp 1 · 10 c', 3e9], ['Warp 2 · 1 AU/s', 1.496e11], ['Warp 3 · 1 ly/s', 9.461e15], ['Warp 4 · 1 kly/s', 9.461e18], ['Warp 5 · 1 Mly/s', 9.461e21], ['Warp 6 · 100 Mly/s', 9.461e23], ['Warp 7 · 1 Gly/s', 9.461e24]];
-const helm = { on: false, gear: 0, rev: false, course: null, auto: false }, _hv = new THREE.Vector3();
+const helm = { on: false, gear: 0, thr: 0, stick: null, rev: false, course: null, auto: false }, _hv = new THREE.Vector3();
 const courseVec = k => { const o = toScene(at(helm.course.pos), focus, k); return _hv.set(o[0], o[1], o[2]); };
-function setGear(i) { helm.gear = clamp(i, 0, GEARS.length - 1); $('hThr').value = GEARS.length - 1 - helm.gear; }
+function setGear(i) { helm.thr = clamp(i, 0, GEARS.length - 1); helm.gear = Math.round(helm.thr); $('hThr').value = GEARS.length - 1 - helm.thr; }
+function speedAt(t) { const i = Math.floor(t), f = t - i, a = GEARS[i][1], b = GEARS[Math.min(i + 1, GEARS.length - 1)][1]; if (!a) return b * f; return Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * f); }   // analog lever: log-interpolated between gears
 function setCourse(d) { helm.course = d; helm.auto = false; lastDest = null; toast(`Course set to ${d.name}: align, autopilot, or jump`); }
 function setHelm(on) {
   helm.on = on; $('helm').hidden = !on; $('navHelm').classList.toggle('on', on);
-  if (on) { if (!fly.on) setFlight(true); } else { setGear(0); helm.auto = false; if (!travel) warpEnd(); }
+  controls.enabled = !on; $('pilot').hidden = !on;
+  if (on) { if (!fly.on) setFlight(true); } else { setGear(0); helm.auto = false; helm.stick = null; camera.up.set(0, 1, 0); camera.lookAt(0, 0, 0); controls.update(); if (!travel) warpEnd(); }
 }
+function helmAttitude(dp, dy, dr) {   // turn the ship about its own axes (pitch, yaw, roll); the camera stays behind the focus, looking at it
+  const q = camera.quaternion, len = camera.position.length() || 1;
+  q.multiply(_hq.setFromAxisAngle(_hX.set(1, 0, 0), dp)).multiply(_hq.setFromAxisAngle(_hY.set(0, 1, 0), dy)).multiply(_hq.setFromAxisAngle(_hZ.set(0, 0, 1), dr)).normalize();
+  camera.position.set(0, 0, 1).applyQuaternion(q).multiplyScalar(len); camera.updateMatrixWorld();
+}
+const _hq = new THREE.Quaternion(), _hX = new THREE.Vector3(), _hY = new THREE.Vector3(), _hZ = new THREE.Vector3(), _hF = new THREE.Vector3();
 function helmMove(dt) {
   const k = 2 / 10 ** state.zoom, viewW = 10 ** state.zoom;
+  // flight-sim controls: arrows pitch/yaw, Q/E roll, drag the mouse as a stick, W/S (or wheel) throttle up/down
+  if (keys.has('w')) helm.thr = Math.min(GEARS.length - 1, helm.thr + 2.2 * dt); if (keys.has('s')) helm.thr = Math.max(0, helm.thr - 2.2 * dt); if (keys.has('b')) helm.thr = 0;
+  helm.gear = Math.round(helm.thr); $('hThr').value = GEARS.length - 1 - helm.thr;
+  let dp = 0, dy = 0, dr = 0; const r = 1.2 * dt;
+  if (keys.has('arrowup')) dp += r; if (keys.has('arrowdown')) dp -= r; if (keys.has('arrowleft')) dy += r; if (keys.has('arrowright')) dy -= r; if (keys.has('q')) dr += r; if (keys.has('e')) dr -= r;
+  if (helm.stick) { dy -= helm.stick.x * 1.8 * dt; dp -= helm.stick.y * 1.8 * dt; }
+  if (dp || dy || dr) helmAttitude(dp, dy, dr);
   camera.getWorldDirection(tmpV); tmpR.crossVectors(tmpV, camera.up).normalize(); tmpU.crossVectors(tmpR, tmpV).normalize();
-  let cmd = GEARS[helm.gear][1], dist = Infinity;
-  if (keys.has('b')) setGear(0);
+  let cmd = speedAt(helm.thr), dist = Infinity;
   if (helm.course) {
     const T = courseVec(k); dist = T.length() / k;
-    if (helm.auto && dist > 0) {   // autopilot: keep turning toward the target, and slow so as to stop at it
-      const f = 1 - Math.exp(-dt * 2.2), cur = tmpV.clone(); cur.lerp(T.clone().normalize(), f).normalize();
-      camera.position.copy(cur).multiplyScalar(-camera.position.length()); camera.lookAt(0, 0, 0); controls.update(); camera.getWorldDirection(tmpV);
+    if (helm.auto && dist > 0) {   // autopilot: turn the nose toward the target, and slow so as to stop at it
+      camera.getWorldDirection(_hF); _hq.setFromUnitVectors(_hF, T.clone().normalize());
+      const part = new THREE.Quaternion().slerp(_hq, 1 - Math.exp(-dt * 2.2)); camera.quaternion.premultiply(part).normalize();
+      camera.position.set(0, 0, 1).applyQuaternion(camera.quaternion).multiplyScalar(camera.position.length()); camera.updateMatrixWorld(); camera.getWorldDirection(tmpV);
       const stop = Math.max(at(helm.course.w || 1) * 0.6, 2); cmd = Math.min(cmd, Math.max(dist - stop, 0) / 4);
       if (dist <= stop * 1.02) { setGear(0); helm.auto = false; toast(`Arrived at ${helm.course.name}`); cmd = 0; }
     }
@@ -1692,15 +1714,19 @@ function courseMarker(k) {   // a diamond on the target, or pinned to the screen
   el.hidden = false; el.style.left = `${x}px`; el.style.top = `${y}px`; el.firstChild.style.opacity = ex ? 0.5 : 1;
   el.lastChild.textContent = `${helm.course.name} · ${P.fmtLength(T.length ? courseVec(k).length() / k : 0)}${ex ? ' ›' : ''}`;
 }
+{ const cv2 = renderer.domElement; let o = null;
+  cv2.addEventListener('pointerdown', e => { if (helm.on) { o = { x: e.clientX, y: e.clientY }; } });
+  window.addEventListener('pointermove', e => { if (!o || !helm.on) return; const sx = clamp((e.clientX - o.x) / 160, -1, 1), sy = clamp((e.clientY - o.y) / 160, -1, 1); helm.stick = Math.hypot(sx, sy) > 0.04 ? { x: sx, y: sy } : null; const el = $('pilot'); el.style.setProperty('--sx', `${sx * 70}px`); el.style.setProperty('--sy', `${sy * 70}px`); el.classList.toggle('held', true); });
+  window.addEventListener('pointerup', () => { o = null; helm.stick = null; $('pilot').classList.remove('held'); });
+}
 $('navHelm').addEventListener('click', () => setHelm(!helm.on)); $('helmClose').addEventListener('click', () => setHelm(false));
-$('hThr').addEventListener('input', e => { helm.gear = GEARS.length - 1 - parseInt(e.target.value, 10); });
+$('hThr').addEventListener('input', e => { helm.thr = GEARS.length - 1 - parseFloat(e.target.value); helm.gear = Math.round(helm.thr); });
 $('hUp').onclick = () => setGear(helm.gear + 1); $('hDown').onclick = () => setGear(helm.gear - 1); $('hStop').onclick = () => setGear(0);
 $('hRev').onclick = () => { helm.rev = !helm.rev; };
-$('hAlign').onclick = () => { if (helm.course) { const T = courseVec(2 / 10 ** state.zoom).clone().normalize(); camera.position.copy(T).multiplyScalar(-camera.position.length()); camera.lookAt(0, 0, 0); controls.update(); } };
+$('hAlign').onclick = () => { if (helm.course) { const T = courseVec(2 / 10 ** state.zoom).clone().normalize(); camera.getWorldDirection(_hF); _hq.setFromUnitVectors(_hF, T); camera.quaternion.premultiply(_hq).normalize(); camera.position.set(0, 0, 1).applyQuaternion(camera.quaternion).multiplyScalar(camera.position.length()); camera.updateMatrixWorld(); } };
 $('hAuto').onclick = () => { if (!helm.course) { toast('Click a body first to set a course'); return; } helm.auto = !helm.auto; if (helm.auto && helm.gear === 0) setGear(8); };
 $('hJump').onclick = () => { if (helm.course) { const d = helm.course; setGear(0); goDest(d, true); } };
 $('hClear').onclick = () => { helm.course = null; helm.auto = false; };
-window.addEventListener('keydown', e => { if (!helm.on || e.repeat || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return; const k = e.key.toLowerCase(); if (k === 'w') setGear(helm.gear + 1); else if (k === 's') setGear(helm.gear - 1); });
 setGear(0); window.kosmoTimeline.helm = helm;
 // keycaps: every control shows its hotkey; the extra hotkeys below work from anywhere (not while typing in a field)
 const KEYCAPS = { navCruise: 'U', navMode: 'G', navHelm: 'H', tPlay: 'P', tSlow: ';', tFast: "'", tStepB: ',', tStepF: '.', tNow: 'N', tRev: '⇧R', tFwd: '⇧F',
@@ -1721,10 +1747,11 @@ window.addEventListener('keydown', e => {
 
 function steer(dt) {
   const fast = keys.has('shift') ? 3 : 1, rot = 1.2 * dt * fast, viewW = 10 ** state.zoom, pan = 0.6 * viewW * dt * fast;
+  if (!helm.on) {
   if (keys.has('arrowleft')) orbitBy(rot, 0); if (keys.has('arrowright')) orbitBy(-rot, 0);
   if (keys.has('arrowup')) orbitBy(0, rot); if (keys.has('arrowdown')) orbitBy(0, -rot);
-  if (keys.has('q')) { state.zoom = clamp(state.zoom + 0.9 * dt * fast, 1, 27); sync('zoom', 2); travel = null; }
-  if (keys.has('e')) { state.zoom = clamp(state.zoom - 0.9 * dt * fast, 1, 27); sync('zoom', 2); travel = null; }
+  } if (!helm.on && keys.has('q')) { state.zoom = clamp(state.zoom + 0.9 * dt * fast, 1, 27); sync('zoom', 2); travel = null; }
+  if (!helm.on && keys.has('e')) { state.zoom = clamp(state.zoom - 0.9 * dt * fast, 1, 27); sync('zoom', 2); travel = null; }
   if (fly.on) flightMove(dt); else flyVel.set(0, 0, 0);
   if (!fly.on && (keys.has('w') || keys.has('a') || keys.has('s') || keys.has('d'))) {
     camera.getWorldDirection(tmpV); tmpR.crossVectors(tmpV, camera.up).normalize(); tmpU.crossVectors(tmpR, tmpV).normalize();
@@ -2188,7 +2215,7 @@ function animate(now) {
   if (frame % 6 === 0) $('clockDate').textContent = clockDate() + (state.pause ? ' (paused)' : '');
   const camBefore = fly.on ? camera.position.clone() : null;
   steer(dt); stepTravel(dt);
-  controls.update();
+  if (!helm.on) controls.update();
   // look around instead of orbit: undo the camera's movement by moving the focus the opposite way
   if (camBefore) moveFocusScene(camBefore.sub(camera.position).divideScalar(2 / 10 ** state.zoom));
   updateScene();
