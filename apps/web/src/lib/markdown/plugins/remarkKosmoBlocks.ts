@@ -13,7 +13,6 @@ import { visit } from "unist-util-visit";
 interface BlockNode extends Node {
   children?: Node[];
   value?: string;
-  position?: { start?: { offset?: number }; end?: { offset?: number } };
   data?: {
     hName?: string;
     hProperties?: Record<string, string>;
