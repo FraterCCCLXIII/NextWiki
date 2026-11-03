@@ -24,6 +24,7 @@ export async function importDatasets(db: Db): Promise<void> {
     "university-exams.json",
     "small-bodies.json",
     "effects.json",
+    "constellations.json",
     ...oracleFiles.map((f) => `oracle/${f}`),
   ];
 

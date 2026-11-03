@@ -19,7 +19,10 @@ function rng(seed) { let s = (seed >>> 0) || 1; return () => { s = (s * 1664525 
 export const NEB_CLASSES = ['hii', 'reflection', 'dark', 'pn_ring', 'pn_bipolar', 'snr_shell', 'snr_pwn', 'snr_sheet', 'pillars', 'lightecho', 'wall'];
 
 export function classifyNebula(spec) {
-  const t = (spec.type || '').toLowerCase(), s = `${spec.name || ''} ${(spec.alt_names || []).join(' ')} ${spec.notes || ''}`.toLowerCase();
+  const t = (spec.type || '').toLowerCase();
+  // the catalogue tags every unclassified nebula "diffuse nebula (emission/reflection/dark)": that phrase names three kinds at once, so it must not be read as a hint
+  // (it used to match /dark/ and turn every such nebula into a near-invisible dark one)
+  const s = `${spec.name || ''} ${(spec.alt_names || []).join(' ')} ${spec.notes || ''}`.toLowerCase().replace(/diffuse nebula \(emission\/reflection\/dark\)/g, 'diffuse nebula');
   if (spec.cls && NEB_CLASSES.includes(spec.cls)) return spec.cls;
   if (t === 'supernova_remnant' || t === 'snr' || /supernova remnant/.test(s)) {
     if (/crab|pulsar|plerion|vela|3c 58|msh 15|g21\.5|wind nebula/.test(s)) return 'snr_pwn';

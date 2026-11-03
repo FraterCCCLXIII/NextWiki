@@ -36,6 +36,10 @@ const nextConfig: NextConfig = {
           destination: "/api/kosmo/data/effects.json",
         },
         {
+          source: "/kosmo/static/constellations.json",
+          destination: "/api/kosmo/data/constellations.json",
+        },
+        {
           source: "/kosmo/static/university-exams.json",
           destination: "/api/kosmo/data/university-exams.json",
         },
