@@ -1,6 +1,8 @@
 import { createDefaultGroups, seedPermissions } from "./permissions.js";
 import { runDeveloperSeeds } from "./developer-seeds.js";
 import { seedSettings } from "./settings.js";
+import { db } from "../index.js";
+import { seedKosmo } from "./kosmo/index.js";
 
 /**
  * Main function to run all seed operations.
@@ -29,6 +31,11 @@ async function seed() {
       // } catch (error) {
       //   console.warn("  Custom seeds probably not defined", error);
       // }
+    }
+
+    // 6. Kosmographica knowledge base (set KOSMO_SEED=false to skip)
+    if (process.env.KOSMO_SEED !== "false") {
+      await seedKosmo(db);
     }
 
     console.log("\n✅ Database seeding completed successfully.");

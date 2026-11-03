@@ -8,12 +8,13 @@ import { listComponent } from "./ListComponent";
 import { linkComponent } from "./LinkComponent";
 import { h1Component, h2Component, h3Component, h4Component, h5Component, h6Component } from "./HeadingComponent";
 import { blockquoteComponent } from "./BlockquoteComponent";
+import { KosmoBlockMarkdown } from "~/components/kosmo/kosmo-block";
 import type { Components } from "react-markdown";
 
 /**
  * Collection of all custom components for client-side markdown rendering
  */
-export const markdownComponents: Components = {
+export const markdownComponents = {
   code: codeComponent,
   ul: listComponent,
   li: listItemComponent,
@@ -25,4 +26,6 @@ export const markdownComponents: Components = {
   h5: h5Component,
   h6: h6Component,
   blockquote: blockquoteComponent,
-};
+  // Custom element produced by remarkKosmoBlocks for {{kosmo:<kind>:<slug>}}
+  "kosmo-block": KosmoBlockMarkdown,
+} as Components;

@@ -752,3 +752,5 @@ export const settingsHistoryRelations = relations(
     }),
   })
 );
+
+export * from "./kosmo";

@@ -1,100 +1,126 @@
-"use client";
-
-import { useMemo, useState } from "react";
+import Link from "next/link";
 import { DataRow, DataList, Pill } from "@repo/ui";
 
-export type PediaObject = {
-  id: string;
+export type PediaRow = {
+  id: string | number;
   name: string;
   type: string | null;
-  parent: string | null;
+  summary: string | null;
+  href: string | null;
 };
 
-const PAGE_SIZE = 200;
+export type PediaTypeChip = { type: string; count: number };
 
 export function PediaTable({
-  objects,
+  rows,
   types,
+  activeType,
+  q,
+  page,
+  pageSize,
+  total,
+  basePath = "/kosmo/pedia",
 }: {
-  objects: PediaObject[];
-  types: string[];
+  rows: PediaRow[];
+  types: PediaTypeChip[];
+  activeType: string | null;
+  q: string;
+  page: number;
+  pageSize: number;
+  total: number;
+  basePath?: string;
 }) {
-  const [query, setQuery] = useState("");
-  const [type, setType] = useState("all");
-  const [limit, setLimit] = useState(PAGE_SIZE);
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return objects.filter((o) => {
-      if (type !== "all" && o.type !== type) return false;
-      if (!q) return true;
-      return (
-        o.name.toLowerCase().includes(q) ||
-        (o.parent ?? "").toLowerCase().includes(q) ||
-        o.id.toLowerCase().includes(q)
-      );
-    });
-  }, [objects, query, type]);
-
-  const visible = filtered.slice(0, limit);
+  const hrefFor = (next: { q?: string; type?: string | null; page?: number }) => {
+    const params = new URLSearchParams();
+    const nq = next.q ?? q;
+    const nt = next.type === undefined ? activeType : next.type;
+    const np = next.page ?? 1;
+    if (nq) params.set("q", nq);
+    if (nt) params.set("type", nt);
+    if (np > 1) params.set("page", String(np));
+    const qs = params.toString();
+    return qs ? `${basePath}?${qs}` : basePath;
+  };
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center">
+      <form method="get" action={basePath} className="flex flex-col gap-3 md:flex-row md:items-center">
+        {activeType ? <input type="hidden" name="type" value={activeType} /> : null}
         <input
           type="search"
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setLimit(PAGE_SIZE);
-          }}
-          placeholder="Search name, parent or id"
+          name="q"
+          defaultValue={q}
+          placeholder="Search by name"
           className="w-full rounded-md border border-kosmo-line bg-kosmo-panel px-3 py-2 text-kosmo-text placeholder:text-kosmo-dim focus:outline-none focus:ring-1 focus:ring-kosmo-mint md:flex-1"
         />
-        <select
-          value={type}
-          onChange={(e) => {
-            setType(e.target.value);
-            setLimit(PAGE_SIZE);
-          }}
-          className="rounded-md border border-kosmo-line bg-kosmo-panel px-3 py-2 text-kosmo-text"
+        <button
+          type="submit"
+          className="rounded-md border border-kosmo-line bg-kosmo-panel px-4 py-2 text-kosmo-mint hover:bg-kosmo-line"
         >
-          <option value="all">all types</option>
-          {types.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
-      </div>
+          search
+        </button>
+      </form>
 
-      <p className="text-sm text-kosmo-dim">
-        {filtered.length.toLocaleString()} of {objects.length.toLocaleString()} objects
-      </p>
+      <nav className="flex flex-wrap gap-2 text-sm">
+        <Link
+          href={hrefFor({ type: null, page: 1 })}
+          className={!activeType ? "text-kosmo-mint" : "text-kosmo-dim hover:text-kosmo-text"}
+        >
+          all types
+        </Link>
+        {types.map((t) => (
+          <Link
+            key={t.type}
+            href={hrefFor({ type: t.type, page: 1 })}
+            className={activeType === t.type ? "text-kosmo-mint" : "text-kosmo-dim hover:text-kosmo-text"}
+          >
+            {t.type} ({t.count.toLocaleString()})
+          </Link>
+        ))}
+      </nav>
+
+      <p className="text-sm text-kosmo-dim">{total.toLocaleString()} matching entries</p>
 
       <DataList>
-        {visible.map((o) => (
-          <DataRow key={o.id} label={o.name}>
+        {rows.map((r) => (
+          <DataRow
+            key={r.id}
+            label={
+              r.href ? (
+                <Link href={r.href} className="text-kosmo-text hover:text-kosmo-mint">
+                  {r.name}
+                </Link>
+              ) : (
+                r.name
+              )
+            }
+          >
             <span className="flex items-center gap-2">
-              {o.parent ? (
-                <span className="text-kosmo-dim">{o.parent}</span>
-              ) : null}
-              {o.type ? <Pill>{o.type}</Pill> : null}
+              {r.summary ? <span className="hidden text-kosmo-dim md:inline">{r.summary}</span> : null}
+              {r.type ? <Pill>{r.type}</Pill> : null}
             </span>
           </DataRow>
         ))}
       </DataList>
 
-      {filtered.length > limit && (
-        <div className="flex justify-center">
-          <button
-            type="button"
-            onClick={() => setLimit((l) => l + PAGE_SIZE)}
-            className="rounded-md border border-kosmo-line bg-kosmo-panel px-4 py-2 text-kosmo-mint hover:bg-kosmo-line"
-          >
-            show more ({(filtered.length - limit).toLocaleString()} left)
-          </button>
-        </div>
+      {pageCount > 1 && (
+        <nav className="flex items-center justify-center gap-4 text-sm">
+          {page > 1 ? (
+            <Link href={hrefFor({ page: page - 1 })} className="text-kosmo-mint">
+              previous
+            </Link>
+          ) : null}
+          <span className="text-kosmo-dim">
+            page {page} of {pageCount}
+          </span>
+          {page < pageCount ? (
+            <Link href={hrefFor({ page: page + 1 })} className="text-kosmo-mint">
+              next
+            </Link>
+          ) : null}
+        </nav>
       )}
     </div>
   );

@@ -129,7 +129,10 @@ export function HighlightedContent({
   const pathname = usePathname();
   const highlightTerm = searchParams?.get("highlight");
   const hasBlockquote = /(^|\n)>\s/.test(content);
-  const shouldUseRenderedHtml = Boolean(renderedHtml) && !hasBlockquote;
+  // Live {{kosmo:...}} blocks need React components, which pre-rendered HTML cannot hydrate
+  const hasKosmoBlock = /\{\{kosmo:/.test(content);
+  const shouldUseRenderedHtml =
+    Boolean(renderedHtml) && !hasBlockquote && !hasKosmoBlock;
   const router = useRouter();
   const isInitialRender = useRef(true);
 

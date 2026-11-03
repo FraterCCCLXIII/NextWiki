@@ -31,6 +31,7 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx src/seeds/run.ts",
+    "db:seed:kosmo": "tsx src/seeds/kosmo/run.ts",
     "_db:seed:permissions": "tsx src/seeds/permissions.ts",
     "_db:seed:custom": "tsx src/seeds/custom-seeds.ts"
   },
