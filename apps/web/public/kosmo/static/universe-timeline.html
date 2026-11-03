@@ -130,9 +130,9 @@
   .row { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
   .row label { flex: 1; color: #c3d0e2; }
   /* sliders: one soft, consistent glow (cool white with a faint warm edge, like the search field), no colour cycling */
-  input[type=range] { -webkit-appearance: none; width: 118px; height: 4px; border-radius: 4px; outline: none; background: linear-gradient(90deg, rgba(150,180,215,0.55), rgba(225,200,165,0.55)); box-shadow: 0 0 8px rgba(215,225,240,0.16), 0 0 1px rgba(255,255,255,0.25); }
-  #scalebars input[type=range], #zoombar input[type=range], #hThr { background: linear-gradient(0deg, rgba(150,180,215,0.55), rgba(225,200,165,0.55)); }
-  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #eef2f8; border: 1.5px solid rgba(190,205,225,0.9); box-shadow: 0 0 9px rgba(225,215,200,0.4); cursor: pointer; }
+  input[type=range] { -webkit-appearance: none; width: 118px; height: 4px; border-radius: 4px; outline: none; background: linear-gradient(90deg, rgba(90,160,255,0.85), rgba(255,175,80,0.85)); box-shadow: 0 0 9px rgba(130,170,255,0.22), 0 0 1px rgba(255,255,255,0.25); }
+  #scalebars input[type=range], #zoombar input[type=range], #hThr { background: linear-gradient(0deg, rgba(90,160,255,0.85), rgba(255,175,80,0.85)); }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #eef2f8; border: 1.5px solid rgba(120,175,255,0.95); box-shadow: 0 0 9px rgba(140,185,255,0.45); cursor: pointer; }
   .val { width: 52px; text-align: right; color: var(--accent); font-variant-numeric: tabular-nums; font-size: 14px; }
   button, select, input[type=text], input[type=number] { background: rgba(26,26,26,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 5px 9px; font: inherit; }
   button { cursor: pointer; transition: border-color .15s, background .15s; margin: 2px 3px 2px 0; }
