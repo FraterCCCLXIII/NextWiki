@@ -309,6 +309,8 @@
   #navhud .navpad { grid-template-columns: repeat(3, 46px); grid-auto-rows: 46px; gap: 8px; justify-items: center; }   /* cells as big as the circles, so none overlap */
   #navhud .navpad .navtag { width: 46px; }
   #timehud button[hidden] { display: none !important; }
+  #timehud .ttitle { font-size: 13px; letter-spacing: 0.28em; color: #7fc3ff; text-align: left; margin-bottom: 2px; }
+  body.hud-nolabels #timehud .ttitle { display: block !important; }
   #tDialWrap { display: flex; flex-direction: column; align-items: center; gap: 2px; } #tDial { cursor: grab; touch-action: none; outline: none; } #tDial:active { cursor: grabbing; }
   #tDial .dt { fill: none; stroke: rgba(255,255,255,0.12); stroke-width: 1; } #tDial .dk { fill: rgba(255,255,255,0.07); stroke: rgba(255,255,255,0.28); stroke-width: 1; } #tDial .dh { stroke: #fff; stroke-width: 2.4; stroke-linecap: round; } #tDial .dp { fill: var(--accent, #7fc3ff); filter: drop-shadow(0 0 4px var(--accent, #7fc3ff)); }
   #tDial .tk { stroke: rgba(255,255,255,0.45); stroke-width: 1.2; } #tDial .tk.on { stroke: var(--accent, #7fc3ff); stroke-width: 2; }
@@ -558,6 +560,7 @@
 <div id="pilot" hidden><span class="pr"></span><span class="ps"></span><span class="ph">drag = stick · arrows pitch/yaw · Q E roll · W S throttle · Space engine</span></div>
 <div id="course" hidden><span class="cm"></span><span class="cl"></span></div>
 <div id="timehud" class="glass" aria-label="Simulation clock">
+  <div class="hudk ttitle">TimeMachine</div>
   <div class="trow">
     <button id="tRev" type="button" title="Play backwards">◀</button><button id="tPlay" type="button" title="Play / pause (P)">❚❚</button><button id="tFwd" type="button" title="Play forwards">▶</button>
     <button id="tSlow" type="button" title="Slower" hidden>−</button><div id="tDialWrap"><svg id="tDial" viewBox="-50 -50 100 100" width="76" height="76" role="slider" aria-label="Clock speed" tabindex="0"><circle r="44" class="dt"/><g id="tTicks"></g><g id="tHand"><circle r="31" class="dk"/><line x1="0" y1="-10" x2="0" y2="-29" class="dh"/><circle cx="0" cy="-29" r="3" class="dp"/></g></svg><span id="tRate" title="Simulated time per real second"></span></div><button id="tFast" type="button" title="Faster" hidden>+</button>
