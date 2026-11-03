@@ -10,7 +10,7 @@ export const CreatePageButton = () => {
 
   return (
     <ClientRequirePermission permission="wiki:page:create">
-      <Link href={`/create?path=${pathname.replace("/", "")}`}>
+      <Link href={`/create?path=${(pathname ?? "").replace("/", "")}`}>
         <Button>Create This Page</Button>
       </Link>
     </ClientRequirePermission>

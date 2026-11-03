@@ -18,7 +18,7 @@ export function SearchTrigger({
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMac, setIsMac] = useState(false);
   const searchParams = useSearchParams();
-  const currentSearch = searchParams.get("search") || "";
+  const currentSearch = searchParams?.get("search") || "";
 
   // Detect OS for keyboard shortcut display
   useEffect(() => {
