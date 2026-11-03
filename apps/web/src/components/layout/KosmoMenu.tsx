@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronDown, Orbit } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +14,7 @@ import {
 import { cn } from "~/lib/utils";
 import { useTRPC } from "~/server/client";
 import { NextWikiLogo } from "./NextWikiLogo";
+import { KosmoLogo } from "./KosmoLogo";
 import { NAV_GROUPS, isNavActive } from "~/lib/kosmo/nav";
 import { ORACLE_GROUPS } from "~/lib/kosmo/oracle-nav";
 
@@ -67,7 +68,7 @@ export function KosmoMenu({ siteLogo }: { siteLogo?: string | null }) {
           type="button"
           className="flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-background-level1"
         >
-          <Orbit className="h-4 w-4" />
+          <KosmoLogo size={24} />
           <span>Kosmographica</span>
           <ChevronDown className="h-4 w-4" />
         </button>
