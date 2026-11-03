@@ -478,7 +478,7 @@
   <div class="row"><label for="fxSpeed">Flight speed</label><input type="range" id="fxSpeed" min="0.4" max="3" step="0.05"><span class="val" id="fxSpeed-v"></span></div>
   <div class="fxshapes" id="fxEase" title="Smooth: ease in and out. Cruise: a short ramp, then a steady speed."></div>
   <div class="row"><label for="fxArc">Path curve</label><input type="range" id="fxArc" min="0" max="1" step="0.02"><span class="val" id="fxArc-v"></span></div>
-  <div class="row"><label for="fxWarp">Warp drive on long trips</label><input type="checkbox" id="fxWarp"></div>
+  <div class="row"><label for="fxWarp" title="Radiating line streaks and a stretched field of view while travelling or flying very fast. Off by default.">Streak effects while travelling (warp lines)</label><input type="checkbox" id="fxWarp"></div>
   <div class="row"><label for="fxWarpAmt">Warp intensity</label><input type="range" id="fxWarpAmt" min="0" max="1.5" step="0.05"><span class="val" id="fxWarpAmt-v"></span></div>
 </aside>
 
@@ -968,9 +968,9 @@ const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 42
 const gauss = () => Math.sqrt(-2 * Math.log(1 - rnd())) * Math.cos(2 * Math.PI * rnd());
 // ---- Star look: sprite shapes, halo, twinkle, brightness. Every point cloud registers its material here, and the
 // "Stars" drawer (the sparkle button) edits `fx`; choices persist in localStorage ("kosmoFx"). ----
-const FX_DEFAULTS = { shape: 'round', size: 1, halo: 0.7, spike: 0.7, rot: 0, twinkle: 0, gain: 1, additive: true, real: true, exposure: 1, warp: true, warpAmt: 1, flight: 'hop', pull: 1, flightSpeed: 1, ease: 'smooth', arc: 0 };
+const FX_DEFAULTS = { shape: 'round', size: 1, halo: 0.7, spike: 0.7, rot: 0, twinkle: 0, gain: 1, additive: true, real: true, exposure: 1, warp: false, warpAmt: 1, flight: 'hop', pull: 1, flightSpeed: 1, ease: 'smooth', arc: 0 };
 const fx = { ...FX_DEFAULTS };
-try { Object.assign(fx, JSON.parse(localStorage.getItem('kosmoFx') || '{}')); } catch { /* storage blocked or bad JSON: defaults */ }
+try { Object.assign(fx, JSON.parse(localStorage.getItem('kosmoFx') || '{}')); if (!localStorage.getItem('kosmoFxStreaksOff')) { fx.warp = false; localStorage.setItem('kosmoFxStreaksOff', '1'); } } catch { /* storage blocked or bad JSON: defaults */ }   // streak effects are off unless the user switches them on (one-time reset of older saved settings)
 window.kosmoTimeline.fx = fx;   // debug hook
 const FX_SHAPES = [['pixel', 'Pixel'], ['round', 'Soft glow'], ['cross', 'Hubble cross'], ['jwst', 'Webb 6+2'], ['eight', 'Eight-point'], ['streak', 'Streak']];
 const FX_SPRITE_SCALE = 4;                       // a sprite is mostly glow and spikes, so it is drawn this much larger than the old square
@@ -2036,7 +2036,7 @@ function helmMove(dt) {
   const sp = flyVel.length();
   if (sp > 0.5 && $('hZoom').checked) { const tz = clamp(Math.log10(sp * 6), 2.6, 27); state.zoom += (tz - state.zoom) * (1 - Math.exp(-dt * 1.6)); sync('zoom', 2); }
   const w = clamp((Math.log10(Math.max(sp, 1)) - 8.5) / 6.5, 0, 1.2);   // beyond light speed the field stretches and the stars streak
-  if (w > 0.02) { warpAmt = w; camera.fov = baseFov + 38 * Math.min(w, 1.2); camera.updateProjectionMatrix(); drawWarp(w, dt); } else warpEnd();
+  if (fx.warp && w > 0.02) { warpAmt = w; camera.fov = baseFov + 38 * Math.min(w, 1.2); camera.updateProjectionMatrix(); drawWarp(w, dt); } else warpEnd();
   const G = GEARS[helm.gear];
   $('hGear').textContent = G[0] + (helm.rev && helm.gear ? ' (reverse)' : '') + (helm.engine ? ' · thrusting' : ' · idle: hold Space');
   $('hSpeed').textContent = `max ${vmaxH ? warpText(vmaxH) + ' · ' + P.fmtLength(vmaxH) + '/s' : '0'}`;
