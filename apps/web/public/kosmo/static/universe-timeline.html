@@ -303,6 +303,9 @@
   /* pad buttons are true circles */
   #navhud .navpad button { width: 46px !important; height: 46px !important; min-width: 0 !important; padding: 0 !important; border-radius: 50% !important; font-size: 17px; }
   #navhud .navpad button.sm { font-size: 10px; letter-spacing: 0.04em; }
+  #navhud .navrow.moderow { flex-direction: column; align-items: center; gap: 8px; }
+  #navhud .navrow.moderow button { width: 150px; justify-content: center; }
+  #navhud .navrow.moderow input[type=range] { width: 150px; flex: none; } #navhud .navrow.moderow .navtag, #navhud .navrow.moderow .navval { text-align: center; min-width: 0; }
   #navhud .navpad { grid-template-columns: repeat(3, 46px); grid-auto-rows: 46px; gap: 8px; justify-items: center; }   /* cells as big as the circles, so none overlap */
   #navhud .navpad .navtag { width: 46px; }
   #timehud button[hidden] { display: none !important; }
@@ -1736,6 +1739,7 @@ function collapsible(panelSel, rows) {
     try { const st = localStorage.getItem(id); if (st === '0' || (st === null && ['Camera scale', 'Hotkeys'].includes(label))) sec.classList.add('closed'); } catch { /* storage blocked */ }
   }
 }
+$('navMode').parentElement.classList.add('moderow');
 collapsible('#navhud', [[p => p.querySelector('#zoom').parentElement, 'Zoom'], ['#zscale', 'Camera scale'], ['.navpads', 'Move & look'], [p => p.querySelector('#navMode').parentElement, 'Mode & speed'], ['#navkeys', 'Hotkeys']]);
 collapsible('#helm', [['.hrow', 'Throttle'], ['.hcourse', 'Course']]);
 collapsible('#timehud', [['.trow:nth-child(1)', 'Clock'], ['.trow:nth-child(2)', 'Date & follow']]);
