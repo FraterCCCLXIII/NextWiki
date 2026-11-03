@@ -274,6 +274,30 @@
   body.hud-min input[type=range]::-webkit-slider-thumb { width: 12px; height: 12px; background: #fff; border: 0; box-shadow: 0 0 0 4px rgba(255,255,255,0.12); }
   body.hud-min #zrule { border-top-color: rgba(255,255,255,0.18); } body.hud-min #zrule b { text-transform: none; font-family: inherit; color: rgba(230,237,247,0.5); } body.hud-min #zread { text-transform: none; letter-spacing: 0.02em; color: rgba(230,237,247,0.8); }
   body.hud-min kbd.kc { background: rgba(255,255,255,0.1); border: 0; color: rgba(230,237,247,0.7); border-radius: 5px; }
+  #navkeys { margin-top: 8px; font-size: 11px; color: var(--muted); } #navkeys summary { cursor: pointer; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(230,237,247,0.6); list-style: none; } #navkeys summary::before { content: "▸ "; } #navkeys[open] summary::before { content: "▾ "; }
+  #navkeys .kgrid { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; margin-top: 6px; max-height: 170px; overflow: auto; } #navkeys .kk { color: #cfe3ff; font-weight: 600; white-space: nowrap; } #navkeys .kv { color: var(--muted); }
+  body.hud-nolabels #navkeys { display: none; }
+  #xpad { position: absolute; left: 0; right: 0; bottom: 0; z-index: 9; display: flex; justify-content: space-between; align-items: flex-end; padding: 0 22px 20px; pointer-events: none; }
+  #xpad[hidden] { display: none; } #xpad > * { pointer-events: auto; }
+  #xpad .xside { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  #xpad .xtrig { display: flex; gap: 10px; } #xpad .xtrig button { width: 74px; height: 34px; border-radius: 10px 10px 4px 4px; }
+  #xpad button { border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: #e6edf7; font: 600 12px ui-sans-serif, system-ui, sans-serif; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); cursor: pointer; touch-action: none; user-select: none; }
+  #xpad button.held, #xpad button:active { background: rgba(255,255,255,0.3); }
+  #xpad .xstick { width: 124px; height: 124px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.22); background: radial-gradient(circle, rgba(255,255,255,0.1), rgba(255,255,255,0.03)); position: relative; touch-action: none; }
+  #xpad .xstick i { position: absolute; left: 50%; top: 50%; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #9fb2cc); box-shadow: 0 2px 10px rgba(0,0,0,0.5); transform: translate(var(--kx, 0px), var(--ky, 0px)); }
+  #xpad .xdpad { display: flex; flex-direction: column; align-items: center; gap: 4px; } #xpad .xdpad > div { display: flex; gap: 34px; } #xpad .xdpad button { width: 34px; height: 34px; border-radius: 8px; }
+  #xpad .xface { display: grid; grid-template-areas: ". y ." "x . b" ". a ."; gap: 4px; justify-items: center; } #xpad .xface button { width: 40px; height: 40px; border-radius: 50%; }
+  #xpad .xface .y { grid-area: y; color: #ffd24a; } #xpad .xface .x { grid-area: x; color: #5aa8ff; } #xpad .xface .b { grid-area: b; color: #ff6b6b; } #xpad .xface .a { grid-area: a; color: #5be08a; }
+  #xpad .xmid { align-self: flex-end; } #xpad .xmid button { padding: 6px 14px; border-radius: 999px; }
+  body.padmode #navhud, body.padmode #hud, body.padmode #navOpen, body.padmode #hudOpen { display: none !important; }
+  body.padmode #timehud { bottom: 190px; }
+  /* collapsible control rows: a quiet header per row, the body folds with a grid-rows transition */
+  .nsec { margin-top: 4px; } .nsh { display: flex; align-items: center; gap: 6px; width: 100%; padding: 2px 0 !important; border: 0 !important; background: transparent !important; color: rgba(230,237,247,0.5) !important; font: 500 10px ui-sans-serif, system-ui, sans-serif !important; letter-spacing: 0.14em !important; text-transform: uppercase !important; cursor: pointer; justify-content: flex-start !important; min-width: 0 !important; box-shadow: none !important; }
+  .nsh:hover { color: #fff !important; } .nsh .nc { display: inline-block; transition: transform .28s ease; font-size: 9px; } .nsec.closed .nsh .nc { transform: rotate(-90deg); }
+  .nbody { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .32s cubic-bezier(.4,0,.2,1), opacity .25s ease, margin .3s ease; opacity: 1; } .ninner { overflow: hidden; min-height: 0; }
+  .nsec.closed .nbody { grid-template-rows: 0fr; opacity: 0; }
+  .nsec:not(.closed) .ninner { overflow: visible; transition: none; }
+  #navkeys summary { font-size: 10px; letter-spacing: 0.14em; }
   #timehud { position: absolute; left: 50%; bottom: 46px; transform: translateX(-50%); z-index: 5; padding: 8px 12px; border-radius: 14px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #c9d6e6; }
   #timehud .trow { display: flex; gap: 6px; align-items: center; justify-content: center; flex-wrap: wrap; }
   #timehud button { padding: 3px 9px; min-width: 30px; font-size: 12px; }
@@ -478,13 +502,27 @@
     </div>
   </div>
   <div class="navrow">
-    <button type="button" id="navMode" title="Orbit around the view centre, or fly where you look (G)">Orbit</button><button type="button" id="navCruise" title="Keep flying forward at the speed set by the slider (U); B or S stops">Cruise</button><button type="button" id="navHelm" title="Ship helm: throttle gears from walking pace to warp, and set a course">Helm</button>
+    <button type="button" id="navMode" title="Orbit around the view centre, or fly where you look (G)">Orbit</button><button type="button" id="navCruise" title="Keep flying forward at the speed set by the slider (U); B or S stops">Cruise</button><button type="button" id="navPad" title="Controller layout: two thumbsticks, triggers and buttons (0). A real gamepad works too.">Pad</button><button type="button" id="navHelm" title="Ship helm: throttle gears from walking pace to warp, and set a course">Helm</button>
     <span class="navtag">speed</span><input type="range" id="navSpeed" min="-2.3" max="1.6" step="0.01" aria-label="Flight speed"><span class="navval" id="navSpeed-v"></span>
   </div>
+<details id="navkeys"><summary>Controls</summary><div class="kgrid"><span class="kk">drag</span><span class="kv">spin the view</span><span class="kk">right-drag / W A S D</span><span class="kv">pan</span><span class="kk">wheel / Q E</span><span class="kv">zoom (throttle in helm)</span><span class="kk">← → ↑ ↓</span><span class="kv">orbit (pitch / yaw in helm)</span><span class="kk">G</span><span class="kv">flight mode</span><span class="kk">U</span><span class="kv">cruise</span><span class="kk">H</span><span class="kv">helm</span><span class="kk">W S · wheel</span><span class="kv">throttle (helm)</span><span class="kk">Q E</span><span class="kv">roll (helm)</span><span class="kk">V F O J ⌫</span><span class="kv">reverse · align · autopilot · jump · clear</span><span class="kk">B</span><span class="kv">brake / all stop</span><span class="kk">⇧</span><span class="kv">boost</span><span class="kk">P</span><span class="kv">pause the clock</span><span class="kk">; ' · , . · N</span><span class="kv">clock speed · day step · now</span><span class="kk">⇧R ⇧F</span><span class="kv">clock backwards / forwards</span><span class="kk">R</span><span class="kv">spin the universe</span><span class="kk">T</span><span class="kv">timeline</span><span class="kk">[ ]</span><span class="kv">pan time</span><span class="kk">C</span><span class="kv">chronicle</span><span class="kk">M · K</span><span class="kv">minimal look · hide labels</span></div></details>
 </div>
 <button id="navOpen" class="orb" type="button" hidden aria-label="Show the navigation controls" title="Navigate">
   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8l-1.9 4.5-4.5 1.9 1.9-4.5z"/></svg>
 </button>
+<div id="xpad" hidden aria-label="Controller">
+  <div class="xside xl">
+    <div class="xtrig"><button data-xk="lt" title="Left trigger: brake / reverse">LT</button><button data-xk="q" title="Left bumper: roll left / zoom out (Q)">LB</button></div>
+    <div class="xstick" id="xsL" title="Left stick: move and strafe"><i></i></div>
+    <div class="xdpad"><button data-xk="x" title="Up (X)">▲</button><div><button data-xclick="tSlow" title="Clock slower">◀</button><button data-xclick="tFast" title="Clock faster">▶</button></div><button data-xk="z" title="Down (Z)">▼</button></div>
+  </div>
+  <div class="xmid"><button id="xExit" type="button" title="Back to the normal HUD (0)">⏏ hud</button></div>
+  <div class="xside xr">
+    <div class="xtrig"><button data-xk="e" title="Right bumper: roll right / zoom in (E)">RB</button><button data-xk="rt" title="Right trigger: throttle / forward">RT</button></div>
+    <div class="xface"><button class="y" data-xclick="navHelm" title="Helm (H)">Y</button><button class="x" data-xclick="navCruise" title="Cruise (U)">X</button><button class="b" data-xk="b" title="Brake (B)">B</button><button class="a" data-xk="shift" title="Boost (Shift)">A</button></div>
+    <div class="xstick" id="xsR" title="Right stick: look"><i></i></div>
+  </div>
+</div>
 <div id="helm" class="glass" hidden aria-label="Ship helm">
   <button id="helmClose" type="button" title="Close the helm" aria-label="Close the helm">×</button>
   <div class="hudk">Helm</div>
@@ -540,7 +578,7 @@
   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
 </button>
 <div id="scalebar"><div id="scaletxt"></div><div class="bar" id="bar"></div><div class="dim" id="scalenote" style="font-size:13px;margin-top:3px"></div></div>
-<div id="help" class="glass">drag · spin &nbsp; right-drag / <kbd>W A S D</kbd> · pan &nbsp; wheel / <kbd>Q</kbd><kbd>E</kbd> · scale &nbsp; <kbd>←→↑↓</kbd> · orbit &nbsp; <kbd>R</kbd> spin &nbsp; <kbd>T</kbd> timeline &nbsp; <kbd>[</kbd><kbd>]</kbd> pan time &nbsp; <kbd>C</kbd> chronicle</div>
+
 
 <script type="module">
 import * as THREE from 'three';
@@ -1638,6 +1676,7 @@ function flightMove(dt) {
   camera.getWorldDirection(tmpV); tmpR.crossVectors(tmpV, camera.up).normalize(); tmpU.crossVectors(tmpR, tmpV).normalize();
   tmpM.set(0, 0, 0);
   if (fly.cruise && (keys.has('s') || keys.has('b'))) setCruise(false);
+  if (padAx.lx || padAx.ly || padAx.rt || padAx.lt) { tmpM.addScaledVector(tmpV, padAx.rt - padAx.lt - padAx.ly); tmpM.addScaledVector(tmpR, padAx.lx); }
   if (keys.has('w') || fly.cruise) tmpM.add(tmpV); if (keys.has('s')) tmpM.sub(tmpV); if (keys.has('d')) tmpM.add(tmpR); if (keys.has('a')) tmpM.sub(tmpR); if (keys.has('x')) tmpM.add(tmpU); if (keys.has('z')) tmpM.sub(tmpU);
   const braking = keys.has('b');
   if (tmpM.lengthSq() > 0 && !braking) tmpM.normalize().multiplyScalar(fly.speed * viewW * boost); else tmpM.set(0, 0, 0);   // metres per second
@@ -1664,6 +1703,22 @@ function setFlight(on) {
   window.addEventListener('keydown', e => { if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return; if (e.key === 'm' || e.key === 'M') tMin(); else if (e.key === 'k' || e.key === 'K') tLab(); });
   apply();
 }
+// ---- collapsible rows: wrap chosen rows of a panel in a titled, animated fold; the open/closed state is remembered ----
+function collapsible(panelSel, rows) {
+  const panel = document.querySelector(panelSel); if (!panel) return;
+  for (const [sel, label] of rows) {
+    const el = panel.querySelector(sel); if (!el) continue;
+    const id = `kosmoRow:${panelSel}:${label}`, sec = document.createElement('section'); sec.className = 'nsec';
+    sec.innerHTML = `<button type="button" class="nsh" aria-expanded="true"><span class="nc">▾</span>${label}</button><div class="nbody"><div class="ninner"></div></div>`;
+    el.replaceWith(sec); sec.querySelector('.ninner').appendChild(el);
+    const set = open => { sec.classList.toggle('closed', !open); sec.querySelector('.nsh').setAttribute('aria-expanded', String(open)); try { localStorage.setItem(id, open ? '1' : '0'); } catch { /* storage blocked */ } };
+    sec.querySelector('.nsh').addEventListener('click', () => set(sec.classList.contains('closed')));
+    try { if (localStorage.getItem(id) === '0') sec.classList.add('closed'); } catch { /* storage blocked */ }
+  }
+}
+collapsible('#navhud', [['.navrow', 'Zoom'], ['#zscale', 'Camera scale'], ['.navpads', 'Move & look'], ['.navrow:last-of-type', 'Mode & speed'], ['#navkeys', 'Hotkeys']]);
+collapsible('#helm', [['.hrow', 'Throttle'], ['.hcourse', 'Course']]);
+collapsible('#timehud', [['.trow:nth-child(1)', 'Clock'], ['.trow:nth-child(2)', 'Date & follow']]);
 // ---- camera scale: the zoom slider reads as a ruler of landmark sizes, from a person to the observable universe ----
 {
   const MARKS = [[2, 'room'], [7.1, 'Earth'], [9.15, 'Sun'], [12.9, 'Solar Sys.'], [15.97, '1 ly'], [17.5, '10 pc'], [20.5, 'Milky Way'], [22.6, 'Local Grp'], [24, 'Virgo'], [26.95, 'Universe']];
@@ -1676,6 +1731,34 @@ function setFlight(on) {
     const ratio = 10 ** (z - m[0]); $('zread').textContent = `camera sees ${P.fmtLength(10 ** z)} · ${Math.abs(ratio - 1) < 0.25 ? `about ${m[1]} size` : ratio > 1 ? `${ratio >= 100 ? '×' + ratio.toExponential(0).replace('e+', '·10^') : ratio.toFixed(1) + '×'} ${m[1]}` : `${(1 / ratio) >= 100 ? '1/' + (1 / ratio).toExponential(0).replace('e+', '·10^') : '1/' + (1 / ratio).toFixed(1)} ${m[1]}`}`;
   }, 200);
 }
+// ---- controller: two thumbsticks on opposite sides, triggers, bumpers, face buttons and a d-pad; a real gamepad (Xbox layout) feeds the same inputs ----
+const padAx = { lx: 0, ly: 0, rx: 0, ry: 0, lt: 0, rt: 0 }, padV = { lx: 0, ly: 0, rx: 0, ry: 0, lt: 0, rt: 0 }, padPrev = {};
+function setPadMode(on) { document.body.classList.toggle('padmode', on); $('xpad').hidden = !on; $('navPad').classList.toggle('on', on); if (on && !fly.on) setFlight(true); }
+$('navPad').addEventListener('click', () => setPadMode($('xpad').hidden)); $('xExit').addEventListener('click', () => setPadMode(false));
+window.addEventListener('keydown', e => { if (!e.repeat && e.key === '0' && !/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) setPadMode($('xpad').hidden); });
+for (const [id, kx, ky] of [['xsL', 'lx', 'ly'], ['xsR', 'rx', 'ry']]) {
+  const el = $(id), knob = el.firstElementChild; let on = false;
+  const move = e => { if (!on) return; const r = el.getBoundingClientRect(), R = r.width / 2; let x = (e.clientX - r.left - R) / R, y = (e.clientY - r.top - R) / R; const m = Math.hypot(x, y); if (m > 1) { x /= m; y /= m; } padV[kx] = x; padV[ky] = y; knob.style.setProperty('--kx', `${x * R * 0.6}px`); knob.style.setProperty('--ky', `${y * R * 0.6}px`); };
+  const end = () => { on = false; padV[kx] = padV[ky] = 0; knob.style.setProperty('--kx', '0px'); knob.style.setProperty('--ky', '0px'); };
+  el.addEventListener('pointerdown', e => { on = true; try { el.setPointerCapture(e.pointerId); } catch { /* synthetic pointer */ } move(e); });
+  el.addEventListener('pointermove', move); el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
+}
+document.querySelectorAll('#xpad button[data-xk]').forEach(b => {
+  const k = b.dataset.xk, down = () => { b.classList.add('held'); if (k === 'lt' || k === 'rt') padV[k] = 1; else keys.add(k); }, up = () => { b.classList.remove('held'); if (k === 'lt' || k === 'rt') padV[k] = 0; else keys.delete(k); };
+  b.addEventListener('pointerdown', e => { try { b.setPointerCapture(e.pointerId); } catch { /* synthetic pointer */ } down(); }); b.addEventListener('pointerup', up); b.addEventListener('pointercancel', up);
+});
+document.querySelectorAll('#xpad button[data-xclick]').forEach(b => b.addEventListener('click', () => $(b.dataset.xclick).click()));
+const dz = v => Math.abs(v) < 0.14 ? 0 : (v - Math.sign(v) * 0.14) / 0.86;
+function pollPad() {
+  const gp = (navigator.getGamepads ? [...navigator.getGamepads()].find(g => g && g.connected) : null);
+  const g = gp ? { lx: dz(gp.axes[0] || 0), ly: dz(gp.axes[1] || 0), rx: dz(gp.axes[2] || 0), ry: dz(gp.axes[3] || 0), lt: gp.buttons[6]?.value || 0, rt: gp.buttons[7]?.value || 0 } : null;
+  for (const a of Object.keys(padAx)) padAx[a] = g && Math.abs(g[a]) > Math.abs(padV[a]) ? g[a] : padV[a];
+  if (!gp) return;
+  const b = i => !!gp.buttons[i]?.pressed, edge = (name, i, fn) => { const now = b(i); if (now && !padPrev[name]) fn(); padPrev[name] = now; }, hold = (name, i, key) => { const now = b(i); if (now !== !!padPrev[name]) { now ? keys.add(key) : keys.delete(key); padPrev[name] = now; } };
+  hold('a', 0, 'shift'); hold('b', 1, 'b'); hold('lb', 4, 'q'); hold('rb', 5, 'e'); hold('up', 12, 'x'); hold('dn', 13, 'z');
+  edge('x', 2, () => $('navCruise').click()); edge('y', 3, () => $('navHelm').click()); edge('l', 14, () => $('tSlow').click()); edge('r', 15, () => $('tFast').click()); edge('start', 9, () => setPadMode($('xpad').hidden));
+}
+window.addEventListener('gamepadconnected', e => toast(`Controller connected: ${e.gamepad.id.slice(0, 40)}`));
 // ---- helm: a throttle lever of speed gears (walking pace to a gigalight-year per second), a course, align and autopilot ----
 const GEARS = [['Stop', 0], ['Walking', 1.4], ['Car · 100 km/h', 27.8], ['Jet airliner', 250], ['Orbital speed', 7.8e3], ['Solar escape', 6.2e5], ['1% light speed', 3e6], ['10% light speed', 3e7], ['Light speed', 299792458],
   ['Warp 1 · 10 c', 3e9], ['Warp 2 · 1 AU/s', 1.496e11], ['Warp 3 · 1 ly/s', 9.461e15], ['Warp 4 · 1 kly/s', 9.461e18], ['Warp 5 · 1 Mly/s', 9.461e21], ['Warp 6 · 100 Mly/s', 9.461e23], ['Warp 7 · 1 Gly/s', 9.461e24]];
@@ -1703,6 +1786,7 @@ function helmMove(dt) {
   let dp = 0, dy = 0, dr = 0; const r = 1.2 * dt;
   if (keys.has('arrowup')) dp += r; if (keys.has('arrowdown')) dp -= r; if (keys.has('arrowleft')) dy += r; if (keys.has('arrowright')) dy -= r; if (keys.has('q')) dr += r; if (keys.has('e')) dr -= r;
   if (helm.stick) { dy -= helm.stick.x * 1.8 * dt; dp -= helm.stick.y * 1.8 * dt; }
+  dy -= padAx.rx * 1.8 * dt; dp -= padAx.ry * 1.8 * dt; helm.thr = clamp(helm.thr + (padAx.rt - padAx.lt) * 2.2 * dt, 0, GEARS.length - 1);
   if (dp || dy || dr) helmAttitude(dp, dy, dr);
   camera.getWorldDirection(tmpV); tmpR.crossVectors(tmpV, camera.up).normalize(); tmpU.crossVectors(tmpR, tmpV).normalize();
   let cmd = speedAt(helm.thr), dist = Infinity;
@@ -1716,7 +1800,7 @@ function helmMove(dt) {
       if (dist <= stop * 1.02) { setGear(0); helm.auto = false; toast(`Arrived at ${helm.course.name}`); cmd = 0; }
     }
   }
-  tmpM.copy(tmpV).multiplyScalar(helm.rev ? -cmd : cmd);
+  tmpM.copy(tmpV).multiplyScalar(helm.rev ? -cmd : cmd); if (padAx.lx || padAx.ly) { tmpM.addScaledVector(tmpR, padAx.lx * viewW * 0.3); tmpM.addScaledVector(tmpU, -padAx.ly * viewW * 0.3); }
   if (keys.has('a')) tmpM.addScaledVector(tmpR, -viewW * 0.3); if (keys.has('d')) tmpM.addScaledVector(tmpR, viewW * 0.3); if (keys.has('x')) tmpM.addScaledVector(tmpU, viewW * 0.3); if (keys.has('z')) tmpM.addScaledVector(tmpU, -viewW * 0.3);
   flyVel.lerp(tmpM, 1 - Math.exp(-dt / Math.max(fly.glide, 0.25)));
   moveFocusScene(tmpS.copy(flyVel).multiplyScalar(dt)); travel = null; follow = null;
@@ -1774,6 +1858,7 @@ window.addEventListener('keydown', e => {
 
 function steer(dt) {
   const fast = keys.has('shift') ? 3 : 1, rot = 1.2 * dt * fast, viewW = 10 ** state.zoom, pan = 0.6 * viewW * dt * fast;
+  if (!helm.on && (padAx.rx || padAx.ry)) orbitBy(-padAx.rx * 1.6 * dt, -padAx.ry * 1.6 * dt);
   if (!helm.on) {
   if (keys.has('arrowleft')) orbitBy(rot, 0); if (keys.has('arrowright')) orbitBy(-rot, 0);
   if (keys.has('arrowup')) orbitBy(0, rot); if (keys.has('arrowdown')) orbitBy(0, -rot);
@@ -2241,7 +2326,7 @@ function animate(now) {
   if (frame % 6 === 0 && window.timeHudUpdate) window.timeHudUpdate();
   if (frame % 6 === 0) $('clockDate').textContent = clockDate() + (state.pause ? ' (paused)' : '');
   const camBefore = fly.on ? camera.position.clone() : null;
-  steer(dt); stepTravel(dt);
+  pollPad(); steer(dt); stepTravel(dt);
   if (!helm.on) controls.update();
   // look around instead of orbit: undo the camera's movement by moving the focus the opposite way
   if (camBefore) moveFocusScene(camBefore.sub(camera.position).divideScalar(2 / 10 ** state.zoom));
