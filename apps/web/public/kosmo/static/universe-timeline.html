@@ -184,8 +184,17 @@
   #sortrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; font-size: 12px; color: var(--muted); } #sortrow select { margin-left: 6px; background: rgba(0,0,0,0.35); color: #e8eef8; border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 3px 6px; font-size: 12px; color-scheme: dark; } #sortrow .chk { cursor: pointer; }
   #results .grp { cursor: pointer; user-select: none; } #results .grp .cv { display: inline-block; width: 12px; transition: transform .2s ease; } #results .grp.closed .cv { transform: rotate(-90deg); } #results .grpbox.closed { display: none; }
   #results mark { background: none; color: var(--accent); font-weight: 600; }
+  /* eye buttons: turn a place (or a whole group) on or off the map */
+  button.eye { flex: none; width: 30px; height: 30px; padding: 0; margin: 0 2px; border: 0; border-radius: 8px; background: transparent; color: rgba(160,175,200,0.4); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+  button.eye:hover { color: #fff; background: rgba(255,255,255,0.08); } button.eye.on { color: var(--accent); }
+  button.eye svg { display: block; pointer-events: none; }
+  #results .grp .eyeg { margin-left: auto; margin-right: 8px; }
   #results .drow { display: flex; align-items: center; }
-  #results .drow button.dest { flex: 1; min-width: 0; }
+  #results .drow button.dest { flex: 1; min-width: 0; width: auto; align-items: center; }
+  #results .drow button.dest small { flex: none; white-space: nowrap; margin-left: auto; }
+  /* the generic "#results button" rule above would stretch these: they are small icon buttons */
+  #results button.eye { width: 30px; height: 30px; padding: 0; margin: 0 2px; flex: none; justify-content: center; align-items: center; border-radius: 8px; }
+  #results .grp button.eye { margin-left: auto; margin-right: 8px; }
   #results .drow .wk { flex: none; padding: 4px 8px; color: var(--muted); text-decoration: none; border-radius: 6px; }
   #results .drow .wk:hover { color: var(--accent); background: rgba(26,26,26,0.9); }
   #results button { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; width: 100%; text-align: left; font-size: 14px; padding: 5px 8px; border: 0; background: transparent; border-radius: 6px; }
@@ -1868,6 +1877,7 @@ function destButton(d, ql) {
   b.innerHTML = `<span class="l">${previewFor(d)}<span class="nm">${hl(d.name, ql)}</span></span><small>${d.type || ''}${d.viaParent ? ' · via ' + d.parent : ''}${d.unplaced ? ' · no sky position' : ''}</small>`;
   b.addEventListener('click', () => { if (d.unplaced) { toast(`${d.name} has no position in the catalogue; open it in Kosmopedia (↗)`); return; } goDest(d); $('search').value = d.name; });
   row.appendChild(b);
+  if (pinnable(d)) row.appendChild(eyeButton(VIS.set.has(d.name), 'Show this place on the map, at any scale', () => { setPinned(d, !VIS.set.has(d.name)); refreshEyes(); }));
   const href = wikiHref(d.meta);
   if (href) { const a = document.createElement('a'); a.className = 'wk'; a.href = href; a.target = '_top'; a.title = `Open ${d.name} in Kosmopedia`; a.textContent = '↗'; row.appendChild(a); }
   return row;
@@ -1904,6 +1914,11 @@ function pagedList(box, items, ql) {
   };
   more.addEventListener('click', draw); draw();
 }
+const VIS = { set: new Set(), pts: null, cap: 0, lines: null, cache: [], dirty: true, group: new THREE.Group() };
+scene.add(VIS.group);
+try { for (const n of JSON.parse(localStorage.getItem('kosmoVisible') || '[]')) VIS.set.add(n); } catch { /* none saved */ }
+const EYE_ON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 5.2A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.6 6.7A17 17 0 0 0 2 12s3.6 7 10 7c1.6 0 3-.4 4.3-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
 const LOC = { chip: 'all', sort: 'name', placed: false, closed: new Set() };
 const FAMILIES = [['all', 'All', () => true], ['recent', 'Recent', null],
   ['views', 'Views', d => d.type === 'view' || d.type === 'scale'], ['constellation', 'Constellations', d => d.type === 'constellation'],
@@ -1940,8 +1955,9 @@ function showResults(q) {
   const fam = FAMILIES.find(f => f[0] === LOC.chip), keep = d => (!LOC.placed || (d.pos && !d.unplaced)) && (LOC.chip === 'all' || (LOC.chip === 'recent' ? RECENT.includes(d.name) : LOC.chip === 'other' ? familyOf(d) === 'other' : fam[2](d)));
   const section = (title, items, collapsible) => {
     const head = document.createElement('div'); head.className = 'grp' + (LOC.closed.has(title) ? ' closed' : ''); head.innerHTML = `<span><span class="cv">▾</span> ${esc(title)}</span><span>${items.length.toLocaleString()}</span>`;
+    const eg = groupEye(items); const cnt = head.lastElementChild; head.insertBefore(eg, cnt);
     const box = document.createElement('div'); box.className = 'grpbox' + (LOC.closed.has(title) ? ' closed' : ''); results.append(head, box); pagedList(box, items, ql);
-    if (collapsible) head.addEventListener('click', () => { const c = !LOC.closed.has(title); c ? LOC.closed.add(title) : LOC.closed.delete(title); head.classList.toggle('closed', c); box.classList.toggle('closed', c); });
+    if (collapsible) head.addEventListener('click', e => { if (e.target.closest && e.target.closest('button.eye')) return; const c = !LOC.closed.has(title); c ? LOC.closed.add(title) : LOC.closed.delete(title); head.classList.toggle('closed', c); box.classList.toggle('closed', c); });
   };
   if (ql) {   // type-ahead: one ranked list, best matches first, the matching letters highlighted
     const hits = DEST.filter(keep).map(d => [d, matchScore(d, ql)]).filter(x => x[1] < 9); hits.sort((a, b) => a[1] - b[1] || a[0].name.localeCompare(b[0].name));
@@ -2502,7 +2518,7 @@ async function loadConstellations() {
       const d = { name: c.name, type: 'constellation', pos, w: Math.max(w, 8 * pc), nopick: true, constellation: c, meta: { type: 'constellation', name: c.name, notes: `${c.meaning}. ${c.story}`, id: undefined } };
       CONST.byName.set(c.name, { c, starPos }); DEST.push(d);
     }
-    $('catStatus').textContent = `${DEST.length.toLocaleString()} destinations (incl. 88 constellations)`; showResults($('search').value);
+    $('catStatus').textContent = `${DEST.length.toLocaleString()} destinations (incl. 88 constellations)`; VIS.dirty = true; showResults($('search').value);
   } catch { /* the dataset is optional */ }
 }
 const CONST_STAR_COLOUR = { O: [0.6, 0.7, 1], B: [0.7, 0.8, 1], A: [0.85, 0.9, 1], F: [1, 0.97, 0.9], G: [1, 0.9, 0.7], K: [1, 0.75, 0.5], M: [1, 0.6, 0.4] };
@@ -2519,6 +2535,8 @@ function updateConstellation(k) {
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(used.length * 3), 3)); g.setAttribute('aSize', new THREE.BufferAttribute(new Float32Array(used.length), 1)); g.setAttribute('aColor', new THREE.BufferAttribute(new Float32Array(used.length * 3), 3)); g.setAttribute('aKind', new THREE.BufferAttribute(new Float32Array(used.length).fill(1), 1));
     used.forEach((id, i) => { const st = j.stars[id], col = CONST_STAR_COLOUR[String(st[5] || 'G')[0]] || CONST_STAR_COLOUR.G; g.attributes.aColor.setXYZ(i, ...col); g.attributes.aSize.setX(i, clamp(22 - 3.2 * (st[3] ?? 4), 8, 40)); });
     ent.pts = new THREE.Points(g, CENSUS_SPRITE_MAT); ent.pts.frustumCulled = false; CONST.group.add(ent.line, ent.pts);
+    // the line of sight from the Sun (us) to the figure: the shape only exists from here, because its stars lie at very different distances along it
+    ent.sun = new THREE.Line(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3)), new THREE.LineBasicMaterial({ color: 0xffd37a, transparent: true, opacity: 0.35, depthTest: false })); ent.sun.frustumCulled = false; CONST.group.add(ent.sun);
   }
   CONST.group.visible = true; CENSUS_SPRITE_MAT.uniforms.uPx.value = renderer.getPixelRatio();
   const lp = ent.line.geometry.attributes.position, pp = ent.pts.geometry.attributes.position, cache = new Map();
@@ -2526,8 +2544,41 @@ function updateConstellation(k) {
   ent.segs.forEach((id, i) => { const v = ent.starPos(id) ? sceneOf(id) : [0, 0, 0]; lp.setXYZ(i, v[0], v[1], v[2]); });
   ent.ids.forEach((id, i) => { const v = sceneOf(id); pp.setXYZ(i, v[0], v[1], v[2]); });
   lp.needsUpdate = true; pp.needsUpdate = true;
+  if (ent.sun) { const a = toScene(SUN, focus, k), dd = DEST.find(x => x.name === name), b = dd ? toScene(at(dd.pos), focus, k) : a, sp = ent.sun.geometry.attributes.position; sp.setXYZ(0, a[0], a[1], a[2]); sp.setXYZ(1, b[0], b[1], b[2]); sp.needsUpdate = true; }
 }
 loadConstellations();
+// ---- visibility: an eye on each place and each group pins it on the map (a glow marker at its real position; a constellation draws its whole figure), at any
+// scale, until switched off. Remembered between visits. ----
+function pinnable(d) { return d.pos && !d.unplaced && !d.census && !d.preset && d.type !== 'view' && d.type !== 'scale'; }
+function savePins() { VIS.dirty = true; try { localStorage.setItem('kosmoVisible', JSON.stringify([...VIS.set])); } catch { /* storage blocked */ } }
+function eyeButton(on, title, onClick) {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'eye' + (on ? ' on' : ''); b.title = title; b.setAttribute('aria-pressed', String(on)); b.innerHTML = on ? EYE_ON : EYE_OFF;
+  b.addEventListener('click', e => { e.stopPropagation(); onClick(); }); return b;
+}
+function setPinned(d, on) { on ? VIS.set.add(d.name) : VIS.set.delete(d.name); savePins(); }
+function refreshEyes() { for (const row of results.querySelectorAll('.drow')) { const b = row.querySelector('button.eye'); if (!b || !row._d) continue; const on = VIS.set.has(row._d.name); b.classList.toggle('on', on); b.innerHTML = on ? EYE_ON : EYE_OFF; b.setAttribute('aria-pressed', String(on)); } for (const g of results.querySelectorAll('.eyeg')) { const items = g._items || []; const all = items.length && items.every(d => VIS.set.has(d.name)); g.classList.toggle('on', !!all); g.innerHTML = all ? EYE_ON : EYE_OFF; } }
+function groupEye(items) {
+  const pin = items.filter(pinnable), all = pin.length && pin.every(d => VIS.set.has(d.name));
+  const b = eyeButton(!!all, pin.length > 600 ? 'Show or hide the first 600 of this group on the map' : 'Show or hide this whole group on the map', () => {
+    const turnOn = !pin.slice(0, 600).every(d => VIS.set.has(d.name)); for (const d of pin.slice(0, 600)) turnOn ? VIS.set.add(d.name) : VIS.set.delete(d.name); savePins(); refreshEyes(); toast(turnOn ? `${Math.min(pin.length, 600)} shown on the map` : 'Hidden from the map');
+  }); b.classList.add('eyeg'); b._items = pin; return b;
+}
+function updateVisible(k) {
+  if (VIS.dirty) {   // rebuild the pinned list
+    VIS.dirty = false; VIS.cache = []; const consts = [];
+    for (const n of VIS.set) { const d = DEST.find(x => x.name === n); if (!d || !pinnable(d)) continue; if (d.type === 'constellation') consts.push(d); else VIS.cache.push({ d, style: censusStyle(d.meta || { type: d.type }) }); }
+    VIS.consts = consts.map(d => ({ d, ent: CONST.byName.get(d.name) })).filter(x => x.ent);
+    const need = VIS.cache.length; if (need > VIS.cap) { if (VIS.pts) { CENSUS.group.remove(VIS.pts); VIS.pts.geometry.dispose(); } VIS.cap = Math.max(64, need * 2); const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(VIS.cap * 3), 3)); g.setAttribute('aSize', new THREE.BufferAttribute(new Float32Array(VIS.cap), 1)); g.setAttribute('aColor', new THREE.BufferAttribute(new Float32Array(VIS.cap * 3), 3)); g.setAttribute('aKind', new THREE.BufferAttribute(new Float32Array(VIS.cap), 1)); VIS.pts = new THREE.Points(g, CENSUS_SPRITE_MAT); VIS.pts.frustumCulled = false; CENSUS.group.add(VIS.pts); }
+    if (VIS.pts) VIS.cache.forEach((it, i) => { VIS.pts.geometry.attributes.aColor.setXYZ(i, ...it.style.c); VIS.pts.geometry.attributes.aKind.setX(i, it.style.k); VIS.pts.geometry.attributes.aColor.needsUpdate = true; VIS.pts.geometry.attributes.aKind.needsUpdate = true; });
+    // one line object for every pinned figure
+    if (VIS.lines) { VIS.group.remove(VIS.lines); VIS.lines.geometry.dispose(); VIS.lines = null; }
+    VIS.segs = []; for (const { ent } of VIS.consts) for (const poly of ent.c.figure) for (let i = 0; i + 1 < poly.length; i++) VIS.segs.push([ent, poly[i], poly[i + 1]]);
+    if (VIS.segs.length) { VIS.lines = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(VIS.segs.length * 6), 3)), new THREE.LineBasicMaterial({ color: 0x7fa7ff, transparent: true, opacity: 0.55, depthTest: false })); VIS.lines.frustumCulled = false; VIS.group.add(VIS.lines); }
+  }
+  const have = VIS.cache.length > 0 && VIS.pts; if (VIS.pts) VIS.pts.visible = !!have; CENSUS_SPRITE_MAT.uniforms.uPx.value = renderer.getPixelRatio();
+  if (have) { const pa = VIS.pts.geometry.attributes, H2 = view.clientHeight / 2; VIS.cache.forEach((it, i) => { const p = at(typeof it.d.pos === 'function' ? it.d.pos() : it.d.pos), sc = toScene(p, focus, k), near = Math.hypot(sc[0], sc[1], sc[2]) < 1e5; pa.position.setXYZ(i, sc[0], sc[1], sc[2]); const w = typeof it.d.w === 'function' ? it.d.w() : it.d.w || 0; pa.aSize.setX(i, near ? Math.max(it.style.s, Math.min(60, (w / 5) * k * H2 * 2)) : 0); }); pa.position.needsUpdate = true; pa.aSize.needsUpdate = true; }
+  if (VIS.lines) { const lp = VIS.lines.geometry.attributes.position, cache = new Map(); const so = (ent, id) => { const key = id; let v = cache.get(key); if (!v) { const sp = ent.starPos(id); v = sp ? toScene(at(sp), focus, k) : [0, 0, 0]; cache.set(key, v); } return v; }; VIS.segs.forEach(([ent, a, b], i) => { const va = so(ent, a), vb = so(ent, b); lp.setXYZ(2 * i, va[0], va[1], va[2]); lp.setXYZ(2 * i + 1, vb[0], vb[1], vb[2]); }); lp.needsUpdate = true; }
+}
 function updateCensus(k) {
   for (const [key, B] of CENSUS.built) if (key !== CENSUS.key) { B.pts.visible = false; for (const it of B.items) if (it.obj) it.obj.visible = false; }
   if (!CENSUS.key) return;
@@ -2553,14 +2604,14 @@ function updateScene() {
     const grow = L.comoving ? a : 1, cover = at(L.width) * grow / viewW;
     if (L.cosmic && L.obj.material) { const cu = L.obj.material.userData.cosU, c0 = atRaw(L.centre); if (cu) { cu.centre.value.set((c0[0] - SUN[0]) / COS_R0, (c0[2] - SUN[2]) / COS_R0, -(c0[1] - SUN[1]) / COS_R0); cu.unit.value = at(L.unit) * grow / COS_R0; } }
     const off = toScene(L.cosmic ? atRaw(L.centre) : at(L.centre), focus, k), far = Math.hypot(off[0], off[1], off[2]) / 2;   // in view widths
-    L.obj.visible = cover > 1e-4 && cover < 1e8 && far < cover * 1.5 + 3e3;
+    L.obj.visible = cover > 1e-4 && cover < 1e8 && far < cover * 1.5 + 3e3 && !(L.key === 'stars' && CONST.active);   // the generated 50 pc star cloud is not real data: hide it while a constellation's real stars are shown
     if (!L.obj.visible) continue;
     L.obj.scale.setScalar(at(L.unit) * k * grow); L.obj.position.set(off[0], off[1], off[2]);
     if (L.comoving) updateUniverse(L.obj, a);
     if (L.update) L.update(L.obj);
   }
   const sp = toScene(SUN, focus, k); sunLight.position.set(sp[0], sp[1], sp[2]);
-  updateBlackHoles(k); updateCensus(k); updateDestModel(k); updateConstellation(k); courseMarker(k);
+  updateBlackHoles(k); updateCensus(k); updateDestModel(k); updateConstellation(k); updateVisible(k); courseMarker(k);
   if (megaObj) {
     const mg = MEGAS[state.mega], cover = mg.width() / viewW;
     megaObj.visible = state.mega !== 'none' && cover > 1e-4 && cover < 1e8;
@@ -3045,7 +3096,7 @@ function animate(now) {
   renderFrame(dt);
 }
 requestAnimationFrame(animate);
-window.kosmo = { CONST, DM, autoFrame, frameStats, trail, renderFrame, quality, drawCube, drawTimeline, drawMinimap, updateHover, updateDrawer, stepDial, get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
+window.kosmo = { VIS, CONST, DM, autoFrame, frameStats, trail, renderFrame, quality, drawCube, drawTimeline, drawMinimap, updateHover, updateDrawer, stepDial, get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
 </script>
 </body>
 </html>
