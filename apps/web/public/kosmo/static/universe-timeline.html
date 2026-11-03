@@ -262,7 +262,8 @@
   #navhud .hudtog button { min-width: 26px; height: 22px; padding: 0 6px; font-size: 11px; letter-spacing: 0; text-transform: none; }
   #navhud .hudtog button.on { color: var(--accent); border-color: var(--accent); }
   /* labels off: no keycaps, no word tags, no ruler captions */
-  body.hud-nolabels kbd.kc, body.hud-nolabels #navhud .navtag, body.hud-nolabels #zrule b, body.hud-nolabels #zread, body.hud-nolabels #helm .hsub, body.hud-nolabels #hud .hudk, body.hud-nolabels #navhud .hudk, body.hud-nolabels #helm .hudk { display: none !important; }
+  body.hud-nolabels kbd.kc, body.hud-nolabels #navhud .navrow .navtag, body.hud-nolabels #zrule b, body.hud-nolabels #zread, body.hud-nolabels #helm .hsub, body.hud-nolabels #hud .hudk, body.hud-nolabels #navhud .hudk, body.hud-nolabels #helm .hudk { display: none !important; }
+  body.hud-nolabels #navhud .navpad .navtag { visibility: hidden; }   /* keep the grid cell so the pad does not collapse */
   /* minimal look: system sans, no frames, soft glass pills */
   body.hud-min #navhud, body.hud-min #helm, body.hud-min #timehud, body.hud-min #hud { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; letter-spacing: 0; border-radius: 20px !important; background: color-mix(in srgb, var(--bg) 42%, transparent) !important; -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2); box-shadow: none; }
   body.hud-min #navhud button, body.hud-min #helm button, body.hud-min #timehud button { border: 0 !important; border-radius: 999px !important; background: rgba(255,255,255,0.07); text-transform: none; letter-spacing: 0; font-size: 12px; font-weight: 500; color: #e6edf7; }
