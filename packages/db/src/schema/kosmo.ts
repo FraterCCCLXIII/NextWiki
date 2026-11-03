@@ -27,6 +27,7 @@ type KosmoEntityKind =
   | "module"
   | "lesson"
   | "event"
+  | "period"
   | "stage";
 
 type KosmoTaxonScheme =
