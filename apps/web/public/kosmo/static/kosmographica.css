@@ -540,3 +540,10 @@ html.embedded .titlebar .sub {
   letter-spacing: 0 !important;
   text-transform: none !important;
 }
+
+/* Embedded timeline: no top bar at all. The Chronicle circle floats over the map, and the
+   strip and drawer that sat below the 58px bar start at the top instead. */
+html.embedded #navbar { background: none !important; height: 0 !important; padding: 0 !important; pointer-events: none; }
+html.embedded .orbwrap { position: fixed; top: 14px; right: 16px; z-index: 9; pointer-events: auto; transition: right .28s ease; }
+html.embedded #top, html.embedded #drawer { top: 0 !important; }
+html.embedded body.drawer-open .orbwrap { right: 416px; }
