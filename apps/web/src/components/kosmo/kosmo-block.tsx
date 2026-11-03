@@ -104,7 +104,7 @@ function Skeleton() {
 
 function Frame({ children }: { children: ReactNode }) {
   return (
-    <section className="my-6 rounded-md border border-kosmo-line bg-kosmo-panel p-4 text-sm text-kosmo-text">
+    <section className="my-6 rounded-md border border-kosmo-line bg-kosmo-panel p-4 text-base text-kosmo-text">
       {children}
     </section>
   );
@@ -119,8 +119,8 @@ function Infobox({ data }: { data: KosmoEntityPayload }) {
   return (
     <Frame>
       <header className="mb-3 border-b border-kosmo-line pb-2">
-        <div className="text-base font-semibold">{entity.name}</div>
-        {entity.type && <div className="text-xs text-kosmo-dim">{entity.type}</div>}
+        <div className="text-lg font-semibold">{entity.name}</div>
+        {entity.type && <div className="text-sm text-kosmo-dim">{entity.type}</div>}
         {entity.summary && <p className="mt-1 text-kosmo-dim">{entity.summary}</p>}
       </header>
       <dl className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1.5">
@@ -133,7 +133,7 @@ function Infobox({ data }: { data: KosmoEntityPayload }) {
               ) : (
                 formatClaimValue(claim)
               )}
-              {claim.note && <span className="ml-2 text-xs text-kosmo-dim">{claim.note}</span>}
+              {claim.note && <span className="ml-2 text-sm text-kosmo-dim">{claim.note}</span>}
             </dd>
           </Fragment>
         ))}
@@ -143,7 +143,7 @@ function Infobox({ data }: { data: KosmoEntityPayload }) {
             <dd>
               {row.value}
               {row.source && (
-                <span className="ml-2 text-xs text-kosmo-dim">
+                <span className="ml-2 text-sm text-kosmo-dim">
                   {/^https?:\/\//.test(row.source) ? (
                     <a href={row.source} target="_blank" rel="noreferrer noopener" className="underline-offset-2 hover:underline">
                       source
@@ -168,7 +168,7 @@ function Children({ data }: { data: KosmoEntityPayload }) {
   const children = data.children ?? [];
   return (
     <Frame>
-      <h4 className="mb-2 text-xs uppercase tracking-wide text-kosmo-dim">Contents</h4>
+      <h4 className="mb-2 text-sm uppercase tracking-wide text-kosmo-dim">Contents</h4>
       {children.length === 0 ? (
         <p className="text-kosmo-dim">No entries yet.</p>
       ) : (
@@ -176,7 +176,7 @@ function Children({ data }: { data: KosmoEntityPayload }) {
           {children.map((child) => (
             <li key={child.slug} className="flex items-baseline gap-2">
               <RefLink name={child.name} path={child.path} />
-              <span className="text-xs text-kosmo-dim">{child.kind}</span>
+              <span className="text-sm text-kosmo-dim">{child.kind}</span>
             </li>
           ))}
         </ul>
@@ -214,7 +214,7 @@ function Links({ data }: { data: KosmoEntityPayload }) {
       ) : (
         groups.map((group) => (
           <div key={group.key} className="mb-3 last:mb-0">
-            <h4 className="mb-1 text-xs uppercase tracking-wide text-kosmo-dim">{group.title}</h4>
+            <h4 className="mb-1 text-sm uppercase tracking-wide text-kosmo-dim">{group.title}</h4>
             <ul className="flex flex-wrap gap-x-4 gap-y-1">
               {group.items.map((item) => (
                 <li key={item.slug}>
@@ -268,10 +268,10 @@ export function KosmoBlock({ kind, slug }: { kind: KosmoBlockKind; slug: string 
 
   if (state.status === "loading") return <Skeleton />;
   if (state.status === "missing") {
-    return <p className="my-4 text-sm text-kosmo-dim">Unknown entry: {slug}</p>;
+    return <p className="my-4 text-base text-kosmo-dim">Unknown entry: {slug}</p>;
   }
   if (state.status === "error") {
-    return <p className="my-4 text-sm text-kosmo-dim">Could not load {slug}.</p>;
+    return <p className="my-4 text-base text-kosmo-dim">Could not load {slug}.</p>;
   }
 
   if (kind === "infobox") return <Infobox data={state.data} />;

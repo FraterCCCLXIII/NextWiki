@@ -9,15 +9,15 @@
 <style>
   :root { --bg: #0d0d0d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --line: rgba(140,170,220,0.14); }
   * { box-sizing: border-box; }
-  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font: 17px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
   ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(127,195,255,0.55), rgba(255,184,107,0.45)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
   * { scrollbar-width: thin; scrollbar-color: rgba(127,195,255,0.6) transparent; }
   .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
   #navbar { position: sticky; top: 0; z-index: 6; height: 58px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(13,13,13,0.98), rgba(13,13,13,0.85)); border-bottom: 1px solid var(--line); }
-  #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 17px; text-transform: uppercase; color: #fff; }
-  #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 11px; color: #fff; opacity: 0.8; margin-top: 2px; }
-  #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.18em; font-size: 12px; text-transform: uppercase; }
+  #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 20px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 13px; color: #fff; opacity: 0.8; margin-top: 2px; }
+  #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.18em; font-size: 14px; text-transform: uppercase; }
 
   /* One added tab is wider than a 1280 screen: allow the menu to shrink and
      scroll sideways below that width rather than clipping its last link. */
@@ -28,8 +28,8 @@
   #menu a { color: rgba(255,255,255,0.72); text-decoration: none; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
   main { max-width: 1400px; margin: 0 auto; padding: 22px; display: grid; grid-template-columns: 300px 1fr; gap: 26px; }
   aside { position: sticky; top: 80px; align-self: start; max-height: calc(100vh - 100px); overflow: auto; }
-  h1 { font-weight: 500; font-size: 26px; margin: 0 0 4px; letter-spacing: 0.04em; }
-  h2 { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 18px 0 8px; }
+  h1 { font-weight: 500; font-size: 31px; margin: 0 0 4px; letter-spacing: 0.04em; }
+  h2 { font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 18px 0 8px; }
   input[type=text], button { background: rgba(26,26,26,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 7px 10px; font: inherit; }
   input[type=text] { width: 100%; } button { cursor: pointer; } button:hover { border-color: var(--accent); }
   .dim { color: var(--muted); }
@@ -39,8 +39,8 @@
   .stage { position: relative; display: block; padding: 7px 10px; margin: 2px 0; border-radius: 9px; cursor: pointer; color: var(--text); text-decoration: none; }
   .stage::before { content: ''; position: absolute; left: -17px; top: 13px; width: 9px; height: 9px; border-radius: 50%; background: var(--c); box-shadow: 0 0 10px var(--c); }
   .stage:hover, .stage.on { background: rgba(127,195,255,0.08); }
-  .stage small { display: block; color: var(--muted); font-size: 11.5px; }
-  .stage .n { float: right; color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .stage small { display: block; color: var(--muted); font-size: 14px; }
+  .stage .n { float: right; color: var(--muted); font-size: 13px; margin-top: 2px; }
   /* the tree */
   .tree details { margin: 0; }
   .tree summary { list-style: none; cursor: pointer; user-select: none; padding: 6px 8px; border-radius: 8px; display: flex; align-items: center; gap: 8px; }
@@ -54,37 +54,37 @@
   .tree summary:hover::after { color: var(--text); }
   .tree .kids { margin-left: 14px; padding-left: 12px; border-left: 1px solid var(--line); }
   .stagehead { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin: 6px 0 2px; }
-  .stagehead h3 { margin: 0; font-weight: 500; font-size: 22px; color: #fff; }
-  .stagehead .ages { color: var(--c); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .stagehead h3 { margin: 0; font-weight: 500; font-size: 26px; color: #fff; }
+  .stagehead .ages { color: var(--c); font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; }
   .blurb { color: var(--muted); margin: 0 0 8px; }
-  .program > summary { font-size: 16px; color: #fff; }
-  .module > summary { font-size: 14px; }
+  .program > summary { font-size: 19px; color: #fff; }
+  .module > summary { font-size: 17px; }
   .lesson { display: flex; align-items: center; gap: 8px; padding: 3px 8px 3px 26px; color: #c3d0e2; }
   .lesson input { accent-color: var(--accent); }
   .lesson.done span { color: var(--muted); text-decoration: line-through; }
-  .lesson a { color: var(--accent2); text-decoration: none; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid rgba(255,184,107,0.35); border-radius: 999px; padding: 0 7px; }
+  .lesson a { color: var(--accent2); text-decoration: none; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid rgba(255,184,107,0.35); border-radius: 999px; padding: 0 7px; }
   .lesson a:hover { background: rgba(255,184,107,0.12); }
-  .count { color: var(--muted); font-size: 11.5px; margin-left: auto; }
+  .count { color: var(--muted); font-size: 14px; margin-left: auto; }
   .bar { height: 3px; border-radius: 3px; background: rgba(255,255,255,0.08); overflow: hidden; margin: 2px 0 10px; }
   .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); width: 0; transition: width .3s; }
   .totals { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 10px 0; }
   .totals div { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; text-align: center; }
-  .totals b { display: block; font-size: 20px; color: #fff; font-weight: 500; }
-  .totals small { color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; font-size: 10px; }
+  .totals b { display: block; font-size: 24px; color: #fff; font-weight: 500; }
+  .totals small { color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; font-size: 12px; }
   mark { background: rgba(255,184,107,0.3); color: inherit; border-radius: 3px; }
   select { background: rgba(26,26,26,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 6px 8px; font: inherit; width: 100%; }
-  .exam { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; margin: 6px 0; font-size: 12.5px; }
-  .exam b { color: #fff; font-weight: 500; font-size: 14px; } .exam .tag { color: var(--accent2); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; margin-left: 6px; }
+  .exam { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; margin: 6px 0; font-size: 15px; }
+  .exam b { color: #fff; font-weight: 500; font-size: 17px; } .exam .tag { color: var(--accent2); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin-left: 6px; }
   .exam .m { color: var(--muted); margin-top: 2px; } .exam a { color: var(--accent); text-decoration: none; }
-  .exam button { font-size: 11px; padding: 2px 8px; margin-top: 6px; }
+  .exam button { font-size: 13px; padding: 2px 8px; margin-top: 6px; }
   #examList { max-height: 46vh; overflow: auto; }
-  .pf { display: inline-block; background: rgba(127,195,255,0.12); border: 1px solid var(--accent); border-radius: 999px; padding: 1px 9px; margin: 4px 0; font-size: 12px; } .pf button { font-size: 10px; padding: 0 6px; margin-left: 6px; }
-  .req { padding: 2px 8px 6px 26px; font-size: 12px; color: var(--muted); }
+  .pf { display: inline-block; background: rgba(127,195,255,0.12); border: 1px solid var(--accent); border-radius: 999px; padding: 1px 9px; margin: 4px 0; font-size: 14px; } .pf button { font-size: 12px; padding: 0 6px; margin-left: 6px; }
+  .req { padding: 2px 8px 6px 26px; font-size: 14px; color: var(--muted); }
   .req a { color: var(--accent); text-decoration: none; } .req a.done { color: var(--muted); text-decoration: line-through; } .req a:hover { text-decoration: underline; }
-  .state { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 999px; padding: 1px 7px; border: 1px solid; }
+  .state { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 999px; padding: 1px 7px; border: 1px solid; }
   .state.ready { color: #7fe3a0; border-color: rgba(127,227,160,0.4); } .state.locked { color: var(--muted); border-color: rgba(138,155,184,0.35); } .state.complete { color: var(--accent2); border-color: rgba(255,184,107,0.4); }
   .subjects { display: flex; flex-wrap: wrap; gap: 5px; }
-  .subjects button { font-size: 11.5px; padding: 3px 8px; } .subjects button.on { border-color: var(--accent); color: var(--accent); }
+  .subjects button { font-size: 14px; padding: 3px 8px; } .subjects button.on { border-color: var(--accent); color: var(--accent); }
 </style>
   <link rel="stylesheet" href="kosmographica.css?v=11">
   <script src="atlas-nav.js" defer></script>
@@ -104,7 +104,7 @@
     <select id="level" style="margin-top:6px"><option value="all">any level</option></select>
     <div id="examList"></div>
     <div id="progFilter"></div>
-    <div class="dim" id="examNote" style="font-size:11.5px;margin-top:6px"></div>
+    <div class="dim" id="examNote" style="font-size:14px;margin-top:6px"></div>
     <h2>Search the tree</h2>
     <input type="text" id="q" placeholder="orbit, Moon, Kepler, plasma…" autocomplete="off">
     <h2>Subjects</h2>
@@ -236,7 +236,7 @@ function renderExams() {
     const meta = [e.ages ? `ages ${e.ages[0]}–${e.ages[1]}` : '', e.grades ? `grades ${e.grades}` : '', e.body, e.purpose].filter(Boolean).join(' · ');
     d.innerHTML = `<b>${esc(e.name)}</b><span class="tag">${LEVEL_NAMES[e.level] || e.level}</span>${e.full_name && e.full_name !== e.name ? `<div class="dim">${esc(e.full_name)}</div>` : ''}<div class="m">${esc(meta)}</div>`
       + (e.subjects?.length ? `<div class="m">subjects: ${esc(e.subjects.join(', '))}</div>` : '') + (e.format ? `<div class="m">${esc(e.format)}</div>` : '') + (e.when ? `<div class="m">when: ${esc(e.when)}</div>` : '') + (e.notes ? `<div class="m">${esc(e.notes)}</div>` : '')
-      + `<div>${e.prep_programs?.length ? `<button data-prep="${esc(e.id)}">show the programmes that prepare for it (${e.prep_programs.length})</button>` : ''} ${e.link ? `<a href="${esc(e.link)}" target="_blank" rel="noopener" style="margin-left:6px;font-size:11px">reference ↗</a>` : ''}</div>`;
+      + `<div>${e.prep_programs?.length ? `<button data-prep="${esc(e.id)}">show the programmes that prepare for it (${e.prep_programs.length})</button>` : ''} ${e.link ? `<a href="${esc(e.link)}" target="_blank" rel="noopener" style="margin-left:6px;font-size:13px">reference ↗</a>` : ''}</div>`;
     d.querySelector('button[data-prep]')?.addEventListener('click', () => { progOnly = new Set(e.prep_programs); $('progFilter').innerHTML = `<span class="pf">preparing for ${esc(e.name)}<button id="clearPrep">×</button></span>`; $('clearPrep').addEventListener('click', () => { progOnly = null; $('progFilter').innerHTML = ''; render(); }); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
     list.appendChild(d);
   }

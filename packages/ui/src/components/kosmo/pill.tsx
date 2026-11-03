@@ -23,7 +23,7 @@ export function Pill({ tone = "dim", children, className, ...props }: PillProps)
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border bg-transparent px-2 py-0.5 text-xs leading-4",
+        "inline-flex items-center rounded-full border bg-transparent px-2 py-0.5 text-sm leading-4",
         toneClasses[tone],
         className,
       )}

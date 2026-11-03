@@ -29,7 +29,7 @@ export function TreeNode({ node, depth = 0, defaultOpenDepth = 0 }: TreeNodeProp
   return (
     <li role="treeitem" aria-expanded={hasChildren ? open : undefined}>
       <div
-        className="flex flex-wrap items-baseline gap-x-2 py-1 text-sm"
+        className="flex flex-wrap items-baseline gap-x-2 py-1 text-base"
         style={{ paddingLeft: depth * 16 }}
       >
         {hasChildren ? (
@@ -50,27 +50,27 @@ export function TreeNode({ node, depth = 0, defaultOpenDepth = 0 }: TreeNodeProp
               ▸
             </span>
             <span>{node.name}</span>
-            <span className="text-xs text-kosmo-dim">{descendants}</span>
+            <span className="text-sm text-kosmo-dim">{descendants}</span>
           </button>
         ) : (
           <span className="pl-[1.1em] text-kosmo-text">{node.name}</span>
         )}
 
-        {node.status ? <span className="text-xs text-kosmo-dim">{node.status}</span> : null}
+        {node.status ? <span className="text-sm text-kosmo-dim">{node.status}</span> : null}
 
         {node.link ? (
           <a
             href={node.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-kosmo-blue hover:text-kosmo-mint"
+            className="text-sm text-kosmo-blue hover:text-kosmo-mint"
           >
             wiki ↗
           </a>
         ) : null}
 
         {open && node.blurb ? (
-          <p className="w-full pl-[1.1em] text-xs leading-relaxed text-kosmo-dim2">{node.blurb}</p>
+          <p className="w-full pl-[1.1em] text-sm leading-relaxed text-kosmo-dim2">{node.blurb}</p>
         ) : null}
       </div>
 

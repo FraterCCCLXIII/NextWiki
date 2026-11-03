@@ -624,7 +624,7 @@
     var host = document.getElementById("sensBody");
     var maxSwing = out.rows[0].swing || 1;
     var html = '<div class="sens">';
-    html += '<div class="sens-row" style="color:var(--dim2);font-size:10px;letter-spacing:.08em;text-transform:uppercase;">' +
+    html += '<div class="sens-row" style="color:var(--dim2);font-size:12px;letter-spacing:.08em;text-transform:uppercase;">' +
       '<span>Lever</span><span>Range of 2100 warming</span><span style="text-align:right;">+' +
       nf(0.25 * 100, 0) + "% / &minus;" + nf(0.25 * 100, 0) + "%</span><span style=\"text-align:right;\">swing</span></div>";
     out.rows.forEach(function (r) {
@@ -656,13 +656,13 @@
 
     var chk = D.checks.map(function (c) {
       return '<div class="srow" style="grid-template-columns:64px 250px 130px minmax(0,1fr);">' +
-        '<span class="' + (c.status === "pass" ? "good" : "bad") + '" style="font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;">' +
+        '<span class="' + (c.status === "pass" ? "good" : "bad") + '" style="font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;">' +
         c.status + "</span><span>" + c.label + '</span><span class="src-vintage">' + c.value + "</span>" +
-        '<span class="muted" style="font-size:11px;">' + c.detail + "</span></div>";
+        '<span class="muted" style="font-size:13px;">' + c.detail + "</span></div>";
     }).join("");
     var pass = D.checks.filter(function (c) { return c.status === "pass"; }).length;
     document.getElementById("checkBody").innerHTML =
-      '<div class="muted" style="margin-bottom:7px;font-size:11.5px;">' + pass + " of " + D.checks.length +
+      '<div class="muted" style="margin-bottom:7px;font-size:14px;">' + pass + " of " + D.checks.length +
       " checks pass. The two that matter: the energy series and the emissions series are independent constructions of the same " +
       "quantity and agree within 1%, and the carbon cycle reconstructs the observed CO2 record from emissions alone.</div>" +
       '<div class="checks">' + chk + "</div>";

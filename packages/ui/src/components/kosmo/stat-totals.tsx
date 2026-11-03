@@ -13,7 +13,7 @@ export function StatTotals({ items, className }: StatTotalsProps) {
           <span className="text-2xl font-semibold leading-none text-kosmo-mint tabular-nums">
             {item.value}
           </span>
-          <span className="text-xs uppercase tracking-wide text-kosmo-dim">{item.label}</span>
+          <span className="text-sm uppercase tracking-wide text-kosmo-dim">{item.label}</span>
         </div>
       ))}
     </div>

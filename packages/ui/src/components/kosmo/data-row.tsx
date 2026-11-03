@@ -9,10 +9,10 @@ export type DataRowProps = {
 
 export function DataRow({ label, children, mono = false }: DataRowProps) {
   return (
-    <div className="flex items-baseline justify-between gap-4 border-b border-kosmo-line py-2 text-sm last:border-b-0">
+    <div className="flex items-baseline justify-between gap-4 border-b border-kosmo-line py-2 text-base last:border-b-0">
       <span className="shrink-0 text-kosmo-dim">{label}</span>
       <span
-        className={cn("min-w-0 text-right text-kosmo-text break-words", mono && "font-mono text-xs")}
+        className={cn("min-w-0 text-right text-kosmo-text break-words", mono && "font-mono text-sm")}
       >
         {children}
       </span>

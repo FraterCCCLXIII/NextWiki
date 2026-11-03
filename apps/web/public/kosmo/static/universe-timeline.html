@@ -12,7 +12,7 @@
     --accent: #7fc3ff; --accent2: #ffb86b; --good: #7fe3a0; --bad: #ff8a8a; --radius: 14px;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 13px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif; overflow: hidden; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 16px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif; overflow: hidden; }
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(127,195,255,0.55), rgba(255,184,107,0.45)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
@@ -27,7 +27,7 @@
       linear-gradient(to bottom, var(--bg) 0, color-mix(in srgb, var(--bg) 60%, transparent) 70px, transparent 190px),
       linear-gradient(to right, var(--bg) 0, color-mix(in srgb, var(--bg) 60%, transparent) 70px, transparent 190px); }
   #navbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(13,13,13,0.9), rgba(13,13,13,0)); }
-  #menu { display: flex; gap: 20px; align-items: center; font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; letter-spacing: 0.18em; font-size: 12px; text-transform: uppercase; }
+  #menu { display: flex; gap: 20px; align-items: center; font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; letter-spacing: 0.18em; font-size: 14px; text-transform: uppercase; }
 
   /* One added tab is wider than a 1280 screen: allow the menu to shrink and
      scroll sideways below that width rather than clipping its last link. */
@@ -38,8 +38,8 @@
   #menu a { color: rgba(255,255,255,0.72); } #menu a:hover { color: #fff; text-decoration: none; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
   #logo { display: flex; align-items: center; gap: 12px; pointer-events: none; }
   #logo .mark { display: none; width: 34px; height: 34px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff 0, #ffd9a0 18%, #ff9f4d 38%, rgba(255,159,77,0.15) 60%, transparent 70%), conic-gradient(from 0deg, rgba(127,195,255,0) 0, rgba(127,195,255,0.9) 25%, rgba(127,195,255,0) 50%, rgba(127,195,255,0.9) 75%, rgba(127,195,255,0) 100%); box-shadow: 0 0 24px rgba(127,195,255,0.35); }
-  #logo .word { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif; font-weight: 500; letter-spacing: 0.3em; font-size: 17px; text-transform: uppercase; color: #fff; }
-  #logo .sub { display: block; font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-style: italic; letter-spacing: 0.06em; font-size: 11px; color: #fff; opacity: 0.8; margin-top: 2px; }
+  #logo .word { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif; font-weight: 500; letter-spacing: 0.3em; font-size: 20px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-style: italic; letter-spacing: 0.06em; font-size: 13px; color: #fff; opacity: 0.8; margin-top: 2px; }
 
   #top { position: absolute; left: 0; right: 0; top: 58px; height: 210px; z-index: 3; transition: height .25s ease; }
   #top.collapsed { height: 0; }
@@ -51,44 +51,44 @@
   #drawer { position: absolute; top: 58px; right: 0; bottom: 0; width: 400px; z-index: 7; transform: translateX(100%); transition: transform .28s ease; display: flex; flex-direction: column; background: linear-gradient(90deg, rgba(13,13,13,0.6), rgba(13,13,13,0.92) 12%); border-left: 1px solid var(--line); }
   #drawer.open { transform: none; }
   #drawer .head { padding: 12px 16px 6px; display: flex; align-items: baseline; justify-content: space-between; }
-  #drawer .head h3 { margin: 0; font-weight: 500; font-size: 18px; color: #fff; }
+  #drawer .head h3 { margin: 0; font-weight: 500; font-size: 22px; color: #fff; }
   #drawer canvas#map { display: block; width: 100%; aspect-ratio: 2 / 1; cursor: crosshair; }
   #drawer .chips { display: flex; flex-wrap: wrap; gap: 5px; padding: 8px 16px; }
-  #drawer .chips button { font-size: 11px; padding: 2px 8px; }
+  #drawer .chips button { font-size: 13px; padding: 2px 8px; }
   #drawer .chips button.on { border-color: var(--accent); color: var(--accent); }
   #vlist { flex: 1; overflow: auto; padding: 6px 16px 24px 16px; position: relative; }
   #vlist::before { content: ''; position: absolute; left: 86px; top: 0; bottom: 0; width: 1px; background: linear-gradient(180deg, rgba(127,195,255,0.5), rgba(255,184,107,0.5)); }
   .ev { display: grid; grid-template-columns: 62px 16px 1fr; gap: 6px; align-items: start; padding: 4px 0; cursor: pointer; border-radius: 6px; }
   .ev:hover { background: rgba(127,195,255,0.06); }
-  .ev .when { text-align: right; color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; padding-top: 2px; }
+  .ev .when { text-align: right; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; padding-top: 2px; }
   .ev .dot { width: 8px; height: 8px; border-radius: 50%; margin: 6px 0 0 3px; background: var(--c); box-shadow: 0 0 8px var(--c); }
-  .ev .what { color: #d6e0ee; font-size: 12.5px; }
-  .ev .what small { display: block; color: var(--muted); font-size: 11px; }
+  .ev .what { color: #d6e0ee; font-size: 15px; }
+  .ev .what small { display: block; color: var(--muted); font-size: 13px; }
   .ev.now { background: rgba(255,255,255,0.08); } .ev.now .what { color: #fff; }
   /* Chronicle is a round button; the clock readout is its hover label. */
   .orbwrap { position: relative; display: flex; align-items: center; }
   button.orb { width: 42px; height: 42px; margin: 0; padding: 0; border-radius: 50%; display: grid; place-items: center; background: rgba(26,26,26,0.85); border: 1px solid var(--line2, #303133); color: var(--text); cursor: pointer; transition: border-color .2s, color .2s, background .2s; }
   button.orb:hover, button.orb:focus-visible { border-color: var(--accent); color: var(--accent); }
   button.orb.open { border-color: var(--accent); color: var(--accent); background: rgba(26,26,26,0.95); }
-  #navTime { position: absolute; right: calc(100% + 10px); top: 50%; transform: translateY(-50%); white-space: nowrap; padding: 6px 12px; border-radius: 999px; background: rgba(26,26,26,0.92); border: 1px solid var(--line2, #303133); font-size: 12px; opacity: 0; pointer-events: none; transition: opacity .18s; }
+  #navTime { position: absolute; right: calc(100% + 10px); top: 50%; transform: translateY(-50%); white-space: nowrap; padding: 6px 12px; border-radius: 999px; background: rgba(26,26,26,0.92); border: 1px solid var(--line2, #303133); font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .18s; }
   .orbwrap:hover #navTime, .orbwrap:focus-within #navTime { opacity: 1; }
-  .tabs { display: flex; gap: 4px; padding: 6px 16px 0; } .tabs button { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 10px; } .tabs button.on { border-color: var(--accent); color: var(--accent); }
+  .tabs { display: flex; gap: 4px; padding: 6px 16px 0; } .tabs button { font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 10px; } .tabs button.on { border-color: var(--accent); color: var(--accent); }
   #atlas { flex: 1; display: none; grid-template-columns: 74px 1fr; min-height: 0; }
   #atlas.on { display: grid; }
   #dial { display: block; width: 74px; height: 100%; cursor: ns-resize; touch-action: none; }
   #folders { overflow: auto; padding: 6px 12px 24px 6px; }
   #folders details { margin: 0; } #folders summary { list-style: none; cursor: pointer; padding: 4px 6px; border-radius: 6px; display: flex; gap: 6px; align-items: baseline; justify-content: flex-start; }
-  #folders summary::-webkit-details-marker { display: none; } #folders summary::after { content: '▸'; margin-left: auto; padding-left: 8px; color: var(--dim2); font-size: 11px; transition: transform .12s, color .12s; }
+  #folders summary::-webkit-details-marker { display: none; } #folders summary::after { content: '▸'; margin-left: auto; padding-left: 8px; color: var(--dim2); font-size: 13px; transition: transform .12s, color .12s; }
   #folders details[open] > summary::after { transform: rotate(90deg); color: var(--accent); } #folders summary:hover { background: rgba(127,195,255,0.06); }
-  #folders summary .span { color: var(--muted); font-size: 10.5px; margin-left: auto; white-space: nowrap; }
-  #folders .lvl0 > summary { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-size: 15px; color: #fff; }
+  #folders summary .span { color: var(--muted); font-size: 13px; margin-left: auto; white-space: nowrap; }
+  #folders .lvl0 > summary { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-size: 18px; color: #fff; }
   #folders .lvl1 > summary { font-weight: 600; color: #eef4fb; } #folders .lvl2 > summary { color: #d6e0ee; }
   #folders .kids { margin-left: 8px; padding-left: 8px; border-left: 1px solid var(--line); }
-  #folders .hv { display: grid; grid-template-columns: 58px 1fr; gap: 6px; padding: 2px 6px 2px 14px; font-size: 12px; cursor: pointer; border-radius: 5px; color: #c9d6e6; }
+  #folders .hv { display: grid; grid-template-columns: 58px 1fr; gap: 6px; padding: 2px 6px 2px 14px; font-size: 14px; cursor: pointer; border-radius: 5px; color: #c9d6e6; }
   #folders .hv:hover { background: rgba(127,195,255,0.06); } #folders .hv .y { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; } #folders .hv.now { background: rgba(255,255,255,0.08); color: #fff; }
   #folders summary.sel { background: rgba(127,195,255,0.12); }
   #tl-handle::before { content: ''; position: absolute; left: 16px; right: 16px; top: 6px; height: 1px; background: linear-gradient(90deg, transparent, rgba(127,195,255,0.55) 15%, rgba(255,184,107,0.55) 85%, transparent); }
-  #tl-handle::after { content: '▾'; position: absolute; left: 50%; top: -2px; transform: translateX(-50%); font-size: 10px; color: var(--accent); background: var(--bg); padding: 0 8px; }
+  #tl-handle::after { content: '▾'; position: absolute; left: 50%; top: -2px; transform: translateX(-50%); font-size: 12px; color: var(--accent); background: var(--bg); padding: 0 8px; }
   #top.collapsed #tl-handle::after { content: '▸ timeline'; letter-spacing: 0.1em; }
 
   .glass { background: transparent; border: 0; border-radius: var(--radius); text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
@@ -98,8 +98,8 @@
   #panel { opacity: 0; pointer-events: none; transform: translateX(-14px); transition: opacity .25s ease, transform .25s ease; }
   #panel.shown { opacity: 1; pointer-events: auto; transform: none; }
   #panelBtn { position: fixed; top: 14px; left: 16px; z-index: 9; }
-  #panel h2 { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
-  details > summary { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; cursor: pointer; list-style: none; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 12px 0 6px; user-select: none; }
+  #panel h2 { font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
+  details > summary { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; cursor: pointer; list-style: none; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 12px 0 6px; user-select: none; }
   details > summary::after { content: '▸'; color: var(--dim2); transition: color .12s, transform .12s; }
   details[open] > summary::after { content: '▾'; color: var(--accent); }
   details > summary:hover::after { color: var(--text); }
@@ -107,12 +107,12 @@
   .row label { flex: 1; color: #c3d0e2; }
   input[type=range] { -webkit-appearance: none; width: 118px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, rgba(127,195,255,0.6), rgba(255,184,107,0.6)); outline: none; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #eaf3ff; border: 2px solid #7fc3ff; box-shadow: 0 0 10px rgba(127,195,255,0.6); cursor: pointer; }
-  .val { width: 52px; text-align: right; color: var(--accent); font-variant-numeric: tabular-nums; font-size: 12px; }
+  .val { width: 52px; text-align: right; color: var(--accent); font-variant-numeric: tabular-nums; font-size: 14px; }
   button, select, input[type=text], input[type=number] { background: rgba(26,26,26,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 5px 9px; font: inherit; }
   button { cursor: pointer; transition: border-color .15s, background .15s; margin: 2px 3px 2px 0; }
   button:hover { border-color: var(--accent); background: rgba(127,195,255,0.12); }
   button.on { border-color: var(--accent); color: var(--accent); background: rgba(127,195,255,0.14); }
-  #readout { margin-top: 10px; color: #b7c6da; font-size: 12.2px; }
+  #readout { margin-top: 10px; color: #b7c6da; font-size: 15px; }
   #readout b { color: #eef4fb; }
   .dim { color: var(--muted); }
   .ok { color: var(--good); font-weight: 600; } .no { color: var(--bad); font-weight: 600; }
@@ -121,26 +121,34 @@
   /* Locations: the travel search and destination list live in a right-hand drawer (#destBtn opens it). */
   #nav { position: absolute; top: 0; right: 0; bottom: 0; width: 400px; z-index: 7; transform: translateX(100%); transition: transform .28s ease; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: linear-gradient(90deg, rgba(13,13,13,0.7), rgba(13,13,13,0.96) 18%); border-left: 1px solid var(--line, #242527); border-radius: 0; text-shadow: none; }
   #nav.open { transform: none; }
-  #nav .head h3 { margin: 0; font-weight: 500; font-size: 18px; color: #fff; }
-  #nav #catStatus { font-size: 12px; line-height: 1.4; }
+  #nav .head h3 { margin: 0; font-weight: 500; font-size: 22px; color: #fff; }
+  #nav #catStatus { font-size: 14px; line-height: 1.4; }
   #nav .line { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   #nav input[type=text] { flex: 0 0 auto; min-width: 180px; }
   #nav input[type=number] { width: 92px; }
-  #results { display: flex; gap: 6px; flex-wrap: wrap; align-content: flex-start; flex: 1; min-height: 0; overflow: auto; }
-  #results button { font-size: 12px; padding: 3px 8px; }
-  #results button small { color: var(--muted); margin-left: 4px; }
+  #results { display: block; flex: 1; min-height: 0; overflow: auto; padding-right: 4px; }
+  #results .grp { position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; padding: 10px 2px 6px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); background: var(--bg); }
+  #results .grpbox { display: flex; flex-direction: column; }
+  #results .drow { display: flex; align-items: center; }
+  #results .drow button.dest { flex: 1; min-width: 0; }
+  #results .drow .wk { flex: none; padding: 4px 8px; color: var(--muted); text-decoration: none; border-radius: 6px; }
+  #results .drow .wk:hover { color: var(--accent); background: rgba(26,26,26,0.9); }
+  #results button { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; width: 100%; text-align: left; font-size: 14px; padding: 5px 8px; border: 0; background: transparent; border-radius: 6px; }
+  #results button:hover { background: rgba(26,26,26,0.9); }
+  #results button small { color: var(--muted); margin-left: 4px; white-space: nowrap; }
+  #results button.more { justify-content: center; color: var(--accent); font-size: 12px; letter-spacing: .06em; }
   body.drawer-open #zoombar, body.drawer-open #scalebar, body.drawer-open #help,
   body.navdrawer-open #zoombar, body.navdrawer-open #scalebar, body.navdrawer-open #help { right: 418px; }
   body.drawer-open #top, body.navdrawer-open #top { right: 400px; }
   #zoombar { position: absolute; right: 18px; top: 296px; bottom: 150px; width: 54px; z-index: 4; display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 8px; }
   #zoombar input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 4px; height: 100%; -webkit-appearance: slider-vertical; }
-  #zoombar .tag { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  #zoombar .tag { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
   #scalebar { position: absolute; right: 18px; bottom: 96px; z-index: 4; color: #c9d6e6; text-align: right; font-variant-numeric: tabular-nums; }
   #scalebar .bar { height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); margin: 4px 0 0 auto; border-radius: 2px; }
-  #help { position: absolute; right: 18px; bottom: 18px; z-index: 4; padding: 8px 12px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+  #help { position: absolute; right: 18px; bottom: 18px; z-index: 4; padding: 8px 12px; color: var(--muted); font-size: 13px; line-height: 1.5; }
   #help kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); font: inherit; }
-  #label { position: absolute; z-index: 3; pointer-events: none; transform: translate(-50%, -140%); color: #fff; font-size: 12px; letter-spacing: 0.04em; text-shadow: 0 0 8px rgba(0,0,0,0.9); white-space: nowrap; }
-  #syslabels span { position: absolute; z-index: 2; pointer-events: none; transform: translate(-50%, 8px); color: rgba(220,232,250,0.85); font-size: 10.5px; letter-spacing: 0.03em; text-shadow: 0 0 6px rgba(0,0,0,0.95); white-space: nowrap; }
+  #label { position: absolute; z-index: 3; pointer-events: none; transform: translate(-50%, -140%); color: #fff; font-size: 14px; letter-spacing: 0.04em; text-shadow: 0 0 8px rgba(0,0,0,0.9); white-space: nowrap; }
+  #syslabels span { position: absolute; z-index: 2; pointer-events: none; transform: translate(-50%, 8px); color: rgba(220,232,250,0.85); font-size: 13px; letter-spacing: 0.03em; text-shadow: 0 0 6px rgba(0,0,0,0.95); white-space: nowrap; }
   #label::after { content: ''; position: absolute; left: 50%; top: 100%; width: 1px; height: 16px; background: rgba(255,255,255,0.6); }
   #toast { position: absolute; left: 50%; top: 290px; transform: translateX(-50%); z-index: 6; padding: 8px 14px; color: var(--text); opacity: 0; transition: opacity .3s; pointer-events: none; }
 </style>
@@ -169,7 +177,7 @@
 
 <button id="panelBtn" class="orb" type="button" title="Controls" aria-label="Controls" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg></button>
 <div id="panel" class="glass">
-  <h2 style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">Controls <button id="panel-toggle" style="font-size:11px;padding:2px 8px">hide</button></h2>
+  <h2 style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">Controls <button id="panel-toggle" style="font-size:13px;padding:2px 8px">hide</button></h2>
   <details open><summary>Timeline axis</summary>
     <div class="row"><label for="stretch">Early-time emphasis (0 linear → 1 log)</label><input type="range" id="stretch" min="0" max="1" step="0.01"><span class="val" id="stretch-v"></span></div>
     <div class="row"><label for="logA">Cursor: log₁₀ a</label><input type="range" id="logA" min="-16" max="8" step="0.01"><span class="val" id="logA-v"></span></div>
@@ -245,7 +253,7 @@
 </aside>
 
 <div id="zoombar" class="glass"><span class="tag">out</span><input type="range" id="zoom" min="6.5" max="27" step="0.01" orient="vertical"><span class="tag">in</span></div>
-<div id="scalebar"><div id="scaletxt"></div><div class="bar" id="bar"></div><div class="dim" id="scalenote" style="font-size:11px;margin-top:3px"></div></div>
+<div id="scalebar"><div id="scaletxt"></div><div class="bar" id="bar"></div><div class="dim" id="scalenote" style="font-size:13px;margin-top:3px"></div></div>
 <div id="help" class="glass">drag · spin &nbsp; right-drag / <kbd>W A S D</kbd> · pan &nbsp; wheel / <kbd>Q</kbd><kbd>E</kbd> · scale &nbsp; <kbd>←→↑↓</kbd> · orbit &nbsp; <kbd>R</kbd> spin &nbsp; <kbd>T</kbd> timeline &nbsp; <kbd>[</kbd><kbd>]</kbd> pan time &nbsp; <kbd>C</kbd> chronicle</div>
 
 <script type="module">
@@ -466,7 +474,7 @@ function drawTimeline() {
   const padL = 60, padR = 90, padT = 22, padB = 66, pw = W - padL - padR, ph = H - padT - padB;
   const X = t => padL + pw * vx(t);
   ctx.save(); ctx.beginPath(); ctx.rect(padL, 0, pw, H); ctx.clip();
-  ctx.font = '11px ui-sans-serif, system-ui';
+  ctx.font = '13px ui-sans-serif, system-ui';
   for (const [t0, t1, col, name] of [[T_MIN, tEq, 'rgba(120,70,160,0.22)', 'radiation era'], [tEq, tL, 'rgba(60,120,200,0.18)', 'matter era'], [tL, AGE, 'rgba(90,180,110,0.18)', 'dark energy era'], [AGE, T_MAX, 'rgba(180,90,90,0.12)', 'future (de Sitter expansion)']]) {
     ctx.fillStyle = col; ctx.fillRect(X(t0), padT, X(t1) - X(t0), ph);
     const vis0 = Math.max(X(t0), padL), vis1 = Math.min(X(t1), padL + pw);
@@ -845,6 +853,16 @@ async function loadCatalog() {
     }
     for (const H of new Set(HOSTS.values())) { H.planets.sort((p, q) => (p.semi_major_axis_m || 0) - (q.semi_major_axis_m || 0)); H.key = hostKeyOf(H.star.name); H.extent = Math.max(10 * starRadius(H.star), ...H.planets.map(p => p.semi_major_axis_m || 0)); }
     SKY_HOSTS = [...new Set(HOSTS.values())].filter(H => H.planets.some(p => p.semi_major_axis_m > 0 || p.period_days > 0)).sort((p, q) => dist3(p.pos, SUN) - dist3(q.pos, SUN));
+    // The Locations drawer lists the whole catalogue: rows that have no sky position of their own (moons off the clock,
+    // duplicate names, unplaced objects) join the list too. With a known parent they travel to its system; the rest only link out.
+    const listedIds = new Set(DEST.map(d => d.meta?.id).filter(Boolean)), destByName = new Map(DEST.map(d => [d.name.toLowerCase(), d]));
+    let unlisted = 0;
+    for (const o of rows) {
+      if (!o.name || listedIds.has(o.id)) continue;
+      const host = o.parent ? destByName.get(String(o.parent).toLowerCase()) : undefined;
+      DEST.push({ name: o.name, type: String(o.type || '').replace(/_/g, ' '), parent: o.parent, meta: o, ...(host ? { pos: host.pos, w: host.w, sys: host.sys, viaParent: true } : { unplaced: true }) });
+      unlisted++;
+    }
     $('catStatus').textContent = `${DEST.length.toLocaleString()} destinations (catalog loaded: ${n.toLocaleString()} placed, ${MOONS.length} moons on the clock, ${[...new Set(HOSTS.values())].filter(H => H.planets.length).length.toLocaleString()} planetary systems)`;
     showResults($('search').value);
     goHash();
@@ -881,14 +899,51 @@ function nearestName() { let best = null, bd = Infinity; for (const d of DEST) {
 
 // search UI
 const results = $('results');
+const RESULT_STEP = 150;
+const wikiHref = o => o && o.id != null ? '/kosmo/object/' + String(o.id).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : null;
+function destButton(d) {
+  const row = document.createElement('div'); row.className = 'drow';
+  const b = document.createElement('button'); b.className = 'dest';
+  b.innerHTML = `<span class="nm">${d.name}</span><small>${d.type || ''}${d.viaParent ? ' · via ' + d.parent : ''}${d.unplaced ? ' · no sky position' : ''}</small>`;
+  b.addEventListener('click', () => { if (d.unplaced) { toast(`${d.name} has no position in the catalogue; open it in Kosmopedia (↗)`); return; } goDest(d); $('search').value = d.name; });
+  row.appendChild(b);
+  const href = wikiHref(d.meta);
+  if (href) { const a = document.createElement('a'); a.className = 'wk'; a.href = href; a.target = '_top'; a.title = `Open ${d.name} in Kosmopedia`; a.textContent = '↗'; row.appendChild(a); }
+  return row;
+}
+// Appends `items` to `box` RESULT_STEP at a time behind a "show more" button, so ~12,000 rows never hit the DOM at once.
+function pagedList(box, items) {
+  let shown = 0;
+  const more = document.createElement('button'); more.className = 'more';
+  const draw = () => {
+    const next = items.slice(shown, shown + RESULT_STEP);
+    for (const d of next) box.appendChild(destButton(d));
+    shown += next.length; more.remove();
+    if (shown < items.length) { more.textContent = `show ${Math.min(RESULT_STEP, items.length - shown).toLocaleString()} more · ${(items.length - shown).toLocaleString()} left`; box.appendChild(more); }
+  };
+  more.addEventListener('click', draw); draw();
+}
 function showResults(q) {
   results.innerHTML = '';
   const ql = (q || '').trim().toLowerCase();
-  const list = ql ? DEST.filter(d => d.name.toLowerCase().includes(ql) || (d.meta?.alt_names || []).some(n => String(n).toLowerCase().includes(ql))).slice(0, 24) : DEST.slice(0, 16);
-  for (const d of list) { const b = document.createElement('button'); b.innerHTML = `${d.name}<small>${d.type || ''}</small>`; b.addEventListener('click', () => { goDest(d); $('search').value = d.name; }); results.appendChild(b); }
+  if (ql) {   // searching: one ranked list (names that start with the query first)
+    const hits = DEST.filter(d => d.name.toLowerCase().includes(ql) || (d.meta?.alt_names || []).some(n => String(n).toLowerCase().includes(ql)));
+    hits.sort((a, b) => (b.name.toLowerCase().startsWith(ql) - a.name.toLowerCase().startsWith(ql)) || a.name.localeCompare(b.name));
+    const head = document.createElement('div'); head.className = 'grp'; head.innerHTML = `<span>matches</span><span>${hits.length.toLocaleString()}</span>`;
+    const box = document.createElement('div'); box.className = 'grpbox'; results.append(head, box); pagedList(box, hits);
+    return;
+  }
+  // browsing: everything in the catalog, grouped by type, biggest groups first, A to Z inside each
+  const groups = new Map();
+  for (const d of DEST) { const t = d.type || 'other'; if (!groups.has(t)) groups.set(t, []); groups.get(t).push(d); }
+  for (const [type, items] of [...groups.entries()].sort((a, b) => b[1].length - a[1].length)) {
+    items.sort((a, b) => a.name.localeCompare(b.name));
+    const head = document.createElement('div'); head.className = 'grp'; head.innerHTML = `<span>${type}</span><span>${items.length.toLocaleString()}</span>`;
+    const box = document.createElement('div'); box.className = 'grpbox'; results.append(head, box); pagedList(box, items);
+  }
 }
 $('search').addEventListener('input', e => showResults(e.target.value));
-$('search').addEventListener('keydown', e => { if (e.key === 'Enter') results.querySelector('button')?.click(); e.stopPropagation(); });
+$('search').addEventListener('keydown', e => { if (e.key === 'Enter') results.querySelector('button.dest')?.click(); e.stopPropagation(); });
 $('goCoord').addEventListener('click', () => { const l = parseFloat($('cl').value), b = parseFloat($('cb').value), d = parseFloat($('cd').value); if (![l, b, d].every(Number.isFinite)) return toast('Enter l, b and a distance in pc'); travelTo(gal(l, b, d * pc), Math.log10(d * pc * 0.2), `l ${l}°, b ${b}°, ${d} pc`); });
 showResults('');
 
@@ -1075,7 +1130,7 @@ function updateDrawer() {
   for (let lon = -150; lon <= 150; lon += 30) { const [x] = proj(0, lon, W, H); mapCtx.beginPath(); mapCtx.moveTo(x, 0); mapCtx.lineTo(x, H); mapCtx.stroke(); }
   for (let lat = -60; lat <= 60; lat += 30) { const [, y] = proj(lat, 0, W, H); mapCtx.beginPath(); mapCtx.moveTo(0, y); mapCtx.lineTo(W, y); mapCtx.stroke(); }
   if (land) { mapCtx.fillStyle = 'rgba(127,195,255,0.16)'; mapCtx.strokeStyle = 'rgba(127,195,255,0.35)'; for (const f of land.features) for (const poly of (f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates)) for (const ring of poly) { mapCtx.beginPath(); ring.forEach(([lon, lat], i) => { const [x, y] = proj(lat, lon, W, H); i ? mapCtx.lineTo(x, y) : mapCtx.moveTo(x, y); }); mapCtx.closePath(); mapCtx.fill(); mapCtx.stroke(); } }
-  else if (land === null) { mapCtx.fillStyle = '#7d8ea8'; mapCtx.font = '11px ui-sans-serif'; mapCtx.fillText('loading coastlines…', 8, H - 8); }
+  else if (land === null) { mapCtx.fillStyle = '#7d8ea8'; mapCtx.font = '13px ui-sans-serif'; mapCtx.fillText('loading coastlines…', 8, H - 8); }
   const placed = mapEvents();
   // cluster markers that fall within the same 12 px cell so dense regions stay readable
   const cells = new Map();
@@ -1085,10 +1140,10 @@ function updateDrawer() {
     const anyPast = group.some(g => g.e.t <= tc);
     if (near.length) { const c = CAT_COLOR[near[0].e.cat]; mapCtx.beginPath(); mapCtx.arc(x, y, 5, 0, 2 * Math.PI); mapCtx.fillStyle = c; mapCtx.fill(); mapCtx.strokeStyle = c; mapCtx.beginPath(); mapCtx.arc(x, y, 9, 0, 2 * Math.PI); mapCtx.stroke(); }
     else { mapCtx.beginPath(); mapCtx.arc(x, y, group.length > 1 ? 4 : 2.2, 0, 2 * Math.PI); mapCtx.fillStyle = anyPast ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.18)'; mapCtx.fill(); }
-    if (group.length > 1) { mapCtx.fillStyle = '#fff'; mapCtx.font = '9px ui-sans-serif'; mapCtx.textAlign = 'center'; mapCtx.fillText(String(group.length), x, y - 7); mapCtx.textAlign = 'left'; }
+    if (group.length > 1) { mapCtx.fillStyle = '#fff'; mapCtx.font = '11px ui-sans-serif'; mapCtx.textAlign = 'center'; mapCtx.fillText(String(group.length), x, y - 7); mapCtx.textAlign = 'left'; }
   }
   const show = hoverEv || placed.filter(e => Math.abs(e.t - tc) <= win)[0];
-  if (show) { const [x, y] = proj(show.where[0], show.where[1], W, H); mapCtx.fillStyle = '#fff'; mapCtx.font = '11px ui-sans-serif'; mapCtx.textAlign = x > W / 2 ? 'right' : 'left'; mapCtx.fillText(`${show.label} · ${nearNow(show.t)}`, x + (x > W / 2 ? -10 : 10), y - 8); mapCtx.textAlign = 'left'; }
+  if (show) { const [x, y] = proj(show.where[0], show.where[1], W, H); mapCtx.fillStyle = '#fff'; mapCtx.font = '13px ui-sans-serif'; mapCtx.textAlign = x > W / 2 ? 'right' : 'left'; mapCtx.fillText(`${show.label} · ${nearNow(show.t)}`, x + (x > W / 2 ? -10 : 10), y - 8); mapCtx.textAlign = 'left'; }
 }
 function mapPick(e) { const W = mapC.clientWidth, H = mapC.clientHeight; let best = null, bd = 12; for (const ev of mapEvents()) { const [x, y] = proj(ev.where[0], ev.where[1], W, H), d = Math.hypot(x - e.offsetX, y - e.offsetY); if (d < bd) { bd = d; best = ev; } } return best; }
 mapC.addEventListener('pointermove', e => { hoverEv = mapPick(e); });
@@ -1154,7 +1209,7 @@ function drawDial() {
     dctx.fillStyle = era ? 'rgba(255,184,107,0.8)' : 'rgba(127,195,255,0.6)'; dctx.fillRect(W - 7, y - (era ? 6 : 3), era ? 4 : 2, era ? 12 : 6);
   }
   dctx.fillStyle = 'rgba(255,255,255,0.9)'; dctx.fillRect(W - 12, cy - 0.5, 12, 1); dctx.fillRect(0, cy - 0.5, 8, 1);
-  dctx.fillStyle = '#7d8ea8'; dctx.font = '9px ui-sans-serif'; dctx.save(); dctx.translate(8, cy); dctx.rotate(-Math.PI / 2); dctx.textAlign = 'center'; dctx.fillText('◄ older · newer ►', 0, 0); dctx.restore();
+  dctx.fillStyle = '#7d8ea8'; dctx.font = '11px ui-sans-serif'; dctx.save(); dctx.translate(8, cy); dctx.rotate(-Math.PI / 2); dctx.textAlign = 'center'; dctx.fillText('◄ older · newer ►', 0, 0); dctx.restore();
 }
 function stepDial() {
   if (!atlasOn) return;

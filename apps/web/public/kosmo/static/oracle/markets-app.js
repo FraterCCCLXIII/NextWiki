@@ -385,7 +385,7 @@
     lab.innerHTML = "<span class='lever-name'>Start from</span><b class='lever-val' id='v_from'>" + state.from + "</b>";
     var sel = document.createElement("select");
     sel.id = "fromSel";
-    sel.style.cssText = "width:100%;margin-top:6px;background:#1a1a1a;color:#c3ccd5;border:1px solid #232528;border-radius:6px;padding:5px;font-size:11px;";
+    sel.style.cssText = "width:100%;margin-top:6px;background:#1a1a1a;color:#c3ccd5;border:1px solid #232528;border-radius:6px;padding:5px;font-size:13px;";
     [1990, 2000, 2008, 2016].forEach(function (y) {
       var o = document.createElement("option");
       o.value = y; o.textContent = y + " → now";

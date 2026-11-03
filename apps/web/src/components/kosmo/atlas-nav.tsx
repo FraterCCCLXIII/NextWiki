@@ -62,7 +62,7 @@ function NavGroupSection({ group }: { group: NavGroup }) {
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
-        className={`flex w-full items-center justify-between py-1 text-left text-[10px] uppercase tracking-[0.16em] select-none ${
+        className={`flex w-full items-center justify-between py-1 text-left text-[12px] uppercase tracking-[0.16em] select-none ${
           hasActive ? "text-kosmo-mint" : "text-kosmo-dim"
         } hover:text-kosmo-text`}
       >
@@ -83,7 +83,7 @@ function NavGroupSection({ group }: { group: NavGroup }) {
               <Link
                 href={page.href}
                 aria-current={active ? "page" : undefined}
-                className={`-mx-2 block rounded px-2 py-1 text-sm transition-colors ${
+                className={`-mx-2 block rounded px-2 py-1 text-base transition-colors ${
                   active
                     ? "bg-kosmo-panel text-kosmo-mint"
                     : "text-kosmo-text hover:bg-kosmo-panel hover:text-kosmo-mint"
@@ -103,7 +103,7 @@ export function AtlasNav() {
   return (
     <nav
       aria-label="Atlas"
-      className="w-full border-b border-kosmo-line bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-4rem)] md:w-60 md:shrink-0 md:overflow-y-auto md:border-b-0 md:border-r"
+      className="w-full bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-4rem)] md:w-60 md:shrink-0 md:overflow-y-auto [scrollbar-color:#303133_transparent] [scrollbar-width:thin]"
     >
       {GROUPS.map((group) => (
         <NavGroupSection key={group.name} group={group} />

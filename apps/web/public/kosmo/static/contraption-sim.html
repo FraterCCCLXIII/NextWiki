@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Contraption Sim</title>
 <style>
-  html, body { margin: 0; height: 100%; background: #0d0d0d; color: #d6e2f0; font: 13px/1.4 system-ui, sans-serif; overflow: hidden; }
+  html, body { margin: 0; height: 100%; background: #0d0d0d; color: #d6e2f0; font: 16px/1.4 system-ui, sans-serif; overflow: hidden; }
   canvas { display: block; }
   /* The atlas header is fixed over the scene, so the panel opens below it. */
   #navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 30; }
@@ -16,8 +16,8 @@
     box-sizing: border-box;
     padding: 12px 14px;
   }
-  #panel h1 { font-size: 15px; margin: 0 0 8px; }
-  #panel h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #7d8ea8; margin: 14px 0 6px; }
+  #panel h1 { font-size: 18px; margin: 0 0 8px; }
+  #panel h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: #7d8ea8; margin: 14px 0 6px; }
   .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 6px 0; }
   .row input[type=range] { flex: 1; min-width: 0; }
   select, button { background: #1a1a1a; color: #d6e2f0; border: 1px solid #2a3a52; border-radius: 6px; padding: 4px 8px; font: inherit; }
@@ -28,16 +28,16 @@
   .ok { color: #6ee7a0; font-weight: 600; }
   .bad { color: #ff7b7b; font-weight: 700; }
   .chart { display: block; width: 100%; height: 150px; background: #1a1a1a; border-radius: 6px; margin-top: 8px; }
-  .cap { color: #7d8ea8; font-size: 11px; margin: 2px 0 0; }
-  #readout table { border-collapse: collapse; width: 100%; margin-top: 4px; font-size: 11px; }
+  .cap { color: #7d8ea8; font-size: 13px; margin: 2px 0 0; }
+  #readout table { border-collapse: collapse; width: 100%; margin-top: 4px; font-size: 13px; }
   #readout th, #readout td { text-align: right; padding: 1px 3px; border-bottom: 1px solid #141c2a; }
   #readout th { color: #7d8ea8; font-weight: 500; }
   #readout td:first-child, #readout th:first-child { text-align: left; }
-  #research-note { background: #1a1a1a; border-left: 3px solid #5fd1ff; border-radius: 6px; padding: 6px 8px; margin: 8px 0; font-size: 12px; }
+  #research-note { background: #1a1a1a; border-left: 3px solid #5fd1ff; border-radius: 6px; padding: 6px 8px; margin: 8px 0; font-size: 14px; }
   #research-note a, details a { color: #8fd8ff; }
   details { margin-top: 10px; background: #1a1a1a; border-radius: 6px; padding: 6px 8px; }
   summary { cursor: pointer; font-weight: 600; }
-  details p { margin: 6px 0; font-size: 12px; }
+  details p { margin: 6px 0; font-size: 14px; }
   @media (max-width: 600px) { #panel { width: auto; right: 12px; max-height: 55%; } }
 </style>
 <script type="importmap">
@@ -631,7 +631,7 @@ function drawChart(st) {
   const ymax = Math.max(1e-9, ...ys, st.op ? st.op[1] : 0) * 1.08;
   const X = x => padL + (x - xmin) / (xmax - xmin) * pw, Y = y => padT + ph - (y / ymax) * ph;
   const muted = '#7d8ea8', secondary = '#c3c2b7', gridc = '#141c2a', series = '#3987e5', accent = '#d95926', surface = '#0b111c';
-  ctx.strokeStyle = gridc; ctx.lineWidth = 1; ctx.fillStyle = muted; ctx.font = '10px system-ui, sans-serif';
+  ctx.strokeStyle = gridc; ctx.lineWidth = 1; ctx.fillStyle = muted; ctx.font = '12px system-ui, sans-serif';
   ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
   for (let i = 0; i <= 4; i++) { const y = padT + ph - (i / 4) * ph; ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke(); ctx.fillText(st.yFmt(ymax * i / 4), padL - 5, y); }
   ctx.textAlign = 'center'; ctx.textBaseline = 'top';
@@ -652,7 +652,7 @@ function drawChart(st) {
     ctx.strokeStyle = muted; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(px, padT); ctx.lineTo(px, padT + ph); ctx.stroke(); ctx.setLineDash([]);
     ctx.fillStyle = series; ctx.beginPath(); ctx.arc(px, py, 4, 0, Math.PI * 2); ctx.fill();
     const label = `${xs[i].toFixed(1)} kV: ${st.yFmt(ys[i])}`;
-    ctx.font = '11px system-ui, sans-serif';
+    ctx.font = '13px system-ui, sans-serif';
     const tw = ctx.measureText(label).width + 10, tx = Math.min(Math.max(px - tw / 2, padL), W - padR - tw);
     ctx.fillStyle = 'rgba(26,26,26,.95)'; ctx.fillRect(tx, padT + 2, tw, 16);
     ctx.fillStyle = secondary; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(label, tx + 5, padT + 4);

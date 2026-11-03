@@ -43,7 +43,7 @@ export default async function KosmoHomePage() {
               className="block rounded border border-kosmo-line bg-kosmo-panel p-4 hover:border-kosmo-mint"
             >
               <span className="block font-medium text-kosmo-mint">{s.label}</span>
-              <span className="block text-sm text-kosmo-dim">{s.blurb}</span>
+              <span className="block text-base text-kosmo-dim">{s.blurb}</span>
             </Link>
           </li>
         ))}

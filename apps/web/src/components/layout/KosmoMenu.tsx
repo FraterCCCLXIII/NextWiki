@@ -35,7 +35,7 @@ export function KosmoMenu() {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-background-level1"
+          className="flex items-center space-x-2 rounded-md px-3 py-2 text-base font-medium text-text-primary transition-colors hover:bg-background-level1"
         >
           <Orbit className="h-4 w-4" />
           <span>Kosmographica</span>

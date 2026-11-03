@@ -63,7 +63,7 @@ export function PediaTable({
         </button>
       </form>
 
-      <nav className="flex flex-wrap gap-2 text-sm">
+      <nav className="flex flex-wrap gap-2 text-base">
         <Link
           href={hrefFor({ type: null, page: 1 })}
           className={!activeType ? "text-kosmo-mint" : "text-kosmo-dim hover:text-kosmo-text"}
@@ -81,7 +81,7 @@ export function PediaTable({
         ))}
       </nav>
 
-      <p className="text-sm text-kosmo-dim">{total.toLocaleString()} matching entries</p>
+      <p className="text-base text-kosmo-dim">{total.toLocaleString()} matching entries</p>
 
       <DataList>
         {rows.map((r) => (
@@ -106,7 +106,7 @@ export function PediaTable({
       </DataList>
 
       {pageCount > 1 && (
-        <nav className="flex items-center justify-center gap-4 text-sm">
+        <nav className="flex items-center justify-center gap-4 text-base">
           {page > 1 ? (
             <Link href={hrefFor({ page: page - 1 })} className="text-kosmo-mint">
               previous
