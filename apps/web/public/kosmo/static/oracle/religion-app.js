@@ -1213,7 +1213,7 @@
     row.className = "lever";
     var sel = document.createElement("select");
     sel.id = "scenarioSel";
-    sel.style.cssText = "width:100%;background:#0d1319;color:#c3ccd5;border:1px solid #232528;border-radius:6px;padding:6px;font-size:11px;";
+    sel.style.cssText = "width:100%;background:#1a1a1a;color:#c3ccd5;border:1px solid #232528;border-radius:6px;padding:6px;font-size:11px;";
     Object.keys(SCENARIOS).forEach(function (k) {
       var o = document.createElement("option");
       o.value = k; o.textContent = SCENARIOS[k].label;
@@ -1272,7 +1272,7 @@
     hrow.className = "lever";
     var hsel = document.createElement("select");
     hsel.id = "horizonSel";
-    hsel.style.cssText = "width:100%;background:#0d1319;color:#c3ccd5;border:1px solid #232528;border-radius:6px;padding:6px;font-size:11px;";
+    hsel.style.cssText = "width:100%;background:#1a1a1a;color:#c3ccd5;border:1px solid #232528;border-radius:6px;padding:6px;font-size:11px;";
     [2100, 2200, 2400].forEach(function (h) {
       var o = document.createElement("option");
       o.value = h; o.textContent = "to " + h;

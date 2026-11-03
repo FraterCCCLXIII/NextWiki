@@ -6,14 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>University</title>
 <style>
-  :root { --bg: #05070d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --line: rgba(140,170,220,0.14); }
+  :root { --bg: #0d0d0d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --line: rgba(140,170,220,0.14); }
   * { box-sizing: border-box; }
   html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
   ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(127,195,255,0.55), rgba(255,184,107,0.45)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
   * { scrollbar-width: thin; scrollbar-color: rgba(127,195,255,0.6) transparent; }
   .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
-  #navbar { position: sticky; top: 0; z-index: 6; height: 58px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(5,7,13,0.98), rgba(5,7,13,0.85)); border-bottom: 1px solid var(--line); }
+  #navbar { position: sticky; top: 0; z-index: 6; height: 58px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(13,13,13,0.98), rgba(13,13,13,0.85)); border-bottom: 1px solid var(--line); }
   #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 17px; text-transform: uppercase; color: #fff; }
   #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 11px; color: #fff; opacity: 0.8; margin-top: 2px; }
   #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.18em; font-size: 12px; text-transform: uppercase; }
@@ -29,7 +29,7 @@
   aside { position: sticky; top: 80px; align-self: start; max-height: calc(100vh - 100px); overflow: auto; }
   h1 { font-weight: 500; font-size: 26px; margin: 0 0 4px; letter-spacing: 0.04em; }
   h2 { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 18px 0 8px; }
-  input[type=text], button { background: rgba(22,32,50,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 7px 10px; font: inherit; }
+  input[type=text], button { background: rgba(26,26,26,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 7px 10px; font: inherit; }
   input[type=text] { width: 100%; } button { cursor: pointer; } button:hover { border-color: var(--accent); }
   .dim { color: var(--muted); }
   /* the ladder (stage list) */
@@ -71,7 +71,7 @@
   .totals b { display: block; font-size: 20px; color: #fff; font-weight: 500; }
   .totals small { color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; font-size: 10px; }
   mark { background: rgba(255,184,107,0.3); color: inherit; border-radius: 3px; }
-  select { background: rgba(22,32,50,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 6px 8px; font: inherit; width: 100%; }
+  select { background: rgba(26,26,26,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 6px 8px; font: inherit; width: 100%; }
   .exam { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; margin: 6px 0; font-size: 12.5px; }
   .exam b { color: #fff; font-weight: 500; font-size: 14px; } .exam .tag { color: var(--accent2); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; margin-left: 6px; }
   .exam .m { color: var(--muted); margin-top: 2px; } .exam a { color: var(--accent); text-decoration: none; }
@@ -85,7 +85,7 @@
   .subjects { display: flex; flex-wrap: wrap; gap: 5px; }
   .subjects button { font-size: 11.5px; padding: 3px 8px; } .subjects button.on { border-color: var(--accent); color: var(--accent); }
 </style>
-  <link rel="stylesheet" href="kosmographica.css?v=6">
+  <link rel="stylesheet" href="kosmographica.css?v=7">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>
@@ -99,7 +99,7 @@
     <div class="totals" id="totals"></div>
     <h2>Preparing for a test</h2>
     <select id="region"></select>
-    <div class="row" style="margin-top:6px"><label for="age" style="flex:1">Student age</label><input type="number" id="age" min="3" max="99" placeholder="any" style="width:70px;background:rgba(22,32,50,0.8);color:var(--text);border:1px solid rgba(127,195,255,0.22);border-radius:9px;padding:5px 8px;font:inherit"></div>
+    <div class="row" style="margin-top:6px"><label for="age" style="flex:1">Student age</label><input type="number" id="age" min="3" max="99" placeholder="any" style="width:70px;background:rgba(26,26,26,0.8);color:var(--text);border:1px solid rgba(127,195,255,0.22);border-radius:9px;padding:5px 8px;font:inherit"></div>
     <select id="level" style="margin-top:6px"><option value="all">any level</option></select>
     <div id="examList"></div>
     <div id="progFilter"></div>

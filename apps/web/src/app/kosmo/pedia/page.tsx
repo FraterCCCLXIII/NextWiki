@@ -23,11 +23,11 @@ export default async function KosmoPediaPage({
   ]);
 
   return (
-    <main className="min-h-screen bg-kosmo-bg text-kosmo-text">
+    <div className="text-kosmo-text">
       <div className="mx-auto max-w-6xl space-y-6 p-4 md:p-8">
         <header className="space-y-2">
-          <h1 className="text-3xl font-semibold">Kosmopedia</h1>
-          <p className="text-kosmo-dim">A searchable catalog of celestial and other objects.</p>
+          <h1 className="text-4xl font-bold tracking-tight text-kosmo-text md:text-5xl">Kosmopedia</h1>
+          <p className="text-lg text-kosmo-dim">A searchable catalog of celestial and other objects.</p>
         </header>
 
         <StatTotals
@@ -53,6 +53,6 @@ export default async function KosmoPediaPage({
           total={total}
         />
       </div>
-    </main>
+    </div>
   );
 }

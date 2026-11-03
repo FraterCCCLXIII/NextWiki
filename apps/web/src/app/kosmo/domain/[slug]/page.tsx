@@ -50,11 +50,11 @@ export default async function KosmoDomainPage({
   const counts = countNodes(nodes);
 
   return (
-    <main className="min-h-screen bg-kosmo-bg text-kosmo-text">
+    <div className="text-kosmo-text">
       <div className="mx-auto max-w-6xl space-y-6 p-4 md:p-8">
         <header className="space-y-2">
-          <h1 className="text-3xl font-semibold">{meta.title}</h1>
-          <p className="text-kosmo-dim">{meta.blurb}</p>
+          <h1 className="text-4xl font-bold tracking-tight text-kosmo-text md:text-5xl">{meta.title}</h1>
+          <p className="text-lg text-kosmo-dim">{meta.blurb}</p>
         </header>
 
         <StatTotals
@@ -69,6 +69,6 @@ export default async function KosmoDomainPage({
           <Tree nodes={nodes.map(adapt)} />
         </section>
       </div>
-    </main>
+    </div>
   );
 }

@@ -7,7 +7,7 @@
 <title>Kosmographica</title>
 <style>
   :root {
-    --bg: #05070d; --panel: rgba(10, 14, 24, 0.72); --line: rgba(140, 170, 220, 0.14); --text: #dbe5f3; --muted: #8a9bb8;
+    --bg: #0d0d0d; --panel: rgba(26,26,26,0.72); --line: rgba(140, 170, 220, 0.14); --text: #dbe5f3; --muted: #8a9bb8;
     --accent: #7fc3ff; --accent2: #ffb86b; --good: #7fe3a0; --bad: #ff8a8a; --radius: 14px;
   }
   * { box-sizing: border-box; }
@@ -20,7 +20,7 @@
 
   #view { position: absolute; inset: 0; }
   #view canvas { display: block; outline: none; }
-  #navbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(5,7,13,0.9), rgba(5,7,13,0)); }
+  #navbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(13,13,13,0.9), rgba(13,13,13,0)); }
   #menu { display: flex; gap: 20px; align-items: center; font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; letter-spacing: 0.18em; font-size: 12px; text-transform: uppercase; }
 
   /* One added tab is wider than a 1280 screen: allow the menu to shrink and
@@ -42,7 +42,7 @@
   #minimap { position: absolute; left: 0; right: 0; bottom: 0; height: 12px; cursor: grab; z-index: 8; }
   #minimap:active { cursor: grabbing; }
   #tl-handle { position: absolute; left: 0; right: 0; bottom: -14px; height: 14px; cursor: pointer; z-index: 7; }
-  #drawer { position: absolute; top: 58px; right: 0; bottom: 0; width: 400px; z-index: 7; transform: translateX(100%); transition: transform .28s ease; display: flex; flex-direction: column; background: linear-gradient(90deg, rgba(5,7,13,0.6), rgba(5,7,13,0.92) 12%); border-left: 1px solid var(--line); }
+  #drawer { position: absolute; top: 58px; right: 0; bottom: 0; width: 400px; z-index: 7; transform: translateX(100%); transition: transform .28s ease; display: flex; flex-direction: column; background: linear-gradient(90deg, rgba(13,13,13,0.6), rgba(13,13,13,0.92) 12%); border-left: 1px solid var(--line); }
   #drawer.open { transform: none; }
   #drawer .head { padding: 12px 16px 6px; display: flex; align-items: baseline; justify-content: space-between; }
   #drawer .head h3 { margin: 0; font-weight: 500; font-size: 18px; color: #fff; }
@@ -92,7 +92,7 @@
   input[type=range] { -webkit-appearance: none; width: 118px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, rgba(127,195,255,0.6), rgba(255,184,107,0.6)); outline: none; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #eaf3ff; border: 2px solid #7fc3ff; box-shadow: 0 0 10px rgba(127,195,255,0.6); cursor: pointer; }
   .val { width: 52px; text-align: right; color: var(--accent); font-variant-numeric: tabular-nums; font-size: 12px; }
-  button, select, input[type=text], input[type=number] { background: rgba(22, 32, 50, 0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 5px 9px; font: inherit; }
+  button, select, input[type=text], input[type=number] { background: rgba(26,26,26,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 5px 9px; font: inherit; }
   button { cursor: pointer; transition: border-color .15s, background .15s; margin: 2px 3px 2px 0; }
   button:hover { border-color: var(--accent); background: rgba(127,195,255,0.12); }
   button.on { border-color: var(--accent); color: var(--accent); background: rgba(127,195,255,0.14); }
@@ -127,7 +127,7 @@
 <script type="importmap">
 { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/", "topojson-client": "https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm" } }
 </script>
-  <link rel="stylesheet" href="kosmographica.css?v=6">
+  <link rel="stylesheet" href="kosmographica.css?v=7">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>
@@ -1043,7 +1043,7 @@ function updateDrawer() {
   const W = mapC.clientWidth, H = mapC.clientHeight, dpr = devicePixelRatio || 1;
   if (mapC.width !== W * dpr || mapC.height !== H * dpr) { mapC.width = W * dpr; mapC.height = H * dpr; }
   mapCtx.setTransform(dpr, 0, 0, dpr, 0, 0); mapCtx.clearRect(0, 0, W, H);
-  mapCtx.fillStyle = 'rgba(10,16,30,0.6)'; mapCtx.fillRect(0, 0, W, H);
+  mapCtx.fillStyle = 'rgba(26,26,26,0.6)'; mapCtx.fillRect(0, 0, W, H);
   mapCtx.strokeStyle = 'rgba(255,255,255,0.06)'; mapCtx.lineWidth = 1;
   for (let lon = -150; lon <= 150; lon += 30) { const [x] = proj(0, lon, W, H); mapCtx.beginPath(); mapCtx.moveTo(x, 0); mapCtx.lineTo(x, H); mapCtx.stroke(); }
   for (let lat = -60; lat <= 60; lat += 30) { const [, y] = proj(lat, 0, W, H); mapCtx.beginPath(); mapCtx.moveTo(0, y); mapCtx.lineTo(W, y); mapCtx.stroke(); }

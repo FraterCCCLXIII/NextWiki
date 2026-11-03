@@ -30,3 +30,11 @@ it is kept as the reference for a React `AtlasTopNav` component.
 
 The unmodified originals remain in the `kosmographica-app` repo. To restore a bar
 here, delete those guards (search for `embedded` / `window.top`).
+
+## Oracle section nav (now a left rail)
+
+The Oracle pages also carried a two-row horizontal nav of their five groups
+(Machine, Earth, Conflict, Minds, Time), built by `oracle/theme.js` into the sticky
+`.topbar` (`oracle-section-nav.webp`). Inside NextWiki it is the left rail
+`components/kosmo/oracle-rail.tsx`, fed by `lib/kosmo/oracle-nav.ts`; the iframe's own
+`.topbar` is hidden when embedded. The group list in `theme.js` is the original.

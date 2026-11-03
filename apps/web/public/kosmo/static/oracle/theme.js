@@ -102,7 +102,12 @@
   band.className = "atlasbar";
   /* Embedded in NextWiki the site header replaces this band; display:none keeps
      --atlas-h at 0 so the sticky offsets below stay right. */
-  if (window.top !== window.self) band.style.display = "none";
+  if (window.top !== window.self) {
+    band.style.display = "none";
+    /* The lab's own nav row moves to NextWiki's left rail (components/kosmo/oracle-rail),
+       so the whole sticky bar goes; sync() below then measures 0 for both offsets. */
+    bar.style.display = "none";
+  }
 
   var mark = document.createElement("a");
   mark.className = "atlas-mark";

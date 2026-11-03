@@ -17,9 +17,9 @@
 
 :root {
   /* ground */
-  --bg: #0c0c0d;
-  --bg2: #101011;
-  --panel: #141415;
+  --bg: #0d0d0d;
+  --bg2: #0d0d0d;
+  --panel: #1a1a1a;
   --line: #242527;
   --line2: #303133;
 
@@ -68,7 +68,7 @@ a { color: var(--accent); }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: #2c2d2f;
+  background: #1a1a1a;
   border: 2px solid transparent;
   background-clip: content-box;
   border-radius: 8px;
@@ -396,7 +396,7 @@ kbd {
 .exam { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 9px 0; }
 .pf { background: none; border: 0; border-radius: 0; padding: 1px 0; color: var(--mint); }
 .state { border: 0; border-radius: 0; padding: 0; }
-.bar { background: #1a1b1d; }
+.bar { background: #1a1a1a; }
 .lesson a { border: 0; color: var(--amber); padding: 0; }
 .lesson a:hover { background: none; color: var(--text); }
 .tree summary:hover { background: none; color: var(--text); }
@@ -426,7 +426,7 @@ mark { background: none; }
    graphite and no border. Scoped by body.sim because chemistry has its own
    #panel that must stay transparent. */
 .sim #panel {
-  background: rgba(12, 12, 13, .92);
+  background: rgba(13,13,13,.92);
   border: 0;
   border-radius: 0;
 }
@@ -520,3 +520,23 @@ html.embedded #logo,
 html.embedded #menu { display: none !important; }
 html.embedded #navbar:not(:has(#drawerBtn, #navTime)) { display: none !important; }
 html.embedded #navbar { justify-content: flex-end; }
+
+/* Embedded in NextWiki: page titles are large typography, matching the /kosmo pages. */
+html.embedded h1:not(#panel h1) {
+  font-family: var(--sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif) !important;
+  font-size: clamp(2.25rem, 4.5vw, 3.25rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.1 !important;
+  text-transform: none !important;
+  color: #ededed !important;
+  margin: 0 0 .35em !important;
+}
+html.embedded h1:not(#panel h1) + p,
+html.embedded .titlebar .sub {
+  font-size: 1.125rem !important;
+  line-height: 1.5 !important;
+  color: #8d8e91 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}

@@ -6,14 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Chemistry</title>
 <style>
-  :root { --bg: #05070d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --line: rgba(140,170,220,0.14); }
+  :root { --bg: #0d0d0d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --line: rgba(140,170,220,0.14); }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 13px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
   ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(127,195,255,0.55), rgba(255,184,107,0.45)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
   * { scrollbar-width: thin; scrollbar-color: rgba(127,195,255,0.6) transparent; }
   .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
-  #navbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(5,7,13,0.95), rgba(5,7,13,0.6)); }
+  #navbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(13,13,13,0.95), rgba(13,13,13,0.6)); }
   #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 17px; text-transform: uppercase; color: #fff; }
   #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 11px; color: #fff; opacity: 0.8; margin-top: 2px; }
   #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.16em; font-size: 12px; text-transform: uppercase; }
@@ -33,7 +33,7 @@
   input[type=range] { -webkit-appearance: none; width: 118px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, rgba(127,195,255,0.6), rgba(255,184,107,0.6)); outline: none; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #eaf3ff; border: 2px solid #7fc3ff; cursor: pointer; }
   .val { width: 44px; text-align: right; color: var(--accent); font-variant-numeric: tabular-nums; font-size: 12px; }
-  input[type=text], button, select { background: rgba(22,32,50,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 5px 9px; font: inherit; }
+  input[type=text], button, select { background: rgba(26,26,26,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 5px 9px; font: inherit; }
   input[type=text] { width: 100%; } button { cursor: pointer; margin: 2px 3px 2px 0; } button:hover { border-color: var(--accent); } button.on { border-color: var(--accent); color: var(--accent); }
   .dim { color: var(--muted); } #status { color: var(--accent2); min-height: 18px; }
   #info { font-size: 12.5px; color: #c3d0e2; } #info b { color: #fff; }
@@ -55,7 +55,7 @@
   kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); }
 </style>
 <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
-  <link rel="stylesheet" href="kosmographica.css?v=6">
+  <link rel="stylesheet" href="kosmographica.css?v=7">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>

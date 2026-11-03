@@ -23,8 +23,8 @@ export default async function KosmoHomePage() {
   return (
     <div className="mx-auto max-w-3xl space-y-10">
       <div>
-        <h1 className="mb-3 text-3xl font-semibold">Kosmographica</h1>
-        <p className="mb-8 text-kosmo-dim">
+        <h1 className="mb-3 text-4xl font-bold tracking-tight text-kosmo-text md:text-5xl">Kosmographica</h1>
+        <p className="mb-8 text-lg text-kosmo-dim">
           A map of everything, to scale. Pick a section to begin.
         </p>
         <StatTotals
@@ -35,7 +35,7 @@ export default async function KosmoHomePage() {
         />
       </div>
 
-      <ul className="grid gap-3 sm:grid-cols-2">
+      <ul className="m-0 grid list-none gap-3 p-0 sm:grid-cols-2">
         {SECTIONS.map((s) => (
           <li key={s.href}>
             <Link

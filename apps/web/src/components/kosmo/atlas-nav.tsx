@@ -69,7 +69,7 @@ function NavGroupSection({ group }: { group: NavGroup }) {
       <ul
         id={panelId}
         hidden={!open}
-        className="mt-1 flex flex-col gap-0.5 border-l border-kosmo-line pl-3"
+        className="m-0 mt-1 flex list-none flex-col gap-0.5 border-l border-kosmo-line pl-3"
       >
         {group.pages.map((page) => {
           const active = isActive(pathname, page.href);

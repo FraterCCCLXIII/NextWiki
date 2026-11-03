@@ -25,9 +25,10 @@
   --color-scrollbar-thumb: var(--color-light-scrollbar-thumb);
 
   /* Kosmographica palette (from kosmographica.css) */
-  --color-kosmo-bg: #0c0c0d;
-  --color-kosmo-bg2: #101011;
-  --color-kosmo-panel: #141415;
+  /* Surfaces follow NextWiki's dark theme: one graphite black, one raised level. */
+  --color-kosmo-bg: var(--color-dark-background-default);
+  --color-kosmo-bg2: var(--color-dark-background-default);
+  --color-kosmo-panel: var(--color-dark-background-paper);
   --color-kosmo-line: #242527;
   --color-kosmo-line2: #303133;
   --color-kosmo-text: #e8e8e6;

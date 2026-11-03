@@ -776,7 +776,7 @@
     lab.innerHTML = "<span class='lever-name'>Highlight a region</span>";
     var sel = document.createElement("select");
     sel.id = "regionSel";
-    sel.style.cssText = "width:100%;margin-top:6px;background:#0d1319;color:#c3ccd5;border:1px solid #232528;border-radius:6px;padding:5px;font-size:11px;";
+    sel.style.cssText = "width:100%;margin-top:6px;background:#1a1a1a;color:#c3ccd5;border:1px solid #232528;border-radius:6px;padding:5px;font-size:11px;";
     var opt = document.createElement("option");
     opt.value = ""; opt.textContent = "all regions equally";
     sel.appendChild(opt);
