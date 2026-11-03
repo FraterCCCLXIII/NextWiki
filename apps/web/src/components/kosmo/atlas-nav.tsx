@@ -43,11 +43,7 @@ function NavGroupSection({ group, hueBase }: { group: NavGroup; hueBase: number 
                 href={page.href}
                 aria-current={active ? "page" : undefined}
                 style={{ "--h": hue } as React.CSSProperties}
-                className={`-mx-2 block rounded px-2 py-1 text-base ${
-                  active
-                    ? "bg-kosmo-panel text-kosmo-mint"
-                    : "kosmo-word"
-                }`}
+                className="kosmo-word -mx-2 block rounded px-2 py-1 text-base text-kosmo-text"
               >
                 {page.label}
               </Link>
