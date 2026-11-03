@@ -380,7 +380,8 @@ export const DEFAULT_SETTINGS: {
   "ai.embeddingDimensions": {
     type: "number",
     value: 1536,
-    description: "Embedding vector dimensions (must match embedding model)",
+    description:
+      "Embedding vector dimensions; must equal the wiki_page_chunks.embedding column width (1536)",
     category: "ai",
     defaultValue: 1536,
   },

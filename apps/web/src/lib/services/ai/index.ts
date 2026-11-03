@@ -5,10 +5,21 @@ import crypto from "crypto";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { getSettings } from "~/lib/services/settings";
-import { db, users, wikiPageChunks, wikiPages } from "@repo/db";
+import {
+  db,
+  EMBEDDING_VECTOR_DIMENSIONS,
+  users,
+  wikiPageChunks,
+  wikiPages,
+} from "@repo/db";
 import { eq, sql } from "drizzle-orm";
 
 const AI_USER_EMAIL = "ai@nextwiki.system";
+
+// The 3-series OpenAI embedding models accept a `dimensions` parameter that
+// truncates the vector; older models (text-embedding-ada-002) have a fixed
+// width and reject the parameter.
+const SUPPORTS_DIMENSIONS_PARAM = /^text-embedding-3-/;
 
 export type AIRole = "viewer" | "editor" | "admin";
 
@@ -407,13 +418,54 @@ export async function embedTexts(input: string[]) {
   if (!settings.enabled) return [];
   if (input.length === 0) return [];
 
+  // Fail here, with an actionable message, rather than letting pgvector reject
+  // the insert with "expected N dimensions" after paying for the API call.
+  if (settings.embeddingDimensions !== EMBEDDING_VECTOR_DIMENSIONS) {
+    throw new TRPCError({
+      code: "PRECONDITION_FAILED",
+      message:
+        `ai.embeddingDimensions is ${settings.embeddingDimensions}, but the ` +
+        `wiki_page_chunks.embedding column is vector(${EMBEDDING_VECTOR_DIMENSIONS}). ` +
+        `Set ai.embeddingDimensions to ${EMBEDDING_VECTOR_DIMENSIONS} — 3-series ` +
+        `models truncate to that width via the dimensions parameter — or migrate ` +
+        `the column before using a wider model.`,
+    });
+  }
+
   const client = await getOpenAIClient();
+  const supportsDimensions = SUPPORTS_DIMENSIONS_PARAM.test(
+    settings.embeddingModel
+  );
+
   const response = await client.embeddings.create({
     model: settings.embeddingModel,
     input,
+    // Without this the setting is inert: swapping models silently changed the
+    // vector width, and the mismatch only surfaced as a failing insert.
+    ...(supportsDimensions
+      ? { dimensions: settings.embeddingDimensions }
+      : {}),
   });
 
-  return response.data.map((item) => item.embedding);
+  const embeddings = response.data.map((item) => item.embedding);
+
+  // Models without the dimensions parameter ignore it, so verify what actually
+  // came back before it reaches the column.
+  const wrongWidth = embeddings.find(
+    (embedding) => embedding.length !== settings.embeddingDimensions
+  );
+  if (wrongWidth) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message:
+        `${settings.embeddingModel} returned ${wrongWidth.length}-dimensional ` +
+        `vectors but ai.embeddingDimensions is ${settings.embeddingDimensions}. ` +
+        `Use a text-embedding-3 model with dimensions set to ` +
+        `${EMBEDDING_VECTOR_DIMENSIONS}.`,
+    });
+  }
+
+  return embeddings;
 }
 
 export async function syncPageEmbeddings(input: {

@@ -30,14 +30,18 @@ export const tsvector = customType<{
   },
 });
 
-const DEFAULT_EMBEDDING_DIMENSIONS = 1536;
+// Width of the `embedding` column on `wiki_page_chunks` (see
+// drizzle/0003_add_wiki_page_chunks.sql). pgvector rejects vectors of any other
+// length, so `ai.embeddingDimensions` has to agree with this value or every
+// insert fails. The AI service checks the two match before it embeds anything.
+export const EMBEDDING_VECTOR_DIMENSIONS = 1536;
 
 export const vector = customType<{
   data: number[];
   driverData: string;
 }>({
   dataType() {
-    return `vector(${DEFAULT_EMBEDDING_DIMENSIONS})`;
+    return `vector(${EMBEDDING_VECTOR_DIMENSIONS})`;
   },
   toDriver(value) {
     return `[${value.join(",")}]`;
