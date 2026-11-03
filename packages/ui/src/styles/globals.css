@@ -667,8 +667,8 @@
 html.kosmo-nav-hidden .kosmo-atlas-nav { max-width: 0; min-width: 0 !important; padding-left: 0; padding-right: 0; opacity: 0; overflow: hidden; pointer-events: none; }
 
 /* Left nav words: plain until hovered or current; then each word shows its own saturated colour gradient (hue set per word through --h), travelling on hover */
-.kosmo-word { transition: filter 0.3s ease; }
-.kosmo-word:hover, .kosmo-word[aria-current="page"] {
+.kosmo-navword { transition: filter 0.3s ease; }
+.kosmo-navword:hover, .kosmo-navword[aria-current="page"] {
   background-image: linear-gradient(90deg, hsl(var(--h) 100% 64%), hsl(calc(var(--h) + 70) 100% 60%), hsl(calc(var(--h) + 140) 100% 62%), hsl(calc(var(--h) + 210) 100% 64%), hsl(var(--h) 100% 64%));
   background-size: 300% 100%;
   -webkit-background-clip: text;
@@ -676,4 +676,15 @@ html.kosmo-nav-hidden .kosmo-atlas-nav { max-width: 0; min-width: 0 !important; 
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
-.kosmo-word:hover { filter: saturate(1.2); animation: kosmoRainbowShift 1.8s linear infinite; }
+.kosmo-navword:hover { filter: saturate(1.2); animation: kosmoRainbowShift 1.8s linear infinite; }
+
+/* Kamiji sprite: a slow bob and blink; it waves a little on hover, and looks up while thinking */
+@keyframes kamijiBob { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-3px) rotate(-1.5deg); } }
+@keyframes kamijiBlink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+@keyframes kamijiWave { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-9deg); } 75% { transform: rotate(9deg); } }
+.kamiji-sprite__hand { transform-origin: 50% 90%; animation: kamijiBob 3.4s ease-in-out infinite; }
+.kamiji-sprite__btn:hover .kamiji-sprite__hand { animation: kamijiWave 0.7s ease-in-out infinite; }
+.kamiji-sprite[data-mood="thinking"] .kamiji-sprite__hand { animation: kamijiBob 1.2s ease-in-out infinite; }
+.kamiji-sprite[data-mood="happy"] .kamiji-sprite__hand { animation: kamijiWave 0.5s ease-in-out 4; }
+.kamiji-sprite__eyes { transform-box: fill-box; transform-origin: center; animation: kamijiBlink 4.6s infinite; transition: transform 0.2s ease; }
+@media (prefers-reduced-motion: reduce) { .kamiji-sprite__hand, .kamiji-sprite__eyes { animation: none !important; } }

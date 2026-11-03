@@ -8,6 +8,8 @@ import type { PageMetadata } from "~/components/layout/MainLayout";
 import {
   AI_DRAWER_OPEN_STORAGE_KEY,
   AI_EXTERNAL_PROMPT_EVENT,
+  AI_STATUS_EVENT,
+  AI_TOGGLE_EVENT,
 } from "./constants";
 
 interface AIAssistantTriggerProps {
@@ -90,7 +92,15 @@ export function AIAssistantTrigger({
   useEffect(() => {
     if (typeof window === "undefined") return;
     window.localStorage.setItem(AI_DRAWER_OPEN_STORAGE_KEY, String(isOpen));
+    window.dispatchEvent(new CustomEvent(AI_STATUS_EVENT, { detail: { open: isOpen } }));
   }, [isOpen]);
+
+  // other controls (the Kamiji sprite) open and close the drawer through this event
+  useEffect(() => {
+    const toggle = () => setIsOpen((prev) => !prev);
+    window.addEventListener(AI_TOGGLE_EVENT, toggle);
+    return () => window.removeEventListener(AI_TOGGLE_EVENT, toggle);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined" || !isOpen || !queuedPrompt) return;

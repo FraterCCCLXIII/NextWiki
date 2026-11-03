@@ -3,6 +3,8 @@ import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { SiteFooter } from "./SiteFooter";
 import { ScrollFeather } from "./ScrollFeather";
+import { getSetting } from "~/lib/services/settings";
+import { KamijiSprite } from "~/components/kamiji/KamijiSprite";
 
 export interface PageMetadata {
   title?: string;
@@ -19,7 +21,8 @@ interface MainLayoutProps {
   pageMetadata?: PageMetadata;
 }
 
-export function MainLayout({ children, pageMetadata }: MainLayoutProps) {
+export async function MainLayout({ children, pageMetadata }: MainLayoutProps) {
+  const aiEnabled = await getSetting("ai.enabled");
   return (
     <div className="flex h-screen">
       {/* Sidebar hidden - kept for potential later use */}
@@ -39,6 +42,8 @@ export function MainLayout({ children, pageMetadata }: MainLayoutProps) {
         <Suspense fallback={null}>
           <SiteFooter />
         </Suspense>
+        {/* Kamiji, bottom-right: opens the AI assistant (the Header holds the drawer); explains itself when the assistant is off */}
+        <KamijiSprite enabled={Boolean(aiEnabled)} />
       </div>
     </div>
   );

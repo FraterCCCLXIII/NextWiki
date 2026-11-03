@@ -18,7 +18,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { PageMetadata } from "~/components/layout/MainLayout";
 import { createClientMarkdownProcessor } from "~/lib/markdown/client-factory";
 import { MarkdownProse } from "~/components/wiki/MarkdownProse";
-import { AI_EXTERNAL_PROMPT_EVENT } from "./constants";
+import { AI_EXTERNAL_PROMPT_EVENT, AI_STATUS_EVENT } from "./constants";
 
 type ChatMessage = {
   id: string;
@@ -532,6 +532,18 @@ export function AIAssistantPanel({
   };
 
   const isWorking = dispatchMutation.isPending;
+
+  // tell the Kamiji sprite what the assistant is doing (thinking while a request runs, happy when a reply lands)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.dispatchEvent(new CustomEvent(AI_STATUS_EVENT, { detail: { working: isWorking } }));
+  }, [isWorking]);
+  const repliedOnce = useRef(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !lastAssistantContent) return;
+    if (!repliedOnce.current) { repliedOnce.current = true; return; } // a restored conversation is not a new reply
+    window.dispatchEvent(new CustomEvent(AI_STATUS_EVENT, { detail: { replied: true } }));
+  }, [lastAssistantContent]);
   const isSendDisabled = !message.trim();
   const showTools =
     effectiveToolAccess.canSummarize || effectiveToolAccess.canEdit;
