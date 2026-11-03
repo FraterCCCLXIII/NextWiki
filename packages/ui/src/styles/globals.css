@@ -635,3 +635,11 @@
 }
 .kosmo-pixel { animation: kosmo-hue 12s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .kosmo-pixel { animation: none; } }
+
+/* The mark's eyes: two 1px black lines that blink (squash flat for a moment) every few seconds. */
+@keyframes kosmo-blink {
+  0%, 91%, 100% { transform: scaleY(1); }
+  94.5% { transform: scaleY(0.1); }
+}
+.kosmo-eye { transform-box: fill-box; transform-origin: center; animation: kosmo-blink 5.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .kosmo-eye { animation: none; } }

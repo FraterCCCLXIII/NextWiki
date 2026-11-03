@@ -554,7 +554,7 @@ html[data-kosmo-bg="original"] { --bg: #05070d; --bg2: #101011; --panel: #141415
 /* Embedded timeline: two round buttons stack under each other; both shift left of whichever drawer is open. */
 html.embedded .orbwrap { flex-direction: column; gap: 10px; align-items: flex-end; }
 html.embedded #navTime { top: 21px; }
-html.embedded body.navdrawer-open .orbwrap { right: 416px; }
+html.embedded body.navdrawer-open .orbwrap, html.embedded body.fxdrawer-open .orbwrap { right: 416px; }
 
 /* Thin, hover-only scrollbars everywhere (the app and the embedded Kosmographica pages share this look). */
 *::-webkit-scrollbar { width: 6px; height: 6px; }

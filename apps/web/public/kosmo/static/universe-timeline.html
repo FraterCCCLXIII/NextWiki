@@ -20,8 +20,10 @@
   ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, rgba(127,195,255,0.9), rgba(255,184,107,0.8)); background-clip: padding-box; border: 2px solid transparent; }
   * { scrollbar-width: thin; scrollbar-color: rgba(127,195,255,0.6) transparent; }
 
+  html, body { overflow: clip; }   /* nothing scrolls: focusing a field in an off-screen drawer must not shift the page */
   #view { position: absolute; inset: 0; }
   #view canvas { display: block; outline: none; }
+  #warp { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
   /* Feathered edges: the star map fades into the page ground at the top and left. */
   #view::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
     background:
@@ -141,9 +143,16 @@
   a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
 
   /* Locations: the travel search and destination list live in a right-hand drawer (#destBtn opens it). */
-  #nav { position: absolute; top: 0; right: 0; bottom: 0; width: 400px; z-index: 7; transform: translateX(100%); transition: transform .28s ease; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: linear-gradient(90deg, rgba(13,13,13,0.7), rgba(13,13,13,0.96) 18%); border-left: 1px solid var(--line, #242527); border-radius: 0; text-shadow: none; }
-  #nav.open { transform: none; }
-  #nav .head h3 { margin: 0; font-weight: 500; font-size: 22px; color: #fff; }
+  #nav, #fx { position: absolute; top: 0; right: 0; bottom: 0; width: 400px; z-index: 7; transform: translateX(100%); transition: transform .28s ease; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: linear-gradient(90deg, rgba(13,13,13,0.7), rgba(13,13,13,0.96) 18%); border-left: 1px solid var(--line, #242527); border-radius: 0; text-shadow: none; }
+  #nav.open, #fx.open { transform: none; }
+  #fx .head { display: flex; align-items: baseline; justify-content: space-between; }
+  #fx .head button { font-size: 12px; padding: 2px 10px; }
+  #fx .fxnote { font-size: 13px; line-height: 1.45; }
+  #fx .fxshapes { display: flex; flex-wrap: wrap; gap: 4px; }
+  #fx .fxshapes button { font-size: 13px; padding: 3px 10px; background: transparent; box-shadow: none; }
+  #fx .fxshapes button.on { border-color: var(--accent); color: var(--accent); }
+  #fx .row input[type=range] { width: 150px; }
+  #nav .head h3, #fx .head h3 { margin: 0; font-weight: 500; font-size: 22px; color: #fff; }
   #nav #catStatus { font-size: 14px; line-height: 1.4; }
   #nav .line { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   #nav input[type=text] { flex: 0 0 auto; min-width: 180px; }
@@ -160,11 +169,27 @@
   #results button small { color: var(--muted); margin-left: 4px; white-space: nowrap; }
   #results button.more { justify-content: center; color: var(--accent); font-size: 12px; letter-spacing: .06em; }
   body.drawer-open #zoombar, body.drawer-open #scalebar, body.drawer-open #help,
-  body.navdrawer-open #zoombar, body.navdrawer-open #scalebar, body.navdrawer-open #help { right: 418px; }
-  body.drawer-open #top, body.navdrawer-open #top { right: 400px; }
+  body.navdrawer-open #zoombar, body.navdrawer-open #scalebar, body.navdrawer-open #help,
+  body.fxdrawer-open #zoombar, body.fxdrawer-open #scalebar, body.fxdrawer-open #help { right: 418px; }
+  body.drawer-open #top, body.navdrawer-open #top, body.fxdrawer-open #top { right: 400px; }
   #zoombar { position: absolute; right: 18px; top: calc(var(--tlh, 210px) + 86px); bottom: 150px; width: 54px; z-index: 4; display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 8px; }
   #zoombar input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 4px; height: 100%; -webkit-appearance: slider-vertical; }
   #zoombar .tag { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  /* HUD: where you are, in the lower left; the x folds it into a small round button */
+  #hud { position: absolute; left: 16px; bottom: 16px; z-index: 5; max-width: calc(100% - 32px); padding: 10px 34px 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--bg) 58%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); text-shadow: none; }
+  #hud[hidden], #hudOpen[hidden] { display: none; }
+  #hud .hudbody { display: flex; gap: 16px; align-items: flex-start; }
+  #hud .hudcube { text-align: center; flex: none; }
+  #cube { width: 116px; height: 116px; display: block; }
+  #hud .hudaccent { color: var(--accent); }
+  #hud .hudk { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+  #hud .hudmain { font-size: 18px; color: #fff; margin: 3px 0 2px; font-variant-numeric: tabular-nums; }
+  #hud .hudsub { font-size: 13px; line-height: 1.5; color: var(--muted); font-variant-numeric: tabular-nums; }
+  #hud .hudscale { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 13px; color: #c9d6e6; font-variant-numeric: tabular-nums; }
+  #hud .hudbar { height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  #hudClose { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; padding: 0; line-height: 1; font-size: 16px; border-radius: 50%; background: transparent; border: 0; color: var(--muted); cursor: pointer; }
+  #hudClose:hover { color: var(--accent); background: rgba(26,26,26,0.8); }
+  #hudOpen { position: absolute; left: 16px; bottom: 16px; z-index: 5; }
   #scalebar { position: absolute; right: 18px; bottom: 96px; z-index: 4; color: #c9d6e6; text-align: right; font-variant-numeric: tabular-nums; }
   #scalebar .bar { height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); margin: 4px 0 0 auto; border-radius: 2px; }
   #help { position: absolute; right: 18px; bottom: 18px; z-index: 4; padding: 8px 12px; color: var(--muted); font-size: 13px; line-height: 1.5; }
@@ -179,13 +204,14 @@
 <script type="importmap">
 { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/", "topojson-client": "https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm" } }
 </script>
-  <link rel="stylesheet" href="kosmographica.css?v=14">
+  <link rel="stylesheet" href="kosmographica.css?v=15">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>
 <body>
 <div id="view"></div>
-<div id="navbar"><div id="logo"><div class="mark"></div><div><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div></div><nav id="menu"><a href="universe-timeline.html" class="here">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span class="orbwrap"><span class="dim" id="navTime"></span><button id="drawerBtn" class="orb" type="button" title="Chronicle: vertical timeline and map" aria-label="Chronicle" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></button><button id="destBtn" class="orb" type="button" title="Locations: travel to a destination" aria-label="Locations" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></button></span></div>
+<canvas id="warp" aria-hidden="true"></canvas>
+<div id="navbar"><div id="logo"><div class="mark"></div><div><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div></div><nav id="menu"><a href="universe-timeline.html" class="here">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span class="orbwrap"><span class="dim" id="navTime"></span><button id="drawerBtn" class="orb" type="button" title="Chronicle: vertical timeline and map" aria-label="Chronicle" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></button><button id="destBtn" class="orb" type="button" title="Locations: travel to a destination" aria-label="Locations" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></button><button id="fxBtn" class="orb" type="button" title="Star effects" aria-label="Star effects" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.1 6.9L21 12l-6.9 2.1L12 21l-2.1-6.9L3 12l6.9-2.1z"/></svg></button></span></div>
 <div id="top"><canvas id="timeline"></canvas><canvas id="minimap" title="Drag the window to pan the timeline"></canvas><div id="tl-handle" title="Click to show or hide the timeline; drag to resize it"></div><div id="tlbrush"></div><div id="tlzoom" title="Wheel: zoom at the pointer · drag: pan · double-click: zoom in · shift-drag: zoom to a range"><button id="tlOut" type="button" aria-label="Zoom out">−</button><button id="tlIn" type="button" aria-label="Zoom in">+</button><button id="tlFit" type="button" aria-label="Show the whole timeline">fit</button></div></div>
 <aside id="drawer">
   <div class="head"><h3 class="serif">Chronicle</h3><span class="dim" id="drawerWhen"></span></div>
@@ -264,6 +290,27 @@
   <p class="dim" style="margin:10px 0 0"><a href="contraption-sim.html">← back to the simulator</a></p>
 </div>
 
+<aside id="fx" class="glass" aria-label="Star effects">
+  <div class="head"><h3>Stars</h3><button id="fxReset" type="button" title="Back to the defaults">reset</button></div>
+  <div class="dim fxnote">How stars shine in the 3D scene: pick a shape from space photography and tune it.</div>
+  <div class="fxshapes" id="fxShapes"></div>
+  <div class="row"><label for="fxSize">Size</label><input type="range" id="fxSize" min="0.3" max="4" step="0.05"><span class="val" id="fxSize-v"></span></div>
+  <div class="row"><label for="fxHalo">Glow</label><input type="range" id="fxHalo" min="0" max="1.5" step="0.05"><span class="val" id="fxHalo-v"></span></div>
+  <div class="row"><label for="fxSpike">Spike length</label><input type="range" id="fxSpike" min="0" max="1" step="0.02"><span class="val" id="fxSpike-v"></span></div>
+  <div class="row"><label for="fxRot">Rotation</label><input type="range" id="fxRot" min="0" max="180" step="1"><span class="val" id="fxRot-v"></span></div>
+  <div class="row"><label for="fxTwinkle">Twinkle</label><input type="range" id="fxTwinkle" min="0" max="1" step="0.02"><span class="val" id="fxTwinkle-v"></span></div>
+  <div class="row"><label for="fxGain">Brightness</label><input type="range" id="fxGain" min="0.3" max="3" step="0.05"><span class="val" id="fxGain-v"></span></div>
+  <div class="row"><label for="fxAdd">Additive glow (light adds up)</label><input type="checkbox" id="fxAdd"></div>
+  <div class="head" style="margin-top:14px"><h3 style="font-size:15px">Travel</h3></div>
+  <div class="fxshapes" id="fxFlight" title="Pull back first: zoom out to see both ends, fly, zoom in. Direct flight: fly straight there without zooming out."></div>
+  <div class="row"><label for="fxPull">Pull-back</label><input type="range" id="fxPull" min="0" max="1.5" step="0.05"><span class="val" id="fxPull-v"></span></div>
+  <div class="row"><label for="fxSpeed">Flight speed</label><input type="range" id="fxSpeed" min="0.4" max="3" step="0.05"><span class="val" id="fxSpeed-v"></span></div>
+  <div class="fxshapes" id="fxEase" title="Smooth: ease in and out. Cruise: a short ramp, then a steady speed."></div>
+  <div class="row"><label for="fxArc">Path curve</label><input type="range" id="fxArc" min="0" max="1" step="0.02"><span class="val" id="fxArc-v"></span></div>
+  <div class="row"><label for="fxWarp">Warp drive on long trips</label><input type="checkbox" id="fxWarp"></div>
+  <div class="row"><label for="fxWarpAmt">Warp intensity</label><input type="range" id="fxWarpAmt" min="0" max="1.5" step="0.05"><span class="val" id="fxWarpAmt-v"></span></div>
+</aside>
+
 <aside id="nav" class="glass" aria-label="Locations">
   <div class="head"><h3>Locations</h3></div>
   <input type="text" id="search" placeholder="Travel to… (Proxima, Andromeda, Sgr A*, Jupiter, Crab Nebula)" autocomplete="off">
@@ -277,6 +324,27 @@
 </aside>
 
 <div id="zoombar" class="glass"><span class="tag">out</span><input type="range" id="zoom" min="6.5" max="27" step="0.01" orient="vertical"><span class="tag">in</span></div>
+<div id="hud" class="glass" aria-label="Current location">
+  <button id="hudClose" type="button" aria-label="Close the location readout" title="Close">×</button>
+  <div class="hudk">Current location</div>
+  <div class="hudbody">
+    <div class="hudtxt">
+      <div class="hudmain" id="hudNear">&nbsp;</div>
+      <div class="hudsub" id="hudCoords"></div>
+      <div class="hudsub" id="hudGC"></div>
+      <div class="hudsub" id="hudView"></div>
+      <div class="hudsub hudaccent" id="hudDest"></div>
+    </div>
+    <div class="hudcube" title="A cube of space around the Sun, turning with your view. Yellow: the Sun. White ring: where you are looking. Blue: the loaded destination, with a line down to the galactic plane.">
+      <canvas id="cube"></canvas>
+      <div class="hudsub" id="cubeNote"></div>
+    </div>
+  </div>
+  <div class="hudscale"><div class="hudbar" id="hudBar"></div><span id="hudScale"></span></div>
+</div>
+<button id="hudOpen" class="orb" type="button" hidden aria-label="Show the location readout" title="Current location">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+</button>
 <div id="scalebar"><div id="scaletxt"></div><div class="bar" id="bar"></div><div class="dim" id="scalenote" style="font-size:13px;margin-top:3px"></div></div>
 <div id="help" class="glass">drag · spin &nbsp; right-drag / <kbd>W A S D</kbd> · pan &nbsp; wheel / <kbd>Q</kbd><kbd>E</kbd> · scale &nbsp; <kbd>←→↑↓</kbd> · orbit &nbsp; <kbd>R</kbd> spin &nbsp; <kbd>T</kbd> timeline &nbsp; <kbd>[</kbd><kbd>]</kbd> pan time &nbsp; <kbd>C</kbd> chronicle</div>
 
@@ -614,6 +682,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 view.appendChild(renderer.domElement);
 renderer.domElement.tabIndex = 0;
 const scene = new THREE.Scene(); scene.background = new THREE.Color(window.KOSMO_BG ? KOSMO_BG.pick(0x05070d) : 0x05070d);
+Object.assign(window.kosmoTimeline, { renderer, scene, state });   // debug hook (profiling)
 const camera = new THREE.PerspectiveCamera(50, 1, 1e-4, 1e5);
 camera.position.set(0.35, 0.75, 1.9).setLength(1 / Math.tan(25 * Math.PI / 180));   // 2 scene units = the frame height
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -628,12 +697,84 @@ renderer.domElement.addEventListener('contextmenu', e => e.preventDefault());
 let seed = 12345;
 const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
 const gauss = () => Math.sqrt(-2 * Math.log(1 - rnd())) * Math.cos(2 * Math.PI * rnd());
+// ---- Star look: sprite shapes, halo, twinkle, brightness. Every point cloud registers its material here, and the
+// "Stars" drawer (the sparkle button) edits `fx`; choices persist in localStorage ("kosmoFx"). ----
+const FX_DEFAULTS = { shape: 'round', size: 1, halo: 0.7, spike: 0.7, rot: 0, twinkle: 0, gain: 1, additive: true, warp: true, warpAmt: 1, flight: 'hop', pull: 1, flightSpeed: 1, ease: 'smooth', arc: 0 };
+const fx = { ...FX_DEFAULTS };
+try { Object.assign(fx, JSON.parse(localStorage.getItem('kosmoFx') || '{}')); } catch { /* storage blocked or bad JSON: defaults */ }
+window.kosmoTimeline.fx = fx;   // debug hook
+const FX_SHAPES = [['pixel', 'Pixel'], ['round', 'Soft glow'], ['cross', 'Hubble cross'], ['jwst', 'Webb 6+2'], ['eight', 'Eight-point'], ['streak', 'Streak']];
+const FX_SPRITE_SCALE = 4;                       // a sprite is mostly glow and spikes, so it is drawn this much larger than the old square
+const fxUTime = { value: 0 }, fxUTwinkle = { value: fx.twinkle };
+const FX_MAX_CSS_PX = 56;                      // largest a star sprite may get on screen (CSS px); stops overdraw and white-out when zoomed in
+const fxUMaxPx = { value: 1e6 };               // the same limit in framebuffer pixels, set in fxApply (no limit for the old square points)
+const fxMats = [];
+let fxTex = null;
+function fxStarTexture() {
+  const S = 256, c = S / 2, cvs = document.createElement('canvas'); cvs.width = cvs.height = S;
+  const g = cvs.getContext('2d'); g.globalCompositeOperation = 'lighter';
+  const halo = g.createRadialGradient(c, c, 0, c, c, c);
+  halo.addColorStop(0, 'rgba(255,255,255,1)'); halo.addColorStop(0.035, 'rgba(255,255,255,0.95)');
+  halo.addColorStop(0.09, `rgba(255,255,255,${0.18 + 0.35 * fx.halo})`); halo.addColorStop(0.3, `rgba(255,255,255,${0.14 * fx.halo})`); halo.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = halo; g.fillRect(0, 0, S, S);
+  const L = c * 0.98 * (0.3 + 0.7 * fx.spike);
+  // one tapered spike each way along the axis `deg` (so a call draws a pair)
+  const spike = (deg, len, w = 1.7) => {
+    for (const flip of [0, 180]) {
+      g.save(); g.translate(c, c); g.rotate((deg + fx.rot + flip) * Math.PI / 180);
+      const l = g.createLinearGradient(0, 0, len, 0); l.addColorStop(0, 'rgba(255,255,255,0.9)'); l.addColorStop(0.35, 'rgba(255,255,255,0.32)'); l.addColorStop(1, 'rgba(255,255,255,0)');
+      g.fillStyle = l; g.beginPath(); g.moveTo(0, -w); g.lineTo(len, 0); g.lineTo(0, w); g.closePath(); g.fill(); g.restore();
+    }
+  };
+  if (fx.shape === 'cross') { spike(45, L); spike(135, L); }                                   // Hubble: four diffraction spikes
+  else if (fx.shape === 'jwst') { spike(90, L); spike(30, L); spike(150, L); spike(0, L * 0.45); }   // Webb: six main spikes plus two short horizontal ones
+  else if (fx.shape === 'eight') { spike(0, L); spike(45, L); spike(90, L); spike(135, L); }
+  else if (fx.shape === 'streak') {                                                              // anamorphic lens streak
+    g.save(); g.translate(c, c); g.rotate(fx.rot * Math.PI / 180); g.scale(1, 0.07);
+    const st = g.createRadialGradient(0, 0, 0, 0, 0, c); st.addColorStop(0, `rgba(255,255,255,${0.5 + 0.4 * fx.spike})`); st.addColorStop(0.4, 'rgba(255,255,255,0.18)'); st.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = st; g.beginPath(); g.arc(0, 0, c, 0, 2 * Math.PI); g.fill(); g.restore();
+  }
+  const t = new THREE.CanvasTexture(cvs); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+function fxStyle(m) {
+  const sprite = fx.shape !== 'pixel';
+  if (!!m.map !== sprite) m.needsUpdate = true;   // a texture appearing or going away changes the shader; nothing else here does
+  m.map = sprite ? fxTex : null; m.alphaTest = sprite ? 0.002 : 0;
+  m.size = m.userData.baseSize * fx.size * (sprite ? FX_SPRITE_SCALE : 1);
+  m.blending = fx.additive ? THREE.AdditiveBlending : THREE.NormalBlending;
+  m.color.setScalar(fx.gain); m.opacity = sprite ? 1 : 0.9;
+}
+// regenerate the sprite when its drawing changed, then restyle every cloud
+function fxApply(redrawSprite = true) {
+  if (fx.shape !== 'pixel' && (redrawSprite || !fxTex)) { fxTex?.dispose(); fxTex = fxStarTexture(); }
+  fxUTwinkle.value = fx.twinkle;
+  fxUMaxPx.value = fx.shape === 'pixel' ? 1e6 : FX_MAX_CSS_PX * renderer.getPixelRatio();
+  for (const m of fxMats) fxStyle(m);
+}
+// twinkle: a per-star size and brightness flicker with its own phase, injected into PointsMaterial's vertex shader
+function fxPatch(sh) {
+  sh.uniforms.uTime = fxUTime; sh.uniforms.uTwinkle = fxUTwinkle; sh.uniforms.uMaxPx = fxUMaxPx;
+  sh.vertexShader = 'attribute float phase;\nuniform float uTime;\nuniform float uTwinkle;\nuniform float uMaxPx;\n' + sh.vertexShader
+    .replace('#include <begin_vertex>', '#include <begin_vertex>\n float tw_ = 1.0 + uTwinkle * (0.5 * sin(uTime * 2.7 + phase) + 0.3 * sin(uTime * 6.1 + phase * 3.7));')
+    .replace('#include <logdepthbuf_vertex>', 'gl_PointSize = min(gl_PointSize * (1.0 + 0.25 * (tw_ - 1.0)), uMaxPx);\n#ifdef USE_COLOR\n vColor *= clamp(0.65 + 0.35 * tw_, 0.2, 1.6);\n#endif\n#include <logdepthbuf_vertex>');
+}
+function fxRegister(m, baseSize) {
+  m.userData.baseSize = baseSize; m.onBeforeCompile = fxPatch; fxMats.push(m);
+  fxUMaxPx.value = fx.shape === 'pixel' ? 1e6 : FX_MAX_CSS_PX * renderer.getPixelRatio();
+  if (fx.shape !== 'pixel' && !fxTex) fxTex = fxStarTexture();
+  fxStyle(m);
+}
+
 function pointCloud(n, fill, size, extra = {}) {
   const pos = new Float32Array(n * 3), col = new Float32Array(n * 3);
   for (let i = 0; i < n; i++) fill(i, pos, col);
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  return new THREE.Points(g, new THREE.PointsMaterial({ size, vertexColors: true, sizeAttenuation: true, transparent: true, opacity: 0.9, depthWrite: false, ...extra }));
+  const phase = new Float32Array(n); for (let i = 0; i < n; i++) phase[i] = (i * 2.399963229728653) % 6.283185307179586;
+  g.setAttribute('phase', new THREE.BufferAttribute(phase, 1));   // per-star twinkle phase
+  const mat = new THREE.PointsMaterial({ size, vertexColors: true, sizeAttenuation: true, transparent: true, opacity: 0.9, depthWrite: false, ...extra });
+  fxRegister(mat, size);
+  return new THREE.Points(g, mat);
 }
 
 // Level 0: observable universe (centred on us), galaxies on a Zel'dovich web; grows with D(a).
@@ -938,23 +1079,135 @@ window.addEventListener('hashchange', goHash);
 function goDest(d) { if (d.sys) systemFor(d.sys); travelTo(d.pos, Math.log10(at(d.w)), d.name); }
 function travelTo(target, zoom, name) {
   const pos = at(target), p0 = [...focus], z0 = state.zoom, dist = Math.hypot(pos[0] - p0[0], pos[1] - p0[1], pos[2] - p0[2]);
-  const bump = Math.max(0, Math.log10(Math.max(dist, 1)) + 0.4 - Math.max(z0, zoom));   // zoom out enough to see both ends
-  travel = { p0, target, z0, z1: clamp(zoom, 6.5, 27), bump, t: 0, dur: 1.6 + Math.min(2.4, bump * 0.4), name };
+  const rawBump = Math.max(0, Math.log10(Math.max(dist, 1)) + 0.4 - Math.max(z0, zoom));   // how far to zoom out to see both ends
+  const direct = fx.flight === 'direct';                                                      // direct flight: no pull-back, just fly there
+  const bump = direct ? 0 : rawBump * fx.pull;
+  // warp strength: none under ~1 light-year, full by ~a megaparsec
+  const warpK = clamp((Math.log10(Math.max(dist, 1)) - 15.5) / 6, 0, 1);
+  // a sideways bow in the route: perpendicular to the direction of travel and to the galactic "up"
+  const dir = [(pos[0] - p0[0]) / (dist || 1), (pos[1] - p0[1]) / (dist || 1), (pos[2] - p0[2]) / (dist || 1)];
+  let perp = [dir[1], -dir[0], 0]; let pl = Math.hypot(perp[0], perp[1], perp[2]); if (pl < 1e-6) { perp = [0, 1, 0]; pl = 1; }
+  perp = perp.map(c => c / pl);
+  travel = { p0, target, z0, z1: clamp(zoom, 6.5, 27), bump, direct, warpK, perp, dist, t: 0, dur: (1.8 + Math.min(2.4, rawBump * 0.4) + warpK * 2.4) / fx.flightSpeed, name };
   follow = null;
-  if (name) toast(`Travelling to ${name}`);
+  if (name) toast(warpK > 0.05 && fx.warp ? `Warping to ${name}` : `Travelling to ${name}`);
 }
+// The route. Pull back first (default): zoom follows one smooth curve with a hump for the pull-back; the camera starts moving once the
+// pull-back has begun and lands before the push-in ends. Direct flight: no hump, the camera sets off at once.
+const sstep = x => x * x * x * (x * (x * 6 - 15) + 10);   // smootherstep
+const cruiseStep = (u, a = 0.18) => { const v = 1 / (1 - a); return u < a ? v * u * u / (2 * a) : u <= 1 - a ? v * (a / 2 + (u - a)) : 1 - v * (1 - u) * (1 - u) / (2 * a); };   // ramp, steady speed, ramp
 function stepTravel(dt) {
-  if (!travel) return;
+  if (!travel) { warpEnd(); return; }
   travel.t = Math.min(1, travel.t + dt / travel.dur);
-  const u = travel.t, e = u * u * (3 - 2 * u), p1 = at(travel.target);
-  state.zoom = travel.z0 + (travel.z1 - travel.z0) * e + travel.bump * Math.sin(Math.PI * u);
-  for (let i = 0; i < 3; i++) focus[i] = travel.p0[i] + (p1[i] - travel.p0[i]) * e;
+  const ease = fx.ease === 'cruise' ? cruiseStep : sstep;
+  const u = travel.t, p1 = at(travel.target), em = ease(travel.direct ? u : clamp((u - 0.1) / 0.8, 0, 1));
+  state.zoom = travel.z0 + (travel.z1 - travel.z0) * ease(u) + travel.bump * Math.pow(Math.sin(Math.PI * u), 1.15);
+  const bow = fx.arc * travel.dist * 0.35 * Math.sin(Math.PI * em);                      // 0 at both ends, so it still lands exactly on target
+  for (let i = 0; i < 3; i++) focus[i] = travel.p0[i] + (p1[i] - travel.p0[i]) * em + travel.perp[i] * bow;
+  warpStep(u, dt);
   sync('zoom', 2);
-  if (u >= 1) { lastDest = { target: travel.target, name: travel.name }; if (typeof travel.target === 'function') follow = travel.target; travel = null; }
+  if (u >= 1) { lastDest = { target: travel.target, name: travel.name }; if (typeof travel.target === 'function') follow = travel.target; travel = null; warpEnd(); }
+}
+// ---- warp drive: the field of view stretches, stars streak outward from the centre, a blue tunnel glow builds and fades ----
+const warpC = $('warp'), wctx = warpC.getContext('2d'), baseFov = camera.fov;
+const WARP_N = 260, warpStars = Array.from({ length: WARP_N }, (_, i) => ({ a: (i * 2.399963229728653) % (2 * Math.PI), r: ((i * 0.618034) % 1), s: 0.45 + ((i * 0.37) % 1) * 0.9, h: (i * 0.131) % 1 }));
+let warpAmt = 0;
+function warpStep(u, dt) {
+  const k = travel.warpK * fx.warpAmt;
+  if (!fx.warp || k <= 0.001) { warpEnd(); return; }
+  warpAmt = k * Math.pow(Math.sin(Math.PI * clamp((u - 0.05) / 0.9, 0, 1)), 1.3);     // builds, peaks mid-trip, eases out on arrival
+  camera.fov = baseFov + 38 * Math.min(warpAmt, 1.2); camera.updateProjectionMatrix();
+  drawWarp(warpAmt, dt);
+}
+function drawWarp(w, dt) {
+  const dpr = Math.min(devicePixelRatio || 1, 2), W = warpC.clientWidth, H = warpC.clientHeight;
+  if (warpC.width !== W * dpr || warpC.height !== H * dpr) { warpC.width = W * dpr; warpC.height = H * dpr; }
+  wctx.setTransform(dpr, 0, 0, dpr, 0, 0); wctx.clearRect(0, 0, W, H);
+  const cx = W / 2, cy = H / 2, R = Math.hypot(cx, cy);
+  wctx.globalCompositeOperation = 'lighter';
+  const glow = wctx.createRadialGradient(cx, cy, 0, cx, cy, R * 0.85);
+  glow.addColorStop(0, `rgba(160,200,255,${0.26 * Math.min(w, 1)})`); glow.addColorStop(0.4, `rgba(80,110,255,${0.09 * Math.min(w, 1)})`); glow.addColorStop(1, 'rgba(0,0,0,0)');
+  wctx.fillStyle = glow; wctx.fillRect(0, 0, W, H);
+  for (const s of warpStars) {
+    s.r += dt * (0.2 + 2.4 * w) * s.s;                                  // stars stream outward, faster as the warp builds
+    if (s.r > 1) { s.r -= 1; s.a = (s.a + 2.399963229728653) % (2 * Math.PI); }
+    const r1 = s.r * s.r * R, len = (0.015 + 0.5 * Math.min(w, 1.2)) * s.r * R * s.s, ca = Math.cos(s.a), sa = Math.sin(s.a);
+    wctx.strokeStyle = `hsla(${205 + s.h * 55}, 90%, ${72 + s.h * 20}%, ${Math.min(1, (0.1 + s.r) * w * 1.3)})`;
+    wctx.lineWidth = 0.6 + s.r * 1.9;
+    wctx.beginPath(); wctx.moveTo(cx + ca * Math.max(0, r1 - len), cy + sa * Math.max(0, r1 - len)); wctx.lineTo(cx + ca * r1, cy + sa * r1); wctx.stroke();
+  }
+}
+function warpEnd() {
+  if (warpAmt === 0 && camera.fov === baseFov) return;
+  warpAmt = 0; camera.fov = baseFov; camera.updateProjectionMatrix(); wctx.clearRect(0, 0, warpC.width, warpC.height);
 }
 let lastDest = null;
 function toast(msg) { const t = $('toast'); t.textContent = msg; t.style.opacity = 1; clearTimeout(t._h); t._h = setTimeout(() => t.style.opacity = 0, 1800); }
-function nearestName() { let best = null, bd = Infinity; for (const d of DEST) { const p = at(d.pos), r = Math.hypot(p[0] - focus[0], p[1] - focus[1], p[2] - focus[2]); if (r < bd) { bd = r; best = d; } } return best ? `${P.fmtLength(bd)} from ${best.name}` : ''; }
+function nearestName() { let best = null, bd = Infinity; for (const d of DEST) { if (!d.pos || d.viaParent) continue; /* list-only rows have no sky position of their own */ const p = at(d.pos), r = Math.hypot(p[0] - focus[0], p[1] - focus[1], p[2] - focus[2]); if (r < bd) { bd = r; best = d; } } return best ? `${P.fmtLength(bd)} from ${best.name}` : ''; }
+
+// HUD (lower left): nearest object, galactic position of the view centre, view size; the scale bar is filled in with the main one.
+// `var`, not `let`: updateScene can run before this point is reached.
+var hudClosed = false;
+try { hudClosed = localStorage.getItem('kosmoHud') === 'closed'; } catch { /* storage blocked */ }
+function hudUpdate(near) {
+  if (hudClosed) return;
+  const v = [focus[0] - SUN[0], focus[1] - SUN[1], focus[2] - SUN[2]], d = Math.hypot(v[0], v[1], v[2]);
+  const l = (Math.atan2(v[1], v[0]) * 180 / Math.PI + 360) % 360, b = d > 0 ? Math.asin(v[2] / d) * 180 / Math.PI : 0;
+  $('hudNear').textContent = near || 'in open space';
+  $('hudCoords').textContent = d < 1e3 ? 'at the Sun' : `l ${l.toFixed(1)}°  b ${b.toFixed(1)}°  ·  ${P.fmtLength(d)} from the Sun`;
+  $('hudGC').textContent = `${P.fmtLength(Math.hypot(focus[0], focus[1], focus[2]))} from the galactic centre`;
+  $('hudView').textContent = `view ${P.fmtLength(10 ** state.zoom)} across`;
+}
+// ---- the mini cube: a box of space centred on the Sun that turns with the camera. Shows the Sun, the view centre and the loaded
+// destination (the one being travelled to, else the last one reached) at their real positions, with a drop line to the galactic plane. ----
+const cubeC = $('cube'), cctx = cubeC.getContext('2d');
+const CUBE_V = [[-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1], [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]];
+const CUBE_E = [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7]];
+const niceCeil = x => { const e = 10 ** Math.floor(Math.log10(x)), m = x / e; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * e; };
+// round the cube's side up to 1, 2 or 5 of the unit it will be shown in (ly, AU, kly ...), not of metres
+const CUBE_UNITS = [1e9 * ly, 1e6 * ly, 1e3 * ly, ly, AU, 1e9, 1e6, 1e3, 1];
+const niceSide = x => { const u = CUBE_UNITS.find(u => x >= u) || 1; return niceCeil(x / u) * u; };
+const loadedDest = () => travel ? { target: travel.target, name: travel.name } : lastDest;
+const _cq = new THREE.Quaternion(), _cv = new THREE.Vector3();
+function drawCube() {
+  if (hudClosed) return;
+  const dpr = Math.min(devicePixelRatio || 1, 2), S = 116;
+  if (cubeC.width !== S * dpr) { cubeC.width = S * dpr; cubeC.height = S * dpr; }
+  cctx.setTransform(dpr, 0, 0, dpr, 0, 0); cctx.clearRect(0, 0, S, S);
+  const rel = a => [a[0] - SUN[0], a[1] - SUN[1], a[2] - SUN[2]];
+  const f = rel(focus), dst = loadedDest(), dp = dst ? rel(at(dst.target)) : null;
+  const ext = Math.max(10 * ly, Math.hypot(f[0], f[1], f[2]), dp ? Math.hypot(dp[0], dp[1], dp[2]) : 0);
+  const side = niceSide(2.4 * ext), half = side / 2;
+  _cq.copy(camera.quaternion).invert();                                   // world -> view, so the cube turns with what you see
+  const R = S * 0.3, c = S / 2;
+  const proj = v => { _cv.set(v[0] / half, v[1] / half, v[2] / half).applyQuaternion(_cq); const k = 1 / (1 - _cv.z * 0.16); return [c + _cv.x * k * R, c - _cv.y * k * R, _cv.z]; };
+  const P3 = CUBE_V.map(v => proj([v[0] * half, v[1] * half, v[2] * half]));
+  cctx.lineWidth = 1;
+  for (const [a, b] of CUBE_E) { const z = (P3[a][2] + P3[b][2]) / 2; cctx.strokeStyle = `rgba(201,214,230,${0.28 + 0.3 * (z + 1) / 2})`; cctx.beginPath(); cctx.moveTo(P3[a][0], P3[a][1]); cctx.lineTo(P3[b][0], P3[b][1]); cctx.stroke(); }
+  // the galactic plane through the Sun: a faint square, so heights above and below it read
+  cctx.strokeStyle = 'rgba(127,195,255,0.22)'; cctx.beginPath(); [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([x, y], i) => { const p = proj([x * half, y * half, 0]); i ? cctx.lineTo(p[0], p[1]) : cctx.moveTo(p[0], p[1]); }); cctx.closePath(); cctx.stroke();
+  const dot = (v, r, col, ring) => { const p = proj(v); cctx.beginPath(); cctx.arc(p[0], p[1], r, 0, 2 * Math.PI); if (ring) { cctx.strokeStyle = col; cctx.lineWidth = 1.4; cctx.stroke(); } else { cctx.fillStyle = col; cctx.fill(); } return p; };
+  const gc = rel([0, 0, 0]); if (Math.max(Math.abs(gc[0]), Math.abs(gc[1]), Math.abs(gc[2])) <= half) dot(gc, 1.6, 'rgba(255,184,107,0.7)');   // galactic centre, when it fits
+  dot([0, 0, 0], 2.6, '#ffd37a');                                                                                      // the Sun
+  if (dp) {
+    const inside = Math.max(Math.abs(dp[0]), Math.abs(dp[1]), Math.abs(dp[2])) <= half * 1.0001;
+    const a = proj(dp), b = proj([dp[0], dp[1], 0]);
+    cctx.strokeStyle = 'rgba(127,195,255,0.45)'; cctx.lineWidth = 1; cctx.setLineDash([2, 2]); cctx.beginPath(); cctx.moveTo(a[0], a[1]); cctx.lineTo(b[0], b[1]); cctx.stroke(); cctx.setLineDash([]);
+    dot([dp[0], dp[1], 0], 1.5, 'rgba(127,195,255,0.6)');
+    dot(dp, inside ? 3.2 : 2.4, '#7fc3ff');                                                                          // the destination
+  }
+  dot(f, 4.2, 'rgba(255,255,255,0.95)', true);                                                                         // where the view is centred
+  $('cubeNote').textContent = `cube ${P.fmtLength(side)}`;
+  $('hudDest').textContent = dst ? `→ ${dst.name || 'destination'}${dp ? ' · ' + P.fmtLength(Math.hypot(dp[0], dp[1], dp[2])) + ' from the Sun' : ''}` : '';
+}
+function setHud(open) {
+  hudClosed = !open; $('hud').hidden = !open; $('hudOpen').hidden = open;
+  try { localStorage.setItem('kosmoHud', open ? 'open' : 'closed'); } catch { /* storage blocked */ }
+  if (open) hudUpdate(nearestName());
+}
+$('hudClose').addEventListener('click', () => setHud(false));
+$('hudOpen').addEventListener('click', () => setHud(true));
+setHud(!hudClosed);
 
 // search UI
 const results = $('results');
@@ -1084,7 +1337,9 @@ function updateScene() {
   const [u, name] = units.find(([u]) => target >= u) || units[units.length - 1];
   const nice = 10 ** Math.floor(Math.log10(target / u)), m = [5, 2, 1].find(m => m * nice <= target / u) * nice;
   const pxPerScene = view.clientHeight / (2 * camera.position.length() * Math.tan(camera.fov / 2 * Math.PI / 180));
-  $('scaletxt').textContent = `${m} ${name}`; $('bar').style.width = `${clamp(m * u * k * pxPerScene, 12, 420)}px`;
+  const barPx = clamp(m * u * k * pxPerScene, 12, 420);
+  $('scaletxt').textContent = `${m} ${name}`; $('bar').style.width = `${barPx}px`;
+  if (!hudClosed) { $('hudScale').textContent = `${m} ${name}`; $('hudBar').style.width = `${barPx}px`; }
   const notes = []; if (state.distK < 1) notes.push(`distances compressed γ = ${state.distK.toFixed(2)}`); if (state.sizeK < 1) notes.push(`sizes balanced β = ${state.sizeK.toFixed(2)}`);
   if (state.skyK < 1) notes.push(`star distances compressed γ = ${state.skyK.toFixed(2)}`); if (skyPack().on) notes.push(`systems magnified ×${skyPack().mags[0].toFixed(0)}–×${skyPack().mags[1].toFixed(0)}`);
   $('scalenote').textContent = notes.length ? `⚠ ${notes.join(' · ')} (galaxies and the star field stay true)` : '';
@@ -1096,7 +1351,7 @@ function readout() {
   const fmtN = x => x >= 1e4 ? x.toExponential(1) : x.toFixed(0);
   const mem = LEVELS.map(L => `${L.name}: ${fmtN(pointsOf(L))} pts, ${(bytesOf(L) / 1e6).toFixed(1)} MB, 1 pt = ${fmtN(Math.max(1, L.count() / Math.max(1, pointsOf(L))))} ${L.what}`).join('<br>');
   const total = LEVELS.reduce((b, L) => b + bytesOf(L), 0);
-  $('where').textContent = nearestName();
+  const near = nearestName(); $('where').textContent = near; hudUpdate(near);
   $('readout').innerHTML = `<b>Cursor:</b> a = ${a.toExponential(2)}, z = ${s.z < 1e4 ? s.z.toFixed(1) : s.z.toExponential(1)}, t = <b>${P.fmtTime(s.t)}</b>, T = ${P.fmtTemp(s.T)}, era: ${s.era}`
     + `<br>Proper radius of today's observable universe then: ${P.fmtLength(CHI0 * a)}; Hubble radius ${P.fmtLength(s.hubbleRadius)}`
     + `<br><b>View:</b> ${P.fmtLength(10 ** state.zoom)} across, nearest level ${activeL.name}`
@@ -1148,16 +1403,49 @@ let land = null;   // GeoJSON land polygons (world-atlas 110m) once loaded; fals
 (async () => { try { const [{ feature }, topo] = await Promise.all([import('topojson-client'), fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/land-110m.json').then(r => r.json())]); land = feature(topo, topo.objects.land); } catch { land = false; } })();
 const mapC = $('map'), mapCtx = mapC.getContext('2d');
 const proj = (lat, lon, W, H) => [(lon + 180) / 360 * W, (90 - lat) / 180 * H];
-let drawerOpen = false, navOpen = false, hoverEv = null;
-function toggleDrawer() { drawerOpen = !drawerOpen; if (drawerOpen && navOpen) setNavDrawer(false); $('drawer').classList.toggle('open', drawerOpen); document.body.classList.toggle('drawer-open', drawerOpen); $('drawerBtn').classList.toggle('open', drawerOpen); $('drawerBtn').setAttribute('aria-expanded', String(drawerOpen)); if (drawerOpen) buildList(); setTimeout(resize, 300); }
+let drawerOpen = false, navOpen = false, fxOpen = false, hoverEv = null;
+function toggleDrawer() { drawerOpen = !drawerOpen; if (drawerOpen) { if (navOpen) setNavDrawer(false); if (fxOpen) setFxDrawer(false); } $('drawer').classList.toggle('open', drawerOpen); document.body.classList.toggle('drawer-open', drawerOpen); $('drawerBtn').classList.toggle('open', drawerOpen); $('drawerBtn').setAttribute('aria-expanded', String(drawerOpen)); if (drawerOpen) buildList(); setTimeout(resize, 300); }
 $('drawerBtn').addEventListener('click', toggleDrawer);
 function setNavDrawer(open) {
   navOpen = open; $('nav').classList.toggle('open', open); $('destBtn').classList.toggle('open', open);
   $('destBtn').setAttribute('aria-expanded', String(open)); document.body.classList.toggle('navdrawer-open', open);
-  if (open) { if (drawerOpen) toggleDrawer(); setTimeout(() => $('search').focus(), 300); }
+  if (open) { if (drawerOpen) toggleDrawer(); if (fxOpen) setFxDrawer(false); setTimeout(() => $('search').focus(), 300); }
   setTimeout(resize, 300);
 }
 $('destBtn').addEventListener('click', () => setNavDrawer(!navOpen));
+// Stars drawer
+function setFxDrawer(open) {
+  fxOpen = open; $('fx').classList.toggle('open', open); $('fxBtn').classList.toggle('open', open);
+  $('fxBtn').setAttribute('aria-expanded', String(open)); document.body.classList.toggle('fxdrawer-open', open);
+  if (open) { if (drawerOpen) toggleDrawer(); if (navOpen) setNavDrawer(false); }
+  setTimeout(resize, 300);
+}
+$('fxBtn').addEventListener('click', () => setFxDrawer(!fxOpen));
+const FX_SLIDERS = [['fxSize', 'size', v => v.toFixed(2) + '×', false], ['fxHalo', 'halo', v => v.toFixed(2), true], ['fxSpike', 'spike', v => v.toFixed(2), true], ['fxRot', 'rot', v => v.toFixed(0) + '°', true], ['fxTwinkle', 'twinkle', v => v.toFixed(2), false], ['fxGain', 'gain', v => v.toFixed(2) + '×', false], ['fxWarpAmt', 'warpAmt', v => v.toFixed(2) + '×', false], ['fxPull', 'pull', v => v.toFixed(2) + '×', false], ['fxSpeed', 'flightSpeed', v => v.toFixed(2) + '×', false], ['fxArc', 'arc', v => v.toFixed(2), false]];
+// `redraw` = the change alters the sprite drawing itself (otherwise only material settings change)
+function fxSync() {
+  for (const [id, key, f] of FX_SLIDERS) { $(id).value = fx[key]; $(id + '-v').textContent = f(fx[key]); }
+  $('fxAdd').checked = fx.additive; $('fxWarp').checked = fx.warp; $('fxWarpAmt').disabled = !fx.warp;
+  $('fxFlight').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === fx.flight));
+  $('fxEase').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === fx.ease));
+  $('fxPull').disabled = fx.flight === 'direct';
+  $('fxShapes').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.shape === fx.shape));
+  const sprite = fx.shape !== 'pixel';
+  for (const id of ['fxHalo', 'fxSpike', 'fxRot']) $(id).disabled = !sprite;
+}
+function fxChanged(redraw) { fxSync(); try { localStorage.setItem('kosmoFx', JSON.stringify(fx)); } catch { /* storage blocked */ } fxApply(redraw); }
+$('fxShapes').innerHTML = FX_SHAPES.map(([k, name]) => `<button type="button" data-shape="${k}">${name}</button>`).join('');
+$('fxShapes').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { fx.shape = b.dataset.shape; fxChanged(true); }));
+for (const [id, key, , redraw] of FX_SLIDERS) $(id).addEventListener('input', e => { fx[key] = parseFloat(e.target.value); fxChanged(redraw); });
+$('fxAdd').addEventListener('change', e => { fx.additive = e.target.checked; fxChanged(false); });
+$('fxWarp').addEventListener('change', e => { fx.warp = e.target.checked; fxChanged(false); });
+const FX_FLIGHTS = [['hop', 'Pull back first'], ['direct', 'Direct flight']], FX_EASES = [['smooth', 'Smooth'], ['cruise', 'Cruise']];
+for (const [id, list, key] of [['fxFlight', FX_FLIGHTS, 'flight'], ['fxEase', FX_EASES, 'ease']]) {
+  $(id).innerHTML = list.map(([v, name]) => `<button type="button" data-v="${v}">${name}</button>`).join('');
+  $(id).querySelectorAll('button').forEach(b => b.addEventListener('click', () => { fx[key] = b.dataset.v; fxChanged(false); }));
+}
+$('fxReset').addEventListener('click', () => { Object.assign(fx, FX_DEFAULTS); fxChanged(true); });
+fxSync();
 $('chips').innerHTML = CATS.map(c => `<button data-c="${c}" class="on" style="color:${CAT_COLOR[c]}">${c}</button>`).join('');
 $('chips').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { const c = b.dataset.c; catOn.has(c) ? catOn.delete(c) : catOn.add(c); b.classList.toggle('on', catOn.has(c)); buildList(); }));
 const cursorT = () => P.cosmoState(10 ** state.logA, tab).t;
@@ -1306,21 +1594,21 @@ function setPanel(open) { $('panel').classList.toggle('shown', open); $('panelBt
 $('panelBtn').addEventListener('click', () => setPanel(!$('panel').classList.contains('shown')));
 $('panel-toggle').addEventListener('click', () => setPanel(false));
 
-function resize() { const w = view.clientWidth, h = view.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); drawTimeline(); }
+function resize() { const w = view.clientWidth, h = view.clientHeight; renderer.setSize(w, h); fxApply(false); camera.aspect = w / h; camera.updateProjectionMatrix(); drawTimeline(); }
 window.addEventListener('resize', resize); resize();
 
 const t0 = performance.now();
 let last = performance.now(), frame = 0;
 function animate(now) {
   requestAnimationFrame(animate);
-  const dt = Math.min((now - last) / 1000, 0.05); last = now;
+  const dt = Math.min((now - last) / 1000, 0.05); last = now; fxUTime.value = now / 1000;
   if (state.play) { state.logA = Math.min(0, state.logA + state.speed * dt); sync('logA', 2); if (state.logA >= 0) { state.play = false; $('play').checked = false; } }
   if (!state.pause) clock.jd += dt * 10 ** state.rate / 86400;
   if (frame % 6 === 0) $('clockDate').textContent = clockDate() + (state.pause ? ' (paused)' : '');
   steer(dt); stepTravel(dt);
   controls.update();
   updateScene();
-  if (frame % 2 === 0) { drawTimeline(); drawMinimap(); }
+  if (frame % 2 === 0) { drawTimeline(); drawMinimap(); drawCube(); }
   if (frame % 10 === 0) updateDrawer();
   if (frame % 2 === 1) stepDial();
   if (frame % 15 === 0) readout();

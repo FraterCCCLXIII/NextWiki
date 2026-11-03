@@ -63,7 +63,7 @@ export function AtlasNav() {
     <nav
       ref={fadeRef}
       aria-label="Atlas"
-      className="w-full bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-6.25rem)] md:w-60 md:shrink-0 md:overflow-y-auto kosmo-scroll scroll-fade"
+      className="w-full bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-6.25rem)] md:w-max md:min-w-40 md:shrink-0 md:overflow-y-auto kosmo-scroll scroll-fade"
     >
       {NAV_GROUPS.map((group) => (
         <NavGroupSection key={group.name} group={group} />

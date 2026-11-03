@@ -5,7 +5,8 @@ import { cn } from "~/lib/utils";
  * Hilbert curve. The full rainbow repeats every 16 steps along the curve, so each 4x4 quarter of the screen holds the
  * whole spectrum folded the same way: a self-similar, fractal mosaic.
  * Pure SVG, 24x24 by default; the pixels run edge to edge inside a rounded square. The colours animate: each pixel
- * cycles the rainbow, offset by its place on the curve (see .kosmo-pixel), unless the user prefers reduced motion.
+ * cycles the rainbow, offset by its place on the curve (see .kosmo-pixel). Two 1px black eyes sit on top and blink
+ * (.kosmo-eye). Both animations stop for users who prefer reduced motion.
  */
 const ORDER = 3;
 const SIDE = 1 << ORDER; // 8 pixels per side
@@ -71,6 +72,9 @@ export function KosmoLogo({ size = 24, className }: { size?: number; className?:
           />
         ))}
       </g>
+      {/* eyes: 1px black lines, 5px tall, mirrored about the centre of the 24px grid */}
+      <rect className="kosmo-eye" x="8" y="9" width="1" height="5" fill="#000" />
+      <rect className="kosmo-eye" x="15" y="9" width="1" height="5" fill="#000" />
     </svg>
   );
 }
