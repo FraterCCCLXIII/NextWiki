@@ -183,7 +183,7 @@
   body.fxdrawer-open #zoombar, body.fxdrawer-open #scalebar, body.fxdrawer-open #help { right: 418px; }
   body.drawer-open #top, body.navdrawer-open #top, body.fxdrawer-open #top { right: 400px; }
   /* vertical distortion sliders, left of the zoom bar; they shift left with the right-hand drawers like the zoom bar does */
-  #scalebars { position: absolute; right: 18px; top: calc(var(--tlh, 210px) + 86px); bottom: 280px; z-index: 4; display: flex; gap: 4px; }
+  #scalebars { position: absolute; right: 18px; top: calc(var(--tlh, 210px) + 86px); bottom: calc(var(--navh, 250px) + 34px); min-height: 120px; z-index: 4; display: flex; gap: 4px; transition: bottom .3s ease; }
   #scalebars .col { width: 50px; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 0 6px; }
   #scalebars .tag { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
   #scalebars .cap { font-size: 11px; color: #c9d6e6; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
@@ -191,6 +191,7 @@
   #scalebars input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 4px; height: 100%; -webkit-appearance: slider-vertical; }
   body.drawer-open #scalebars, body.navdrawer-open #scalebars, body.fxdrawer-open #scalebars { right: 418px; }
   body.nav-closed #scalebars { bottom: 90px; }
+  #navhud { max-height: calc(100vh - var(--tlh, 210px) - 130px); overflow-y: auto; overflow-x: hidden; }
   #zoombar { position: absolute; right: 18px; top: calc(var(--tlh, 210px) + 86px); bottom: 150px; width: 54px; z-index: 4; display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 8px; }
   #zoombar input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 4px; height: 100%; -webkit-appearance: slider-vertical; }
   #zoombar .tag { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
@@ -1722,7 +1723,7 @@ function collapsible(panelSel, rows) {
     el.replaceWith(sec); sec.querySelector('.ninner').appendChild(el);
     const set = open => { sec.classList.toggle('closed', !open); sec.querySelector('.nsh').setAttribute('aria-expanded', String(open)); try { localStorage.setItem(id, open ? '1' : '0'); } catch { /* storage blocked */ } };
     sec.querySelector('.nsh').addEventListener('click', () => set(sec.classList.contains('closed')));
-    try { if (localStorage.getItem(id) === '0') sec.classList.add('closed'); } catch { /* storage blocked */ }
+    try { const st = localStorage.getItem(id); if (st === '0' || (st === null && ['Camera scale', 'Hotkeys'].includes(label))) sec.classList.add('closed'); } catch { /* storage blocked */ }
   }
 }
 collapsible('#navhud', [[p => p.querySelector('#zoom').parentElement, 'Zoom'], ['#zscale', 'Camera scale'], ['.navpads', 'Move & look'], [p => p.querySelector('#navMode').parentElement, 'Mode & speed'], ['#navkeys', 'Hotkeys']]);
@@ -1741,6 +1742,9 @@ collapsible('#timehud', [['.trow:nth-child(1)', 'Clock'], ['.trow:nth-child(2)',
   dial.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { setR(state.rate + 0.35); e.preventDefault(); } if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { setR(state.rate - 0.35); e.preventDefault(); } });
   setInterval(() => { $('tHand').setAttribute('transform', `rotate(${ang(state.rate)})`); dial.querySelectorAll('.tk').forEach(t => t.classList.toggle('on', Math.abs(+t.dataset.r - state.rate) < 0.05)); }, 100);
 }
+// keep the vertical sliders clear of the Navigate panel: they stop just above it, whatever its height (rows fold, look changes)
+{ const nh = $('navhud'), upd = () => document.body.style.setProperty('--navh', `${document.body.classList.contains('nav-closed') ? 56 : Math.round(nh.getBoundingClientRect().height)}px`);
+  new ResizeObserver(upd).observe(nh); upd(); new MutationObserver(upd).observe(document.body, { attributes: true, attributeFilter: ['class'] }); }
 // ---- camera scale: the zoom slider reads as a ruler of landmark sizes, from a person to the observable universe ----
 {
   const MARKS = [[2, 'room'], [7.1, 'Earth'], [9.15, 'Sun'], [12.9, 'Solar Sys.'], [15.97, '1 ly'], [17.5, '10 pc'], [20.5, 'Milky Way'], [22.6, 'Local Grp'], [24, 'Virgo'], [26.95, 'Universe']];
