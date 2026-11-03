@@ -291,7 +291,7 @@
   #xpad .xface .y { grid-area: y; color: #ffd24a; } #xpad .xface .x { grid-area: x; color: #5aa8ff; } #xpad .xface .b { grid-area: b; color: #ff6b6b; } #xpad .xface .a { grid-area: a; color: #5be08a; }
   #xpad .xmid { align-self: flex-end; } #xpad .xmid button { padding: 6px 14px; border-radius: 999px; }
   body.padmode #navhud, body.padmode #hud, body.padmode #navOpen, body.padmode #hudOpen { display: none !important; }
-  body.padmode #timehud { bottom: 190px; }
+  body.padmode #timehud { bottom: auto; top: 150px; left: 16px; transform: none; max-width: 330px; }
   /* collapsible control rows: a quiet header per row, the body folds with a grid-rows transition */
   .nsec { margin-top: 4px; } .nsh { display: flex; align-items: center; gap: 6px; width: 100%; padding: 2px 0 !important; border: 0 !important; background: transparent !important; color: rgba(230,237,247,0.5) !important; font: 500 10px ui-sans-serif, system-ui, sans-serif !important; letter-spacing: 0.14em !important; text-transform: uppercase !important; cursor: pointer; justify-content: flex-start !important; min-width: 0 !important; box-shadow: none !important; }
   .nsh:hover { color: #fff !important; } .nsh .nc { display: inline-block; transition: transform .28s ease; font-size: 9px; } .nsec.closed .nsh .nc { transform: rotate(-90deg); }
