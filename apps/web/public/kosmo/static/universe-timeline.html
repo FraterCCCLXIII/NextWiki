@@ -350,9 +350,9 @@
   #navhud .navpad { grid-template-columns: repeat(3, 46px); grid-auto-rows: 46px; gap: 8px; justify-items: center; }   /* cells as big as the circles, so none overlap */
   #navhud .navpad .navtag { width: 46px; }
   #timehud button[hidden] { display: none !important; }
-  /* corner mark in the location HUD: white, turned and mirrored (CSS transform below) */
+  /* corner mark in the location HUD: white, turned upside down (CSS transform below) */
   #hud { position: absolute; }
-  #hud .hudlogo { position: absolute; right: 14px; bottom: 12px; width: 46px; height: auto; opacity: 0.8; transform: rotate(180deg) scaleX(-1); pointer-events: none; }
+  #hud .hudlogo { position: absolute; right: 14px; bottom: 12px; width: 46px; height: auto; opacity: 0.8; transform: rotate(180deg); pointer-events: none; }
   body.hud-nolabels #hud .hudlogo { display: block; }
   #tmHide { margin-left: 10px; width: 20px; height: 20px; min-width: 0 !important; padding: 0 !important; border-radius: 50% !important; font-size: 13px; line-height: 1; vertical-align: middle; background: transparent !important; color: var(--muted) !important; border: 0 !important; }
   #tmShow { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 5; } #tmShow[hidden] { display: none; }
@@ -2485,6 +2485,24 @@ function censusBuild(key) {
 const DM = { name: null, obj: null, r: 0, pos: null, count: -1, byName: new Map() };
 const DM_TYPES = new Set(['galaxy', 'nebula', 'supernova_remnant', 'star_cluster', 'galaxy_cluster', 'black_hole', 'pulsar', 'neutron_star', 'white_dwarf', 'quasar', 'star', 'other']);
 const DM_DEFAULT_R = { nebula: 5 * pc, supernova_remnant: 12 * pc, star_cluster: 8 * pc, galaxy_cluster: 2 * Mpc, galaxy: 8 * kpc, black_hole: 3e4, neutron_star: 1.2e4, pulsar: 1.2e4, white_dwarf: 7e6, star: 7e8, quasar: 1e10, other: 7e7 };
+// Stars for a nebula: the catalogue has none inside the Eagle Nebula, but a real star-forming region is full of them. A young blue-white cluster sits in the nebula (NGC 6611 in the
+// Eagle: a few hundred stars, a handful of them very bright O stars), with a looser field of foreground and background stars around it. Deterministic from the name; drawn as
+// point-spread glows that scale with the nebula (children of its model), so they are in the same place at every zoom. These are illustrative, not catalogue stars.
+function nebulaStars(spec) {
+  let h = 2166136261; for (const ch of String(spec.name)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0; const R = () => { h = (Math.imul(h, 1664525) + 1013904223) >>> 0; return h / 4294967296; };
+  const snr = /remnant/.test(String(spec.type)), nClu = snr ? 60 : 380, nFld = snr ? 220 : 520, n = nClu + nFld;
+  const pos = new Float32Array(n * 3), col = new Float32Array(n * 3), size = new Float32Array(n), kind = new Float32Array(n);
+  const cx = (R() - 0.5) * 0.4, cy = (R() - 0.5) * 0.3, cz = (R() - 0.5) * 0.3, gauss = () => Math.sqrt(-2 * Math.log(1 - R())) * Math.cos(6.2832 * R());
+  for (let i = 0; i < n; i++) {
+    const clu = i < nClu, u = R(), mag = Math.pow(u, 5);   // few bright, many faint
+    if (clu) { pos[3 * i] = cx + 0.26 * gauss(); pos[3 * i + 1] = cy + 0.26 * gauss(); pos[3 * i + 2] = cz + 0.26 * gauss(); }
+    else { const z = 2 * R() - 1, th = 6.2832 * R(), r = 1.8 * Math.cbrt(R()), k = Math.sqrt(1 - z * z); pos[3 * i] = r * k * Math.cos(th); pos[3 * i + 1] = r * k * Math.sin(th); pos[3 * i + 2] = r * z; }
+    const c = clu ? (R() < 0.8 ? [0.7, 0.82, 1] : [0.95, 0.95, 1]) : (R() < 0.55 ? [1, 0.95, 0.85] : R() < 0.5 ? [0.8, 0.88, 1] : [1, 0.75, 0.55]), br = 0.45 + 0.55 * (mag > 0.15 ? 1 : R());
+    col.set([c[0] * br, c[1] * br, c[2] * br], 3 * i); size[i] = 3 + (clu ? 17 : 12) * mag; kind[i] = mag > 0.12 ? 1 : 0;
+  }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('aSize', new THREE.BufferAttribute(size, 1)); g.setAttribute('aColor', new THREE.BufferAttribute(col, 3)); g.setAttribute('aKind', new THREE.BufferAttribute(kind, 1));
+  const pts = new THREE.Points(g, CENSUS_SPRITE_MAT); pts.frustumCulled = false; pts.renderOrder = 5; return pts;
+}
 function updateDestModel(k) {
   const name = CENSUS.key ? null : (travel ? travel.name : lastDest && lastDest.name);
   if (name !== DM.name) {
@@ -2495,6 +2513,7 @@ function updateDestModel(k) {
       DM.r = o.radius_m > 0 ? o.radius_m : DM_DEFAULT_R[o.type] || 1e6; DM.pos = d.pos;
       DM.obj = createModel(THREE, { ...o, radius_m: DM.r, points: o.type === 'galaxy' ? 7000 : undefined, tilt: true, segments: 32 }); DM.obj.visible = false; CENSUS.group.add(DM.obj);
       DM.type = o.type; DM.style = censusStyle(o);
+      if (o.type === 'nebula' || o.type === 'supernova_remnant') DM.obj.add(nebulaStars(o));
       if (!DM.pts) { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(3), 3)); g.setAttribute('aSize', new THREE.BufferAttribute(new Float32Array(1), 1)); g.setAttribute('aColor', new THREE.BufferAttribute(new Float32Array(3), 3)); g.setAttribute('aKind', new THREE.BufferAttribute(new Float32Array(1), 1)); DM.pts = new THREE.Points(g, CENSUS_SPRITE_MAT); DM.pts.frustumCulled = false; CENSUS.group.add(DM.pts); }
       DM.pts.geometry.attributes.aColor.setXYZ(0, ...DM.style.c); DM.pts.geometry.attributes.aKind.setX(0, DM.style.k); DM.pts.geometry.attributes.aColor.needsUpdate = true; DM.pts.geometry.attributes.aKind.needsUpdate = true;
     }
