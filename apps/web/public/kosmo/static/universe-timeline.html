@@ -21,6 +21,11 @@
 
   #view { position: absolute; inset: 0; }
   #view canvas { display: block; outline: none; }
+  /* Feathered edges: the star map fades into the page ground at the top and left. */
+  #view::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
+    background:
+      linear-gradient(to bottom, var(--bg) 0, color-mix(in srgb, var(--bg) 60%, transparent) 70px, transparent 190px),
+      linear-gradient(to right, var(--bg) 0, color-mix(in srgb, var(--bg) 60%, transparent) 70px, transparent 190px); }
   #navbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(13,13,13,0.9), rgba(13,13,13,0)); }
   #menu { display: flex; gap: 20px; align-items: center; font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; letter-spacing: 0.18em; font-size: 12px; text-transform: uppercase; }
 
@@ -62,9 +67,9 @@
   .ev.now { background: rgba(255,255,255,0.08); } .ev.now .what { color: #fff; }
   /* Chronicle is a round button; the clock readout is its hover label. */
   .orbwrap { position: relative; display: flex; align-items: center; }
-  #drawerBtn.orb { width: 42px; height: 42px; margin: 0; padding: 0; border-radius: 50%; display: grid; place-items: center; background: rgba(26,26,26,0.85); border: 1px solid var(--line2, #303133); color: var(--text); cursor: pointer; transition: border-color .2s, color .2s, background .2s; }
-  #drawerBtn.orb:hover, #drawerBtn.orb:focus-visible { border-color: var(--accent); color: var(--accent); }
-  #drawerBtn.orb.open { border-color: var(--accent); color: var(--accent); background: rgba(26,26,26,0.95); }
+  button.orb { width: 42px; height: 42px; margin: 0; padding: 0; border-radius: 50%; display: grid; place-items: center; background: rgba(26,26,26,0.85); border: 1px solid var(--line2, #303133); color: var(--text); cursor: pointer; transition: border-color .2s, color .2s, background .2s; }
+  button.orb:hover, button.orb:focus-visible { border-color: var(--accent); color: var(--accent); }
+  button.orb.open { border-color: var(--accent); color: var(--accent); background: rgba(26,26,26,0.95); }
   #navTime { position: absolute; right: calc(100% + 10px); top: 50%; transform: translateY(-50%); white-space: nowrap; padding: 6px 12px; border-radius: 999px; background: rgba(26,26,26,0.92); border: 1px solid var(--line2, #303133); font-size: 12px; opacity: 0; pointer-events: none; transition: opacity .18s; }
   .orbwrap:hover #navTime, .orbwrap:focus-within #navTime { opacity: 1; }
   .tabs { display: flex; gap: 4px; padding: 6px 16px 0; } .tabs button { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 10px; } .tabs button.on { border-color: var(--accent); color: var(--accent); }
@@ -89,6 +94,10 @@
   .glass { background: transparent; border: 0; border-radius: var(--radius); text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
   #panel { position: absolute; left: 16px; top: 290px; bottom: 96px; width: 330px; z-index: 4; overflow: auto; padding: 8px 14px 14px; }
   #panel.collapsed { bottom: auto; height: 46px; overflow: hidden; }
+  /* Controls reveal as transparent text from the round button at the top-left. */
+  #panel { opacity: 0; pointer-events: none; transform: translateX(-14px); transition: opacity .25s ease, transform .25s ease; }
+  #panel.shown { opacity: 1; pointer-events: auto; transform: none; }
+  #panelBtn { position: fixed; top: 14px; left: 16px; z-index: 9; }
   #panel h2 { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
   details > summary { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; cursor: pointer; list-style: none; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 12px 0 6px; user-select: none; }
   details > summary::after { content: '▸'; color: var(--dim2); transition: color .12s, transform .12s; }
@@ -109,16 +118,20 @@
   .ok { color: var(--good); font-weight: 600; } .no { color: var(--bad); font-weight: 600; }
   a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
 
-  #nav { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 4; padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; width: min(760px, calc(100% - 420px)); }
+  /* Locations: the travel search and destination list live in a right-hand drawer (#destBtn opens it). */
+  #nav { position: absolute; top: 0; right: 0; bottom: 0; width: 400px; z-index: 7; transform: translateX(100%); transition: transform .28s ease; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: linear-gradient(90deg, rgba(13,13,13,0.7), rgba(13,13,13,0.96) 18%); border-left: 1px solid var(--line, #242527); border-radius: 0; text-shadow: none; }
+  #nav.open { transform: none; }
+  #nav .head h3 { margin: 0; font-weight: 500; font-size: 18px; color: #fff; }
+  #nav #catStatus { font-size: 12px; line-height: 1.4; }
   #nav .line { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  #nav input[type=text] { flex: 1; min-width: 180px; }
+  #nav input[type=text] { flex: 0 0 auto; min-width: 180px; }
   #nav input[type=number] { width: 92px; }
-  #results { display: flex; gap: 6px; flex-wrap: wrap; max-height: 74px; overflow: auto; }
+  #results { display: flex; gap: 6px; flex-wrap: wrap; align-content: flex-start; flex: 1; min-height: 0; overflow: auto; }
   #results button { font-size: 12px; padding: 3px 8px; }
   #results button small { color: var(--muted); margin-left: 4px; }
-  body.drawer-open #zoombar, body.drawer-open #scalebar, body.drawer-open #help { right: 418px; }
-  body.drawer-open #top { right: 400px; }
-  body.drawer-open #nav { width: min(640px, calc(100% - 800px)); left: calc(50% - 200px); }
+  body.drawer-open #zoombar, body.drawer-open #scalebar, body.drawer-open #help,
+  body.navdrawer-open #zoombar, body.navdrawer-open #scalebar, body.navdrawer-open #help { right: 418px; }
+  body.drawer-open #top, body.navdrawer-open #top { right: 400px; }
   #zoombar { position: absolute; right: 18px; top: 296px; bottom: 150px; width: 54px; z-index: 4; display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 8px; }
   #zoombar input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 4px; height: 100%; -webkit-appearance: slider-vertical; }
   #zoombar .tag { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
@@ -134,13 +147,13 @@
 <script type="importmap">
 { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/", "topojson-client": "https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm" } }
 </script>
-  <link rel="stylesheet" href="kosmographica.css?v=9">
+  <link rel="stylesheet" href="kosmographica.css?v=11">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>
 <body>
 <div id="view"></div>
-<div id="navbar"><div id="logo"><div class="mark"></div><div><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div></div><nav id="menu"><a href="universe-timeline.html" class="here">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span class="orbwrap"><span class="dim" id="navTime"></span><button id="drawerBtn" class="orb" type="button" title="Chronicle: vertical timeline and map" aria-label="Chronicle" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></button></span></div>
+<div id="navbar"><div id="logo"><div class="mark"></div><div><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div></div><nav id="menu"><a href="universe-timeline.html" class="here">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span class="orbwrap"><span class="dim" id="navTime"></span><button id="drawerBtn" class="orb" type="button" title="Chronicle: vertical timeline and map" aria-label="Chronicle" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></button><button id="destBtn" class="orb" type="button" title="Locations: travel to a destination" aria-label="Locations" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></button></span></div>
 <div id="top"><canvas id="timeline"></canvas><canvas id="minimap" title="Drag the window to pan the timeline"></canvas><div id="tl-handle" title="Show or hide the timeline"></div></div>
 <aside id="drawer">
   <div class="head"><h3 class="serif">Chronicle</h3><span class="dim" id="drawerWhen"></span></div>
@@ -154,6 +167,7 @@
 <div id="syslabels"></div>
 <div id="toast" class="glass"></div>
 
+<button id="panelBtn" class="orb" type="button" title="Controls" aria-label="Controls" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg></button>
 <div id="panel" class="glass">
   <h2 style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">Controls <button id="panel-toggle" style="font-size:11px;padding:2px 8px">hide</button></h2>
   <details open><summary>Timeline axis</summary>
@@ -218,18 +232,17 @@
   <p class="dim" style="margin:10px 0 0"><a href="contraption-sim.html">← back to the simulator</a></p>
 </div>
 
-<div id="nav" class="glass">
-  <div class="line">
-    <input type="text" id="search" placeholder="Travel to… (Proxima, Andromeda, Sgr A*, Jupiter, Crab Nebula)" autocomplete="off">
-    <span class="dim" id="catStatus">built-in destinations</span>
-  </div>
+<aside id="nav" class="glass" aria-label="Locations">
+  <div class="head"><h3>Locations</h3></div>
+  <input type="text" id="search" placeholder="Travel to… (Proxima, Andromeda, Sgr A*, Jupiter, Crab Nebula)" autocomplete="off">
+  <span class="dim" id="catStatus">built-in destinations</span>
   <div id="results"></div>
   <div class="line">
     <span class="dim">Galactic</span> <input type="number" id="cl" placeholder="l °" step="0.01"> <input type="number" id="cb" placeholder="b °" step="0.01"> <input type="number" id="cd" placeholder="dist pc" step="any">
     <button id="goCoord">Go</button>
     <span class="dim" id="where"></span>
   </div>
-</div>
+</aside>
 
 <div id="zoombar" class="glass"><span class="tag">out</span><input type="range" id="zoom" min="6.5" max="27" step="0.01" orient="vertical"><span class="tag">in</span></div>
 <div id="scalebar"><div id="scaletxt"></div><div class="bar" id="bar"></div><div class="dim" id="scalenote" style="font-size:11px;margin-top:3px"></div></div>
@@ -1021,9 +1034,16 @@ let land = null;   // GeoJSON land polygons (world-atlas 110m) once loaded; fals
 (async () => { try { const [{ feature }, topo] = await Promise.all([import('topojson-client'), fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/land-110m.json').then(r => r.json())]); land = feature(topo, topo.objects.land); } catch { land = false; } })();
 const mapC = $('map'), mapCtx = mapC.getContext('2d');
 const proj = (lat, lon, W, H) => [(lon + 180) / 360 * W, (90 - lat) / 180 * H];
-let drawerOpen = false, hoverEv = null;
-function toggleDrawer() { drawerOpen = !drawerOpen; $('drawer').classList.toggle('open', drawerOpen); document.body.classList.toggle('drawer-open', drawerOpen); $('drawerBtn').classList.toggle('open', drawerOpen); $('drawerBtn').setAttribute('aria-expanded', String(drawerOpen)); if (drawerOpen) buildList(); setTimeout(resize, 300); }
+let drawerOpen = false, navOpen = false, hoverEv = null;
+function toggleDrawer() { drawerOpen = !drawerOpen; if (drawerOpen && navOpen) setNavDrawer(false); $('drawer').classList.toggle('open', drawerOpen); document.body.classList.toggle('drawer-open', drawerOpen); $('drawerBtn').classList.toggle('open', drawerOpen); $('drawerBtn').setAttribute('aria-expanded', String(drawerOpen)); if (drawerOpen) buildList(); setTimeout(resize, 300); }
 $('drawerBtn').addEventListener('click', toggleDrawer);
+function setNavDrawer(open) {
+  navOpen = open; $('nav').classList.toggle('open', open); $('destBtn').classList.toggle('open', open);
+  $('destBtn').setAttribute('aria-expanded', String(open)); document.body.classList.toggle('navdrawer-open', open);
+  if (open) { if (drawerOpen) toggleDrawer(); setTimeout(() => $('search').focus(), 300); }
+  setTimeout(resize, 300);
+}
+$('destBtn').addEventListener('click', () => setNavDrawer(!navOpen));
 $('chips').innerHTML = CATS.map(c => `<button data-c="${c}" class="on" style="color:${CAT_COLOR[c]}">${c}</button>`).join('');
 $('chips').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { const c = b.dataset.c; catOn.has(c) ? catOn.delete(c) : catOn.add(c); b.classList.toggle('on', catOn.has(c)); buildList(); }));
 const cursorT = () => P.cosmoState(10 ** state.logA, tab).t;
@@ -1149,9 +1169,11 @@ dialC.addEventListener('wheel', e => { e.preventDefault(); dialTarget = clamp(Ma
 ALL_EVENTS.push(...folderIndex.flatMap(n => n.evs).filter(e => !ALL_EVENTS.some(x => x.label === e.label)));
 ALL_EVENTS.sort((a, b) => a.t - b.t);
 
-function toggleTimeline() { const c = $('top').classList.toggle('collapsed'); $('panel').style.top = c ? '84px' : '290px'; $('zoombar').style.top = c ? '90px' : '296px'; $('toast').style.top = c ? '84px' : '290px'; }
+function toggleTimeline() { const c = $('top').classList.toggle('collapsed'); $('panel').style.top = (c ? 84 : 290) - (document.documentElement.classList.contains('embedded') ? 58 : 0) + 'px'; $('zoombar').style.top = c ? '90px' : '296px'; $('toast').style.top = c ? '84px' : '290px'; }
 $('tl-handle').addEventListener('click', toggleTimeline);
-$('panel-toggle').addEventListener('click', () => { const c = $('panel').classList.toggle('collapsed'); $('panel-toggle').textContent = c ? 'show' : 'hide'; });
+function setPanel(open) { $('panel').classList.toggle('shown', open); $('panelBtn').classList.toggle('open', open); $('panelBtn').setAttribute('aria-expanded', String(open)); }
+$('panelBtn').addEventListener('click', () => setPanel(!$('panel').classList.contains('shown')));
+$('panel-toggle').addEventListener('click', () => setPanel(false));
 
 function resize() { const w = view.clientWidth, h = view.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); drawTimeline(); }
 window.addEventListener('resize', resize); resize();

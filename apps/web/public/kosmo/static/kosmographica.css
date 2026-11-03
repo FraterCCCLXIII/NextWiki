@@ -550,3 +550,11 @@ html.embedded body.drawer-open .orbwrap { right: 416px; }
 
 /* Internal look switch (kosmo-theme.js): "original" restores the atlas's navy-black grounds. */
 html[data-kosmo-bg="original"] { --bg: #05070d; --bg2: #101011; --panel: #141415; }
+
+/* Embedded timeline: two round buttons stack under each other; both shift left of whichever drawer is open. */
+html.embedded .orbwrap { flex-direction: column; gap: 10px; align-items: flex-end; }
+html.embedded #navTime { top: 21px; }
+html.embedded body.navdrawer-open .orbwrap { right: 416px; }
+
+/* Embedded timeline: the controls panel sits below the timeline strip, which now starts at the top. */
+html.embedded #panel { top: 232px; }

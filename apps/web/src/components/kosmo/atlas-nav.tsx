@@ -74,7 +74,7 @@ function NavGroupSection({ group }: { group: NavGroup }) {
       <ul
         id={panelId}
         hidden={!open}
-        className="m-0 mt-1 flex list-none flex-col gap-0.5 border-l border-kosmo-line pl-3"
+        className="m-0 mt-1 flex list-none flex-col gap-0.5 p-0"
       >
         {group.pages.map((page) => {
           const active = isActive(pathname, page);
@@ -83,7 +83,7 @@ function NavGroupSection({ group }: { group: NavGroup }) {
               <Link
                 href={page.href}
                 aria-current={active ? "page" : undefined}
-                className={`block rounded px-2 py-1 text-sm transition-colors ${
+                className={`-mx-2 block rounded px-2 py-1 text-sm transition-colors ${
                   active
                     ? "bg-kosmo-panel text-kosmo-mint"
                     : "text-kosmo-text hover:bg-kosmo-panel hover:text-kosmo-mint"
