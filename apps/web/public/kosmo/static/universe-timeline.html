@@ -621,6 +621,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import * as P from './sim-physics.js?v=20261029b';
 import { createModel, textures } from './kosmo-models.js';
+import { makeTiledCloud } from './cosmic-web.js';
 import * as SB from './scale-balance.js';
 import { HISTORY } from './history-taxonomy.js';
 fetch('textures/index.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => { if (j) for (const [k, v] of Object.entries(j)) textures.register(k, v); }).catch(() => {});
@@ -1066,30 +1067,49 @@ function pointCloud(n, fill, size, extra = {}) {
 }
 
 // Level 0: observable universe (centred on us), galaxies on a Zel'dovich web; grows with D(a).
-const web = P.makeZeldovichField(2.2, [[3, 0, 0], [0, 3, 0], [0, 0, 3], [2, 2, 0], [0, 2, 2], [2, 0, 2], [1, 1, 1], [3, 1, 2]], 3);
-function buildUniverse(n) {
-  const q = new Float32Array(n * 3);
-  for (let i = 0; i < n; i++) { let x, y, z; do { x = 2 * rnd() - 1; y = 2 * rnd() - 1; z = 2 * rnd() - 1; } while (x * x + y * y + z * z > 1); q[3 * i] = 0.5 + 0.5 * x; q[3 * i + 1] = 0.5 + 0.5 * y; q[3 * i + 2] = 0.5 + 0.5 * z; }
-  const pts = pointCloud(n, (i, pos, col) => { col[3 * i] = 0.75; col[3 * i + 1] = 0.8; col[3 * i + 2] = 1; }, 0.006);
-  pts.userData = { q, n, lastA: -1 };
-  return pts;
+// The cosmic web: a Gaussian random field with a CDM power spectrum, evolved with the Zel'dovich approximation (cosmic-web.js; built in a worker, about a
+// second of FFT work). A 512 Mpc/h box of it is tiled (each repeat turned a different way) out to the radius of each level. The statistics match surveys
+// (see tools/cosmic-web-study.mjs): xi(r) near (r/5.5 Mpc/h)^-1.8, sigma(8 Mpc/h) near 1, most of the volume in voids, mass in filaments and nodes. It is a
+// statistical twin of the real universe, not a map of it: positions of individual superclusters are not the real ones.
+const HUBBLE_H = 0.7, WEB = { data: null, worker: null, id: 0, status: 'idle', clouds: new Set(), params: { preset: 'random', seed: 7, smooth: 3, D: 1 } };
+const WEB_L = 512;
+function webBumps(preset) {   // constrained seeds in the box (Mpc/h; the observer sits at the box centre)
+  const c = WEB_L / 2;
+  if (preset === 'attractor') return [{ kind: 'blob', pos: [c + 130, c - 90, c + 60], amp: 7, sigma: 22 }, { kind: 'blob', pos: [c - 90, c + 70, c - 40], amp: 3, sigma: 18 }];   // a Shapley / Great Attractor-like mass concentration
+  if (preset === 'wall') return [{ kind: 'wall', pos: [c + 150, c, c], amp: 5, sigma: 7, axis: 0, extent: 160 }];                                                       // a Great Wall-like sheet, hundreds of Mpc across
+  if (preset === 'voids') return [[c + 120, c, c], [c - 110, c + 90, c], [c, c - 130, c + 80], [c - 40, c + 20, c - 140], [c + 60, c + 110, c - 90]].map(pos => ({ kind: 'blob', pos, amp: -2.6, sigma: 30 }));
+  return [];
 }
+function requestWeb(params = WEB.params) {
+  Object.assign(WEB.params, params);
+  if (!WEB.worker) { try { WEB.worker = new Worker('./cosmic-web-worker.js', { type: 'module' }); WEB.worker.onmessage = e => { if (e.data.id !== WEB.id) return; WEB.data = e.data; WEB.status = 'ready'; for (const c of WEB.clouds) { c.userData.tc = null; c.userData.lastA = -1; } $('webStatus') && ($('webStatus').textContent = `ready · seed ${WEB.params.seed} · ${WEB.params.preset}`); }; WEB.worker.onerror = () => { WEB.status = 'error'; $('webStatus') && ($('webStatus').textContent = 'could not start the web worker'); }; } catch { WEB.status = 'error'; return; } }
+  WEB.status = 'building'; $('webStatus') && ($('webStatus').textContent = 'generating the web (about a second)…');
+  WEB.worker.postMessage({ id: ++WEB.id, N: 64, L: WEB_L, seed: WEB.params.seed, smooth: WEB.params.smooth, D: 1, bumps: webBumps(WEB.params.preset) });
+}
+setTimeout(() => requestWeb(), 600);   // after the first frames, so nothing waits on it
+function webCloud(n, rMpc, opacity) {   // a point cloud that fills itself from the web once it is built
+  const pts = pointCloud(n, (i, pos, col) => { col[3 * i] = 0.75; col[3 * i + 1] = 0.8; col[3 * i + 2] = 1; }, 0.0028);   // fine points: the web reads by density, not by overlap
+  pts.userData = { n, rMpcH: rMpc * HUBBLE_H, tc: null, lastA: -1, opacity }; WEB.clouds.add(pts); return pts;
+}
+function fillWebCloud(pts, D) {   // positions for growth D (1 = today), in units of the cloud's own radius
+  const u = pts.userData; if (!WEB.data) return false;
+  if (!u.tc) u.tc = makeTiledCloud(WEB.data, { n: u.n, R: u.rMpcH, seed: 11 + u.n % 97, bias: u.rMpcH < 2000 ? 0.9 : 0.4 });
+  const pos = pts.geometry.attributes.position.array, col = pts.geometry.attributes.color.array, sc = 1 / u.rMpcH;
+  u.tc.eval(D, pos, col); for (let i = 0, m = u.tc.n * 3; i < m; i++) pos[i] *= sc;
+  pts.geometry.userData.n = u.tc.n; pts.geometry.setDrawRange(0, Math.floor(u.tc.n * Math.min(1, Math.max(0.05, quality.applied > 0 ? quality.applied : 1))));   // only the points the sampler placed
+  pts.geometry.attributes.position.needsUpdate = true; pts.geometry.attributes.color.needsUpdate = true; return true;
+}
+// Level 0: observable universe (centred on us); the web tiled out to the Hubble radius, growing with D(a). At these scales it is nearly homogeneous, as the real one is.
+function buildUniverse(n) { return webCloud(n, CHI0 / Mpc, 0.9); }
 function updateUniverse(pts, a) {
   if (Math.abs(pts.userData.lastA - a) < 1e-6 * a) return;
-  pts.userData.lastA = a;
   const s = P.cosmoState(a, tab), D = s.D / P.cosmoState(1, tab).D;
-  const { q, n } = pts.userData, pos = pts.geometry.attributes.position.array, col = pts.geometry.attributes.color.array;
-  const qv = { x: 0, y: 0, z: 0 }, o = { x: 0, y: 0, z: 0, density: 1, deltaLin: 0 };
-  for (let i = 0; i < n; i++) {
-    qv.x = q[3 * i]; qv.y = q[3 * i + 1]; qv.z = q[3 * i + 2];
-    P.zeldovichDisplace(qv, D, web, o);
-    pos[3 * i] = (o.x - 0.5) * 2; pos[3 * i + 1] = (o.y - 0.5) * 2; pos[3 * i + 2] = (o.z - 0.5) * 2;
-    const w = clamp(Math.log10(Number.isFinite(o.density) ? o.density : 1e3) / 2 + 0.5, 0, 1);
-    col[3 * i] = 0.5 + 0.5 * w; col[3 * i + 1] = 0.6 + 0.3 * w; col[3 * i + 2] = 1 - 0.5 * w;
-  }
-  pts.geometry.attributes.position.needsUpdate = true; pts.geometry.attributes.color.needsUpdate = true;
-  pts.material.opacity = clamp((s.D - 0.03) / 0.1, 0, 0.9);
+  if (!fillWebCloud(pts, D)) return;
+  pts.userData.lastA = a; pts.material.opacity = clamp((s.D - 0.03) / 0.1, 0, 0.6);
 }
+// Level 0.5: the local web, 300 Mpc around us (z up to 0.07) (what the 2MASS / SDSS maps show): filaments, nodes and voids you can fly through.
+function buildWebLevel(n) { return webCloud(n, 300, 0.9); }
+function updateWebLevel(pts) { if (pts.userData.tc && pts.userData.lastA === 1) return; if (fillWebCloud(pts, 1)) pts.userData.lastA = 1; }
 // Virgo-like cluster at its real place (M87: l 283.8°, b 74.5°, 16.5 Mpc)
 const CL = { R: 1.6 * Mpc, nGal: 1500, pos: gal(283.78, 74.49, 16.5 * Mpc) };
 function buildCluster(n) {
@@ -1202,6 +1222,7 @@ function updateEarth(g) {   // the same shown positions and radii as the Solar l
 
 const LEVELS = [
   { key: 'universe', cosmic: true, name: 'Observable universe', unit: CHI0, width: 2 * CHI0, centre: SUN, build: () => buildUniverse(state.resU * 1000), count: () => COUNTS.galaxies, what: 'galaxies', comoving: true },
+  { key: 'web', cosmic: true, name: 'Cosmic web (local universe, 300 Mpc)', unit: 300 * Mpc, width: 600 * Mpc, centre: SUN, build: () => buildWebLevel(state.resU * 1700), count: () => 4e6, what: 'galaxies (statistical web, not the real positions)', update: o => updateWebLevel(o) },
   { key: 'cluster', cosmic: true, name: 'Virgo cluster', unit: CL.R, width: 2 * CL.R, centre: CL.pos, build: () => buildCluster(state.resC * 1000), count: () => CL.nGal, what: 'galaxies (+ hot gas)' },
   { key: 'galaxy', name: 'Milky Way', unit: GAL.R, width: 2 * GAL.R, centre: [0, 0, 0], build: () => buildGalaxy(state.resG * 1000), count: () => GAL.stars, what: 'stars' },
   { key: 'stars', name: 'Solar neighbourhood (50 pc)', unit: NB.R, width: 2 * NB.R, centre: SUN, build: () => buildStars(state.resS * 1000), count: () => NB.density * 4 / 3 * Math.PI * NB.R ** 3, what: 'stars' },
@@ -1435,7 +1456,7 @@ function pickPoint(mx, my) {
   const W = view.clientWidth, H = view.clientHeight, cand = [], R2 = 44 * 44; let best = null, bd = R2;
   scene.traverse(o => {
     if (!o.isPoints || !o.geometry.attributes.position) return; for (let v = o; v; v = v.parent) if (!v.visible) return;
-    const pos = o.geometry.attributes.position, a = pos.array, n = pos.count; if (n > 600000) return;
+    const pos = o.geometry.attributes.position, a = pos.array, n = Math.min(pos.count, o.geometry.drawRange.count); if (n > 600000) return;
     o.updateWorldMatrix(true, false); _pm.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse).multiply(o.matrixWorld); const e = _pm.elements;
     const cu = state.cosK !== 1 && o.material.userData.cosU && o.material.userData.cosU.unit.value > 0 ? o.material.userData.cosU : null;
     for (let i = 0; i < n; i++) {
@@ -2303,12 +2324,12 @@ $('skyOff').addEventListener('click', () => { state.skyK = 1; state.skyB = 1; sy
 document.querySelectorAll('button[data-sky]').forEach(b => b.addEventListener('click', () => { const [g, be] = b.dataset.sky.split(',').map(Number); state.skyK = g; state.skyB = be; sync('skyK', 2); sync('skyB', 2); goSky(); }));
 // Vertical distortion sliders <-> state <-> the Controls panel's own sliders. Size is logarithmic so x1..x63 feels even.
 function syncScaleBars() {
-  $('vDist').value = state.distK; $('vDist-v').textContent = `γ ${state.distK.toFixed(2)}`;
-  $('vSize').value = Math.log10(state.sizeMul); $('vSize-v').textContent = `×${state.sizeMul < 10 ? state.sizeMul.toFixed(1) : state.sizeMul.toFixed(0)}`;
-  $('vBal').value = state.sizeK; $('vBal-v').textContent = `β ${state.sizeK.toFixed(2)}`;
-  $('vCos').value = state.cosK; $('vCos-v').textContent = `κ ${state.cosK.toFixed(2)}`; fxUCosK.value = state.cosK;
+  if (document.activeElement !== $('vDist')) $('vDist').value = state.distK; $('vDist-v').textContent = `γ ${state.distK.toFixed(2)}`;
+  if (document.activeElement !== $('vSize')) $('vSize').value = Math.log10(state.sizeMul); $('vSize-v').textContent = `×${state.sizeMul < 10 ? state.sizeMul.toFixed(1) : state.sizeMul.toFixed(0)}`;
+  if (document.activeElement !== $('vBal')) $('vBal').value = state.sizeK; $('vBal-v').textContent = `β ${state.sizeK.toFixed(2)}`;
+  if (document.activeElement !== $('vCos')) $('vCos').value = state.cosK; $('vCos-v').textContent = `κ ${state.cosK.toFixed(2)}`; fxUCosK.value = state.cosK;
 }
-$('vCos').addEventListener('input', e => { let v = parseFloat(e.target.value); if (Math.abs(v - 1) < 0.03) v = 1; state.cosK = v; hoverSnap = null; syncScaleBars(); });
+$('vCos').addEventListener('input', e => { let v = parseFloat(e.target.value); if (Math.abs(v - 1) < 0.012) v = 1; state.cosK = v; hoverSnap = null; syncScaleBars(); });
 $('vDist').addEventListener('input', e => { state.distK = state.skyK = parseFloat(e.target.value); sync('distK', 2); sync('skyK', 2); syncScaleBars(); });
 $('vSize').addEventListener('input', e => { state.sizeMul = Math.max(1, Math.round(10 ** parseFloat(e.target.value) * 2) / 2); sync('sizeMul', 1); syncScaleBars(); fxApply(false); });
 $('vBal').addEventListener('input', e => { state.sizeK = state.skyB = parseFloat(e.target.value); sync('sizeK', 2); sync('skyB', 2); syncScaleBars(); });
@@ -2578,9 +2599,29 @@ window.addEventListener('resize', resize); resize();
 
 const t0 = performance.now();
 let last = performance.now(), frame = 0;
+// ---- adaptive detail: the big point maps cost time in proportion to how many points are drawn. If frames run long, draw a thinning random share of
+// every cloud (they are stored in random order, so it stays an even sample); win the points back when there is headroom. Dragging a lever
+// or the timeline briefly drops detail further so the control stays glued to the pointer. ----
+const quality = { q: 1, ema: 16, cool: 0, burstUntil: 0, applied: -1 };
+function applyQuality(q) {
+  quality.applied = q;
+  scene.traverse(o => { if (!o.isPoints || !o.geometry.attributes.position) return; const g = o.geometry; g.userData.n ||= g.attributes.position.count; g.setDrawRange(0, Math.max(1000, Math.floor(g.userData.n * q))); });
+}
+function adaptQuality(ms, now) {
+  quality.ema += (Math.min(ms, 200) - quality.ema) * 0.06; quality.cool -= ms;
+  if (quality.cool <= 0) {
+    if (quality.ema > 23 && quality.q > 0.25) { quality.q = Math.max(0.25, quality.q * 0.82); quality.cool = 400; }
+    else if (quality.ema < 14.5 && quality.q < 1) { quality.q = Math.min(1, quality.q * 1.08); quality.cool = 700; }
+  }
+  const eff = now < quality.burstUntil ? Math.min(quality.q, 0.45) : quality.q;
+  if (Math.abs(eff - quality.applied) > 0.02 || (eff === 1 && quality.applied !== 1)) applyQuality(eff);
+}
+const burstDetail = (ms = 450) => { quality.burstUntil = performance.now() + ms; };
+document.addEventListener('input', e => { if (e.target.matches && e.target.matches('#scalebars input, #zoom, #navSpeed')) burstDetail(); }, true);
 let tlLastSig = '';
 function animate(now) {
   requestAnimationFrame(animate);
+  try { adaptQuality(now - last, now); quality.frames = (quality.frames || 0) + 1; } catch (err) { quality.error = String(err); }
   const dt = Math.min((now - last) / 1000, 0.05); last = now; fxUTime.value = now / 1000; fxURef.value = camera.position.length();
   if (state.play) { state.logA = Math.min(0, state.logA + state.speed * dt); sync('logA', 2); if (state.logA >= 0) { state.play = false; $('play').checked = false; } }
   if (!state.pause) clock.jd += (state.dir || 1) * dt * 10 ** state.rate / 86400;
@@ -2604,7 +2645,7 @@ function animate(now) {
   renderer.render(scene, camera);
 }
 requestAnimationFrame(animate);
-window.kosmo = { drawCube, drawTimeline, drawMinimap, updateHover, updateDrawer, stepDial, get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
+window.kosmo = { quality, drawCube, drawTimeline, drawMinimap, updateHover, updateDrawer, stepDial, get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
 </script>
 </body>
 </html>
