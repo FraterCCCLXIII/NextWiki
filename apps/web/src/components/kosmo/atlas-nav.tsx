@@ -3,17 +3,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { LogoOrb } from "@repo/ui";
 
-type NavPage = { href: string; label: string };
+type NavPage = { href: string; label: string; prefix?: string };
 type NavGroup = { name: string; pages: NavPage[] };
 
 const GROUPS: NavGroup[] = [
   {
     name: "Atlas",
     pages: [
-      { href: "/kosmo", label: "Kosmographica" },
-      { href: "/kosmo/tools/timeline", label: "Timeline" },
+      { href: "/kosmo", label: "Overview" },
+      { href: "/kosmo/tools/timeline", label: "Kosmographica" },
       { href: "/kosmo/pedia", label: "Kosmopedia" },
     ],
   },
@@ -37,16 +36,22 @@ const GROUPS: NavGroup[] = [
       { href: "/kosmo/tools/contraption", label: "Simulator" },
     ],
   },
+  {
+    name: "Lab",
+    pages: [{ href: "/kosmo/tools/oracle", label: "Oracle", prefix: "/kosmo/tools/oracle" }],
+  },
 ];
 
-function isActive(pathname: string, href: string) {
+function isActive(pathname: string, page: NavPage) {
+  const { href, prefix } = page;
   if (href === "/kosmo") return pathname === "/kosmo";
+  if (prefix) return pathname.startsWith(prefix);
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
 function NavGroupSection({ group }: { group: NavGroup }) {
   const pathname = usePathname() ?? "";
-  const hasActive = group.pages.some((p) => isActive(pathname, p.href));
+  const hasActive = group.pages.some((p) => isActive(pathname, p));
   const [open, setOpen] = useState(true);
   const panelId = `kosmo-nav-${group.name.toLowerCase()}`;
 
@@ -72,7 +77,7 @@ function NavGroupSection({ group }: { group: NavGroup }) {
         className="m-0 mt-1 flex list-none flex-col gap-0.5 border-l border-kosmo-line pl-3"
       >
         {group.pages.map((page) => {
-          const active = isActive(pathname, page.href);
+          const active = isActive(pathname, page);
           return (
             <li key={page.href}>
               <Link
@@ -100,13 +105,6 @@ export function AtlasNav() {
       aria-label="Atlas"
       className="w-full border-b border-kosmo-line bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-4rem)] md:w-60 md:shrink-0 md:overflow-y-auto md:border-b-0 md:border-r"
     >
-      <Link href="/kosmo" className="mb-5 flex items-center gap-2 text-kosmo-text">
-        <LogoOrb />
-        <span className="flex flex-col leading-tight">
-          <span className="text-xs font-semibold tracking-[0.22em] uppercase">Kosmographica</span>
-          <span className="text-[10px] text-kosmo-dim">a map of everything, to scale</span>
-        </span>
-      </Link>
       {GROUPS.map((group) => (
         <NavGroupSection key={group.name} group={group} />
       ))}

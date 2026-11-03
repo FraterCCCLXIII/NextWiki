@@ -16,7 +16,8 @@ export default async function KosmoToolPage({ params }: ToolPageProps) {
   if (!src) notFound();
 
   return (
-    <div className="flex min-h-[80vh] w-full flex-col">
+    // Full-bleed: cancel the kosmo layout's padding and fill the space under the 4rem site header.
+    <div className="-m-4 h-[calc(100vh-4rem)] md:-m-8">
       <EmbedFrame src={src} title={KOSMO_TOOLS[tool]!.title} />
     </div>
   );

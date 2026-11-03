@@ -184,7 +184,7 @@ export function createModel(THREE, spec = {}) {
   group.userData = { kind, spec };
   const tickers = [], disposables = [];
   const C = (r, g, b) => new THREE.Color(r, g, b);
-  const sphere = (segments = spec.segments || 64) => {   // spec.segments lowers the mesh detail for scenes with many bodies const g = new THREE.SphereGeometry(1, segments, segments / 2); disposables.push(g); return g; };
+  const sphere = (segments = spec.segments || 64) => { const g = new THREE.SphereGeometry(1, segments, segments / 2); disposables.push(g); return g; };   // spec.segments lowers the mesh detail for scenes with many bodies
   const addSprite = (size, color, color2, shape, soft = 2.5, alpha = 1, depthWrite = false) => {
     const g = new THREE.PlaneGeometry(size, size), m = new THREE.ShaderMaterial({ vertexShader: SPRITE_VERT, fragmentShader: SPRITE_FRAG, transparent: true, depthWrite, blending: THREE.AdditiveBlending, uniforms: { uColor: { value: color }, uColor2: { value: color2 }, uShape: { value: shape }, uTime: { value: 0 }, uSeed: { value: seed }, uSoft: { value: soft }, uAlpha: { value: alpha } } });
     const s = new THREE.Mesh(g, m); s.onBeforeRender = (r, sc, cam) => { s.quaternion.copy(cam.quaternion); }; group.add(s); disposables.push(g, m); tickers.push(t => { m.uniforms.uTime.value = t; }); return s;

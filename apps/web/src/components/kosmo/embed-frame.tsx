@@ -8,25 +8,25 @@ interface EmbedFrameProps {
 }
 
 /**
- * Full-width iframe for a static Kosmographica tool, with a loading skeleton.
+ * Iframe for a static Kosmographica page that fills whatever container it is
+ * given (the tool route sizes that to the space below the site header).
  */
 export function EmbedFrame({ src, title }: EmbedFrameProps) {
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <div className="relative min-h-[80vh] w-full">
+    <div className="relative h-full w-full">
       {!loaded && (
         <div
           aria-hidden="true"
-          className="absolute inset-0 animate-pulse rounded-md bg-kosmo-bg/60"
+          className="absolute inset-0 animate-pulse bg-kosmo-bg"
         />
       )}
       <iframe
         src={src}
         title={title}
-        loading="lazy"
         onLoad={() => setLoaded(true)}
-        className="h-full min-h-[80vh] w-full border-0"
+        className="absolute inset-0 h-full w-full border-0"
       />
     </div>
   );
