@@ -800,6 +800,7 @@ const TICK_SET = (() => {
 function fmtYears(y) { return y >= 1e9 ? `${+(y / 1e9).toPrecision(3)} Gyr` : y >= 1e6 ? `${+(y / 1e6).toPrecision(3)} Myr` : y >= 1e3 ? `${+(y / 1e3).toPrecision(3)} kyr` : `${+y.toPrecision(3)} yr`; }
 const nearNow = t => Math.abs(t - AGE) < 0.9 * AGE ? (t < AGE ? `${fmtYears((AGE - t) / yr)} ago` : t === AGE ? 'now' : `+${fmtYears((t - AGE) / yr)}`) : P.fmtTime(t);
 const tEq = P.cosmoState(tab.p.aEq, tab).t, tL = P.cosmoState(tab.p.aLambda, tab).t;
+const curveCache = { key: '', pts: [] };
 function drawTimeline() {
   if ($('top').classList.contains('collapsed')) return;
   const W = cv.clientWidth, H = cv.clientHeight, dpr = devicePixelRatio || 1;
@@ -815,12 +816,20 @@ function drawTimeline() {
     ctx.fillStyle = '#9fb0c8'; if (vis1 - vis0 > 90) ctx.fillText(name, vis0 + 6, padT + 13);
   }
   const yOf = v => padT + ph * (1 - (Math.log10(v) + 16) / 32);
-  const curve = (fn, col) => {
+  // the three curves share one set of samples (one cosmoState per column, not three), kept while the view and width stay put, and drawn
+  // coarser while a drag or pinch is in progress so the view follows the fingers
+  const busy = !!(tlPinch || (tlDrag && tlDrag.moved)), step = busy ? 5 : 2, ck = `${tlView.x0}|${tlView.x1}|${pw}|${step}`;
+  if (curveCache.key !== ck) {
+    const pts = [];
+    for (let i = 0; i <= pw; i += step) { const s = P.cosmoState(aAtTime(tOfX(tlView.x0 + (tlView.x1 - tlView.x0) * i / pw)), tab); pts.push([i, s.T, s.a, s.rhoM / s.rho]); }
+    curveCache.key = ck; curveCache.pts = pts;
+  }
+  const curve = (idx, col) => {
     ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.beginPath();
-    for (let i = 0; i <= pw; i += 2) { const s = P.cosmoState(aAtTime(tOfX(tlView.x0 + (tlView.x1 - tlView.x0) * i / pw)), tab), y = yOf(Math.max(1e-16, Math.min(1e16, fn(s)))); i === 0 ? ctx.moveTo(padL + i, y) : ctx.lineTo(padL + i, y); }
+    curveCache.pts.forEach((q, n) => { const y = yOf(Math.max(1e-16, Math.min(1e16, q[idx]))); n === 0 ? ctx.moveTo(padL + q[0], y) : ctx.lineTo(padL + q[0], y); });
     ctx.stroke();
   };
-  curve(s => s.T, '#ffb86b'); curve(s => s.a, '#7fc3ff'); curve(s => s.rhoM / s.rho, '#9fe39f');
+  curve(1, '#ffb86b'); curve(2, '#7fc3ff'); curve(3, '#9fe39f');
   ctx.fillStyle = '#7d8ea8'; ctx.textAlign = 'right';
   for (const e of [-16, -8, 0, 8, 16]) { const y = yOf(10 ** e); ctx.fillText(`1e${e}`, padL - 6, y + 4); ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + pw, y); ctx.stroke(); }
   ctx.textAlign = 'left';
@@ -2344,6 +2353,7 @@ window.addEventListener('resize', resize); resize();
 
 const t0 = performance.now();
 let last = performance.now(), frame = 0;
+let tlLastSig = '';
 function animate(now) {
   requestAnimationFrame(animate);
   const dt = Math.min((now - last) / 1000, 0.05); last = now; fxUTime.value = now / 1000; fxURef.value = camera.position.length();
@@ -2357,7 +2367,9 @@ function animate(now) {
   // look around instead of orbit: undo the camera's movement by moving the focus the opposite way
   if (camBefore) moveFocusScene(camBefore.sub(camera.position).divideScalar(2 / 10 ** state.zoom));
   updateScene();
-  if (frame % 2 === 0) { if (frame % 8 === 0 || state.play || travel) drawTimeline(); drawMinimap(); drawCube(); }
+  const tlSig = `${tlView.x0}|${tlView.x1}|${state.logA}`;
+  if (tlSig !== tlLastSig || frame % 12 === 0 || state.play || travel) { tlLastSig = tlSig; drawTimeline(); }   // redraw the moment the view or the cursor moves, so pinch and pan track the fingers
+  if (frame % 2 === 0) { drawMinimap(); drawCube(); }
   if (frame % 10 === 0) updateDrawer();
   if (frame % 3 === 0) updateHover();
   if (frame % 15 === 0 && fxCompactNow() !== fxCompact) { fxCompact = fxCompactNow(); fxApply(false); }
