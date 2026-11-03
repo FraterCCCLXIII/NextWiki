@@ -24,6 +24,51 @@
   --color-scrollbar-track: var(--color-light-scrollbar-track);
   --color-scrollbar-thumb: var(--color-light-scrollbar-thumb);
 
+  /* Kosmographica palette (from kosmographica.css) */
+  --color-kosmo-bg: #0c0c0d;
+  --color-kosmo-bg2: #101011;
+  --color-kosmo-panel: #141415;
+  --color-kosmo-line: #242527;
+  --color-kosmo-line2: #303133;
+  --color-kosmo-text: #e8e8e6;
+  --color-kosmo-dim: #8d8e91;
+  --color-kosmo-dim2: #67686b;
+  --color-kosmo-mint: #a9c0b4;
+  --color-kosmo-blue: #8aa4be;
+  --color-kosmo-amber: #c4a373;
+  --color-kosmo-red: #c28181;
+  --color-kosmo-violet: #a396b3;
+  --font-kosmo-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  --font-kosmo-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  --animate-orb-spin: orb-spin 9s linear infinite;
+  --animate-orb-bounce: orb-bounce 5s ease-in-out infinite;
+  --animate-orb-halo: orb-halo 5s ease-in-out infinite;
+  @keyframes orb-spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes orb-bounce {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.85; }
+  }
+  @keyframes orb-halo {
+    0%, 100% {
+      box-shadow:
+        inset 0 0 3px rgba(255,255,255,.40),
+        0 0 0 1px rgba(220,255,245,.22),
+        0 0 9px rgba(150,240,205,.38),
+        0 0 22px rgba(110,220,180,.18),
+        0 0 44px rgba(80,190,160,.08);
+    }
+    50% {
+      box-shadow:
+        inset 0 0 4px rgba(255,255,255,.60),
+        0 0 0 1px rgba(238,255,250,.46),
+        0 0 16px rgba(180,255,225,.75),
+        0 0 38px rgba(120,240,195,.42),
+        0 0 78px rgba(90,210,170,.22);
+    }
+  }
+
   /* Light mode theme variables */
   --color-light-background-default: #ffffff;
   --color-light-background-paper: #f8f9fa;

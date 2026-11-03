@@ -1,0 +1,241 @@
+[
+ {
+  "title": "Mao Zedong",
+  "target": "Mao Zedong",
+  "categories": [
+   "Category:Anti-fascists"
+  ],
+  "from": [
+   "philosophy.json:/Chinese philosophy/Modern Chinese thought/Mao Zedong"
+  ]
+ },
+ {
+  "title": "Abraham Joshua Heschel",
+  "target": "Abraham Joshua Heschel",
+  "categories": [
+   "Category:Emigrants from Nazi Germany to the United States",
+   "Category:Jewish emigrants from Nazi Germany to the United States"
+  ],
+  "from": [
+   "philosophy.json:/Jewish philosophy/Modern Jewish philosophy/Abraham Joshua Heschel"
+  ]
+ },
+ {
+  "title": "Hannah Arendt",
+  "target": "Hannah Arendt",
+  "categories": [
+   "Category:American Ashkenazi Jews",
+   "Category:Emigrants from Nazi Germany to the United States",
+   "Category:German Ashkenazi Jews",
+   "Category:Jewish emigrants from Nazi Germany to the United States",
+   "Category:Scholars of antisemitism"
+  ],
+  "from": [
+   "philosophy.json:/Jewish philosophy/Modern Jewish philosophy/Hannah Arendt",
+   "philosophy.json:/Philosophical branches and problems/Political philosophy/Hannah Arendt (political)",
+   "philosophy.json:/Twentieth-century and contemporary philosophy/Phenomenology/Hannah Arendt (phenomenology)"
+  ]
+ },
+ {
+  "title": "Immanuel Kant",
+  "target": "Immanuel Kant",
+  "categories": [
+   "Category:German white supremacists"
+  ],
+  "from": [
+   "philosophy.json:/Renaissance and early modern philosophy/Kant"
+  ]
+ },
+ {
+  "title": "Mikhail Bakunin",
+  "target": "Mikhail Bakunin",
+  "categories": [
+   "Category:Antisemitism in the Russian Empire",
+   "Category:Left-wing antisemitism"
+  ],
+  "from": [
+   "philosophy.json:/Nineteenth-century philosophy/Social and political thought/Mikhail Bakunin"
+  ]
+ },
+ {
+  "title": "Peter Kropotkin",
+  "target": "Peter Kropotkin",
+  "categories": [
+   "Category:Russian anti-fascists"
+  ],
+  "from": [
+   "philosophy.json:/Nineteenth-century philosophy/Social and political thought/Peter Kropotkin"
+  ]
+ },
+ {
+  "title": "Edith Stein",
+  "target": "Edith Stein",
+  "categories": [
+   "Category:Catholic saints and blesseds of the Nazi era",
+   "Category:People killed by gas chamber by Nazi Germany"
+  ],
+  "from": [
+   "philosophy.json:/Twentieth-century and contemporary philosophy/Phenomenology/Edith Stein"
+  ]
+ },
+ {
+  "title": "Martin Heidegger",
+  "target": "Martin Heidegger",
+  "categories": [
+   "Category:Antisemitism in Germany",
+   "Category:German fascists",
+   "Category:Nazi Party members"
+  ],
+  "from": [
+   "philosophy.json:/Twentieth-century and contemporary philosophy/Phenomenology/Martin Heidegger"
+  ]
+ },
+ {
+  "title": "Jean-Paul Sartre",
+  "target": "Jean-Paul Sartre",
+  "categories": [
+   "Category:Scholars of antisemitism"
+  ],
+  "from": [
+   "philosophy.json:/Twentieth-century and contemporary philosophy/Existentialism/Jean-Paul Sartre"
+  ]
+ },
+ {
+  "title": "Albert Camus",
+  "target": "Albert Camus",
+  "categories": [
+   "Category:French anti-fascists"
+  ],
+  "from": [
+   "philosophy.json:/Twentieth-century and contemporary philosophy/Existentialism/Albert Camus"
+  ]
+ },
+ {
+  "title": "Bertrand Russell",
+  "target": "Bertrand Russell",
+  "categories": [
+   "Category:British anti-fascists"
+  ],
+  "from": [
+   "philosophy.json:/Twentieth-century and contemporary philosophy/Analytic philosophy/Bertrand Russell"
+  ]
+ },
+ {
+  "title": "Rudolf Carnap",
+  "target": "Rudolf Carnap",
+  "categories": [
+   "Category:Emigrants from Nazi Germany to the United States"
+  ],
+  "from": [
+   "philosophy.json:/Twentieth-century and contemporary philosophy/Analytic philosophy/Rudolf Carnap"
+  ]
+ },
+ {
+  "title": "Otto Neurath",
+  "target": "Otto Neurath",
+  "categories": [
+   "Category:Jews who immigrated to the United Kingdom to escape Nazism"
+  ],
+  "from": [
+   "philosophy.json:/Twentieth-century and contemporary philosophy/Analytic philosophy/Otto Neurath"
+  ]
+ },
+ {
+  "title": "Max Horkheimer",
+  "target": "Max Horkheimer",
+  "categories": [
+   "Category:American anti-fascists",
+   "Category:Emigrants from Nazi Germany to the United States",
+   "Category:German anti-fascists",
+   "Category:Jewish anti-fascists",
+   "Category:Jewish emigrants from Nazi Germany to the United States"
+  ],
+  "from": [
+   "philosophy.json:/Twentieth-century and contemporary philosophy/Critical theory and the Frankfurt School/Max Horkheimer"
+  ]
+ },
+ {
+  "title": "Gilles Deleuze",
+  "target": "Gilles Deleuze",
+  "categories": [
+   "Category:French anti-fascists"
+  ],
+  "from": [
+   "philosophy.json:/Twentieth-century and contemporary philosophy/Structuralism and post-structuralism/Gilles Deleuze"
+  ]
+ },
+ {
+  "title": "Jan Smuts",
+  "target": "Jan Smuts",
+  "categories": [
+   "Category:South African anti-fascists"
+  ],
+  "from": [
+   "philosophy.json:/Integral and developmental thought/Evolutionary spirituality/Jan Smuts (holism)",
+   "philosophy.json:/Twentieth-century and contemporary philosophy/Process philosophy/Jan Smuts"
+  ]
+ },
+ {
+  "title": "Judith Butler",
+  "target": "Judith Butler",
+  "categories": [
+   "Category:American Ashkenazi Jews"
+  ],
+  "from": [
+   "philosophy.json:/Twentieth-century and contemporary philosophy/Feminist philosophy/Judith Butler"
+  ]
+ },
+ {
+  "title": "Jorge Luis Borges",
+  "target": "Jorge Luis Borges",
+  "categories": [
+   "Category:Argentine anti-fascists"
+  ],
+  "from": [
+   "philosophy.json:/Twentieth-century and contemporary philosophy/Latin American philosophy/Jorge Luis Borges"
+  ]
+ },
+ {
+  "title": "Alan Turing",
+  "target": "Alan Turing",
+  "categories": [
+   "Category:British anti-fascists"
+  ],
+  "from": [
+   "philosophy.json:/Twentieth-century and contemporary philosophy/Philosophy of mind and cognitive science/Alan Turing"
+  ]
+ },
+ {
+  "title": "Anarchism",
+  "target": "Anarchism",
+  "categories": [
+   "Category:Anti-fascism"
+  ],
+  "from": [
+   "philosophy.json:/Philosophical branches and problems/Political philosophy/Anarchism"
+  ]
+ },
+ {
+  "title": "Karl Barth",
+  "target": "Karl Barth",
+  "categories": [
+   "Category:Swiss anti-fascists"
+  ],
+  "from": [
+   "philosophy.json:/Philosophical branches and problems/Philosophy of religion/Karl Barth"
+  ]
+ },
+ {
+  "title": "Dietrich Bonhoeffer",
+  "target": "Dietrich Bonhoeffer",
+  "categories": [
+   "Category:German anti-fascists",
+   "Category:German people executed in Nazi concentration camps",
+   "Category:People executed by Nazi Germany by hanging",
+   "Category:Resistance members who died in Nazi concentration camps"
+  ],
+  "from": [
+   "philosophy.json:/Philosophical branches and problems/Philosophy of religion/Dietrich Bonhoeffer"
+  ]
+ }
+]

@@ -22,3 +22,8 @@ export * from "./tabs";
 export * from "./textarea";
 export * from "./tooltip";
 export * from "./dropdown";
+export * from "./kosmo/data-row";
+export * from "./kosmo/logo-orb";
+export * from "./kosmo/pill";
+export * from "./kosmo/stat-totals";
+export * from "./kosmo/tree";

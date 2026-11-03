@@ -1,0 +1,1227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contraption Sim</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #07090f; color: #d6e2f0; font: 13px/1.4 system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; }
+  /* The atlas header is fixed over the scene, so the panel opens below it. */
+  #navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 30; }
+  #panel {
+    position: fixed; top: 74px; left: 12px; width: 260px; max-height: calc(100% - 86px); overflow: auto;
+    box-sizing: border-box;
+    padding: 12px 14px;
+  }
+  #panel h1 { font-size: 15px; margin: 0 0 8px; }
+  #panel h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #7d8ea8; margin: 14px 0 6px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 6px 0; }
+  .row input[type=range] { flex: 1; min-width: 0; }
+  select, button { background: #16202f; color: #d6e2f0; border: 1px solid #2a3a52; border-radius: 6px; padding: 4px 8px; font: inherit; }
+  button { cursor: pointer; }
+  button:hover { background: #1d2a3f; }
+  .val { width: 40px; text-align: right; font-variant-numeric: tabular-nums; color: #8fb8e8; }
+  #readout { font-variant-numeric: tabular-nums; background: #0b111c; border-radius: 6px; padding: 6px 8px; margin-top: 8px; }
+  .ok { color: #6ee7a0; font-weight: 600; }
+  .bad { color: #ff7b7b; font-weight: 700; }
+  .chart { display: block; width: 100%; height: 150px; background: #0b111c; border-radius: 6px; margin-top: 8px; }
+  .cap { color: #7d8ea8; font-size: 11px; margin: 2px 0 0; }
+  #readout table { border-collapse: collapse; width: 100%; margin-top: 4px; font-size: 11px; }
+  #readout th, #readout td { text-align: right; padding: 1px 3px; border-bottom: 1px solid #141c2a; }
+  #readout th { color: #7d8ea8; font-weight: 500; }
+  #readout td:first-child, #readout th:first-child { text-align: left; }
+  #research-note { background: #0b111c; border-left: 3px solid #5fd1ff; border-radius: 6px; padding: 6px 8px; margin: 8px 0; font-size: 12px; }
+  #research-note a, details a { color: #8fd8ff; }
+  details { margin-top: 10px; background: #0b111c; border-radius: 6px; padding: 6px 8px; }
+  summary { cursor: pointer; font-weight: 600; }
+  details p { margin: 6px 0; font-size: 12px; }
+  @media (max-width: 600px) { #panel { width: auto; right: 12px; max-height: 55%; } }
+</style>
+<script type="importmap">
+{ "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+} }
+</script>
+  <link rel="stylesheet" href="kosmographica.css?v=6">
+  <script src="atlas-nav.js" defer></script>
+  <script src="accordion.js" defer></script>
+</head>
+<body class="sim">
+
+<div id="navbar"><div id="logo"></div><nav id="menu"></nav><span></span></div>
+
+<div id="panel">
+  <h1>Contraption Sim</h1>
+
+  <div class="row">
+    <label for="contraption">Setup</label>
+    <select id="contraption">
+      <option value="orbit">Orbiting coil rings</option>
+      <option value="bottle">Magnetic mirror trap</option>
+      <option value="gyro">Gyroscope in coil field</option>
+      <option value="motor">Coil-driven motor</option>
+      <option value="levit">Levitation test rig</option>
+      <option value="ffall">Magnet free-fall test</option>
+      <option value="ionic">Ion wind thruster (SI)</option>
+      <option value="xenon">Xenon gridded ion engine</option>
+      <option value="carr">Carr machine test bench (SI)</option>
+      <option value="cosmo">Early universe (FLRW + Zel'dovich, SI)</option>
+      <optgroup label="Perpetual motion claims (all lose energy)">
+        <option value="perp-wheel">Overbalanced wheel</option>
+        <option value="perp-detent">Magnet detent rotor</option>
+        <option value="perp-coil">Self-sensing coil drive</option>
+      </optgroup>
+    </select>
+  </div>
+
+  <div id="research-note"></div>
+
+  <h2>Electromagnetism</h2>
+  <div class="row"><label for="current">Ring current (A, 1000 turns)</label><input type="range" id="current" min="-3" max="3" step="0.1"><span class="val" id="current-v"></span></div>
+  <div class="row"><label><input type="checkbox" id="alt"> Alternate ring polarity</label></div>
+  <div class="row"><label for="efield">E field Y (sim; 1 = 0.1 mV/m)</label><input type="range" id="efield" min="-2" max="2" step="0.05"><span class="val" id="efield-v"></span></div>
+  <div class="row"><label><input type="checkbox" id="lines"> Show field lines</label></div>
+
+  <h2>Motion and gravity</h2>
+  <div class="row"><label for="orbit">Ring orbit speed (rad/s)</label><input type="range" id="orbit" min="0" max="2" step="0.05"><span class="val" id="orbit-v"></span></div>
+  <div class="row"><label><input type="checkbox" id="grav"> Gravity on</label></div>
+  <div class="row"><label for="g">g (m/s²)</label><input type="range" id="g" min="0" max="20" step="0.1"><span class="val" id="g-v"></span></div>
+  <div class="row"><label for="spin">Gyro spin (sim)</label><input type="range" id="spin" min="10" max="200" step="5"><span class="val" id="spin-v"></span></div>
+  <div class="row"><label for="mu">Gyro moment (A·m²)</label><input type="range" id="mu" min="0" max="2" step="0.05"><span class="val" id="mu-v"></span></div>
+  <div class="row"><label for="time">Time scale</label><input type="range" id="time" min="0" max="3" step="0.05"><span class="val" id="time-v"></span></div>
+
+  <h2>Motor</h2>
+  <div class="row"><label for="drive">Drive freq (rad/s)</label><input type="range" id="drive" min="0" max="10" step="0.1"><span class="val" id="drive-v"></span></div>
+  <div class="row"><label for="rotorMu">Rotor moment (A·m²)</label><input type="range" id="rotorMu" min="0" max="3" step="0.05"><span class="val" id="rotorMu-v"></span></div>
+  <div class="row"><label for="friction">Friction (sim)</label><input type="range" id="friction" min="0" max="1" step="0.01"><span class="val" id="friction-v"></span></div>
+
+  <h2>Levitation test</h2>
+  <div class="row"><label for="kLift">Diamagnet strength (sim)</label><input type="range" id="kLift" min="0" max="20" step="0.1"><span class="val" id="kLift-v"></span></div>
+  <div class="row"><label for="eta">Bubble η (hypothetical)</label><input type="range" id="eta" min="0" max="1" step="0.01"><span class="val" id="eta-v"></span></div>
+
+  <h2>Free-fall test</h2>
+  <div class="row"><label for="coupling">Magnet coupling (× g)</label><input type="range" id="coupling" min="0" max="5" step="0.1"><span class="val" id="coupling-v"></span></div>
+  <div class="row"><label><input type="checkbox" id="repulsive"> Repulsive coupling</label></div>
+  <div class="row"><label for="alpha">Hypothetical α (inertial cut)</label><input type="range" id="alpha" min="0" max="0.5" step="0.01"><span class="val" id="alpha-v"></span></div>
+
+  <h2>Ion wind thruster (SI)</h2>
+  <div>
+    <button data-ead="mit">MIT 2018 plane</button><button data-ead="lab">Lab stage</button><button data-ead="lifter">Lifter</button>
+  </div>
+  <div class="row"><label for="eadV">Voltage (kV)</label><input type="range" id="eadV" min="2" max="80" step="0.5"><span class="val" id="eadV-v"></span></div>
+  <div class="row"><label for="eadD">Electrode gap (cm)</label><input type="range" id="eadD" min="1" max="30" step="0.5"><span class="val" id="eadD-v"></span></div>
+  <div class="row"><label for="eadR">Emitter wire radius (mm)</label><input type="range" id="eadR" min="0.02" max="1" step="0.01"><span class="val" id="eadR-v"></span></div>
+  <div class="row"><label for="eadB">Span per row (m)</label><input type="range" id="eadB" min="0.2" max="8" step="0.1"><span class="val" id="eadB-v"></span></div>
+  <div class="row"><label for="eadRows">Rows per stage</label><input type="range" id="eadRows" min="1" max="8" step="1"><span class="val" id="eadRows-v"></span></div>
+  <div class="row"><label for="eadN">Stages in series</label><input type="range" id="eadN" min="1" max="8" step="1"><span class="val" id="eadN-v"></span></div>
+  <div class="row"><label for="eadDelta">Air density (1 = sea level)</label><input type="range" id="eadDelta" min="0.05" max="1.2" step="0.01"><span class="val" id="eadDelta-v"></span></div>
+  <div class="row"><label for="eadMu0">Ion mobility (×10⁻⁴ m²/V·s)</label><input type="range" id="eadMu0" min="1.2" max="3" step="0.05"><span class="val" id="eadMu0-v"></span></div>
+  <div class="row"><label for="eadVinf">Airspeed (m/s)</label><input type="range" id="eadVinf" min="0" max="25" step="0.25"><span class="val" id="eadVinf-v"></span></div>
+  <div class="row"><label for="eadG">Geometry factor g (fitted)</label><input type="range" id="eadG" min="0.02" max="2" step="0.01"><span class="val" id="eadG-v"></span></div>
+
+  <h2>Xenon ion engine</h2>
+  <div class="row"><label for="xeV">Beam voltage (V)</label><input type="range" id="xeV" min="200" max="2000" step="5"><span class="val" id="xeV-v"></span></div>
+  <div class="row"><label for="xeI">Beam current (mA)</label><input type="range" id="xeI" min="0" max="500" step="5"><span class="val" id="xeI-v"></span></div>
+
+  <h2>Carr machine test bench</h2>
+  <div class="row"><label for="carrI">Coil current (A)</label><input type="range" id="carrI" min="0" max="10" step="0.1"><span class="val" id="carrI-v"></span></div>
+  <div class="row"><label for="carrN">Turns per coil</label><input type="range" id="carrN" min="100" max="3000" step="50"><span class="val" id="carrN-v"></span></div>
+  <div class="row"><label for="carrGap">C-core air gap (mm)</label><input type="range" id="carrGap" min="5" max="120" step="1"><span class="val" id="carrGap-v"></span></div>
+  <div class="row"><label for="carrLam">Lamination (mm)</label><input type="range" id="carrLam" min="0.1" max="22" step="0.05"><span class="val" id="carrLam-v"></span></div>
+  <div class="row"><label for="carrF">Switching (Hz)</label><input type="range" id="carrF" min="1" max="1000" step="1"><span class="val" id="carrF-v"></span></div>
+  <div class="row"><label for="carrReduce">Reduce coil E (0 = none)</label><input type="range" id="carrReduce" min="0" max="12" step="1"><span class="val" id="carrReduce-v"></span></div>
+  <div class="row"><label for="carrFactor">Reduced coil level</label><input type="range" id="carrFactor" min="0" max="1" step="0.05"><span class="val" id="carrFactor-v"></span></div>
+  <div class="row"><label for="carrDisc">Plate disc (rpm)</label><input type="range" id="carrDisc" min="0" max="3000" step="10"><span class="val" id="carrDisc-v"></span></div>
+  <div class="row"><label for="carrRim">Rim turn (rpm)</label><input type="range" id="carrRim" min="0" max="300" step="1"><span class="val" id="carrRim-v"></span></div>
+  <div class="row"><label for="carrUtron">Utron spin (rpm)</label><input type="range" id="carrUtron" min="0" max="6000" step="50"><span class="val" id="carrUtron-v"></span></div>
+
+  <h2>Early universe</h2>
+  <div>
+    <button data-cosmo="-9.5">BBN</button><button data-cosmo="eq">Equality</button><button data-cosmo="rec">Recombination</button><button data-cosmo="0">Today</button>
+  </div>
+  <div class="row"><label><input type="checkbox" id="cosmoPlay"> Play (log time)</label></div>
+  <div class="row"><label for="cosmoLogA">log₁₀ scale factor a</label><input type="range" id="cosmoLogA" min="-16" max="0" step="0.01"><span class="val" id="cosmoLogA-v"></span></div>
+  <div class="row"><label for="cosmoSpeed">Play speed (decades/s)</label><input type="range" id="cosmoSpeed" min="0.1" max="4" step="0.1"><span class="val" id="cosmoSpeed-v"></span></div>
+  <div class="row"><label for="cosmoH0">H₀ (km/s/Mpc)</label><input type="range" id="cosmoH0" min="50" max="80" step="0.1"><span class="val" id="cosmoH0-v"></span></div>
+  <div class="row"><label for="cosmoOmegaM">Ω_m (flat: Ω_Λ = 1 − Ω_m − Ω_r)</label><input type="range" id="cosmoOmegaM" min="0.05" max="1" step="0.005"><span class="val" id="cosmoOmegaM-v"></span></div>
+  <div class="row"><label for="cosmoAmp">Perturbation δ₀ (linear, at a = 1)</label><input type="range" id="cosmoAmp" min="0" max="4" step="0.05"><span class="val" id="cosmoAmp-v"></span></div>
+  <div class="row"><label for="cosmoWaves">Plane-wave modes</label><input type="range" id="cosmoWaves" min="1" max="4" step="1"><span class="val" id="cosmoWaves-v"></span></div>
+
+  <h2>Particles and reset</h2>
+  <div class="row"><button id="addE">+20 electrons</button><button id="clearE">Clear</button></div>
+  <div class="row"><button id="reset">Reset setup</button></div>
+
+  <div id="readout"></div>
+  <div id="ead-charts" hidden>
+    <canvas id="chartT" class="chart"></canvas>
+    <p class="cap">Thrust vs voltage, current geometry. Marker: operating point.</p>
+    <canvas id="chartTP" class="chart"></canvas>
+    <p class="cap">Thrust per kilowatt vs voltage, falls as d/(μV).</p>
+  </div>
+
+  <details>
+    <summary>Units and scaling</summary>
+    <p id="units-note"></p>
+  </details>
+
+  <details>
+    <summary>Research notes</summary>
+    <p><b>Electrostatic and electromagnetic levitation.</b> Electrostatic levitation is real but needs active feedback, because Earnshaw's theorem applies. NASA JPL built the first electrostatic levitator in 1993 to measure liquid metals in vacuum. See the <a href="https://technav.ieee.org/topic/levitation/" target="_blank" rel="noopener">IEEE overview</a> and the <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9345915/" target="_blank" rel="noopener">China Space Station study</a>. Induced-magnetism levitation escapes Earnshaw, but still needs feedback in practice (<a href="https://link.springer.com/article/10.1007/s10765-023-03309-9" target="_blank" rel="noopener">comparison paper</a>). Not simulated here. Eddy-current and Lorentz-force levitation are not covered by the research yet.</p>
+    <p><b>Laithwaite's gyroscope (1974).</b> He lifted a 40 lb spinning disc with one hand and argued that it weighed less. NASA's <a href="https://ntrs.nasa.gov/api/citations/20070004897/downloads/20070004897.pdf" target="_blank" rel="noopener">Millis and Thomas report</a> found no measurable weight change. The <a href="https://eric.ed.gov/?id=EJ1037532" target="_blank" rel="noopener">2014 Physics Teacher article</a> notes conventional explanations exist. My understanding (not stated in these sources): the lift is ordinary gyroscopic precession and reaction force, not lost weight.</p>
+    <p><b>Searl effect.</b> A claimed self-accelerating magnetic generator, never independently verified. A lab prototype showed no self-acceleration (<a href="https://www.scribd.com/document/7914592/Searl-Effect-Generator" target="_blank" rel="noopener">test writeup</a>). A reported 7% weight change was inconsistent between runs (<a href="https://medium.com/predict/searl-effect-generator-replication-measures-7-reduction-in-weight-b8d24e4199f0" target="_blank" rel="noopener">Medium</a>). The 1990s self-powering results rest on promotional sources. No peer-reviewed study exists.</p>
+    <p><b>Biefeld–Brown, Podkletnov, Hutchison.</b> Biefeld–Brown thrust in air is ion wind. The vacuum claim is second-hand and unconfirmed. Podkletnov's superconductor "gravity shielding" failed replication. The Hutchison effect has no peer-reviewed replication.</p>
+    <p><b>Official UAP reporting.</b> AARO's FY2025 report (<a href="https://thedebrief.org/aaros-latest-uap-report-finds-no-evidence-of-exotic-technology-but-mysteries-remain/" target="_blank" rel="noopener">The Debrief</a>) found no evidence of exotic technology or recovered materials.</p>
+    <p><b>Bottom line.</b> Every levitation effect that works is explained by known physics. The fringe claims have not been reproduced under controlled conditions.</p>
+  </details>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import * as P from './sim-physics.js?v=20261025';   // bump when the module changes: Chrome caches module imports
+
+// All physics lives in sim-physics.js (pure, tested by tests/run-tests.mjs). This file is
+// rendering, UI and the readouts. Sim units map to SI through P.SCALE (see the Units note).
+const { SEG, DT, FLOOR } = P;
+const TUBE = 0.06;       // coil wire radius (visual)
+const TRAIL = 60;        // trail length in samples
+const UP = new THREE.Vector3(0, 1, 0);
+
+const state = {
+  contraption: 'orbit',
+  current: 1.5,
+  alternate: true,
+  efield: 0,
+  lines: true,
+  orbit: 0.4,
+  gravity: false,
+  g: P.UNITS.g0,
+  spin: 80,
+  mu: 0.3,
+  time: 1,
+  drive: 3,
+  rotorMu: 0.6,
+  friction: 0.05,
+  coupling: 2,       // magnet coupling strength, in units of g
+  repulsive: false,  // false = attractive (NS/NS-style) coupling
+  alpha: 0,          // hypothetical inertial-mass cut for magnet a
+  // ion wind thruster (SI): kV, cm, mm, m, -, -, -, 1e-4 m^2/(V s), m/s, fitted factor
+  eadV: 40, eadD: 5, eadR: 0.1, eadB: 5, eadRows: 1, eadN: 4, eadDelta: 1, eadMu0: 2.0, eadVinf: 5, eadG: 0.15,
+  xeV: 1065,    // xenon engine beam voltage (V), real units
+  xeI: 300,     // xenon engine beam current (mA), real units
+  // Carr bench: A, turns, mm, mm, Hz, coil index, level, rpm, rpm, rpm (video defaults)
+  carrI: 4.5, carrN: 1000, carrGap: 80, carrLam: 0.35, carrF: 60, carrReduce: 0, carrFactor: 0.5, carrDisc: 600, carrRim: 60, carrUtron: 3000,
+  // early universe: log10 a, decades per second, km/s/Mpc, -, linear delta at a=1, modes
+  cosmoLogA: -12, cosmoSpeed: 0.5, cosmoH0: 67.4, cosmoOmegaM: 0.315, cosmoAmp: 2.5, cosmoWaves: 3, cosmoPlay: true,
+  kLift: 1.4,   // diamagnet strength (scaled), tuned so the hover sits near y = -0.5
+  eta: 0,       // hypothetical gravity reduction for the bubble test
+};
+
+// ---- unit helpers --------------------------------------------------------
+const $ = id => document.getElementById(id);
+const fmt = (kind, unit, x, d = 3) => P.fmtSI(P.toSI(kind, x), unit, d);
+const badge = ok => ok ? '<span class="ok">PASS</span>' : '<span class="bad">FAIL</span>';
+// One conservation line: quantity, drift since reset, stated tolerance, verdict.
+function checkLine(label, drift, tol, kind, unit, note = '') {
+  const ok = Math.abs(drift) <= tol;
+  return `<br><b>${label}:</b> ${fmt(kind, unit, Math.abs(drift), 2)} drift (tol ${fmt(kind, unit, tol, 2)}) ${badge(ok)}${note}`;
+}
+const drift = new P.Drift();   // value minus its value at reset or at the last energy-zero change
+
+// ---- scene ---------------------------------------------------------------
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x07090f);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+camera.position.set(7, 5, 9);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 0, 0);
+controls.enableDamping = true;
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+const sun = new THREE.DirectionalLight(0xffffff, 1.1);
+sun.position.set(5, 8, 4);
+scene.add(sun);
+
+const grid = new THREE.GridHelper(16, 16, 0x223344, 0x111822);
+grid.position.y = FLOOR;
+scene.add(grid);
+scene.add(new THREE.AxesHelper(1.5));
+
+const pivotGeo = new THREE.SphereGeometry(0.12, 16, 12);
+const pivotMat = new THREE.MeshStandardMaterial({ color: 0xdddddd });
+
+// ---- coil rings ----------------------------------------------------------
+// Geometry and Biot-Savart live in sim-physics.js; here each ring just gets a torus mesh.
+let rings = [];
+
+function disposeObject(obj) {
+  obj.traverse(o => {
+    if (o.geometry) o.geometry.dispose();
+    if (o.material && o.material.dispose) o.material.dispose();
+  });
+}
+
+function buildRings(name) {
+  for (const r of rings) {
+    scene.remove(r.group);
+    disposeObject(r.group);
+  }
+  rings = P.buildRingSet(name);
+  for (const r of rings) {
+    const group = new THREE.Group();
+    const material = new THREE.MeshStandardMaterial({
+      color: 0xff6b6b, emissive: 0xff6b6b, emissiveIntensity: 0.3, roughness: 0.35, metalness: 0.6,
+    });
+    group.add(new THREE.Mesh(new THREE.TorusGeometry(r.R, r.tube ?? TUBE, 8, SEG * 2), material));
+    scene.add(group);
+    r.group = group; r.material = material;
+  }
+}
+
+function ringParams() {
+  return {
+    orbit: state.orbit, current: state.current, alternate: state.alternate, drive: state.drive,
+    // self-sensing claim: the coil phase follows the rotor angle, not a clock
+    psi: state.contraption === 'perp-coil' && motor ? motor.psi : null,
+  };
+}
+
+// Move every ring to its pose at time t (physics) and mirror it onto the meshes.
+function updateRings(t) {
+  if (state.contraption === 'carr') for (const r of rings) r.gain = (r.idx === state.carrReduce - 1) ? state.carrFactor : 1;
+  P.poseRings(rings, t, ringParams());
+  for (const r of rings) {
+    r.group.position.set(r.pos.x, r.pos.y, r.pos.z);
+    r.group.rotation.set(r.tilt, r.th + (r.yaw || 0), 0, 'YXZ');
+    const hot = r.current >= 0;
+    r.material.color.set(hot ? 0xff6b6b : 0x4dabff);
+    r.material.emissive.copy(r.material.color);
+    r.material.emissiveIntensity = 0.1 + 0.5 * Math.min(Math.abs(r.current) / 3, 1);
+  }
+}
+
+const B0 = new THREE.Vector3();  // scratch field value
+const fieldAt = (x, y, z, out) => P.fieldAt(rings, x, y, z, out);
+
+// ---- electrons -----------------------------------------------------------
+const particles = [];
+const electronGeo = new THREE.SphereGeometry(0.07, 12, 8);
+const electronMat = new THREE.MeshStandardMaterial({ color: 0x7ef0ff, emissive: 0x2ab6d6, emissiveIntensity: 0.8 });
+// Integrator environment: field, uniform E, gravity (updated every step from the sliders).
+const pEnv = { field: fieldAt, E: { x: 0, y: 0, z: 0 }, G: { x: 0, y: 0, z: 0 } };
+let pEnvSig = '';
+
+function spawnElectrons(n) {
+  for (let i = 0; i < n; i++) {
+    const mesh = new THREE.Mesh(electronGeo, electronMat);
+    const trailGeo = new THREE.BufferGeometry();
+    trailGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(TRAIL * 3), 3));
+    trailGeo.setDrawRange(0, 0);
+    const trail = new THREE.Line(trailGeo, new THREE.LineBasicMaterial({ color: 0x7ef0ff, transparent: true, opacity: 0.5 }));
+    trail.frustumCulled = false;
+    const p = P.makeParticle(
+      { x: (Math.random() - 0.5) * 2, y: (Math.random() - 0.5) * 2, z: (Math.random() - 0.5) * 2 },
+      { x: (Math.random() - 0.5) * 4, y: (Math.random() - 0.5) * 4, z: (Math.random() - 0.5) * 4 });
+    scene.add(mesh, trail);
+    Object.assign(p, { mesh, trail, hist: [] });
+    P.rebaselineParticle(p, pEnv);
+    particles.push(p);
+  }
+}
+
+function removeParticle(i) {
+  const p = particles[i];
+  scene.remove(p.mesh, p.trail);
+  p.trail.geometry.dispose();
+  particles.splice(i, 1);
+}
+
+function clearParticles() {
+  for (let i = particles.length - 1; i >= 0; i--) removeParticle(i);
+}
+
+// ---- gyroscope -----------------------------------------------------------
+// Fast-top approximation (see sim-physics.js): the axis precesses about the torque vector.
+let gyro = null;
+
+function buildGyro() {
+  const group = new THREE.Group();
+  const disk = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.9, 0.9, 0.25, 40),
+    new THREE.MeshStandardMaterial({ color: 0xffc857, metalness: 0.7, roughness: 0.3 }),
+  );
+  disk.position.y = P.D;
+  group.add(disk);
+  group.add(new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, -1.6, 0), new THREE.Vector3(0, 1.6, 0)]),
+    new THREE.LineBasicMaterial({ color: 0xffffff }),
+  ));
+  scene.add(group);
+
+  const pivot = new THREE.Mesh(pivotGeo, pivotMat);
+  scene.add(pivot);
+  gyro = Object.assign(P.makeGyro(), { group, disk, pivot });
+}
+
+// ---- coil-driven motor ----------------------------------------------------
+// Three stator coils carry I_k = I sin(w t - k*120 deg), giving a rotating field
+// at the centre. A bar-magnet rotor feels torque m x B and follows it; friction
+// and inertia set how far it lags. Rotor back-reaction on the coils is ignored.
+let motor = null;
+
+function buildMotor() {
+  const group = new THREE.Group();
+  const north = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.4, 0.4),
+    new THREE.MeshStandardMaterial({ color: 0xe05555, emissive: 0x551111 }));
+  north.position.x = 0.45;
+  const south = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.4, 0.4),
+    new THREE.MeshStandardMaterial({ color: 0x4d7fe0, emissive: 0x112255 }));
+  south.position.x = -0.45;
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 3, 12),
+    new THREE.MeshStandardMaterial({ color: 0xbbbbbb, metalness: 0.8, roughness: 0.3 }));
+  group.add(north, south, shaft);
+  scene.add(group);
+  motor = Object.assign(P.makeRotor(0), { group });
+}
+
+// ---- perpetual-motion claims ----------------------------------------------
+// Each claim runs on the rotor model with its real torques and friction. The
+// readout checks the energy books. None of them gains energy.
+const PERP_NAMES = {
+  'perp-wheel': 'Overbalanced wheel',
+  'perp-detent': 'Magnet detent rotor',
+  'perp-coil': 'Self-sensing coil drive',
+};
+const PERP_NOTES = {
+  'perp-wheel': 'Fixed weight: it settles with the weight at the bottom and friction removes the swing.',
+  'perp-detent': 'Two stable angles: the rotor settles at one, and no energy comes out.',
+  'perp-coil': 'The coils are powered and their phase follows the rotor. This is an electric motor, not a perpetual machine.',
+};
+
+// Short research note shown under the setup picker for each setup.
+const RESEARCH = {
+  cosmo: 'Early universe: the flat FLRW background from the Friedmann equation in SI (Planck 2018 parameters), with the Standard Model g*(T) step table so the temperature–time relation holds back to the electroweak scale, and the Zel\'dovich approximation for structure growth (exact in 1D until shell crossing). Checks: t·H = ½ in the radiation era and ⅔ in the matter era, age 13.8 Gyr, z_eq ≈ 3400, recombination at 372 kyr, growth factor vs the Carroll–Press–Turner fit. Not modelled: inflation, baryogenesis, the smooth g* transitions, radiation in the growth equation, anything before 10⁻¹² s. See also the <a href="universe-timeline.html">universe timeline and scale page</a>.',
+  carr: 'Carr machine test bench: the three subsystems from Project Vimana ep. 2 (Otis Carr\'s 1950s saucer) held against physics, in SI. C-core gap field and saturation, eddy loss vs lamination, switching spike; aluminium plates as an eddy brake with the spin-down test he proposes; the bismuth Utron as Faraday disc, winding torque and gyroscope; corona-glow voltage. The 12-coil "steering" test is run with real forces: the field is from the coils, and the force on the craft from its own coils is zero by Newton\'s third law. <a href="https://www.youtube.com/watch?v=_r2c4xPjxwI" target="_blank" rel="noopener">Project Vimana ep. 2</a>',
+  gyro: 'Laithwaite\'s "weightless" gyro: NASA found no measurable weight change. The lift is ordinary gyroscopic precession (my understanding, not stated in the sources). <a href="https://ntrs.nasa.gov/api/citations/20070004897/downloads/20070004897.pdf" target="_blank" rel="noopener">NASA report</a>',
+  'perp-wheel': 'Overbalanced wheel: general physics, not from the searched sources. With fixed weights the wheel settles and friction removes the swing.',
+  'perp-detent': 'Magnet detent: general physics. The rotor settles at a stable angle and no energy comes out.',
+  'perp-coil': 'Searl-style self-sensing drive: independent tests found no self-acceleration. In this model the rotor stalls, so the coils burn power for no work. <a href="https://www.scribd.com/document/7914592/Searl-Effect-Generator" target="_blank" rel="noopener">Searl test writeup</a>',
+  bottle: 'Magnetic mirror: standard physics, the same principle as magnetic confinement. Not a research claim.',
+  xenon: 'Xenon gridded ion engine (flight-proven type): xenon is ionised, then accelerated through grids, so it needs no air and works in vacuum. Thrust = (I/e)·m·v with v = sqrt(2eV/m). The diagrams show the ionisation chamber, magnet rings, accelerator grids, and a neutraliser cathode that keeps the beam charge-neutral.',
+  ionic: 'Ion wind (electroaerodynamic) thruster, SI: Peek onset, Townsend corona current, T = I·V/(μE + v) (= I·d/μ at rest, Masuyama &amp; Barrett), actuator-disk stages. One fitted constant g = 0.15 (MIT preset ≈ 500 W, 3 N). Thrust needs neutral gas: thin air raises mobility, so power per newton climbs as 1/δ and the gap sparks over. The readout also shows the free-ion-beam thrust the same current would give in vacuum, about a thousand times less. <a href="https://news.mit.edu/2018/first-ionic-wind-plane-no-moving-parts-1121" target="_blank" rel="noopener">MIT 2018</a> · <a href="https://royalsocietypublishing.org/doi/10.1098/rspa.2012.0623" target="_blank" rel="noopener">Masuyama &amp; Barrett 2013</a>',
+  ffall: 'Magnet free-fall test: two magnets fall with their mutual magnetic force. A rigid pair\'s internal forces cancel, so its centre of mass always falls at g. One magnet alone can fall faster or slower than g. The α input is hypothetical, not known physics.',
+  levit: 'Levitation test rig: a diamagnet floats where its magnetic lift balances its weight (real physics, the frog effect). The bubble parameter η is hypothetical, not known physics. The readout shows the work it would need.',
+  motor: 'Coil-driven motor: powered coils drive the rotor. Standard physics, not a claim.',
+  orbit: 'Orbiting coil rings: standard Biot–Savart and Lorentz force physics, not a research claim.',
+};
+
+function stepPerp(dt) {
+  if (!motor) return;
+  const prm = { g: state.g, friction: state.friction, rotorMu: state.rotorMu };
+  if (state.contraption === 'perp-wheel') P.stepWheel(motor, dt, prm);
+  else if (state.contraption === 'perp-detent') P.stepDetent(motor, dt, prm);
+  else P.stepMotor(motor, rings, dt, prm);
+}
+
+function buildWheelVisual() {
+  // The wheel turns about Z, so the magnet visuals are hidden and a wheel is drawn instead.
+  for (const child of motor.group.children) child.visible = false;
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.05, 8, 64),
+    new THREE.MeshStandardMaterial({ color: 0xbbbbbb, metalness: 0.6, roughness: 0.4 }));
+  const weight = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 12),
+    new THREE.MeshStandardMaterial({ color: 0xff8800, emissive: 0x552200 }));
+  weight.position.set(1.2, 0, 0);
+  motor.group.add(ring, weight);
+}
+
+// Energy books: KE + PE + friction loss - work from coils must stay constant (tol 0.1% of scale).
+function rotorBooksLine() {
+  const kind = state.contraption, prm = { g: state.g };
+  const b = P.rotorEnergyBooks(kind, motor, prm);
+  const d = drift.update(`${kind}|${state.g}`, b.check);
+  const tol = 1e-3 * P.rotorEnergyScale(kind, motor, prm) + 1e-12;
+  return { b, line: checkLine('Energy check (KE+PE+loss-work)', d, tol, 'energy', 'J') };
+}
+function perpReadout() {
+  const { b, line } = rotorBooksLine();
+  let txt = `<b>${PERP_NAMES[state.contraption]}</b><br>${PERP_NOTES[state.contraption]}`
+    + `<br>KE ${fmt('energy', 'J', b.ke)}, PE ${fmt('energy', 'J', b.pe)}, friction loss ${fmt('energy', 'J', motor.loss)}`;
+  if (state.contraption === 'perp-coil') {
+    txt += `<br>Work from coils ${fmt('energy', 'J', motor.work)}, coil I²R heat ${fmt('energy', 'J', motor.heat)}`;
+  }
+  return txt + line;
+}
+
+// ---- levitation test rig ---------------------------------------------------
+// Real physics: a diamagnet is pushed toward weaker field, F = -k d(B^2)/dy (U = k B^2).
+// A hover happens where that lift balances weight. The bubble parameter eta is
+// hypothetical: it scales weight down, and known physics has no such effect.
+let payload = null;
+
+function buildPayload() {
+  const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.25, 20, 14),
+    new THREE.MeshStandardMaterial({ color: 0x9ad0ff, emissive: 0x204060 }));
+  scene.add(mesh);
+  payload = Object.assign(P.makePayload(), { mesh });
+}
+
+function levitReadout() {
+  const lift = P.magForceY(rings, payload.y, state.kLift);
+  const weight = P.PAYLOAD_MASS * state.g * (1 - state.eta);
+  const prm = { g: state.g, eta: state.eta, kLift: state.kLift };
+  const e = P.levitEnergy(payload, rings, prm);
+  const sig = `${state.g}|${state.eta}|${state.kLift}|${rings.map(r => r.current).join(',')}`;
+  const d = drift.update(sig, e.total);
+  // tolerance: 0.1% of the weight times the 4 m of available travel
+  const tol = 1e-3 * P.PAYLOAD_MASS * Math.max(state.g, 1) * 4;
+  return `<b>Levitation test rig</b><br>Real physics: diamagnetic lift. Bubble η = ${state.eta.toFixed(2)} is hypothetical.`
+    + `<br>height ${payload.y.toFixed(2)} m, speed ${payload.v.toFixed(2)} m/s`
+    + `<br>magnetic lift ${fmt('force', 'N', lift)}, weight ${fmt('force', 'N', weight)}, net ${fmt('force', 'N', lift - weight)}`
+    + `<br>coil I²R heat ${fmt('energy', 'J', payload.heat)}`
+    + `<br>Work to raise the payload 1 m: ${fmt('energy', 'J', weight)}, from a source`
+    + checkLine('Energy check (KE+PE+magnetic PE+drag/floor loss)', d, tol, 'energy', 'J');
+}
+
+// ---- magnet free-fall test ---------------------------------------------------
+// Two magnets fall under gravity plus their mutual dipole force. The internal
+// forces are equal and opposite, so the centre of mass falls at g. One magnet
+// alone can fall faster or slower than g. The alpha input is a hypothetical
+// inertial-mass cut for magnet a: its gravity is unchanged, its inertia is (1 - alpha).
+let fall = null;
+
+function buildFall() {
+  const mk = color => new THREE.Mesh(new THREE.SphereGeometry(0.25, 20, 14),
+    new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.25 }));
+  const a = mk(0xff7a7a), b = mk(0x7aa8ff);
+  scene.add(a, b);
+  fall = Object.assign(P.makeFall(), { a, b });
+}
+
+function fallReadout() {
+  const g = state.g;
+  const com = fall.aComV / g;
+  const ok = Math.abs(com + 1) <= 1e-9;
+  return `<b>Magnet free-fall test</b><br>Coupling ${state.repulsive ? 'repulsive' : 'attractive'}, α = ${state.alpha.toFixed(2)} (hypothetical)`
+    + `<br>magnet a accel ${(fall.aA / g).toFixed(2)} g, magnet b ${(fall.aB / g).toFixed(2)} g (g = ${g.toFixed(2)} m/s²)`
+    + `<br>separation ${(fall.ya - fall.yb).toFixed(2)} m, trial ${fall.trials}`
+    + `<br><b>COM accel</b> ${com.toFixed(3)} g (tol |+1 g| ≤ 1e-9 g) ${badge(ok)}`
+    + (ok ? '' : ' <span class="bad">momentum not conserved: the hypothetical α breaks Newton\'s third law</span>');
+}
+
+// ---- ion wind thruster (SI) --------------------------------------------------
+// Physics: P.eadModel (Peek onset, Townsend current, T = I V/(mu E + v), actuator-disk
+// stages). The scene is in metres: emitter wires, collectors, air-speed arrows per
+// station, a thrust arrow, and visual ions whose spawn rate and drift follow the model.
+let ionic = null;
+const ionGeo = new THREE.SphereGeometry(0.008, 6, 5);
+const ionMat = new THREE.MeshBasicMaterial({ color: 0xa8c8ff });
+const ionHooks = {
+  onAdd: ion => { ion.mesh = new THREE.Mesh(ionGeo, ionMat); scene.add(ion.mesh); },
+  onRemove: ion => scene.remove(ion.mesh),
+};
+const eadParams = () => ({ V: state.eadV, g: state.eadG, d: state.eadD, r: state.eadR, b: state.eadB, rows: state.eadRows, N: state.eadN, delta: state.eadDelta, mu0: state.eadMu0, vinf: state.eadVinf });
+const eadCurrent = () => P.eadModel(eadParams());
+const eadEmitterMat = new THREE.MeshStandardMaterial({ color: 0xd98a4a, metalness: 0.8, roughness: 0.3 });
+const eadCollectorMat = new THREE.MeshStandardMaterial({ color: 0xaab4c4, metalness: 0.6, roughness: 0.4 });
+const eadFrameMat = new THREE.MeshStandardMaterial({ color: 0x33415a, roughness: 0.8 });
+
+function disposeIonic() {
+  if (!ionic) return;
+  scene.remove(ionic.group);
+  disposeObject(ionic.group);
+  for (const p of ionic.ions) scene.remove(p.mesh);
+  ionic = null;
+}
+
+function buildIonic() {
+  disposeIonic();
+  const s = eadParams(), lay = P.eadLayout(s);
+  const group = new THREE.Group();
+  const glows = [];
+  for (const st of lay.stages) {
+    for (const y of lay.ys) {
+      const wire = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, s.b, 6), eadEmitterMat);
+      wire.rotation.x = Math.PI / 2; wire.position.set(st.x0, y, 0);
+      const glow = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, s.b, 8),
+        new THREE.MeshBasicMaterial({ color: 0x7fb0ff, transparent: true, opacity: 0.15 }));
+      glow.rotation.x = Math.PI / 2; glow.position.set(st.x0, y, 0);
+      glows.push(glow);
+      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, s.b, 10), eadCollectorMat);
+      col.rotation.x = Math.PI / 2; col.position.set(st.x1, y, 0);
+      group.add(wire, glow, col);
+    }
+    for (const z of [-s.b / 2, s.b / 2]) {
+      const post = new THREE.Mesh(new THREE.BoxGeometry(lay.d + 0.04, lay.height + 0.06, 0.01), eadFrameMat);
+      post.position.set((st.x0 + st.x1) / 2, 0, z);
+      group.add(post);
+    }
+  }
+  const arrows = [];
+  for (const x of [lay.stages[0].x0 - 0.25, ...lay.stages.map(st => st.x1 + 0.03)]) {
+    const a = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(x, -0.35 - lay.height / 2, 0), 0.1, 0x5fd1ff, 0.04, 0.02);
+    arrows.push(a); group.add(a);
+  }
+  const thrustArrow = new THREE.ArrowHelper(new THREE.Vector3(-1, 0, 0), new THREE.Vector3(0, 0.35 + lay.height / 2, 0), 0.1, 0xd95926, 0.06, 0.03);
+  group.add(thrustArrow);
+  scene.add(group);
+  ionic = Object.assign(P.makeIonic(), { group, glows, arrows, thrustArrow });
+}
+
+function updateIonicVisuals() {
+  const m = eadCurrent(), s = eadParams();
+  const glow = m.I1 > 0 ? Math.min(0.08 + 0.5 * Math.sqrt(m.I1 / 0.01), 0.7) : 0;
+  for (const g of ionic.glows) g.material.opacity = glow;
+  const speeds = [s.vinf, ...m.stages.map(st => st.vout)];
+  ionic.arrows.forEach((a, i) => {
+    const sp = speeds[i] || 0;
+    a.setLength(Math.max(0.01, 0.08 * sp), 0.04, 0.02);
+    a.visible = sp > 0.02;
+  });
+  ionic.thrustArrow.setLength(Math.max(0.02, 0.25 * m.T), 0.06, 0.03);
+  ionic.thrustArrow.visible = m.T > 1e-3;
+  for (const q of ionic.ions) q.mesh.position.set(q.x, q.y, q.z);
+}
+
+const siN = x => P.fmtSI(x, 'N', 2), siW = x => P.fmtSI(x, 'W', 2), siA = x => P.fmtSI(x, 'A', 2), siV = x => P.fmtSI(x, 'V', 2);
+function ionicReadout() {
+  const m = eadCurrent(), s = eadParams();
+  let status;
+  if (m.below) status = `<span class="bad">Below corona onset (V₀ = ${siV(m.V0)}): no current, no thrust.</span>`;
+  else if (m.spark) status = `<span class="bad">Spark-over likely: V/d = ${(m.E / 1e6).toFixed(2)} MV/m exceeds ${(P.EAD.SPARK_FIELD * s.delta / 1e6).toFixed(2)} MV/m (rough limit).</span>`;
+  else status = `<span class="ok">Corona regime.</span> V/d = ${(m.E / 1e6).toFixed(2)} MV/m, onset ${siV(m.V0)}.`;
+  const rows = m.stages.map(st => `<tr><td>${st.k}</td><td>${siA(st.I)}</td><td>${siN(st.T)}</td><td>${st.vin.toFixed(1)} → ${st.vout.toFixed(1)}</td><td>${(st.tp * 1e3).toFixed(1)}</td></tr>`).join('');
+  const booksTol = 1e-9;
+  return `<b>Ion wind thruster (SI)</b><br>${status}`
+    + `<br><b>Thrust ${siN(m.T)}</b> · power ${siW(m.P)} · <b>${(m.TP * 1e3).toFixed(1)} N/kW</b>`
+    + `<br>Current ${siA(m.I)} · ion drift ${m.driftSpeed.toFixed(0)} m/s · μ ${(m.mu * 1e4).toFixed(2)}×10⁻⁴ m²/V·s`
+    + `<br>Thrust density ${m.density.toFixed(2)} N/m² · exit air ${m.vExit.toFixed(2)} m/s · efficiency at ${s.vinf.toFixed(1)} m/s: ${(m.eta * 100).toFixed(2)} % (ideal 1 stage ${(m.etaIdeal * 100).toFixed(2)} %)`
+    + `<br>Same current as a free ion beam in vacuum: ${siN(m.Tvac)} at ${(m.vIon / 1e3).toFixed(0)} km/s${m.T > 0 ? `, ${(m.T / m.Tvac).toFixed(0)}× less than the ion wind` : ''}`
+    + `<table><tr><th>Stage</th><th>I</th><th>T</th><th>air in → out (m/s)</th><th>N/kW</th></tr>${rows}</table>`
+    + `<br><b>Power books</b> (electrical = jet kinetic ${siW(m.Pjet)} + ion-neutral heat ${siW(m.heat)}): ${m.books.toExponential(1)} rel. residual (tol ${booksTol.toExponential(0)}) ${badge(m.books <= booksTol)} <i>(identity of the model, not an independent check)</i>`
+    + `<br><span class="cap">Benchmarks: MIT 2018 ≈ 40 kV, ≈ 500 W, 5 m span, 60 m flights. Masuyama &amp; Barrett ≈ 100 N/kW at low thrust.</span>`;
+}
+
+// Two single-series canvas charts: thrust and N/kW against voltage, operating point marked.
+function setupChart(canvas, xLabel, yLabel, yFmt) {
+  const st = { canvas, ctx: canvas.getContext('2d'), xs: [], ys: [], op: null, hover: null, xLabel, yLabel, yFmt };
+  canvas.addEventListener('mousemove', e => { const r = canvas.getBoundingClientRect(); st.hover = (e.clientX - r.left) / r.width; drawChart(st); });
+  canvas.addEventListener('mouseleave', () => { st.hover = null; drawChart(st); });
+  return st;
+}
+function drawChart(st) {
+  const { canvas, ctx, xs, ys } = st;
+  const dpr = Math.min(window.devicePixelRatio, 2), W = canvas.clientWidth, H = canvas.clientHeight;
+  if (W === 0 || !xs.length) return;
+  if (canvas.width !== W * dpr || canvas.height !== H * dpr) { canvas.width = W * dpr; canvas.height = H * dpr; }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  const padL = 40, padR = 10, padT = 14, padB = 34, pw = W - padL - padR, ph = H - padT - padB;
+  const xmin = xs[0], xmax = xs[xs.length - 1];
+  const ymax = Math.max(1e-9, ...ys, st.op ? st.op[1] : 0) * 1.08;
+  const X = x => padL + (x - xmin) / (xmax - xmin) * pw, Y = y => padT + ph - (y / ymax) * ph;
+  const muted = '#7d8ea8', secondary = '#c3c2b7', gridc = '#141c2a', series = '#3987e5', accent = '#d95926', surface = '#0b111c';
+  ctx.strokeStyle = gridc; ctx.lineWidth = 1; ctx.fillStyle = muted; ctx.font = '10px system-ui, sans-serif';
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  for (let i = 0; i <= 4; i++) { const y = padT + ph - (i / 4) * ph; ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke(); ctx.fillText(st.yFmt(ymax * i / 4), padL - 5, y); }
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (let i = 0; i <= 4; i++) { const x = xmin + (xmax - xmin) * i / 4; ctx.fillText(x.toFixed(0), X(x), padT + ph + 5); }
+  ctx.fillStyle = secondary; ctx.textAlign = 'left'; ctx.fillText(st.yLabel, padL, 0);
+  ctx.textAlign = 'right'; ctx.fillText(st.xLabel, W - padR, padT + ph + 18);
+  ctx.strokeStyle = series; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.beginPath();
+  xs.forEach((x, i) => { const px = X(x), py = Y(ys[i]); i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); });
+  ctx.stroke();
+  if (st.op) {
+    ctx.fillStyle = surface; ctx.beginPath(); ctx.arc(X(st.op[0]), Y(st.op[1]), 6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(X(st.op[0]), Y(st.op[1]), 4, 0, Math.PI * 2); ctx.fill();
+  }
+  if (st.hover !== null) {
+    let i = Math.round(((st.hover * W - padL) / pw) * (xs.length - 1));
+    i = Math.max(0, Math.min(xs.length - 1, i));
+    const px = X(xs[i]), py = Y(ys[i]);
+    ctx.strokeStyle = muted; ctx.setLineDash([3, 3]); ctx.beginPath(); ctx.moveTo(px, padT); ctx.lineTo(px, padT + ph); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = series; ctx.beginPath(); ctx.arc(px, py, 4, 0, Math.PI * 2); ctx.fill();
+    const label = `${xs[i].toFixed(1)} kV: ${st.yFmt(ys[i])}`;
+    ctx.font = '11px system-ui, sans-serif';
+    const tw = ctx.measureText(label).width + 10, tx = Math.min(Math.max(px - tw / 2, padL), W - padR - tw);
+    ctx.fillStyle = 'rgba(12,16,26,.95)'; ctx.fillRect(tx, padT + 2, tw, 16);
+    ctx.fillStyle = secondary; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText(label, tx + 5, padT + 4);
+  }
+}
+const chartT = setupChart($('chartT'), 'voltage (kV)', 'thrust (N)', v => v >= 10 ? v.toFixed(0) : v.toFixed(2));
+const chartTP = setupChart($('chartTP'), 'voltage (kV)', 'thrust per power (N/kW)', v => v.toFixed(0));
+function updateEadCharts() {
+  const s = eadParams(), m = eadCurrent();
+  const xs = [], tN = [], tp = [];
+  for (let i = 0; i <= 120; i++) {
+    const Vk = 2 + 78 * i / 120, mm = P.eadModel({ ...s, V: Vk });
+    xs.push(Vk); tN.push(mm.T); tp.push(mm.TP * 1e3);
+  }
+  chartT.xs = xs; chartT.ys = tN; chartT.op = [s.V, m.T];
+  chartTP.xs = xs; chartTP.ys = tp; chartTP.op = [s.V, m.TP * 1e3];
+  drawChart(chartT); drawChart(chartTP);
+}
+
+// ---- Carr machine test bench (SI) --------------------------------------------
+// Closed-form physics in P.carrBench; the 12-coil ring is live Biot-Savart (rings)
+// with per-coil gain, so the "reduce a coil to steer" claim is tested with real forces.
+let carr = null;
+const carrParams = () => ({ I: state.carrI, N: state.carrN, gap: state.carrGap / 1000, lam: state.carrLam / 1000, f: state.carrF, discRpm: state.carrDisc, rimRpm: state.carrRim, utronRpm: state.carrUtron });
+
+function disposeCarr() {
+  if (!carr) return;
+  scene.remove(carr.group);
+  disposeObject(carr.group);
+  carr = null;
+}
+
+function buildCarr() {
+  disposeCarr();
+  const c = P.CARR;
+  const group = new THREE.Group();
+  // plywood centre plate with six aluminium D-caps on its rim (the disc spins)
+  const disc = new THREE.Group();
+  disc.add(new THREE.Mesh(new THREE.CylinderGeometry(c.plateR, c.plateR, c.plateT, 64),
+    new THREE.MeshStandardMaterial({ color: 0xa3824e, roughness: 0.9 })));
+  const alMat = new THREE.MeshStandardMaterial({ color: 0xc9d1dc, metalness: 0.8, roughness: 0.35 });
+  for (let k = 0; k < c.nCaps; k++) {
+    const sector = new THREE.Mesh(new THREE.RingGeometry(c.capIn, c.capOut, 24, 1, k * Math.PI / 3 + Math.PI / 12, Math.PI / 6), alMat);
+    sector.rotation.x = -Math.PI / 2;
+    for (const y of [c.plateT / 2 + c.leaf / 2, -c.plateT / 2 - c.leaf / 2]) {
+      const leaf = sector.clone(); leaf.position.y = y; disc.add(leaf);
+    }
+  }
+  group.add(disc);
+  // bismuth Utron: two right-angle cones base to base on the shaft (spins on its own)
+  const u = c.utronLarge;
+  const biMat = new THREE.MeshStandardMaterial({ color: 0xd8c8d8, metalness: 0.6, roughness: 0.45 });
+  const utron = new THREE.Group();
+  const top = new THREE.Mesh(new THREE.ConeGeometry(u.R, u.h, 48), biMat); top.position.y = u.h / 2;
+  const bot = new THREE.Mesh(new THREE.ConeGeometry(u.R, u.h, 48), biMat); bot.rotation.x = Math.PI; bot.position.y = -u.h / 2;
+  utron.add(top, bot);
+  utron.position.y = c.plateT / 2 + u.h + 0.01;
+  group.add(utron);
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.036, 1.0, 16),
+    new THREE.MeshStandardMaterial({ color: 0x9aa4b2, metalness: 0.8, roughness: 0.3 }));
+  group.add(shaft);
+  // coil labels: E1 at +x, numbered clockwise seen from above (matches the coil phases)
+  scene.add(group);
+  carr = { group, disc, utron };
+  camera.position.set(1.6, 1.1, 1.9);
+  controls.target.set(0, 0.1, 0);
+}
+
+function updateCarrVisuals(frameDt) {
+  const dt = frameDt * state.time;
+  carr.disc.rotation.y += state.carrDisc * 2 * Math.PI / 60 * dt * 0.05;     // slowed 20x for the eye
+  carr.utron.rotation.y -= state.carrUtron * 2 * Math.PI / 60 * dt * 0.01;   // slowed 100x
+}
+
+const fN = x => P.fmtSI(x, 'N', 2), fW = x => P.fmtSI(x, 'W', 2), fVv = x => P.fmtSI(x, 'V', 2);
+function carrReadout() {
+  const b = P.carrBench(carrParams()), c = P.CARR;
+  const F = P.diamagneticForceAt(rings, 0, 0, 0, 2 * P.CARR.utronLarge.R ** 3 * 0.5, c.chiBi);
+  const Fmag = Math.hypot(F.x, F.y, F.z);
+  const k = state.carrReduce;
+  let steer;
+  if (k === 0) steer = `All twelve coils equal: field at the centre cancels by symmetry, force on the Utron ${fN(Fmag)}.`;
+  else {
+    const phi = (k - 1) * Math.PI / 6;
+    const toward = Fmag > 0 ? (F.x * Math.cos(phi) + F.z * Math.sin(phi)) / Fmag : 0;
+    steer = `Coil E${k} at ${(state.carrFactor * 100).toFixed(0)} %: diamagnetic force on the Utron ${fN(Fmag)}, ${toward > 0.9 ? 'toward' : toward < -0.9 ? 'away from' : 'oblique to'} E${k} (cos ${toward.toFixed(2)}). Carr's rule says the craft moves toward the reduced coil; a diamagnet does move that way, but the force is ${(Fmag / (2 * b.mLarge * P.UNITS.g0)).toExponential(1)} of the Utron's weight, and it is internal: the coils feel the equal and opposite force, so the craft's net force is <b>0</b>.`;
+  }
+  return `<b>Carr machine test bench (SI)</b> <span class="cap">closed-form, after Project Vimana ep. 2; "video" marks his stated numbers</span>`
+    + `<br><b>C-core electromagnet:</b> ${b.ampereTurns.toFixed(0)} A·turns across ${state.carrGap} mm → gap field <b>${(b.B * 1e3).toFixed(1)} mT</b>${b.saturated ? ' <span class="bad">(core saturated, Bsat 1.8 T)</span>' : ''} (video: ~70 mT at 80 mm). Pull per pole face ${fN(b.force)} (∝ B², so ∝ 1/gap²).`
+    + `<br><b>Switching:</b> L ≈ ${P.fmtSI(b.L, 'H', 2)}, stored ${P.fmtSI(b.energy, 'J', 2)}; interrupting in ${(c.tOff * 1e3).toFixed(0)} ms spikes to ${fVv(b.spike)} — why contacts arc and drives use transistors + snubbers.`
+    + `<br><b>Eddy loss in the core at ${state.carrF} Hz:</b> ${state.carrLam} mm sheets ${fW(b.eddyLam)} vs 22 mm solid ${fW(b.eddySolid)}, ratio ${b.eddyRatio.toFixed(0)}× (video: ~4000×; thin-sheet formula, skin depth ${(b.skinDepth * 1e3).toFixed(2)} mm so the solid figure is an upper bound).`
+    + `<br><b>Aluminium D-caps:</b> ${b.capMass.toFixed(2)} kg each (video: 2.25 kg), ${(c.nCaps * b.capMass).toFixed(1)} kg on the rim; disc inertia ${b.Idisc.toFixed(2)} kg·m².`
+    + `<br><b>Eddy brake, magnet on, disc at ${state.carrDisc} rpm:</b> rim speed ${b.vRim.toFixed(1)} m/s, braking torque ${P.fmtSI(b.brakeTorque, 'N·m', 2)}, heat ${fW(b.brakeHeat)}; spin-down time constant <b>${b.brakeTau.toFixed(0)} s</b> (his proposed test: compare spin-down with magnet off / on / switching; off = friction only, not modelled).`
+    + `<br><b>Utron (bismuth):</b> halves ${(b.mSmall * 1e3).toFixed(0)} g / ${b.mLarge.toFixed(1)} kg (video: 240 g / 14 kg). Spinning at ${state.carrUtron} rpm in the gap field: symmetric winding → <b>0 V</b> induced; as a Faraday disc ${P.fmtSI(b.faradayV, 'V', 2)} (video: ~14 mV); 5 A in the 65-turn winding → torque ${P.fmtSI(b.windingTorque, 'N·m', 2)} that tilts it, none about the spin axis.`
+    + `<br><b>Gyroscope rim (${c.nUtrons} Utrons at 45°, rim ${state.carrRim} rpm):</b> L per Utron ${b.Lu.toFixed(3)} N·m·s, torque per mount ${P.fmtSI(b.gyroTorque, 'N·m', 2)} (video: ~1 N·m); the six cancel, the struts carry them. Braking all Utrons spins the rim up by ${b.dRimRpm.toFixed(1)} rpm (video: 60 → 72); total momentum unchanged.`
+    + `<br><b>Glow:</b> corona at a ${(c.edgeRadius * 1e3).toFixed(0)} mm edge needs ≈ ${fVv(b.coronaV)}; the ${state.carrGap} mm gap breaks down at ≈ ${fVv(b.gapBreakdownV)} (3 MV/m). A glow needs tens of kV on the plates; it says nothing about lift.`
+    + `<br><b>Steering test (live Biot-Savart, 12 air-core coils):</b> ${steer}`
+    + `<br><b>Momentum check:</b> net force on craft from its own coils and Utron = 0 (internal), gyro torques cancel by symmetry, braking exchanges L with no change in total — <span class="ok">PASS</span> <i>(statements of conservation; the numeric cancellation of the centre field is in the node test, 1e-15)</i>`;
+}
+
+// ---- xenon gridded ion engine (real units) -----------------------------------
+// Xenon is ionised, then accelerated through grids: v = sqrt(2 e V / m).
+// Thrust = (I / e) * m * v. Beam power = I * V. No air needed.
+let xenon = null;
+const xenonHooks = {
+  onAdd: ion => {
+    ion.mesh = new THREE.Mesh(ionGeo, ionMat);
+    ion.yo = (Math.random() - 0.5) * 0.6; ion.zo = (Math.random() - 0.5) * 0.6;
+    scene.add(ion.mesh);
+  },
+  onRemove: ion => scene.remove(ion.mesh),
+};
+
+function buildXenon() {
+  const group = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 1.6, 24),
+    new THREE.MeshStandardMaterial({ color: 0xbbbbbb, metalness: 0.6, roughness: 0.35 }));
+  body.rotation.z = Math.PI / 2;   // axis along x
+  body.position.x = -0.8;
+  const grids = [0.3, 0.6].map((x, i) => {
+    const g = new THREE.Mesh(new THREE.TorusGeometry(0.46, 0.035, 8, 36),
+      new THREE.MeshStandardMaterial({ color: i ? 0xff5f5f : 0x5f9bff, emissive: i ? 0x551111 : 0x112255 }));
+    g.rotation.y = Math.PI / 2;
+    g.position.x = x;
+    return g;
+  });
+  group.add(body, ...grids);
+  scene.add(group);
+  const arrow = new THREE.ArrowHelper(new THREE.Vector3(-1, 0, 0), new THREE.Vector3(0, 1.2, 0), 1, 0xff5f5f);
+  scene.add(arrow);
+  xenon = { group, arrow, ions: [], spawn: 0 };
+}
+
+function updateXenonVisuals() {
+  for (const p of xenon.ions) p.mesh.position.set(p.x, p.yo, p.zo);
+  const { F } = P.xenonRates(state.xeV, state.xeI);
+  xenon.arrow.setLength(Math.min(0.05 + F * 1e3 * 0.02, 3), 0.2, 0.1);
+}
+
+function xenonReadout() {
+  const { V, I, v, F, P: Pw, Pjet, Isp, mdot } = P.xenonRates(state.xeV, state.xeI);
+  const tol = 1e-9 * Math.max(Pw, 1e-9);
+  return `<b>Xenon gridded ion engine</b><br>Real units: beam ${(I * 1e3).toFixed(0)} mA at ${V.toFixed(0)} V (${P.UNITS.ionName}, ${(P.UNITS.ionMass * 1e27).toFixed(1)}e-27 kg).`
+    + `<br>Exhaust ${(v / 1000).toFixed(1)} km/s, specific impulse ${Isp.toFixed(0)} s, propellant flow ${(mdot * 1e6).toFixed(2)} mg/s`
+    + `<br>Thrust ${P.fmtSI(F, 'N')}, beam power ${P.fmtSI(Pw, 'W')}`
+    + `<br>Thrust per kW ${Pw > 0 ? (F * 1e3 / (Pw / 1000)).toFixed(1) : '—'} mN/kW. Ideal beam efficiency is 100%; real engines run about 60–80%.`
+    + `<br><b>Energy check</b> (beam power I·V vs jet power ½ṁv²): ${P.fmtSI(Math.abs(Pjet - Pw), 'W', 2)} drift (tol ${P.fmtSI(tol, 'W', 2)}) ${badge(Math.abs(Pjet - Pw) <= tol)}`;
+}
+
+// ---- Early universe (FLRW + Zel'dovich) -------------------------------------
+// Background: P.cosmoTable (Friedmann + g*(T)); structure: P.zeldovichDisplace on a comoving
+// grid. The scene shows the comoving box (fixed on screen); the readout gives proper sizes.
+let cosmo = null;
+const COSMO_N = 22, COSMO_BOX = 4;   // particles per side, box size on screen (sim units)
+const cosmoWaveSets = [[[1, 0, 0]], [[1, 0, 0], [0, 1, 0]], [[1, 0, 0], [0, 1, 0], [0, 0, 1]], [[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 1, 0]]];
+const cosmoKeyA = () => Math.pow(10, state.cosmoLogA);
+
+function cosmoRebuildTable() {
+  if (!cosmo) return;
+  cosmo.tab = P.cosmoTable({ H0: state.cosmoH0, OmegaM: state.cosmoOmegaM });
+  cosmo.events = P.cosmoEvents(cosmo.tab);
+}
+function cosmoRebuildField() { if (cosmo) cosmo.field = P.makeZeldovichField(state.cosmoAmp, cosmoWaveSets[state.cosmoWaves - 1]); }
+
+function disposeCosmo() {
+  if (!cosmo) return;
+  scene.remove(cosmo.points, cosmo.box);
+  cosmo.points.geometry.dispose(); cosmo.points.material.dispose();
+  cosmo.box.geometry.dispose(); cosmo.box.material.dispose();
+  scene.background.set(0x07090f);
+  grid.visible = true;
+  if (fieldLines) fieldLines.visible = state.lines;
+  cosmo = null;
+}
+
+function buildCosmo() {
+  disposeCosmo();
+  const n = COSMO_N, count = n * n * n;
+  const q = new Float32Array(count * 3);
+  for (let i = 0, k = 0; i < n; i++) for (let j = 0; j < n; j++) for (let l = 0; l < n; l++, k++) {
+    q[3 * k] = (i + 0.5) / n; q[3 * k + 1] = (j + 0.5) / n; q[3 * k + 2] = (l + 0.5) / n;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+  const points = new THREE.Points(geo, new THREE.PointsMaterial({ size: 0.05, vertexColors: true, transparent: true, opacity: 0.9 }));
+  const box = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(COSMO_BOX, COSMO_BOX, COSMO_BOX)),
+    new THREE.LineBasicMaterial({ color: 0x3a5a7a }));
+  scene.add(points, box);
+  grid.visible = false;
+  if (fieldLines) fieldLines.visible = false;
+  cosmo = { points, box, q, count, tab: null, field: null, events: [], maxRho: 1 };
+  cosmoRebuildTable(); cosmoRebuildField();
+  camera.position.set(5.5, 4, 6.5);
+  controls.target.set(0, 0, 0);
+}
+
+function stepCosmo(dt) {
+  if (!state.cosmoPlay) return;
+  state.cosmoLogA = Math.min(0, state.cosmoLogA + state.cosmoSpeed * dt);
+  if (state.cosmoLogA >= 0) state.cosmoPlay = false;
+  syncRange('cosmoLogA', 'cosmoLogA', 2); $('cosmoPlay').checked = state.cosmoPlay;
+}
+
+// photon colour by temperature: opaque glowing plasma before recombination, then dark
+function cosmoBackground(T) {
+  const x = Math.min(1, Math.max(0, Math.log10(T / 300) / Math.log10(3e4 / 300)));   // 300 K .. 30 kK
+  const c = new THREE.Color();
+  // dark sky below 300 K; deep red -> orange (recombination, 3000 K) -> blue-white plasma, kept dim
+  if (T < 300) c.setRGB(0.03, 0.035, 0.06);
+  else if (x < 0.7) c.setHSL(0.0 + 0.09 * x / 0.7, 0.85, 0.05 + 0.2 * x / 0.7);
+  else c.setHSL(0.09 + 0.5 * (x - 0.7) / 0.3, 0.45, 0.16 + 0.06 * (x - 0.7) / 0.3);
+  scene.background.copy(c);
+}
+
+function updateCosmoVisuals() {
+  const a = cosmoKeyA(), s = P.cosmoState(a, cosmo.tab);
+  const pos = cosmo.points.geometry.attributes.position, col = cosmo.points.geometry.attributes.color;
+  const qv = { x: 0, y: 0, z: 0 }, out = { x: 0, y: 0, z: 0, density: 1, deltaLin: 0 };
+  let maxRho = 1;
+  for (let k = 0; k < cosmo.count; k++) {
+    qv.x = cosmo.q[3 * k]; qv.y = cosmo.q[3 * k + 1]; qv.z = cosmo.q[3 * k + 2];
+    P.zeldovichDisplace(qv, s.D, cosmo.field, out);
+    pos.array[3 * k] = (out.x - 0.5) * COSMO_BOX; pos.array[3 * k + 1] = (out.y - 0.5) * COSMO_BOX; pos.array[3 * k + 2] = (out.z - 0.5) * COSMO_BOX;
+    const rho = Number.isFinite(out.density) ? out.density : 1e3;
+    maxRho = Math.max(maxRho, rho);
+    const w = Math.min(1, Math.max(0, Math.log10(rho) / 2 + 0.5));   // 0.3x .. 30x mean
+    col.array[3 * k] = 0.25 + 0.75 * w; col.array[3 * k + 1] = 0.45 + 0.3 * w; col.array[3 * k + 2] = 1 - 0.7 * w;
+  }
+  pos.needsUpdate = true; col.needsUpdate = true;
+  cosmo.points.material.opacity = s.T > 3000 ? 0.25 : 0.9;   // matter is coupled to the photon fluid before recombination
+  cosmo.maxRho = maxRho;
+  cosmoBackground(s.T);
+}
+
+function cosmoReadout() {
+  const a = cosmoKeyA(), s = P.cosmoState(a, cosmo.tab), p = cosmo.tab.p;
+  const pct = x => (100 * x).toFixed(x > 0.01 ? 1 : 3) + ' %';
+  const age = P.cosmoAge(cosmo.tab), hor = P.cosmoHorizonToday(cosmo.tab) / (P.COSMO.c * P.COSMO.yr * 1e9);
+  const next = cosmo.events.find(e => e.a > a * 1.0001), prev = [...cosmo.events].reverse().find(e => e.a <= a * 1.0001);
+  const aSC = P.zeldovichShellCrossing(cosmo.tab, state.cosmoAmp / Math.sqrt(state.cosmoWaves));
+  // checks: analytic limits of the Friedmann equation
+  const eraOK = s.era === 'radiation' ? Math.abs(s.tH - 0.5) / 0.5 : s.era === 'matter' ? Math.abs(s.tH - 2 / 3) / (2 / 3) : NaN;
+  const eraTol = 0.05;
+  const cpt = P.growthCPT(p.OmegaM, p.OmegaL), D1 = P.cosmoState(1, cosmo.tab).D;
+  const ruleT = s.era === 'radiation' && s.kTeV > 1e5 ? P.radiationEraTime(s.kTeV / 1e6, s.gStar) : null;
+  let txt = `<b>Early universe (SI, flat ΛCDM)</b><br>a = ${a.toExponential(2)}, z = ${s.z < 1e4 ? s.z.toFixed(1) : s.z.toExponential(2)}, <b>t = ${P.fmtTime(s.t)}</b>, T<sub>γ</sub> = <b>${P.fmtTemp(s.T)}</b>, g* = ${s.gStar.toFixed(2)}`
+    + `<br>H = ${(s.H * P.COSMO.Mpc / 1e3).toPrecision(3)} km/s/Mpc, era: <b>${s.era}</b> (Ω_r ${pct(s.OmegaR)}, Ω_m ${pct(s.OmegaM)}, Ω_Λ ${pct(s.OmegaL)}; Σ = 1 by the Friedmann equation)`
+    + `<br>Densities: radiation ${s.rhoR.toExponential(2)}, matter ${s.rhoM.toExponential(2)}, Λ ${s.rhoL.toExponential(2)} kg/m³ (water 1000, air 1.2, today's critical ${p.rhoCrit0.toExponential(2)})`
+    + `<br>Hubble radius c/H = ${P.fmtLength(s.hubbleRadius)}; particle horizon (proper) ${P.fmtLength(s.horizonPhys)}; comoving box on screen = 100 Mpc, proper size ${P.fmtLength(100 * a * P.COSMO.Mpc)}`
+    + `<br>${prev ? `Last: <i>${prev.label}</i> at ${P.fmtTime(prev.t)}. ` : ''}${next ? `Next: <i>${next.label}</i> at ${P.fmtTime(next.t)} (T ${P.fmtTemp(next.T)}).` : ''}`
+    + `<br><b>Structure (Zel\'dovich):</b> growth D = ${s.D.toExponential(2)} (D ≈ a in the matter era, suppressed by Λ to ${D1.toFixed(3)} today), f = dlnD/dlna = ${s.f.toFixed(3)} vs Linder [Ω_m/(Ω_m+Ω_Λ)]<sup>0.55</sup> = ${s.fLinder.toFixed(3)} (growth solved for matter + Λ only), densest cell ${cosmo.maxRho >= 1e3 ? '∞ (shell crossing)' : cosmo.maxRho.toFixed(1) + '× mean'}; first caustic (per-mode amplitude δ₀/√modes) at a = ${Number.isFinite(aSC) ? aSC.toFixed(3) + ' (t = ' + P.fmtTime(P.cosmoState(aSC, cosmo.tab).t) + ')' : 'never (δ₀ too small)'}`
+    + `<br><b>Checks:</b> t·H = ${s.tH.toFixed(4)} ${Number.isFinite(eraOK) ? `vs ${s.era === 'radiation' ? '½' : '⅔'} (single-component limit, ${(eraOK * 100).toFixed(2)} % off) ${badge(eraOK <= eraTol)}` : '(Λ era: no power-law limit)'}`
+    + (ruleT ? `; t vs 2.42 s·g*<sup>−½</sup>(MeV/kT)² = ${P.fmtTime(ruleT)} ${badge(Math.abs(ruleT - s.t) / s.t < 0.05)}` : '')
+    + `; age ${(age / P.COSMO.yr / 1e9).toFixed(2)} Gyr ${badge(Math.abs(age / P.COSMO.yr / 1e9 - 13.80) < 0.15 || Math.abs(state.cosmoH0 - 67.4) > 0.05 || Math.abs(state.cosmoOmegaM - 0.315) > 1e-3)} (Planck 2018: 13.80); z_eq ${(1 / p.aEq - 1).toFixed(0)}; horizon today ${hor.toFixed(1)} Gly; D(1) vs Carroll–Press–Turner ${cpt.toFixed(3)} ${badge(Math.abs(D1 - cpt) / cpt < 0.02)}`;
+  return txt;
+}
+
+// ---- field lines (streamlines of B) ---------------------------------------
+const SEEDS = 22, LINE_STEPS = 60, LINE_STEP = 0.07;
+let seeds = [];
+let fieldLines = null;
+
+function buildLines() {
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(SEEDS * 2 * LINE_STEPS * 2 * 3), 3));
+  fieldLines = new THREE.LineSegments(geo, new THREE.LineBasicMaterial({ color: 0x5fd1ff, transparent: true, opacity: 0.35 }));
+  fieldLines.frustumCulled = false;
+  fieldLines.visible = state.lines;
+  scene.add(fieldLines);
+}
+
+function resetSeeds() {
+  seeds = Array.from({ length: SEEDS }, () =>
+    new THREE.Vector3((Math.random() - 0.5) * 6, (Math.random() - 0.5) * 6, (Math.random() - 0.5) * 6));
+}
+
+const _p = new THREE.Vector3(), _b = new THREE.Vector3();
+function updateLines() {
+  const geo = fieldLines.geometry;
+  const arr = geo.attributes.position.array;
+  let n = 0;
+  for (const s of seeds) {
+    for (const dir of [1, -1]) {
+      _p.copy(s);
+      for (let k = 0; k < LINE_STEPS; k++) {
+        fieldAt(_p.x, _p.y, _p.z, _b);
+        const mag = _b.length();
+        if (mag < 1e-4 || _p.length() > 10) break;
+        const x0 = _p.x, y0 = _p.y, z0 = _p.z;
+        _p.addScaledVector(_b, dir * LINE_STEP / mag);
+        arr[n++] = x0; arr[n++] = y0; arr[n++] = z0;
+        arr[n++] = _p.x; arr[n++] = _p.y; arr[n++] = _p.z;
+      }
+    }
+  }
+  geo.setDrawRange(0, n / 3);
+  geo.attributes.position.needsUpdate = true;
+}
+
+// ---- build / reset -------------------------------------------------------
+function buildContraption() {
+  buildRings(state.contraption);
+  if (gyro) {
+    scene.remove(gyro.group, gyro.pivot);
+    disposeObject(gyro.group);
+    gyro = null;
+  }
+  if (motor) {
+    scene.remove(motor.group);
+    disposeObject(motor.group);
+    motor = null;
+  }
+  if (payload) {
+    scene.remove(payload.mesh);
+    disposeObject(payload.mesh);
+    payload = null;
+  }
+  if (fall) {
+    scene.remove(fall.a, fall.b);
+    disposeObject(fall.a);
+    disposeObject(fall.b);
+    fall = null;
+  }
+  if (state.contraption === 'levit') buildPayload();
+  if (state.contraption === 'ffall') buildFall();
+  disposeIonic();
+  if (state.contraption === 'ionic') buildIonic();
+  if (xenon) {
+    scene.remove(xenon.group, xenon.arrow);
+    disposeObject(xenon.group);
+    for (const p of xenon.ions) scene.remove(p.mesh);
+    xenon = null;
+  }
+  if (state.contraption === 'xenon') buildXenon();
+  disposeCarr();
+  if (state.contraption === 'carr') buildCarr();
+  disposeCosmo();
+  if (state.contraption === 'cosmo') buildCosmo();
+  if (state.contraption === 'gyro') buildGyro();
+  if (state.contraption === 'motor' || state.contraption.startsWith('perp-')) buildMotor();
+  if (motor && state.contraption === 'perp-wheel') buildWheelVisual();
+  if (motor && state.contraption === 'perp-detent') motor.psi = 0.6;   // start off a detent
+  clearParticles();
+  drift.reset();
+  pEnvSig = '';
+  if (state.contraption !== 'cosmo') spawnElectrons(20);
+  resetSeeds();
+  simT = 0;
+  updateRings(0);
+  if (fieldLines) updateLines();
+  $('research-note').innerHTML = RESEARCH[state.contraption] || '';
+}
+
+// ---- loop ----------------------------------------------------------------
+let simT = 0;
+let acc = 0;
+let last = performance.now();
+let frameCount = 0;
+
+function stepPhysics(dt) {
+  simT += dt;
+  updateRings(simT);
+  pEnv.G.y = state.gravity ? -state.g : 0;
+  pEnv.E.y = state.efield;
+  const sig = `${pEnv.G.y}|${pEnv.E.y}`;
+  if (sig !== pEnvSig) {   // E field or g changed: the potential-energy zero moved, so re-baseline
+    pEnvSig = sig;
+    for (const p of particles) P.rebaselineParticle(p, pEnv);
+  }
+  if (gyro) P.stepGyro(gyro, rings, dt, { G: pEnv.G, mu: state.mu, spin: state.spin });
+  stepPerp(dt);
+  if (payload) P.stepLevit(payload, rings, dt, state);
+  if (fall) P.stepFall(fall, dt, state);
+  if (ionic) P.stepIonicVisual(ionic, dt, eadParams(), eadCurrent(), ionHooks);
+  if (xenon) P.stepXenonIons(xenon, dt, state, xenonHooks);
+  if (cosmo) stepCosmo(dt);
+  for (const p of particles) P.stepParticle(p, dt, pEnv);
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    if (!Number.isFinite(p.pos.x) || Math.hypot(p.pos.x, p.pos.y, p.pos.z) > 12) removeParticle(i);
+  }
+}
+
+function updateVisuals(frameDt) {
+  for (const p of particles) {
+    p.mesh.position.set(p.pos.x, p.pos.y, p.pos.z);
+    p.hist.push(new THREE.Vector3(p.pos.x, p.pos.y, p.pos.z));
+    if (p.hist.length > TRAIL) p.hist.shift();
+    const tg = p.trail.geometry;
+    const arr = tg.attributes.position.array;
+    for (let i = 0; i < p.hist.length; i++) {
+      const v = p.hist[i];
+      arr[3 * i] = v.x; arr[3 * i + 1] = v.y; arr[3 * i + 2] = v.z;
+    }
+    tg.setDrawRange(0, p.hist.length);
+    tg.attributes.position.needsUpdate = true;
+  }
+  if (motor) {
+    const wheel = state.contraption === 'perp-wheel';
+    motor.group.rotation.set(0, wheel ? 0 : motor.psi, wheel ? motor.psi : 0);
+  }
+  if (ionic) updateIonicVisuals();
+  if (xenon) updateXenonVisuals();
+  if (carr) updateCarrVisuals(frameDt);
+  if (cosmo) updateCosmoVisuals();
+  if (payload) payload.mesh.position.set(0, payload.y, 0);
+  if (fall) {
+    fall.a.position.set(0, fall.ya, 0);
+    fall.b.position.set(0, fall.yb, 0);
+  }
+  if (gyro) {
+    gyro.group.quaternion.setFromUnitVectors(UP, new THREE.Vector3(gyro.a.x, gyro.a.y, gyro.a.z));
+    gyro.pivot.position.set(0, 0, 0);
+    gyro.disk.rotation.y += frameDt * state.time * 0.2 * state.spin;
+  }
+}
+
+// Electron energy per kg: 1/2 v^2 - (q/m) E.x - g.x, in J/kg (the sim electron has q/m = 1e4 C/kg).
+function particleLine() {
+  if (!particles.length) return '<br><b>Particle energy check:</b> no particles';
+  const c = P.particleEnergyCheck(particles, pEnv);
+  const timeVarying = (state.contraption === 'orbit' && state.orbit > 0) || state.contraption === 'motor' || state.contraption === 'perp-coil';
+  return checkLine('Particle energy check (KE + E-field PE + gravity PE, per kg)', c.drift, c.tol, 'energyPerMass', 'J/kg',
+    timeVarying ? ' <i>(induced E from the changing B is not modelled)</i>' : '');
+}
+
+function gyroLine() {
+  const U = P.gyroEnergy(gyro), W = gyro.W;
+  const d = drift.update(`${W.x.toFixed(9)}|${W.y.toFixed(9)}|${W.z.toFixed(9)}`, U);
+  const tol = 1e-3 * Math.hypot(W.x, W.y, W.z) + 1e-12;
+  return checkLine('Energy check (gyro PE: gravity + dipole)', d, tol, 'energy', 'J');
+}
+
+function updateReadout() {
+  fieldAt(0, 0, 0, B0);
+  let txt = `|B| at centre: ${fmt('field', 'T', B0.length())} (ring current ${state.current.toFixed(1)} A × ${P.N_TURNS} turns)`
+    + `<br>Electrons: ${particles.length} (q/m ${P.QM_SI.toExponential(1)} C/kg, scaled)`;
+  if (gyro) txt += `<br>Gyro precession: ${gyro.precession.toFixed(3)} rad/s` + gyroLine();
+  if (motor && state.contraption.startsWith('perp-')) txt += `<br>${perpReadout()}`;
+  else if (motor) {
+    const { b, line } = rotorBooksLine();
+    txt += `<br>Rotor: ${motor.omega.toFixed(2)} rad/s (drive ${state.drive.toFixed(2)} rad/s)`
+      + `<br>KE ${fmt('energy', 'J', b.ke)}, work from coils ${fmt('energy', 'J', motor.work)}, friction loss ${fmt('energy', 'J', motor.loss)}, coil I²R heat ${fmt('energy', 'J', motor.heat)}`
+      + line.replace('(KE+PE+loss-work)', '(KE+loss-work)');
+  }
+  if (payload) txt += `<br>${levitReadout()}`;
+  if (fall) txt += `<br>${fallReadout()}`;
+  if (ionic) txt += `<br>${ionicReadout()}`;
+  if (xenon) txt += `<br>${xenonReadout()}`;
+  if (carr) txt += `<br>${carrReadout()}`;
+  if (cosmo) txt += `<br>${cosmoReadout()}`;
+  txt += particleLine();
+  $('readout').innerHTML = txt;
+  $('ead-charts').hidden = !ionic;
+  if (ionic) updateEadCharts();
+}
+
+function animate(now) {
+  requestAnimationFrame(animate);
+  const frameDt = Math.min((now - last) / 1000, 0.05);
+  last = now;
+
+  acc = Math.min(acc + frameDt * state.time, 0.05);
+  while (acc >= DT) {
+    stepPhysics(DT);
+    acc -= DT;
+  }
+
+  controls.update();
+  updateVisuals(frameDt);
+  if (state.lines && frameCount % 6 === 0) updateLines();
+  if (frameCount % 10 === 0) updateReadout();
+  frameCount++;
+  renderer.render(scene, camera);
+}
+
+// ---- UI ------------------------------------------------------------------
+function bindRange(id, key, decimals, onChange) {
+  const el = $(id), out = $(id + '-v');
+  const show = () => { out.textContent = Number(state[key]).toFixed(decimals); };
+  el.value = state[key];
+  show();
+  el.addEventListener('input', () => { state[key] = parseFloat(el.value); show(); if (onChange) onChange(); });
+}
+function syncRange(id, key, decimals) { $(id).value = state[key]; $(id + '-v').textContent = Number(state[key]).toFixed(decimals); }
+
+function bindCheck(id, key) {
+  const el = $(id);
+  el.checked = state[key];
+  el.addEventListener('change', () => { state[key] = el.checked; });
+}
+
+bindRange('current', 'current', 1);
+bindRange('efield', 'efield', 2);
+bindRange('orbit', 'orbit', 2);
+bindRange('g', 'g', 1);
+bindRange('spin', 'spin', 0);
+bindRange('mu', 'mu', 2);
+bindRange('time', 'time', 2);
+bindRange('drive', 'drive', 2);
+bindRange('rotorMu', 'rotorMu', 2);
+bindRange('friction', 'friction', 2);
+bindRange('kLift', 'kLift', 1);
+bindRange('eta', 'eta', 2);
+bindRange('coupling', 'coupling', 1);
+bindRange('alpha', 'alpha', 2);
+// ion wind: geometry sliders rebuild the electrodes; the rest only change the model
+const EAD_SLIDERS = { eadV: 1, eadD: 1, eadR: 2, eadB: 1, eadRows: 0, eadN: 0, eadDelta: 2, eadMu0: 2, eadVinf: 2, eadG: 2 };
+const EAD_GEOMETRY = new Set(['eadD', 'eadB', 'eadRows', 'eadN']);
+for (const [key, dec] of Object.entries(EAD_SLIDERS)) {
+  bindRange(key, key, dec, () => { if (ionic && EAD_GEOMETRY.has(key)) buildIonic(); });
+}
+document.querySelectorAll('button[data-ead]').forEach(b => b.addEventListener('click', () => {
+  const pr = P.EAD_PRESETS[b.dataset.ead];
+  Object.assign(state, { eadV: pr.V, eadD: pr.d, eadR: pr.r, eadB: pr.b, eadRows: pr.rows, eadN: pr.N, eadDelta: pr.delta, eadMu0: pr.mu0, eadVinf: pr.vinf, eadG: pr.g });
+  for (const [key, dec] of Object.entries(EAD_SLIDERS)) syncRange(key, key, dec);
+  if (state.contraption !== 'ionic') { state.contraption = 'ionic'; $('contraption').value = 'ionic'; buildContraption(); }
+  else buildIonic();
+}));
+bindRange('xeV', 'xeV', 0);
+bindRange('xeI', 'xeI', 0);
+for (const [key, dec] of Object.entries({ carrI: 1, carrN: 0, carrGap: 0, carrLam: 2, carrF: 0, carrReduce: 0, carrFactor: 2, carrDisc: 0, carrRim: 0, carrUtron: 0 })) bindRange(key, key, dec);
+bindRange('cosmoLogA', 'cosmoLogA', 2, () => { if (state.cosmoLogA >= 0) { state.cosmoPlay = false; $('cosmoPlay').checked = false; } });
+bindRange('cosmoSpeed', 'cosmoSpeed', 1);
+bindRange('cosmoH0', 'cosmoH0', 1, cosmoRebuildTable);
+bindRange('cosmoOmegaM', 'cosmoOmegaM', 3, cosmoRebuildTable);
+bindRange('cosmoAmp', 'cosmoAmp', 2, cosmoRebuildField);
+bindRange('cosmoWaves', 'cosmoWaves', 0, cosmoRebuildField);
+bindCheck('cosmoPlay', 'cosmoPlay');
+document.querySelectorAll('button[data-cosmo]').forEach(b => b.addEventListener('click', () => {
+  if (state.contraption !== 'cosmo') { state.contraption = 'cosmo'; $('contraption').value = 'cosmo'; buildContraption(); }
+  const v = b.dataset.cosmo, p = cosmo.tab.p;
+  state.cosmoLogA = v === 'eq' ? Math.log10(p.aEq) : v === 'rec' ? Math.log10(P.cosmoScaleAtT(2970, p)) : parseFloat(v);
+  state.cosmoPlay = false; $('cosmoPlay').checked = false;
+  syncRange('cosmoLogA', 'cosmoLogA', 2);
+}));
+bindCheck('repulsive', 'repulsive');
+bindCheck('alt', 'alternate');
+bindCheck('grav', 'gravity');
+bindCheck('lines', 'lines');
+$('lines').addEventListener('change', () => { if (fieldLines) fieldLines.visible = state.lines; });
+
+{ const m = /setup=([\w-]+)/.exec(location.hash); if (m && P.RING_SETUPS[m[1]]) state.contraption = m[1]; }   // deep link from University lessons
+$('contraption').value = state.contraption;
+$('contraption').addEventListener('change', e => {
+  state.contraption = e.target.value;
+  buildContraption();
+});
+$('addE').addEventListener('click', () => spawnElectrons(20));
+$('clearE').addEventListener('click', () => clearParticles());
+$('reset').addEventListener('click', () => buildContraption());
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Scale table (sim -> SI), generated from sim-physics.js so it cannot drift from the code.
+$('units-note').innerHTML = [
+  ['length', 'm'], ['time', 's'], ['current', 'A'], ['charge', 'C'], ['field', 'T'], ['mass', 'kg'],
+  ['force', 'N'], ['energy', 'J'], ['power', 'W'], ['efield', 'V/m'], ['moment', 'A·m²'], ['resistance', 'Ω'],
+].map(([k, u]) => `${k}: 1 sim = ${P.SCALE[k].toPrecision(4)} ${u}`).join('<br>')
+  + `<br>Each ring is ${P.N_TURNS} turns. Electrons are scaled test charges (q/m ${P.QM_SI.toExponential(2)} C/kg, `
+  + `${P.QM_RATIO_TO_ELECTRON.toExponential(1)}× smaller than a real electron) so gyro-radii fit the scene. Ion wind is model units; the xenon engine is SI.`;
+
+// ---- start ---------------------------------------------------------------
+buildLines();
+buildContraption();
+requestAnimationFrame(animate);
+</script>
+</body>
+</html>

@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chemistry</title>
+<style>
+  :root { --bg: #05070d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --line: rgba(140,170,220,0.14); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 13px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(127,195,255,0.55), rgba(255,184,107,0.45)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+  * { scrollbar-width: thin; scrollbar-color: rgba(127,195,255,0.6) transparent; }
+  .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+  #navbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(5,7,13,0.95), rgba(5,7,13,0.6)); }
+  #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 17px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 11px; color: #fff; opacity: 0.8; margin-top: 2px; }
+  #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.16em; font-size: 12px; text-transform: uppercase; }
+
+  /* One added tab is wider than a 1280 screen: allow the menu to shrink and
+     scroll sideways below that width rather than clipping its last link. */
+  @media (max-width: 1320px) {
+    #menu { overflow-x: auto; min-width: 0; scrollbar-width: none; }
+    #menu::-webkit-scrollbar { display: none; }
+  }
+  #menu a { color: rgba(255,255,255,0.72); text-decoration: none; white-space: nowrap; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+  #view { position: absolute; inset: 0; } #view canvas { display: block; }
+  #panel { position: absolute; left: 16px; top: 70px; bottom: 16px; width: 330px; z-index: 4; overflow: auto; padding: 4px 6px 14px; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
+  h2 { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
+  h1 { font-weight: 500; font-size: 24px; margin: 4px 0 2px; }
+  .row { display: flex; align-items: center; gap: 8px; margin: 4px 0; } .row label { flex: 1; color: #c3d0e2; }
+  input[type=range] { -webkit-appearance: none; width: 118px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, rgba(127,195,255,0.6), rgba(255,184,107,0.6)); outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #eaf3ff; border: 2px solid #7fc3ff; cursor: pointer; }
+  .val { width: 44px; text-align: right; color: var(--accent); font-variant-numeric: tabular-nums; font-size: 12px; }
+  input[type=text], button, select { background: rgba(22,32,50,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 5px 9px; font: inherit; }
+  input[type=text] { width: 100%; } button { cursor: pointer; margin: 2px 3px 2px 0; } button:hover { border-color: var(--accent); } button.on { border-color: var(--accent); color: var(--accent); }
+  .dim { color: var(--muted); } #status { color: var(--accent2); min-height: 18px; }
+  #info { font-size: 12.5px; color: #c3d0e2; } #info b { color: #fff; }
+  #ptable { position: absolute; right: 16px; bottom: 16px; z-index: 4; display: grid; grid-template-columns: repeat(18, 22px); gap: 2px; }
+  #ptable div { width: 22px; height: 22px; font-size: 8.5px; display: flex; align-items: center; justify-content: center; border-radius: 3px; color: #05070d; font-weight: 600; cursor: pointer; opacity: 0.85; }
+  #ptable div:hover { opacity: 1; outline: 1px solid #fff; } #ptable div.present { outline: 1.5px solid #fff; opacity: 1; }
+  /* The quick-load list sits directly above the table, on the same 430px
+     footprint the 18-column grid occupies, so the two share one right edge. */
+  #quick { position: absolute; right: 16px; bottom: 266px; z-index: 4; width: 430px; text-align: right; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
+  #quick h2 { margin: 0 0 2px; }
+  /* Two columns of labels, the block flush with the table's right edge. A
+     single flowing line wrapped into ragged orphans, and one row per group
+     left a label alone on a line of its own. */
+  #quick .list { display: grid; grid-template-columns: repeat(2, max-content); justify-content: end; column-gap: 22px; }
+  #quick button { margin: 0; font-size: 11.5px; padding: 2px 4px; text-align: left; }
+  #legend { position: absolute; right: 16px; top: 70px; z-index: 4; text-align: right; font-size: 12px; color: #c3d0e2; text-shadow: 0 1px 6px #000; }
+  #legend span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 10px; margin-right: 4px; vertical-align: middle; }
+  #help { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 4; color: var(--muted); font-size: 11px; text-shadow: 0 1px 6px #000; }
+  kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); }
+</style>
+<script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
+  <link rel="stylesheet" href="kosmographica.css?v=6">
+  <script src="atlas-nav.js" defer></script>
+  <script src="accordion.js" defer></script>
+</head>
+<body>
+<div id="view"></div>
+<div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
+  <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html" class="here">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span></span></div>
+<div id="panel">
+  <h1 class="serif">Chemistry</h1>
+  <div class="dim">Molecules and proteins from the public databases, drawn as atoms, as a voxel density cloud, or as slices through it.</div>
+  <h2>Search</h2>
+  <input type="text" id="q" placeholder="molecule name (PubChem) or PDB id (RCSB), then Enter">
+  <div id="status"></div>
+  <h2>View</h2>
+  <div><button data-v="ball" class="on">ball &amp; stick</button><button data-v="space">space-filling</button><button data-v="cloud">voxel cloud</button><button data-v="slice">slice</button><button data-v="atom">atom</button></div>
+  <div class="row"><label for="iso">Cloud threshold</label><input type="range" id="iso" min="0.02" max="0.9" step="0.01" value="0.18"><span class="val" id="iso-v">0.18</span></div>
+  <div class="row"><label for="dens">Cloud opacity</label><input type="range" id="dens" min="0.1" max="4" step="0.05" value="1.2"><span class="val" id="dens-v">1.20</span></div>
+  <div class="row"><label for="sigma">Blur (× vdW radius)</label><input type="range" id="sigma" min="0.3" max="1.5" step="0.05" value="0.6"><span class="val" id="sigma-v">0.60</span></div>
+  <div class="row"><label for="slice">Slice position</label><input type="range" id="slice" min="0" max="1" step="0.002" value="0.5"><span class="val" id="slice-v">0.50</span></div>
+  <div class="row"><label for="axis">Slice axis</label><select id="axis" style="width:118px"><option value="2">z (axial)</option><option value="1">y (coronal)</option><option value="0">x (sagittal)</option></select></div>
+  <div class="row"><label><input type="checkbox" id="hyd" checked> show hydrogens</label><label><input type="checkbox" id="spin" checked> spin</label></div>
+  <h2>About this structure</h2>
+  <div id="info">nothing loaded yet</div>
+  <p class="dim" style="font-size:11.5px">Coordinates: PubChem 3D conformers (small molecules) and RCSB PDB entries (proteins, nucleic acids). The voxel cloud is a sum of Gaussians per atom, scaled by van der Waals radius, rendered by ray marching a 3D texture, the same technique as volumetric medical imaging; it is a model of where the atoms are, not a measured electron density. The atom view is the opposite: each electron is placed in its subshell and sampled from that orbital's hydrogenic probability density, then the whole cloud is splatted into a volume and ray-marched, so the shape you see is the orbital's rather than the atom's footprint. Radii there are power-compressed and the nucleus is drawn thousands of times too large; at true scale the nucleus is a ten-thousandth of the cloud and neither would be visible.</p>
+</div>
+<div id="legend"></div>
+<div id="quick">
+  <h2>Load</h2>
+  <div class="list"><button data-m="water">water</button><button data-m="caffeine">caffeine</button><button data-m="glucose">glucose</button><button data-m="aspirin">aspirin</button><button data-m="dopamine">dopamine</button><button data-m="cholesterol">cholesterol</button><button data-m="ATP">ATP</button><button data-m="buckminsterfullerene">C60</button><button data-p="1CRN">crambin 1CRN</button><button data-p="1LYZ">lysozyme 1LYZ</button><button data-p="4INS">insulin 4INS</button><button data-p="1A3N">haemoglobin 1A3N</button><button data-p="1EMA">GFP 1EMA</button><button data-p="1BNA">DNA 1BNA</button><button data-p="6VXX">spike 6VXX</button></div>
+</div>
+<div id="ptable"></div>
+<div id="help">drag · rotate &nbsp; wheel · zoom &nbsp; right-drag · pan &nbsp; <kbd>1</kbd>–<kbd>5</kbd> views</div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+const $ = id => document.getElementById(id);
+// ---- element data: symbol, CPK colour, van der Waals radius (Å), covalent radius (Å) ----
+const EL = {};
+const ELEMENTS = `H 1 ffffff 1.10 0.31|He 2 d9ffff 1.40 0.28|Li 3 cc80ff 1.82 1.28|Be 4 c2ff00 1.53 0.96|B 5 ffb5b5 1.92 0.84|C 6 909090 1.70 0.76|N 7 3050f8 1.55 0.71|O 8 ff0d0d 1.52 0.66|F 9 90e050 1.47 0.57|Ne 10 b3e3f5 1.54 0.58|Na 11 ab5cf2 2.27 1.66|Mg 12 8aff00 1.73 1.41|Al 13 bfa6a6 1.84 1.21|Si 14 f0c8a0 2.10 1.11|P 15 ff8000 1.80 1.07|S 16 ffff30 1.80 1.05|Cl 17 1ff01f 1.75 1.02|Ar 18 80d1e3 1.88 1.06|K 19 8f40d4 2.75 2.03|Ca 20 3dff00 2.31 1.76|Sc 21 e6e6e6 2.11 1.70|Ti 22 bfc2c7 2.00 1.60|V 23 a6a6ab 2.00 1.53|Cr 24 8a99c7 2.00 1.39|Mn 25 9c7ac7 2.00 1.39|Fe 26 e06633 2.00 1.32|Co 27 f090a0 2.00 1.26|Ni 28 50d050 1.63 1.24|Cu 29 c88033 1.40 1.32|Zn 30 7d80b0 1.39 1.22|Ga 31 c28f8f 1.87 1.22|Ge 32 668f8f 2.11 1.20|As 33 bd80e3 1.85 1.19|Se 34 ffa100 1.90 1.20|Br 35 a62929 1.85 1.20|Kr 36 5cb8d1 2.02 1.16|Rb 37 702eb0 3.03 2.20|Sr 38 00ff00 2.49 1.95|Y 39 94ffff 2.00 1.90|Zr 40 94e0e0 2.00 1.75|Nb 41 73c2c9 2.00 1.64|Mo 42 54b5b5 2.00 1.54|Tc 43 3b9e9e 2.00 1.47|Ru 44 248f8f 2.00 1.46|Rh 45 0a7d8c 2.00 1.42|Pd 46 006985 1.63 1.39|Ag 47 c0c0c0 1.72 1.45|Cd 48 ffd98f 1.58 1.44|In 49 a67573 1.93 1.42|Sn 50 668080 2.17 1.39|Sb 51 9e63b5 2.06 1.39|Te 52 d47a00 2.06 1.38|I 53 940094 1.98 1.39|Xe 54 429eb0 2.16 1.40|Cs 55 57178f 3.43 2.44|Ba 56 00c900 2.68 2.15|La 57 70d4ff 2.00 2.07|Ce 58 ffffc7 2.00 2.04|Pr 59 d9ffc7 2.00 2.03|Nd 60 c7ffc7 2.00 2.01|Pm 61 a3ffc7 2.00 1.99|Sm 62 8fffc7 2.00 1.98|Eu 63 61ffc7 2.00 1.98|Gd 64 45ffc7 2.00 1.96|Tb 65 30ffc7 2.00 1.94|Dy 66 1fffc7 2.00 1.92|Ho 67 00ff9c 2.00 1.92|Er 68 00e675 2.00 1.89|Tm 69 00d452 2.00 1.90|Yb 70 00bf38 2.00 1.87|Lu 71 00ab24 2.00 1.87|Hf 72 4dc2ff 2.00 1.75|Ta 73 4da6ff 2.00 1.70|W 74 2194d6 2.00 1.62|Re 75 267dab 2.00 1.51|Os 76 266696 2.00 1.44|Ir 77 175487 2.00 1.41|Pt 78 d0d0e0 1.75 1.36|Au 79 ffd123 1.66 1.36|Hg 80 b8b8d0 1.55 1.32|Tl 81 a6544d 1.96 1.45|Pb 82 575961 2.02 1.46|Bi 83 9e4fb5 2.07 1.48|Po 84 ab5c00 1.97 1.40|At 85 754f45 2.02 1.50|Rn 86 428296 2.20 1.50|Fr 87 420066 3.48 2.60|Ra 88 007d00 2.83 2.21|Ac 89 70abfa 2.00 2.15|Th 90 00baff 2.00 2.06|Pa 91 00a1ff 2.00 2.00|U 92 008fff 1.86 1.96|Np 93 0080ff 2.00 1.90|Pu 94 006bff 2.00 1.87|Am 95 545cf2 2.00 1.80|Cm 96 785ce3 2.00 1.69|Bk 97 8a4fe3 2.00 1.68|Cf 98 a136d4 2.00 1.68|Es 99 b31fd4 2.00 1.65|Fm 100 b31fba 2.00 1.67|Md 101 b30da6 2.00 1.73|No 102 bd0d87 2.00 1.76|Lr 103 c70066 2.00 1.61|Rf 104 cc0059 2.00 1.57|Db 105 d1004f 2.00 1.49|Sg 106 d90045 2.00 1.43|Bh 107 e00038 2.00 1.41|Hs 108 e6002e 2.00 1.34|Mt 109 eb0026 2.00 1.29|Ds 110 ee0023 2.00 1.28|Rg 111 f00020 2.00 1.21|Cn 112 f2001d 2.00 1.22|Nh 113 f4001a 2.00 1.36|Fl 114 f60017 2.00 1.43|Mc 115 f80014 2.00 1.62|Lv 116 fa0011 2.00 1.75|Ts 117 fc000e 2.00 1.65|Og 118 fe000b 2.00 1.57`;
+for (const row of ELEMENTS.split('|')) { const [sym, z, hex, vdw, cov] = row.split(' '); EL[sym] = { sym, z: +z, color: parseInt(hex, 16), vdw: +vdw, cov: +cov }; }
+const BY_Z = Object.values(EL).sort((a, b) => a.z - b.z);
+// periodic table layout: group per Z (1-18), lanthanides/actinides on rows 8-9
+const GROUP = z => { if (z === 1) return 1; if (z === 2) return 18; if (z <= 4) return z - 2; if (z <= 10) return z + 8; if (z <= 12) return z - 10; if (z <= 18) return z; if (z <= 36) return z - 18; if (z <= 54) return z - 36; if (z >= 57 && z <= 71) return z - 54; if (z <= 86) return z - 68; if (z >= 89 && z <= 103) return z - 86; return z - 100; };
+const PERIOD = z => z <= 2 ? 1 : z <= 10 ? 2 : z <= 18 ? 3 : z <= 36 ? 4 : z <= 54 ? 5 : (z >= 57 && z <= 71) ? 8 : z <= 86 ? 6 : (z >= 89 && z <= 103) ? 9 : 7;
+(function buildTable() {
+  const t = $('ptable'); t.style.gridTemplateRows = 'repeat(10, 22px)';
+  for (const e of BY_Z) { const d = document.createElement('div'); d.textContent = e.sym; d.title = `${e.sym} · Z=${e.z} · vdW ${e.vdw} Å`; d.style.background = '#' + e.color.toString(16).padStart(6, '0'); d.style.gridColumn = GROUP(e.z); d.style.gridRow = PERIOD(e.z) + (PERIOD(e.z) >= 8 ? 1 : 0); d.dataset.sym = e.sym; d.addEventListener('click', () => { $('q').value = e.sym; load(e.sym === 'C' ? 'graphite' : e.sym === 'H' ? 'hydrogen' : e.sym); }); t.appendChild(d); }
+})();
+
+// ---- scene ----
+const view = $('view'), renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); view.appendChild(renderer.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x05070d);
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 5000); camera.position.set(0, 0, 30);
+const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true;
+scene.add(new THREE.AmbientLight(0xffffff, 0.55)); const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(5, 8, 10); scene.add(key); const fill = new THREE.DirectionalLight(0x9fd3ff, 0.5); fill.position.set(-6, -4, -8); scene.add(fill);
+const root = new THREE.Group(); scene.add(root);
+let mol = null, mode = 'ball', meshes = [], volume = null;
+
+// ---- parsers ----
+function parseSDF(txt) {
+  const L = txt.split(/\r?\n/), n = parseInt(L[3].slice(0, 3)), nb = parseInt(L[3].slice(3, 6)), atoms = [], bonds = [];
+  for (let i = 0; i < n; i++) { const l = L[4 + i]; atoms.push({ x: +l.slice(0, 10), y: +l.slice(10, 20), z: +l.slice(20, 30), el: l.slice(31, 34).trim() }); }
+  for (let i = 0; i < nb; i++) { const l = L[4 + n + i]; bonds.push([parseInt(l.slice(0, 3)) - 1, parseInt(l.slice(3, 6)) - 1, parseInt(l.slice(6, 9))]); }
+  return { atoms, bonds, name: L[0].trim() };
+}
+function parsePDB(txt) {
+  const atoms = [], serial = new Map(), bonds = [];
+  let title = '';
+  for (const l of txt.split(/\n/)) {
+    if (l.startsWith('TITLE ')) title += l.slice(10).trim() + ' ';
+    if (l.startsWith('ATOM') || l.startsWith('HETATM')) {
+      let el = l.slice(76, 78).trim(); if (!el) el = l.slice(12, 14).trim().replace(/[0-9]/g, ''); el = el[0].toUpperCase() + el.slice(1).toLowerCase(); if (!EL[el]) el = 'C';
+      serial.set(parseInt(l.slice(6, 11)), atoms.length);
+      atoms.push({ x: +l.slice(30, 38), y: +l.slice(38, 46), z: +l.slice(46, 54), el, res: l.slice(17, 20).trim(), chain: l.slice(21, 22), het: l.startsWith('HETATM') });
+    }
+    if (l.startsWith('CONECT')) { const a = serial.get(parseInt(l.slice(6, 11))); for (let k = 11; k + 5 <= l.length; k += 5) { const b = serial.get(parseInt(l.slice(k, k + 5))); if (a != null && b != null && a < b) bonds.push([a, b, 1]); } }
+    if (l.startsWith('ENDMDL')) break;   // first model only
+  }
+  return { atoms, bonds: bonds.concat(bondsByDistance(atoms)), name: title.trim() };
+}
+function bondsByDistance(atoms) {   // covalent-radius rule with a spatial hash (proteins have no bond records)
+  const cell = 2.2, grid = new Map(), key = (x, y, z) => `${x},${y},${z}`, out = [];
+  atoms.forEach((a, i) => { const k = key(Math.floor(a.x / cell), Math.floor(a.y / cell), Math.floor(a.z / cell)); (grid.get(k) || grid.set(k, []).get(k)).push(i); });
+  atoms.forEach((a, i) => { const cx = Math.floor(a.x / cell), cy = Math.floor(a.y / cell), cz = Math.floor(a.z / cell);
+    for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) for (let dz = -1; dz <= 1; dz++) for (const j of grid.get(key(cx + dx, cy + dy, cz + dz)) || []) { if (j <= i) continue; const b = atoms[j], d = Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z), lim = (EL[a.el].cov + EL[b.el].cov) * 1.15 + 0.1; if (d < lim && d > 0.4) out.push([i, j, 1]); } });
+  return out;
+}
+
+// ---- loading ----
+async function load(q) {
+  q = q.trim(); if (!q) return;
+  $('status').textContent = `loading ${q}…`;
+  try {
+    let m;
+    if (/^[0-9][A-Za-z0-9]{3}$/.test(q)) { const r = await fetch(`https://files.rcsb.org/download/${q.toUpperCase()}.pdb`); if (!r.ok) throw new Error(`RCSB ${r.status}`); m = parsePDB(await r.text()); m.source = `RCSB PDB ${q.toUpperCase()} — https://www.rcsb.org/structure/${q.toUpperCase()}`; m.kind = 'protein'; }
+    else { let r = await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(q)}/SDF?record_type=3d`); if (!r.ok) r = await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(q)}/SDF`); if (!r.ok) throw new Error(`PubChem ${r.status}: no such compound`); m = parseSDF(await r.text()); m.source = `PubChem (name search "${q}") — https://pubchem.ncbi.nlm.nih.gov/#query=${encodeURIComponent(q)}`; m.kind = 'molecule'; m.name = q; }
+    setMolecule(m); if (mode !== 'atom') $('status').textContent = '';
+  } catch (e) { $('status').textContent = String(e.message || e); }
+}
+function setMolecule(m) {
+  // centre and compute extent
+  const c = [0, 0, 0]; for (const a of m.atoms) { c[0] += a.x; c[1] += a.y; c[2] += a.z; } for (let k = 0; k < 3; k++) c[k] /= m.atoms.length;
+  let R = 1; for (const a of m.atoms) { a.x -= c[0]; a.y -= c[1]; a.z -= c[2]; R = Math.max(R, Math.hypot(a.x, a.y, a.z)); }
+  m.radius = R; mol = m;
+  const counts = {}; for (const a of m.atoms) counts[a.el] = (counts[a.el] || 0) + 1;
+  const formula = Object.entries(counts).sort((a, b) => (a[0] === 'C' ? -1 : b[0] === 'C' ? 1 : a[0] === 'H' ? -1 : b[0] === 'H' ? 1 : a[0].localeCompare(b[0]))).map(([e, n]) => e + (n > 1 ? n : '')).join('');
+  /* From the isotope when the molar mass is not in the table: a heavy element
+     from the periodic table would otherwise read as 0.00 Da. */
+  const mass = m.atoms.reduce((s, a) => s + (MASS[a.el] || Aof(a.el)), 0);
+  const chains = new Set(m.atoms.filter(a => !a.het).map(a => a.chain)), residues = new Set(m.atoms.filter(a => !a.het).map(a => a.chain + a.res));
+  const single = m.atoms.length === 1 ? m.atoms[0].el : null;
+  const atomLine = single ? `<br><span class="dim">${EL[single].z} protons · ${Aof(single)} nucleons · shells ${shellsOf(EL[single].z, single).join(', ')} · ${shellsOf(EL[single].z, single).length} shell(s)</span>` : '';
+  $('info').innerHTML = `<b>${m.name || '—'}</b><br>${m.atoms.length.toLocaleString()} atoms, ${m.bonds.length.toLocaleString()} bonds · ${m.kind === 'protein' ? `${chains.size} chain(s)` : 'formula ' + formula} · mass ≈ ${mass.toFixed(mass > 1000 ? 0 : 2)} Da · extent ${(2 * R).toFixed(1)} Å${atomLine}<br><span class="dim">${m.source}</span>`;
+  $('legend').innerHTML = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([e, n]) => `${e} ${n}<span style="background:#${EL[e].color.toString(16).padStart(6, '0')}"></span>`).join('<br>');
+  for (const d of $('ptable').children) d.classList.toggle('present', !!counts[d.dataset.sym]);
+  /* A single atom is framed for the shell model, not for a molecule of radius R
+     (which is 1 for one atom, and puts the camera inside the outer shell). */
+  camera.position.set(0, 0, m.atoms.length === 1 ? 5.2 : R * 3.2); controls.target.set(0, 0, 0);
+  /* One atom is not a molecule: there is nothing to stick together and no
+     shape to fill, so a lone atom opens as an atom. */
+  volume = null; if (single) mode = 'atom'; syncMode(); build();
+}
+const MASS = { H: 1.008, C: 12.011, N: 14.007, O: 15.999, P: 30.974, S: 32.06, F: 18.998, Cl: 35.45, Br: 79.904, I: 126.9, Na: 22.99, K: 39.098, Mg: 24.305, Ca: 40.078, Fe: 55.845, Zn: 65.38, Cu: 63.546, Mn: 54.938, Se: 78.971, Co: 58.933, Li: 6.941, Be: 9.012, B: 10.81, Ne: 20.18, Al: 26.982, Si: 28.085, Ar: 39.948, Ti: 47.867, Cr: 51.996, Ni: 58.693, Rb: 85.468, Sr: 87.62, Mo: 95.95, Ag: 107.868, Cd: 112.414, Sn: 118.71, Cs: 132.905, Ba: 137.327, Pt: 195.084, Au: 196.967, Hg: 200.592, Pb: 207.2, U: 238.029 };
+/* The nucleus needs a mass number, not a molar mass: the most abundant isotope.
+   Rounding the molar mass is right for most elements and wrong for a few
+   (Cu-63 at 69% but 63.5 rounds to 64, chlorine 35). */
+const NUCLIDE = { H: 1, He: 4, Li: 7, Be: 9, B: 11, C: 12, N: 14, O: 16, F: 19, Ne: 20, Na: 23, Mg: 24, Al: 27, Si: 28, P: 31, S: 32, Cl: 35, Ar: 40, K: 39, Ca: 40, Ti: 48, Cr: 52, Mn: 55, Fe: 56, Co: 59, Ni: 58, Cu: 63, Zn: 64, Se: 80, Br: 79, Rb: 85, Sr: 88, Mo: 98, Ag: 107, Cd: 114, Sn: 120, I: 127, Cs: 133, Ba: 138, Pt: 195, Au: 197, Hg: 202, Pb: 208, U: 238 };
+
+// ---- rendering: atoms and bonds (instanced) ----
+function clear() {
+  for (const o of meshes) {
+    if (o.userData.atomCloud) { o.material.uniforms.uDens.value.dispose(); o.material.uniforms.uCol.value.dispose(); }
+    root.remove(o); o.geometry?.dispose(); o.material?.dispose();
+  }
+  meshes = [];
+}
+function build() {
+  clear(); if (!mol) return;
+  const showH = $('hyd').checked, atoms = mol.atoms.map((a, i) => ({ ...a, i })).filter(a => showH || a.el !== 'H');
+  if (mode === 'atom') { buildAtom(mostCommon(atoms)); return; }
+  elementLegend(atoms);
+  if (mode === 'ball' || mode === 'space') {
+    const sph = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 20, 14), new THREE.MeshStandardMaterial({ roughness: 0.45, metalness: 0.05 }), atoms.length);
+    const M = new THREE.Matrix4(), col = new THREE.Color();
+    atoms.forEach((a, k) => { const r = mode === 'space' ? EL[a.el].vdw : Math.max(0.22, EL[a.el].cov * 0.45); M.makeScale(r, r, r).setPosition(a.x, a.y, a.z); sph.setMatrixAt(k, M); sph.setColorAt(k, col.setHex(EL[a.el].color)); });
+    sph.instanceMatrix.needsUpdate = true; sph.instanceColor.needsUpdate = true; root.add(sph); meshes.push(sph);
+    if (mode === 'ball') {
+      const idx = new Map(atoms.map((a, k) => [a.i, k])), bl = mol.bonds.filter(([a, b]) => idx.has(a) && idx.has(b));
+      const cyl = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.11, 0.11, 1, 10, 1, true), new THREE.MeshStandardMaterial({ color: 0xc9d1dc, roughness: 0.5 }), bl.length * 2);
+      const up = new THREE.Vector3(0, 1, 0), q = new THREE.Quaternion(), dir = new THREE.Vector3(), mid = new THREE.Vector3(), pa = new THREE.Vector3(), pb = new THREE.Vector3();
+      let k = 0;
+      for (const [a, b] of bl) { const A = mol.atoms[a], B = mol.atoms[b]; pa.set(A.x, A.y, A.z); pb.set(B.x, B.y, B.z); dir.subVectors(pb, pa); const len = dir.length(); q.setFromUnitVectors(up, dir.clone().normalize());
+        for (const [from, elc] of [[pa, A.el], [pb, B.el]]) { mid.copy(from).addScaledVector(dir, from === pa ? 0.25 : -0.25); M.compose(mid, q, new THREE.Vector3(1, len / 2, 1)); cyl.setMatrixAt(k, M); cyl.setColorAt(k, col.setHex(EL[elc].color).lerp(new THREE.Color(0xffffff), 0.25)); k++; } }
+      cyl.instanceMatrix.needsUpdate = true; if (cyl.instanceColor) cyl.instanceColor.needsUpdate = true; root.add(cyl); meshes.push(cyl);
+    }
+  } else buildVolume(atoms);
+}
+
+// ---- the atom itself: a screened nucleus inside an electron cloud ----
+/* A sphere is a good model of how an atom *occupies space* in a molecule and a
+   bad model of an atom. This view draws what the periodic table is about: the
+   nucleus, and the electrons as a probability cloud rather than as planets.
+   Each electron is put in its atomic subshell in Madelung order, sampled from
+   that subshell's hydrogenic radial distribution with a Slater-screened charge,
+   and given the angular shape of its own (l, m) orbital — s are spheres, p are
+   dumbbells, d are four-lobed. It is a one-electron approximation of a
+   many-electron atom: right shapes and right ordering, approximate energies.
+   Three things are deliberately not to scale — the nucleus (about 1e-5 of the
+   atom, drawn at roughly 4%), the radii (power-compressed so the inner shells
+   are not a single point at the centre), and the number of points, which stands
+   in for probability density rather than counting anything. */
+const SUBSHELLS = [[1, 0], [2, 0], [2, 1], [3, 0], [3, 1], [4, 0], [3, 2], [4, 1], [5, 0], [4, 2], [5, 1], [6, 0], [4, 3], [5, 2], [6, 1], [7, 0], [5, 3], [6, 2], [7, 1], [8, 0]];
+/* Madelung order gets about twenty ground states wrong, all of them the same
+   way: one or two electrons sit in the (n)s subshell that belong in the (n−1)d
+   or (n−2)f subshell, because the two are close in energy. Each entry moves k
+   electrons from one subshell to the other, so the totals still add to Z. */
+const CONFIG_FIX = {
+  Cr: [[4, 0, 3, 2, 1]], Cu: [[4, 0, 3, 2, 1]], Nb: [[5, 0, 4, 2, 1]], Mo: [[5, 0, 4, 2, 1]],
+  Ru: [[5, 0, 4, 2, 1]], Rh: [[5, 0, 4, 2, 1]], Pd: [[5, 0, 4, 2, 2]], Ag: [[5, 0, 4, 2, 1]],
+  La: [[4, 3, 5, 2, 1]], Ce: [[4, 3, 5, 2, 1]], Gd: [[4, 3, 5, 2, 1]],
+  Pt: [[6, 0, 5, 2, 1]], Au: [[6, 0, 5, 2, 1]],
+  Ac: [[5, 3, 6, 2, 1]], Th: [[5, 3, 6, 2, 2]], Pa: [[5, 3, 6, 2, 1]], U: [[5, 3, 6, 2, 1]],
+  Np: [[5, 3, 6, 2, 1]], Cm: [[5, 3, 6, 2, 1]],
+};
+function configOf(z, sym) {
+  const out = []; let left = z;
+  for (const [n, l] of SUBSHELLS) { if (left <= 0) break; const c = Math.min(2 * (2 * l + 1), left); out.push({ n, l, count: c }); left -= c; }
+  for (const [fn, fl, tn, tl, k] of CONFIG_FIX[sym] || []) {
+    const from = out.find(s => s.n === fn && s.l === fl), to = out.find(s => s.n === tn && s.l === tl);
+    if (!from || !to || from.count < k) continue;
+    from.count -= k; to.count += k;
+  }
+  return out.filter(s => s.count > 0).sort((a, b) => a.n - b.n || a.l - b.l);
+}
+/* Electrons per principal shell from the configuration rather than from Bohr's
+   capacities: gold is 2, 8, 18, 32, 18, 1 — not 2, 8, 18, 32, 19. */
+function shellsOf(z, sym) {
+  const by = [];
+  for (const s of configOf(z, sym)) by[s.n - 1] = (by[s.n - 1] || 0) + s.count;
+  return by.filter(v => v);
+}
+function Aof(sym) { return NUCLIDE[sym] || Math.round(MASS[sym] || EL[sym].z * 2.1); }
+/* The atom view of a molecule has to pick one element to draw. Hydrogen is
+   usually the most abundant and the least interesting, so heavy elements win:
+   the most common non-hydrogen, or hydrogen only if nothing else is there. */
+function mostCommon(atoms) {
+  const c = {}; for (const a of atoms) c[a.el] = (c[a.el] || 0) + 1;
+  let best = null;
+  for (const el in c) {
+    if (el === 'H' && Object.keys(c).length > 1) continue;
+    if (!best || c[el] > c[best] || (c[el] === c[best] && EL[el].z > EL[best].z)) best = el;
+  }
+  return best || 'C';
+}
+
+/* ---- where the electrons are ---- */
+function laguerre(k, alpha, x) {            // associated Laguerre L_k^alpha(x), upward in k
+  let l0 = 1, l1 = 1 + alpha - x;
+  if (k <= 0) return l0;
+  for (let i = 1; i < k; i++) { const l2 = ((2 * i + 1 + alpha - x) * l1 - (i + alpha) * l0) / (i + 1); l0 = l1; l1 = l2; }
+  return l1;
+}
+/* Hydrogenic radial probability P(r) ∝ r²R_nl(r)², turned into an inverse-CDF
+   sampler once per subshell, so tens of thousands of samples cost one table. */
+function radialSampler(n, l, z) {
+  const N = 384, rmax = (5 * n * n) / z + 8, h = rmax / N, cdf = new Float64Array(N + 1);
+  let acc = 0;
+  for (let i = 0; i < N; i++) {
+    const r = (i + 0.5) * h, rho = (2 * z * r) / n;
+    const R = Math.exp(-rho / 2) * Math.pow(rho, l) * laguerre(n - l - 1, 2 * l + 1, rho);
+    acc += r * r * R * R * h; cdf[i + 1] = acc;
+  }
+  if (!(acc > 0)) return () => 1 / z;
+  for (let i = 0; i <= N; i++) cdf[i] /= acc;
+  return () => {
+    const u = Math.random(); let lo = 0, hi = N;
+    while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (cdf[mid] < u) lo = mid; else hi = mid; }
+    const f = (u - cdf[lo]) / Math.max(1e-12, cdf[hi] - cdf[lo]);
+    return (lo + f + 0.5) * h;
+  };
+}
+/* Slater's rules: an electron in shell n is screened by 0.35 per other electron
+   in its own shell, 0.85 by the shell just inside and fully by everything
+   deeper. Crude for heavy atoms, but it gives the right ordering and the right
+   collapse of the inner shells towards the nucleus. */
+function screenedZ(config, n, Z) {
+  const by = new Map(); for (const s of config) by.set(s.n, (by.get(s.n) || 0) + s.count);
+  let S = 0;
+  for (const [m, c] of by) { if (m === n) S += 0.35 * Math.max(0, c - 1); else if (m === n - 1) S += 0.85 * c; else if (m < n - 1) S += c; }
+  return Math.max(1, Z - S);
+}
+/* |Y_lm|² for the real spherical harmonics, scaled to a maximum of 1, so a
+   uniform direction can be accepted with that probability. m = 0 is the
+   axisymmetric member; ±m are the real combinations along x/y and their
+   diagonals, which is why p comes out as three dumbbells and d as four lobes. */
+function angularSampler(l, m) {
+  return () => {
+    for (;;) {
+      const c = Math.random() * 2 - 1, s = Math.sqrt(Math.max(0, 1 - c * c)), ph = Math.random() * Math.PI * 2, cp = Math.cos(ph), sp = Math.sin(ph);
+      let w;
+      if (l === 0) w = 1;
+      else if (l === 1) w = m === 0 ? c * c : m > 0 ? s * s * cp * cp : s * s * sp * sp;
+      else if (l === 2) {
+        if (m === 0) w = ((3 * c * c - 1) / 2) ** 2;
+        else if (m === 1) w = 4 * s * s * c * c * cp * cp;
+        else if (m === -1) w = 4 * s * s * c * c * sp * sp;
+        else if (m === 2) w = s ** 4 * Math.cos(2 * ph) ** 2;
+        else w = s ** 4 * Math.sin(2 * ph) ** 2;
+      } else {
+        if (m === 0) w = ((5 * c * c * c - 3 * c) / 2) ** 2;
+        else if (m === 1) w = s * s * (5 * c * c - 1) ** 2 * cp * cp;
+        else if (m === -1) w = s * s * (5 * c * c - 1) ** 2 * sp * sp;
+        else if (m === 2) w = 6.75 * s ** 4 * c * c * Math.cos(2 * ph) ** 2;
+        else if (m === -2) w = 6.75 * s ** 4 * c * c * Math.sin(2 * ph) ** 2;
+        else if (m === 3) w = s ** 6 * Math.cos(3 * ph) ** 2;
+        else w = s ** 6 * Math.sin(3 * ph) ** 2;
+      }
+      if (Math.random() < w) return [s * cp, c, s * sp];
+    }
+  };
+}
+
+/* ---- what it looks like ---- */
+const SHELL_TINT = [0xe6fff8, 0x9fe8d8, 0x7ad2cc, 0x74b4d8, 0x8f9fe6, 0xb59af2, 0xd49cf0, 0xe8a4d8];
+const hex2 = c => '#' + c.toString(16).padStart(6, '0');
+/* The cloud is a volume, not a swarm of dots. Sprites were tried first and a
+   heavy atom has no single point size that works: a few dozen electrons inside
+   the 1s shell land within a couple of pixels of each other and saturate to a
+   white disc, while the lone outermost electron is spread over hundreds of
+   pixels of empty space and reads as dust. Splatting the same samples into a 3D
+   texture and ray-marching it integrates all of that into one continuous field,
+   which is what a probability cloud is. */
+const ATOM_N = 80, ATOM_EXT = 2.1;      // voxels per side, half-extent in scene units
+const ATOM_VERT = /* glsl */`out vec3 vPos; void main(){ vPos = position + 0.5; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`;
+const ATOM_FRAG = /* glsl */`
+precision highp float; precision highp sampler3D;
+uniform sampler3D uDens, uCol; uniform vec3 uCamPos; uniform float uK; uniform float uOpacity;
+in vec3 vPos;
+out vec4 outColor;
+vec2 hitBox(vec3 ro, vec3 rd){ vec3 t0 = (vec3(0.0) - ro) / rd, t1 = (vec3(1.0) - ro) / rd; vec3 tmin = min(t0, t1), tmax = max(t0, t1); return vec2(max(max(tmin.x, tmin.y), tmin.z), min(min(tmax.x, tmax.y), tmax.z)); }
+void main(){
+  vec3 rd = normalize(vPos - uCamPos);
+  vec2 t = hitBox(uCamPos, rd); t.x = max(t.x, 0.0); if (t.y <= t.x) discard;
+  float dt = (t.y - t.x) / 56.0;
+  /* Jitter the first sample: fixed steps through a smooth gradient show up as
+     concentric rings otherwise. */
+  float jitter = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) * dt * 1.6;
+  vec3 acc = vec3(0.0); float T = 1.0;
+  for (int i = 0; i < 56; i++) {
+    vec3 q = uCamPos + rd * (t.x + jitter + (float(i) + 0.5) * dt);
+    /* The density texture is gamma-encoded: the valence shell holds a couple of
+       electrons spread over a hundred times the volume of the core, so at linear
+       contrast the atom is a dot with nothing around it. 1.6 re-applies most of
+       the contrast without turning the halo into a floodlight. */
+    float d = pow(texture(uDens, q).r, 1.4);
+    /* A thresholded surface rather than a linear fog: the iso-density shell is
+       where the orbitals actually have their shape, and it gives the cloud a
+       readable edge and visible lobes instead of a screenful of glow. */
+    float a = smoothstep(uK, uK + 0.16, d) * uOpacity * dt;
+    if (a > 0.0005) {
+      acc += T * a * texture(uCol, q).rgb * 1.15;
+      T *= 1.0 - a;
+      if (T < 0.10) break;
+    }
+  }
+  if (T > 0.996) discard;
+  outColor = vec4(acc, 1.0 - T);
+}`;
+
+function buildAtom(sym) {
+  const Z = (EL[sym] || EL.C).z, A = Aof(sym), config = configOf(Z, sym), nmax = shellsOf(Z, sym).length;
+
+  /* Electrons: every electron is sampled from its own subshell, so the cloud is
+     the sum of the orbitals the configuration occupies. Samples are budgeted by
+     shell volume (n^3.5), not by electron count: the valence shell has one or
+     two electrons in ten times the volume of the 1s pair, and at equal samples
+     per electron it renders as nothing. Flat typed arrays, because a heavy atom
+     is a few hundred thousand samples and a second spent allocating objects is
+     a second the page is frozen. */
+  const TARGET = 120000, weight = config.reduce((s, c) => s + c.count * Math.pow(c.n, 3.5), 0);
+  const per = config.map(s => Math.max(220, Math.min(22000, Math.round((TARGET * Math.pow(s.n, 3.5)) / weight))));
+  let nSamples = 0; config.forEach((s, i) => { nSamples += s.count * per[i]; });
+  const P = new Float32Array(nSamples * 3), R = new Float32Array(nSamples), NN = new Uint8Array(nSamples);
+  const samplers = new Map();
+  let w = 0;
+  config.forEach((s, si) => {
+    const key = s.n + ',' + s.l;
+    if (!samplers.has(key)) samplers.set(key, radialSampler(s.n, s.l, screenedZ(config, s.n, Z)));
+    const rad = samplers.get(key);
+    for (let k = 0; k < s.count; k++) {
+      const ang = angularSampler(s.l, (k % (2 * s.l + 1)) - s.l);
+      for (let j = 0; j < per[si]; j++, w++) {
+        const r = rad(), [dx, dy, dz] = ang();
+        P[3 * w] = dx * r; P[3 * w + 1] = dy * r; P[3 * w + 2] = dz * r; R[w] = r; NN[w] = s.n;
+      }
+    }
+  });
+  /* Radii are power-compressed: uncompressed, the 1s shell of gold is 1/800 of
+     its 6s shell and vanishes into the nucleus. The reference is a percentile
+     of the sampled radii, taken across shells so that every element is drawn at
+     a comparable size. */
+  const sorted = Float32Array.from(R).sort();
+  const ref = sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * 0.985))] || 1;
+  const RATOM = 1.55, POW = 0.85;
+
+  /* ---- splat into a density volume, carrying the shell's own tint ---- */
+  const N = ATOM_N, E = ATOM_EXT, h = (2 * E) / N;
+  const dens = new Float32Array(N * N * N), colr = new Float32Array(N * N * N * 3);
+  const K = 2, kern = [];
+  for (let dz = -K; dz <= K; dz++) for (let dy = -K; dy <= K; dy++) for (let dx = -K; dx <= K; dx++) {
+    const kw = Math.exp(-(dx * dx + dy * dy + dz * dz) / 1.9);
+    if (kw > 0.02) kern.push(dx, dy, dz, kw);
+  }
+  const tint = new THREE.Color(), tintCache = new Map();
+  for (let i = 0; i < nSamples; i++) {
+    const r = R[i], n = NN[i];
+    const f = r > 1e-9 ? (RATOM * Math.pow(r / ref, POW)) / r : 0;
+    const gx = Math.round((P[3 * i] * f + E) / h), gy = Math.round((P[3 * i + 1] * f + E) / h), gz = Math.round((P[3 * i + 2] * f + E) / h);
+    if (gx < -K || gy < -K || gz < -K || gx >= N + K || gy >= N + K || gz >= N + K) continue;
+    let tc = tintCache.get(n);
+    if (!tc) { tint.setHex(SHELL_TINT[Math.min(SHELL_TINT.length - 1, n - 1)]).multiplyScalar(0.55 + 0.45 * (n / nmax)); tc = [tint.r, tint.g, tint.b]; tintCache.set(n, tc); }
+    for (let ki = 0; ki < kern.length; ki += 4) {
+      const X = gx + kern[ki], Y = gy + kern[ki + 1], Z = gz + kern[ki + 2], kw = kern[ki + 3];
+      if (X < 0 || Y < 0 || Z < 0 || X >= N || Y >= N || Z >= N) continue;
+      const id = X + N * (Y + N * Z);
+      dens[id] += kw; colr[3 * id] += kw * tc[0]; colr[3 * id + 1] += kw * tc[1]; colr[3 * id + 2] += kw * tc[2];
+    }
+  }
+  let mx = 0; for (let i = 0; i < dens.length; i++) mx = Math.max(mx, dens[i]);
+  const d8 = new Uint8Array(N * N * N), c8 = new Uint8Array(N * N * N * 4);
+  for (let i = 0; i < dens.length; i++) {
+    const d = dens[i]; d8[i] = Math.min(255, Math.round(255 * Math.pow(d / mx, 1 / 2.2)));
+    const inv = d > 1e-6 ? 1 / d : 0;
+    c8[4 * i] = Math.min(255, 255 * colr[3 * i] * inv); c8[4 * i + 1] = Math.min(255, 255 * colr[3 * i + 1] * inv); c8[4 * i + 2] = Math.min(255, 255 * colr[3 * i + 2] * inv); c8[4 * i + 3] = 255;
+  }
+  /* The visible surface is the 90% probability surface — the boundary an orbital
+     diagram draws. Take the density below which only a tenth of the electron
+     density lies, draw that contour, then scale the atom so the contour itself
+     fills a fixed part of the view. Both are per-element computations: one
+     constant for all atoms gives carbon a screenful of fog and lead a dot. */
+  const cV = (N - 1) / 2, radSum = new Float64Array(N), radN = new Float64Array(N);
+  let mass = 0;
+  for (let z = 0; z < N; z++) for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const d = dens[x + N * (y + N * z)]; if (d <= 0) continue;
+    const ri = Math.round(Math.hypot(x - cV, y - cV, z - cV));
+    radSum[ri] += d; radN[ri]++; mass += d;
+  }
+  const HB = 256, hist = new Float64Array(HB);
+  for (let i = 0; i < dens.length; i++) if (dens[i] > 0) hist[Math.min(HB - 1, Math.floor((dens[i] / mx) * HB))] += dens[i];
+  let cum = 0, cut = 0.05 * mx;
+  for (let b = 0; b < HB; b++) { cum += hist[b]; if (cum >= 0.10 * mass) { cut = ((b + 1) / HB) * mx; break; } }
+
+  /* radius where the shell-averaged density falls through the contour */
+  let rIso = 1;
+  for (let i = 1; i < N; i++) if (radN[i] > 2 && radSum[i] / radN[i] >= cut) rIso = i;
+  const zoom = Math.min(4.5, Math.max(0.25, 0.95 / Math.max(1e-6, rIso * h)));
+  const uK = Math.pow(cut / mx, 1 / 2.2);
+  const uOpacity = 9;
+
+  const tD = new THREE.Data3DTexture(d8, N, N, N); tD.format = THREE.RedFormat; tD.minFilter = tD.magFilter = THREE.LinearFilter; tD.unpackAlignment = 1; tD.needsUpdate = true;
+  const tC = new THREE.Data3DTexture(c8, N, N, N); tC.format = THREE.RGBAFormat; tC.minFilter = tC.magFilter = THREE.LinearFilter; tC.needsUpdate = true;
+
+  const cloud = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.ShaderMaterial({
+    vertexShader: ATOM_VERT, fragmentShader: ATOM_FRAG, glslVersion: THREE.GLSL3,
+    transparent: true, depthWrite: false, side: THREE.BackSide, premultipliedAlpha: true,
+    uniforms: { uDens: { value: tD }, uCol: { value: tC }, uCamPos: { value: new THREE.Vector3() }, uK: { value: uK }, uOpacity: { value: uOpacity } },
+  }));
+  cloud.scale.setScalar(2 * E * zoom); cloud.userData.atomCloud = true; cloud.renderOrder = 1;
+  root.add(cloud); meshes.push(cloud);
+
+  /* The nucleus: a golden-angle spiral through the nuclear volume, so the
+     cluster reads as packed rather than random, protons spread evenly through
+     the sequence so neither colour clumps into a lobe. */
+  const nucR = (0.03 + 0.05 * Math.cbrt(A) / Math.cbrt(240));
+  const nucleonR = A === 1 ? nucR : Math.min(nucR * 0.95, (nucR / Math.cbrt(A)) * 1.15);
+  const nuc = new THREE.InstancedMesh(
+    new THREE.SphereGeometry(nucleonR, 12, 8),
+    new THREE.MeshStandardMaterial({ roughness: 0.36, metalness: 0.1, emissive: 0x0a1512 }), Math.max(1, A));
+  const M = new THREE.Matrix4();
+  const proton = new THREE.Color(0xff9d6e), neutron = new THREE.Color(0x8fa2c4);
+  const protons = new Set();
+  for (let k = 0; k < Z; k++) protons.add(Math.min(A - 1, Math.floor((k + 0.5) * A / Z)));
+  for (let i = 0; i < A; i++) {
+    const y = 1 - 2 * (i + 0.5) / A, rad = Math.sqrt(Math.max(0, 1 - y * y));
+    const th = i * 2.399963, r = nucR * Math.cbrt((i + 0.5) / A) * 0.94;
+    M.makeScale(1, 1, 1).setPosition(Math.cos(th) * rad * r, y * r, Math.sin(th) * rad * r);
+    nuc.setMatrixAt(i, M);
+    nuc.setColorAt(i, protons.has(i) ? proton : neutron);
+  }
+  nuc.instanceMatrix.needsUpdate = true; if (nuc.instanceColor) nuc.instanceColor.needsUpdate = true;
+  /* The nucleus is drawn over the cloud rather than through it: at the centre
+     of the cloud it is behind a full column of electron density, and a
+     depth-tested nucleus would disappear exactly where it matters. */
+  nuc.material.depthTest = false; nuc.material.transparent = true; nuc.renderOrder = 3; root.add(nuc); meshes.push(nuc);
+
+  /* Frame the atom: switching in from a protein would otherwise show it as a
+     speck, since the molecule view leaves the camera far out. */
+  const d = camera.position.distanceTo(controls.target);
+  if (d > 6.5 || d < 4.2) { camera.position.set(0, 0, 5.2); controls.target.set(0, 0, 0); }
+
+  /* The legend becomes the shell structure, in the cloud's own colours. */
+  const byShell = new Map();
+  for (const s of config) byShell.set(s.n, (byShell.get(s.n) || 0) + s.count);
+  $('legend').innerHTML = [...byShell].map(([n, c]) => `n=${n} ${c}e<span style="background:${hex2(SHELL_TINT[Math.min(SHELL_TINT.length - 1, n - 1)])}"></span>`).join('<br>');
+  $('status').textContent = `${mol && mol.atoms.length > 1 ? sym + ' (most abundant heavy element) · ' : ''}${Z} electrons in ${nmax} shell${nmax > 1 ? 's' : ''}, ${A} nucleons · radii compressed, nucleus not to scale`;
+}
+
+function elementLegend(atoms) {
+  const counts = {}; for (const a of atoms) counts[a.el] = (counts[a.el] || 0) + 1;
+  $('legend').innerHTML = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([el, n]) => `${el} ${n}<span style="background:${hex2(EL[el].color)}"></span>`).join('<br>');
+}
+
+// ---- voxel cloud: Gaussian density per atom into a 3D texture, ray-marched ----
+const VOL_FRAG = /* glsl */`
+precision highp float; precision highp sampler3D;
+uniform sampler3D uDens, uCol; uniform vec3 uCamPos; uniform float uIso, uOpacity, uSliceOn, uSlice; uniform int uAxis;
+in vec3 vPos;   // box local coordinates in [0,1]^3
+out vec4 outColor;
+vec2 hitBox(vec3 ro, vec3 rd){ vec3 t0 = (vec3(0.0) - ro) / rd, t1 = (vec3(1.0) - ro) / rd; vec3 tmin = min(t0, t1), tmax = max(t0, t1); return vec2(max(max(tmin.x, tmin.y), tmin.z), min(min(tmax.x, tmax.y), tmax.z)); }
+void main(){
+  vec3 rd = normalize(vPos - uCamPos); vec2 t = hitBox(uCamPos, rd); t.x = max(t.x, 0.0); if (t.y <= t.x) discard;
+  if (uSliceOn > 0.5) {   // a single plane through the volume: where the ray crosses it, show density as a CT-style map
+    float p = uAxis == 0 ? uCamPos.x : uAxis == 1 ? uCamPos.y : uCamPos.z, d = uAxis == 0 ? rd.x : uAxis == 1 ? rd.y : rd.z;
+    float ts = (uSlice - p) / d; if (ts < t.x || ts > t.y) discard;
+    vec3 q = uCamPos + rd * ts; float dens = texture(uDens, q).r; vec3 c = texture(uCol, q).rgb;
+    float v = smoothstep(0.0, 0.6, dens);
+    outColor = vec4(mix(vec3(0.02, 0.03, 0.06), mix(vec3(0.2, 0.3, 0.5), c * 1.2 + 0.2, v), 0.15 + 0.85 * v), 1.0); return;
+  }
+  float steps = 160.0, dt = (t.y - t.x) / steps; vec3 acc = vec3(0.0); float T = 1.0;
+  for (float i = 0.0; i < 160.0; i += 1.0) {
+    vec3 q = uCamPos + rd * (t.x + (i + 0.5) * dt); float dens = texture(uDens, q).r;
+    float a = smoothstep(uIso, uIso + 0.25, dens) * uOpacity * dt * 12.0;
+    vec3 c = texture(uCol, q).rgb * (0.5 + 1.5 * dens);
+    acc += T * a * c; T *= (1.0 - a); if (T < 0.02) break;
+  }
+  if (T > 0.985) discard;
+  outColor = vec4(acc, 1.0 - T);
+}`;
+const VOL_VERT = /* glsl */`out vec3 vPos; void main(){ vPos = position + 0.5; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`;
+function buildVolume(atoms) {
+  const N = 96, sig = parseFloat($('sigma').value), L = 2 * mol.radius + 6, h = L / N, o = -L / 2;
+  if (!volume || volume.N !== N || volume.sig !== sig || volume.showH !== $('hyd').checked) {
+    const dens = new Float32Array(N * N * N), colr = new Float32Array(N * N * N * 3);
+    for (const a of atoms) {
+      const s = EL[a.el].vdw * sig, r = 3 * s, c = new THREE.Color(EL[a.el].color);
+      const i0 = Math.max(0, Math.floor((a.x - o - r) / h)), i1 = Math.min(N - 1, Math.ceil((a.x - o + r) / h)), j0 = Math.max(0, Math.floor((a.y - o - r) / h)), j1 = Math.min(N - 1, Math.ceil((a.y - o + r) / h)), k0 = Math.max(0, Math.floor((a.z - o - r) / h)), k1 = Math.min(N - 1, Math.ceil((a.z - o + r) / h));
+      const w0 = EL[a.el].z <= 1 ? 0.45 : 1;
+      for (let k = k0; k <= k1; k++) for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
+        const dx = o + (i + 0.5) * h - a.x, dy = o + (j + 0.5) * h - a.y, dz = o + (k + 0.5) * h - a.z, g = w0 * Math.exp(-(dx * dx + dy * dy + dz * dz) / (2 * s * s));
+        const id = i + N * (j + N * k); dens[id] += g; colr[3 * id] += g * c.r; colr[3 * id + 1] += g * c.g; colr[3 * id + 2] += g * c.b;
+      }
+    }
+    let mx = 0; for (let i = 0; i < dens.length; i++) mx = Math.max(mx, dens[i]);
+    const d8 = new Uint8Array(N * N * N), c8 = new Uint8Array(N * N * N * 4);
+    for (let i = 0; i < dens.length; i++) { const d = dens[i]; d8[i] = Math.min(255, Math.round(255 * d / mx)); const inv = d > 1e-6 ? 1 / d : 0; c8[4 * i] = Math.min(255, 255 * colr[3 * i] * inv); c8[4 * i + 1] = Math.min(255, 255 * colr[3 * i + 1] * inv); c8[4 * i + 2] = Math.min(255, 255 * colr[3 * i + 2] * inv); c8[4 * i + 3] = 255; }
+    const tD = new THREE.Data3DTexture(d8, N, N, N); tD.format = THREE.RedFormat; tD.minFilter = tD.magFilter = THREE.LinearFilter; tD.unpackAlignment = 1; tD.needsUpdate = true;
+    const tC = new THREE.Data3DTexture(c8, N, N, N); tC.format = THREE.RGBAFormat; tC.minFilter = tC.magFilter = THREE.LinearFilter; tC.needsUpdate = true;
+    volume = { N, sig, showH: $('hyd').checked, tD, tC, L };
+  }
+  const mat = new THREE.ShaderMaterial({ vertexShader: VOL_VERT, fragmentShader: VOL_FRAG, transparent: true, depthWrite: false, side: THREE.BackSide, glslVersion: THREE.GLSL3,
+    uniforms: { uDens: { value: volume.tD }, uCol: { value: volume.tC }, uCamPos: { value: new THREE.Vector3() }, uIso: { value: +$('iso').value }, uOpacity: { value: +$('dens').value }, uSliceOn: { value: mode === 'slice' ? 1 : 0 }, uSlice: { value: +$('slice').value }, uAxis: { value: +$('axis').value } } });
+  const box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), mat); box.scale.setScalar(volume.L); box.userData.volume = true; root.add(box); meshes.push(box);
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(volume.L, volume.L, volume.L)), new THREE.LineBasicMaterial({ color: 0x2f4360 })); root.add(edges); meshes.push(edges);
+}
+
+// ---- UI ----
+for (const b of document.querySelectorAll('button[data-m]')) b.addEventListener('click', () => { $('q').value = b.dataset.m; load(b.dataset.m); });
+for (const b of document.querySelectorAll('button[data-p]')) b.addEventListener('click', () => { $('q').value = b.dataset.p; load(b.dataset.p); });
+$('q').addEventListener('keydown', e => { if (e.key === 'Enter') load($('q').value); });
+for (const b of document.querySelectorAll('button[data-v]')) b.addEventListener('click', () => setMode(b.dataset.v));
+function syncMode() { document.querySelectorAll('button[data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === mode)); }
+function setMode(m) { mode = m; syncMode(); if (m !== 'atom') $('status').textContent = ''; build(); }
+for (const id of ['iso', 'dens', 'sigma', 'slice']) $(id).addEventListener('input', () => { $(id + '-v').textContent = (+$(id).value).toFixed(2); if (id === 'sigma') { volume = null; if (mode === 'cloud' || mode === 'slice') build(); } });
+$('axis').addEventListener('change', () => {}); $('hyd').addEventListener('change', build);
+window.addEventListener('keydown', e => { if (e.target.tagName === 'INPUT') return; const m = { 1: 'ball', 2: 'space', 3: 'cloud', 4: 'slice', 5: 'atom' }[e.key]; if (m) setMode(m); });
+function resize() { const w = view.clientWidth, h = view.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+window.addEventListener('resize', resize); resize();
+const inv = new THREE.Matrix4(), camLocal = new THREE.Vector3();
+function animate() {
+  requestAnimationFrame(animate); controls.update();
+  if ($('spin').checked && mol) root.rotation.y += 0.0025;
+  for (const o of meshes) if (o.userData.volume) { inv.copy(o.matrixWorld).invert(); camLocal.copy(camera.position).applyMatrix4(inv).addScalar(0.5); const u = o.material.uniforms; u.uCamPos.value.copy(camLocal); u.uIso.value = +$('iso').value; u.uOpacity.value = +$('dens').value; u.uSlice.value = +$('slice').value; u.uAxis.value = +$('axis').value; u.uSliceOn.value = mode === 'slice' ? 1 : 0; }
+  for (const o of meshes) if (o.userData.atomCloud) { inv.copy(o.matrixWorld).invert(); camLocal.copy(camera.position).applyMatrix4(inv).addScalar(0.5); o.material.uniforms.uCamPos.value.copy(camLocal); }
+  renderer.render(scene, camera);
+}
+animate();
+load('caffeine');
+</script>
+</body>
+</html>

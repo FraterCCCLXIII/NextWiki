@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>University</title>
+<style>
+  :root { --bg: #05070d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --line: rgba(140,170,220,0.14); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(127,195,255,0.55), rgba(255,184,107,0.45)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+  * { scrollbar-width: thin; scrollbar-color: rgba(127,195,255,0.6) transparent; }
+  .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+  #navbar { position: sticky; top: 0; z-index: 6; height: 58px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(5,7,13,0.98), rgba(5,7,13,0.85)); border-bottom: 1px solid var(--line); }
+  #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 17px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 11px; color: #fff; opacity: 0.8; margin-top: 2px; }
+  #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.18em; font-size: 12px; text-transform: uppercase; }
+
+  /* One added tab is wider than a 1280 screen: allow the menu to shrink and
+     scroll sideways below that width rather than clipping its last link. */
+  @media (max-width: 1320px) {
+    #menu { overflow-x: auto; min-width: 0; scrollbar-width: none; }
+    #menu::-webkit-scrollbar { display: none; }
+  }
+  #menu a { color: rgba(255,255,255,0.72); text-decoration: none; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+  main { max-width: 1400px; margin: 0 auto; padding: 22px; display: grid; grid-template-columns: 300px 1fr; gap: 26px; }
+  aside { position: sticky; top: 80px; align-self: start; max-height: calc(100vh - 100px); overflow: auto; }
+  h1 { font-weight: 500; font-size: 26px; margin: 0 0 4px; letter-spacing: 0.04em; }
+  h2 { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 18px 0 8px; }
+  input[type=text], button { background: rgba(22,32,50,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 7px 10px; font: inherit; }
+  input[type=text] { width: 100%; } button { cursor: pointer; } button:hover { border-color: var(--accent); }
+  .dim { color: var(--muted); }
+  /* the ladder (stage list) */
+  .ladder { position: relative; padding-left: 18px; }
+  .ladder::before { content: ''; position: absolute; left: 5px; top: 8px; bottom: 8px; width: 1px; background: linear-gradient(180deg, #ffd1a0, #a8c8ff 50%, #ffa8a8); }
+  .stage { position: relative; display: block; padding: 7px 10px; margin: 2px 0; border-radius: 9px; cursor: pointer; color: var(--text); text-decoration: none; }
+  .stage::before { content: ''; position: absolute; left: -17px; top: 13px; width: 9px; height: 9px; border-radius: 50%; background: var(--c); box-shadow: 0 0 10px var(--c); }
+  .stage:hover, .stage.on { background: rgba(127,195,255,0.08); }
+  .stage small { display: block; color: var(--muted); font-size: 11.5px; }
+  .stage .n { float: right; color: var(--muted); font-size: 11px; margin-top: 2px; }
+  /* the tree */
+  .tree details { margin: 0; }
+  .tree summary { list-style: none; cursor: pointer; user-select: none; padding: 6px 8px; border-radius: 8px; display: flex; align-items: center; gap: 8px; }
+  .tree summary::-webkit-details-marker { display: none; }
+  .tree summary:hover { background: rgba(127,195,255,0.06); }
+  /* The disclosure triangle sits after the title it discloses, at the right
+     edge of the row, so titles start flush with their indent instead of
+     behind a gutter of chevrons. */
+  .tree summary::after { content: '▸'; margin-left: auto; color: var(--dim2); display: inline-block; transition: transform .15s, color .15s; }
+  .tree details[open] > summary::after { transform: rotate(90deg); color: var(--accent); }
+  .tree summary:hover::after { color: var(--text); }
+  .tree .kids { margin-left: 14px; padding-left: 12px; border-left: 1px solid var(--line); }
+  .stagehead { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin: 6px 0 2px; }
+  .stagehead h3 { margin: 0; font-weight: 500; font-size: 22px; color: #fff; }
+  .stagehead .ages { color: var(--c); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .blurb { color: var(--muted); margin: 0 0 8px; }
+  .program > summary { font-size: 16px; color: #fff; }
+  .module > summary { font-size: 14px; }
+  .lesson { display: flex; align-items: center; gap: 8px; padding: 3px 8px 3px 26px; color: #c3d0e2; }
+  .lesson input { accent-color: var(--accent); }
+  .lesson.done span { color: var(--muted); text-decoration: line-through; }
+  .lesson a { color: var(--accent2); text-decoration: none; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid rgba(255,184,107,0.35); border-radius: 999px; padding: 0 7px; }
+  .lesson a:hover { background: rgba(255,184,107,0.12); }
+  .count { color: var(--muted); font-size: 11.5px; margin-left: auto; }
+  .bar { height: 3px; border-radius: 3px; background: rgba(255,255,255,0.08); overflow: hidden; margin: 2px 0 10px; }
+  .bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); width: 0; transition: width .3s; }
+  .totals { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 10px 0; }
+  .totals div { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; text-align: center; }
+  .totals b { display: block; font-size: 20px; color: #fff; font-weight: 500; }
+  .totals small { color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; font-size: 10px; }
+  mark { background: rgba(255,184,107,0.3); color: inherit; border-radius: 3px; }
+  select { background: rgba(22,32,50,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 6px 8px; font: inherit; width: 100%; }
+  .exam { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; margin: 6px 0; font-size: 12.5px; }
+  .exam b { color: #fff; font-weight: 500; font-size: 14px; } .exam .tag { color: var(--accent2); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; margin-left: 6px; }
+  .exam .m { color: var(--muted); margin-top: 2px; } .exam a { color: var(--accent); text-decoration: none; }
+  .exam button { font-size: 11px; padding: 2px 8px; margin-top: 6px; }
+  #examList { max-height: 46vh; overflow: auto; }
+  .pf { display: inline-block; background: rgba(127,195,255,0.12); border: 1px solid var(--accent); border-radius: 999px; padding: 1px 9px; margin: 4px 0; font-size: 12px; } .pf button { font-size: 10px; padding: 0 6px; margin-left: 6px; }
+  .req { padding: 2px 8px 6px 26px; font-size: 12px; color: var(--muted); }
+  .req a { color: var(--accent); text-decoration: none; } .req a.done { color: var(--muted); text-decoration: line-through; } .req a:hover { text-decoration: underline; }
+  .state { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 999px; padding: 1px 7px; border: 1px solid; }
+  .state.ready { color: #7fe3a0; border-color: rgba(127,227,160,0.4); } .state.locked { color: var(--muted); border-color: rgba(138,155,184,0.35); } .state.complete { color: var(--accent2); border-color: rgba(255,184,107,0.4); }
+  .subjects { display: flex; flex-wrap: wrap; gap: 5px; }
+  .subjects button { font-size: 11.5px; padding: 3px 8px; } .subjects button.on { border-color: var(--accent); color: var(--accent); }
+</style>
+  <link rel="stylesheet" href="kosmographica.css?v=6">
+  <script src="atlas-nav.js" defer></script>
+  <script src="accordion.js" defer></script>
+</head>
+<body>
+<div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
+  <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html" class="here">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span></span></div>
+<main>
+  <aside>
+    <h1 class="serif">University</h1>
+    <div class="dim">Programmes and modules for every age, from first questions to original research. The tree is the structure; lessons link into the map, the encyclopedia and the simulator where they already exist.</div>
+    <div class="totals" id="totals"></div>
+    <h2>Preparing for a test</h2>
+    <select id="region"></select>
+    <div class="row" style="margin-top:6px"><label for="age" style="flex:1">Student age</label><input type="number" id="age" min="3" max="99" placeholder="any" style="width:70px;background:rgba(22,32,50,0.8);color:var(--text);border:1px solid rgba(127,195,255,0.22);border-radius:9px;padding:5px 8px;font:inherit"></div>
+    <select id="level" style="margin-top:6px"><option value="all">any level</option></select>
+    <div id="examList"></div>
+    <div id="progFilter"></div>
+    <div class="dim" id="examNote" style="font-size:11.5px;margin-top:6px"></div>
+    <h2>Search the tree</h2>
+    <input type="text" id="q" placeholder="orbit, Moon, Kepler, plasma…" autocomplete="off">
+    <h2>Subjects</h2>
+    <div class="subjects" id="subjects"></div>
+    <h2>Stages</h2>
+    <div class="ladder" id="ladder"></div>
+    <div style="margin-top:14px"><button id="expand">expand all</button> <button id="collapse">collapse all</button> <button id="reset" title="clears your check marks">reset progress</button></div>
+  </aside>
+  <section class="tree" id="tree"></section>
+</main>
+<script type="module">
+import { TREE } from './university-tree.js';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const L = l => typeof l === 'string' ? { t: l } : l;
+const lessonId = (si, pi, mi, li) => `${TREE[si].id}/${pi}/${mi}/${li}`;
+let done = new Set(); try { done = new Set(JSON.parse(localStorage.getItem('kosmo-university-done') || '[]')); } catch {}
+const save = () => { try { localStorage.setItem('kosmo-university-done', JSON.stringify([...done])); } catch {} };
+let q = '', subject = 'all', progOnly = null;   // progOnly: Set of programme names when preparing for an exam
+const hit = s => q && String(s).toLowerCase().includes(q);
+// index every module by name: stage index, programme, module, and the ids of its lessons
+const INDEX = new Map();
+TREE.forEach((st, si) => st.programs.forEach((pr, pi) => pr.modules.forEach((mo, mi) => INDEX.set(mo.name, { si, pi, mi, st, pr, mo, ids: mo.lessons.map((_, li) => `${st.id}/${pi}/${mi}/${li}`) }))));
+const moduleDone = name => { const x = INDEX.get(name); return !!x && x.ids.every(id => done.has(id)); };
+const moduleState = mo => { const reqs = (mo.req || []).filter(r => INDEX.has(r)); if (moduleDone(mo.name)) return 'complete'; return reqs.every(moduleDone) ? 'ready' : 'locked'; };
+// subjects: a programme's family, from its name
+const SUBJECTS = [['Mathematics', /math|number|algebra|geometry|calculus|statistic|arith/i], ['Language & literature', /language|literacy|english|reading|writing|literature|rhetoric|lingu/i], ['Science', /science|physics|chemistry|biology|astronom|earth|planet|cosmolog|plasma|solar|galaxy|sky|neighbourhood|measuring|forces|motion|electric|light|life beyond|modern physics|mechanics|electromagnetism|computational astro/i], ['History & society', /history|civic|government|econom|geograph|social|politic|law|business|philosoph|ethic|religio|culture|stories/i], ['Arts', /art|music|drama|theatre|dance|design|architect|make and play/i], ['Computing', /comput|digital|software|data|programming/i], ['Health & PE', /health|physical education|\bpe\b|sport|wellbeing|life skills|practical/i], ['Engineering & space', /engineer|aerospace|space systems|propulsion|mission|megastructure/i], ['Research & teaching', /research|phd|doctoral|postdoc|public science|teaching|education|craft|lifelong|communication/i]];
+const subjectOf = name => (SUBJECTS.find(([, re]) => re.test(name)) || ['Other'])[0];
+const mark = s => q ? esc(s).replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'ig'), m => `<mark>${m}</mark>`) : esc(s);
+const link = l => l.go ? `<a href="universe-timeline.html#go=${encodeURIComponent(l.go)}" title="open in Kosmographica">map</a>` : l.sim ? `<a href="contraption-sim.html#setup=${encodeURIComponent(l.sim)}" title="open in the simulator">simulate</a>` : l.pedia ? `<a href="kosmopedia.html#obj=${encodeURIComponent(l.pedia)}">pedia</a>` : '';
+
+function counts(stage) { let p = stage.programs.length, m = 0, l = 0, d = 0; stage.programs.forEach((pr, pi) => pr.modules.forEach((mo, mi) => { m++; mo.lessons.forEach((_, li) => { l++; if (done.has(`${stage.id}/${pi}/${mi}/${li}`)) d++; }); })); return { p, m, l, d }; }
+
+function renderSubjects() {
+  const counts = {}; TREE.forEach(st => st.programs.forEach(pr => { const k = subjectOf(pr.name); counts[k] = (counts[k] || 0) + 1; }));
+  const keys = ['all', ...SUBJECTS.map(s => s[0]).filter(k => counts[k]), ...(counts.Other ? ['Other'] : [])];
+  $('subjects').innerHTML = keys.map(k => `<button data-s="${k}" class="${k === subject ? 'on' : ''}">${k === 'all' ? 'all subjects' : k}${k !== 'all' ? ` <span class="dim">${counts[k]}</span>` : ''}</button>`).join('');
+  $('subjects').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { subject = b.dataset.s; renderSubjects(); render(); }));
+}
+function render() {
+  const ladder = $('ladder'), tree = $('tree');
+  ladder.innerHTML = ''; tree.innerHTML = '';
+  let T = { p: 0, m: 0, l: 0, d: 0 };
+  TREE.forEach((stage, si) => {
+    const c = counts(stage); T.p += c.p; T.m += c.m; T.l += c.l; T.d += c.d;
+    const a = document.createElement('a'); a.className = 'stage'; a.href = `#${stage.id}`; a.style.setProperty('--c', stage.color);
+    a.innerHTML = `${esc(stage.name)}<span class="n">${c.d}/${c.l}</span><small>${esc(stage.ages)} · ${c.p} programmes · ${c.m} modules</small>`;
+    ladder.appendChild(a);
+    // stage block
+    const matchStage = (!progOnly || stage.programs.some(pr => progOnly.has(pr.name))) && (!q || hit(stage.name) || hit(stage.blurb) || stage.programs.some(pr => hit(pr.name) || pr.modules.some(mo => hit(mo.name) || mo.lessons.some(l => hit(L(l).t)))));
+    if (!matchStage) return;
+    const d = document.createElement('details'); d.open = !!q || !!progOnly || location.hash === `#${stage.id}` || si === 0; d.id = stage.id; d.style.setProperty('--c', stage.color);
+    d.innerHTML = `<summary><div class="stagehead"><h3 class="serif">${mark(stage.name)}</h3><span class="ages">${esc(stage.ages)}</span></div><span class="count">${c.d}/${c.l} lessons</span></summary>
+      <div class="kids"><p class="blurb">${mark(stage.blurb)}</p><div class="bar"><i style="width:${c.l ? 100 * c.d / c.l : 0}%"></i></div></div>`;
+    const kids = d.querySelector('.kids');
+    stage.programs.forEach((pr, pi) => {
+      const matchP = (!progOnly || progOnly.has(pr.name)) && (subject === 'all' || subjectOf(pr.name) === subject) && (!q || hit(pr.name) || pr.modules.some(mo => hit(mo.name) || mo.lessons.some(l => hit(L(l).t))));
+      if (!matchP) return;
+      const pd = document.createElement('details'); pd.className = 'program'; pd.open = !!q || !!progOnly;
+      const nl = pr.modules.reduce((n, mo) => n + mo.lessons.length, 0), nd = pr.modules.reduce((n, mo, mi) => n + mo.lessons.filter((_, li) => done.has(lessonId(si, pi, mi, li))).length, 0);
+      pd.innerHTML = `<summary>${mark(pr.name)}<span class="count">${pr.modules.length} modules · ${nd}/${nl}</span></summary><div class="kids"></div>`;
+      const pk = pd.querySelector('.kids');
+      pr.modules.forEach((mo, mi) => {
+        const matchM = !q || hit(mo.name) || mo.lessons.some(l => hit(L(l).t)) || hit(pr.name);
+        if (!matchM) return;
+        const md = document.createElement('details'); md.className = 'module'; md.open = !!q || location.hash === `#m=${encodeURIComponent(mo.name)}`; md.id = `m-${mo.name.replace(/\W+/g, '-')}`;
+        const stt = moduleState(mo);
+        md.innerHTML = `<summary>${mark(mo.name)}<span class="state ${stt}">${stt}</span><span class="count">${mo.lessons.length} lessons</span></summary><div class="kids"></div>`;
+        const mk = md.querySelector('.kids');
+        if (mo.req && mo.req.length) {
+          const rq = document.createElement('div'); rq.className = 'req';
+          rq.innerHTML = 'requires ' + mo.req.map(r => { const x = INDEX.get(r); return x ? `<a href="#m=${encodeURIComponent(r)}" class="${moduleDone(r) ? 'done' : ''}" title="${esc(x.st.name)} · ${esc(x.pr.name)}">${esc(r)}</a>` : `<span class="dim">${esc(r)} (missing)</span>`; }).join(', ');
+          mk.appendChild(rq);
+        }
+        mo.lessons.forEach((raw, li) => {
+          const l = L(raw), id = lessonId(si, pi, mi, li), row = document.createElement('label');
+          row.className = 'lesson' + (done.has(id) ? ' done' : '');
+          row.innerHTML = `<input type="checkbox" ${done.has(id) ? 'checked' : ''}><span>${mark(l.t)}</span>${link(l)}`;
+          row.querySelector('input').addEventListener('change', e => { e.target.checked ? done.add(id) : done.delete(id); save(); render(); });
+          mk.appendChild(row);
+        });
+        pk.appendChild(md);
+      });
+      kids.appendChild(pd);
+    });
+    tree.appendChild(d);
+  });
+  $('totals').innerHTML = `<div><b>${TREE.length}</b><small>stages</small></div><div><b>${T.p}</b><small>programmes</small></div><div><b>${T.m}</b><small>modules</small></div><div><b>${T.d}/${T.l}</b><small>lessons done</small></div>`;
+  ladder.querySelectorAll('.stage').forEach(a => a.classList.toggle('on', a.getAttribute('href') === location.hash));
+}
+$('q').addEventListener('input', e => { q = e.target.value.trim().toLowerCase(); render(); });
+$('expand').addEventListener('click', () => document.querySelectorAll('.tree details').forEach(d => d.open = true));
+$('collapse').addEventListener('click', () => document.querySelectorAll('.tree details').forEach(d => d.open = false));
+$('reset').addEventListener('click', () => { if (confirm('Clear all check marks?')) { done.clear(); save(); render(); } });
+function openHash() {
+  const h = location.hash;
+  if (h.startsWith('#m=')) {   // jump to a module: open its stage and programme, then scroll
+    const name = decodeURIComponent(h.slice(3)), x = INDEX.get(name); if (!x) return;
+    const el = document.getElementById(`m-${name.replace(/\W+/g, '-')}`); if (!el) return;
+    let p = el; while (p && p.id !== 'tree') { if (p.tagName === 'DETAILS') p.open = true; p = p.parentElement; }
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else { const d = document.getElementById(h.slice(1)); if (d) { d.open = true; d.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
+}
+window.addEventListener('hashchange', () => { render(); openHash(); });
+renderSubjects(); render(); openHash();
+
+// ---- exams by region, age and level ----
+const LEVEL_NAMES = { early_years: 'early years', primary: 'primary', lower_secondary: 'lower secondary', upper_secondary: 'upper secondary', school_leaving: 'school leaving', university_entrance: 'university entrance', undergraduate: 'undergraduate', graduate_entrance: 'graduate entrance', professional: 'professional', language: 'language', international: 'international' };
+let EX = null;
+async function loadExams() {
+  try { EX = await (await fetch('university-exams.json', { cache: 'no-store' })).json(); } catch { $('examNote').textContent = 'university-exams.json not found.'; return; }
+  const rs = [...EX.regions].sort((a, b) => a.name.localeCompare(b.name));
+  $('region').innerHTML = `<option value="">choose a region…</option>` + rs.map(r => `<option value="${r.id}">${r.flag || ''} ${r.name} (${EX.exams.filter(e => e.region === r.id).length})</option>`).join('');
+  $('level').innerHTML += Object.entries(LEVEL_NAMES).map(([k, v]) => `<option value="${k}">${v}</option>`).join('');
+  try { const saved = localStorage.getItem('kosmo-region'); if (saved) $('region').value = saved; } catch {}
+  for (const id of ['region', 'age', 'level']) $(id).addEventListener(id === 'age' ? 'input' : 'change', renderExams);
+  renderExams();
+}
+function renderExams() {
+  const list = $('examList'); list.innerHTML = '';
+  if (!EX) return;
+  const region = $('region').value, age = parseInt($('age').value), level = $('level').value;
+  try { localStorage.setItem('kosmo-region', region); } catch {}
+  if (!region) { $('examNote').textContent = `${EX.exams.length} tests across ${EX.regions.length} regions. Choose a region, then an age or level.`; return; }
+  const rows = EX.exams.filter(e => e.region === region && (level === 'all' || e.level === level) && (!Number.isFinite(age) || !e.ages || (age >= e.ages[0] - 1 && age <= e.ages[1] + 1)));
+  rows.sort((a, b) => (a.ages?.[0] ?? 99) - (b.ages?.[0] ?? 99));
+  for (const e of rows) {
+    const d = document.createElement('div'); d.className = 'exam';
+    const meta = [e.ages ? `ages ${e.ages[0]}–${e.ages[1]}` : '', e.grades ? `grades ${e.grades}` : '', e.body, e.purpose].filter(Boolean).join(' · ');
+    d.innerHTML = `<b>${esc(e.name)}</b><span class="tag">${LEVEL_NAMES[e.level] || e.level}</span>${e.full_name && e.full_name !== e.name ? `<div class="dim">${esc(e.full_name)}</div>` : ''}<div class="m">${esc(meta)}</div>`
+      + (e.subjects?.length ? `<div class="m">subjects: ${esc(e.subjects.join(', '))}</div>` : '') + (e.format ? `<div class="m">${esc(e.format)}</div>` : '') + (e.when ? `<div class="m">when: ${esc(e.when)}</div>` : '') + (e.notes ? `<div class="m">${esc(e.notes)}</div>` : '')
+      + `<div>${e.prep_programs?.length ? `<button data-prep="${esc(e.id)}">show the programmes that prepare for it (${e.prep_programs.length})</button>` : ''} ${e.link ? `<a href="${esc(e.link)}" target="_blank" rel="noopener" style="margin-left:6px;font-size:11px">reference ↗</a>` : ''}</div>`;
+    d.querySelector('button[data-prep]')?.addEventListener('click', () => { progOnly = new Set(e.prep_programs); $('progFilter').innerHTML = `<span class="pf">preparing for ${esc(e.name)}<button id="clearPrep">×</button></span>`; $('clearPrep').addEventListener('click', () => { progOnly = null; $('progFilter').innerHTML = ''; render(); }); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    list.appendChild(d);
+  }
+  $('examNote').textContent = rows.length ? `${rows.length} test${rows.length > 1 ? 's' : ''} shown. Compiled from general knowledge; dates, fees and formats change, so confirm with the examining body.` : 'No tests match that age and level in this region.';
+}
+loadExams();
+</script>
+</body>
+</html>

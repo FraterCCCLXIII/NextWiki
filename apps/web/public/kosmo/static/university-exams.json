@@ -1,0 +1,7418 @@
+{
+ "regions": [
+  {
+   "id": "us",
+   "name": "United States",
+   "flag": "🇺🇸"
+  },
+  {
+   "id": "uk",
+   "name": "United Kingdom",
+   "flag": "🇬🇧"
+  },
+  {
+   "id": "ie",
+   "name": "Ireland",
+   "flag": "🇮🇪"
+  },
+  {
+   "id": "fr",
+   "name": "France",
+   "flag": "🇫🇷"
+  },
+  {
+   "id": "de",
+   "name": "Germany",
+   "flag": "🇩🇪"
+  },
+  {
+   "id": "es",
+   "name": "Spain",
+   "flag": "🇪🇸"
+  },
+  {
+   "id": "it",
+   "name": "Italy",
+   "flag": "🇮🇹"
+  },
+  {
+   "id": "nl",
+   "name": "Netherlands",
+   "flag": "🇳🇱"
+  },
+  {
+   "id": "nordic",
+   "name": "Nordic countries",
+   "flag": "🇸🇪"
+  },
+  {
+   "id": "pl",
+   "name": "Poland",
+   "flag": "🇵🇱"
+  },
+  {
+   "id": "ru",
+   "name": "Russia",
+   "flag": "🇷🇺"
+  },
+  {
+   "id": "cn",
+   "name": "China",
+   "flag": "🇨🇳"
+  },
+  {
+   "id": "jp",
+   "name": "Japan",
+   "flag": "🇯🇵"
+  },
+  {
+   "id": "kr",
+   "name": "South Korea",
+   "flag": "🇰🇷"
+  },
+  {
+   "id": "tw",
+   "name": "Taiwan",
+   "flag": "🇹🇼"
+  },
+  {
+   "id": "hk",
+   "name": "Hong Kong",
+   "flag": "🇭🇰"
+  },
+  {
+   "id": "sg",
+   "name": "Singapore",
+   "flag": "🇸🇬"
+  },
+  {
+   "id": "in",
+   "name": "India",
+   "flag": "🇮🇳"
+  },
+  {
+   "id": "pk",
+   "name": "Pakistan",
+   "flag": "🇵🇰"
+  },
+  {
+   "id": "bd",
+   "name": "Bangladesh",
+   "flag": "🇧🇩"
+  },
+  {
+   "id": "vn",
+   "name": "Vietnam",
+   "flag": "🇻🇳"
+  },
+  {
+   "id": "id",
+   "name": "Indonesia",
+   "flag": "🇮🇩"
+  },
+  {
+   "id": "ph",
+   "name": "Philippines",
+   "flag": "🇵🇭"
+  },
+  {
+   "id": "th",
+   "name": "Thailand",
+   "flag": "🇹🇭"
+  },
+  {
+   "id": "au",
+   "name": "Australia",
+   "flag": "🇦🇺"
+  },
+  {
+   "id": "nz",
+   "name": "New Zealand",
+   "flag": "🇳🇿"
+  },
+  {
+   "id": "ca",
+   "name": "Canada",
+   "flag": "🇨🇦"
+  },
+  {
+   "id": "br",
+   "name": "Brazil",
+   "flag": "🇧🇷"
+  },
+  {
+   "id": "mx",
+   "name": "Mexico",
+   "flag": "🇲🇽"
+  },
+  {
+   "id": "latam",
+   "name": "Argentina, Chile and Colombia",
+   "flag": "🌎"
+  },
+  {
+   "id": "za",
+   "name": "South Africa",
+   "flag": "🇿🇦"
+  },
+  {
+   "id": "ng",
+   "name": "Nigeria",
+   "flag": "🇳🇬"
+  },
+  {
+   "id": "ke",
+   "name": "Kenya",
+   "flag": "🇰🇪"
+  },
+  {
+   "id": "gh",
+   "name": "Ghana",
+   "flag": "🇬🇭"
+  },
+  {
+   "id": "eg",
+   "name": "Egypt",
+   "flag": "🇪🇬"
+  },
+  {
+   "id": "tr",
+   "name": "Turkey",
+   "flag": "🇹🇷"
+  },
+  {
+   "id": "ir",
+   "name": "Iran",
+   "flag": "🇮🇷"
+  },
+  {
+   "id": "il",
+   "name": "Israel",
+   "flag": "🇮🇱"
+  },
+  {
+   "id": "gulf",
+   "name": "Gulf states",
+   "flag": "🇦🇪"
+  },
+  {
+   "id": "intl",
+   "name": "International",
+   "flag": "🌐"
+  }
+ ],
+ "exams": [
+  {
+   "id": "us-state",
+   "region": "us",
+   "name": "State assessments (ESSA)",
+   "full_name": "State standardised assessments (e.g. STAAR, Smarter Balanced, FAST)",
+   "body": "State education agencies",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    8,
+    17
+   ],
+   "grades": "3–8 and once in high school",
+   "purpose": "annual accountability testing",
+   "subjects": [
+    "reading",
+    "mathematics",
+    "science"
+   ],
+   "format": null,
+   "when": "annually in spring",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Every_Student_Succeeds_Act",
+   "notes": "Federal law requires annual reading and maths tests in grades 3–8 and once in high school; tests differ by state."
+  },
+  {
+   "id": "us-naep",
+   "region": "us",
+   "name": "NAEP",
+   "full_name": "National Assessment of Educational Progress",
+   "body": "NCES (US Dept of Education)",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    9,
+    17
+   ],
+   "grades": "4, 8, 12",
+   "purpose": "sample-based national monitoring",
+   "subjects": [
+    "reading",
+    "mathematics",
+    "science",
+    "other subjects"
+   ],
+   "format": null,
+   "when": "every two years (core subjects)",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/National_Assessment_of_Educational_Progress",
+   "notes": "Sample survey of students, no individual scores."
+  },
+  {
+   "id": "us-psat",
+   "region": "us",
+   "name": "PSAT/NMSQT",
+   "full_name": "Preliminary SAT / National Merit Scholarship Qualifying Test",
+   "body": "College Board",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    15,
+    17
+   ],
+   "grades": "10–11",
+   "purpose": "SAT practice and National Merit qualification",
+   "subjects": [
+    "reading",
+    "writing",
+    "mathematics"
+   ],
+   "format": "digital, adaptive",
+   "when": "October",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/PSAT/NMSQT",
+   "notes": null
+  },
+  {
+   "id": "us-sat",
+   "region": "us",
+   "name": "SAT",
+   "full_name": "Scholastic Assessment Test",
+   "body": "College Board",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    16,
+    18
+   ],
+   "grades": "11–12",
+   "purpose": "college admission",
+   "subjects": [
+    "reading",
+    "writing",
+    "mathematics"
+   ],
+   "format": "digital, adaptive; 2 h 14 min; scored 400–1600",
+   "when": "several dates a year",
+   "cost": "about US$68 (2025)",
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/SAT",
+   "notes": null
+  },
+  {
+   "id": "us-act",
+   "region": "us",
+   "name": "ACT",
+   "full_name": "American College Testing",
+   "body": "ACT, Inc.",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    16,
+    18
+   ],
+   "grades": "11–12",
+   "purpose": "college admission",
+   "subjects": [
+    "English",
+    "mathematics",
+    "reading",
+    "science (optional)"
+   ],
+   "format": "multiple choice; composite 1–36",
+   "when": "seven dates a year",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics"
+   ],
+   "link": "https://en.wikipedia.org/wiki/ACT_(test)",
+   "notes": null
+  },
+  {
+   "id": "us-ap",
+   "region": "us",
+   "name": "AP",
+   "full_name": "Advanced Placement exams",
+   "body": "College Board",
+   "level": "upper_secondary",
+   "stage": "high",
+   "ages": [
+    15,
+    18
+   ],
+   "grades": "10–12",
+   "purpose": "college credit and placement",
+   "subjects": [
+    "about 40 subjects"
+   ],
+   "format": "exams scored 1–5",
+   "when": "May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)",
+    "Computer Science (High School)",
+    "Government and Economics"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Advanced_Placement",
+   "notes": null
+  },
+  {
+   "id": "us-ged",
+   "region": "us",
+   "name": "GED",
+   "full_name": "General Educational Development",
+   "body": "GED Testing Service",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    16,
+    99
+   ],
+   "grades": "adult",
+   "purpose": "high school equivalency",
+   "subjects": [
+    "reasoning through language arts",
+    "mathematics",
+    "science",
+    "social studies"
+   ],
+   "format": "four computer-based subject tests",
+   "when": "year round",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Government and Economics"
+   ],
+   "link": "https://en.wikipedia.org/wiki/GED",
+   "notes": null
+  },
+  {
+   "id": "us-hiset",
+   "region": "us",
+   "name": "HiSET",
+   "full_name": "High School Equivalency Test",
+   "body": "ETS",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    16,
+    99
+   ],
+   "grades": "adult",
+   "purpose": "high school equivalency",
+   "subjects": [
+    "language arts",
+    "mathematics",
+    "science",
+    "social studies"
+   ],
+   "format": "five subject tests",
+   "when": "year round",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/HiSET",
+   "notes": null
+  },
+  {
+   "id": "us-clep",
+   "region": "us",
+   "name": "CLEP",
+   "full_name": "College-Level Examination Program",
+   "body": "College Board",
+   "level": "undergraduate",
+   "stage": "college",
+   "ages": [
+    17,
+    99
+   ],
+   "grades": null,
+   "purpose": "college credit by examination",
+   "subjects": [
+    "about 34 subjects"
+   ],
+   "format": null,
+   "when": "year round",
+   "cost": null,
+   "prep_programs": [
+    "BSc Mathematics",
+    "BA Humanities"
+   ],
+   "link": "https://en.wikipedia.org/wiki/College-Level_Examination_Program",
+   "notes": null
+  },
+  {
+   "id": "us-gre",
+   "region": "us",
+   "name": "GRE General Test",
+   "full_name": "Graduate Record Examination",
+   "body": "ETS",
+   "level": "graduate_entrance",
+   "stage": "college",
+   "ages": [
+    21,
+    40
+   ],
+   "grades": null,
+   "purpose": "graduate school admission",
+   "subjects": [
+    "verbal reasoning",
+    "quantitative reasoning",
+    "analytical writing"
+   ],
+   "format": null,
+   "when": "year round",
+   "cost": null,
+   "prep_programs": [
+    "MSc Mathematics",
+    "MSc Social Sciences",
+    "MSc Computer Science"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Graduate_Record_Examinations",
+   "notes": null
+  },
+  {
+   "id": "us-gmat",
+   "region": "us",
+   "name": "GMAT",
+   "full_name": "Graduate Management Admission Test",
+   "body": "GMAC",
+   "level": "graduate_entrance",
+   "stage": "college",
+   "ages": [
+    21,
+    40
+   ],
+   "grades": null,
+   "purpose": "MBA and business master's admission",
+   "subjects": [
+    "quantitative",
+    "verbal",
+    "data insights"
+   ],
+   "format": null,
+   "when": "year round",
+   "cost": null,
+   "prep_programs": [
+    "BSc Economics and Business",
+    "MSc Economics and Business"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Graduate_Management_Admission_Test",
+   "notes": null
+  },
+  {
+   "id": "us-lsat",
+   "region": "us",
+   "name": "LSAT",
+   "full_name": "Law School Admission Test",
+   "body": "LSAC",
+   "level": "graduate_entrance",
+   "stage": "college",
+   "ages": [
+    21,
+    40
+   ],
+   "grades": null,
+   "purpose": "law school admission",
+   "subjects": [
+    "logical reasoning",
+    "analytical reasoning",
+    "reading comprehension",
+    "writing sample"
+   ],
+   "format": null,
+   "when": "several times a year",
+   "cost": null,
+   "prep_programs": [
+    "LLB Law",
+    "LLM Law"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Law_School_Admission_Test",
+   "notes": "Also used in Canada."
+  },
+  {
+   "id": "us-mcat",
+   "region": "us",
+   "name": "MCAT",
+   "full_name": "Medical College Admission Test",
+   "body": "AAMC",
+   "level": "graduate_entrance",
+   "stage": "college",
+   "ages": [
+    21,
+    40
+   ],
+   "grades": null,
+   "purpose": "medical school admission",
+   "subjects": [
+    "biological and biochemical foundations",
+    "chemical and physical foundations",
+    "psychological and social foundations",
+    "critical analysis"
+   ],
+   "format": null,
+   "when": "January to September",
+   "cost": null,
+   "prep_programs": [
+    "BSc Medicine and Health Sciences",
+    "BSc Biology",
+    "BSc Chemistry"
+   ],
+   "link": "https://en.wikipedia.org/wiki/MCAT",
+   "notes": "Also used in Canada."
+  },
+  {
+   "id": "us-dat",
+   "region": "us",
+   "name": "DAT",
+   "full_name": "Dental Admission Test",
+   "body": "American Dental Association",
+   "level": "graduate_entrance",
+   "stage": "college",
+   "ages": [
+    21,
+    40
+   ],
+   "grades": null,
+   "purpose": "dental school admission",
+   "subjects": [
+    "natural sciences",
+    "perceptual ability",
+    "reading comprehension",
+    "quantitative reasoning"
+   ],
+   "format": null,
+   "when": "year round",
+   "cost": null,
+   "prep_programs": [
+    "BSc Medicine and Health Sciences",
+    "BSc Biology",
+    "BSc Chemistry"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Dental_Admission_Test",
+   "notes": null
+  },
+  {
+   "id": "us-pcat",
+   "region": "us",
+   "name": "PCAT",
+   "full_name": "Pharmacy College Admission Test",
+   "body": "Pearson",
+   "level": "graduate_entrance",
+   "stage": "college",
+   "ages": [
+    19,
+    40
+   ],
+   "grades": null,
+   "purpose": "pharmacy school admission",
+   "subjects": null,
+   "format": null,
+   "when": "discontinued after the 2023–24 cycle",
+   "cost": null,
+   "prep_programs": [
+    "BSc Medicine and Health Sciences",
+    "BSc Biology",
+    "BSc Chemistry"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Pharmacy_College_Admission_Test",
+   "notes": "Discontinued in 2024."
+  },
+  {
+   "id": "us-usmle",
+   "region": "us",
+   "name": "USMLE Steps 1–3",
+   "full_name": "United States Medical Licensing Examination",
+   "body": "NBME and FSMB",
+   "level": "professional",
+   "stage": "masters",
+   "ages": [
+    23,
+    35
+   ],
+   "grades": null,
+   "purpose": "medical licensure",
+   "subjects": [
+    "basic science",
+    "clinical knowledge",
+    "clinical management"
+   ],
+   "format": null,
+   "when": "year round",
+   "cost": null,
+   "prep_programs": [
+    "MSc Public Health and Clinical Science",
+    "PhD Medicine and Health"
+   ],
+   "link": "https://en.wikipedia.org/wiki/United_States_Medical_Licensing_Examination",
+   "notes": "Step 1 is pass/fail since 2022."
+  },
+  {
+   "id": "us-nclex",
+   "region": "us",
+   "name": "NCLEX",
+   "full_name": "National Council Licensure Examination",
+   "body": "NCSBN",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    20,
+    99
+   ],
+   "grades": null,
+   "purpose": "nursing licensure",
+   "subjects": [
+    "nursing practice"
+   ],
+   "format": "computer adaptive",
+   "when": "year round",
+   "cost": null,
+   "prep_programs": [
+    "BSc Medicine and Health Sciences"
+   ],
+   "link": "https://en.wikipedia.org/wiki/NCLEX",
+   "notes": "RN and PN versions."
+  },
+  {
+   "id": "us-bar",
+   "region": "us",
+   "name": "Bar exam / UBE",
+   "full_name": "Uniform Bar Examination",
+   "body": "NCBE and state bar associations",
+   "level": "professional",
+   "stage": "masters",
+   "ages": [
+    24,
+    99
+   ],
+   "grades": null,
+   "purpose": "lawyer licensure",
+   "subjects": [
+    "multistate multiple choice",
+    "essays",
+    "performance test"
+   ],
+   "format": null,
+   "when": "February and July",
+   "cost": null,
+   "prep_programs": [
+    "LLM Law",
+    "LLB Law"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Uniform_Bar_Examination",
+   "notes": "NextGen bar exam is being phased in from 2026."
+  },
+  {
+   "id": "us-cpa",
+   "region": "us",
+   "name": "CPA Exam",
+   "full_name": "Uniform CPA Examination",
+   "body": "AICPA and NASBA",
+   "level": "professional",
+   "stage": "masters",
+   "ages": [
+    22,
+    99
+   ],
+   "grades": null,
+   "purpose": "accountancy licensure",
+   "subjects": [
+    "auditing",
+    "financial accounting",
+    "regulation",
+    "plus a discipline"
+   ],
+   "format": null,
+   "when": "year round",
+   "cost": null,
+   "prep_programs": [
+    "MSc Economics and Business",
+    "BSc Economics and Business"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Uniform_Certified_Public_Accountant_Examination",
+   "notes": null
+  },
+  {
+   "id": "us-fe-pe",
+   "region": "us",
+   "name": "FE and PE exams",
+   "full_name": "Fundamentals of Engineering / Principles and Practice of Engineering",
+   "body": "NCEES",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    21,
+    99
+   ],
+   "grades": null,
+   "purpose": "engineer licensure",
+   "subjects": [
+    "engineering disciplines"
+   ],
+   "format": "computer based",
+   "when": "year round",
+   "cost": null,
+   "prep_programs": [
+    "BEng Civil and Mechanical",
+    "BEng Electrical and Electronic",
+    "MEng Engineering"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Fundamentals_of_Engineering_exam",
+   "notes": null
+  },
+  {
+   "id": "us-praxis",
+   "region": "us",
+   "name": "Praxis",
+   "full_name": "Praxis Series",
+   "body": "ETS",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    21,
+    99
+   ],
+   "grades": null,
+   "purpose": "teacher certification",
+   "subjects": [
+    "core academic skills",
+    "subject assessments"
+   ],
+   "format": null,
+   "when": "year round",
+   "cost": null,
+   "prep_programs": [
+    "BA Education",
+    "MEd Education"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Praxis_tests",
+   "notes": null
+  },
+  {
+   "id": "us-toefl",
+   "region": "us",
+   "name": "TOEFL iBT",
+   "full_name": "Test of English as a Foreign Language",
+   "body": "ETS",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    16,
+    99
+   ],
+   "grades": null,
+   "purpose": "English proficiency for study abroad",
+   "subjects": [
+    "reading",
+    "listening",
+    "speaking",
+    "writing"
+   ],
+   "format": "internet based, about 2 h",
+   "when": "many dates a year",
+   "cost": null,
+   "prep_programs": [
+    "English Literature and Composition",
+    "English Language Arts"
+   ],
+   "link": "https://en.wikipedia.org/wiki/TOEFL",
+   "notes": null
+  },
+  {
+   "id": "us-wida",
+   "region": "us",
+   "name": "ACCESS for ELLs",
+   "full_name": "WIDA ACCESS",
+   "body": "WIDA",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    5,
+    18
+   ],
+   "grades": "K–12",
+   "purpose": "English language proficiency of learners",
+   "subjects": [
+    "listening",
+    "speaking",
+    "reading",
+    "writing"
+   ],
+   "format": null,
+   "when": "annually",
+   "cost": null,
+   "prep_programs": [
+    "English Language Arts"
+   ],
+   "link": "https://en.wikipedia.org/wiki/WIDA_Consortium",
+   "notes": null
+  },
+  {
+   "id": "uk-eyfs",
+   "region": "uk",
+   "name": "EYFS Profile",
+   "full_name": "Early Years Foundation Stage Profile",
+   "body": "Department for Education",
+   "level": "early_years",
+   "stage": "kindergarten",
+   "ages": [
+    4,
+    5
+   ],
+   "grades": "Reception",
+   "purpose": "teacher assessment at end of reception",
+   "subjects": [
+    "17 early learning goals"
+   ],
+   "format": "teacher observation, no test",
+   "when": "end of Reception year",
+   "cost": null,
+   "prep_programs": [
+    "Early Mathematics",
+    "Words and Stories"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Early_Years_Foundation_Stage",
+   "notes": null
+  },
+  {
+   "id": "uk-baseline",
+   "region": "uk",
+   "name": "Reception Baseline Assessment",
+   "full_name": "Reception Baseline Assessment",
+   "body": "Department for Education",
+   "level": "early_years",
+   "stage": "kindergarten",
+   "ages": [
+    4,
+    5
+   ],
+   "grades": "Reception",
+   "purpose": "baseline for school progress measure",
+   "subjects": [
+    "early mathematics",
+    "language",
+    "communication and literacy"
+   ],
+   "format": "short task-based, one to one",
+   "when": "within six weeks of starting Reception",
+   "cost": null,
+   "prep_programs": [
+    "Early Mathematics",
+    "Words and Stories"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Reception_Baseline_Assessment",
+   "notes": "Statutory in England from 2021."
+  },
+  {
+   "id": "uk-phonics",
+   "region": "uk",
+   "name": "Phonics Screening Check",
+   "full_name": "Phonics Screening Check",
+   "body": "Department for Education",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    5,
+    7
+   ],
+   "grades": "Year 1",
+   "purpose": "check decoding of words",
+   "subjects": [
+    "phonics"
+   ],
+   "format": "40 words, one to one, about 5–10 min",
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Reading and Writing Begins"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Phonics_screening_check",
+   "notes": null
+  },
+  {
+   "id": "uk-mtc",
+   "region": "uk",
+   "name": "Multiplication Tables Check",
+   "full_name": "Multiplication Tables Check",
+   "body": "Department for Education",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    8,
+    9
+   ],
+   "grades": "Year 4",
+   "purpose": "times tables fluency",
+   "subjects": [
+    "multiplication"
+   ],
+   "format": "25 questions, on screen",
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Multiplication_tables_check",
+   "notes": null
+  },
+  {
+   "id": "uk-ks1",
+   "region": "uk",
+   "name": "KS1 SATs",
+   "full_name": "Key Stage 1 assessments",
+   "body": "Standards and Testing Agency",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    6,
+    7
+   ],
+   "grades": "Year 2",
+   "purpose": "end of key stage 1",
+   "subjects": [
+    "reading",
+    "mathematics"
+   ],
+   "format": "teacher assessment informed by tests",
+   "when": "May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Standard_Attainment_Tests",
+   "notes": "Tests became non-statutory from 2023."
+  },
+  {
+   "id": "uk-ks2",
+   "region": "uk",
+   "name": "KS2 SATs",
+   "full_name": "Key Stage 2 SATs",
+   "body": "Standards and Testing Agency",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    10,
+    11
+   ],
+   "grades": "Year 6",
+   "purpose": "end of primary school",
+   "subjects": [
+    "reading",
+    "maths",
+    "grammar punctuation and spelling"
+   ],
+   "format": "written papers",
+   "when": "May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Standard_Attainment_Tests",
+   "notes": null
+  },
+  {
+   "id": "uk-11plus",
+   "region": "uk",
+   "name": "11-plus",
+   "full_name": "Eleven-plus selective school test",
+   "body": "local grammar school consortia and authorities",
+   "level": "lower_secondary",
+   "stage": "primary",
+   "ages": [
+    10,
+    11
+   ],
+   "grades": "Year 5–6",
+   "purpose": "grammar school selection",
+   "subjects": [
+    "verbal reasoning",
+    "non-verbal reasoning",
+    "English",
+    "mathematics"
+   ],
+   "format": null,
+   "when": "autumn of Year 6 (varies)",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Eleven-plus",
+   "notes": "Providers vary by area (GL, CEM)."
+  },
+  {
+   "id": "uk-ks3",
+   "region": "uk",
+   "name": "KS3 national curriculum teacher assessment",
+   "full_name": "Key Stage 3",
+   "body": "schools",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    11,
+    14
+   ],
+   "grades": "Years 7–9",
+   "purpose": "no national tests, school assessment",
+   "subjects": [
+    "all subjects"
+   ],
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Key_Stage_3",
+   "notes": "Included for completeness; no statutory national exam."
+  },
+  {
+   "id": "uk-gcse",
+   "region": "uk",
+   "name": "GCSE",
+   "full_name": "General Certificate of Secondary Education",
+   "body": "AQA, OCR, Pearson Edexcel, WJEC",
+   "level": "upper_secondary",
+   "stage": "high",
+   "ages": [
+    14,
+    16
+   ],
+   "grades": "Years 10–11",
+   "purpose": "secondary qualification",
+   "subjects": [
+    "about 60 subjects"
+   ],
+   "format": "written exams, some coursework",
+   "when": "May to June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)",
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/General_Certificate_of_Secondary_Education",
+   "notes": "England, Wales and Northern Ireland."
+  },
+  {
+   "id": "uk-national5",
+   "region": "uk",
+   "name": "Scottish National 5",
+   "full_name": "National 5",
+   "body": "SQA",
+   "level": "upper_secondary",
+   "stage": "high",
+   "ages": [
+    15,
+    16
+   ],
+   "grades": "S4",
+   "purpose": "Scottish secondary qualification",
+   "subjects": [
+    "many subjects"
+   ],
+   "format": null,
+   "when": "April to May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/National_5",
+   "notes": null
+  },
+  {
+   "id": "uk-highers",
+   "region": "uk",
+   "name": "Scottish Highers",
+   "full_name": "Higher",
+   "body": "SQA",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    16,
+    18
+   ],
+   "grades": "S5–S6",
+   "purpose": "Scottish university entrance",
+   "subjects": [
+    "many subjects"
+   ],
+   "format": null,
+   "when": "April to May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Higher_(Scottish_Qualifications_Authority)",
+   "notes": null
+  },
+  {
+   "id": "uk-advhigher",
+   "region": "uk",
+   "name": "Scottish Advanced Highers",
+   "full_name": "Advanced Higher",
+   "body": "SQA",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    18
+   ],
+   "grades": "S6",
+   "purpose": "advanced Scottish qualification",
+   "subjects": [
+    "many subjects"
+   ],
+   "format": null,
+   "when": "April to May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Advanced_Higher",
+   "notes": null
+  },
+  {
+   "id": "uk-alevel",
+   "region": "uk",
+   "name": "A-levels",
+   "full_name": "General Certificate of Education Advanced Level",
+   "body": "AQA, OCR, Pearson Edexcel, WJEC, CCEA",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    16,
+    18
+   ],
+   "grades": "Years 12–13",
+   "purpose": "university admission",
+   "subjects": [
+    "about 80 subjects"
+   ],
+   "format": "written exams, some coursework",
+   "when": "May to June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)",
+    "Modern Physics",
+    "Electromagnetism"
+   ],
+   "link": "https://en.wikipedia.org/wiki/GCE_Advanced_Level_(United_Kingdom)",
+   "notes": null
+  },
+  {
+   "id": "uk-btec",
+   "region": "uk",
+   "name": "BTEC",
+   "full_name": "Business and Technology Education Council qualifications",
+   "body": "Pearson",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    14,
+    19
+   ],
+   "grades": null,
+   "purpose": "vocational qualification",
+   "subjects": [
+    "applied subjects"
+   ],
+   "format": "coursework and assessments",
+   "when": "ongoing",
+   "cost": null,
+   "prep_programs": [
+    "Computer Science (High School)",
+    "Health, Fitness and Life Skills"
+   ],
+   "link": "https://en.wikipedia.org/wiki/BTEC",
+   "notes": null
+  },
+  {
+   "id": "uk-tlevel",
+   "region": "uk",
+   "name": "T-levels",
+   "full_name": "T Level technical qualification",
+   "body": "DfE with awarding organisations",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    16,
+    19
+   ],
+   "grades": null,
+   "purpose": "technical qualification",
+   "subjects": [
+    "technical subjects with industry placement"
+   ],
+   "format": null,
+   "when": "ongoing",
+   "cost": null,
+   "prep_programs": [
+    "Computer Science (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/T-Level",
+   "notes": null
+  },
+  {
+   "id": "uk-ucat",
+   "region": "uk",
+   "name": "UCAT",
+   "full_name": "University Clinical Aptitude Test",
+   "body": "UCAT Consortium",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "Year 13",
+   "purpose": "medical and dental admission",
+   "subjects": [
+    "verbal reasoning",
+    "decision making",
+    "quantitative reasoning",
+    "situational judgement"
+   ],
+   "format": "computer based, 2 h",
+   "when": "July to September",
+   "cost": null,
+   "prep_programs": [
+    "Biology (High School)",
+    "Chemistry (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/University_Clinical_Aptitude_Test",
+   "notes": null
+  },
+  {
+   "id": "uk-bmat",
+   "region": "uk",
+   "name": "BMAT",
+   "full_name": "BioMedical Admissions Test",
+   "body": "Cambridge Assessment",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "Year 13",
+   "purpose": "medical admission",
+   "subjects": [
+    "scientific knowledge",
+    "thinking skills",
+    "writing"
+   ],
+   "format": null,
+   "when": "discontinued after 2023",
+   "cost": null,
+   "prep_programs": [
+    "Biology (High School)",
+    "Chemistry (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/BioMedical_Admissions_Test",
+   "notes": "Discontinued: last sat in 2023."
+  },
+  {
+   "id": "uk-lnat",
+   "region": "uk",
+   "name": "LNAT",
+   "full_name": "National Admissions Test for Law",
+   "body": "LNAT Consortium",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "Year 13",
+   "purpose": "law admission",
+   "subjects": [
+    "multiple choice",
+    "essay"
+   ],
+   "format": null,
+   "when": "September to January",
+   "cost": null,
+   "prep_programs": [
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/National_Admissions_Test_for_Law",
+   "notes": null
+  },
+  {
+   "id": "uk-step",
+   "region": "uk",
+   "name": "STEP",
+   "full_name": "Sixth Term Examination Paper",
+   "body": "Cambridge Assessment Admissions Testing",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "Year 13",
+   "purpose": "mathematics admission to Cambridge and Warwick",
+   "subjects": [
+    "mathematics"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Sixth_Term_Examination_Paper",
+   "notes": null
+  },
+  {
+   "id": "uk-mat",
+   "region": "uk",
+   "name": "MAT",
+   "full_name": "Mathematics Admissions Test",
+   "body": "University of Oxford",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "Year 13",
+   "purpose": "Oxford maths and computer science admission",
+   "subjects": [
+    "mathematics"
+   ],
+   "format": null,
+   "when": "October",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Mathematics_Admissions_Test",
+   "notes": null
+  },
+  {
+   "id": "uk-tsa",
+   "region": "uk",
+   "name": "TSA",
+   "full_name": "Thinking Skills Assessment",
+   "body": "Cambridge Assessment Admissions Testing",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "Year 13",
+   "purpose": "Oxbridge admission",
+   "subjects": [
+    "critical thinking",
+    "problem solving"
+   ],
+   "format": null,
+   "when": "autumn",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Thinking_Skills_Assessment",
+   "notes": null
+  },
+  {
+   "id": "uk-pat",
+   "region": "uk",
+   "name": "PAT",
+   "full_name": "Physics Aptitude Test",
+   "body": "University of Oxford",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "Year 13",
+   "purpose": "Oxford physics admission",
+   "subjects": [
+    "physics",
+    "mathematics"
+   ],
+   "format": null,
+   "when": "October",
+   "cost": null,
+   "prep_programs": [
+    "Classical Mechanics",
+    "Mathematics Pathway"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Physics_Aptitude_Test",
+   "notes": null
+  },
+  {
+   "id": "uk-ielts",
+   "region": "uk",
+   "name": "IELTS",
+   "full_name": "International English Language Testing System",
+   "body": "British Council, IDP, Cambridge",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    16,
+    99
+   ],
+   "grades": null,
+   "purpose": "English proficiency",
+   "subjects": [
+    "listening",
+    "reading",
+    "writing",
+    "speaking"
+   ],
+   "format": "band score 0–9",
+   "when": "many dates a year",
+   "cost": null,
+   "prep_programs": [
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/IELTS",
+   "notes": null
+  },
+  {
+   "id": "uk-qts",
+   "region": "uk",
+   "name": "QTS (skills and induction)",
+   "full_name": "Qualified Teacher Status",
+   "body": "Department for Education",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    21,
+    99
+   ],
+   "grades": null,
+   "purpose": "teacher accreditation",
+   "subjects": [
+    "teaching practice"
+   ],
+   "format": "assessed teaching, no separate national exam today",
+   "when": "ongoing",
+   "cost": null,
+   "prep_programs": [
+    "BA Education",
+    "MEd Education"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Qualified_teacher_status",
+   "notes": "Skills tests were abolished in 2020."
+  },
+  {
+   "id": "uk-cambridge-english",
+   "region": "uk",
+   "name": "Cambridge English Qualifications",
+   "full_name": "B2 First, C1 Advanced, C2 Proficiency",
+   "body": "Cambridge University Press and Assessment",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    14,
+    99
+   ],
+   "grades": null,
+   "purpose": "English proficiency",
+   "subjects": [
+    "reading",
+    "writing",
+    "listening",
+    "speaking"
+   ],
+   "format": null,
+   "when": "many dates a year",
+   "cost": null,
+   "prep_programs": [
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Cambridge_English_Language_Assessment",
+   "notes": null
+  },
+  {
+   "id": "uk-sqe",
+   "region": "uk",
+   "name": "SQE",
+   "full_name": "Solicitors Qualifying Examination",
+   "body": "SRA",
+   "level": "professional",
+   "stage": "masters",
+   "ages": [
+    22,
+    99
+   ],
+   "grades": null,
+   "purpose": "solicitor qualification",
+   "subjects": [
+    "functioning legal knowledge",
+    "practical legal skills"
+   ],
+   "format": null,
+   "when": "twice a year",
+   "cost": null,
+   "prep_programs": [
+    "LLM Law",
+    "LLB Law"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Solicitors_Qualifying_Examination",
+   "notes": null
+  },
+  {
+   "id": "ie-junior",
+   "region": "ie",
+   "name": "Junior Cycle",
+   "full_name": "Junior Cycle (Junior Certificate)",
+   "body": "State Examinations Commission",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    14,
+    15
+   ],
+   "grades": "3rd year",
+   "purpose": "end of lower secondary",
+   "subjects": [
+    "all subjects"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Junior_Certificate",
+   "notes": null
+  },
+  {
+   "id": "ie-leaving",
+   "region": "ie",
+   "name": "Leaving Certificate",
+   "full_name": "Leaving Certificate",
+   "body": "State Examinations Commission",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "6th year",
+   "purpose": "school leaving and university entry via CAO points",
+   "subjects": [
+    "about 40 subjects"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Leaving_Certificate_(Ireland)",
+   "notes": null
+  },
+  {
+   "id": "fr-brevet",
+   "region": "fr",
+   "name": "Diplôme national du brevet",
+   "full_name": "Brevet",
+   "body": "Ministère de l'Éducation nationale",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    14,
+    15
+   ],
+   "grades": "3e",
+   "purpose": "end of collège",
+   "subjects": [
+    "French",
+    "mathematics",
+    "history-geography",
+    "sciences",
+    "oral"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Brevet_(France)",
+   "notes": null
+  },
+  {
+   "id": "fr-bac",
+   "region": "fr",
+   "name": "Baccalauréat",
+   "full_name": "Baccalauréat général, technologique et professionnel",
+   "body": "Ministère de l'Éducation nationale",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    18
+   ],
+   "grades": "Terminale",
+   "purpose": "school leaving and university entrance",
+   "subjects": [
+    "specialities",
+    "philosophy",
+    "Grand oral"
+   ],
+   "format": "graded out of 20",
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)",
+    "Philosophy, Religion and Media"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Baccalauréat_(France)",
+   "notes": null
+  },
+  {
+   "id": "fr-prepa",
+   "region": "fr",
+   "name": "Concours des grandes écoles",
+   "full_name": "Classes préparatoires and competitive entrance exams",
+   "body": "grandes écoles",
+   "level": "university_entrance",
+   "stage": "college",
+   "ages": [
+    18,
+    22
+   ],
+   "grades": "after bac",
+   "purpose": "entry to engineering and business schools",
+   "subjects": [
+    "mathematics",
+    "physics",
+    "languages",
+    "literature"
+   ],
+   "format": null,
+   "when": "spring",
+   "cost": null,
+   "prep_programs": [
+    "BSc Mathematics",
+    "BSc Physics",
+    "BEng Civil and Mechanical"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Classe_préparatoire_aux_grandes_écoles",
+   "notes": null
+  },
+  {
+   "id": "fr-parcoursup",
+   "region": "fr",
+   "name": "Parcoursup",
+   "full_name": "Parcoursup admission platform",
+   "body": "Ministère de l'Enseignement supérieur",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    18
+   ],
+   "grades": "Terminale",
+   "purpose": "university application (file-based, no exam)",
+   "subjects": null,
+   "format": null,
+   "when": "January to March",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Parcoursup",
+   "notes": "Application platform, not an exam."
+  },
+  {
+   "id": "fr-delf",
+   "region": "fr",
+   "name": "DELF/DALF",
+   "full_name": "Diplôme d'études en langue française",
+   "body": "France Éducation international",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    12,
+    99
+   ],
+   "grades": null,
+   "purpose": "French proficiency",
+   "subjects": [
+    "listening",
+    "reading",
+    "writing",
+    "speaking"
+   ],
+   "format": "CEFR A1 to C2",
+   "when": "many dates a year",
+   "cost": null,
+   "prep_programs": [
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Diplôme_d'études_en_langue_française",
+   "notes": null
+  },
+  {
+   "id": "fr-tcf",
+   "region": "fr",
+   "name": "TCF",
+   "full_name": "Test de connaissance du français",
+   "body": "France Éducation international",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    16,
+    99
+   ],
+   "grades": null,
+   "purpose": "French proficiency",
+   "subjects": null,
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Test_de_connaissance_du_français",
+   "notes": null
+  },
+  {
+   "id": "fr-capes",
+   "region": "fr",
+   "name": "CAPES / Agrégation",
+   "full_name": "Teaching competitions",
+   "body": "Ministère de l'Éducation nationale",
+   "level": "professional",
+   "stage": "masters",
+   "ages": [
+    22,
+    99
+   ],
+   "grades": null,
+   "purpose": "recruitment of teachers",
+   "subjects": [
+    "subject specialism"
+   ],
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "MEd Education"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Agrégation",
+   "notes": null
+  },
+  {
+   "id": "de-mittlere",
+   "region": "de",
+   "name": "Mittlere Reife",
+   "full_name": "Mittlerer Schulabschluss",
+   "body": "Länder",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    15,
+    16
+   ],
+   "grades": "10",
+   "purpose": "intermediate school leaving",
+   "subjects": [
+    "German",
+    "mathematics",
+    "English"
+   ],
+   "format": null,
+   "when": "spring",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Mittlere_Reife",
+   "notes": null
+  },
+  {
+   "id": "de-abitur",
+   "region": "de",
+   "name": "Abitur",
+   "full_name": "Allgemeine Hochschulreife",
+   "body": "Länder (KMK)",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12–13",
+   "purpose": "university entrance",
+   "subjects": [
+    "advanced courses",
+    "written and oral exams"
+   ],
+   "format": null,
+   "when": "spring",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Abitur",
+   "notes": null
+  },
+  {
+   "id": "de-testas",
+   "region": "de",
+   "name": "TestAS",
+   "full_name": "Test for Academic Studies",
+   "body": "TestDaF-Institut",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    30
+   ],
+   "grades": null,
+   "purpose": "international student admission screening",
+   "subjects": [
+    "core test",
+    "subject modules"
+   ],
+   "format": null,
+   "when": "several dates a year",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/TestAS",
+   "notes": null
+  },
+  {
+   "id": "de-testdaf",
+   "region": "de",
+   "name": "TestDaF",
+   "full_name": "Test Deutsch als Fremdsprache",
+   "body": "TestDaF-Institut",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    17,
+    99
+   ],
+   "grades": null,
+   "purpose": "German proficiency for university",
+   "subjects": [
+    "reading",
+    "listening",
+    "writing",
+    "speaking"
+   ],
+   "format": "TDN 3–5",
+   "when": "several dates a year",
+   "cost": null,
+   "prep_programs": [
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Test_Deutsch_als_Fremdsprache",
+   "notes": null
+  },
+  {
+   "id": "de-goethe",
+   "region": "de",
+   "name": "Goethe-Zertifikat",
+   "full_name": "Goethe-Zertifikat A1–C2",
+   "body": "Goethe-Institut",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    10,
+    99
+   ],
+   "grades": null,
+   "purpose": "German proficiency",
+   "subjects": [
+    "reading",
+    "listening",
+    "writing",
+    "speaking"
+   ],
+   "format": "CEFR levels",
+   "when": "many dates a year",
+   "cost": null,
+   "prep_programs": [
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Goethe-Zertifikat",
+   "notes": null
+  },
+  {
+   "id": "de-staatsexamen",
+   "region": "de",
+   "name": "Staatsexamen",
+   "full_name": "State examinations (law, medicine, teaching)",
+   "body": "Länder",
+   "level": "professional",
+   "stage": "masters",
+   "ages": [
+    22,
+    99
+   ],
+   "grades": null,
+   "purpose": "licensure",
+   "subjects": [
+    "law",
+    "medicine",
+    "teaching"
+   ],
+   "format": null,
+   "when": "varies",
+   "cost": null,
+   "prep_programs": [
+    "MEd Education",
+    "LLM Law"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Staatsexamen",
+   "notes": null
+  },
+  {
+   "id": "de-medat",
+   "region": "de",
+   "name": "Test für medizinische Studiengänge",
+   "full_name": "TMS and EMS",
+   "body": "ITB Consulting",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    18,
+    25
+   ],
+   "grades": null,
+   "purpose": "medicine admission",
+   "subjects": [
+    "scientific reasoning"
+   ],
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "Biology (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Test_für_medizinische_Studiengänge",
+   "notes": null
+  },
+  {
+   "id": "es-eso",
+   "region": "es",
+   "name": "ESO graduation",
+   "full_name": "Educación Secundaria Obligatoria",
+   "body": "Ministerio de Educación",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    15,
+    16
+   ],
+   "grades": "4º ESO",
+   "purpose": "compulsory secondary diploma",
+   "subjects": [
+    "all subjects"
+   ],
+   "format": "continuous assessment",
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Compulsory_Secondary_Education",
+   "notes": null
+  },
+  {
+   "id": "es-pau",
+   "region": "es",
+   "name": "PAU / EBAU / EvAU",
+   "full_name": "Prueba de Acceso a la Universidad",
+   "body": "autonomous communities",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "2º Bachillerato",
+   "purpose": "university entrance",
+   "subjects": [
+    "common and optional subjects"
+   ],
+   "format": null,
+   "when": "June and July",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Selectividad",
+   "notes": null
+  },
+  {
+   "id": "es-bach",
+   "region": "es",
+   "name": "Bachillerato",
+   "full_name": "Bachillerato",
+   "body": "Ministerio de Educación",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    16,
+    18
+   ],
+   "grades": "1º–2º",
+   "purpose": "upper secondary diploma",
+   "subjects": [
+    "track subjects"
+   ],
+   "format": "continuous assessment",
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Bachillerato",
+   "notes": null
+  },
+  {
+   "id": "es-dele",
+   "region": "es",
+   "name": "DELE",
+   "full_name": "Diplomas de Español como Lengua Extranjera",
+   "body": "Instituto Cervantes",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    12,
+    99
+   ],
+   "grades": null,
+   "purpose": "Spanish proficiency",
+   "subjects": [
+    "reading",
+    "writing",
+    "listening",
+    "speaking"
+   ],
+   "format": "CEFR A1 to C2",
+   "when": "several dates a year",
+   "cost": null,
+   "prep_programs": [
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Diplomas_de_Español_como_Lengua_Extranjera",
+   "notes": null
+  },
+  {
+   "id": "es-mir",
+   "region": "es",
+   "name": "MIR",
+   "full_name": "Médico Interno Residente",
+   "body": "Ministerio de Sanidad",
+   "level": "professional",
+   "stage": "masters",
+   "ages": [
+    23,
+    40
+   ],
+   "grades": null,
+   "purpose": "medical specialty allocation",
+   "subjects": [
+    "multiple choice (about 200 questions)"
+   ],
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "MSc Public Health and Clinical Science"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Médico_Interno_Residente",
+   "notes": null
+  },
+  {
+   "id": "es-oposiciones",
+   "region": "es",
+   "name": "Oposiciones",
+   "full_name": "Public service competitive exams",
+   "body": "public administrations",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    18,
+    99
+   ],
+   "grades": null,
+   "purpose": "civil service and teaching recruitment",
+   "subjects": null,
+   "format": null,
+   "when": "varies",
+   "cost": null,
+   "prep_programs": [
+    "BA Education"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Oposiciones",
+   "notes": null
+  },
+  {
+   "id": "it-licenza",
+   "region": "it",
+   "name": "Esame di Stato primo ciclo",
+   "full_name": "Licenza media",
+   "body": "Ministero dell'Istruzione",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    13,
+    14
+   ],
+   "grades": "3ª media",
+   "purpose": "end of lower secondary",
+   "subjects": [
+    "Italian",
+    "mathematics",
+    "languages",
+    "oral"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Italy",
+   "notes": null
+  },
+  {
+   "id": "it-maturita",
+   "region": "it",
+   "name": "Maturità",
+   "full_name": "Esame di Stato conclusivo del secondo ciclo",
+   "body": "Ministero dell'Istruzione e del Merito",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    18,
+    19
+   ],
+   "grades": "5th year",
+   "purpose": "school leaving and university access",
+   "subjects": [
+    "written papers",
+    "oral"
+   ],
+   "format": "scored out of 100",
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Esame_di_maturità",
+   "notes": null
+  },
+  {
+   "id": "it-tolc",
+   "region": "it",
+   "name": "TOLC",
+   "full_name": "Test OnLine CISIA",
+   "body": "CISIA",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    18,
+    25
+   ],
+   "grades": null,
+   "purpose": "university admission screening (engineering, medicine, economics)",
+   "subjects": [
+    "mathematics",
+    "logic",
+    "science",
+    "verbal comprehension"
+   ],
+   "format": "computer based",
+   "when": "many dates a year",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/CISIA",
+   "notes": null
+  },
+  {
+   "id": "it-imat",
+   "region": "it",
+   "name": "IMAT",
+   "full_name": "International Medical Admissions Test",
+   "body": "Italian Ministry of University",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    18,
+    25
+   ],
+   "grades": null,
+   "purpose": "medicine admission (English-taught)",
+   "subjects": [
+    "reasoning",
+    "general knowledge",
+    "biology",
+    "chemistry",
+    "physics and maths"
+   ],
+   "format": null,
+   "when": "September",
+   "cost": null,
+   "prep_programs": [
+    "Biology (High School)",
+    "Chemistry (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/International_Medical_Admissions_Test",
+   "notes": null
+  },
+  {
+   "id": "it-invalsi",
+   "region": "it",
+   "name": "INVALSI",
+   "full_name": "National evaluation tests",
+   "body": "INVALSI",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    7,
+    18
+   ],
+   "grades": "2, 5, 8, 10, 13",
+   "purpose": "national learning assessment",
+   "subjects": [
+    "Italian",
+    "mathematics",
+    "English"
+   ],
+   "format": "computer based",
+   "when": "spring",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/INVALSI",
+   "notes": null
+  },
+  {
+   "id": "it-celi",
+   "region": "it",
+   "name": "CELI / CILS",
+   "full_name": "Italian language certificates",
+   "body": "Università per Stranieri Perugia / Siena",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    14,
+    99
+   ],
+   "grades": null,
+   "purpose": "Italian proficiency",
+   "subjects": null,
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/CILS",
+   "notes": null
+  },
+  {
+   "id": "nl-cito",
+   "region": "nl",
+   "name": "Eindtoets (Cito)",
+   "full_name": "Eindtoets Basisonderwijs",
+   "body": "CvTE / Cito",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    11,
+    12
+   ],
+   "grades": "groep 8",
+   "purpose": "advice for secondary school type",
+   "subjects": [
+    "language",
+    "arithmetic",
+    "world orientation"
+   ],
+   "format": null,
+   "when": "April",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Cito",
+   "notes": null
+  },
+  {
+   "id": "nl-eindexamen",
+   "region": "nl",
+   "name": "Eindexamen",
+   "full_name": "VMBO, HAVO and VWO final exams",
+   "body": "CvTE",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    16,
+    18
+   ],
+   "grades": "4–6",
+   "purpose": "secondary school leaving",
+   "subjects": [
+    "school and national exams"
+   ],
+   "format": null,
+   "when": "May to June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_the_Netherlands",
+   "notes": null
+  },
+  {
+   "id": "nl-nt2",
+   "region": "nl",
+   "name": "Staatsexamen NT2",
+   "full_name": "Dutch as a second language state exam",
+   "body": "DUO",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    18,
+    99
+   ],
+   "grades": null,
+   "purpose": "Dutch proficiency",
+   "subjects": null,
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Staatsexamen_Nederlands_als_tweede_taal",
+   "notes": null
+  },
+  {
+   "id": "nordic-se-nationella",
+   "region": "nordic",
+   "name": "Nationella prov (Sweden)",
+   "full_name": "National tests",
+   "body": "Skolverket",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    9,
+    18
+   ],
+   "grades": "3, 6, 9 and upper secondary",
+   "purpose": "grading support",
+   "subjects": [
+    "Swedish",
+    "mathematics",
+    "English"
+   ],
+   "format": null,
+   "when": "spring",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Sweden",
+   "notes": null
+  },
+  {
+   "id": "nordic-se-hsp",
+   "region": "nordic",
+   "name": "Högskoleprovet",
+   "full_name": "Swedish Scholastic Aptitude Test",
+   "body": "Swedish Council for Higher Education",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    18,
+    40
+   ],
+   "grades": null,
+   "purpose": "university admission",
+   "subjects": [
+    "verbal",
+    "quantitative sections"
+   ],
+   "format": "multiple choice",
+   "when": "spring and autumn",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Swedish_Scholastic_Aptitude_Test",
+   "notes": null
+  },
+  {
+   "id": "nordic-no-eksamen",
+   "region": "nordic",
+   "name": "Norwegian national exams",
+   "full_name": "Eksamen",
+   "body": "Utdanningsdirektoratet",
+   "level": "upper_secondary",
+   "stage": "high",
+   "ages": [
+    15,
+    19
+   ],
+   "grades": null,
+   "purpose": "school-leaving exams",
+   "subjects": [
+    "Norwegian",
+    "mathematics",
+    "English",
+    "other subjects"
+   ],
+   "format": null,
+   "when": "May to June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Norway",
+   "notes": null
+  },
+  {
+   "id": "nordic-no-nasjonale",
+   "region": "nordic",
+   "name": "Nasjonale prøver (Norway)",
+   "full_name": "National tests",
+   "body": "Utdanningsdirektoratet",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    10,
+    14
+   ],
+   "grades": "5, 8, 9",
+   "purpose": "learning monitoring",
+   "subjects": [
+    "reading",
+    "numeracy",
+    "English"
+   ],
+   "format": null,
+   "when": "autumn",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Norway",
+   "notes": null
+  },
+  {
+   "id": "nordic-dk-studentereksamen",
+   "region": "nordic",
+   "name": "Studentereksamen (Denmark)",
+   "full_name": "Upper secondary exams",
+   "body": "Ministry of Children and Education",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": null,
+   "purpose": "university entrance",
+   "subjects": [
+    "track subjects"
+   ],
+   "format": null,
+   "when": "May to June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Denmark",
+   "notes": null
+  },
+  {
+   "id": "nordic-fi-yo",
+   "region": "nordic",
+   "name": "Matriculation Examination (Finland)",
+   "full_name": "Ylioppilastutkinto",
+   "body": "Matriculation Examination Board",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    18,
+    19
+   ],
+   "grades": null,
+   "purpose": "upper secondary completion and admission",
+   "subjects": [
+    "Finnish or Swedish",
+    "plus three other subjects"
+   ],
+   "format": "digital",
+   "when": "spring and autumn",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Matriculation_Examination_(Finland)",
+   "notes": null
+  },
+  {
+   "id": "nordic-is-sam",
+   "region": "nordic",
+   "name": "Icelandic Samræmd próf",
+   "full_name": "National exams",
+   "body": "Education Authority",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    14,
+    15
+   ],
+   "grades": "10",
+   "purpose": null,
+   "subjects": [
+    "Icelandic",
+    "mathematics",
+    "English"
+   ],
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Iceland",
+   "notes": null
+  },
+  {
+   "id": "pl-osmoklasisty",
+   "region": "pl",
+   "name": "Egzamin ósmoklasisty",
+   "full_name": "Eighth-grade exam",
+   "body": "CKE",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    14,
+    15
+   ],
+   "grades": "8",
+   "purpose": "secondary school allocation",
+   "subjects": [
+    "Polish",
+    "mathematics",
+    "foreign language"
+   ],
+   "format": null,
+   "when": "May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Poland",
+   "notes": null
+  },
+  {
+   "id": "pl-matura",
+   "region": "pl",
+   "name": "Matura",
+   "full_name": "Egzamin maturalny",
+   "body": "CKE",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    18,
+    19
+   ],
+   "grades": "4 liceum",
+   "purpose": "school leaving and university entrance",
+   "subjects": [
+    "Polish",
+    "mathematics",
+    "foreign language",
+    "extended subjects"
+   ],
+   "format": null,
+   "when": "May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Matura",
+   "notes": null
+  },
+  {
+   "id": "ru-oge",
+   "region": "ru",
+   "name": "OGE",
+   "full_name": "Basic State Exam",
+   "body": "Rosobrnadzor",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    15,
+    16
+   ],
+   "grades": "9",
+   "purpose": "basic general education certificate",
+   "subjects": [
+    "Russian",
+    "mathematics",
+    "electives"
+   ],
+   "format": null,
+   "when": "May to June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Basic_State_Exam",
+   "notes": null
+  },
+  {
+   "id": "ru-ege",
+   "region": "ru",
+   "name": "EGE",
+   "full_name": "Unified State Exam",
+   "body": "Rosobrnadzor",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    18
+   ],
+   "grades": "11",
+   "purpose": "school leaving and university entrance",
+   "subjects": [
+    "Russian",
+    "mathematics",
+    "electives"
+   ],
+   "format": "scored 0–100",
+   "when": "May to July",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Unified_State_Exam",
+   "notes": null
+  },
+  {
+   "id": "ru-vpr",
+   "region": "ru",
+   "name": "VPR",
+   "full_name": "All-Russian Verification Works",
+   "body": "Rosobrnadzor",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    10,
+    16
+   ],
+   "grades": "4–8",
+   "purpose": "quality monitoring",
+   "subjects": [
+    "Russian",
+    "mathematics",
+    "sciences"
+   ],
+   "format": null,
+   "when": "spring",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Russia",
+   "notes": null
+  },
+  {
+   "id": "ru-trki",
+   "region": "ru",
+   "name": "TORFL",
+   "full_name": "Test of Russian as a Foreign Language",
+   "body": "Russian Ministry of Education",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    16,
+    99
+   ],
+   "grades": null,
+   "purpose": "Russian proficiency",
+   "subjects": null,
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/TORFL",
+   "notes": null
+  },
+  {
+   "id": "cn-zhongkao",
+   "region": "cn",
+   "name": "Zhongkao",
+   "full_name": "High School Entrance Examination",
+   "body": "local education bureaus",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    14,
+    16
+   ],
+   "grades": "9",
+   "purpose": "senior high school admission",
+   "subjects": [
+    "Chinese",
+    "mathematics",
+    "English",
+    "sciences"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Zhongkao",
+   "notes": null
+  },
+  {
+   "id": "cn-gaokao",
+   "region": "cn",
+   "name": "Gaokao",
+   "full_name": "National College Entrance Examination",
+   "body": "Ministry of Education",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "university admission",
+   "subjects": [
+    "Chinese",
+    "mathematics",
+    "foreign language",
+    "electives"
+   ],
+   "format": "about 2 to 3 days",
+   "when": "7–10 June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Gaokao",
+   "notes": null
+  },
+  {
+   "id": "cn-cet",
+   "region": "cn",
+   "name": "CET-4 and CET-6",
+   "full_name": "College English Test",
+   "body": "National Education Examinations Authority",
+   "level": "language",
+   "stage": "college",
+   "ages": [
+    18,
+    25
+   ],
+   "grades": null,
+   "purpose": "English proficiency for undergraduates",
+   "subjects": [
+    "listening",
+    "reading",
+    "writing",
+    "translation"
+   ],
+   "format": null,
+   "when": "June and December",
+   "cost": null,
+   "prep_programs": [
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/College_English_Test",
+   "notes": null
+  },
+  {
+   "id": "cn-hsk",
+   "region": "cn",
+   "name": "HSK",
+   "full_name": "Hanyu Shuiping Kaoshi",
+   "body": "Chinese Testing International",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    8,
+    99
+   ],
+   "grades": null,
+   "purpose": "Chinese proficiency",
+   "subjects": [
+    "listening",
+    "reading",
+    "writing"
+   ],
+   "format": "levels 1–9 (since 2021 reform)",
+   "when": "monthly",
+   "cost": null,
+   "prep_programs": [
+    "Little Linguists",
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Hanyu_Shuiping_Kaoshi",
+   "notes": null
+  },
+  {
+   "id": "cn-kaoyan",
+   "region": "cn",
+   "name": "Kaoyan",
+   "full_name": "National Postgraduate Entrance Examination",
+   "body": "Ministry of Education",
+   "level": "graduate_entrance",
+   "stage": "college",
+   "ages": [
+    21,
+    35
+   ],
+   "grades": null,
+   "purpose": "master's admission",
+   "subjects": [
+    "politics",
+    "English",
+    "mathematics",
+    "specialism"
+   ],
+   "format": null,
+   "when": "December",
+   "cost": null,
+   "prep_programs": [
+    "MSc Mathematics",
+    "MA Humanities"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Postgraduate_Entrance_Examination_(China)",
+   "notes": null
+  },
+  {
+   "id": "cn-gongkao",
+   "region": "cn",
+   "name": "National Civil Service Exam",
+   "full_name": "Guokao",
+   "body": "Chinese government",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    21,
+    35
+   ],
+   "grades": null,
+   "purpose": "civil service recruitment",
+   "subjects": null,
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "BA Social Sciences"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Civil_service_of_the_People's_Republic_of_China",
+   "notes": null
+  },
+  {
+   "id": "jp-common",
+   "region": "jp",
+   "name": "Common Test for University Admissions",
+   "full_name": "Daigaku Nyūgaku Kyōtsū Test",
+   "body": "NCUEE",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "university entrance",
+   "subjects": [
+    "Japanese",
+    "mathematics",
+    "sciences",
+    "English",
+    "social studies"
+   ],
+   "format": null,
+   "when": "January",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/National_Center_Test_for_University_Admissions",
+   "notes": "Replaced the National Center Test in 2021."
+  },
+  {
+   "id": "jp-eju",
+   "region": "jp",
+   "name": "EJU",
+   "full_name": "Examination for Japanese University Admission",
+   "body": "JASSO",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    30
+   ],
+   "grades": null,
+   "purpose": "international students admission",
+   "subjects": [
+    "Japanese",
+    "science",
+    "mathematics",
+    "general studies"
+   ],
+   "format": null,
+   "when": "June and November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Examination_for_Japanese_University_Admission_for_International_Students",
+   "notes": null
+  },
+  {
+   "id": "jp-jlpt",
+   "region": "jp",
+   "name": "JLPT",
+   "full_name": "Japanese-Language Proficiency Test",
+   "body": "Japan Foundation and JEES",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    10,
+    99
+   ],
+   "grades": null,
+   "purpose": "Japanese proficiency",
+   "subjects": [
+    "language knowledge",
+    "reading",
+    "listening"
+   ],
+   "format": "levels N5 to N1",
+   "when": "July and December",
+   "cost": null,
+   "prep_programs": [
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Japanese-Language_Proficiency_Test",
+   "notes": null
+  },
+  {
+   "id": "jp-njuken",
+   "region": "jp",
+   "name": "Junior high entrance exams (chūgaku juken)",
+   "full_name": "Private school entrance exams",
+   "body": "individual schools",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    11,
+    12
+   ],
+   "grades": "6",
+   "purpose": null,
+   "subjects": [
+    "Japanese",
+    "mathematics",
+    "science",
+    "social studies"
+   ],
+   "format": null,
+   "when": "January to February",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Japan",
+   "notes": null
+  },
+  {
+   "id": "jp-kokuritsu",
+   "region": "jp",
+   "name": "University second-stage exams",
+   "full_name": "Individual university examinations",
+   "body": "universities",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": null,
+   "purpose": "university entrance",
+   "subjects": [
+    "varies by university"
+   ],
+   "format": null,
+   "when": "February",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Japan",
+   "notes": null
+  },
+  {
+   "id": "kr-suneung",
+   "region": "kr",
+   "name": "Suneung (CSAT)",
+   "full_name": "College Scholastic Ability Test",
+   "body": "KICE",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "university admission",
+   "subjects": [
+    "Korean",
+    "mathematics",
+    "English",
+    "inquiry",
+    "Korean history"
+   ],
+   "format": "one day",
+   "when": "November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/College_Scholastic_Ability_Test",
+   "notes": null
+  },
+  {
+   "id": "kr-topik",
+   "region": "kr",
+   "name": "TOPIK",
+   "full_name": "Test of Proficiency in Korean",
+   "body": "NIIED",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    10,
+    99
+   ],
+   "grades": null,
+   "purpose": "Korean proficiency",
+   "subjects": [
+    "reading",
+    "listening",
+    "writing"
+   ],
+   "format": "levels 1–6",
+   "when": "several dates a year",
+   "cost": null,
+   "prep_programs": [
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Test_of_Proficiency_in_Korean",
+   "notes": null
+  },
+  {
+   "id": "kr-civil",
+   "region": "kr",
+   "name": "Civil service examinations (Korea)",
+   "full_name": "Civil service exams",
+   "body": "Ministry of Personnel",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    21,
+    35
+   ],
+   "grades": null,
+   "purpose": "civil service",
+   "subjects": null,
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "BA Social Sciences"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_South_Korea",
+   "notes": null
+  },
+  {
+   "id": "tw-gsat",
+   "region": "tw",
+   "name": "GSAT",
+   "full_name": "General Scholastic Ability Test",
+   "body": "College Entrance Examination Center",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "university admission",
+   "subjects": [
+    "Chinese",
+    "English",
+    "mathematics",
+    "social studies",
+    "sciences"
+   ],
+   "format": null,
+   "when": "January",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/General_Scholastic_Ability_Test",
+   "notes": null
+  },
+  {
+   "id": "tw-cap",
+   "region": "tw",
+   "name": "CAP",
+   "full_name": "Comprehensive Assessment Program for Junior High School Students",
+   "body": "Ministry of Education",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    14,
+    15
+   ],
+   "grades": "9",
+   "purpose": "senior high school admission",
+   "subjects": [
+    "Chinese",
+    "English",
+    "mathematics",
+    "social studies",
+    "sciences",
+    "writing"
+   ],
+   "format": null,
+   "when": "May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Comprehensive_Assessment_Program_for_Junior_High_School_Students",
+   "notes": null
+  },
+  {
+   "id": "tw-ast",
+   "region": "tw",
+   "name": "AST",
+   "full_name": "Advanced Subjects Test",
+   "body": "College Entrance Examination Center",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "specialised admission",
+   "subjects": [
+    "specific subjects"
+   ],
+   "format": null,
+   "when": "July",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Advanced_Subjects_Test",
+   "notes": null
+  },
+  {
+   "id": "tw-tocfl",
+   "region": "tw",
+   "name": "TOCFL",
+   "full_name": "Test of Chinese as a Foreign Language",
+   "body": "SC-TOP",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    10,
+    99
+   ],
+   "grades": null,
+   "purpose": "Chinese proficiency",
+   "subjects": null,
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Test_of_Chinese_as_a_Foreign_Language",
+   "notes": null
+  },
+  {
+   "id": "hk-hkdse",
+   "region": "hk",
+   "name": "HKDSE",
+   "full_name": "Hong Kong Diploma of Secondary Education",
+   "body": "HKEAA",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "S6",
+   "purpose": "school leaving and university entry",
+   "subjects": [
+    "Chinese",
+    "English",
+    "mathematics",
+    "liberal studies and electives"
+   ],
+   "format": null,
+   "when": "April to May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Hong_Kong_Diploma_of_Secondary_Education",
+   "notes": null
+  },
+  {
+   "id": "hk-tsa",
+   "region": "hk",
+   "name": "Territory-wide System Assessment",
+   "full_name": "TSA",
+   "body": "HKEAA",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    8,
+    15
+   ],
+   "grades": "3, 6, 9",
+   "purpose": "basic competency monitoring",
+   "subjects": [
+    "Chinese",
+    "English",
+    "mathematics"
+   ],
+   "format": null,
+   "when": "May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Territory-wide_System_Assessment",
+   "notes": null
+  },
+  {
+   "id": "hk-hkcee",
+   "region": "hk",
+   "name": "HKCEE and HKALE (historic)",
+   "full_name": "Certificate and Advanced Level Examinations",
+   "body": "HKEAA",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    16,
+    19
+   ],
+   "grades": null,
+   "purpose": "former qualifications",
+   "subjects": null,
+   "format": null,
+   "when": "phased out in 2012 and 2013",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Hong_Kong_Certificate_of_Education_Examination",
+   "notes": "Discontinued."
+  },
+  {
+   "id": "sg-psle",
+   "region": "sg",
+   "name": "PSLE",
+   "full_name": "Primary School Leaving Examination",
+   "body": "SEAB and MOE",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    11,
+    12
+   ],
+   "grades": "Primary 6",
+   "purpose": "secondary school placement",
+   "subjects": [
+    "English",
+    "mathematics",
+    "science",
+    "mother tongue"
+   ],
+   "format": "Achievement Level scoring from 2021",
+   "when": "September to October",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Primary_School_Leaving_Examination",
+   "notes": null
+  },
+  {
+   "id": "sg-olevel",
+   "region": "sg",
+   "name": "GCE O-Level",
+   "full_name": "Singapore-Cambridge GCE Ordinary Level",
+   "body": "SEAB",
+   "level": "upper_secondary",
+   "stage": "high",
+   "ages": [
+    15,
+    17
+   ],
+   "grades": "Secondary 4/5",
+   "purpose": "secondary qualification",
+   "subjects": [
+    "many subjects"
+   ],
+   "format": null,
+   "when": "October to November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/GCE_Ordinary_Level_(Singapore)",
+   "notes": null
+  },
+  {
+   "id": "sg-nlevel",
+   "region": "sg",
+   "name": "GCE N-Level",
+   "full_name": "Normal Level",
+   "body": "SEAB",
+   "level": "upper_secondary",
+   "stage": "high",
+   "ages": [
+    15,
+    17
+   ],
+   "grades": "Secondary 4",
+   "purpose": "secondary qualification",
+   "subjects": [
+    "many subjects"
+   ],
+   "format": null,
+   "when": "October to November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/GCE_Normal_Level",
+   "notes": null
+  },
+  {
+   "id": "sg-alevel",
+   "region": "sg",
+   "name": "GCE A-Level",
+   "full_name": "Singapore-Cambridge GCE Advanced Level",
+   "body": "SEAB",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "JC2",
+   "purpose": "university admission",
+   "subjects": [
+    "H1",
+    "H2",
+    "H3 subjects"
+   ],
+   "format": null,
+   "when": "November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/GCE_Advanced_Level_(Singapore)",
+   "notes": null
+  },
+  {
+   "id": "sg-ip",
+   "region": "sg",
+   "name": "Integrated Programme",
+   "full_name": "Integrated Programme (school-based through-train)",
+   "body": "MOE",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    13,
+    19
+   ],
+   "grades": null,
+   "purpose": "skips O-Levels; leads to A-Level or IB",
+   "subjects": [
+    "varies"
+   ],
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Integrated_Programme_(Singapore)",
+   "notes": null
+  },
+  {
+   "id": "in-cbse10",
+   "region": "in",
+   "name": "CBSE Class 10",
+   "full_name": "All India Secondary School Examination",
+   "body": "CBSE",
+   "level": "upper_secondary",
+   "stage": "high",
+   "ages": [
+    15,
+    16
+   ],
+   "grades": "10",
+   "purpose": "secondary board examination",
+   "subjects": [
+    "languages",
+    "mathematics",
+    "science",
+    "social science"
+   ],
+   "format": null,
+   "when": "February to March",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Central_Board_of_Secondary_Education",
+   "notes": null
+  },
+  {
+   "id": "in-cbse12",
+   "region": "in",
+   "name": "CBSE Class 12",
+   "full_name": "All India Senior School Certificate Examination",
+   "body": "CBSE",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    18
+   ],
+   "grades": "12",
+   "purpose": "senior secondary board",
+   "subjects": [
+    "stream subjects"
+   ],
+   "format": null,
+   "when": "February to April",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Central_Board_of_Secondary_Education",
+   "notes": null
+  },
+  {
+   "id": "in-icse",
+   "region": "in",
+   "name": "ICSE and ISC",
+   "full_name": "Indian Certificate of Secondary Education / Indian School Certificate",
+   "body": "CISCE",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    15,
+    18
+   ],
+   "grades": "10 and 12",
+   "purpose": "school boards",
+   "subjects": [
+    "many subjects"
+   ],
+   "format": null,
+   "when": "February to April",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Council_for_the_Indian_School_Certificate_Examinations",
+   "notes": null
+  },
+  {
+   "id": "in-stateboards",
+   "region": "in",
+   "name": "State boards",
+   "full_name": "State secondary and higher secondary boards",
+   "body": "state boards",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    15,
+    18
+   ],
+   "grades": "10 and 12",
+   "purpose": "state-level school boards",
+   "subjects": [
+    "varies"
+   ],
+   "format": null,
+   "when": "February to March",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Boards_of_Education_in_India",
+   "notes": null
+  },
+  {
+   "id": "in-jeemain",
+   "region": "in",
+   "name": "JEE Main",
+   "full_name": "Joint Entrance Examination Main",
+   "body": "National Testing Agency",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    20
+   ],
+   "grades": "12",
+   "purpose": "engineering admission (NITs, IIITs)",
+   "subjects": [
+    "physics",
+    "chemistry",
+    "mathematics"
+   ],
+   "format": "computer based",
+   "when": "January and April",
+   "cost": null,
+   "prep_programs": [
+    "Classical Mechanics",
+    "Mathematics Pathway",
+    "Chemistry (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Joint_Entrance_Examination_–_Main",
+   "notes": null
+  },
+  {
+   "id": "in-jeeadv",
+   "region": "in",
+   "name": "JEE Advanced",
+   "full_name": "Joint Entrance Examination Advanced",
+   "body": "IITs (rotating)",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    20
+   ],
+   "grades": "12",
+   "purpose": "IIT admission",
+   "subjects": [
+    "physics",
+    "chemistry",
+    "mathematics"
+   ],
+   "format": null,
+   "when": "May or June",
+   "cost": null,
+   "prep_programs": [
+    "Classical Mechanics",
+    "Electromagnetism",
+    "Mathematics Pathway",
+    "Chemistry (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Joint_Entrance_Examination_–_Advanced",
+   "notes": null
+  },
+  {
+   "id": "in-neet",
+   "region": "in",
+   "name": "NEET-UG",
+   "full_name": "National Eligibility cum Entrance Test (Undergraduate)",
+   "body": "National Testing Agency",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    25
+   ],
+   "grades": "12",
+   "purpose": "MBBS and BDS admission",
+   "subjects": [
+    "physics",
+    "chemistry",
+    "biology"
+   ],
+   "format": null,
+   "when": "May",
+   "cost": null,
+   "prep_programs": [
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics"
+   ],
+   "link": "https://en.wikipedia.org/wiki/NEET_(UG)",
+   "notes": null
+  },
+  {
+   "id": "in-cuet",
+   "region": "in",
+   "name": "CUET-UG",
+   "full_name": "Common University Entrance Test",
+   "body": "National Testing Agency",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    20
+   ],
+   "grades": "12",
+   "purpose": "central university admission",
+   "subjects": [
+    "languages",
+    "domain subjects",
+    "general test"
+   ],
+   "format": null,
+   "when": "May to June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Common_University_Entrance_Test",
+   "notes": null
+  },
+  {
+   "id": "in-cat",
+   "region": "in",
+   "name": "CAT",
+   "full_name": "Common Admission Test",
+   "body": "IIMs",
+   "level": "graduate_entrance",
+   "stage": "college",
+   "ages": [
+    21,
+    30
+   ],
+   "grades": null,
+   "purpose": "MBA admission",
+   "subjects": [
+    "verbal",
+    "data interpretation",
+    "quantitative aptitude"
+   ],
+   "format": null,
+   "when": "November",
+   "cost": null,
+   "prep_programs": [
+    "BSc Economics and Business"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Common_Admission_Test_(India)",
+   "notes": null
+  },
+  {
+   "id": "in-gate",
+   "region": "in",
+   "name": "GATE",
+   "full_name": "Graduate Aptitude Test in Engineering",
+   "body": "IITs and IISc",
+   "level": "graduate_entrance",
+   "stage": "college",
+   "ages": [
+    21,
+    30
+   ],
+   "grades": null,
+   "purpose": "MTech and PSU recruitment",
+   "subjects": [
+    "engineering and science papers"
+   ],
+   "format": null,
+   "when": "February",
+   "cost": null,
+   "prep_programs": [
+    "BEng Civil and Mechanical",
+    "BEng Electrical and Electronic",
+    "BSc Computer Science"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Graduate_Aptitude_Test_in_Engineering",
+   "notes": null
+  },
+  {
+   "id": "in-upsc",
+   "region": "in",
+   "name": "UPSC Civil Services Examination",
+   "full_name": "Civil Services Exam",
+   "body": "UPSC",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    21,
+    32
+   ],
+   "grades": null,
+   "purpose": "civil service (IAS, IPS)",
+   "subjects": [
+    "prelims",
+    "mains",
+    "interview"
+   ],
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "BA Social Sciences",
+    "BA Humanities"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Civil_Services_Examination_(India)",
+   "notes": null
+  },
+  {
+   "id": "in-ntse",
+   "region": "in",
+   "name": "NTSE",
+   "full_name": "National Talent Search Examination",
+   "body": "NCERT",
+   "level": "upper_secondary",
+   "stage": "high",
+   "ages": [
+    14,
+    16
+   ],
+   "grades": "10",
+   "purpose": "scholarships",
+   "subjects": [
+    "mental ability",
+    "scholastic aptitude"
+   ],
+   "format": null,
+   "when": "annual (suspended)",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/National_Talent_Search_Examination",
+   "notes": "Status uncertain in recent years."
+  },
+  {
+   "id": "in-olympiads",
+   "region": "in",
+   "name": "Indian Olympiads (HBCSE)",
+   "full_name": "Science and mathematics olympiad programme",
+   "body": "HBCSE",
+   "level": "international",
+   "stage": "high",
+   "ages": [
+    14,
+    18
+   ],
+   "grades": null,
+   "purpose": "olympiad team selection",
+   "subjects": [
+    "physics",
+    "chemistry",
+    "biology",
+    "mathematics",
+    "astronomy",
+    "informatics"
+   ],
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "Classical Mechanics",
+    "Astronomy Practicals",
+    "Mathematics Pathway"
+   ],
+   "link": "https://en.wikipedia.org/wiki/International_Science_Olympiad",
+   "notes": null
+  },
+  {
+   "id": "in-clat",
+   "region": "in",
+   "name": "CLAT",
+   "full_name": "Common Law Admission Test",
+   "body": "Consortium of NLUs",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    20
+   ],
+   "grades": "12",
+   "purpose": "national law university admission",
+   "subjects": [
+    "English",
+    "current affairs",
+    "legal reasoning",
+    "logic",
+    "quantitative"
+   ],
+   "format": null,
+   "when": "December",
+   "cost": null,
+   "prep_programs": [
+    "LLB Law"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Common_Law_Admission_Test",
+   "notes": null
+  },
+  {
+   "id": "in-ugcnet",
+   "region": "in",
+   "name": "UGC NET",
+   "full_name": "National Eligibility Test",
+   "body": "National Testing Agency",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    21,
+    40
+   ],
+   "grades": null,
+   "purpose": "assistant professor and JRF eligibility",
+   "subjects": null,
+   "format": null,
+   "when": "twice a year",
+   "cost": null,
+   "prep_programs": [
+    "MEd Education",
+    "MA Humanities"
+   ],
+   "link": "https://en.wikipedia.org/wiki/National_Eligibility_Test",
+   "notes": null
+  },
+  {
+   "id": "pk-matric",
+   "region": "pk",
+   "name": "Matric (SSC)",
+   "full_name": "Secondary School Certificate",
+   "body": "boards of intermediate and secondary education",
+   "level": "upper_secondary",
+   "stage": "high",
+   "ages": [
+    15,
+    16
+   ],
+   "grades": "9–10",
+   "purpose": "secondary certificate",
+   "subjects": [
+    "subjects by group"
+   ],
+   "format": null,
+   "when": "March",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Secondary_School_Certificate_(Pakistan)",
+   "notes": null
+  },
+  {
+   "id": "pk-fsc",
+   "region": "pk",
+   "name": "FSc / HSSC",
+   "full_name": "Higher Secondary School Certificate",
+   "body": "boards",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    18
+   ],
+   "grades": "11–12",
+   "purpose": "higher secondary",
+   "subjects": [
+    "pre-medical",
+    "pre-engineering",
+    "commerce",
+    "arts"
+   ],
+   "format": null,
+   "when": "April to May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Higher_Secondary_School_Certificate",
+   "notes": null
+  },
+  {
+   "id": "pk-mdcat",
+   "region": "pk",
+   "name": "MDCAT",
+   "full_name": "Medical and Dental College Admission Test",
+   "body": "PMDC",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    20
+   ],
+   "grades": null,
+   "purpose": "medical admission",
+   "subjects": [
+    "biology",
+    "chemistry",
+    "physics",
+    "English",
+    "logical reasoning"
+   ],
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "Biology (High School)",
+    "Chemistry (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Medical_and_Dental_College_Admission_Test",
+   "notes": null
+  },
+  {
+   "id": "pk-ecat",
+   "region": "pk",
+   "name": "ECAT",
+   "full_name": "Engineering College Admission Test",
+   "body": "UET Lahore and others",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    20
+   ],
+   "grades": null,
+   "purpose": "engineering admission",
+   "subjects": [
+    "mathematics",
+    "physics",
+    "chemistry",
+    "English"
+   ],
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "Classical Mechanics",
+    "Mathematics Pathway"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Engineering_College_Admission_Test",
+   "notes": null
+  },
+  {
+   "id": "pk-css",
+   "region": "pk",
+   "name": "CSS",
+   "full_name": "Central Superior Services examination",
+   "body": "FPSC",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    21,
+    30
+   ],
+   "grades": null,
+   "purpose": "civil service",
+   "subjects": null,
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "BA Social Sciences"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Central_Superior_Services",
+   "notes": null
+  },
+  {
+   "id": "bd-psc",
+   "region": "bd",
+   "name": "PSC (discontinued)",
+   "full_name": "Primary School Certificate",
+   "body": "Ministry of Primary Education",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    10,
+    11
+   ],
+   "grades": "5",
+   "purpose": "primary completion",
+   "subjects": [
+    "Bangla",
+    "English",
+    "maths",
+    "science"
+   ],
+   "format": null,
+   "when": "discontinued in 2023",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Bangladesh",
+   "notes": "Abolished in 2023 along with JSC."
+  },
+  {
+   "id": "bd-ssc",
+   "region": "bd",
+   "name": "SSC",
+   "full_name": "Secondary School Certificate",
+   "body": "education boards",
+   "level": "upper_secondary",
+   "stage": "high",
+   "ages": [
+    15,
+    16
+   ],
+   "grades": "10",
+   "purpose": "secondary certificate",
+   "subjects": [
+    "subjects by group"
+   ],
+   "format": null,
+   "when": "February",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Secondary_School_Certificate_(Bangladesh)",
+   "notes": null
+  },
+  {
+   "id": "bd-hsc",
+   "region": "bd",
+   "name": "HSC",
+   "full_name": "Higher Secondary Certificate",
+   "body": "education boards",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    18
+   ],
+   "grades": "12",
+   "purpose": "higher secondary",
+   "subjects": [
+    "subjects by group"
+   ],
+   "format": null,
+   "when": "April to June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Higher_Secondary_Certificate_(Bangladesh)",
+   "notes": null
+  },
+  {
+   "id": "bd-gst",
+   "region": "bd",
+   "name": "Admission tests (GST, BUET, medical)",
+   "full_name": "University admission tests",
+   "body": "universities and DGHS",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    20
+   ],
+   "grades": null,
+   "purpose": "university admission",
+   "subjects": [
+    "varies"
+   ],
+   "format": null,
+   "when": "after HSC",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Bangladesh",
+   "notes": null
+  },
+  {
+   "id": "vn-thpt",
+   "region": "vn",
+   "name": "National High School Exam",
+   "full_name": "Kỳ thi tốt nghiệp Trung học phổ thông",
+   "body": "Ministry of Education and Training",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "graduation and admission",
+   "subjects": [
+    "literature",
+    "mathematics",
+    "foreign language",
+    "electives"
+   ],
+   "format": null,
+   "when": "late June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Vietnam",
+   "notes": null
+  },
+  {
+   "id": "vn-tuyensinh10",
+   "region": "vn",
+   "name": "Grade 10 entrance exam",
+   "full_name": "Tuyển sinh lớp 10",
+   "body": "provincial departments",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    14,
+    15
+   ],
+   "grades": "9",
+   "purpose": "upper secondary admission",
+   "subjects": [
+    "literature",
+    "mathematics",
+    "foreign language"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Vietnam",
+   "notes": null
+  },
+  {
+   "id": "vn-dgnl",
+   "region": "vn",
+   "name": "Competency assessment tests",
+   "full_name": "VNU-HCM and Hanoi University tests",
+   "body": "VNU",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": null,
+   "purpose": "university admission",
+   "subjects": [
+    "language",
+    "mathematics",
+    "science"
+   ],
+   "format": null,
+   "when": "spring",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Vietnam",
+   "notes": null
+  },
+  {
+   "id": "id-utbk",
+   "region": "id",
+   "name": "UTBK-SNBT",
+   "full_name": "Computer-based written test for selection of state universities",
+   "body": "LTMPT / Ministry",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    20
+   ],
+   "grades": "12",
+   "purpose": "state university admission",
+   "subjects": [
+    "scholastic potential",
+    "literacy",
+    "numeracy"
+   ],
+   "format": null,
+   "when": "April to May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Indonesia",
+   "notes": null
+  },
+  {
+   "id": "id-an",
+   "region": "id",
+   "name": "Asesmen Nasional",
+   "full_name": "National Assessment",
+   "body": "Ministry of Education",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    10,
+    17
+   ],
+   "grades": "5, 8, 11",
+   "purpose": "school quality monitoring",
+   "subjects": [
+    "literacy",
+    "numeracy",
+    "character survey"
+   ],
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Indonesia",
+   "notes": "Replaced the UN in 2021."
+  },
+  {
+   "id": "id-un",
+   "region": "id",
+   "name": "Ujian Nasional (discontinued)",
+   "full_name": "National Examination",
+   "body": "Ministry of Education",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    15,
+    18
+   ],
+   "grades": null,
+   "purpose": "former graduation exam",
+   "subjects": [
+    "core subjects"
+   ],
+   "format": null,
+   "when": "abolished 2021",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Ujian_Nasional",
+   "notes": "Discontinued."
+  },
+  {
+   "id": "ph-nat",
+   "region": "ph",
+   "name": "National Achievement Test",
+   "full_name": "NAT",
+   "body": "DepEd",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    10,
+    17
+   ],
+   "grades": "6, 10, 12",
+   "purpose": "achievement monitoring",
+   "subjects": [
+    "English",
+    "mathematics",
+    "science",
+    "Filipino",
+    "social studies"
+   ],
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_the_Philippines",
+   "notes": null
+  },
+  {
+   "id": "ph-upcat",
+   "region": "ph",
+   "name": "UPCAT",
+   "full_name": "University of the Philippines College Admission Test",
+   "body": "University of the Philippines",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    16,
+    19
+   ],
+   "grades": "12",
+   "purpose": "UP admission",
+   "subjects": [
+    "language",
+    "science",
+    "mathematics",
+    "reading"
+   ],
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/University_of_the_Philippines",
+   "notes": null
+  },
+  {
+   "id": "ph-plepte",
+   "region": "ph",
+   "name": "Professional Regulation Commission board exams",
+   "full_name": "PRC licensure exams",
+   "body": "PRC",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    21,
+    99
+   ],
+   "grades": null,
+   "purpose": "professional licensure",
+   "subjects": [
+    "by profession"
+   ],
+   "format": null,
+   "when": "varies",
+   "cost": null,
+   "prep_programs": [
+    "BEng Civil and Mechanical",
+    "BSc Medicine and Health Sciences"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Professional_Regulation_Commission",
+   "notes": null
+  },
+  {
+   "id": "th-onet",
+   "region": "th",
+   "name": "O-NET",
+   "full_name": "Ordinary National Educational Test",
+   "body": "NIETS",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    11,
+    18
+   ],
+   "grades": "6, 9, 12",
+   "purpose": "national assessment",
+   "subjects": [
+    "Thai",
+    "mathematics",
+    "science",
+    "social studies",
+    "English"
+   ],
+   "format": null,
+   "when": "February to March",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Ordinary_National_Educational_Test",
+   "notes": null
+  },
+  {
+   "id": "th-tcas",
+   "region": "th",
+   "name": "TCAS",
+   "full_name": "Thai University Central Admission System",
+   "body": "Ministry of Higher Education",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "university admission",
+   "subjects": [
+    "portfolios",
+    "TGAT",
+    "TPAT",
+    "A-Level"
+   ],
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Thailand",
+   "notes": null
+  },
+  {
+   "id": "th-gat",
+   "region": "th",
+   "name": "GAT/PAT (historic)",
+   "full_name": "General and Professional Aptitude Tests",
+   "body": "NIETS",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "former admission tests",
+   "subjects": null,
+   "format": null,
+   "when": "superseded by TGAT and TPAT",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Thailand",
+   "notes": null
+  },
+  {
+   "id": "au-naplan",
+   "region": "au",
+   "name": "NAPLAN",
+   "full_name": "National Assessment Program: Literacy and Numeracy",
+   "body": "ACARA",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    7,
+    15
+   ],
+   "grades": "3, 5, 7, 9",
+   "purpose": "national literacy and numeracy",
+   "subjects": [
+    "reading",
+    "writing",
+    "language conventions",
+    "numeracy"
+   ],
+   "format": "online",
+   "when": "March",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/NAPLAN",
+   "notes": null
+  },
+  {
+   "id": "au-hsc",
+   "region": "au",
+   "name": "NSW HSC",
+   "full_name": "Higher School Certificate",
+   "body": "NESA",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    18
+   ],
+   "grades": "12",
+   "purpose": "school leaving",
+   "subjects": [
+    "many courses"
+   ],
+   "format": null,
+   "when": "October to November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Higher_School_Certificate_(New_South_Wales)",
+   "notes": null
+  },
+  {
+   "id": "au-vce",
+   "region": "au",
+   "name": "VCE",
+   "full_name": "Victorian Certificate of Education",
+   "body": "VCAA",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    16,
+    18
+   ],
+   "grades": "11–12",
+   "purpose": "school leaving",
+   "subjects": [
+    "many studies; GAT"
+   ],
+   "format": null,
+   "when": "October to November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Victorian_Certificate_of_Education",
+   "notes": null
+  },
+  {
+   "id": "au-qce",
+   "region": "au",
+   "name": "QCE",
+   "full_name": "Queensland Certificate of Education",
+   "body": "QCAA",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    16,
+    18
+   ],
+   "grades": "11–12",
+   "purpose": "school leaving",
+   "subjects": [
+    "external assessment in general subjects"
+   ],
+   "format": null,
+   "when": "October to November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Queensland_Certificate_of_Education",
+   "notes": null
+  },
+  {
+   "id": "au-atar",
+   "region": "au",
+   "name": "ATAR",
+   "full_name": "Australian Tertiary Admission Rank",
+   "body": "state TACs",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    18
+   ],
+   "grades": "12",
+   "purpose": "university ranking",
+   "subjects": [
+    "aggregate rank 0–99.95 from school results"
+   ],
+   "format": "rank, not an exam",
+   "when": "December",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Australian_Tertiary_Admission_Rank",
+   "notes": null
+  },
+  {
+   "id": "au-ucat-anz",
+   "region": "au",
+   "name": "UCAT ANZ",
+   "full_name": "University Clinical Aptitude Test Australia and New Zealand",
+   "body": "UCAT ANZ Consortium",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    25
+   ],
+   "grades": null,
+   "purpose": "medical and dental admission",
+   "subjects": [
+    "verbal reasoning",
+    "decision making",
+    "quantitative reasoning",
+    "situational judgement"
+   ],
+   "format": null,
+   "when": "July to August",
+   "cost": null,
+   "prep_programs": [
+    "Biology (High School)",
+    "Chemistry (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/University_Clinical_Aptitude_Test",
+   "notes": null
+  },
+  {
+   "id": "au-gamsat",
+   "region": "au",
+   "name": "GAMSAT",
+   "full_name": "Graduate Medical School Admissions Test",
+   "body": "ACER",
+   "level": "graduate_entrance",
+   "stage": "college",
+   "ages": [
+    21,
+    40
+   ],
+   "grades": null,
+   "purpose": "graduate medical admission",
+   "subjects": [
+    "reasoning in humanities and social sciences",
+    "written communication",
+    "reasoning in biological and physical sciences"
+   ],
+   "format": null,
+   "when": "March and September",
+   "cost": null,
+   "prep_programs": [
+    "BSc Medicine and Health Sciences",
+    "BSc Biology",
+    "BSc Chemistry"
+   ],
+   "link": "https://en.wikipedia.org/wiki/GAMSAT",
+   "notes": null
+  },
+  {
+   "id": "au-stat",
+   "region": "au",
+   "name": "STAT",
+   "full_name": "Special Tertiary Admissions Test",
+   "body": "ACER",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    18,
+    99
+   ],
+   "grades": null,
+   "purpose": "mature-age admission",
+   "subjects": [
+    "verbal",
+    "quantitative",
+    "writing"
+   ],
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Special_Tertiary_Admissions_Test",
+   "notes": null
+  },
+  {
+   "id": "nz-ncea",
+   "region": "nz",
+   "name": "NCEA",
+   "full_name": "National Certificate of Educational Achievement",
+   "body": "NZQA",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    15,
+    18
+   ],
+   "grades": "11–13",
+   "purpose": "secondary qualification and university entrance",
+   "subjects": [
+    "many standards"
+   ],
+   "format": null,
+   "when": "November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/National_Certificate_of_Educational_Achievement",
+   "notes": null
+  },
+  {
+   "id": "nz-scholarship",
+   "region": "nz",
+   "name": "NZ Scholarship",
+   "full_name": "New Zealand Scholarship",
+   "body": "NZQA",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    18
+   ],
+   "grades": "13",
+   "purpose": "top-student award",
+   "subjects": [
+    "many subjects"
+   ],
+   "format": null,
+   "when": "November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/New_Zealand_Scholarship",
+   "notes": null
+  },
+  {
+   "id": "ca-eqao",
+   "region": "ca",
+   "name": "EQAO assessments",
+   "full_name": "Education Quality and Accountability Office tests",
+   "body": "EQAO (Ontario)",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    8,
+    15
+   ],
+   "grades": "3, 6, 9",
+   "purpose": "provincial monitoring",
+   "subjects": [
+    "reading",
+    "writing",
+    "mathematics"
+   ],
+   "format": null,
+   "when": "spring",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_Quality_and_Accountability_Office",
+   "notes": null
+  },
+  {
+   "id": "ca-osslt",
+   "region": "ca",
+   "name": "OSSLT",
+   "full_name": "Ontario Secondary School Literacy Test",
+   "body": "EQAO",
+   "level": "upper_secondary",
+   "stage": "high",
+   "ages": [
+    15,
+    16
+   ],
+   "grades": "10",
+   "purpose": "graduation requirement",
+   "subjects": [
+    "reading",
+    "writing"
+   ],
+   "format": null,
+   "when": "spring",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Ontario_Secondary_School_Literacy_Test",
+   "notes": null
+  },
+  {
+   "id": "ca-alberta",
+   "region": "ca",
+   "name": "Alberta diploma exams",
+   "full_name": "Diploma Examinations",
+   "body": "Alberta Education",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    18
+   ],
+   "grades": "12",
+   "purpose": "provincial exams",
+   "subjects": [
+    "English",
+    "mathematics",
+    "sciences",
+    "social studies"
+   ],
+   "format": null,
+   "when": "January, April, June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Diploma_exam_(Alberta)",
+   "notes": null
+  },
+  {
+   "id": "ca-quebec",
+   "region": "ca",
+   "name": "Quebec ministerial exams",
+   "full_name": "Épreuves uniques",
+   "body": "Ministère de l'Éducation du Québec",
+   "level": "upper_secondary",
+   "stage": "high",
+   "ages": [
+    15,
+    17
+   ],
+   "grades": "Secondary 4–5",
+   "purpose": "provincial exams",
+   "subjects": [
+    "French",
+    "English",
+    "mathematics",
+    "history"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Quebec",
+   "notes": null
+  },
+  {
+   "id": "ca-bc",
+   "region": "ca",
+   "name": "BC provincial assessments",
+   "full_name": "Graduation Numeracy and Literacy Assessments",
+   "body": "BC Ministry of Education",
+   "level": "upper_secondary",
+   "stage": "high",
+   "ages": [
+    15,
+    18
+   ],
+   "grades": "10–12",
+   "purpose": "graduation requirement",
+   "subjects": [
+    "numeracy",
+    "literacy"
+   ],
+   "format": null,
+   "when": "through the year",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_British_Columbia",
+   "notes": null
+  },
+  {
+   "id": "ca-cegep",
+   "region": "ca",
+   "name": "CEGEP admission (R-score)",
+   "full_name": "Cote de rendement",
+   "body": "universities",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": null,
+   "purpose": "Quebec university admission",
+   "subjects": [
+    "college results"
+   ],
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Cégep",
+   "notes": null
+  },
+  {
+   "id": "ca-cfa-nclex",
+   "region": "ca",
+   "name": "NCLEX-RN (Canada)",
+   "full_name": "National Council Licensure Examination",
+   "body": "provincial regulators",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    21,
+    99
+   ],
+   "grades": null,
+   "purpose": "nursing licensure",
+   "subjects": null,
+   "format": null,
+   "when": "year round",
+   "cost": null,
+   "prep_programs": [
+    "BSc Medicine and Health Sciences"
+   ],
+   "link": "https://en.wikipedia.org/wiki/NCLEX",
+   "notes": null
+  },
+  {
+   "id": "ca-celpip",
+   "region": "ca",
+   "name": "CELPIP",
+   "full_name": "Canadian English Language Proficiency Index Program",
+   "body": "Paragon Testing Enterprises",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    16,
+    99
+   ],
+   "grades": null,
+   "purpose": "English proficiency for immigration",
+   "subjects": [
+    "listening",
+    "reading",
+    "writing",
+    "speaking"
+   ],
+   "format": null,
+   "when": "many dates",
+   "cost": null,
+   "prep_programs": [
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/CELPIP",
+   "notes": null
+  },
+  {
+   "id": "br-enem",
+   "region": "br",
+   "name": "ENEM",
+   "full_name": "Exame Nacional do Ensino Médio",
+   "body": "INEP",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    25
+   ],
+   "grades": "12",
+   "purpose": "university admission via SISU",
+   "subjects": [
+    "languages",
+    "humanities",
+    "sciences",
+    "mathematics",
+    "essay"
+   ],
+   "format": "two Sundays",
+   "when": "November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Exame_Nacional_do_Ensino_Médio",
+   "notes": null
+  },
+  {
+   "id": "br-vestibular",
+   "region": "br",
+   "name": "Vestibular",
+   "full_name": "University entrance exams (FUVEST, UNICAMP)",
+   "body": "universities",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    25
+   ],
+   "grades": "12",
+   "purpose": "university admission",
+   "subjects": [
+    "varies"
+   ],
+   "format": null,
+   "when": "November to January",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Vestibular",
+   "notes": null
+  },
+  {
+   "id": "br-saeb",
+   "region": "br",
+   "name": "SAEB",
+   "full_name": "Sistema de Avaliação da Educação Básica",
+   "body": "INEP",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    10,
+    18
+   ],
+   "grades": "5, 9, 12",
+   "purpose": "national monitoring",
+   "subjects": [
+    "Portuguese",
+    "mathematics"
+   ],
+   "format": null,
+   "when": "every two years",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Brazil",
+   "notes": null
+  },
+  {
+   "id": "br-oab",
+   "region": "br",
+   "name": "OAB exam",
+   "full_name": "Ordem dos Advogados do Brasil bar exam",
+   "body": "OAB",
+   "level": "professional",
+   "stage": "masters",
+   "ages": [
+    22,
+    99
+   ],
+   "grades": null,
+   "purpose": "lawyer licensure",
+   "subjects": null,
+   "format": null,
+   "when": "three times a year",
+   "cost": null,
+   "prep_programs": [
+    "LLM Law"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Brazilian_Bar_Association",
+   "notes": null
+  },
+  {
+   "id": "br-celpe",
+   "region": "br",
+   "name": "Celpe-Bras",
+   "full_name": "Portuguese proficiency certificate",
+   "body": "INEP",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    16,
+    99
+   ],
+   "grades": null,
+   "purpose": "Portuguese proficiency",
+   "subjects": null,
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Celpe-Bras",
+   "notes": null
+  },
+  {
+   "id": "mx-comipems",
+   "region": "mx",
+   "name": "COMIPEMS",
+   "full_name": "Examen Único de Ingreso a la Educación Media Superior",
+   "body": "COMIPEMS",
+   "level": "upper_secondary",
+   "stage": "middle",
+   "ages": [
+    14,
+    15
+   ],
+   "grades": "9",
+   "purpose": "upper secondary placement in Mexico City",
+   "subjects": [
+    "Spanish",
+    "mathematics",
+    "sciences",
+    "history"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/COMIPEMS",
+   "notes": null
+  },
+  {
+   "id": "mx-exani",
+   "region": "mx",
+   "name": "EXANI-II",
+   "full_name": "Examen Nacional de Ingreso a la Educación Superior",
+   "body": "CENEVAL",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "university admission",
+   "subjects": [
+    "reading",
+    "mathematics",
+    "writing"
+   ],
+   "format": null,
+   "when": "several dates",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/CENEVAL",
+   "notes": null
+  },
+  {
+   "id": "mx-exani-iii",
+   "region": "mx",
+   "name": "EXANI-III",
+   "full_name": "Postgraduate admission",
+   "body": "CENEVAL",
+   "level": "graduate_entrance",
+   "stage": "college",
+   "ages": [
+    21,
+    40
+   ],
+   "grades": null,
+   "purpose": "graduate admission",
+   "subjects": null,
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "MSc Social Sciences"
+   ],
+   "link": "https://en.wikipedia.org/wiki/CENEVAL",
+   "notes": null
+  },
+  {
+   "id": "mx-planea",
+   "region": "mx",
+   "name": "PLANEA",
+   "full_name": "Plan Nacional para la Evaluación de los Aprendizajes",
+   "body": "INEE",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    11,
+    18
+   ],
+   "grades": "6, 9, 12",
+   "purpose": "learning monitoring",
+   "subjects": [
+    "language",
+    "mathematics"
+   ],
+   "format": null,
+   "when": "discontinued after 2019",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Mexico",
+   "notes": "Discontinued."
+  },
+  {
+   "id": "latam-paes",
+   "region": "latam",
+   "name": "PAES (Chile)",
+   "full_name": "Prueba de Acceso a la Educación Superior",
+   "body": "DEMRE",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "university admission",
+   "subjects": [
+    "reading",
+    "mathematics",
+    "history",
+    "science"
+   ],
+   "format": "replaced PSU",
+   "when": "June and December",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Prueba_de_Aptitud_Académica_(Chile)",
+   "notes": null
+  },
+  {
+   "id": "latam-saber11",
+   "region": "latam",
+   "name": "Saber 11 (Colombia)",
+   "full_name": "Examen Saber 11",
+   "body": "ICFES",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    16,
+    18
+   ],
+   "grades": "11",
+   "purpose": "school leaving and admission",
+   "subjects": [
+    "critical reading",
+    "mathematics",
+    "natural sciences",
+    "social",
+    "English"
+   ],
+   "format": null,
+   "when": "twice a year",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/ICFES",
+   "notes": null
+  },
+  {
+   "id": "latam-ar-ingreso",
+   "region": "latam",
+   "name": "Argentine university entrance (CBC)",
+   "full_name": "Ciclo Básico Común and entry courses",
+   "body": "universities",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": null,
+   "purpose": "university admission",
+   "subjects": [
+    "varies"
+   ],
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Argentina",
+   "notes": "No national exam; policies vary by university."
+  },
+  {
+   "id": "latam-aprender",
+   "region": "latam",
+   "name": "Aprender (Argentina)",
+   "full_name": "Aprender national assessment",
+   "body": "Ministry of Education",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    8,
+    18
+   ],
+   "grades": "3, 6, secondary",
+   "purpose": "national monitoring",
+   "subjects": [
+    "language",
+    "mathematics"
+   ],
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Argentina",
+   "notes": null
+  },
+  {
+   "id": "latam-simce",
+   "region": "latam",
+   "name": "SIMCE (Chile)",
+   "full_name": "Sistema de Medición de la Calidad de la Educación",
+   "body": "Agencia de Calidad",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    9,
+    16
+   ],
+   "grades": "4, 8, 10",
+   "purpose": "national monitoring",
+   "subjects": [
+    "language",
+    "mathematics",
+    "sciences"
+   ],
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/SIMCE",
+   "notes": null
+  },
+  {
+   "id": "za-nsc",
+   "region": "za",
+   "name": "NSC (matric)",
+   "full_name": "National Senior Certificate",
+   "body": "Department of Basic Education",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "school leaving",
+   "subjects": [
+    "about 7 subjects"
+   ],
+   "format": null,
+   "when": "October to November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/National_Senior_Certificate",
+   "notes": null
+  },
+  {
+   "id": "za-nbt",
+   "region": "za",
+   "name": "NBT",
+   "full_name": "National Benchmark Tests",
+   "body": "CETAP, University of Cape Town",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "university placement",
+   "subjects": [
+    "academic literacy",
+    "quantitative literacy",
+    "mathematics"
+   ],
+   "format": null,
+   "when": "May to November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/National_Benchmark_Tests",
+   "notes": null
+  },
+  {
+   "id": "za-ieb",
+   "region": "za",
+   "name": "IEB NSC",
+   "full_name": "Independent Examinations Board National Senior Certificate",
+   "body": "IEB",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "school leaving for independent schools",
+   "subjects": [
+    "about 7 subjects"
+   ],
+   "format": null,
+   "when": "October to November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Independent_Examinations_Board",
+   "notes": null
+  },
+  {
+   "id": "za-ana",
+   "region": "za",
+   "name": "ANA (discontinued)",
+   "full_name": "Annual National Assessments",
+   "body": "Department of Basic Education",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    7,
+    15
+   ],
+   "grades": "1–6, 9",
+   "purpose": "literacy and numeracy monitoring",
+   "subjects": null,
+   "format": null,
+   "when": "suspended in 2015",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Annual_National_Assessments",
+   "notes": "Suspended."
+  },
+  {
+   "id": "ng-waec",
+   "region": "ng",
+   "name": "WASSCE (Nigeria)",
+   "full_name": "West African Senior School Certificate Examination",
+   "body": "WAEC",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    16,
+    18
+   ],
+   "grades": "SS3",
+   "purpose": "school leaving",
+   "subjects": [
+    "English",
+    "mathematics",
+    "subjects"
+   ],
+   "format": null,
+   "when": "May to June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/West_African_Examinations_Council",
+   "notes": null
+  },
+  {
+   "id": "ng-neco",
+   "region": "ng",
+   "name": "NECO SSCE",
+   "full_name": "Senior School Certificate Examination",
+   "body": "NECO",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    16,
+    18
+   ],
+   "grades": "SS3",
+   "purpose": "school leaving",
+   "subjects": [
+    "English",
+    "mathematics",
+    "subjects"
+   ],
+   "format": null,
+   "when": "June to July",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/National_Examinations_Council",
+   "notes": null
+  },
+  {
+   "id": "ng-jamb",
+   "region": "ng",
+   "name": "JAMB UTME",
+   "full_name": "Unified Tertiary Matriculation Examination",
+   "body": "JAMB",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    16,
+    22
+   ],
+   "grades": null,
+   "purpose": "university admission",
+   "subjects": [
+    "English plus three subjects"
+   ],
+   "format": "computer based",
+   "when": "April to May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Joint_Admissions_and_Matriculation_Board",
+   "notes": null
+  },
+  {
+   "id": "ng-bece",
+   "region": "ng",
+   "name": "BECE (Nigeria)",
+   "full_name": "Basic Education Certificate Examination",
+   "body": "NECO / state boards",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    14,
+    15
+   ],
+   "grades": "JSS3",
+   "purpose": "junior secondary completion",
+   "subjects": [
+    "many subjects"
+   ],
+   "format": null,
+   "when": "June to July",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Basic_Education_Certificate_Examination",
+   "notes": null
+  },
+  {
+   "id": "ng-post-utme",
+   "region": "ng",
+   "name": "Post-UTME",
+   "full_name": "University screening",
+   "body": "universities",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    16,
+    22
+   ],
+   "grades": null,
+   "purpose": "institutional screening",
+   "subjects": null,
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Joint_Admissions_and_Matriculation_Board",
+   "notes": null
+  },
+  {
+   "id": "ke-kpsea",
+   "region": "ke",
+   "name": "KPSEA",
+   "full_name": "Kenya Primary School Education Assessment",
+   "body": "KNEC",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    11,
+    13
+   ],
+   "grades": "6",
+   "purpose": "competency-based assessment",
+   "subjects": [
+    "mathematics",
+    "English",
+    "Kiswahili",
+    "science",
+    "social studies"
+   ],
+   "format": null,
+   "when": "October to November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Kenya_Primary_School_Education_Assessment",
+   "notes": null
+  },
+  {
+   "id": "ke-kcpe",
+   "region": "ke",
+   "name": "KCPE",
+   "full_name": "Kenya Certificate of Primary Education",
+   "body": "KNEC",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    13,
+    15
+   ],
+   "grades": "8",
+   "purpose": "primary completion",
+   "subjects": [
+    "English",
+    "Kiswahili",
+    "mathematics",
+    "science",
+    "social studies"
+   ],
+   "format": null,
+   "when": "last sat 2023",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Kenya_Certificate_of_Primary_Education",
+   "notes": "Phased out under CBC."
+  },
+  {
+   "id": "ke-kcse",
+   "region": "ke",
+   "name": "KCSE",
+   "full_name": "Kenya Certificate of Secondary Education",
+   "body": "KNEC",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "Form 4",
+   "purpose": "school leaving",
+   "subjects": [
+    "compulsory plus electives"
+   ],
+   "format": null,
+   "when": "October to November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Kenya_Certificate_of_Secondary_Education",
+   "notes": null
+  },
+  {
+   "id": "ke-kjsea",
+   "region": "ke",
+   "name": "KJSEA",
+   "full_name": "Kenya Junior School Education Assessment",
+   "body": "KNEC",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    14,
+    15
+   ],
+   "grades": "9",
+   "purpose": "junior school completion",
+   "subjects": [
+    "learning areas"
+   ],
+   "format": null,
+   "when": "from 2025",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Kenya_Junior_School_Education_Assessment",
+   "notes": null
+  },
+  {
+   "id": "gh-bece",
+   "region": "gh",
+   "name": "BECE (Ghana)",
+   "full_name": "Basic Education Certificate Examination",
+   "body": "WAEC Ghana",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    14,
+    16
+   ],
+   "grades": "JHS3",
+   "purpose": "senior high school placement",
+   "subjects": [
+    "English",
+    "mathematics",
+    "science",
+    "social studies"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Basic_Education_Certificate_Examination",
+   "notes": null
+  },
+  {
+   "id": "gh-wassce",
+   "region": "gh",
+   "name": "WASSCE (Ghana)",
+   "full_name": "West African Senior School Certificate Examination",
+   "body": "WAEC",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "SHS3",
+   "purpose": "school leaving",
+   "subjects": [
+    "core and elective subjects"
+   ],
+   "format": null,
+   "when": "May to June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/West_African_Senior_School_Certificate_Examination",
+   "notes": null
+  },
+  {
+   "id": "eg-thanaweya",
+   "region": "eg",
+   "name": "Thanaweya Amma",
+   "full_name": "General Secondary Education Certificate",
+   "body": "Ministry of Education",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "university admission",
+   "subjects": [
+    "Arabic",
+    "foreign language",
+    "science or literary track"
+   ],
+   "format": null,
+   "when": "June to July",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Thanaweya_Amma",
+   "notes": null
+  },
+  {
+   "id": "eg-prep",
+   "region": "eg",
+   "name": "Preparatory certificate",
+   "full_name": "Basic education certificate",
+   "body": "governorates",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    14,
+    15
+   ],
+   "grades": "9",
+   "purpose": "lower secondary completion",
+   "subjects": [
+    "subjects"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Egypt",
+   "notes": null
+  },
+  {
+   "id": "tr-lgs",
+   "region": "tr",
+   "name": "LGS",
+   "full_name": "High School Entrance Exam",
+   "body": "MEB",
+   "level": "lower_secondary",
+   "stage": "middle",
+   "ages": [
+    13,
+    14
+   ],
+   "grades": "8",
+   "purpose": "high school placement",
+   "subjects": [
+    "Turkish",
+    "mathematics",
+    "science",
+    "history",
+    "language",
+    "religion"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/High_School_Entrance_Exam",
+   "notes": null
+  },
+  {
+   "id": "tr-yks",
+   "region": "tr",
+   "name": "YKS",
+   "full_name": "Higher Education Institutions Exam",
+   "body": "ÖSYM",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    22
+   ],
+   "grades": "12",
+   "purpose": "university admission",
+   "subjects": [
+    "TYT",
+    "AYT",
+    "YDT"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Higher_Education_Institutions_Exam",
+   "notes": null
+  },
+  {
+   "id": "tr-kpss",
+   "region": "tr",
+   "name": "KPSS",
+   "full_name": "Public Personnel Selection Examination",
+   "body": "ÖSYM",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    21,
+    40
+   ],
+   "grades": null,
+   "purpose": "public sector recruitment",
+   "subjects": null,
+   "format": null,
+   "when": "biennial",
+   "cost": null,
+   "prep_programs": [
+    "BA Social Sciences"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Public_Personnel_Selection_Examination",
+   "notes": null
+  },
+  {
+   "id": "tr-ales",
+   "region": "tr",
+   "name": "ALES / YDS",
+   "full_name": "Academic Personnel and Postgraduate Education Entrance Exam",
+   "body": "ÖSYM",
+   "level": "graduate_entrance",
+   "stage": "college",
+   "ages": [
+    21,
+    40
+   ],
+   "grades": null,
+   "purpose": "graduate admission",
+   "subjects": null,
+   "format": null,
+   "when": "several times a year",
+   "cost": null,
+   "prep_programs": [
+    "MSc Social Sciences"
+   ],
+   "link": "https://en.wikipedia.org/wiki/ALES",
+   "notes": null
+  },
+  {
+   "id": "ir-konkur",
+   "region": "ir",
+   "name": "Konkur",
+   "full_name": "Iranian University Entrance Exam",
+   "body": "Sanjesh",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    22
+   ],
+   "grades": "12",
+   "purpose": "university admission",
+   "subjects": [
+    "general and specialised tests"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Konkur",
+   "notes": null
+  },
+  {
+   "id": "ir-konkur-grad",
+   "region": "ir",
+   "name": "Graduate entrance exam (Konkur-e Arshad)",
+   "full_name": "Iranian master's entrance exam",
+   "body": "Sanjesh",
+   "level": "graduate_entrance",
+   "stage": "college",
+   "ages": [
+    21,
+    35
+   ],
+   "grades": null,
+   "purpose": "master's admission",
+   "subjects": null,
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "MSc Social Sciences"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Konkur",
+   "notes": null
+  },
+  {
+   "id": "il-bagrut",
+   "region": "il",
+   "name": "Bagrut",
+   "full_name": "Matriculation certificate",
+   "body": "Ministry of Education",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    18
+   ],
+   "grades": "12",
+   "purpose": "school leaving",
+   "subjects": [
+    "Hebrew",
+    "mathematics",
+    "English",
+    "Bible",
+    "civics",
+    "electives"
+   ],
+   "format": null,
+   "when": "January and June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Bagrut_certificate",
+   "notes": null
+  },
+  {
+   "id": "il-psychometric",
+   "region": "il",
+   "name": "Psychometric Entrance Test",
+   "full_name": "Psychometric Test",
+   "body": "NITE",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    30
+   ],
+   "grades": null,
+   "purpose": "university admission",
+   "subjects": [
+    "quantitative",
+    "verbal",
+    "English"
+   ],
+   "format": "scored 200–800",
+   "when": "several dates a year",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Psychometric_Entrance_Test",
+   "notes": null
+  },
+  {
+   "id": "il-meitzav",
+   "region": "il",
+   "name": "Meitzav (discontinued)",
+   "full_name": "School growth and effectiveness measures",
+   "body": "RAMA",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    10,
+    14
+   ],
+   "grades": "5, 8",
+   "purpose": null,
+   "subjects": [
+    "Hebrew",
+    "mathematics",
+    "science",
+    "English"
+   ],
+   "format": null,
+   "when": "replaced by new assessments",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Israel",
+   "notes": "Superseded."
+  },
+  {
+   "id": "gulf-emsat",
+   "region": "gulf",
+   "name": "EmSAT",
+   "full_name": "Emirates Standardised Test",
+   "body": "UAE Ministry of Education",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    16,
+    19
+   ],
+   "grades": "12",
+   "purpose": "UAE university admission",
+   "subjects": [
+    "Arabic",
+    "English",
+    "mathematics",
+    "physics",
+    "chemistry",
+    "biology"
+   ],
+   "format": "computer based",
+   "when": "several times a year",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Emirates_Standardized_Test",
+   "notes": "No longer required as of recent policy changes; check."
+  },
+  {
+   "id": "gulf-qiyas",
+   "region": "gulf",
+   "name": "Qiyas (GAT and SAAT)",
+   "full_name": "General Aptitude Test / Standard Achievement Admission Test",
+   "body": "Education and Training Evaluation Commission, Saudi Arabia",
+   "level": "university_entrance",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "Saudi university admission",
+   "subjects": [
+    "verbal",
+    "quantitative; science achievement"
+   ],
+   "format": null,
+   "when": "multiple dates",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Qiyas",
+   "notes": null
+  },
+  {
+   "id": "gulf-kuwait",
+   "region": "gulf",
+   "name": "Kuwait Thanawiya Amma",
+   "full_name": "General secondary certificate",
+   "body": "Ministry of Education",
+   "level": "school_leaving",
+   "stage": "high",
+   "ages": [
+    17,
+    19
+   ],
+   "grades": "12",
+   "purpose": "school leaving",
+   "subjects": [
+    "subjects"
+   ],
+   "format": null,
+   "when": "June",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Kuwait",
+   "notes": null
+  },
+  {
+   "id": "gulf-qatar",
+   "region": "gulf",
+   "name": "Qatar national exams",
+   "full_name": "Qatar Comprehensive Educational Assessment",
+   "body": "Ministry of Education",
+   "level": "primary",
+   "stage": "primary",
+   "ages": [
+    8,
+    18
+   ],
+   "grades": null,
+   "purpose": "national monitoring",
+   "subjects": [
+    "Arabic",
+    "English",
+    "mathematics",
+    "science"
+   ],
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_Qatar",
+   "notes": null
+  },
+  {
+   "id": "gulf-ae-moe",
+   "region": "gulf",
+   "name": "UAE MAP/Moe exams",
+   "full_name": "Ministry of Education end-of-year exams",
+   "body": "UAE MOE",
+   "level": "upper_secondary",
+   "stage": "high",
+   "ages": [
+    15,
+    18
+   ],
+   "grades": "10–12",
+   "purpose": "school completion",
+   "subjects": [
+    "subjects"
+   ],
+   "format": null,
+   "when": "annual",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Education_in_the_United_Arab_Emirates",
+   "notes": null
+  },
+  {
+   "id": "intl-ib-pyp",
+   "region": "intl",
+   "name": "IB Primary Years Programme",
+   "full_name": "PYP",
+   "body": "International Baccalaureate",
+   "level": "international",
+   "stage": "primary",
+   "ages": [
+    3,
+    12
+   ],
+   "grades": "PreK–5",
+   "purpose": "programme of inquiry; exhibition",
+   "subjects": [
+    "transdisciplinary themes"
+   ],
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts"
+   ],
+   "link": "https://en.wikipedia.org/wiki/International_Baccalaureate",
+   "notes": "No external exam; ends with exhibition."
+  },
+  {
+   "id": "intl-ib-myp",
+   "region": "intl",
+   "name": "IB Middle Years Programme",
+   "full_name": "MYP",
+   "body": "International Baccalaureate",
+   "level": "international",
+   "stage": "middle",
+   "ages": [
+    11,
+    16
+   ],
+   "grades": "6–10",
+   "purpose": "programme; optional eAssessment",
+   "subjects": [
+    "eight subject groups"
+   ],
+   "format": null,
+   "when": "May",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/International_Baccalaureate",
+   "notes": null
+  },
+  {
+   "id": "intl-ib-dp",
+   "region": "intl",
+   "name": "IB Diploma Programme",
+   "full_name": "DP",
+   "body": "International Baccalaureate",
+   "level": "international",
+   "stage": "high",
+   "ages": [
+    16,
+    19
+   ],
+   "grades": "11–12",
+   "purpose": "school leaving and admission",
+   "subjects": [
+    "six subjects plus TOK",
+    "EE",
+    "CAS"
+   ],
+   "format": "scored out of 45",
+   "when": "May and November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)",
+    "Philosophy, Religion and Media"
+   ],
+   "link": "https://en.wikipedia.org/wiki/International_Baccalaureate",
+   "notes": null
+  },
+  {
+   "id": "intl-ib-cp",
+   "region": "intl",
+   "name": "IB Career-related Programme",
+   "full_name": "CP",
+   "body": "International Baccalaureate",
+   "level": "international",
+   "stage": "high",
+   "ages": [
+    16,
+    19
+   ],
+   "grades": "11–12",
+   "purpose": "career-related qualification",
+   "subjects": [
+    "DP courses plus career study"
+   ],
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/International_Baccalaureate",
+   "notes": null
+  },
+  {
+   "id": "intl-cambridge-primary",
+   "region": "intl",
+   "name": "Cambridge Primary Checkpoint",
+   "full_name": "Cambridge Primary Checkpoint",
+   "body": "Cambridge International",
+   "level": "international",
+   "stage": "primary",
+   "ages": [
+    10,
+    11
+   ],
+   "grades": "6",
+   "purpose": "end of primary",
+   "subjects": [
+    "English",
+    "mathematics",
+    "science"
+   ],
+   "format": null,
+   "when": "April and October",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Cambridge_Assessment_International_Education",
+   "notes": null
+  },
+  {
+   "id": "intl-cambridge-lower",
+   "region": "intl",
+   "name": "Cambridge Lower Secondary Checkpoint",
+   "full_name": "Checkpoint",
+   "body": "Cambridge International",
+   "level": "international",
+   "stage": "middle",
+   "ages": [
+    13,
+    14
+   ],
+   "grades": "9",
+   "purpose": "end of lower secondary",
+   "subjects": [
+    "English",
+    "mathematics",
+    "science"
+   ],
+   "format": null,
+   "when": "April and October",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Cambridge_Assessment_International_Education",
+   "notes": null
+  },
+  {
+   "id": "intl-igcse",
+   "region": "intl",
+   "name": "Cambridge IGCSE",
+   "full_name": "International General Certificate of Secondary Education",
+   "body": "Cambridge International, Pearson Edexcel",
+   "level": "international",
+   "stage": "high",
+   "ages": [
+    14,
+    16
+   ],
+   "grades": "10–11",
+   "purpose": "secondary qualification",
+   "subjects": [
+    "many subjects"
+   ],
+   "format": null,
+   "when": "May to June and October to November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)",
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/International_General_Certificate_of_Secondary_Education",
+   "notes": null
+  },
+  {
+   "id": "intl-cie-alevel",
+   "region": "intl",
+   "name": "Cambridge International AS and A-Level",
+   "full_name": "International A-Level",
+   "body": "Cambridge International",
+   "level": "international",
+   "stage": "high",
+   "ages": [
+    16,
+    19
+   ],
+   "grades": "12–13",
+   "purpose": "pre-university",
+   "subjects": [
+    "many subjects"
+   ],
+   "format": null,
+   "when": "May to June and October to November",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition",
+    "Biology (High School)",
+    "Chemistry (High School)",
+    "Classical Mechanics",
+    "History and Geography (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Cambridge_Assessment_International_Education",
+   "notes": null
+  },
+  {
+   "id": "intl-pisa",
+   "region": "intl",
+   "name": "PISA",
+   "full_name": "Programme for International Student Assessment",
+   "body": "OECD",
+   "level": "international",
+   "stage": "high",
+   "ages": [
+    15,
+    15
+   ],
+   "grades": null,
+   "purpose": "system comparison",
+   "subjects": [
+    "reading",
+    "mathematics",
+    "science"
+   ],
+   "format": null,
+   "when": "every three years",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Programme_for_International_Student_Assessment",
+   "notes": "Sample survey of systems, not a student exam; no individual results."
+  },
+  {
+   "id": "intl-timss",
+   "region": "intl",
+   "name": "TIMSS",
+   "full_name": "Trends in International Mathematics and Science Study",
+   "body": "IEA",
+   "level": "international",
+   "stage": "primary",
+   "ages": [
+    9,
+    14
+   ],
+   "grades": "4, 8",
+   "purpose": "system comparison",
+   "subjects": [
+    "mathematics",
+    "science"
+   ],
+   "format": null,
+   "when": "every four years",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics",
+    "English Language Arts",
+    "Mathematics",
+    "English: Reading and Writing"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Trends_in_International_Mathematics_and_Science_Study",
+   "notes": "Sample survey, not a student exam."
+  },
+  {
+   "id": "intl-pirls",
+   "region": "intl",
+   "name": "PIRLS",
+   "full_name": "Progress in International Reading Literacy Study",
+   "body": "IEA",
+   "level": "international",
+   "stage": "primary",
+   "ages": [
+    9,
+    10
+   ],
+   "grades": "4",
+   "purpose": "system comparison",
+   "subjects": [
+    "reading"
+   ],
+   "format": null,
+   "when": "every five years",
+   "cost": null,
+   "prep_programs": [
+    "English Language Arts"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Progress_in_International_Reading_Literacy_Study",
+   "notes": "Sample survey, not a student exam."
+  },
+  {
+   "id": "intl-imo",
+   "region": "intl",
+   "name": "IMO",
+   "full_name": "International Mathematical Olympiad",
+   "body": "IMO Board",
+   "level": "international",
+   "stage": "high",
+   "ages": [
+    14,
+    19
+   ],
+   "grades": null,
+   "purpose": "competition",
+   "subjects": [
+    "mathematics"
+   ],
+   "format": "two days, six problems",
+   "when": "July",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway"
+   ],
+   "link": "https://en.wikipedia.org/wiki/International_Mathematical_Olympiad",
+   "notes": null
+  },
+  {
+   "id": "intl-ipho",
+   "region": "intl",
+   "name": "IPhO",
+   "full_name": "International Physics Olympiad",
+   "body": "IPhO",
+   "level": "international",
+   "stage": "high",
+   "ages": [
+    14,
+    19
+   ],
+   "grades": null,
+   "purpose": "competition",
+   "subjects": [
+    "physics"
+   ],
+   "format": "theory and experiment",
+   "when": "July",
+   "cost": null,
+   "prep_programs": [
+    "Classical Mechanics",
+    "Electromagnetism",
+    "Modern Physics"
+   ],
+   "link": "https://en.wikipedia.org/wiki/International_Physics_Olympiad",
+   "notes": null
+  },
+  {
+   "id": "intl-icho",
+   "region": "intl",
+   "name": "IChO",
+   "full_name": "International Chemistry Olympiad",
+   "body": "IChO",
+   "level": "international",
+   "stage": "high",
+   "ages": [
+    14,
+    19
+   ],
+   "grades": null,
+   "purpose": "competition",
+   "subjects": [
+    "chemistry"
+   ],
+   "format": null,
+   "when": "July",
+   "cost": null,
+   "prep_programs": [
+    "Chemistry (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/International_Chemistry_Olympiad",
+   "notes": null
+  },
+  {
+   "id": "intl-ibo",
+   "region": "intl",
+   "name": "IBO",
+   "full_name": "International Biology Olympiad",
+   "body": "IBO",
+   "level": "international",
+   "stage": "high",
+   "ages": [
+    14,
+    19
+   ],
+   "grades": null,
+   "purpose": "competition",
+   "subjects": [
+    "biology"
+   ],
+   "format": null,
+   "when": "July",
+   "cost": null,
+   "prep_programs": [
+    "Biology (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/International_Biology_Olympiad",
+   "notes": null
+  },
+  {
+   "id": "intl-ioi",
+   "region": "intl",
+   "name": "IOI",
+   "full_name": "International Olympiad in Informatics",
+   "body": "IOI",
+   "level": "international",
+   "stage": "high",
+   "ages": [
+    14,
+    19
+   ],
+   "grades": null,
+   "purpose": "competition",
+   "subjects": [
+    "algorithms",
+    "programming"
+   ],
+   "format": null,
+   "when": "summer",
+   "cost": null,
+   "prep_programs": [
+    "Computer Science (High School)"
+   ],
+   "link": "https://en.wikipedia.org/wiki/International_Olympiad_in_Informatics",
+   "notes": null
+  },
+  {
+   "id": "intl-ioaa",
+   "region": "intl",
+   "name": "IOAA",
+   "full_name": "International Olympiad on Astronomy and Astrophysics",
+   "body": "IOAA",
+   "level": "international",
+   "stage": "high",
+   "ages": [
+    14,
+    19
+   ],
+   "grades": null,
+   "purpose": "competition",
+   "subjects": [
+    "astronomy",
+    "astrophysics"
+   ],
+   "format": null,
+   "when": "summer",
+   "cost": null,
+   "prep_programs": [
+    "Astronomy Practicals",
+    "Earth and Space Science",
+    "Measuring the Sky"
+   ],
+   "link": "https://en.wikipedia.org/wiki/International_Olympiad_on_Astronomy_and_Astrophysics",
+   "notes": null
+  },
+  {
+   "id": "intl-sat-abroad",
+   "region": "intl",
+   "name": "SAT and ACT abroad",
+   "full_name": "International administration of SAT and ACT",
+   "body": "College Board, ACT",
+   "level": "international",
+   "stage": "high",
+   "ages": [
+    16,
+    19
+   ],
+   "grades": null,
+   "purpose": "admission to US universities",
+   "subjects": [
+    "see US entries"
+   ],
+   "format": null,
+   "when": "several dates",
+   "cost": null,
+   "prep_programs": [
+    "Mathematics Pathway",
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/SAT",
+   "notes": "Same tests as US entries."
+  },
+  {
+   "id": "intl-det",
+   "region": "intl",
+   "name": "Duolingo English Test",
+   "full_name": "Duolingo English Test",
+   "body": "Duolingo",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    16,
+    99
+   ],
+   "grades": null,
+   "purpose": "English proficiency",
+   "subjects": [
+    "adaptive",
+    "1 h"
+   ],
+   "format": "computer adaptive; scored 10–160",
+   "when": "on demand",
+   "cost": null,
+   "prep_programs": [
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Duolingo_English_Test",
+   "notes": null
+  },
+  {
+   "id": "intl-pte",
+   "region": "intl",
+   "name": "PTE Academic",
+   "full_name": "Pearson Test of English Academic",
+   "body": "Pearson",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    16,
+    99
+   ],
+   "grades": null,
+   "purpose": "English proficiency",
+   "subjects": [
+    "speaking",
+    "writing",
+    "reading",
+    "listening"
+   ],
+   "format": "scored 10–90",
+   "when": "on demand",
+   "cost": null,
+   "prep_programs": [
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Pearson_Test_of_English",
+   "notes": null
+  },
+  {
+   "id": "intl-toeic",
+   "region": "intl",
+   "name": "TOEIC",
+   "full_name": "Test of English for International Communication",
+   "body": "ETS",
+   "level": "language",
+   "stage": "college",
+   "ages": [
+    18,
+    99
+   ],
+   "grades": null,
+   "purpose": "workplace English",
+   "subjects": [
+    "listening",
+    "reading"
+   ],
+   "format": null,
+   "when": "many dates",
+   "cost": null,
+   "prep_programs": [
+    "English Literature and Composition"
+   ],
+   "link": "https://en.wikipedia.org/wiki/TOEIC",
+   "notes": null
+  },
+  {
+   "id": "intl-dalf",
+   "region": "intl",
+   "name": "DALF (international)",
+   "full_name": "Diplôme approfondi de langue française",
+   "body": "France Éducation international",
+   "level": "language",
+   "stage": "high",
+   "ages": [
+    16,
+    99
+   ],
+   "grades": null,
+   "purpose": "advanced French",
+   "subjects": [
+    "C1 and C2"
+   ],
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "World Languages III"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Diplôme_approfondi_de_langue_française",
+   "notes": null
+  },
+  {
+   "id": "intl-cefr-delf-junior",
+   "region": "intl",
+   "name": "DELF Prim and Junior",
+   "full_name": "School versions of DELF",
+   "body": "France Éducation international",
+   "level": "language",
+   "stage": "primary",
+   "ages": [
+    8,
+    17
+   ],
+   "grades": null,
+   "purpose": "French for children",
+   "subjects": null,
+   "format": null,
+   "when": null,
+   "cost": null,
+   "prep_programs": [
+    "World Languages"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Diplôme_d'études_en_langue_française",
+   "notes": null
+  },
+  {
+   "id": "intl-acca",
+   "region": "intl",
+   "name": "ACCA",
+   "full_name": "Association of Chartered Certified Accountants",
+   "body": "ACCA",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    18,
+    99
+   ],
+   "grades": null,
+   "purpose": "accountancy qualification",
+   "subjects": [
+    "financial reporting",
+    "audit",
+    "tax",
+    "strategy"
+   ],
+   "format": null,
+   "when": "four sessions a year",
+   "cost": null,
+   "prep_programs": [
+    "BSc Economics and Business",
+    "MSc Economics and Business"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Association_of_Chartered_Certified_Accountants",
+   "notes": null
+  },
+  {
+   "id": "intl-cfa",
+   "region": "intl",
+   "name": "CFA Program",
+   "full_name": "Chartered Financial Analyst",
+   "body": "CFA Institute",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    21,
+    99
+   ],
+   "grades": null,
+   "purpose": "investment professional designation",
+   "subjects": [
+    "Levels I–III"
+   ],
+   "format": null,
+   "when": "several windows a year",
+   "cost": null,
+   "prep_programs": [
+    "MSc Economics and Business"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Chartered_Financial_Analyst",
+   "notes": null
+  },
+  {
+   "id": "intl-pmp",
+   "region": "intl",
+   "name": "PMP",
+   "full_name": "Project Management Professional",
+   "body": "PMI",
+   "level": "professional",
+   "stage": "college",
+   "ages": [
+    25,
+    99
+   ],
+   "grades": null,
+   "purpose": "project management certification",
+   "subjects": null,
+   "format": null,
+   "when": "year round",
+   "cost": null,
+   "prep_programs": [
+    "MSc Economics and Business"
+   ],
+   "link": "https://en.wikipedia.org/wiki/Project_Management_Professional",
+   "notes": null
+  }
+ ]
+}

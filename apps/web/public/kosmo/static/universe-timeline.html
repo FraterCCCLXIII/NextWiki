@@ -1,0 +1,1173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kosmographica</title>
+<style>
+  :root {
+    --bg: #05070d; --panel: rgba(10, 14, 24, 0.72); --line: rgba(140, 170, 220, 0.14); --text: #dbe5f3; --muted: #8a9bb8;
+    --accent: #7fc3ff; --accent2: #ffb86b; --good: #7fe3a0; --bad: #ff8a8a; --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 13px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif; overflow: hidden; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(127,195,255,0.55), rgba(255,184,107,0.45)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+  ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, rgba(127,195,255,0.9), rgba(255,184,107,0.8)); background-clip: padding-box; border: 2px solid transparent; }
+  * { scrollbar-width: thin; scrollbar-color: rgba(127,195,255,0.6) transparent; }
+
+  #view { position: absolute; inset: 0; }
+  #view canvas { display: block; outline: none; }
+  #navbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(5,7,13,0.9), rgba(5,7,13,0)); }
+  #menu { display: flex; gap: 20px; align-items: center; font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; letter-spacing: 0.18em; font-size: 12px; text-transform: uppercase; }
+
+  /* One added tab is wider than a 1280 screen: allow the menu to shrink and
+     scroll sideways below that width rather than clipping its last link. */
+  @media (max-width: 1320px) {
+    #menu { overflow-x: auto; min-width: 0; scrollbar-width: none; }
+    #menu::-webkit-scrollbar { display: none; }
+  }
+  #menu a { color: rgba(255,255,255,0.72); } #menu a:hover { color: #fff; text-decoration: none; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+  #logo { display: flex; align-items: center; gap: 12px; pointer-events: none; }
+  #logo .mark { display: none; width: 34px; height: 34px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff 0, #ffd9a0 18%, #ff9f4d 38%, rgba(255,159,77,0.15) 60%, transparent 70%), conic-gradient(from 0deg, rgba(127,195,255,0) 0, rgba(127,195,255,0.9) 25%, rgba(127,195,255,0) 50%, rgba(127,195,255,0.9) 75%, rgba(127,195,255,0) 100%); box-shadow: 0 0 24px rgba(127,195,255,0.35); }
+  #logo .word { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif; font-weight: 500; letter-spacing: 0.3em; font-size: 17px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-style: italic; letter-spacing: 0.06em; font-size: 11px; color: #fff; opacity: 0.8; margin-top: 2px; }
+
+  #top { position: absolute; left: 0; right: 0; top: 58px; height: 210px; z-index: 3; transition: height .25s ease; }
+  #top.collapsed { height: 0; }
+  #top.collapsed canvas { opacity: 0; pointer-events: none; }
+  #timeline { display: block; width: 100%; height: 210px; cursor: crosshair; transition: opacity .2s; }
+  #minimap { position: absolute; left: 0; right: 0; bottom: 0; height: 12px; cursor: grab; z-index: 8; }
+  #minimap:active { cursor: grabbing; }
+  #tl-handle { position: absolute; left: 0; right: 0; bottom: -14px; height: 14px; cursor: pointer; z-index: 7; }
+  #drawer { position: absolute; top: 58px; right: 0; bottom: 0; width: 400px; z-index: 7; transform: translateX(100%); transition: transform .28s ease; display: flex; flex-direction: column; background: linear-gradient(90deg, rgba(5,7,13,0.6), rgba(5,7,13,0.92) 12%); border-left: 1px solid var(--line); }
+  #drawer.open { transform: none; }
+  #drawer .head { padding: 12px 16px 6px; display: flex; align-items: baseline; justify-content: space-between; }
+  #drawer .head h3 { margin: 0; font-weight: 500; font-size: 18px; color: #fff; }
+  #drawer canvas#map { display: block; width: 100%; aspect-ratio: 2 / 1; cursor: crosshair; }
+  #drawer .chips { display: flex; flex-wrap: wrap; gap: 5px; padding: 8px 16px; }
+  #drawer .chips button { font-size: 11px; padding: 2px 8px; }
+  #drawer .chips button.on { border-color: var(--accent); color: var(--accent); }
+  #vlist { flex: 1; overflow: auto; padding: 6px 16px 24px 16px; position: relative; }
+  #vlist::before { content: ''; position: absolute; left: 86px; top: 0; bottom: 0; width: 1px; background: linear-gradient(180deg, rgba(127,195,255,0.5), rgba(255,184,107,0.5)); }
+  .ev { display: grid; grid-template-columns: 62px 16px 1fr; gap: 6px; align-items: start; padding: 4px 0; cursor: pointer; border-radius: 6px; }
+  .ev:hover { background: rgba(127,195,255,0.06); }
+  .ev .when { text-align: right; color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; padding-top: 2px; }
+  .ev .dot { width: 8px; height: 8px; border-radius: 50%; margin: 6px 0 0 3px; background: var(--c); box-shadow: 0 0 8px var(--c); }
+  .ev .what { color: #d6e0ee; font-size: 12.5px; }
+  .ev .what small { display: block; color: var(--muted); font-size: 11px; }
+  .ev.now { background: rgba(255,255,255,0.08); } .ev.now .what { color: #fff; }
+  #drawerBtn { margin-left: 18px; }
+  .tabs { display: flex; gap: 4px; padding: 6px 16px 0; } .tabs button { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 10px; } .tabs button.on { border-color: var(--accent); color: var(--accent); }
+  #atlas { flex: 1; display: none; grid-template-columns: 74px 1fr; min-height: 0; }
+  #atlas.on { display: grid; }
+  #dial { display: block; width: 74px; height: 100%; cursor: ns-resize; touch-action: none; }
+  #folders { overflow: auto; padding: 6px 12px 24px 6px; }
+  #folders details { margin: 0; } #folders summary { list-style: none; cursor: pointer; padding: 4px 6px; border-radius: 6px; display: flex; gap: 6px; align-items: baseline; justify-content: flex-start; }
+  #folders summary::-webkit-details-marker { display: none; } #folders summary::after { content: '▸'; margin-left: auto; padding-left: 8px; color: var(--dim2); font-size: 11px; transition: transform .12s, color .12s; }
+  #folders details[open] > summary::after { transform: rotate(90deg); color: var(--accent); } #folders summary:hover { background: rgba(127,195,255,0.06); }
+  #folders summary .span { color: var(--muted); font-size: 10.5px; margin-left: auto; white-space: nowrap; }
+  #folders .lvl0 > summary { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-size: 15px; color: #fff; }
+  #folders .lvl1 > summary { font-weight: 600; color: #eef4fb; } #folders .lvl2 > summary { color: #d6e0ee; }
+  #folders .kids { margin-left: 8px; padding-left: 8px; border-left: 1px solid var(--line); }
+  #folders .hv { display: grid; grid-template-columns: 58px 1fr; gap: 6px; padding: 2px 6px 2px 14px; font-size: 12px; cursor: pointer; border-radius: 5px; color: #c9d6e6; }
+  #folders .hv:hover { background: rgba(127,195,255,0.06); } #folders .hv .y { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; } #folders .hv.now { background: rgba(255,255,255,0.08); color: #fff; }
+  #folders summary.sel { background: rgba(127,195,255,0.12); }
+  #tl-handle::before { content: ''; position: absolute; left: 16px; right: 16px; top: 6px; height: 1px; background: linear-gradient(90deg, transparent, rgba(127,195,255,0.55) 15%, rgba(255,184,107,0.55) 85%, transparent); }
+  #tl-handle::after { content: '▾'; position: absolute; left: 50%; top: -2px; transform: translateX(-50%); font-size: 10px; color: var(--accent); background: var(--bg); padding: 0 8px; }
+  #top.collapsed #tl-handle::after { content: '▸ timeline'; letter-spacing: 0.1em; }
+
+  .glass { background: transparent; border: 0; border-radius: var(--radius); text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
+  #panel { position: absolute; left: 16px; top: 290px; bottom: 96px; width: 330px; z-index: 4; overflow: auto; padding: 8px 14px 14px; }
+  #panel.collapsed { bottom: auto; height: 46px; overflow: hidden; }
+  #panel h2 { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
+  details > summary { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; cursor: pointer; list-style: none; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 12px 0 6px; user-select: none; }
+  details > summary::after { content: '▸'; color: var(--dim2); transition: color .12s, transform .12s; }
+  details[open] > summary::after { content: '▾'; color: var(--accent); }
+  details > summary:hover::after { color: var(--text); }
+  .row { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+  .row label { flex: 1; color: #c3d0e2; }
+  input[type=range] { -webkit-appearance: none; width: 118px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, rgba(127,195,255,0.6), rgba(255,184,107,0.6)); outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #eaf3ff; border: 2px solid #7fc3ff; box-shadow: 0 0 10px rgba(127,195,255,0.6); cursor: pointer; }
+  .val { width: 52px; text-align: right; color: var(--accent); font-variant-numeric: tabular-nums; font-size: 12px; }
+  button, select, input[type=text], input[type=number] { background: rgba(22, 32, 50, 0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 5px 9px; font: inherit; }
+  button { cursor: pointer; transition: border-color .15s, background .15s; margin: 2px 3px 2px 0; }
+  button:hover { border-color: var(--accent); background: rgba(127,195,255,0.12); }
+  button.on { border-color: var(--accent); color: var(--accent); background: rgba(127,195,255,0.14); }
+  #readout { margin-top: 10px; color: #b7c6da; font-size: 12.2px; }
+  #readout b { color: #eef4fb; }
+  .dim { color: var(--muted); }
+  .ok { color: var(--good); font-weight: 600; } .no { color: var(--bad); font-weight: 600; }
+  a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
+
+  #nav { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 4; padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; width: min(760px, calc(100% - 420px)); }
+  #nav .line { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  #nav input[type=text] { flex: 1; min-width: 180px; }
+  #nav input[type=number] { width: 92px; }
+  #results { display: flex; gap: 6px; flex-wrap: wrap; max-height: 74px; overflow: auto; }
+  #results button { font-size: 12px; padding: 3px 8px; }
+  #results button small { color: var(--muted); margin-left: 4px; }
+  body.drawer-open #zoombar, body.drawer-open #scalebar, body.drawer-open #help { right: 418px; }
+  body.drawer-open #top { right: 400px; }
+  body.drawer-open #nav { width: min(640px, calc(100% - 800px)); left: calc(50% - 200px); }
+  #zoombar { position: absolute; right: 18px; top: 296px; bottom: 150px; width: 54px; z-index: 4; display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 8px; }
+  #zoombar input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 4px; height: 100%; -webkit-appearance: slider-vertical; }
+  #zoombar .tag { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  #scalebar { position: absolute; right: 18px; bottom: 96px; z-index: 4; color: #c9d6e6; text-align: right; font-variant-numeric: tabular-nums; }
+  #scalebar .bar { height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); margin: 4px 0 0 auto; border-radius: 2px; }
+  #help { position: absolute; right: 18px; bottom: 18px; z-index: 4; padding: 8px 12px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+  #help kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); font: inherit; }
+  #label { position: absolute; z-index: 3; pointer-events: none; transform: translate(-50%, -140%); color: #fff; font-size: 12px; letter-spacing: 0.04em; text-shadow: 0 0 8px rgba(0,0,0,0.9); white-space: nowrap; }
+  #syslabels span { position: absolute; z-index: 2; pointer-events: none; transform: translate(-50%, 8px); color: rgba(220,232,250,0.85); font-size: 10.5px; letter-spacing: 0.03em; text-shadow: 0 0 6px rgba(0,0,0,0.95); white-space: nowrap; }
+  #label::after { content: ''; position: absolute; left: 50%; top: 100%; width: 1px; height: 16px; background: rgba(255,255,255,0.6); }
+  #toast { position: absolute; left: 50%; top: 290px; transform: translateX(-50%); z-index: 6; padding: 8px 14px; color: var(--text); opacity: 0; transition: opacity .3s; pointer-events: none; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/", "topojson-client": "https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm" } }
+</script>
+  <link rel="stylesheet" href="kosmographica.css?v=6">
+  <script src="atlas-nav.js" defer></script>
+  <script src="accordion.js" defer></script>
+</head>
+<body>
+<div id="view"></div>
+<div id="navbar"><div id="logo"><div class="mark"></div><div><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div></div><nav id="menu"><a href="universe-timeline.html" class="here">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span><span class="dim" id="navTime"></span><button id="drawerBtn" title="Vertical timeline and map">Chronicle ◂</button></span></div>
+<div id="top"><canvas id="timeline"></canvas><canvas id="minimap" title="Drag the window to pan the timeline"></canvas><div id="tl-handle" title="Show or hide the timeline"></div></div>
+<aside id="drawer">
+  <div class="head"><h3 class="serif">Chronicle</h3><span class="dim" id="drawerWhen"></span></div>
+  <canvas id="map"></canvas>
+  <div class="tabs"><button id="tabEvents" class="on">Events</button><button id="tabAtlas">Atlas of history</button></div>
+  <div class="chips" id="chips"></div>
+  <div id="vlist"></div>
+  <div id="atlas"><canvas id="dial"></canvas><div id="folders"></div></div>
+</aside>
+<div id="label" hidden></div>
+<div id="syslabels"></div>
+<div id="toast" class="glass"></div>
+
+<div id="panel" class="glass">
+  <h2 style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">Controls <button id="panel-toggle" style="font-size:11px;padding:2px 8px">hide</button></h2>
+  <details open><summary>Timeline axis</summary>
+    <div class="row"><label for="stretch">Early-time emphasis (0 linear → 1 log)</label><input type="range" id="stretch" min="0" max="1" step="0.01"><span class="val" id="stretch-v"></span></div>
+    <div class="row"><label for="logA">Cursor: log₁₀ a</label><input type="range" id="logA" min="-16" max="8" step="0.01"><span class="val" id="logA-v"></span></div>
+    <div><button data-tl="all">Big Bang → far future</button><button data-tl="cosmic">Big Bang → now</button><button data-tl="solar">Solar System</button><button data-tl="earth">Earth &amp; life</button><button data-tl="human">Human history</button><button data-tl="future">Far future</button></div>
+    <div class="dim" style="margin-top:4px">wheel over the timeline zooms around the pointer · drag pans · click sets the cursor</div>
+    <div class="row"><label><input type="checkbox" id="play"> Play (log time) <span class="dim">· space</span></label></div>
+    <div class="row"><label for="speed">Play speed (decades/s)</label><input type="range" id="speed" min="0.1" max="3" step="0.1"><span class="val" id="speed-v"></span></div>
+  </details>
+  <details open><summary>Solar System clock (JPL mean elements)</summary>
+    <div class="row"><label>Date</label><span id="clockDate" style="color:var(--accent)"></span></div>
+    <div class="row"><label><input type="checkbox" id="pause"> Pause <span class="dim">· P</span></label></div>
+    <div class="row"><label for="rate">Rate: log₁₀ (sim seconds per second)</label><input type="range" id="rate" min="0" max="9.5" step="0.1"><span class="val" id="rate-v"></span></div>
+    <div><button data-rate="0">real time</button><button data-rate="3.5563">1 h/s</button><button data-rate="4.9365">1 day/s</button><button data-rate="6.4197">1 month/s</button><button data-rate="7.4991">1 yr/s</button><button data-rate="8.4991">10 yr/s</button><button id="clockNow">now</button></div>
+    <div class="dim" style="margin-top:4px">Positions from JPL's Keplerian mean elements (1800–2050 table, arcminute accuracy); the Moon is a circular approximation.</div>
+  </details>
+  <details open><summary>Scale balance (a map projection, not physics)</summary>
+    <div class="row"><label for="distK">Distance compression γ (1 = true)</label><input type="range" id="distK" min="0.2" max="1" step="0.01"><span class="val" id="distK-v"></span></div>
+    <div class="row"><label for="sizeK">Size balance β (1 = true)</label><input type="range" id="sizeK" min="0" max="1" step="0.01"><span class="val" id="sizeK-v"></span></div>
+    <div><button id="trueScale">true scale</button><button data-sb="0.6,0.5">balanced</button><button data-sb="0.35,0.15">see everything</button></div>
+    <div class="dim" style="margin-top:4px">Within a system, distances from the host follow d′ = d₀·(d/d₀)^γ (order and direction kept; the innermost orbit stays put) and radii r′ = r_ref^(1−β)·r^β, capped so no body reaches a neighbour's orbit. The scale bar says when the view is compressed; labels show each body's size exaggeration.</div>
+  </details>
+  <details open><summary>Compressed sky: many systems in one window</summary>
+    <div class="row"><label for="skyK">Distance between systems γ (1 = true)</label><input type="range" id="skyK" min="0.2" max="1" step="0.01"><span class="val" id="skyK-v"></span></div>
+    <div class="row"><label for="skyB">System size balance β (1 = true)</label><input type="range" id="skyB" min="0" max="1" step="0.01"><span class="val" id="skyB-v"></span></div>
+    <div class="row"><label for="skyN">Nearest planetary systems shown</label><input type="range" id="skyN" min="10" max="200" step="10"><span class="val" id="skyN-v"></span></div>
+    <div><button data-sky="0.3,0.1">all nearby systems in one window</button><button data-sky="0.6,0.5">gentle</button><button id="skyOff">true sky</button></div>
+    <div class="dim" style="margin-top:4px">Star distances from the Sun follow d′ = 1 pc·(d/1 pc)^γ (order and direction kept), and each system, Solar System included, is magnified by one factor so that its outer orbit fills part of the gap to its nearest neighbour. The planets inside still obey the two knobs above. Labels show the total exaggeration.</div>
+  </details>
+  <details open><summary>Levels (nested, to scale)</summary>
+    <div id="levelBtns"></div>
+    <div class="row"><label><input type="checkbox" id="spin"> Auto-spin <span class="dim">· R</span></label></div>
+  </details>
+  <details><summary>Resolution per level (memory)</summary>
+    <div class="row"><label for="resU">Universe points (×1000)</label><input type="range" id="resU" min="5" max="500" step="5"><span class="val" id="resU-v"></span></div>
+    <div class="row"><label for="resC">Cluster points (×1000)</label><input type="range" id="resC" min="1" max="100" step="1"><span class="val" id="resC-v"></span></div>
+    <div class="row"><label for="resG">Galaxy points (×1000)</label><input type="range" id="resG" min="5" max="500" step="5"><span class="val" id="resG-v"></span></div>
+    <div class="row"><label for="resS">Star field points (×1000)</label><input type="range" id="resS" min="1" max="200" step="1"><span class="val" id="resS-v"></span></div>
+  </details>
+  <details open><summary>Megastructures (hypothetical, real physics)</summary>
+    <div class="row"><label for="mega">Structure</label><select id="mega">
+      <option value="none">none</option>
+      <option value="swarm">Dyson swarm (orbiting collectors)</option>
+      <option value="bubble">Dyson bubble (statites on light pressure)</option>
+      <option value="shell">Rigid Dyson shell</option>
+      <option value="shkadov">Shkadov thruster (stellar engine)</option>
+      <option value="ringworld">Ringworld (spinning ring)</option>
+      <option value="matrioshka">Matrioshka brain (nested shells)</option>
+      <option value="oneill">O'Neill cylinder (at Earth–Moon L5)</option>
+      <option value="elevator">Space elevator (Earth)</option>
+      <option value="oring">Orbital ring (Earth, 300 km)</option>
+    </select></div>
+    <div class="row"><button id="goMega">Travel to structure</button></div>
+    <div class="row"><label for="megaR">Radius (AU, star structures)</label><input type="range" id="megaR" min="0.1" max="5" step="0.05"><span class="val" id="megaR-v"></span></div>
+    <div class="row"><label for="megaF">Swarm: log₁₀ fraction of L collected</label><input type="range" id="megaF" min="-4" max="0" step="0.1"><span class="val" id="megaF-v"></span></div>
+    <div class="row"><label for="megaSigma">Collector areal density (g/m²)</label><input type="range" id="megaSigma" min="0.1" max="50" step="0.1"><span class="val" id="megaSigma-v"></span></div>
+    <div class="row"><label for="habR">Habitat radius (km)</label><input type="range" id="habR" min="0.25" max="16" step="0.25"><span class="val" id="habR-v"></span></div>
+    <div class="row"><label for="megaMat">Tether / wall material</label><select id="megaMat"><option value="steel">steel</option><option value="kevlar">Kevlar</option><option value="cnt" selected>CNT fibre</option><option value="graphene">graphene</option></select></div>
+  </details>
+  <div id="readout"></div>
+  <p class="dim" style="margin:10px 0 0"><a href="contraption-sim.html">← back to the simulator</a></p>
+</div>
+
+<div id="nav" class="glass">
+  <div class="line">
+    <input type="text" id="search" placeholder="Travel to… (Proxima, Andromeda, Sgr A*, Jupiter, Crab Nebula)" autocomplete="off">
+    <span class="dim" id="catStatus">built-in destinations</span>
+  </div>
+  <div id="results"></div>
+  <div class="line">
+    <span class="dim">Galactic</span> <input type="number" id="cl" placeholder="l °" step="0.01"> <input type="number" id="cb" placeholder="b °" step="0.01"> <input type="number" id="cd" placeholder="dist pc" step="any">
+    <button id="goCoord">Go</button>
+    <span class="dim" id="where"></span>
+  </div>
+</div>
+
+<div id="zoombar" class="glass"><span class="tag">out</span><input type="range" id="zoom" min="6.5" max="27" step="0.01" orient="vertical"><span class="tag">in</span></div>
+<div id="scalebar"><div id="scaletxt"></div><div class="bar" id="bar"></div><div class="dim" id="scalenote" style="font-size:11px;margin-top:3px"></div></div>
+<div id="help" class="glass">drag · spin &nbsp; right-drag / <kbd>W A S D</kbd> · pan &nbsp; wheel / <kbd>Q</kbd><kbd>E</kbd> · scale &nbsp; <kbd>←→↑↓</kbd> · orbit &nbsp; <kbd>R</kbd> spin &nbsp; <kbd>T</kbd> timeline &nbsp; <kbd>[</kbd><kbd>]</kbd> pan time &nbsp; <kbd>C</kbd> chronicle</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import * as P from './sim-physics.js?v=20261029b';
+import { createModel, textures } from './kosmo-models.js';
+import * as SB from './scale-balance.js';
+import { HISTORY } from './history-taxonomy.js';
+fetch('textures/index.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => { if (j) for (const [k, v] of Object.entries(j)) textures.register(k, v); }).catch(() => {});
+const MASS = { Mercury: 3.301e23, Venus: 4.867e24, Earth: 5.972e24, Mars: 6.417e23, Jupiter: 1.898e27, Saturn: 5.683e26, Uranus: 8.681e25, Neptune: 1.024e26, Pluto: 1.303e22, Moon: 7.346e22 };
+
+// ---------------------------------------------------------------------------
+// Physics: the FLRW table from the simulator (Friedmann + g*(T)); nothing fitted here.
+// ---------------------------------------------------------------------------
+const tab = P.cosmoTable();
+const events = P.cosmoEvents(tab);
+const C = P.COSMO, yr = C.yr, ly = C.c * yr, AU = 1.495978707e11, pc = 3.0856775814913673e16, kpc = 1e3 * pc, Mpc = C.Mpc;
+const AGE = P.cosmoAge(tab), T_MIN = 1e-12, CHI0 = P.cosmoHorizonToday(tab);
+const T_MAX = P.cosmoState(tab.p.aMax, tab).t;   // ~335 Gyr: the de Sitter future the table reaches
+function aAtTime(t) {
+  let lo = 0, hi = tab.n;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (tab.t[m] < t) lo = m; else hi = m; }
+  const s = (t - tab.t[lo]) / (tab.t[hi] - tab.t[lo] || 1);
+  return Math.exp(tab.lnA[lo] + s * (tab.lnA[hi] - tab.lnA[lo]));
+}
+// Epochs on the cosmic clock. ago/ahead in years (Earth and life: geological record; future: stellar
+// evolution models). Cosmic milestones come from the FLRW table itself.
+const ago = y => AGE - y * yr, ahead = y => AGE + y * yr;
+const EPOCHS = [
+  ['Milky Way thin disc forms', ago(8.8e9), 'cosmic'], ['Solar nebula collapses; Sun ignites', ago(4.57e9), 'solar'],
+  ['Earth accretes', ago(4.54e9), 'solar'], ['Moon-forming impact (Theia)', ago(4.51e9), 'solar'], ['Oldest zircons; liquid water', ago(4.4e9), 'earth'],
+  ['Late Heavy Bombardment (debated)', ago(3.9e9), 'solar'], ['Earliest evidence of life', ago(3.7e9), 'life'], ['Oxygenic photosynthesis', ago(3.0e9), 'life'],
+  ['Great Oxidation Event', ago(2.4e9), 'earth'], ['Eukaryotic cells', ago(1.8e9), 'life'], ['Snowball Earth episodes', ago(7.2e8), 'earth'],
+  ['Ediacaran animals', ago(5.75e8), 'life'], ['Cambrian explosion', ago(5.39e8), 'life'], ['Plants colonise land', ago(4.7e8), 'life'],
+  ['End-Permian extinction', ago(2.52e8), 'life'], ['First dinosaurs and mammals', ago(2.3e8), 'life'], ['Pangaea breaks up', ago(1.8e8), 'earth'],
+  ['Flowering plants', ago(1.3e8), 'life'], ['Chicxulub impact; dinosaurs end', ago(6.6e7), 'life'], ['Primates diversify', ago(5.5e7), 'life'],
+  ['Hominins split from chimpanzee line', ago(6.5e6), 'human'], ['Homo erectus; controlled fire', ago(1.5e6), 'human'], ['Homo sapiens', ago(3.0e5), 'human'],
+  ['Out of Africa', ago(7e4), 'human'], ['Last Glacial Maximum', ago(2.1e4), 'human'], ['Agriculture', ago(1.2e4), 'human'], ['Writing (Sumer)', ago(5.2e3), 'human'],
+  ['Pyramids of Giza', ago(4.57e3), 'human'], ['Classical Greece', ago(2.45e3), 'human'], ['Printing press', ago(576), 'human'], ['Industrial revolution', ago(260), 'human'],
+  ['First spaceflight (Sputnik)', ago(69), 'human'], ['Now', AGE, 'human'],
+  ['Sun 10 % brighter: oceans begin to evaporate', ahead(1.1e9), 'future'], ['Earth uninhabitable for complex life', ahead(1.5e9), 'future'],
+  ['Milky Way–Andromeda merger', ahead(4.5e9), 'future'], ['Sun leaves the main sequence', ahead(5.0e9), 'future'], ['Sun a red giant (Earth\'s orbit reached)', ahead(7.6e9), 'future'],
+  ['Sun a white dwarf', ahead(8.0e9), 'future'], ['Local Group alone in its horizon', ahead(1.0e11), 'future'], ['Universe at 10× today\'s size', P.cosmoState(10, tab).t, 'cosmic'],
+  ['Universe at 1000× today\'s size', P.cosmoState(1e3, tab).t, 'cosmic'],
+].map(([label, t, cat]) => ({ label, t, cat }));
+// places (lat, lon) for events that happened somewhere on Earth, plus more local history
+const PLACED = [
+  ['Vredefort impact, largest known crater', ago(2.02e9), 'earth', -27.0, 27.5], ['Burgess Shale fauna', ago(5.08e8), 'life', 51.43, -116.47],
+  ['Siberian Traps erupt (end-Permian)', ago(2.52e8), 'earth', 66.0, 100.0], ['Deccan Traps erupt', ago(6.6e7), 'earth', 19.0, 74.0],
+  ['Chicxulub impact', ago(6.6e7), 'life', 21.4, -89.5], ['Lucy (Australopithecus) walks in Afar', ago(3.2e6), 'human', 11.1, 40.6],
+  ['Oldowan stone tools', ago(2.6e6), 'human', -2.9, 36.5], ['Toba supereruption', ago(7.4e4), 'earth', 2.7, 98.8],
+  ['Chauvet cave paintings', ago(3.6e4), 'human', 44.39, 4.42], ['Lascaux', ago(1.7e4), 'human', 45.05, 1.17],
+  ['Göbekli Tepe built', ago(1.15e4), 'human', 37.22, 38.92], ['Çatalhöyük', ago(9.1e3), 'human', 37.67, 32.83],
+  ['Uruk: first cities', ago(6.0e3), 'human', 31.32, 45.64], ['Cuneiform writing', ago(5.2e3), 'human', 31.32, 45.64],
+  ['Stonehenge sarsens raised', ago(4.5e3), 'human', 51.18, -1.83], ['Great Pyramid of Giza', ago(4.57e3), 'human', 29.98, 31.13],
+  ['Indus cities (Mohenjo-daro)', ago(4.5e3), 'human', 27.33, 68.14], ['Shang oracle bones', ago(3.25e3), 'human', 36.1, 114.3],
+  ['Olmec heads', ago(3.0e3), 'human', 18.1, -94.9], ['Homer\'s epics written down', ago(2.75e3), 'human', 38.4, 27.1],
+  ['Buddha teaches at Sarnath', ago(2.45e3), 'human', 25.38, 83.02], ['Classical Athens', ago(2.45e3), 'human', 37.98, 23.73],
+  ['Qin unifies China', ago(2.24e3), 'human', 34.38, 109.27], ['Eratosthenes measures the Earth', ago(2.26e3), 'human', 31.2, 29.92],
+  ['Rome: Augustus', ago(2.05e3), 'human', 41.9, 12.5], ['Ptolemy\'s Almagest', ago(1.88e3), 'human', 31.2, 29.92],
+  ['Maya classic period peaks', ago(1.3e3), 'human', 17.22, -89.62], ['Hijra; rise of Islam', ago(1.4e3), 'human', 24.47, 39.61],
+  ['House of Wisdom, Baghdad', ago(1.2e3), 'human', 33.34, 44.4], ['Al-Khwarizmi\'s algebra', ago(1.2e3), 'human', 33.34, 44.4],
+  ['Song dynasty printing and compass', ago(1.0e3), 'human', 34.76, 114.35], ['Gutenberg press', ago(576), 'human', 50.0, 8.27],
+  ['Columbus reaches the Americas', ago(534), 'human', 24.0, -74.5], ['Copernicus, De revolutionibus', ago(483), 'human', 54.36, 19.68],
+  ['Galileo\'s telescope', ago(416), 'human', 45.41, 11.88], ['Kepler\'s laws', ago(417), 'human', 50.09, 14.42],
+  ['Newton\'s Principia', ago(339), 'human', 52.2, 0.12], ['Herschel finds Uranus', ago(245), 'human', 51.38, -2.36],
+  ['Darwin, On the Origin of Species', ago(167), 'human', 51.51, -0.13], ['Maxwell\'s equations', ago(161), 'human', 51.5, -0.13],
+  ['Einstein\'s annus mirabilis', ago(121), 'human', 46.95, 7.45], ['Hubble measures the expansion', ago(97), 'human', 34.22, -118.06],
+  ['First nuclear reactor', ago(84), 'human', 41.79, -87.6], ['Gagarin orbits the Earth', ago(65), 'human', 45.96, 63.31],
+  ['CMB discovered (Holmdel horn)', ago(62), 'human', 40.39, -74.19], ['Apollo 11 launch', ago(57), 'human', 28.57, -80.65],
+  ['World Wide Web (CERN)', ago(37), 'human', 46.23, 6.05], ['Hubble Space Telescope launch', ago(36), 'human', 28.57, -80.65],
+  ['First exoplanet around a Sun-like star', ago(31), 'human', 43.93, 5.71], ['Higgs boson found', ago(14), 'human', 46.23, 6.05],
+  ['Gravitational waves detected', ago(11), 'human', 46.45, -119.41], ['JWST launch (Kourou)', ago(5), 'human', 5.24, -52.77],
+].map(([label, t, cat, lat, lon]) => ({ label, t, cat, where: [lat, lon] }));
+for (const e of EPOCHS) {   // places for the epochs already listed
+  const w = { 'Industrial revolution': [53.48, -2.24], 'Writing (Sumer)': [31.32, 45.64], 'Pyramids of Giza': [29.98, 31.13], 'Classical Greece': [37.98, 23.73], 'Printing press': [50.0, 8.27], 'First spaceflight (Sputnik)': [45.96, 63.31], 'Chicxulub impact; dinosaurs end': [21.4, -89.5], 'Out of Africa': [15.0, 40.0], 'Agriculture': [36.5, 38.0], 'Hominins split from chimpanzee line': [0.5, 30.0], 'Homo sapiens': [31.0, -8.0], 'Homo erectus; controlled fire': [2.0, 36.0] }[e.label];
+  if (w) e.where = w;
+}
+const ALL_EVENTS = [...PLACED];   // cosmic milestones and epochs are added once the table events exist
+const CAT_COLOR = { cosmic: '#7fc3ff', solar: '#ffb86b', earth: '#9fe39f', life: '#e9a0e9', human: '#ffffff', future: '#ff9f9f' };
+const OMEGA_B = 0.0224 / (C.H0 / 100) ** 2, VOL = 4 / 3 * Math.PI * CHI0 ** 3;
+const M_BARYON = OMEGA_B * tab.p.rhoCrit0 * VOL, N_BARYON = M_BARYON / 1.67262192e-27, M_DARK = (tab.p.OmegaM - OMEGA_B) * tab.p.rhoCrit0 * VOL;
+const COUNTS = { galaxies: 2e12, stars: 1e23 };
+
+const state = { stretch: 0.8, logA: 0, play: false, speed: 0.5, zoom: 26.97, spin: false, rate: 0, pause: false, resU: 150, resG: 150, resS: 30, resC: 20, mega: 'none', megaR: 1, megaF: -2, megaSigma: 1, habR: 4, megaMat: 'cnt', distK: 1, sizeK: 1, skyK: 1, skyB: 1, skyN: 60 };
+const $ = id => document.getElementById(id);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+// ---------------------------------------------------------------------------
+// Frame: galactic Cartesian in metres, float64. x toward the galactic centre, y toward l = 90°,
+// z toward the north galactic pole. Scene axes: (x, y_up = z_gal, z = -y_gal). The Sun sits at
+// x = -8.2 kpc; planets are laid along +x from the Sun (their true orientation is not modelled).
+// ---------------------------------------------------------------------------
+const SUN = [-8.2 * kpc, 0, 0];
+const gal = (l, b, d) => { const L = l * Math.PI / 180, B = b * Math.PI / 180; return [SUN[0] + d * Math.cos(B) * Math.cos(L), SUN[1] + d * Math.cos(B) * Math.sin(L), SUN[2] + d * Math.sin(B)]; };
+const toScene = (v, c, k) => [(v[0] - c[0]) * k, (v[2] - c[2]) * k, -(v[1] - c[1]) * k];
+function eqToGal(raDeg, decDeg) {   // J2000 equatorial -> galactic (l, b) in degrees
+  const ra = raDeg * Math.PI / 180, dec = decDeg * Math.PI / 180;
+  const x = Math.cos(dec) * Math.cos(ra), y = Math.cos(dec) * Math.sin(ra), z = Math.sin(dec);
+  const gx = -0.0548755604 * x - 0.8734370902 * y - 0.4838350155 * z;
+  const gy = 0.4941094279 * x - 0.4448296300 * y + 0.7469822445 * z;
+  const gz = -0.8676661490 * x - 0.1980763734 * y + 0.4559837762 * z;
+  return [((Math.atan2(gy, gx) * 180 / Math.PI) + 360) % 360, Math.asin(gz) * 180 / Math.PI];
+}
+// Solar System clock: Julian day advancing at state.rate sim-seconds per real second
+const clock = { jd: P.jdFromDate(Date.now()) };
+const bodyCache = { jd: NaN, pos: {} };
+function bodyPos(name) {   // absolute galactic metres, heliocentric Kepler state rotated ecliptic -> galactic
+  if (bodyCache.jd !== clock.jd) {
+    bodyCache.jd = clock.jd; bodyCache.pos = {};
+    for (const n of Object.keys(P.ORBITS)) { const s = P.keplerState(n, clock.jd), g = P.eclipticToGalactic(s.x, s.y, s.z); bodyCache.pos[n] = [SUN[0] + g[0] * AU, SUN[1] + g[1] * AU, SUN[2] + g[2] * AU]; bodyCache.pos[n].state = s; }
+    const e = bodyCache.pos.Earth, mo = P.moonOffset(clock.jd), gm = P.eclipticToGalactic(mo.x, mo.y, mo.z);
+    bodyCache.pos.Moon = [e[0] + gm[0] * AU, e[1] + gm[1] * AU, e[2] + gm[2] * AU];
+    // Earth-Moon L5: 60 degrees behind the Moon in its orbit (same plane, same radius)
+    const th = Math.atan2(mo.y, mo.x) - Math.PI / 3, r = Math.hypot(mo.x, mo.y, mo.z), l5 = P.eclipticToGalactic(r * Math.cos(th), r * Math.sin(th), 0);
+    bodyCache.pos.L5 = [e[0] + l5[0] * AU, e[1] + l5[1] * AU, e[2] + l5[2] * AU];
+    bodyCache.pos.Sun = SUN;
+  }
+  return bodyCache.pos[name];
+}
+// ---------------------------------------------------------------------------
+// Shown layout: where bodies are DRAWN after the two knobs (scale-balance.js). bodyPos() stays the truth;
+// everything that draws or travels reads layout(). At γ = β = 1 the two agree to rounding.
+// ---------------------------------------------------------------------------
+const R_SUN = 6.957e8, R_EARTH = 6371e3, M_EARTH = 5.972e24, R_JUP = 69911e3, M_JUP = 1.898e27;
+const MOONS = [];   // from the catalogue: { name, parent, a, period, r, mass, phase }
+const hash01 = str => { let h = 2166136261; for (const ch of String(str)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return ((h >>> 0) % 100000) / 100000; };
+const dist3 = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+// Compressed sky: the nearest planetary systems packed around the Sun (scale-balance.js packSystems).
+let SKY_HOSTS = [];   // hosts with planets, sorted by distance from the Sun (filled when the catalogue loads)
+const skyCache = { key: '', on: false, map: new Map(), width: 0, truest: 0, mags: [1, 1] };
+function skyPack() {
+  const key = `${state.skyK}|${state.skyB}|${state.skyN}|${SKY_HOSTS.length}`;
+  if (skyCache.key === key) return skyCache;
+  skyCache.key = key; skyCache.on = state.skyK < 1 || state.skyB < 1;
+  const items = [{ name: 'sun', pos: [0, 0, 0], extent: 39.5 * AU }], chosen = SKY_HOSTS.slice(0, state.skyN);
+  if (skyCache.on) for (const H of chosen) items.push({ name: H.key, pos: [H.pos[0] - SUN[0], H.pos[1] - SUN[1], H.pos[2] - SUN[2]], extent: H.extent });
+  const pk = SB.packSystems(items, { gamma: state.skyK, beta: state.skyB, d0: pc });
+  skyCache.map = new Map(pk.items.map(o => [o.name, { pos: [SUN[0] + o.pos[0], SUN[1] + o.pos[1], SUN[2] + o.pos[2]], mag: o.mag, extent: o.extent, dist: o.dist }]));
+  skyCache.width = 2.3 * Math.max(...pk.items.map(o => o.dist), 1);
+  skyCache.truest = chosen.length ? dist3(chosen[chosen.length - 1].pos, SUN) : 0;
+  const mags = pk.items.map(o => o.mag); skyCache.mags = [Math.min(...mags), Math.max(...mags)];
+  skyCache.set = new Set(skyCache.on ? chosen.map(H => H.key) : []);
+  return skyCache;
+}
+const skyOf = key => skyPack().map.get(key);
+const skyPosOf = (key, truePos) => { const s = skyOf(key); if (s) return s.pos; return state.skyK < 1 ? SB.compressVector(truePos, SUN, pc, state.skyK) : truePos; };   // unpacked stars still follow the distance law
+const sunMag = () => skyOf('sun')?.mag ?? 1;
+const layoutCache = { key: '', pos: {}, r: {}, exag: {}, d0: 0, moonEcl: null, magSun: 1 };
+function layout() {
+  const key = `${clock.jd}|${state.distK}|${state.sizeK}|${MOONS.length}|${skyPack().key}`;
+  if (layoutCache.key === key) return layoutCache;
+  layoutCache.key = key;
+  const pos = {}, r = {}, exag = {}, knobs = { gamma: state.distK, beta: state.sizeK }, M = sunMag();   // M: the Solar System's magnification in the compressed sky
+  layoutCache.magSun = M;
+  const planets = Object.keys(P.ORBITS).map(n => ({ name: n, r: P.ORBITS[n].radius, d: dist3(bodyPos(n), SUN), a: P.ORBITS[n].el[0] * AU }));
+  const L = SB.layoutSystem(planets, { r: R_SUN }, knobs);
+  pos.Sun = SUN; r.Sun = L.host.r * M; exag.Sun = L.host.exag * M; layoutCache.d0 = L.d0; layoutCache.solar = L;
+  for (const b of L.bodies) { const p = bodyPos(b.name), sc = b.scale * M; pos[b.name] = [SUN[0] + (p[0] - SUN[0]) * sc, SUN[1] + (p[1] - SUN[1]) * sc, SUN[2] + (p[2] - SUN[2]) * sc]; r[b.name] = b.r * M; exag[b.name] = b.exag * M; }
+  // moons: circular orbits in the ecliptic on the clock (the Earth's Moon from the ephemeris), laid out around the SHOWN planet
+  const byParent = new Map(); for (const m of MOONS) (byParent.get(m.parent) || byParent.set(m.parent, []).get(m.parent)).push(m);
+  const moonOffsetEcl = m => { if (m.name === 'Moon') { const o = P.moonOffset(clock.jd); return [o.x * AU, o.y * AU, o.z * AU]; } const th = 2 * Math.PI * ((clock.jd - P.EPHEM.J2000) / m.period + m.phase); return [m.a * Math.cos(th), m.a * Math.sin(th), 0]; };
+  for (const [parent, ms] of byParent) {
+    if (!pos[parent]) continue;
+    const offs = ms.map(m => moonOffsetEcl(m).map(x => x * M));   // the moon system is magnified with its planet
+    const LM = SB.layoutSystem(ms.map((m, i) => ({ name: m.name, r: m.r * M, d: Math.hypot(...offs[i]), a: m.a * M })), { r: r[parent], fixed: true }, { ...knobs, rRef: 0.3 * r[parent] });
+    LM.bodies.forEach((b, i) => { const m = ms[i], o = offs[i], g = P.eclipticToGalactic(o[0] * b.scale, o[1] * b.scale, o[2] * b.scale), pp = pos[parent]; pos[m.name] = [pp[0] + g[0], pp[1] + g[1], pp[2] + g[2]]; r[m.name] = b.r; exag[m.name] = b.r / m.r; m.shownA = m.a * M * b.scale; if (m.name === 'Moon') layoutCache.moonEcl = [o[0] * b.scale, o[1] * b.scale, o[2] * b.scale]; });
+  }
+  if (pos.Moon && layoutCache.moonEcl) {   // Earth–Moon L5: 60° behind the shown Moon, same plane and radius
+    const o = layoutCache.moonEcl, th = Math.atan2(o[1], o[0]) - Math.PI / 3, rr = Math.hypot(o[0], o[1], o[2]), g = P.eclipticToGalactic(rr * Math.cos(th), rr * Math.sin(th), 0), e = pos.Earth;
+    pos.L5 = [e[0] + g[0], e[1] + g[1], e[2] + g[2]];
+  } else pos.L5 = bodyPos('L5');
+  if (!pos.Moon) { const e = bodyPos('Earth'), mo = bodyPos('Moon'); pos.Moon = [e[0] + (mo[0] - e[0]) * M, e[1] + (mo[1] - e[1]) * M, e[2] + (mo[2] - e[2]) * M]; r.Moon = 1737.4e3 * M; exag.Moon = M; }
+  layoutCache.pos = pos; layoutCache.r = r; layoutCache.exag = exag;
+  return layoutCache;
+}
+const EARTH = () => layout().pos.Earth, MOON = () => layout().pos.Moon, L5 = () => layout().pos.L5;
+const shownR = name => layout().r[name] ?? exoShownR(name), shownExag = name => layout().exag[name] ?? exoExag(name);
+const at = c => typeof c === 'function' ? c() : c;   // level / structure / destination centres may move
+let follow = null;   // function returning the position the focus should track (after travelling to a moving body)
+
+// focus = where the camera looks (metres, galactic); zoom = log10 of the view width in metres
+const focus = [...SUN];
+let travel = null;   // {p0, p1, z0, z1, bump, t, dur, name}
+
+// ---------------------------------------------------------------------------
+// Timeline canvas (x = (1-k) linear + k log; k = 1 gives each decade the same width)
+// ---------------------------------------------------------------------------
+const cv = $('timeline'), ctx = cv.getContext('2d');
+const L0 = Math.log10(T_MIN), L1 = Math.log10(T_MAX);
+const xOf = t => { const k = state.stretch; return (1 - k) * (t / T_MAX) + k * (Math.log10(Math.max(t, T_MIN)) - L0) / (L1 - L0); };
+function tOfX(x) { let lo = L0, hi = L1; for (let i = 0; i < 60; i++) { const m = 0.5 * (lo + hi); if (xOf(10 ** m) < x) lo = m; else hi = m; } return 10 ** (0.5 * (lo + hi)); }
+// visible window in stretched coordinates; zoom with the wheel, pan by dragging
+const tlView = { x0: 0, x1: 1 };
+const vx = t => (xOf(t) - tlView.x0) / (tlView.x1 - tlView.x0);     // 0..1 across the plot
+const tlShow = (t0, t1) => { tlView.x0 = xOf(t0); tlView.x1 = xOf(t1); };
+const tlCenter = t => { const span = tlView.x1 - tlView.x0, x = xOf(t); tlView.x0 = clamp(x - span / 2, 0, 1 - span); tlView.x1 = tlView.x0 + span; };
+const tlPan = f => { const span = tlView.x1 - tlView.x0; tlView.x0 = clamp(tlView.x0 + f * span, 0, 1 - span); tlView.x1 = tlView.x0 + span; };
+const tlZoom = (f, u = 0.5) => { const xm = tlView.x0 + (tlView.x1 - tlView.x0) * u, span = clamp((tlView.x1 - tlView.x0) * f, 1e-7, 1); tlView.x0 = clamp(xm - u * span, 0, 1 - span); tlView.x1 = tlView.x0 + span; };
+const TL_PRESETS = { all: [T_MIN, T_MAX], cosmic: [T_MIN, AGE * 1.002], solar: [ago(4.8e9), ahead(8.5e9)], earth: [ago(4.6e9), ahead(1.6e9)], human: [ago(8e6), ahead(300)], future: [ago(1e9), T_MAX] };
+// ticks: cosmic time early on, "ago" / "ahead" once we are near the present
+const TICK_SET = (() => {
+  const out = [];
+  for (const t of [1e-12, 1e-9, 1e-6, 1e-3, 1, 60, 3600, 86400, yr, 1e3 * yr, 1e6 * yr, 1e9 * yr, 1e10 * yr]) out.push({ t, label: P.fmtTime(t).replace(/\.0+ /, ' ') });
+  for (let k = 0; k <= 10; k++) for (const m of [1, 2, 5]) { const y = m * 10 ** k; if (y * yr < AGE) out.push({ t: ago(y), label: `${fmtYears(y)} ago` }); if (ahead(y) < T_MAX) out.push({ t: ahead(y), label: `+${fmtYears(y)}` }); }
+  out.push({ t: AGE, label: 'now' });
+  return out.sort((a, b) => a.t - b.t);
+})();
+function fmtYears(y) { return y >= 1e9 ? `${+(y / 1e9).toPrecision(3)} Gyr` : y >= 1e6 ? `${+(y / 1e6).toPrecision(3)} Myr` : y >= 1e3 ? `${+(y / 1e3).toPrecision(3)} kyr` : `${+y.toPrecision(3)} yr`; }
+const nearNow = t => Math.abs(t - AGE) < 0.9 * AGE ? (t < AGE ? `${fmtYears((AGE - t) / yr)} ago` : t === AGE ? 'now' : `+${fmtYears((t - AGE) / yr)}`) : P.fmtTime(t);
+const tEq = P.cosmoState(tab.p.aEq, tab).t, tL = P.cosmoState(tab.p.aLambda, tab).t;
+function drawTimeline() {
+  if ($('top').classList.contains('collapsed')) return;
+  const W = cv.clientWidth, H = cv.clientHeight, dpr = devicePixelRatio || 1;
+  if (cv.width !== W * dpr || cv.height !== H * dpr) { cv.width = W * dpr; cv.height = H * dpr; }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+  const padL = 60, padR = 90, padT = 22, padB = 66, pw = W - padL - padR, ph = H - padT - padB;
+  const X = t => padL + pw * vx(t);
+  ctx.save(); ctx.beginPath(); ctx.rect(padL, 0, pw, H); ctx.clip();
+  ctx.font = '11px ui-sans-serif, system-ui';
+  for (const [t0, t1, col, name] of [[T_MIN, tEq, 'rgba(120,70,160,0.22)', 'radiation era'], [tEq, tL, 'rgba(60,120,200,0.18)', 'matter era'], [tL, AGE, 'rgba(90,180,110,0.18)', 'dark energy era'], [AGE, T_MAX, 'rgba(180,90,90,0.12)', 'future (de Sitter expansion)']]) {
+    ctx.fillStyle = col; ctx.fillRect(X(t0), padT, X(t1) - X(t0), ph);
+    const vis0 = Math.max(X(t0), padL), vis1 = Math.min(X(t1), padL + pw);
+    ctx.fillStyle = '#9fb0c8'; if (vis1 - vis0 > 90) ctx.fillText(name, vis0 + 6, padT + 13);
+  }
+  const yOf = v => padT + ph * (1 - (Math.log10(v) + 16) / 32);
+  const curve = (fn, col) => {
+    ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.beginPath();
+    for (let i = 0; i <= pw; i += 2) { const s = P.cosmoState(aAtTime(tOfX(tlView.x0 + (tlView.x1 - tlView.x0) * i / pw)), tab), y = yOf(Math.max(1e-16, Math.min(1e16, fn(s)))); i === 0 ? ctx.moveTo(padL + i, y) : ctx.lineTo(padL + i, y); }
+    ctx.stroke();
+  };
+  curve(s => s.T, '#ffb86b'); curve(s => s.a, '#7fc3ff'); curve(s => s.rhoM / s.rho, '#9fe39f');
+  ctx.fillStyle = '#7d8ea8'; ctx.textAlign = 'right';
+  for (const e of [-16, -8, 0, 8, 16]) { const y = yOf(10 ** e); ctx.fillText(`1e${e}`, padL - 6, y + 4); ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + pw, y); ctx.stroke(); }
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#ffb86b'; ctx.fillText('T (K)', padL + pw + 10, padT + 12); ctx.fillStyle = '#7fc3ff'; ctx.fillText('a', padL + pw + 10, padT + 26); ctx.fillStyle = '#9fe39f'; ctx.fillText('Ω_m(t)', padL + pw + 10, padT + 40);
+  ctx.strokeStyle = '#3a4a62'; ctx.fillStyle = '#9fb0c8'; ctx.textAlign = 'center';
+  let lastX = -1e9;
+  for (const { t, label } of TICK_SET) { const x = X(t); if (x < padL - 1 || x > padL + pw + 1) continue; ctx.beginPath(); ctx.moveTo(x, padT + ph); ctx.lineTo(x, padT + ph + 5); ctx.stroke(); if (x - lastX > 54) { ctx.fillText(label, x, padT + ph + 17); lastX = x; } }
+  ctx.textAlign = 'left';
+  // milestones: cosmic (from the table) plus epochs; labels drop into the first of three rows with room
+  const all = [...events.map(e => ({ label: e.label.split(' (')[0].split(':')[0], t: e.t, cat: 'cosmic' })), ...EPOCHS].sort((a, b) => a.t - b.t);
+  const rowEnd = [-1e9, -1e9, -1e9];
+  for (const e of all) {
+    const x = X(e.t); if (x < padL - 2 || x > padL + pw + 2) continue;
+    const wLabel = ctx.measureText(e.label).width + 10;
+    let row = rowEnd.findIndex(r => x > r);
+    const col = CAT_COLOR[e.cat] || '#c9d6e6';
+    ctx.strokeStyle = col.replace(')', ',0.35)').replace('#', 'rgba(') ; ctx.strokeStyle = 'rgba(127,195,255,0.3)'; ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT + ph + (row < 0 ? 6 : 26 + row * 12)); ctx.stroke();
+    if (row < 0) continue;
+    rowEnd[row] = x + wLabel; ctx.fillStyle = col; ctx.fillText(e.label, x + 3, padT + ph + 36 + row * 12);
+  }
+  const tc = P.cosmoState(10 ** state.logA, tab).t, xc = X(tc);
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(xc, padT); ctx.lineTo(xc, padT + ph); ctx.stroke();
+  ctx.fillStyle = '#fff'; ctx.textAlign = xc > W - 260 ? 'right' : 'left'; ctx.fillText(`t = ${P.fmtTime(tc)} · ${nearNow(tc)}`, xc + (xc > W - 260 ? -4 : 4), padT - 8); ctx.textAlign = 'left';
+  ctx.restore();
+  $('navTime').textContent = `t = ${P.fmtTime(tc)} · ${nearNow(tc)}`;
+  cv._geom = { padL, pw };
+}
+let tlDrag = null;
+cv.addEventListener('pointerdown', e => { tlDrag = { x: e.offsetX, x0: tlView.x0, x1: tlView.x1, moved: false }; cv.setPointerCapture(e.pointerId); });
+cv.addEventListener('pointermove', e => {
+  if (!tlDrag) return; const g = cv._geom, dx = e.offsetX - tlDrag.x;
+  if (Math.abs(dx) > 3) tlDrag.moved = true;
+  if (tlDrag.moved) { const span = tlDrag.x1 - tlDrag.x0, d = -dx / g.pw * span; tlView.x0 = clamp(tlDrag.x0 + d, 0, 1 - span); tlView.x1 = tlView.x0 + span; }
+});
+cv.addEventListener('pointerup', e => { if (tlDrag && !tlDrag.moved) scrub(e); tlDrag = null; });
+cv.addEventListener('wheel', e => {
+  e.preventDefault(); const g = cv._geom; if (!g) return;
+  if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) { tlPan((e.deltaX || e.deltaY) * 0.0012); return; }   // shift-wheel or trackpad sideways pans
+  tlZoom(Math.exp(e.deltaY * 0.0015), clamp((e.offsetX - g.padL) / g.pw, 0, 1));
+}, { passive: false });
+// minimap: the whole range with the visible window; drag the window, click to jump
+const mm = $('minimap'), mctx = mm.getContext('2d');
+function drawMinimap() {
+  const W = mm.clientWidth, H = mm.clientHeight, dpr = devicePixelRatio || 1, g = cv._geom; if (!g) return;
+  if (mm.width !== W * dpr || mm.height !== H * dpr) { mm.width = W * dpr; mm.height = H * dpr; }
+  mctx.setTransform(dpr, 0, 0, dpr, 0, 0); mctx.clearRect(0, 0, W, H);
+  const x0 = g.padL, w = g.pw;
+  mctx.fillStyle = 'rgba(255,255,255,0.06)'; mctx.fillRect(x0, 4, w, 4);
+  for (const t of [tEq, tL, AGE]) { const x = x0 + w * xOf(t); mctx.fillStyle = 'rgba(255,255,255,0.35)'; mctx.fillRect(x, 2, 1, 8); }
+  mctx.fillStyle = 'rgba(127,195,255,0.75)'; mctx.fillRect(x0 + w * tlView.x0, 2, Math.max(4, w * (tlView.x1 - tlView.x0)), 8);
+  const xc = x0 + w * xOf(P.cosmoState(10 ** state.logA, tab).t); mctx.fillStyle = '#fff'; mctx.fillRect(xc - 0.5, 0, 1, 12);
+}
+let mmDrag = null;
+mm.addEventListener('pointerdown', e => { const g = cv._geom; const u = clamp((e.offsetX - g.padL) / g.pw, 0, 1), span = tlView.x1 - tlView.x0; if (u < tlView.x0 || u > tlView.x1) { tlView.x0 = clamp(u - span / 2, 0, 1 - span); tlView.x1 = tlView.x0 + span; } mmDrag = { u, x0: tlView.x0 }; mm.setPointerCapture(e.pointerId); });
+mm.addEventListener('pointermove', e => { if (!mmDrag) return; const g = cv._geom, u = (e.offsetX - g.padL) / g.pw, span = tlView.x1 - tlView.x0; tlView.x0 = clamp(mmDrag.x0 + (u - mmDrag.u), 0, 1 - span); tlView.x1 = tlView.x0 + span; });
+mm.addEventListener('pointerup', () => { mmDrag = null; });
+function scrub(e) { const g = cv._geom; if (!g) return; const x = clamp((e.offsetX - g.padL) / g.pw, 0, 1); state.logA = Math.log10(aAtTime(tOfX(tlView.x0 + (tlView.x1 - tlView.x0) * x))); state.play = false; $('play').checked = false; sync('logA', 2); }
+document.querySelectorAll('button[data-tl]').forEach(b => b.addEventListener('click', () => { const [t0, t1] = TL_PRESETS[b.dataset.tl]; tlShow(t0, t1); if (b.dataset.tl !== 'all' && b.dataset.tl !== 'cosmic') { state.logA = 0; sync('logA', 2); } }));
+
+// ---------------------------------------------------------------------------
+// 3D scene
+// ---------------------------------------------------------------------------
+const view = $('view');
+const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+view.appendChild(renderer.domElement);
+renderer.domElement.tabIndex = 0;
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x05070d);
+const camera = new THREE.PerspectiveCamera(50, 1, 1e-4, 1e5);
+camera.position.set(0.35, 0.75, 1.9).setLength(1 / Math.tan(25 * Math.PI / 180));   // 2 scene units = the frame height
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableZoom = false; controls.enablePan = true; controls.screenSpacePanning = true; controls.enableDamping = true; controls.dampingFactor = 0.08;
+controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.PAN };
+scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+const sunLight = new THREE.PointLight(0xfff2d0, 2.5, 0, 0); scene.add(sunLight);
+// the wheel travels in scale (not a camera dolly), so every level keeps its true size
+renderer.domElement.addEventListener('wheel', e => { e.preventDefault(); state.zoom = clamp(state.zoom + Math.sign(e.deltaY) * 0.08, 6.5, 27); sync('zoom', 2); travel = null; }, { passive: false });
+renderer.domElement.addEventListener('contextmenu', e => e.preventDefault());
+
+let seed = 12345;
+const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+const gauss = () => Math.sqrt(-2 * Math.log(1 - rnd())) * Math.cos(2 * Math.PI * rnd());
+function pointCloud(n, fill, size, extra = {}) {
+  const pos = new Float32Array(n * 3), col = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) fill(i, pos, col);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  return new THREE.Points(g, new THREE.PointsMaterial({ size, vertexColors: true, sizeAttenuation: true, transparent: true, opacity: 0.9, depthWrite: false, ...extra }));
+}
+
+// Level 0: observable universe (centred on us), galaxies on a Zel'dovich web; grows with D(a).
+const web = P.makeZeldovichField(2.2, [[3, 0, 0], [0, 3, 0], [0, 0, 3], [2, 2, 0], [0, 2, 2], [2, 0, 2], [1, 1, 1], [3, 1, 2]], 3);
+function buildUniverse(n) {
+  const q = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) { let x, y, z; do { x = 2 * rnd() - 1; y = 2 * rnd() - 1; z = 2 * rnd() - 1; } while (x * x + y * y + z * z > 1); q[3 * i] = 0.5 + 0.5 * x; q[3 * i + 1] = 0.5 + 0.5 * y; q[3 * i + 2] = 0.5 + 0.5 * z; }
+  const pts = pointCloud(n, (i, pos, col) => { col[3 * i] = 0.75; col[3 * i + 1] = 0.8; col[3 * i + 2] = 1; }, 0.006);
+  pts.userData = { q, n, lastA: -1 };
+  return pts;
+}
+function updateUniverse(pts, a) {
+  if (Math.abs(pts.userData.lastA - a) < 1e-6 * a) return;
+  pts.userData.lastA = a;
+  const s = P.cosmoState(a, tab), D = s.D / P.cosmoState(1, tab).D;
+  const { q, n } = pts.userData, pos = pts.geometry.attributes.position.array, col = pts.geometry.attributes.color.array;
+  const qv = { x: 0, y: 0, z: 0 }, o = { x: 0, y: 0, z: 0, density: 1, deltaLin: 0 };
+  for (let i = 0; i < n; i++) {
+    qv.x = q[3 * i]; qv.y = q[3 * i + 1]; qv.z = q[3 * i + 2];
+    P.zeldovichDisplace(qv, D, web, o);
+    pos[3 * i] = (o.x - 0.5) * 2; pos[3 * i + 1] = (o.y - 0.5) * 2; pos[3 * i + 2] = (o.z - 0.5) * 2;
+    const w = clamp(Math.log10(Number.isFinite(o.density) ? o.density : 1e3) / 2 + 0.5, 0, 1);
+    col[3 * i] = 0.5 + 0.5 * w; col[3 * i + 1] = 0.6 + 0.3 * w; col[3 * i + 2] = 1 - 0.5 * w;
+  }
+  pts.geometry.attributes.position.needsUpdate = true; pts.geometry.attributes.color.needsUpdate = true;
+  pts.material.opacity = clamp((s.D - 0.03) / 0.1, 0, 0.9);
+}
+// Virgo-like cluster at its real place (M87: l 283.8°, b 74.5°, 16.5 Mpc)
+const CL = { R: 1.6 * Mpc, nGal: 1500, pos: gal(283.78, 74.49, 16.5 * Mpc) };
+function buildCluster(n) {
+  return pointCloud(n, (i, pos, col) => {
+    const r = Math.pow(rnd(), 1.5), th = rnd() * 2 * Math.PI, ph = Math.acos(2 * rnd() - 1);
+    pos[3 * i] = r * Math.sin(ph) * Math.cos(th); pos[3 * i + 1] = r * Math.cos(ph) * 0.8; pos[3 * i + 2] = r * Math.sin(ph) * Math.sin(th);
+    const g = i % Math.max(1, Math.floor(n / CL.nGal)) === 0;
+    col[3 * i] = g ? 1 : 0.5; col[3 * i + 1] = g ? 0.95 : 0.3; col[3 * i + 2] = g ? 0.8 : 0.6;
+  }, 0.012);
+}
+// Milky Way: exponential disc, bulge, halo, four log-spiral arms (illustrative), radius 25 kpc
+const GAL = { R: 25 * kpc, hR: 2.6 * kpc, hz: 0.3 * kpc, bulge: 1.0 * kpc, stars: 2e11 };
+function buildGalaxy(n) {
+  return pointCloud(n, (i, pos, col) => {
+    const u = rnd(); let x, y, z, t;
+    if (u < 0.12) { const r = GAL.bulge / GAL.R * Math.abs(gauss()) * 0.8, th = rnd() * 2 * Math.PI, ph = Math.acos(2 * rnd() - 1); x = r * Math.sin(ph) * Math.cos(th); z = r * Math.sin(ph) * Math.sin(th); y = r * Math.cos(ph) * 0.7; t = 0.9; }
+    else if (u < 0.17) { const r = (0.3 + 0.7 * rnd()), th = rnd() * 2 * Math.PI, ph = Math.acos(2 * rnd() - 1); x = r * Math.sin(ph) * Math.cos(th); z = r * Math.sin(ph) * Math.sin(th); y = r * Math.cos(ph); t = 0.6; }
+    else { let r; do { r = -Math.log(1 - rnd()) * GAL.hR / GAL.R; } while (r > 1); let th = rnd() * 2 * Math.PI; const arm = Math.floor(rnd() * 4), pitch = 12 * Math.PI / 180, thArm = Math.log(Math.max(r, 0.02) / 0.1) / Math.tan(pitch) + arm * Math.PI / 2; if (rnd() < 0.7) th = thArm + gauss() * 0.25; x = r * Math.cos(th); z = r * Math.sin(th); y = gauss() * GAL.hz / GAL.R * (0.5 + r); t = 0.2 + 0.8 * rnd(); }
+    pos[3 * i] = x; pos[3 * i + 1] = y; pos[3 * i + 2] = z;
+    col[3 * i] = 0.6 + 0.4 * t; col[3 * i + 1] = 0.65 + 0.25 * (1 - Math.abs(t - 0.5)); col[3 * i + 2] = 1 - 0.5 * t;
+  }, 0.004);
+}
+const NB = { R: 50 * pc, density: 0.1 / pc ** 3 };
+function buildStars(n) {
+  return pointCloud(n, (i, pos, col) => { let x, y, z; do { x = 2 * rnd() - 1; y = 2 * rnd() - 1; z = 2 * rnd() - 1; } while (x * x + y * y + z * z > 1); pos[3 * i] = x; pos[3 * i + 1] = y * 0.6; pos[3 * i + 2] = z; const t = rnd(); col[3 * i] = 0.7 + 0.3 * t; col[3 * i + 1] = 0.75 + 0.2 * t; col[3 * i + 2] = 1 - 0.4 * t; }, 0.01);
+}
+// Solar System: real orbits (JPL mean elements), heliocentric, drawn in the galactic frame; unit = AU.
+// Orbit curves are sampled over one period at the clock's epoch and refreshed every 20 years of sim time.
+const gsv = (x, y, z) => { const g = P.eclipticToGalactic(x, y, z); return new THREE.Vector3(g[0], g[2], -g[1]); };   // ecliptic AU -> scene (unit AU)
+function orbitCurve(name, jd, gamma = 1, d0AU = 1, mag = 1) {   // the same power law as the bodies, so each body sits on its drawn orbit
+  const s0 = P.keplerState(name, jd), pts = [];
+  for (let k = 0; k <= 240; k++) { const s = P.keplerState(name, jd + s0.period * k / 240), v = gsv(s.x, s.y, s.z), d = v.length(); if (d > 0) v.multiplyScalar(mag * SB.compressDistance(d, d0AU, gamma) / d); pts.push(v); }
+  return new THREE.BufferGeometry().setFromPoints(pts);
+}
+function circleCurve(n = 128) {   // unit circle in the ecliptic plane, drawn in the galactic frame (moon orbits)
+  const pts = []; for (let k = 0; k <= n; k++) { const th = 2 * Math.PI * k / n; pts.push(gsv(Math.cos(th), Math.sin(th), 0)); }
+  return new THREE.BufferGeometry().setFromPoints(pts);
+}
+// Bodies are kosmo-models (procedural shaders, texture slots); each is a unit-radius group scaled to true size.
+// beacon: a soft glow the size of the whole system, so packed systems read at a glance; it fades out as you zoom into one
+const glowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'), g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.12, 'rgba(255,255,255,0.95)'); g.addColorStop(0.4, 'rgba(255,255,255,0.4)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64); const t = new THREE.CanvasTexture(c); return t; })();
+const starTint = T => !(T > 0) ? 0xfff0d0 : T < 3500 ? 0xff9a60 : T < 5000 ? 0xffd090 : T < 6500 ? 0xfff4dc : T < 10000 ? 0xd8e6ff : 0xaac4ff;
+function makeBeacon(T) { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: starTint(T), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false })); sp.renderOrder = 2; return sp; }
+const beaconOpacity = widthM => clamp((260 - widthM / 10 ** state.zoom * view.clientHeight) / 160, 0, 1);   // full while the system is under ~60 px tall, gone past ~220 px
+const modelOf = (name, type, radius_m) => createModel(THREE, { name, type, radius_m, mass_kg: MASS[name], temperature_K: name === 'Sun' ? 5772 : undefined });
+function buildSolar() {
+  const g = new THREE.Group();
+  const sunM = modelOf('Sun', 'star', R_SUN); sunM.scale.setScalar(R_SUN / AU); g.add(sunM);
+  g.userData = { bodies: {}, models: [sunM], sun: sunM, orbits: {}, moonOrbits: {}, orbitKey: '', nMoons: 0 };
+  for (const [name, o] of Object.entries(P.ORBITS)) {
+    const line = new THREE.Line(orbitCurve(name, clock.jd), new THREE.LineBasicMaterial({ color: o.dwarf ? 0x3a3a4a : 0x2f4360 })); g.add(line); g.userData.orbits[name] = line;
+    const m = modelOf(name, o.dwarf ? 'dwarf_planet' : 'planet', o.radius); m.scale.setScalar(o.radius / AU); m.name = name; g.add(m); g.userData.bodies[name] = m; g.userData.models.push(m);
+  }
+  addMoonModels(g);
+  g.userData.beacon = makeBeacon(5772); g.add(g.userData.beacon);
+  return g;
+}
+const moonSpec = m => ({ name: m.name, type: 'moon', radius_m: m.r, mass_kg: m.mass, semi_major_axis_m: m.a, period_days: m.period });
+function addMoonModels(g) {   // catalogue moons (and the Moon) as textured bodies circling their planets
+  const have = new Set(Object.keys(g.userData.bodies));
+  for (const mo of MOONS) {
+    if (have.has(mo.name)) continue;
+    const m = createModel(THREE, moonSpec(mo)); m.scale.setScalar(mo.r / AU); m.name = mo.name; g.add(m); g.userData.bodies[mo.name] = m; g.userData.models.push(m);
+    const line = new THREE.Line(circleCurve(), new THREE.LineBasicMaterial({ color: 0x33475f, transparent: true, opacity: 0.8 })); g.add(line); g.userData.moonOrbits[mo.name] = line;
+  }
+  g.userData.nMoons = MOONS.length;
+}
+const simT = () => (performance.now() - t0) / 1000;
+function updateSky() {   // build the packed systems a few per frame so the first look does not stall
+  if (!skyPack().on) return;
+  let n = 0; for (const H of SKY_HOSTS.slice(0, state.skyN)) { if (SYSTEMS.has(H.key)) continue; systemFor(H.key); if (++n >= 3) break; }
+}
+function updateSolar(g) {
+  const t = simT(), Lo = layout(), { pos, r } = Lo;
+  if (g.userData.nMoons !== MOONS.length) addMoonModels(g);
+  g.userData.sun.scale.setScalar(r.Sun / AU);
+  const solarW = 2.1 * Math.max(...Object.keys(P.ORBITS).map(n => dist3(pos[n], SUN)));
+  g.userData.beacon.scale.setScalar(0.9 * solarW / AU); g.userData.beacon.material.opacity = skyPack().on ? beaconOpacity(solarW) : 0;
+  for (const [name, m] of Object.entries(g.userData.bodies)) {
+    const p = pos[name]; if (!p) continue;
+    m.position.set((p[0] - SUN[0]) / AU, (p[2] - SUN[2]) / AU, -(p[1] - SUN[1]) / AU);
+    m.scale.setScalar(r[name] / AU);
+    if (m.userData.lightDir) m.userData.lightDir.copy(m.position).multiplyScalar(-1).normalize();   // lit from the Sun
+    m.rotation.y = t * 0.1;
+  }
+  for (const mo of MOONS) { const line = g.userData.moonOrbits[mo.name], pp = pos[mo.parent]; if (!line || !pp || !(mo.shownA > 0)) continue; line.position.set((pp[0] - SUN[0]) / AU, (pp[2] - SUN[2]) / AU, -(pp[1] - SUN[1]) / AU); line.scale.setScalar(mo.shownA / AU); }
+  for (const m of g.userData.models) m.tick(t);
+  const key = `${Math.round(clock.jd / (20 * 365.25))}|${state.distK}|${Lo.magSun}`;   // orbits re-sampled every 20 years of sim time and whenever the compression changes
+  if (g.userData.orbitKey !== key) { g.userData.orbitKey = key; for (const [name, line] of Object.entries(g.userData.orbits)) { line.geometry.dispose(); line.geometry = orbitCurve(name, clock.jd, state.distK, Lo.d0 / AU, Lo.magSun); } }
+}
+function buildEarth() {   // unit = Earth radius; the Moon follows the clock
+  const g = new THREE.Group();
+  const earth = modelOf('Earth', 'planet', 6371e3); g.add(earth);
+  const moon = modelOf('Moon', 'moon', 1737.4e3); moon.scale.setScalar(1737.4e3 / 6371e3); moon.name = 'Moon'; g.add(moon); g.userData = { moon, earth };
+  return g;
+}
+function updateEarth(g) {   // the same shown positions and radii as the Solar level, so the two nest without a jump
+  const Lo = layout(), e = Lo.pos.Earth, m = Lo.pos.Moon, R = Lo.r.Earth, t = simT();
+  g.userData.moon.position.set((m[0] - e[0]) / R, (m[2] - e[2]) / R, -(m[1] - e[1]) / R);
+  g.userData.moon.scale.setScalar((Lo.r.Moon || 1737.4e3) / R);
+  const ld = new THREE.Vector3(SUN[0] - e[0], SUN[2] - e[2], -(SUN[1] - e[1])).normalize();
+  for (const b of [g.userData.earth, g.userData.moon]) { if (b.userData.lightDir) b.userData.lightDir.copy(ld); b.tick(t); }
+  g.userData.earth.rotation.y = t * 0.05;
+}
+
+const LEVELS = [
+  { key: 'universe', name: 'Observable universe', unit: CHI0, width: 2 * CHI0, centre: SUN, build: () => buildUniverse(state.resU * 1000), count: () => COUNTS.galaxies, what: 'galaxies', comoving: true },
+  { key: 'cluster', name: 'Virgo cluster', unit: CL.R, width: 2 * CL.R, centre: CL.pos, build: () => buildCluster(state.resC * 1000), count: () => CL.nGal, what: 'galaxies (+ hot gas)' },
+  { key: 'galaxy', name: 'Milky Way', unit: GAL.R, width: 2 * GAL.R, centre: [0, 0, 0], build: () => buildGalaxy(state.resG * 1000), count: () => GAL.stars, what: 'stars' },
+  { key: 'stars', name: 'Solar neighbourhood (50 pc)', unit: NB.R, width: 2 * NB.R, centre: SUN, build: () => buildStars(state.resS * 1000), count: () => NB.density * 4 / 3 * Math.PI * NB.R ** 3, what: 'stars' },
+  { key: 'sky', name: 'Planetary systems (compressed sky)', unit: pc, width: () => skyPack().on ? skyPack().width : 2.3 * (skyPack().truest || 12 * pc), centre: SUN, build: () => new THREE.Group(), count: () => Math.min(state.skyN, SKY_HOSTS.length), what: 'planetary systems (built as you look)', update: updateSky },
+  { key: 'solar', name: 'Solar system', unit: AU, width: () => 2.1 * Math.max(...Object.keys(P.ORBITS).map(n => dist3(layout().pos[n], SUN))), centre: SUN, build: buildSolar, count: () => 11, what: 'bodies (Sun, 8 planets, Pluto, Moon)', update: updateSolar },
+  { key: 'earth', name: 'Earth', unit: () => layout().r.Earth, width: () => 6 * layout().r.Earth, centre: EARTH, build: buildEarth, count: () => 2, what: 'bodies (Moon at 384,400 km)', update: updateEarth },
+];
+for (const L of LEVELS) { L.obj = L.build(); scene.add(L.obj); }
+const levelBtns = $('levelBtns');
+for (const L of LEVELS) { const b = document.createElement('button'); b.textContent = L.name; b.dataset.key = L.key; b.addEventListener('click', () => travelTo(L.centre, Math.log10(at(L.width) * 1.3), L.name)); levelBtns.appendChild(b); }
+function rebuild(L) { scene.remove(L.obj); L.obj.traverse(o => { o.geometry?.dispose(); o.material?.dispose(); }); L.obj = L.build(); scene.add(L.obj); }
+function pointsOf(L) { let n = 0; L.obj.traverse(o => { if (o.isPoints) n += o.geometry.attributes.position.count; }); return n; }
+function bytesOf(L) { let b = 0; L.obj.traverse(o => { if (o.geometry) for (const a of Object.values(o.geometry.attributes)) b += a.array.byteLength; }); return b; }
+
+// ---- megastructures (numbers from P.*; drawn at true size and place) ----
+function shellPoints(n, r, colr, size) { return pointCloud(n, (i, pos, col) => { const th = rnd() * 2 * Math.PI, ph = Math.acos(2 * rnd() - 1); pos[3 * i] = r * Math.sin(ph) * Math.cos(th); pos[3 * i + 1] = r * Math.cos(ph); pos[3 * i + 2] = r * Math.sin(ph) * Math.sin(th); col[3 * i] = colr[0]; col[3 * i + 1] = colr[1]; col[3 * i + 2] = colr[2]; }, size); }
+const MEGAS = {
+  none: { unit: 1, width: () => 0, centre: SUN, build: () => new THREE.Group() },
+  swarm: { unit: AU, width: () => 2 * state.megaR * AU, centre: SUN, build: () => shellPoints(40000, state.megaR, [1, 0.85, 0.5], 0.01) },
+  bubble: { unit: AU, width: () => 2 * state.megaR * AU, centre: SUN, build: () => shellPoints(8000, state.megaR, [0.7, 0.9, 1], 0.015) },
+  shell: { unit: AU, width: () => 2 * state.megaR * AU, centre: SUN, build: () => new THREE.Mesh(new THREE.SphereGeometry(state.megaR, 48, 24, 0, Math.PI * 1.5), new THREE.MeshStandardMaterial({ color: 0x8899aa, side: THREE.DoubleSide, metalness: 0.4, roughness: 0.6 })) },
+  shkadov: { unit: AU, width: () => 2 * state.megaR * AU, centre: SUN, build: () => { const m = new THREE.Mesh(new THREE.SphereGeometry(state.megaR, 48, 24, 0, Math.PI), new THREE.MeshStandardMaterial({ color: 0xdde6f0, side: THREE.DoubleSide, metalness: 0.9, roughness: 0.2 })); m.rotation.y = Math.PI / 2; return m; } },
+  ringworld: { unit: AU, width: () => 2 * state.megaR * AU, centre: SUN, build: () => { const w = 1.6e9 / AU, m = new THREE.Mesh(new THREE.RingGeometry(state.megaR - w / 2, state.megaR + w / 2, 256), new THREE.MeshStandardMaterial({ color: 0x9fd3ff, side: THREE.DoubleSide, emissive: 0x224466 })); m.rotation.x = Math.PI / 2; return m; } },
+  matrioshka: { unit: AU, width: () => 2 * P.matrioshka().shells.at(-1).rAU * AU, centre: SUN, build: () => { const g = new THREE.Group(); for (const sh of P.matrioshka().shells) g.add(new THREE.Mesh(new THREE.SphereGeometry(sh.rAU, 48, 24), new THREE.MeshBasicMaterial({ color: 0xffb86b, wireframe: true, transparent: true, opacity: 0.35 }))); return g; } },
+  oneill: { unit: 1, width: () => 8 * state.habR * 1e3, centre: L5, build: () => { const r = state.habR * 1e3, m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 8 * r, 48, 1, true), new THREE.MeshStandardMaterial({ color: 0xcfd8e3, side: THREE.DoubleSide, metalness: 0.6, roughness: 0.4 })); m.rotation.z = Math.PI / 2; return m; } },
+  elevator: { unit: 1, width: () => 2 * P.spaceElevator().freeEndRadius, centre: EARTH, build: () => { const e = P.spaceElevator(), g = new THREE.Group(); g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 6.371e6, 0), new THREE.Vector3(0, e.freeEndRadius, 0)]), new THREE.LineBasicMaterial({ color: 0xffe08a }))); const geo = new THREE.Mesh(new THREE.SphereGeometry(3e5, 12, 8), new THREE.MeshBasicMaterial({ color: 0xffb86b })); geo.position.y = e.rg; g.add(geo); return g; } },
+  oring: { unit: 1, width: () => 2 * (6.371e6 + 300e3) * 1.2, centre: EARTH, build: () => { const r = 6.371e6 + 300e3, m = new THREE.Mesh(new THREE.TorusGeometry(r, 2e4, 8, 256), new THREE.MeshStandardMaterial({ color: 0xffe08a, emissive: 0x553300 })); m.rotation.x = Math.PI / 2; return m; } },
+};
+let megaObj = null;
+function rebuildMega() { if (megaObj) { scene.remove(megaObj); megaObj.traverse(o => { o.geometry?.dispose(); o.material?.dispose(); }); } megaObj = MEGAS[state.mega].build(); scene.add(megaObj); }
+function megaReadout() {
+  const m = state.mega, M = P.MEGA, ok = b => `<span class="${b ? 'ok' : 'no'}">${b ? 'feasible' : 'not feasible'}</span>`;
+  const matName = { steel: 'steel', kevlar: 'Kevlar', cnt: 'CNT fibre', graphene: 'graphene' }[state.megaMat];
+  if (m === 'swarm' || m === 'bubble') {
+    const d = P.dysonSwarm({ r: state.megaR * AU, f: 10 ** state.megaF, A: 1e6, sigmaA: state.megaSigma * 1e-3 }), st = P.statiteLimit();
+    let t = `<b>Dyson ${m}</b> at ${state.megaR} AU: flux ${d.flux.toFixed(0)} W/m²; collecting ${(10 ** state.megaF * 100).toPrecision(2)} % of L☉ = ${d.power.toExponential(2)} W (Kardashev II ≈ 4e26 W) needs ${d.areaTotal.toExponential(2)} m², ${d.N.toExponential(1)} collectors of 1 km², mass ${d.mass.toExponential(2)} kg = ${d.massMercury.toExponential(2)} Mercury masses at ${state.megaSigma} g/m²; collector equilibrium ${d.Teq.toFixed(0)} K.`;
+    t += m === 'swarm' ? ` Orbital speed ${(d.vOrb / 1e3).toFixed(1)} km/s, period ${(d.period / 86400 / 365.25).toFixed(2)} yr; collectors need non-intersecting orbits (a swarm, never a shell). ${ok(true)} with known materials; mining the mass is the limit.`
+      : ` Statite condition: areal density ≤ ${(st * 1e3).toFixed(2)} g/m² (perfect reflector; ${(P.statiteLimit({ R: 0 }) * 1e3).toFixed(2)} absorbing), independent of distance. Yours ${state.megaSigma} g/m²: ${ok(state.megaSigma * 1e-3 <= st)}.`;
+    return t;
+  }
+  if (m === 'shell') { const r = P.rigidShell({ r: state.megaR * AU }); return `<b>Rigid Dyson shell</b> at ${state.megaR} AU: the shell theorem gives it <b>no net force</b> from the star (it drifts into it), and a self-supporting shell carries compressive stress GMρ/2r = <b>${(r.stress / 1e12).toFixed(2)} TPa</b> for ρ = 3000 kg/m³ vs ~0.13 TPa for graphene. ${ok(false)}.`; }
+  if (m === 'shkadov') { const s = P.shkadov(); return `<b>Shkadov thruster</b>: a mirror hemisphere at the statite density reflects half the light back; thrust ≤ L/2c = <b>${s.F.toExponential(2)} N</b>, acceleration ${s.a.toExponential(2)} m/s², Δv ${(s.dvPerGyr / 1e3).toFixed(1)} km/s per Gyr, ${(s.distPerGyr / ly).toFixed(0)} ly in the first Gyr from rest. Consistent physics (published proposal), slow.`; }
+  if (m === 'ringworld') { const r = P.spinHabitat({ r: state.megaR * AU, M: M.Msun }); return `<b>Ringworld</b> at ${state.megaR} AU: rim speed for 1 g ${(r.v / 1e3).toFixed(0)} km/s (one turn in ${(r.period / 86400).toFixed(1)} d); needs specific strength v² − GM/r = <b>${r.specificSelf.toExponential(2)} J/kg</b>; graphene gives ${(M.materials.graphene.sigma / M.materials.graphene.rho).toExponential(1)} J/kg, ${r.shortfall.toExponential(1)}× short, and the ring is unstable against drifting into the star. ${ok(false)}.`; }
+  if (m === 'matrioshka') { const b = P.matrioshka(); return `<b>Matrioshka brain</b>: shells where a black surface radiates at ${b.shells.map(x => x.T + ' K → ' + x.rAU.toFixed(2) + ' AU').join(', ')}; the Landauer limit kT ln 2 per erased bit caps the stack at <b>${b.totalBitsPerS.toExponential(2)} bit-ops/s</b> for L☉. A thermodynamic ceiling, not a design.`; }
+  if (m === 'oneill') { const o = P.spinHabitat({ r: state.habR * 1e3, rhoWall: M.materials[state.megaMat].rho, tWall: 0.5, pAir: 50e3, floorLoad: 1e4 }); return `<b>O'Neill cylinder</b> r = ${state.habR} km at Earth–Moon L5: ${o.rpm.toFixed(2)} rpm for 1 g (period ${o.period.toFixed(0)} s); Coriolis push at walking speed ${o.coriolisWalk.toFixed(2)} m/s² (${(o.coriolisWalk / M.g0 * 100).toFixed(0)} % of g; under ~2 rpm is usually judged tolerable); 0.5 m ${matName} wall, half an atmosphere, 10 kPa floor load: hoop stress ${(o.stress / 1e6).toFixed(0)} MPa vs strength ${(M.materials[state.megaMat].sigma / 1e6).toFixed(0)} MPa: ${ok(o.feasibleWith.includes(state.megaMat))}.`; }
+  if (m === 'elevator') { const e = P.spaceElevator({ material: state.megaMat }); return `<b>Space elevator</b>: GEO at ${(e.geoAltitude / 1e3).toFixed(0)} km, climb ${e.dPhi.toExponential(3)} J/kg, free end without counterweight ${(e.freeEndRadius / 1e3).toFixed(0)} km; uniform-stress taper with ${matName}: <b>${e.taper < 1e6 ? e.taper.toFixed(2) : e.taper.toExponential(1)}</b> (steel ${e.tapers.steel.toExponential(1)}, Kevlar ${e.tapers.kevlar.toExponential(1)}, CNT ${e.tapers.cnt.toFixed(2)}, graphene ${e.tapers.graphene.toFixed(2)}). ${ok(e.taper < 10)} if the material exists at length.`; }
+  if (m === 'oring') { const o = P.orbitalRing(); return `<b>Orbital ring</b> at 300 km: orbital speed ${(o.vOrb / 1e3).toFixed(2)} km/s; a 1000 kg/m rotor at 10 km/s supports <b>${(o.supportPerMetre / 1e3).toFixed(0)} kN per metre</b> of stationary sheath (${o.massPerMetreSupported.toFixed(0)} kg/m); rotor kinetic energy ${o.rotorKE.toExponential(2)} J. Ordinary materials plus a magnetic bearing; the stored energy is the hazard.`; }
+  return '';
+}
+
+// ---------------------------------------------------------------------------
+// Destinations: built-in (l, b, distance) plus catalog/objects.json when present.
+// ---------------------------------------------------------------------------
+const DEST = [
+  { name: 'Sun', pos: SUN, w: () => 5 * shownR('Sun'), type: 'star' }, { name: 'Moon', pos: MOON, w: () => 5 * shownR('Moon'), type: 'moon' },
+  ...Object.entries(P.ORBITS).map(([n, o]) => ({ name: n, pos: () => layout().pos[n], w: () => Math.max(5 * shownR(n), ...MOONS.filter(m => m.parent === n).map(m => 2.6 * m.shownA)), type: o.dwarf ? 'dwarf planet' : 'planet' })),
+  { name: 'Galactic centre (Sgr A*)', pos: [0, 0, 0], w: 2 * 100 * pc, type: 'black hole' },
+  { name: 'Proxima Centauri', lbd: [313.94, -1.93, 1.30 * pc], w: 0.2 * pc, type: 'star' }, { name: 'Alpha Centauri AB', lbd: [315.73, -0.68, 1.34 * pc], w: 0.2 * pc, type: 'star' },
+  { name: 'Sirius', lbd: [227.23, -8.89, 2.64 * pc], w: 0.2 * pc, type: 'star' }, { name: 'Vega', lbd: [67.45, 19.24, 7.68 * pc], w: 0.3 * pc, type: 'star' },
+  { name: 'Betelgeuse', lbd: [199.79, -8.96, 170 * pc], w: 3 * pc, type: 'star' }, { name: 'Eta Carinae', lbd: [287.60, -0.63, 2300 * pc], w: 10 * pc, type: 'star' },
+  { name: 'Pleiades', lbd: [166.57, -23.46, 136 * pc], w: 15 * pc, type: 'star cluster' }, { name: 'Orion Nebula (M42)', lbd: [209.01, -19.38, 412 * pc], w: 12 * pc, type: 'nebula' },
+  { name: 'Crab Nebula (M1)', lbd: [184.56, -5.78, 2000 * pc], w: 6 * pc, type: 'supernova remnant' }, { name: 'Cygnus X-1', lbd: [71.33, 3.07, 2220 * pc], w: 2 * pc, type: 'black hole' },
+  { name: 'Omega Centauri', lbd: [309.10, 14.97, 5200 * pc], w: 60 * pc, type: 'star cluster' }, { name: 'Large Magellanic Cloud', lbd: [280.47, -32.89, 50 * kpc], w: 12 * kpc, type: 'galaxy' },
+  { name: 'Andromeda (M31)', lbd: [121.17, -21.57, 765 * kpc], w: 80 * kpc, type: 'galaxy' }, { name: 'Triangulum (M33)', lbd: [133.61, -31.33, 840 * kpc], w: 30 * kpc, type: 'galaxy' },
+  { name: 'Virgo cluster (M87)', pos: CL.pos, w: 2 * CL.R * 1.3, type: 'galaxy cluster' }, { name: 'Coma cluster', lbd: [58.08, 87.96, 100 * Mpc], w: 8 * Mpc, type: 'galaxy cluster' },
+  { name: 'Observable universe', pos: SUN, w: 2 * CHI0 * 1.3, type: 'everything' },
+];
+for (const d of DEST) if (d.lbd) d.pos = gal(...d.lbd);
+// ---- exoplanet systems: built on demand when you travel to a catalogue star or planet; the star and its
+// planets are kosmo-models on circular orbits on the clock, laid out with the same two knobs ----
+const HOSTS = new Map();      // host name (lower) -> { star: row, pos, planets: rows[] }
+const SYSTEMS = new Map();    // host key -> level-like { key, name, unit, width, centre, obj, update, lay, built }
+const MAX_SYSTEMS = 12;
+const planetRadius = o => o.radius_m > 0 ? o.radius_m : o.mass_kg > 0 ? (o.mass_kg < 2 * M_EARTH ? R_EARTH * (o.mass_kg / M_EARTH) ** 0.28 : o.mass_kg < 130 * M_EARTH ? R_EARTH * 1.23 * (o.mass_kg / (2 * M_EARTH)) ** 0.59 : R_JUP * Math.min(1.3, (o.mass_kg / M_JUP) ** -0.04)) : R_EARTH;   // Chen & Kipping-like power laws when the archive has no radius
+const starRadius = st => st?.radius_m > 0 ? st.radius_m : st?.mass_kg > 0 ? R_SUN * (st.mass_kg / 1.989e30) ** 0.8 : R_SUN;
+function hostKeyOf(name) { return String(name || '').toLowerCase(); }
+function systemFor(key) {
+  if (SYSTEMS.has(key)) { const S = SYSTEMS.get(key); S.used = performance.now(); return S; }
+  const H = HOSTS.get(key); if (!H) return null;
+  const GM = 6.674e-11 * (H.star?.mass_kg > 0 ? H.star.mass_kg : 1.989e30);
+  const planets = H.planets.map(o => { let a = o.semi_major_axis_m, T = o.period_days; if (!(a > 0) && T > 0) a = Math.cbrt(GM * (T * 86400 / (2 * Math.PI)) ** 2); if (!(T > 0) && a > 0) T = 2 * Math.PI * Math.sqrt(a ** 3 / GM) / 86400; return a > 0 && T > 0 ? { row: o, name: o.name, a, T, r: planetRadius(o), phase: hash01(o.name) } : null; }).filter(Boolean);
+  // orbital plane: one seeded normal per system (the archive gives inclinations to the line of sight, not a plane)
+  const h = hash01(key), h2 = hash01(key + '/2'), nz = 1 - 2 * h2, nr = Math.sqrt(Math.max(0, 1 - nz * nz)), nrm = new THREE.Vector3(nr * Math.cos(2 * Math.PI * h), nz, nr * Math.sin(2 * Math.PI * h));
+  const u = new THREE.Vector3(0, 1, 0).cross(nrm); if (u.lengthSq() < 1e-6) u.set(1, 0, 0); u.normalize(); const v = new THREE.Vector3().crossVectors(nrm, u);
+  const g = new THREE.Group(), star = createModel(THREE, { ...(H.star || {}), name: H.star?.name || key, type: H.star?.type || 'star', segments: 32 });
+  g.add(star);
+  const beacon = makeBeacon(H.star?.temperature_K); g.add(beacon);
+  const models = planets.map(pl => { const m = createModel(THREE, { ...pl.row, radius_m: pl.r, segments: 32 }); m.name = pl.name; g.add(m); return m; });
+  const rings = planets.map(() => { const pts = []; for (let k = 0; k <= 128; k++) { const th = 2 * Math.PI * k / 128; pts.push(u.clone().multiplyScalar(Math.cos(th)).addScaledVector(v, Math.sin(th))); } const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0x4a6a9a, transparent: true, opacity: 0.8 })); g.add(line); return line; });
+  const aMax = planets.length ? Math.max(...planets.map(p => p.a)) : 0;
+  const S = { key, name: H.star?.name || key, unit: AU, centre: () => skyPosOf(key, H.pos), obj: g, used: performance.now(), planets, models, star, lay: { key: '', shown: {}, r: {}, exag: {}, width: 0 },
+    width: () => S.layout().width };
+  S.layout = () => {
+    const k = `${clock.jd}|${state.distK}|${state.sizeK}|${skyPack().key}`; if (S.lay.key === k) return S.lay; S.lay.key = k;
+    const M = skyOf(key)?.mag ?? 1, c = S.centre();   // M: this system's magnification in the compressed sky
+    const L = SB.layoutSystem(planets.map(p => ({ name: p.name, r: p.r, d: p.a, a: p.a })), { r: starRadius(H.star) }, { gamma: state.distK, beta: state.sizeK });
+    const shown = {}, r = {}, exag = {}; r[S.name] = L.host.r * M; exag[S.name] = L.host.exag * M; let aMaxShown = 0;
+    L.bodies.forEach((b, i) => { const p = planets[i], th = 2 * Math.PI * ((clock.jd - P.EPHEM.J2000) / p.T + p.phase), d = b.d * M; const sx = u.x * Math.cos(th) + v.x * Math.sin(th), sy = u.y * Math.cos(th) + v.y * Math.sin(th), sz = u.z * Math.cos(th) + v.z * Math.sin(th);
+      shown[p.name] = { scene: [sx * d / AU, sy * d / AU, sz * d / AU], gal: [c[0] + sx * d, c[1] - sz * d, c[2] + sy * d], a: d }; r[p.name] = b.r * M; exag[p.name] = b.exag * M; aMaxShown = Math.max(aMaxShown, d); });
+    S.lay.shown = shown; S.lay.r = r; S.lay.exag = exag; S.lay.width = Math.max(2 * aMaxShown * 1.3, 10 * L.host.r * M); return S.lay;
+  };
+  S.update = () => {
+    const lay = S.layout(), t = simT(); star.scale.setScalar(lay.r[S.name] / AU); star.tick(t);
+    beacon.scale.setScalar(0.9 * lay.width / AU); beacon.material.opacity = beaconOpacity(lay.width);
+    models.forEach((m, i) => { const p = planets[i], s = lay.shown[p.name]; m.position.set(s.scene[0], s.scene[1], s.scene[2]); m.scale.setScalar(lay.r[p.name] / AU); if (m.userData.lightDir) m.userData.lightDir.copy(m.position).multiplyScalar(-1).normalize(); m.rotation.y = t * 0.1; m.tick(t); rings[i].scale.setScalar(s.a / AU); });
+  };
+  scene.add(g); SYSTEMS.set(key, S);
+  const keep = skyPack().set;   // systems in the compressed sky stay; the oldest of the others goes
+  if (SYSTEMS.size > state.skyN + MAX_SYSTEMS) { const old = [...SYSTEMS.values()].filter(S => !keep.has(S.key)).sort((p, q) => p.used - q.used)[0]; if (old) { scene.remove(old.obj); old.obj.traverse(o => { o.geometry?.dispose(); o.material?.dispose(); }); SYSTEMS.delete(old.key); } }
+  return S;
+}
+function exoShownR(name) { for (const S of SYSTEMS.values()) if (S.lay.r[name] != null) return S.lay.r[name]; return undefined; }
+function exoExag(name) { for (const S of SYSTEMS.values()) if (S.lay.exag[name] != null) return S.lay.exag[name]; return undefined; }
+async function loadCatalog() {
+  try {
+    const r = await fetch('catalog/objects.json', { cache: 'no-store' }); if (!r.ok) throw 0;
+    const rows = await r.json(), byName = new Map();
+    const add = o => { if (!o.name || byName.has(o.name.toLowerCase())) return; byName.set(o.name.toLowerCase(), o); const i = DEST.findIndex(d => d.name.toLowerCase() === o.name.toLowerCase()); if (i >= 0 && !DEST[i].meta) DEST[i] = o; else DEST.push(o); };   // a catalogue row replaces the built-in entry of the same name
+    let n = 0;
+    for (const o of rows) {   // absolute positions first
+      if (o.ra_deg == null || o.dec_deg == null || !(o.dist_pc > 0)) continue;
+      const [l, b] = eqToGal(o.ra_deg, o.dec_deg);
+      if (o.type === 'planet' || o.type === 'dwarf_planet' || o.type === 'moon') continue;   // Solar System bodies come from the ephemeris
+      if ((o.type === 'exoplanet' || o.type === 'exomoon_candidate') && o.parent) continue;   // placed on their orbits below
+      const pos = gal(l, b, o.dist_pc * pc), isStar = o.type === 'star' || o.type === 'white_dwarf';
+      const w = o.radius_m ? 5 * o.radius_m : o.type === 'galaxy' ? 40 * kpc : o.type === 'galaxy_cluster' ? 4 * Mpc : (o.type === 'nebula' || o.type === 'star_cluster') ? 8 * pc : 0.2 * pc;
+      if (isStar) { const key = hostKeyOf(o.name); HOSTS.set(key, { star: o, pos, planets: [] }); for (const alt of o.alt_names || []) if (!HOSTS.has(hostKeyOf(alt))) HOSTS.set(hostKeyOf(alt), HOSTS.get(key)); }
+      add({ name: o.name, pos: isStar ? () => skyPosOf(hostKeyOf(o.name), pos) : pos, w: isStar && o.radius_m ? () => 5 * (exoShownR(o.name) ?? o.radius_m) : w, type: String(o.type || '').replace('_', ' '), parent: o.parent, meta: o, sys: isStar ? hostKeyOf(o.name) : undefined }); n++;
+    }
+    for (const o of rows) {   // the big moons circle their planets on the clock (the Moon from the ephemeris, the rest circular)
+      if (o.type !== 'moon' || !(o.radius_m >= 400e3) || !(o.semi_major_axis_m > 0) || !(o.period_days > 0) || !P.ORBITS[o.parent]) continue;
+      MOONS.push({ name: o.name, parent: o.parent, a: o.semi_major_axis_m, period: o.period_days, r: o.radius_m, mass: o.mass_kg || undefined, phase: hash01(o.name), shownA: o.semi_major_axis_m });
+      if (o.name !== 'Moon') add({ name: o.name, pos: () => layout().pos[o.name], w: () => 5 * shownR(o.name), type: 'moon', parent: o.parent, meta: o }); n++;
+    }
+    MOONS.sort((p, q) => p.a - q.a);
+    for (const o of rows) {   // then parent-relative bodies (exoplanets): they live in their host's system, built when you travel there
+      if (o.type !== 'exoplanet' && o.type !== 'exomoon_candidate') continue;
+      if (!(o.semi_major_axis_m > 0 || o.period_days > 0) || !o.parent) continue;
+      const key = hostKeyOf(o.parent), H = HOSTS.get(key); if (!H) continue;
+      H.planets.push(o);
+      add({ name: o.name, pos: () => { const S = SYSTEMS.get(key); const s = S?.layout().shown[o.name]; return s ? s.gal : skyPosOf(key, H.pos); }, w: () => { const S = SYSTEMS.get(key); return 5 * (S?.layout().r[o.name] || planetRadius(o)); }, type: String(o.type || '').replace('_', ' '), parent: o.parent, meta: o, sys: key }); n++;
+    }
+    for (const H of new Set(HOSTS.values())) { H.planets.sort((p, q) => (p.semi_major_axis_m || 0) - (q.semi_major_axis_m || 0)); H.key = hostKeyOf(H.star.name); H.extent = Math.max(10 * starRadius(H.star), ...H.planets.map(p => p.semi_major_axis_m || 0)); }
+    SKY_HOSTS = [...new Set(HOSTS.values())].filter(H => H.planets.some(p => p.semi_major_axis_m > 0 || p.period_days > 0)).sort((p, q) => dist3(p.pos, SUN) - dist3(q.pos, SUN));
+    $('catStatus').textContent = `${DEST.length.toLocaleString()} destinations (catalog loaded: ${n.toLocaleString()} placed, ${MOONS.length} moons on the clock, ${[...new Set(HOSTS.values())].filter(H => H.planets.length).length.toLocaleString()} planetary systems)`;
+    showResults($('search').value);
+    goHash();
+  } catch { $('catStatus').textContent = `${DEST.length} built-in destinations (catalog/objects.json not found yet)`; }
+}
+loadCatalog();
+function goHash() {
+  const m = /go=([^&]+)/.exec(location.hash); if (!m) return;
+  const q = decodeURIComponent(m[1]).toLowerCase(), d = DEST.find(d => d.name.toLowerCase() === q) || DEST.find(d => d.name.toLowerCase().includes(q));
+  if (d) { goDest(d); $('search').value = d.name; showResults(d.name); }
+}
+window.addEventListener('hashchange', goHash);
+
+function goDest(d) { if (d.sys) systemFor(d.sys); travelTo(d.pos, Math.log10(at(d.w)), d.name); }
+function travelTo(target, zoom, name) {
+  const pos = at(target), p0 = [...focus], z0 = state.zoom, dist = Math.hypot(pos[0] - p0[0], pos[1] - p0[1], pos[2] - p0[2]);
+  const bump = Math.max(0, Math.log10(Math.max(dist, 1)) + 0.4 - Math.max(z0, zoom));   // zoom out enough to see both ends
+  travel = { p0, target, z0, z1: clamp(zoom, 6.5, 27), bump, t: 0, dur: 1.6 + Math.min(2.4, bump * 0.4), name };
+  follow = null;
+  if (name) toast(`Travelling to ${name}`);
+}
+function stepTravel(dt) {
+  if (!travel) return;
+  travel.t = Math.min(1, travel.t + dt / travel.dur);
+  const u = travel.t, e = u * u * (3 - 2 * u), p1 = at(travel.target);
+  state.zoom = travel.z0 + (travel.z1 - travel.z0) * e + travel.bump * Math.sin(Math.PI * u);
+  for (let i = 0; i < 3; i++) focus[i] = travel.p0[i] + (p1[i] - travel.p0[i]) * e;
+  sync('zoom', 2);
+  if (u >= 1) { lastDest = { target: travel.target, name: travel.name }; if (typeof travel.target === 'function') follow = travel.target; travel = null; }
+}
+let lastDest = null;
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.style.opacity = 1; clearTimeout(t._h); t._h = setTimeout(() => t.style.opacity = 0, 1800); }
+function nearestName() { let best = null, bd = Infinity; for (const d of DEST) { const p = at(d.pos), r = Math.hypot(p[0] - focus[0], p[1] - focus[1], p[2] - focus[2]); if (r < bd) { bd = r; best = d; } } return best ? `${P.fmtLength(bd)} from ${best.name}` : ''; }
+
+// search UI
+const results = $('results');
+function showResults(q) {
+  results.innerHTML = '';
+  const ql = (q || '').trim().toLowerCase();
+  const list = ql ? DEST.filter(d => d.name.toLowerCase().includes(ql) || (d.meta?.alt_names || []).some(n => String(n).toLowerCase().includes(ql))).slice(0, 24) : DEST.slice(0, 16);
+  for (const d of list) { const b = document.createElement('button'); b.innerHTML = `${d.name}<small>${d.type || ''}</small>`; b.addEventListener('click', () => { goDest(d); $('search').value = d.name; }); results.appendChild(b); }
+}
+$('search').addEventListener('input', e => showResults(e.target.value));
+$('search').addEventListener('keydown', e => { if (e.key === 'Enter') results.querySelector('button')?.click(); e.stopPropagation(); });
+$('goCoord').addEventListener('click', () => { const l = parseFloat($('cl').value), b = parseFloat($('cb').value), d = parseFloat($('cd').value); if (![l, b, d].every(Number.isFinite)) return toast('Enter l, b and a distance in pc'); travelTo(gal(l, b, d * pc), Math.log10(d * pc * 0.2), `l ${l}°, b ${b}°, ${d} pc`); });
+showResults('');
+
+// keyboard steering
+const keys = new Set();
+window.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  keys.add(e.key.toLowerCase());
+  if (e.key === ' ') { e.preventDefault(); state.play = !state.play; $('play').checked = state.play; if (state.play && state.logA >= 0) state.logA = -16; }
+  if (e.key.toLowerCase() === 'r') { state.spin = !state.spin; $('spin').checked = state.spin; }
+  if (e.key.toLowerCase() === 't') toggleTimeline();
+  if (e.key === '[') tlPan(-0.2); if (e.key === ']') tlPan(0.2); if (e.key === '-') tlZoom(1.6); if (e.key === '=' || e.key === '+') tlZoom(1 / 1.6);
+  if (e.key.toLowerCase() === 'c') toggleDrawer();
+  if (e.key.startsWith('Arrow')) e.preventDefault();
+});
+window.addEventListener('keyup', e => keys.delete(e.key.toLowerCase()));
+const tmpV = new THREE.Vector3(), tmpR = new THREE.Vector3(), tmpU = new THREE.Vector3(), tmpM = new THREE.Vector3();
+function steer(dt) {
+  const fast = keys.has('shift') ? 3 : 1, rot = 1.2 * dt * fast, viewW = 10 ** state.zoom, pan = 0.6 * viewW * dt * fast;
+  if (keys.has('arrowleft')) orbitBy(rot, 0); if (keys.has('arrowright')) orbitBy(-rot, 0);
+  if (keys.has('arrowup')) orbitBy(0, rot); if (keys.has('arrowdown')) orbitBy(0, -rot);
+  if (keys.has('q')) { state.zoom = clamp(state.zoom + 0.9 * dt * fast, 6.5, 27); sync('zoom', 2); travel = null; }
+  if (keys.has('e')) { state.zoom = clamp(state.zoom - 0.9 * dt * fast, 6.5, 27); sync('zoom', 2); travel = null; }
+  if (keys.has('w') || keys.has('a') || keys.has('s') || keys.has('d')) {
+    camera.getWorldDirection(tmpV); tmpR.crossVectors(tmpV, camera.up).normalize(); tmpU.crossVectors(tmpR, tmpV).normalize();
+    tmpM.set(0, 0, 0);
+    if (keys.has('w')) tmpM.add(tmpU); if (keys.has('s')) tmpM.sub(tmpU); if (keys.has('d')) tmpM.add(tmpR); if (keys.has('a')) tmpM.sub(tmpR);
+    moveFocusScene(tmpM.multiplyScalar(pan)); travel = null; follow = null;
+  }
+  if (state.spin) orbitBy(0.15 * dt, 0);
+}
+function orbitBy(dAz, dPol) { const sph = new THREE.Spherical().setFromVector3(camera.position); sph.theta += dAz; sph.phi = clamp(sph.phi + dPol, 0.05, Math.PI - 0.05); camera.position.setFromSpherical(sph); camera.lookAt(0, 0, 0); }
+function moveFocusScene(v) { focus[0] += v.x; focus[2] += v.y; focus[1] -= v.z; }   // scene metres -> galactic metres
+
+// ---- per-frame placement ----
+let activeL = LEVELS[0];
+function updateScene() {
+  const a = 10 ** state.logA, viewW = 10 ** state.zoom, k = 2 / viewW;
+  // a mouse pan moved the OrbitControls target: fold it into the focus (metres) and recentre
+  if (controls.target.lengthSq() > 0) { const t = controls.target; focus[0] += t.x / k; focus[2] += t.y / k; focus[1] -= t.z / k; camera.position.sub(t); t.set(0, 0, 0); follow = null; }
+  if (follow && !travel) { const f = follow(); focus[0] = f[0]; focus[1] = f[1]; focus[2] = f[2]; }
+  activeL = LEVELS.reduce((best, L) => Math.abs(Math.log10(at(L.width)) - state.zoom) < Math.abs(Math.log10(at(best.width)) - state.zoom) ? L : best, LEVELS[0]);
+  for (const L of [...LEVELS, ...SYSTEMS.values()]) {
+    const grow = L.comoving ? a : 1, cover = at(L.width) * grow / viewW;
+    const off = toScene(at(L.centre), focus, k), far = Math.hypot(off[0], off[1], off[2]) / 2;   // in view widths
+    L.obj.visible = cover > 1e-4 && cover < 1e8 && far < cover * 1.5 + 3e3;
+    if (!L.obj.visible) continue;
+    L.obj.scale.setScalar(at(L.unit) * k * grow); L.obj.position.set(off[0], off[1], off[2]);
+    if (L.comoving) updateUniverse(L.obj, a);
+    if (L.update) L.update(L.obj);
+  }
+  const sp = toScene(SUN, focus, k); sunLight.position.set(sp[0], sp[1], sp[2]);
+  if (megaObj) {
+    const mg = MEGAS[state.mega], cover = mg.width() / viewW;
+    megaObj.visible = state.mega !== 'none' && cover > 1e-4 && cover < 1e8;
+    if (megaObj.visible) { const o = toScene(at(mg.centre), focus, k); megaObj.scale.setScalar(mg.unit * k); megaObj.position.set(o[0], o[1], o[2]); }
+  }
+  // destination label
+  const lab = $('label');
+  if (lastDest && !travel) {
+    const o = toScene(at(lastDest.target), focus, k), p = new THREE.Vector3(o[0], o[1], o[2]), r = p.length(); p.project(camera);
+    const ex = SB.fmtExag(shownExag(lastDest.name));
+    if (r < 3 && p.z < 1) { lab.hidden = false; lab.textContent = lastDest.name + (ex ? ` · size ${ex}` : ''); lab.style.left = `${(p.x + 1) / 2 * view.clientWidth}px`; lab.style.top = `${(1 - p.y) / 2 * view.clientHeight}px`; } else lab.hidden = true;
+  } else lab.hidden = true;
+  // names of the packed systems (compressed sky), while each is small on screen
+  const sl = $('syslabels'), sk = skyPack();
+  if (sk.on) {
+    const items = [['sun', 'Solar System', SUN, 2.1 * Math.max(...Object.keys(P.ORBITS).map(n => dist3(layout().pos[n], SUN)))], ...[...SYSTEMS.values()].filter(S => sk.set.has(S.key)).map(S => [S.key, S.name, S.centre(), S.layout().width])];
+    let i = 0;
+    for (const [key, name, c, w] of items) {
+      const px = w / viewW * view.clientHeight; if (px > 200) continue;
+      const o = toScene(c, focus, k), p = new THREE.Vector3(o[0], o[1], o[2]); if (p.length() > 3) continue; p.project(camera); if (p.z >= 1 || Math.abs(p.x) > 1 || Math.abs(p.y) > 1) continue;
+      const el = sl.children[i] || sl.appendChild(document.createElement('span')); el.textContent = name; el.style.left = `${(p.x + 1) / 2 * view.clientWidth}px`; el.style.top = `${(1 - p.y) / 2 * view.clientHeight + Math.max(6, px / 2)}px`; el.style.opacity = clamp((200 - px) / 80, 0.25, 1); i++;
+    }
+    while (sl.children.length > i) sl.lastChild.remove();
+  } else if (sl.children.length) sl.innerHTML = '';
+  // scale bar
+  const target = viewW / 4, units = [[1e9 * ly, 'Gly'], [1e6 * ly, 'Mly'], [1e3 * ly, 'kly'], [ly, 'ly'], [AU, 'AU'], [1e9, 'Gm'], [1e6, 'Mm'], [1e3, 'km'], [1, 'm']];
+  const [u, name] = units.find(([u]) => target >= u) || units[units.length - 1];
+  const nice = 10 ** Math.floor(Math.log10(target / u)), m = [5, 2, 1].find(m => m * nice <= target / u) * nice;
+  const pxPerScene = view.clientHeight / (2 * camera.position.length() * Math.tan(camera.fov / 2 * Math.PI / 180));
+  $('scaletxt').textContent = `${m} ${name}`; $('bar').style.width = `${clamp(m * u * k * pxPerScene, 12, 420)}px`;
+  const notes = []; if (state.distK < 1) notes.push(`distances compressed γ = ${state.distK.toFixed(2)}`); if (state.sizeK < 1) notes.push(`sizes balanced β = ${state.sizeK.toFixed(2)}`);
+  if (state.skyK < 1) notes.push(`star distances compressed γ = ${state.skyK.toFixed(2)}`); if (skyPack().on) notes.push(`systems magnified ×${skyPack().mags[0].toFixed(0)}–×${skyPack().mags[1].toFixed(0)}`);
+  $('scalenote').textContent = notes.length ? `⚠ ${notes.join(' · ')} (galaxies and the star field stay true)` : '';
+  for (const b of levelBtns.children) b.classList.toggle('on', b.dataset.key === activeL.key);
+}
+
+function readout() {
+  const a = 10 ** state.logA, s = P.cosmoState(a, tab);
+  const fmtN = x => x >= 1e4 ? x.toExponential(1) : x.toFixed(0);
+  const mem = LEVELS.map(L => `${L.name}: ${fmtN(pointsOf(L))} pts, ${(bytesOf(L) / 1e6).toFixed(1)} MB, 1 pt = ${fmtN(Math.max(1, L.count() / Math.max(1, pointsOf(L))))} ${L.what}`).join('<br>');
+  const total = LEVELS.reduce((b, L) => b + bytesOf(L), 0);
+  $('where').textContent = nearestName();
+  $('readout').innerHTML = `<b>Cursor:</b> a = ${a.toExponential(2)}, z = ${s.z < 1e4 ? s.z.toFixed(1) : s.z.toExponential(1)}, t = <b>${P.fmtTime(s.t)}</b>, T = ${P.fmtTemp(s.T)}, era: ${s.era}`
+    + `<br>Proper radius of today's observable universe then: ${P.fmtLength(CHI0 * a)}; Hubble radius ${P.fmtLength(s.hubbleRadius)}`
+    + `<br><b>View:</b> ${P.fmtLength(10 ** state.zoom)} across, nearest level ${activeL.name}`
+    + (skyPack().on ? `<br><b>Compressed sky:</b> ${Math.min(state.skyN, SKY_HOSTS.length)} nearest planetary systems packed within ${P.fmtLength(skyPack().width / 2.3)} of the Sun (truly out to ${P.fmtLength(skyPack().truest)}), each magnified ×${skyPack().mags[0].toFixed(0)}–×${skyPack().mags[1].toFixed(0)}; ${SYSTEMS.size} systems built` : '')
+    + (state.distK < 1 || state.sizeK < 1 ? `<br><b>Scale balance:</b> γ = ${state.distK.toFixed(2)}, β = ${state.sizeK.toFixed(2)}: Sun ${SB.fmtExag(shownExag('Sun')) || '×1'}, Earth ${SB.fmtExag(shownExag('Earth')) || '×1'}, Jupiter ${SB.fmtExag(shownExag('Jupiter')) || '×1'}, Pluto ${SB.fmtExag(shownExag('Pluto')) || '×1'}; Neptune drawn at ${P.fmtLength(dist3(layout().pos.Neptune, SUN))} (true ${P.fmtLength(dist3(bodyPos('Neptune'), SUN))})` : '')
+    + `<br><b>Contents (from the same parameters):</b> comoving radius ${(CHI0 / ly / 1e9).toFixed(1)} Gly; ordinary matter ${M_BARYON.toExponential(2)} kg (Ω_b = ${OMEGA_B.toFixed(3)}) ≈ ${N_BARYON.toExponential(1)} nucleons; dark matter ${M_DARK.toExponential(2)} kg; galaxies ~${COUNTS.galaxies.toExponential(0)}, stars ~${COUNTS.stars.toExponential(0)} (survey extrapolations)`
+    + (state.mega !== 'none' ? `<br>${megaReadout()}` : '')
+    + `<br><b>Memory budget</b> (GPU buffers, ${(total / 1e6).toFixed(1)} MB):<br>${mem}`
+    + `<br><span class="dim">Every level is drawn at its true size and real place; a level is skipped while it spans less than 10⁻⁴ of the view or lies far outside it, so point counts are a pure fidelity choice.</span>`;
+}
+
+// ---- UI wiring ----
+function sync(id, dec) { $(id).value = state[id]; const v = $(id + '-v'); if (v) v.textContent = Number(state[id]).toFixed(dec); }
+function bind(id, dec, onChange) { const el = $(id); sync(id, dec); el.addEventListener('input', () => { state[id] = parseFloat(el.value); sync(id, dec); onChange?.(); }); }
+bind('stretch', 2); bind('logA', 2, () => { state.play = false; $('play').checked = false; }); bind('speed', 1); bind('zoom', 2, () => { travel = null; });
+const byKey = k => LEVELS.find(L => L.key === k);
+bind('resU', 0, () => rebuild(byKey('universe'))); bind('resG', 0, () => rebuild(byKey('galaxy'))); bind('resS', 0, () => rebuild(byKey('stars'))); bind('resC', 0, () => rebuild(byKey('cluster')));
+bind('megaR', 2, rebuildMega); bind('megaF', 1); bind('megaSigma', 1); bind('habR', 2, rebuildMega);
+bind('distK', 2); bind('sizeK', 2); bind('skyK', 2); bind('skyB', 2); bind('skyN', 0);
+const goSky = () => { const L = byKey('sky'); travelTo(L.centre, Math.log10(at(L.width)), L.name); };
+$('skyOff').addEventListener('click', () => { state.skyK = 1; state.skyB = 1; sync('skyK', 2); sync('skyB', 2); });
+document.querySelectorAll('button[data-sky]').forEach(b => b.addEventListener('click', () => { const [g, be] = b.dataset.sky.split(',').map(Number); state.skyK = g; state.skyB = be; sync('skyK', 2); sync('skyB', 2); goSky(); }));
+$('trueScale').addEventListener('click', () => { state.distK = 1; state.sizeK = 1; sync('distK', 2); sync('sizeK', 2); });
+document.querySelectorAll('button[data-sb]').forEach(b => b.addEventListener('click', () => { const [g, be] = b.dataset.sb.split(',').map(Number); state.distK = g; state.sizeK = be; sync('distK', 2); sync('sizeK', 2); }));
+$('play').addEventListener('change', () => { state.play = $('play').checked; if (state.play && state.logA >= 0) state.logA = -16; });
+$('spin').addEventListener('change', () => { state.spin = $('spin').checked; });
+$('mega').value = state.mega; $('mega').addEventListener('change', () => { state.mega = $('mega').value; rebuildMega(); goMega(); });
+$('megaMat').value = state.megaMat; $('megaMat').addEventListener('change', () => { state.megaMat = $('megaMat').value; });
+function goMega() { if (state.mega === 'none') return; const mg = MEGAS[state.mega]; travelTo(mg.centre, Math.log10(mg.width() * 1.4), $('mega').selectedOptions[0].textContent); }
+// Solar System clock controls
+bind('rate', 1);
+$('pause').addEventListener('change', () => { state.pause = $('pause').checked; });
+document.querySelectorAll('button[data-rate]').forEach(b => b.addEventListener('click', () => { state.rate = parseFloat(b.dataset.rate); sync('rate', 1); }));
+$('clockNow').addEventListener('click', () => { clock.jd = P.jdFromDate(Date.now()); });
+function clockDate() { const d = new Date((clock.jd - 2440587.5) * 86400000); const y = d.getUTCFullYear(); return Number.isFinite(y) && Math.abs(y) < 1e5 ? d.toISOString().replace('T', ' ').slice(0, 19) + ' UTC' : `JD ${clock.jd.toFixed(1)}`; }
+$('clockDate').textContent = clockDate();
+window.addEventListener('keydown', e => { if (e.key.toLowerCase() === 'p' && e.target.tagName !== 'INPUT') { state.pause = !state.pause; $('pause').checked = state.pause; } });
+$('goMega').addEventListener('click', goMega);
+rebuildMega();
+// ---------------------------------------------------------------------------
+// Chronicle drawer: a vertical timeline of every event (cosmic + Earth + local history) and a
+// world map placing the ones that happened somewhere. The cursor time ties the three together.
+// ---------------------------------------------------------------------------
+ALL_EVENTS.push(...events.map(e => ({ label: e.label.split(' (')[0], t: e.t, cat: 'cosmic' })), ...EPOCHS);
+ALL_EVENTS.sort((a, b) => a.t - b.t);
+const CATS = ['cosmic', 'solar', 'earth', 'life', 'human', 'future'];
+const catOn = new Set(CATS);
+let land = null;   // GeoJSON land polygons (world-atlas 110m) once loaded; false if the fetch failed
+(async () => { try { const [{ feature }, topo] = await Promise.all([import('topojson-client'), fetch('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/land-110m.json').then(r => r.json())]); land = feature(topo, topo.objects.land); } catch { land = false; } })();
+const mapC = $('map'), mapCtx = mapC.getContext('2d');
+const proj = (lat, lon, W, H) => [(lon + 180) / 360 * W, (90 - lat) / 180 * H];
+let drawerOpen = false, hoverEv = null;
+function toggleDrawer() { drawerOpen = !drawerOpen; $('drawer').classList.toggle('open', drawerOpen); document.body.classList.toggle('drawer-open', drawerOpen); $('drawerBtn').textContent = drawerOpen ? 'Chronicle ▸' : 'Chronicle ◂'; if (drawerOpen) buildList(); setTimeout(resize, 300); }
+$('drawerBtn').addEventListener('click', toggleDrawer);
+$('chips').innerHTML = CATS.map(c => `<button data-c="${c}" class="on" style="color:${CAT_COLOR[c]}">${c}</button>`).join('');
+$('chips').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { const c = b.dataset.c; catOn.has(c) ? catOn.delete(c) : catOn.add(c); b.classList.toggle('on', catOn.has(c)); buildList(); }));
+const cursorT = () => P.cosmoState(10 ** state.logA, tab).t;
+const nearWindow = () => Math.max(50 * yr, 0.03 * (tOfX(tlView.x1) - tOfX(tlView.x0)));   // "near the cursor" scales with the visible span
+function gotoEvent(e) { state.logA = Math.log10(aAtTime(e.t)); state.play = false; $('play').checked = false; sync('logA', 2); if (tlView.x1 - tlView.x0 > 0.3) tlZoom(0.2); tlCenter(e.t); }
+let listEls = [];
+function buildList() {
+  const list = $('vlist'); list.innerHTML = ''; listEls = []; lastNearest = null;
+  for (const e of ALL_EVENTS) {
+    if (!catOn.has(e.cat)) continue;
+    const row = document.createElement('div'); row.className = 'ev'; row.style.setProperty('--c', CAT_COLOR[e.cat]);
+    row.innerHTML = `<span class="when">${nearNow(e.t)}</span><span class="dot"></span><span class="what">${e.label}${e.where ? `<small>${e.where[0].toFixed(1)}°, ${e.where[1].toFixed(1)}°</small>` : ''}</span>`;
+    row.addEventListener('click', () => gotoEvent(e)); row._e = e; list.appendChild(row); listEls.push(row);
+  }
+}
+let lastNearest = null;
+function updateDrawer() {
+  if (!drawerOpen) return;
+  const tc = cursorT(), win = nearWindow();
+  $('drawerWhen').textContent = nearNow(tc);
+  let best = null, bd = Infinity; for (const r of listEls) { const d = Math.abs(r._e.t - tc); if (d < bd) { bd = d; best = r; } }
+  if (!atlasOn && best !== lastNearest) { lastNearest?.classList.remove('now'); best?.classList.add('now'); best?.scrollIntoView({ block: 'center', behavior: 'smooth' }); lastNearest = best; }
+  if (atlasOn) { let br = null, bdd = Infinity; for (const r of $('folders').querySelectorAll('.hv')) { const dd = Math.abs(r._e.t - tc); if (dd < bdd) { bdd = dd; br = r; } } if (br !== lastNearest) { lastNearest?.classList.remove('now'); br?.classList.add('now'); lastNearest = br; } }
+  const W = mapC.clientWidth, H = mapC.clientHeight, dpr = devicePixelRatio || 1;
+  if (mapC.width !== W * dpr || mapC.height !== H * dpr) { mapC.width = W * dpr; mapC.height = H * dpr; }
+  mapCtx.setTransform(dpr, 0, 0, dpr, 0, 0); mapCtx.clearRect(0, 0, W, H);
+  mapCtx.fillStyle = 'rgba(10,16,30,0.6)'; mapCtx.fillRect(0, 0, W, H);
+  mapCtx.strokeStyle = 'rgba(255,255,255,0.06)'; mapCtx.lineWidth = 1;
+  for (let lon = -150; lon <= 150; lon += 30) { const [x] = proj(0, lon, W, H); mapCtx.beginPath(); mapCtx.moveTo(x, 0); mapCtx.lineTo(x, H); mapCtx.stroke(); }
+  for (let lat = -60; lat <= 60; lat += 30) { const [, y] = proj(lat, 0, W, H); mapCtx.beginPath(); mapCtx.moveTo(0, y); mapCtx.lineTo(W, y); mapCtx.stroke(); }
+  if (land) { mapCtx.fillStyle = 'rgba(127,195,255,0.16)'; mapCtx.strokeStyle = 'rgba(127,195,255,0.35)'; for (const f of land.features) for (const poly of (f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates)) for (const ring of poly) { mapCtx.beginPath(); ring.forEach(([lon, lat], i) => { const [x, y] = proj(lat, lon, W, H); i ? mapCtx.lineTo(x, y) : mapCtx.moveTo(x, y); }); mapCtx.closePath(); mapCtx.fill(); mapCtx.stroke(); } }
+  else if (land === null) { mapCtx.fillStyle = '#7d8ea8'; mapCtx.font = '11px ui-sans-serif'; mapCtx.fillText('loading coastlines…', 8, H - 8); }
+  const placed = mapEvents();
+  // cluster markers that fall within the same 12 px cell so dense regions stay readable
+  const cells = new Map();
+  for (const e of placed) { const [x, y] = proj(e.where[0], e.where[1], W, H); const k = `${Math.round(x / 12)},${Math.round(y / 12)}`; (cells.get(k) || cells.set(k, []).get(k)).push({ e, x, y }); }
+  for (const group of cells.values()) {
+    const near = group.filter(g => Math.abs(g.e.t - tc) <= win), x = group.reduce((s, g) => s + g.x, 0) / group.length, y = group.reduce((s, g) => s + g.y, 0) / group.length;
+    const anyPast = group.some(g => g.e.t <= tc);
+    if (near.length) { const c = CAT_COLOR[near[0].e.cat]; mapCtx.beginPath(); mapCtx.arc(x, y, 5, 0, 2 * Math.PI); mapCtx.fillStyle = c; mapCtx.fill(); mapCtx.strokeStyle = c; mapCtx.beginPath(); mapCtx.arc(x, y, 9, 0, 2 * Math.PI); mapCtx.stroke(); }
+    else { mapCtx.beginPath(); mapCtx.arc(x, y, group.length > 1 ? 4 : 2.2, 0, 2 * Math.PI); mapCtx.fillStyle = anyPast ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.18)'; mapCtx.fill(); }
+    if (group.length > 1) { mapCtx.fillStyle = '#fff'; mapCtx.font = '9px ui-sans-serif'; mapCtx.textAlign = 'center'; mapCtx.fillText(String(group.length), x, y - 7); mapCtx.textAlign = 'left'; }
+  }
+  const show = hoverEv || placed.filter(e => Math.abs(e.t - tc) <= win)[0];
+  if (show) { const [x, y] = proj(show.where[0], show.where[1], W, H); mapCtx.fillStyle = '#fff'; mapCtx.font = '11px ui-sans-serif'; mapCtx.textAlign = x > W / 2 ? 'right' : 'left'; mapCtx.fillText(`${show.label} · ${nearNow(show.t)}`, x + (x > W / 2 ? -10 : 10), y - 8); mapCtx.textAlign = 'left'; }
+}
+function mapPick(e) { const W = mapC.clientWidth, H = mapC.clientHeight; let best = null, bd = 12; for (const ev of mapEvents()) { const [x, y] = proj(ev.where[0], ev.where[1], W, H), d = Math.hypot(x - e.offsetX, y - e.offsetY); if (d < bd) { bd = d; best = ev; } } return best; }
+mapC.addEventListener('pointermove', e => { hoverEv = mapPick(e); });
+mapC.addEventListener('pointerleave', () => { hoverEv = null; });
+mapC.addEventListener('click', e => { const ev = mapPick(e); if (ev) gotoEvent(ev); });
+
+// ---- Atlas of history: nested folders (era > period > civilisation > events) steered by a dial ----
+const yt = y => AGE - (2026 - y) * yr;   // astronomical year -> cosmic time
+const fmtYear = y => y <= -10000 ? `${fmtYears(-y + 2026)} ago` : y < 1 ? `${-y + 1} BCE` : `${y} CE`;
+let folderIndex = [], dialItems = [], selFolder = null, atlasOn = false;
+(function index(nodes, depth, parent, path) {
+  for (const n of nodes) {
+    n.depth = depth; n.parent = parent; n.path = path + '/' + n.name;
+    n.evs = (n.events || []).map(([label, year, lat, lon]) => ({ label, year, t: yt(year), where: [lat, lon], cat: 'human', folder: n }));
+    folderIndex.push(n); if (depth <= 1) dialItems.push(n);
+    index(n.children || [], depth + 1, n, n.path);
+  }
+})(HISTORY, 0, null, '');
+const subtreeEvents = n => [...n.evs, ...(n.children || []).flatMap(subtreeEvents)];
+const atlasEvents = () => selFolder ? subtreeEvents(selFolder) : folderIndex.filter(n => n.depth === 0).flatMap(subtreeEvents);
+function mapEvents() { return atlasOn ? atlasEvents() : ALL_EVENTS.filter(e => e.where && catOn.has(e.cat)); }
+function setTab(atlas) { atlasOn = atlas; $('tabAtlas').classList.toggle('on', atlas); $('tabEvents').classList.toggle('on', !atlas); $('atlas').classList.toggle('on', atlas); $('vlist').style.display = atlas ? 'none' : ''; $('chips').style.display = atlas ? 'none' : ''; if (atlas) { buildFolders(); drawDial(); } }
+$('tabEvents').addEventListener('click', () => setTab(false)); $('tabAtlas').addEventListener('click', () => setTab(true));
+function buildFolders() {
+  const root = $('folders'); root.innerHTML = '';
+  const make = n => {
+    const d = document.createElement('details'); d.className = `lvl${Math.min(n.depth, 2)}`; d.open = n.depth === 0 || (selFolder && selFolder.path.startsWith(n.path));
+    d.innerHTML = `<summary class="${selFolder === n ? 'sel' : ''}">${n.name}<span class="span">${fmtYear(n.from)} – ${fmtYear(n.to)}</span></summary><div class="kids"></div>`;
+    const sum = d.querySelector('summary'); sum.addEventListener('click', ev => { ev.preventDefault(); selectFolder(n, true); });
+    const kids = d.querySelector('.kids');
+    for (const c of n.children || []) kids.appendChild(make(c));
+    for (const e of n.evs) { const r = document.createElement('div'); r.className = 'hv'; r.innerHTML = `<span class="y">${fmtYear(e.year)}</span><span>${e.label}</span>`; r.addEventListener('click', () => gotoEvent(e)); r._e = e; kids.appendChild(r); }
+    n.el = d; return d;
+  };
+  for (const n of HISTORY) root.appendChild(make(n));
+}
+function selectFolder(n, fromTree) {
+  selFolder = n;
+  tlShow(yt(n.from) - (yt(n.to) - yt(n.from)) * 0.04, yt(n.to) + (yt(n.to) - yt(n.from)) * 0.04);
+  const tc = cursorT(); if (tc < yt(n.from) || tc > yt(n.to)) { state.logA = Math.log10(aAtTime(yt((n.from + n.to) / 2))); sync('logA', 2); }
+  for (const f of folderIndex) if (f.el) { const sum = f.el.querySelector(':scope > summary'); sum.classList.toggle('sel', f === n); if (n.path.startsWith(f.path)) f.el.open = true; }
+  if (n.el && !fromTree) n.el.open = !n.el.open || true;
+  if (n.el && fromTree) n.el.open = !n.el.open;
+  const di = dialItems.indexOf(n.depth <= 1 ? n : (n.parent?.depth === 1 ? n.parent : n.parent?.parent || n)); if (di >= 0) dialTarget = di;
+  n.el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+// dial: a vertical wheel of eras and periods on the drawer's left edge; drag or wheel to turn, it snaps to an item
+const dialC = $('dial'), dctx = dialC.getContext('2d');
+let dialPos = 0, dialTarget = 0, dialDrag = null;
+function drawDial() {
+  const W = dialC.clientWidth, H = dialC.clientHeight, dpr = devicePixelRatio || 1; if (!W || !H) return;
+  if (dialC.width !== W * dpr || dialC.height !== H * dpr) { dialC.width = W * dpr; dialC.height = H * dpr; }
+  dctx.setTransform(dpr, 0, 0, dpr, 0, 0); dctx.clearRect(0, 0, W, H);
+  const cy = H / 2, step = 30;
+  dctx.fillStyle = 'rgba(127,195,255,0.08)'; dctx.fillRect(W - 6, 0, 1, H);
+  for (let i = 0; i < dialItems.length; i++) {
+    const n = dialItems[i], d = i - dialPos, y = cy + d * step; if (y < -20 || y > H + 20) continue;
+    const k = Math.max(0, 1 - Math.abs(d) / 7), era = n.depth === 0;
+    dctx.save(); dctx.translate(W - 10, y); dctx.rotate(-Math.PI / 2);
+    dctx.globalAlpha = 0.25 + 0.75 * k; dctx.fillStyle = Math.abs(d) < 0.5 ? '#fff' : era ? '#c9d6e6' : '#8a9bb8';
+    dctx.font = `${era ? '600 ' : ''}${era ? 11 : 10}px ui-sans-serif, system-ui`; dctx.textAlign = 'center'; dctx.textBaseline = 'middle';
+    dctx.fillText(n.name.length > 26 ? n.name.slice(0, 24) + '…' : n.name, 0, 0); dctx.restore();
+    dctx.fillStyle = era ? 'rgba(255,184,107,0.8)' : 'rgba(127,195,255,0.6)'; dctx.fillRect(W - 7, y - (era ? 6 : 3), era ? 4 : 2, era ? 12 : 6);
+  }
+  dctx.fillStyle = 'rgba(255,255,255,0.9)'; dctx.fillRect(W - 12, cy - 0.5, 12, 1); dctx.fillRect(0, cy - 0.5, 8, 1);
+  dctx.fillStyle = '#7d8ea8'; dctx.font = '9px ui-sans-serif'; dctx.save(); dctx.translate(8, cy); dctx.rotate(-Math.PI / 2); dctx.textAlign = 'center'; dctx.fillText('◄ older · newer ►', 0, 0); dctx.restore();
+}
+function stepDial() {
+  if (!atlasOn) return;
+  if (!dialDrag) { dialPos += (dialTarget - dialPos) * 0.18; if (Math.abs(dialTarget - dialPos) < 0.002) dialPos = dialTarget; }
+  drawDial();
+}
+dialC.addEventListener('pointerdown', e => { dialDrag = { y: e.clientY, pos: dialPos }; dialC.setPointerCapture(e.pointerId); });
+dialC.addEventListener('pointermove', e => { if (!dialDrag) return; dialPos = clamp(dialDrag.pos - (e.clientY - dialDrag.y) / 30, 0, dialItems.length - 1); });
+dialC.addEventListener('pointerup', () => { if (!dialDrag) return; dialDrag = null; dialTarget = Math.round(dialPos); selectFolder(dialItems[dialTarget]); });
+dialC.addEventListener('wheel', e => { e.preventDefault(); dialTarget = clamp(Math.round(dialTarget + Math.sign(e.deltaY)), 0, dialItems.length - 1); selectFolder(dialItems[dialTarget]); }, { passive: false });
+// folder events are places too: fold them into the Events tab and the map's "all" source
+ALL_EVENTS.push(...folderIndex.flatMap(n => n.evs).filter(e => !ALL_EVENTS.some(x => x.label === e.label)));
+ALL_EVENTS.sort((a, b) => a.t - b.t);
+
+function toggleTimeline() { const c = $('top').classList.toggle('collapsed'); $('panel').style.top = c ? '84px' : '290px'; $('zoombar').style.top = c ? '90px' : '296px'; $('toast').style.top = c ? '84px' : '290px'; }
+$('tl-handle').addEventListener('click', toggleTimeline);
+$('panel-toggle').addEventListener('click', () => { const c = $('panel').classList.toggle('collapsed'); $('panel-toggle').textContent = c ? 'show' : 'hide'; });
+
+function resize() { const w = view.clientWidth, h = view.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); drawTimeline(); }
+window.addEventListener('resize', resize); resize();
+
+const t0 = performance.now();
+let last = performance.now(), frame = 0;
+function animate(now) {
+  requestAnimationFrame(animate);
+  const dt = Math.min((now - last) / 1000, 0.05); last = now;
+  if (state.play) { state.logA = Math.min(0, state.logA + state.speed * dt); sync('logA', 2); if (state.logA >= 0) { state.play = false; $('play').checked = false; } }
+  if (!state.pause) clock.jd += dt * 10 ** state.rate / 86400;
+  if (frame % 6 === 0) $('clockDate').textContent = clockDate() + (state.pause ? ' (paused)' : '');
+  steer(dt); stepTravel(dt);
+  controls.update();
+  updateScene();
+  if (frame % 2 === 0) { drawTimeline(); drawMinimap(); }
+  if (frame % 10 === 0) updateDrawer();
+  if (frame % 2 === 1) stepDial();
+  if (frame % 15 === 0) readout();
+  frame++;
+  renderer.render(scene, camera);
+}
+requestAnimationFrame(animate);
+window.kosmo = { get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
+</script>
+</body>
+</html>

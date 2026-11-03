@@ -1,0 +1,2656 @@
+{
+ "philosophy": [
+  {
+   "title": "Rta",
+   "target": "Ṛta",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Vedic and Upanishadic thought/Rta"
+   ]
+  },
+  {
+   "title": "Atman (Hinduism)",
+   "target": "Ātman (Hinduism)",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Vedic and Upanishadic thought/Atman"
+   ]
+  },
+  {
+   "title": "Uddalaka Aruni",
+   "target": "Uddālaka Āruṇi",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Vedic and Upanishadic thought/Uddalaka Aruni"
+   ]
+  },
+  {
+   "title": "Gargi Vachaknavi",
+   "target": "Gārgī Vāchaknavī",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Vedic and Upanishadic thought/Gargi Vachaknavi"
+   ]
+  },
+  {
+   "title": "Jnana yoga",
+   "target": "Jñāna yoga",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Epics and Bhagavad Gita/Jnana yoga"
+   ]
+  },
+  {
+   "title": "Anumana",
+   "target": "Pramana",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Nyaya/Anumana"
+   ]
+  },
+  {
+   "title": "Gangesha Upadhyaya",
+   "target": "Gaṅgeśa",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Nyaya/Gangesa"
+   ]
+  },
+  {
+   "title": "Vaisheshika Sutra",
+   "target": "Vaiśeṣika Sūtra",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Vaisheshika/Vaisheshika Sutra"
+   ]
+  },
+  {
+   "title": "Samavaya",
+   "target": "Samavaya",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Vaisheshika/Samavaya"
+   ]
+  },
+  {
+   "title": "Samkhya Karika",
+   "target": "Samkhyakarika",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Samkhya/Samkhya Karika"
+   ]
+  },
+  {
+   "title": "Purusha (Hinduism)",
+   "target": "Purusha (Hinduism)",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Samkhya/Purusha"
+   ]
+  },
+  {
+   "title": "Ashtanga (eight limbs)",
+   "target": "Ashtanga (eight limbs)",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Yoga/Ashtanga (eight limbs)"
+   ]
+  },
+  {
+   "title": "Mimamsa",
+   "target": "Mīmāṃsā",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Purva Mimamsa"
+   ]
+  },
+  {
+   "title": "Mimamsa Sutras",
+   "target": "Purva Mimamsa Sutras",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Purva Mimamsa/Mimamsa Sutras"
+   ]
+  },
+  {
+   "title": "Kumarila Bhatta",
+   "target": "Kumārila Bhaṭṭa",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Purva Mimamsa/Kumarila Bhatta"
+   ]
+  },
+  {
+   "title": "Apauruṣeya",
+   "target": "Apauruṣeyā",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Purva Mimamsa/Apaurusheyatva"
+   ]
+  },
+  {
+   "title": "Badarayana",
+   "target": "Brahma Sutras",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Vedanta/Badarayana"
+   ]
+  },
+  {
+   "title": "Vivekachudamani",
+   "target": "Vivekacūḍāmaṇi",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Advaita Vedanta/Vivekachudamani"
+   ]
+  },
+  {
+   "title": "Adhyasa",
+   "target": "Adhyāsa",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Advaita Vedanta/Adhyasa"
+   ]
+  },
+  {
+   "title": "Avidya (Hinduism)",
+   "target": "Avidyā",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Advaita Vedanta/Avidya",
+    "/Perennial and comparative themes/Human condition in comparative view/Ignorance as root"
+   ]
+  },
+  {
+   "title": "Nirguna Brahman",
+   "target": "Para Brahman",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Advaita Vedanta/Nirguna Brahman",
+    "/Perennial and comparative themes/Theism, pantheism and panentheism/Personal and impersonal absolute"
+   ]
+  },
+  {
+   "title": "Mandana Misra",
+   "target": "Maṇḍana Miśra",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Advaita Vedanta/Mandana Mishra"
+   ]
+  },
+  {
+   "title": "Padmapada",
+   "target": "Padmapadacharya",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Advaita Vedanta/Padmapada"
+   ]
+  },
+  {
+   "title": "Madhusudana Sarasvati",
+   "target": "Madhusūdana Sarasvatī",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Advaita Vedanta/Madhusudana Sarasvati"
+   ]
+  },
+  {
+   "title": "Vallabhacharya",
+   "target": "Vallabha",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Bhedabheda/Vallabha"
+   ]
+  },
+  {
+   "title": "Bhaskara (philosopher)",
+   "target": "Bhāskara (Bhedabheda Vedanta)",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Six Darshanas/Bhedabheda/Bhaskara"
+   ]
+  },
+  {
+   "title": "Early Buddhism",
+   "target": "Early Buddhism",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Early Buddhism"
+   ]
+  },
+  {
+   "title": "Gautama Buddha",
+   "target": "The Buddha",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Early Buddhism/Siddhartha Gautama (the Buddha)"
+   ]
+  },
+  {
+   "title": "Anatta",
+   "target": "Anattā",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Early Buddhism/Anatta",
+    "/Perennial and comparative themes/Emptiness and Brahman",
+    "/Perennial and comparative themes/Emptiness and Brahman/Anatta vs Atman"
+   ]
+  },
+  {
+   "title": "Twelve Nidanas",
+   "target": "Pratītyasamutpāda",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Early Buddhism/Twelve nidanas"
+   ]
+  },
+  {
+   "title": "Kalama Sutta",
+   "target": "Kesamutti Sutta",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Early Buddhism/Kalama Sutta"
+   ]
+  },
+  {
+   "title": "Avyākata",
+   "target": "Avyākata",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Early Buddhism/Unanswerable questions"
+   ]
+  },
+  {
+   "title": "Milinda Pañha",
+   "target": "Milinda Panha",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Abhidharma/Milindapanha"
+   ]
+  },
+  {
+   "title": "Flower Garland Sutra",
+   "target": "Buddhāvataṃsaka Sūtra",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Mahayana/Avatamsaka Sutra"
+   ]
+  },
+  {
+   "title": "Catuskoti",
+   "target": "Catuṣkoṭi",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Madhyamaka/Catuskoti"
+   ]
+  },
+  {
+   "title": "Āryadeva",
+   "target": "Aryadeva",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Madhyamaka/Aryadeva"
+   ]
+  },
+  {
+   "title": "Buddhapalita",
+   "target": "Buddhapālita",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Madhyamaka/Buddhapalita"
+   ]
+  },
+  {
+   "title": "Candrakirti",
+   "target": "Chandrakirti",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Madhyamaka/Candrakirti"
+   ]
+  },
+  {
+   "title": "Prasaṅgika",
+   "target": "Svatantrika–Prasaṅgika distinction",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Madhyamaka/Prasangika"
+   ]
+  },
+  {
+   "title": "Svatantrika",
+   "target": "Svatantrika–Prasaṅgika distinction",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Madhyamaka/Svatantrika"
+   ]
+  },
+  {
+   "title": "Shantarakshita",
+   "target": "Śāntarakṣita",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Madhyamaka/Shantarakshita"
+   ]
+  },
+  {
+   "title": "Tsongkhapa",
+   "target": "Je Tsongkhapa",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Madhyamaka/Tsongkhapa"
+   ]
+  },
+  {
+   "title": "Yogacara",
+   "target": "Yogachara",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Yogacara"
+   ]
+  },
+  {
+   "title": "Vijñaptimātra",
+   "target": "Yogachara",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Yogacara/Vijnaptimatra"
+   ]
+  },
+  {
+   "title": "Ālaya-vijñāna",
+   "target": "Eight Consciousnesses",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Yogacara/Alayavijnana"
+   ]
+  },
+  {
+   "title": "Trisvabhava",
+   "target": "Trisvabhāva",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Yogacara/Trisvabhava"
+   ]
+  },
+  {
+   "title": "Lankavatara Sutra",
+   "target": "Laṅkāvatāra Sūtra",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Yogacara/Lankavatara Sutra"
+   ]
+  },
+  {
+   "title": "Samdhinirmocana Sutra",
+   "target": "Samdhinirmocana Sutra",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Yogacara/Samdhinirmocana Sutra"
+   ]
+  },
+  {
+   "title": "Buddhist logico-epistemological tradition",
+   "target": "Buddhist logico-epistemological tradition",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Buddhist logic and epistemology",
+    "/Philosophical branches and problems/Logic/Buddhist logic"
+   ]
+  },
+  {
+   "title": "Tibetan Book of the Dead",
+   "target": "Bardo Thodol",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Vajrayana/Tibetan Book of the Dead"
+   ]
+  },
+  {
+   "title": "Stephen Batchelor",
+   "target": "Stephen Batchelor",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Indian philosophy/Buddhist philosophy/Buddhist modernism/Stephen Batchelor"
+   ]
+  },
+  {
+   "title": "Parshvanatha",
+   "target": "Pārśvanātha",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Jain philosophy/Parshvanatha"
+   ]
+  },
+  {
+   "title": "Syādvāda",
+   "target": "Anekantavada",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Jain philosophy/Syadvada"
+   ]
+  },
+  {
+   "title": "Śvētāmbara",
+   "target": "Śvetāmbara",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Jain philosophy/Svetambara"
+   ]
+  },
+  {
+   "title": "Siddhasena Divakara",
+   "target": "Siddhasenadivākarasuri",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Jain philosophy/Siddhasena Divakara"
+   ]
+  },
+  {
+   "title": "Three Jewels of Jainism",
+   "target": "Ratnatraya",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Jain philosophy/Triratna of Jainism"
+   ]
+  },
+  {
+   "title": "Nastika",
+   "target": "Āstika and nāstika",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Ajivika and Charvaka"
+   ]
+  },
+  {
+   "title": "Pūraṇa Kassapa",
+   "target": "Purana Kassapa",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Ajivika and Charvaka/Purana Kassapa"
+   ]
+  },
+  {
+   "title": "Ajivika",
+   "target": "Ājīvika",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Ajivika and Charvaka/Ajivika"
+   ]
+  },
+  {
+   "title": "Tattvopaplavasimha",
+   "target": "Jayarāśi Bhaṭṭa",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Ajivika and Charvaka/Tattvopaplavasimha"
+   ]
+  },
+  {
+   "title": "Lokayata",
+   "target": "Charvaka",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Ajivika and Charvaka/Lokayata"
+   ]
+  },
+  {
+   "title": "Trika Shaivism",
+   "target": "Kashmir Shaivism",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Kashmir Shaivism and Tantra/Trika"
+   ]
+  },
+  {
+   "title": "Pratyabhijna",
+   "target": "Trika",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Kashmir Shaivism and Tantra/Pratyabhijna"
+   ]
+  },
+  {
+   "title": "Spanda",
+   "target": "Spanda",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Indian philosophy/Kashmir Shaivism and Tantra/Spanda"
+   ]
+  },
+  {
+   "title": "Tantraloka",
+   "target": "Tantrāloka",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Kashmir Shaivism and Tantra/Tantraloka"
+   ]
+  },
+  {
+   "title": "Nath",
+   "target": "Natha Sampradaya",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Kashmir Shaivism and Tantra/Siddha Siddhanta"
+   ]
+  },
+  {
+   "title": "Modern Hindu philosophy",
+   "target": "Modern Hindu philosophy",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Modern Indian thought"
+   ]
+  },
+  {
+   "title": "Ram Mohan Roy",
+   "target": "Raja Ram Mohan Roy",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Modern Indian thought/Ram Mohan Roy"
+   ]
+  },
+  {
+   "title": "The Life Divine",
+   "target": "Sri Aurobindo",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Modern Indian thought/The Life Divine"
+   ]
+  },
+  {
+   "title": "Krishna Chandra Bhattacharyya",
+   "target": "Krishna Chandra Bhattacharyya",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Indian philosophy/Modern Indian thought/K. C. Bhattacharyya"
+   ]
+  },
+  {
+   "title": "Shi Jing",
+   "target": "Classic of Poetry",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Early Chinese cosmology/Shijing"
+   ]
+  },
+  {
+   "title": "Ren (Confucianism)",
+   "target": "Ren (philosophy)",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Confucianism/Ren",
+    "/Perennial and comparative themes/Virtue across traditions/Confucian ren and li"
+   ]
+  },
+  {
+   "title": "Xiao (Confucianism)",
+   "target": "Xiao (Confucianism)",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Confucianism/Xiao (filial piety)"
+   ]
+  },
+  {
+   "title": "Zeng Shen",
+   "target": "Zengzi",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Confucianism/Zengzi"
+   ]
+  },
+  {
+   "title": "Four beginnings",
+   "target": "Four beginnings",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Confucianism/Four sprouts"
+   ]
+  },
+  {
+   "title": "Han Confucianism",
+   "target": "Confucianism",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Confucianism/Han Confucianism"
+   ]
+  },
+  {
+   "title": "De (Chinese)",
+   "target": "De (Chinese philosophy)",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Daoism/De",
+    "/Perennial and comparative themes/Virtue across traditions/Daoist de"
+   ]
+  },
+  {
+   "title": "Pu (Daoism)",
+   "target": "Pu (Taoism)",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Daoism/Pu (uncarved block)"
+   ]
+  },
+  {
+   "title": "Impartial care",
+   "target": "Impartial care",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Mohism/Jian ai"
+   ]
+  },
+  {
+   "title": "Mohist canon",
+   "target": "Mozi (book)",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Mohism/Mohist Canon"
+   ]
+  },
+  {
+   "title": "Investigation of things",
+   "target": "Investigation of things",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Neo-Confucianism/Gewu"
+   ]
+  },
+  {
+   "title": "Liangzhi",
+   "target": "Liangzhi",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Neo-Confucianism/Liangzhi"
+   ]
+  },
+  {
+   "title": "Zhixing heyi",
+   "target": "Zhixing heyi",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Neo-Confucianism/Zhixing heyi"
+   ]
+  },
+  {
+   "title": "Zhu Daosheng",
+   "target": "Daosheng",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Chinese Buddhism/Daosheng"
+   ]
+  },
+  {
+   "title": "Faxiang",
+   "target": "East Asian Yogācāra",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Chinese Buddhism/Faxiang"
+   ]
+  },
+  {
+   "title": "The Gateless Gate",
+   "target": "The Gateless Barrier",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Chinese Buddhism/Gateless Gate"
+   ]
+  },
+  {
+   "title": "Zongmi",
+   "target": "Guifeng Zongmi",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Chinese Buddhism/Zongmi"
+   ]
+  },
+  {
+   "title": "Modern Chinese philosophy",
+   "target": "Modern Chinese philosophy",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Modern Chinese thought"
+   ]
+  },
+  {
+   "title": "Mou Zongsan",
+   "target": "Mou Tsung-san",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Modern Chinese thought/Mou Zongsan"
+   ]
+  },
+  {
+   "title": "Tang Chun-I",
+   "target": "Tang Chun-I",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Chinese philosophy/Modern Chinese thought/Tang Junyi"
+   ]
+  },
+  {
+   "title": "Japanese Buddhism",
+   "target": "Buddhism in Japan",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Japanese and Korean philosophy/Japanese Buddhism"
+   ]
+  },
+  {
+   "title": "Hongaku",
+   "target": "Original enlightenment",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Japanese and Korean philosophy/Japanese Buddhism/Hongaku"
+   ]
+  },
+  {
+   "title": "Uji (Dogen)",
+   "target": "Uji (Dogen)",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Japanese and Korean philosophy/Japanese Zen/Uji (being-time)"
+   ]
+  },
+  {
+   "title": "Bankei",
+   "target": "Bankei Yōtaku",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Japanese and Korean philosophy/Japanese Zen/Bankei"
+   ]
+  },
+  {
+   "title": "Four–Seven Debate",
+   "target": "Four–Seven Debate",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Japanese and Korean philosophy/Neo-Confucianism in Japan and Korea/Four-Seven Debate"
+   ]
+  },
+  {
+   "title": "Jeong Yak-yong",
+   "target": "Chŏng Yagyong",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Japanese and Korean philosophy/Neo-Confucianism in Japan and Korea/Jeong Yakyong (Dasan)"
+   ]
+  },
+  {
+   "title": "Donghak",
+   "target": "Tonghak",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Japanese and Korean philosophy/Neo-Confucianism in Japan and Korea/Donghak"
+   ]
+  },
+  {
+   "title": "Ryōbu Shintō",
+   "target": "Muromachi period",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Japanese and Korean philosophy/Shinto thought/Ryobu Shinto"
+   ]
+  },
+  {
+   "title": "Nishida Kitarō",
+   "target": "Kitarō Nishida",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Japanese and Korean philosophy/Kyoto School/Nishida Kitaro"
+   ]
+  },
+  {
+   "title": "Basho (philosophy)",
+   "target": "Basho (philosophy)",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Japanese and Korean philosophy/Kyoto School/Basho"
+   ]
+  },
+  {
+   "title": "Watsuji Tetsurō",
+   "target": "Tetsurō Watsuji",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Japanese and Korean philosophy/Kyoto School/Watsuji Tetsuro"
+   ]
+  },
+  {
+   "title": "Miki Kiyoshi",
+   "target": "Kiyoshi Miki",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Japanese and Korean philosophy/Kyoto School/Miki Kiyoshi"
+   ]
+  },
+  {
+   "title": "Yūgen",
+   "target": "Japanese aesthetics",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Japanese and Korean philosophy/Japanese aesthetics/Yugen"
+   ]
+  },
+  {
+   "title": "Pahlavi literature",
+   "target": "Middle Persian literature",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Zoroastrian and Iranian thought/Pahlavi books"
+   ]
+  },
+  {
+   "title": "Islamic theology",
+   "target": "Schools of Islamic theology",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Kalam"
+   ]
+  },
+  {
+   "title": "Al-Nazzam",
+   "target": "Ibrahim al-Nazzam",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Kalam/Al-Nazzam"
+   ]
+  },
+  {
+   "title": "Al-Ash'ari",
+   "target": "Abu al-Hasan al-Ash'ari",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Kalam/Al-Ashari"
+   ]
+  },
+  {
+   "title": "Maturidi",
+   "target": "Maturidism",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Kalam/Maturidiyya"
+   ]
+  },
+  {
+   "title": "Islamic atomism",
+   "target": "Islamic atomism",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Kalam/Atomism in kalam"
+   ]
+  },
+  {
+   "title": "Translation movement",
+   "target": "Translation movement",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Persian and Islamic philosophy/Falsafa/Translation movement"
+   ]
+  },
+  {
+   "title": "Muhammad ibn Zakariya al-Razi",
+   "target": "Abu Bakr al-Razi",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Falsafa/Al-Razi (Rhazes)"
+   ]
+  },
+  {
+   "title": "The Virtuous City",
+   "target": "The Virtuous City",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Falsafa/Al-Madina al-Fadila"
+   ]
+  },
+  {
+   "title": "Essence–existence distinction",
+   "target": "Essence–existence distinction",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Falsafa/Essence and existence",
+    "/Christian and medieval philosophy/High Scholasticism/Esse and essence"
+   ]
+  },
+  {
+   "title": "Ihya Ulum al-Din",
+   "target": "Ihya Ulum al-Din",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Falsafa/Ihya Ulum al-Din"
+   ]
+  },
+  {
+   "title": "Suhrawardi",
+   "target": "Suhrawardi",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Persian and Islamic philosophy/Illuminationism (Ishraq)/Suhrawardi"
+   ]
+  },
+  {
+   "title": "The Philosophy of Illumination",
+   "target": "The Philosophy of Illumination",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Illuminationism (Ishraq)/Hikmat al-Ishraq"
+   ]
+  },
+  {
+   "title": "Alam al-misal",
+   "target": "Alam al-misal",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Illuminationism (Ishraq)/Alam al-mithal"
+   ]
+  },
+  {
+   "title": "Shams al-Din al-Shahrazuri",
+   "target": "Al-Shahrazuri",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Illuminationism (Ishraq)/Shahrazuri"
+   ]
+  },
+  {
+   "title": "Isfahan school (philosophy)",
+   "target": "Isfahan school (philosophy)",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Safavid Persian philosophy"
+   ]
+  },
+  {
+   "title": "Substantial motion",
+   "target": "Substantial motion",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Safavid Persian philosophy/Substantial motion"
+   ]
+  },
+  {
+   "title": "Allameh Tabatabaei",
+   "target": "Muhammad Husayn Tabataba'i",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Safavid Persian philosophy/Allamah Tabatabai"
+   ]
+  },
+  {
+   "title": "Rabia of Basra",
+   "target": "Rabia Basri",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Sufism/Rabia al-Adawiyya"
+   ]
+  },
+  {
+   "title": "Mansur Al-Hallaj",
+   "target": "Al-Hallaj",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Sufism/Al-Hallaj"
+   ]
+  },
+  {
+   "title": "Fusus al-Hikam",
+   "target": "Fusus al-Hikam",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Sufism/Fusus al-Hikam"
+   ]
+  },
+  {
+   "title": "Wahdat al-wujud",
+   "target": "Wahdat al-wujūd",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Sufism/Wahdat al-wujud",
+    "/Perennial and comparative themes/Nonduality/Sufi unity of being"
+   ]
+  },
+  {
+   "title": "Abdul-Qadir Gilani",
+   "target": "Abdul Qadir Gilani",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Sufism/Abd al-Qadir al-Jilani"
+   ]
+  },
+  {
+   "title": "Taha Abderrahmane",
+   "target": "Taha Abderrahmane",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Persian and Islamic philosophy/Modern Islamic thought/Taha Abdurrahman"
+   ]
+  },
+  {
+   "title": "Medieval Jewish philosophy",
+   "target": "Jewish philosophy",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Jewish philosophy/Medieval Jewish philosophy"
+   ]
+  },
+  {
+   "title": "Maimonides' thirteen principles of faith",
+   "target": "Maimonides' thirteen principles of faith",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Jewish philosophy/Medieval Jewish philosophy/Thirteen Principles of Faith"
+   ]
+  },
+  {
+   "title": "Sefer HaBahir",
+   "target": "Bahir",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Jewish philosophy/Kabbalah/Sefer ha-Bahir"
+   ]
+  },
+  {
+   "title": "Shevirat haKelim",
+   "target": "Shevirat haKelim",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Jewish philosophy/Kabbalah/Shevirat ha-kelim"
+   ]
+  },
+  {
+   "title": "Moses de Leon",
+   "target": "Moses de León",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Jewish philosophy/Kabbalah/Moses de Leon"
+   ]
+  },
+  {
+   "title": "Modern Jewish philosophy",
+   "target": "Modern Jewish philosophy",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Jewish philosophy/Modern Jewish philosophy"
+   ]
+  },
+  {
+   "title": "Arche",
+   "target": "First principle",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Presocratics/Arche"
+   ]
+  },
+  {
+   "title": "Antiphon (person of Rhamnus)",
+   "target": "Antiphon (person of Rhamnus)",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Sophists and Socrates/Antiphon the Sophist"
+   ]
+  },
+  {
+   "title": "Socratic paradoxes",
+   "target": "Socratic paradoxes",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Sophists and Socrates/Socratic paradoxes"
+   ]
+  },
+  {
+   "title": "Socratic schools",
+   "target": "Socratic schools",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Socratic schools"
+   ]
+  },
+  {
+   "title": "Eubulides of Miletus",
+   "target": "Eubulides",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Socratic schools/Eubulides"
+   ]
+  },
+  {
+   "title": "Plato's tripartite theory of soul",
+   "target": "Plato's theory of soul",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Plato and the Academy/Tripartite soul"
+   ]
+  },
+  {
+   "title": "Third man argument",
+   "target": "Parmenides (dialogue)",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Plato and the Academy/Third man argument"
+   ]
+  },
+  {
+   "title": "Sea battle",
+   "target": "Naval warfare",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Aristotle and the Peripatetics/Sea battle argument"
+   ]
+  },
+  {
+   "title": "Letter to Menoeceus",
+   "target": "Epicurus",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Hellenistic philosophies/Epicureanism/Letter to Menoeceus"
+   ]
+  },
+  {
+   "title": "Tetrapharmakos",
+   "target": "Principal Doctrines",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Hellenistic philosophies/Epicureanism/Epicurean tetrapharmakos"
+   ]
+  },
+  {
+   "title": "Logos (Stoicism)",
+   "target": "Logos (Stoicism)",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Hellenistic philosophies/Stoicism/Logos spermatikos"
+   ]
+  },
+  {
+   "title": "Oikeiosis",
+   "target": "Oikeiôsis",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Hellenistic philosophies/Stoicism/Oikeiosis"
+   ]
+  },
+  {
+   "title": "Premeditatio malorum",
+   "target": "Premeditatio malorum",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Hellenistic philosophies/Stoicism/Stoic premeditation of evils"
+   ]
+  },
+  {
+   "title": "On Isis and Osiris",
+   "target": "Moralia",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Hermetic and Middle Platonic currents/Plutarch's Isis and Osiris"
+   ]
+  },
+  {
+   "title": "World soul",
+   "target": "World Soul",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Neoplatonism/World Soul"
+   ]
+  },
+  {
+   "title": "On the Mysteries",
+   "target": "On the Mysteries",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Neoplatonism/De Mysteriis"
+   ]
+  },
+  {
+   "title": "Saturninius Secundus Salutius",
+   "target": "Salutius",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Neoplatonism/Sallustius"
+   ]
+  },
+  {
+   "title": "Platonic Theology",
+   "target": "Platonic theology",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Neoplatonism/Platonic Theology"
+   ]
+  },
+  {
+   "title": "Henad",
+   "target": "Henad",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Ancient Greek and Roman philosophy/Neoplatonism/Henads"
+   ]
+  },
+  {
+   "title": "On the Divine Names",
+   "target": "On the Divine Names",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Christian and medieval philosophy/Patristic thought/Divine Names"
+   ]
+  },
+  {
+   "title": "Theosis",
+   "target": "Theosis",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Christian and medieval philosophy/Patristic thought/Theosis"
+   ]
+  },
+  {
+   "title": "Privatio boni",
+   "target": "Absence of good",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Christian and medieval philosophy/Augustine and Latin antiquity/Privation theory of evil"
+   ]
+  },
+  {
+   "title": "The Consolation of Philosophy",
+   "target": "On the Consolation of Philosophy",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Christian and medieval philosophy/Augustine and Latin antiquity/Consolation of Philosophy"
+   ]
+  },
+  {
+   "title": "Periphyseon",
+   "target": "De divisione naturae",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Christian and medieval philosophy/Early medieval and Carolingian/Periphyseon",
+    "/Christian and medieval philosophy/Early medieval and Carolingian/Four divisions of nature"
+   ]
+  },
+  {
+   "title": "Héloïse d'Argenteuil",
+   "target": "Heloise",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Christian and medieval philosophy/Early Scholasticism/Heloise"
+   ]
+  },
+  {
+   "title": "Medieval realism",
+   "target": "Philosophical realism",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Christian and medieval philosophy/Early Scholasticism/Realism vs nominalism"
+   ]
+  },
+  {
+   "title": "Summa Theologiae",
+   "target": "Summa Theologica",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Christian and medieval philosophy/High Scholasticism/Summa Theologiae"
+   ]
+  },
+  {
+   "title": "Condemnations of 1277",
+   "target": "Condemnations of 1210–1277",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Christian and medieval philosophy/High Scholasticism/Condemnations of 1277"
+   ]
+  },
+  {
+   "title": "Late Scholasticism",
+   "target": "Late Scholasticism",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Christian and medieval philosophy/Late Scholasticism"
+   ]
+  },
+  {
+   "title": "Gelassenheit",
+   "target": "Gelassenheit",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Christian and medieval philosophy/Christian mysticism/Gelassenheit",
+    "/Twentieth-century and contemporary philosophy/Phenomenology/Gelassenheit (Heidegger)"
+   ]
+  },
+  {
+   "title": "Jan van Ruusbroec",
+   "target": "John of Ruusbroec",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Christian and medieval philosophy/Christian mysticism/Jan van Ruusbroec"
+   ]
+  },
+  {
+   "title": "De docta ignorantia",
+   "target": "De docta ignorantia",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Christian and medieval philosophy/Christian mysticism/De Docta Ignorantia"
+   ]
+  },
+  {
+   "title": "Coincidentia oppositorum",
+   "target": "Unity of opposites",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Christian and medieval philosophy/Christian mysticism/Coincidentia oppositorum"
+   ]
+  },
+  {
+   "title": "Gemistus Pletho",
+   "target": "Gemistos Plethon",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Christian and medieval philosophy/Eastern Orthodox thought/Gemistos Plethon"
+   ]
+  },
+  {
+   "title": "Anne Conway",
+   "target": "Anne Conway",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Renaissance and early modern philosophy/Renaissance humanism and Platonism/Anne Conway"
+   ]
+  },
+  {
+   "title": "Protestant Reformation",
+   "target": "Reformation",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Renaissance and early modern philosophy/Renaissance humanism and Platonism/Reformation thought"
+   ]
+  },
+  {
+   "title": "Francisco Sánchez (philosopher)",
+   "target": "Francisco Sánchez (philosopher)",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Renaissance and early modern philosophy/Skepticism and early modern humanism/Francisco Sanches"
+   ]
+  },
+  {
+   "title": "Primary/secondary quality distinction",
+   "target": "Primary–secondary quality distinction",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Renaissance and early modern philosophy/Scientific Revolution/Primary and secondary qualities"
+   ]
+  },
+  {
+   "title": "Cartesian dualism",
+   "target": "Mind–body dualism",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Renaissance and early modern philosophy/Rationalism/Cartesian dualism"
+   ]
+  },
+  {
+   "title": "Elisabeth of Bohemia",
+   "target": "Elisabeth of Bohemia",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Renaissance and early modern philosophy/Rationalism/Elisabeth of Bohemia"
+   ]
+  },
+  {
+   "title": "Ethics (Spinoza book)",
+   "target": "Spinoza's Ethics",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Renaissance and early modern philosophy/Rationalism/Ethics (Spinoza)"
+   ]
+  },
+  {
+   "title": "Amor Dei intellectualis",
+   "target": "Amor Dei intellectualis",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Renaissance and early modern philosophy/Rationalism/Amor Dei intellectualis"
+   ]
+  },
+  {
+   "title": "Pre-established harmony",
+   "target": "Mind–body problem",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Renaissance and early modern philosophy/Rationalism/Pre-established harmony"
+   ]
+  },
+  {
+   "title": "Mary Shepherd",
+   "target": "Mary Shepherd",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Renaissance and early modern philosophy/Rationalism/Lady Mary Shepherd"
+   ]
+  },
+  {
+   "title": "British empiricism",
+   "target": "Empiricism",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Renaissance and early modern philosophy/British Empiricism"
+   ]
+  },
+  {
+   "title": "Locke's theory of personal identity",
+   "target": "Locke's theory of personal identity",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Renaissance and early modern philosophy/British Empiricism/Locke on personal identity"
+   ]
+  },
+  {
+   "title": "Johann Gottfried von Herder",
+   "target": "Johann Gottfried Herder",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Renaissance and early modern philosophy/Enlightenment/J. G. Herder"
+   ]
+  },
+  {
+   "title": "Kant's table of judgments",
+   "target": "Kant's table of judgments",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Renaissance and early modern philosophy/Kant/Categories"
+   ]
+  },
+  {
+   "title": "Answering the Question: What Is Enlightenment?",
+   "target": "What Is Enlightenment?",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Renaissance and early modern philosophy/Kant/Enlightenment as emergence"
+   ]
+  },
+  {
+   "title": "Wissenschaftslehre",
+   "target": "Epistemology",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Nineteenth-century philosophy/German Idealism and Romanticism/Wissenschaftslehre"
+   ]
+  },
+  {
+   "title": "Philosophical Investigations into the Essence of Human Freedom",
+   "target": "Philosophical Investigations into the Essence of Human Freedom",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Nineteenth-century philosophy/German Idealism and Romanticism/Philosophical Inquiries into Freedom"
+   ]
+  },
+  {
+   "title": "Phenomenology of Spirit",
+   "target": "The Phenomenology of Spirit",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Nineteenth-century philosophy/German Idealism and Romanticism/Phenomenology of Spirit"
+   ]
+  },
+  {
+   "title": "Sublation",
+   "target": "Aufheben",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Nineteenth-century philosophy/German Idealism and Romanticism/Aufhebung"
+   ]
+  },
+  {
+   "title": "Master–slave dialectic",
+   "target": "Lord–bondsman dialectic",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Nineteenth-century philosophy/German Idealism and Romanticism/Master-slave dialectic"
+   ]
+  },
+  {
+   "title": "Schopenhauer",
+   "target": "Arthur Schopenhauer",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Nineteenth-century philosophy/Pessimism and existential precursors/Renunciation"
+   ]
+  },
+  {
+   "title": "Either/Or (Kierkegaard)",
+   "target": "Either/Or (Kierkegaard)",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Nineteenth-century philosophy/Pessimism and existential precursors/Either/Or"
+   ]
+  },
+  {
+   "title": "Kierkegaard",
+   "target": "Søren Kierkegaard",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Nineteenth-century philosophy/Pessimism and existential precursors/Three stages of life"
+   ]
+  },
+  {
+   "title": "Pragmatism: A New Name for Some Old Ways of Thinking",
+   "target": "Pragmatism: A New Name for Some Old Ways of Thinking",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Nineteenth-century philosophy/Pragmatism/Pragmatism (James)"
+   ]
+  },
+  {
+   "title": "Creative Evolution",
+   "target": "Creative evolution",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Nineteenth-century philosophy/Pragmatism/Creative Evolution"
+   ]
+  },
+  {
+   "title": "Thomas Hill Green",
+   "target": "T. H. Green",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Nineteenth-century philosophy/Pragmatism/T. H. Green"
+   ]
+  },
+  {
+   "title": "John McTaggart Ellis McTaggart",
+   "target": "J. M. E. McTaggart",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Nineteenth-century philosophy/Pragmatism/J. M. E. McTaggart"
+   ]
+  },
+  {
+   "title": "20th-century philosophy",
+   "target": "Contemporary philosophy",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy"
+   ]
+  },
+  {
+   "title": "Ideas (Husserl)",
+   "target": "Ideas (Husserl)",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Phenomenology/Ideas I"
+   ]
+  },
+  {
+   "title": "Ontological difference",
+   "target": "Fundamental ontology",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Phenomenology/Ontological difference"
+   ]
+  },
+  {
+   "title": "The Courage to Be",
+   "target": "Paul Tillich",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Existentialism/Courage to Be"
+   ]
+  },
+  {
+   "title": "Language-game (philosophy)",
+   "target": "Language game (philosophy)",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Analytic philosophy/Language games"
+   ]
+  },
+  {
+   "title": "Rule-following paradox",
+   "target": "Wittgenstein on Rules and Private Language",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Analytic philosophy/Rule-following paradox"
+   ]
+  },
+  {
+   "title": "The Logical Structure of the World",
+   "target": "The Logical Structure of the World",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Analytic philosophy/Logical Construction of the World"
+   ]
+  },
+  {
+   "title": "Clarence Irving Lewis",
+   "target": "C. I. Lewis",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Pragmatism (20th century)/C. I. Lewis"
+   ]
+  },
+  {
+   "title": "Instrumental rationality",
+   "target": "Instrumental and value rationality",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Critical theory and the Frankfurt School/Instrumental reason"
+   ]
+  },
+  {
+   "title": "Science and the Modern World",
+   "target": "Science and the Modern World",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Process philosophy/Science and the Modern World"
+   ]
+  },
+  {
+   "title": "Adventures of Ideas",
+   "target": "Adventures of Ideas",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Process philosophy/Adventures of Ideas"
+   ]
+  },
+  {
+   "title": "Actual occasion",
+   "target": "Actual occasion",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Process philosophy/Actual occasion"
+   ]
+  },
+  {
+   "title": "Prehension",
+   "target": "Prehensility",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Process philosophy/Prehension"
+   ]
+  },
+  {
+   "title": "Fallacy of misplaced concreteness",
+   "target": "Reification (fallacy)",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Process philosophy/Fallacy of misplaced concreteness"
+   ]
+  },
+  {
+   "title": "Gender performativity",
+   "target": "Social construction of gender",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Feminist philosophy/Gender performativity"
+   ]
+  },
+  {
+   "title": "Catharine MacKinnon",
+   "target": "Catharine A. MacKinnon",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Feminist philosophy/Catharine MacKinnon"
+   ]
+  },
+  {
+   "title": "Decolonisation",
+   "target": "Decolonization",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Decolonial and postcolonial thought"
+   ]
+  },
+  {
+   "title": "María Lugones",
+   "target": "Maria Lugones",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Decolonial and postcolonial thought/Maria Lugones"
+   ]
+  },
+  {
+   "title": "John S. Mbiti",
+   "target": "John S. Mbiti",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/African philosophy/John Mbiti"
+   ]
+  },
+  {
+   "title": "Memphite Theology",
+   "target": "Shabaka Stone",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/African philosophy/Memphite Theology"
+   ]
+  },
+  {
+   "title": "Zera Yacob",
+   "target": "Zara Yaqob",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/African philosophy/Ethiopian philosophy",
+    "/Twentieth-century and contemporary philosophy/African philosophy/Zera Yacob"
+   ]
+  },
+  {
+   "title": "African-American philosophy",
+   "target": "Africana philosophy",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/African philosophy/African American philosophy"
+   ]
+  },
+  {
+   "title": "Anna Julia Cooper",
+   "target": "Anna J. Cooper",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/African philosophy/Anna Julia Cooper"
+   ]
+  },
+  {
+   "title": "Latin American philosophy",
+   "target": "Culture of Latin America",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Latin American philosophy"
+   ]
+  },
+  {
+   "title": "Philosophy of liberation",
+   "target": "Enrique Dussel",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Latin American philosophy/Philosophy of liberation"
+   ]
+  },
+  {
+   "title": "Leopoldo Zea",
+   "target": "Leopoldo Zea Aguilar",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Latin American philosophy/Leopoldo Zea"
+   ]
+  },
+  {
+   "title": "Buen vivir",
+   "target": "Socialism of the 21st century",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Latin American philosophy/Sumak kawsay"
+   ]
+  },
+  {
+   "title": "Mestizaje",
+   "target": "Mestizo",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Latin American philosophy/Mestizaje"
+   ]
+  },
+  {
+   "title": "Gloria E. Anzaldúa",
+   "target": "Gloria Anzaldúa",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Latin American philosophy/Gloria Anzaldua"
+   ]
+  },
+  {
+   "title": "Indigenous philosophy",
+   "target": "Indigenous philosophy",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Indigenous philosophies"
+   ]
+  },
+  {
+   "title": "Mitákuye Oyás'iŋ",
+   "target": "Mitákuye Oyás'iŋ",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Indigenous philosophies/Mitakuye Oyasin"
+   ]
+  },
+  {
+   "title": "Dreamtime",
+   "target": "The Dreaming",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Indigenous philosophies/Dreaming"
+   ]
+  },
+  {
+   "title": "Gayanashagowa",
+   "target": "Great Law of Peace",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Indigenous philosophies/Haudenosaunee Great Law"
+   ]
+  },
+  {
+   "title": "Andy Clark",
+   "target": "Andrew Clark",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Philosophy of mind and cognitive science/Andy Clark"
+   ]
+  },
+  {
+   "title": "Frank Jackson (philosopher)",
+   "target": "Frank Cameron Jackson",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Philosophy of mind and cognitive science/Frank Jackson"
+   ]
+  },
+  {
+   "title": "Philip Goff",
+   "target": "Philip Goff",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Twentieth-century and contemporary philosophy/Philosophy of mind and cognitive science/Philip Goff"
+   ]
+  },
+  {
+   "title": "Three Jewels",
+   "target": "Refuge in Buddhism",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Integral and developmental thought/Panentheon framework/Kosmotheon"
+   ]
+  },
+  {
+   "title": "Evolutionary spirituality",
+   "target": "Evolutionary spirituality",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Integral and developmental thought/Evolutionary spirituality"
+   ]
+  },
+  {
+   "title": "Bruce Sanguin",
+   "target": "Bruce Sanguin",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Integral and developmental thought/Evolutionary spirituality/Bruce Sanguin"
+   ]
+  },
+  {
+   "title": "Integral theory (Ken Wilber)",
+   "target": "Integral theory",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Integral and developmental thought/Integral philosophy",
+    "/Integral and developmental thought/Integral philosophy/AQAL",
+    "/Integral and developmental thought/Developmental models/Alexander Wilber integral critique"
+   ]
+  },
+  {
+   "title": "A Theory of Everything (Ken Wilber book)",
+   "target": "A Theory of Everything (Ken Wilber book)",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Integral and developmental thought/Integral philosophy/A Theory of Everything"
+   ]
+  },
+  {
+   "title": "The Spectrum of Consciousness",
+   "target": "The Spectrum of Consciousness",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Integral and developmental thought/Integral philosophy/The Spectrum of Consciousness"
+   ]
+  },
+  {
+   "title": "Four quadrants",
+   "target": "Four quadrants",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Integral and developmental thought/Integral philosophy/Four quadrants"
+   ]
+  },
+  {
+   "title": "Pre/trans fallacy",
+   "target": "Ken Wilber",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Integral and developmental thought/Integral philosophy/Pre/trans fallacy"
+   ]
+  },
+  {
+   "title": "Integral Life Practice",
+   "target": "Integral Life Practice",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Integral and developmental thought/Integral philosophy/Integral Life Practice"
+   ]
+  },
+  {
+   "title": "Sean Esbjörn-Hargens",
+   "target": "Sean Esbjörn-Hargens",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Integral and developmental thought/Integral philosophy/Sean Esbjorn-Hargens"
+   ]
+  },
+  {
+   "title": "Susanne Cook-Greuter",
+   "target": "Susanne Cook-Greuter",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Integral and developmental thought/Developmental models/Susanne Cook-Greuter"
+   ]
+  },
+  {
+   "title": "John Vervaeke",
+   "target": "John Vervaeke",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Integral and developmental thought/Developmental models/Meaning crisis",
+    "/Integral and developmental thought/Developmental models/John Vervaeke"
+   ]
+  },
+  {
+   "title": "Daniel Schmachtenberger",
+   "target": "Daniel Schmachtenberger",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Integral and developmental thought/Developmental models/Daniel Schmachtenberger"
+   ]
+  },
+  {
+   "title": "Problem of the many",
+   "target": "Problem of the many",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Metaphysics/Problem of the many"
+   ]
+  },
+  {
+   "title": "Grandfather paradox",
+   "target": "Temporal paradox",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Metaphysics/Grandfather paradox"
+   ]
+  },
+  {
+   "title": "Why is there something rather than nothing?",
+   "target": "Why is there anything at all?",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Metaphysics/Why is there something rather than nothing?"
+   ]
+  },
+  {
+   "title": "Theory of justification",
+   "target": "Justification (epistemology)",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Epistemology/Knowledge as justified true belief"
+   ]
+  },
+  {
+   "title": "Deontological ethics",
+   "target": "Deontology",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Ethics/Deontology"
+   ]
+  },
+  {
+   "title": "Error theory",
+   "target": "Moral nihilism",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Ethics/Error theory"
+   ]
+  },
+  {
+   "title": "Drowning child analogy",
+   "target": "Famine, Affluence, and Morality",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Ethics/Drowning child"
+   ]
+  },
+  {
+   "title": "On a Supposed Right to Lie Because of Philanthropic Concerns",
+   "target": "On a Supposed Right to Tell Lies from Benevolent Motives",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Ethics/Murderer at the door"
+   ]
+  },
+  {
+   "title": "Stoic logic",
+   "target": "Stoicism",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Logic/Stoic propositional logic"
+   ]
+  },
+  {
+   "title": "Institutional theory of art",
+   "target": "Theory of art",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Aesthetics/Institutional theory of art"
+   ]
+  },
+  {
+   "title": "Artworld",
+   "target": "Art world",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Aesthetics/Artworld"
+   ]
+  },
+  {
+   "title": "Aesthetic attitude",
+   "target": "Aesthetic attitude",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Aesthetics/Aesthetic attitude"
+   ]
+  },
+  {
+   "title": "Chinese aesthetics",
+   "target": "Chinese art",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Aesthetics/Chinese aesthetics"
+   ]
+  },
+  {
+   "title": "Aura (Benjamin)",
+   "target": "Aura (Benjamin)",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Aesthetics/Aura"
+   ]
+  },
+  {
+   "title": "Paradox of tragedy",
+   "target": "Paradox of tragedy",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Aesthetics/Paradox of tragedy"
+   ]
+  },
+  {
+   "title": "Judgment of taste",
+   "target": "Judgment of taste",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Aesthetics/Problem of aesthetic judgment"
+   ]
+  },
+  {
+   "title": "Philosophy of art",
+   "target": "Aesthetics",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Aesthetics/Is there an ontology of art?"
+   ]
+  },
+  {
+   "title": "Structural realism",
+   "target": "Neorealism (international relations)",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of science/Structural realism"
+   ]
+  },
+  {
+   "title": "Laws of science",
+   "target": "Scientific law",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of science/Laws of nature"
+   ]
+  },
+  {
+   "title": "No-miracles argument",
+   "target": "Structuralism (philosophy of science)",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of science/No miracles argument"
+   ]
+  },
+  {
+   "title": "Species problem",
+   "target": "Species",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of science/Biology: species concept"
+   ]
+  },
+  {
+   "title": "Religious experience",
+   "target": "Mystical or religious experience",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of religion/Religious experience"
+   ]
+  },
+  {
+   "title": "Religious language",
+   "target": "Religious language",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of religion/Religious language"
+   ]
+  },
+  {
+   "title": "Moral argument",
+   "target": "Argument from morality",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of religion/Moral argument"
+   ]
+  },
+  {
+   "title": "Free will defense",
+   "target": "Alvin Plantinga's free-will defense",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of religion/Free will defense"
+   ]
+  },
+  {
+   "title": "Soul-making theodicy",
+   "target": "Irenaean theodicy",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of religion/Soul-making theodicy"
+   ]
+  },
+  {
+   "title": "Problem of free will",
+   "target": "Free will",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of religion/Foreknowledge and freedom"
+   ]
+  },
+  {
+   "title": "Relationship between religion and science",
+   "target": "Relationship between science and religion",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of religion/Religion and science"
+   ]
+  },
+  {
+   "title": "Use theory of meaning",
+   "target": "Philosophical Investigations",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of language/Use theory of meaning"
+   ]
+  },
+  {
+   "title": "Frege's puzzle",
+   "target": "Frege's puzzles",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of language/Frege's puzzle"
+   ]
+  },
+  {
+   "title": "Sphota",
+   "target": "Sphoṭa",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of language/Sphota"
+   ]
+  },
+  {
+   "title": "Bhartrihari",
+   "target": "Bhartṛhari",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Philosophy of language/Bhartrihari"
+   ]
+  },
+  {
+   "title": "Philosophy of law",
+   "target": "Jurisprudence",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Additional branches/Philosophy of law"
+   ]
+  },
+  {
+   "title": "Philosophy of economics",
+   "target": "Philosophy and economics",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Additional branches/Philosophy of economics"
+   ]
+  },
+  {
+   "title": "Philosophy of humor",
+   "target": "Theories of humor",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Additional branches/Philosophy of humor"
+   ]
+  },
+  {
+   "title": "Existential risk from artificial general intelligence",
+   "target": "Existential risk from artificial intelligence",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Additional branches/Existential risk"
+   ]
+  },
+  {
+   "title": "Newcomb's paradox",
+   "target": "Newcomb's problem",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Philosophical branches and problems/Additional branches/Newcomb's problem"
+   ]
+  },
+  {
+   "title": "Tathāgatagarbha",
+   "target": "Buddha-nature",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Perennial and comparative themes/Emptiness and Brahman/Buddha-nature vs Atman"
+   ]
+  },
+  {
+   "title": "Ground of being",
+   "target": "Ground of Being",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Perennial and comparative themes/Emptiness and Brahman/Ground of being"
+   ]
+  },
+  {
+   "title": "Arete (moral virtue)",
+   "target": "Arete",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Perennial and comparative themes/Virtue across traditions/Aristotelian arete"
+   ]
+  },
+  {
+   "title": "Stoic ethics",
+   "target": "Stoicism",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Perennial and comparative themes/Virtue across traditions/Stoic virtue"
+   ]
+  },
+  {
+   "title": "Christian virtues",
+   "target": "Christian virtue",
+   "missing": false,
+   "disambiguation": true,
+   "nodes": [
+    "/Perennial and comparative themes/Virtue across traditions/Christian virtues"
+   ]
+  },
+  {
+   "title": "Mahavratas",
+   "target": "Five Vows",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Perennial and comparative themes/Virtue across traditions/Jain mahavratas"
+   ]
+  },
+  {
+   "title": "Right livelihood",
+   "target": "Noble Eightfold Path",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Perennial and comparative themes/Virtue across traditions/Right livelihood"
+   ]
+  },
+  {
+   "title": "Vipassana",
+   "target": "Samatha-vipassanā",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Perennial and comparative themes/Contemplative practice across traditions/Vipassana"
+   ]
+  },
+  {
+   "title": "Mystical experience",
+   "target": "Mystical or religious experience",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Perennial and comparative themes/Contemplative practice across traditions/Mystical experience"
+   ]
+  },
+  {
+   "title": "Ego (spirituality)",
+   "target": "Religious views on the self",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Perennial and comparative themes/Human condition in comparative view/Ego"
+   ]
+  },
+  {
+   "title": "Light in religion",
+   "target": "Light in religion",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Perennial and comparative themes/Human condition in comparative view/Light symbolism"
+   ]
+  },
+  {
+   "title": "Divine feminine",
+   "target": "Goddess",
+   "missing": false,
+   "disambiguation": false,
+   "nodes": [
+    "/Perennial and comparative themes/Human condition in comparative view/Sacred feminine"
+   ]
+  },
+  {
+   "title": "The Sacred and the Profane",
+   "target": "The Sacred and the Profane",
+   "missing": true,
+   "disambiguation": false,
+   "nodes": [
+    "/Perennial and comparative themes/Human condition in comparative view/Sacred and profane"
+   ]
+  }
+ ]
+}
