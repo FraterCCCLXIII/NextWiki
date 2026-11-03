@@ -6,7 +6,7 @@ import { useState } from "react";
 import { NAV_GROUPS, isNavActive, type NavGroup } from "~/lib/kosmo/nav";
 import { useScrollFade } from "~/lib/hooks/use-scroll-fade";
 
-function NavGroupSection({ group }: { group: NavGroup }) {
+function NavGroupSection({ group, hueBase }: { group: NavGroup; hueBase: number }) {
   const pathname = usePathname() ?? "";
   const hasActive = group.pages.some((p) => isNavActive(pathname, p));
   const [open, setOpen] = useState(true);
@@ -34,17 +34,19 @@ function NavGroupSection({ group }: { group: NavGroup }) {
         hidden={!open}
         className="m-0 mt-1 flex list-none flex-col gap-0.5 p-0"
       >
-        {group.pages.map((page) => {
+        {group.pages.map((page, i) => {
           const active = isNavActive(pathname, page);
+          const hue = (hueBase + i * 47) % 360; // every word gets its own colour gradient
           return (
             <li key={page.href}>
               <Link
                 href={page.href}
                 aria-current={active ? "page" : undefined}
-                className={`-mx-2 block rounded px-2 py-1 text-base transition-colors ${
+                style={{ "--h": hue } as React.CSSProperties}
+                className={`-mx-2 block rounded px-2 py-1 text-base ${
                   active
                     ? "bg-kosmo-panel text-kosmo-mint"
-                    : "text-kosmo-text kosmo-rainbow"
+                    : "kosmo-word"
                 }`}
               >
                 {page.label}
@@ -65,8 +67,8 @@ export function AtlasNav() {
       aria-label="Atlas"
       className="kosmo-atlas-nav w-full bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-6.25rem)] md:w-max md:min-w-40 md:shrink-0 md:overflow-y-auto kosmo-scroll scroll-fade"
     >
-      {NAV_GROUPS.map((group) => (
-        <NavGroupSection key={group.name} group={group} />
+      {NAV_GROUPS.map((group, gi) => (
+        <NavGroupSection key={group.name} group={group} hueBase={(gi * 97 + 12) % 360} />
       ))}
     </nav>
   );
