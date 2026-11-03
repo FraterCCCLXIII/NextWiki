@@ -1442,7 +1442,7 @@ const CUBE_COL = { star: '255,236,200', galaxy: '255,184,107', planet: '127,195,
 function drawCube() {
   if (hudClosed) return;
   const dpr = Math.min(devicePixelRatio || 1, 2), S = 150;
-  if (cubeC.width !== S * dpr) { cubeC.width = S * dpr; cubeC.height = S * dpr; }
+  if (cubeC.width !== S * dpr || cubeC.height !== S * dpr) { cubeC.width = S * dpr; cubeC.height = S * dpr; }
   cctx.setTransform(dpr, 0, 0, dpr, 0, 0); cctx.clearRect(0, 0, S, S);
   // the cube is the camera's own box of space: centred on the view centre, one view-width on a side, turning with the camera
   const side = 10 ** state.zoom, half = side / 2, dst = loadedDest();
