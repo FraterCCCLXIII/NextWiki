@@ -177,13 +177,14 @@
   body.fxdrawer-open #zoombar, body.fxdrawer-open #scalebar, body.fxdrawer-open #help { right: 418px; }
   body.drawer-open #top, body.navdrawer-open #top, body.fxdrawer-open #top { right: 400px; }
   /* vertical distortion sliders, left of the zoom bar; they shift left with the right-hand drawers like the zoom bar does */
-  #scalebars { position: absolute; right: 78px; top: calc(var(--tlh, 210px) + 86px); bottom: 150px; z-index: 4; display: flex; gap: 4px; }
+  #scalebars { position: absolute; right: 18px; top: calc(var(--tlh, 210px) + 86px); bottom: 280px; z-index: 4; display: flex; gap: 4px; }
   #scalebars .col { width: 50px; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 0 6px; }
   #scalebars .tag { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
   #scalebars .cap { font-size: 11px; color: #c9d6e6; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
   #scalebars .v { font-size: 12px; color: var(--accent); font-variant-numeric: tabular-nums; min-height: 15px; }
   #scalebars input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 4px; height: 100%; -webkit-appearance: slider-vertical; }
-  body.drawer-open #scalebars, body.navdrawer-open #scalebars, body.fxdrawer-open #scalebars { right: 478px; }
+  body.drawer-open #scalebars, body.navdrawer-open #scalebars, body.fxdrawer-open #scalebars { right: 418px; }
+  body.nav-closed #scalebars { bottom: 90px; }
   #zoombar { position: absolute; right: 18px; top: calc(var(--tlh, 210px) + 86px); bottom: 150px; width: 54px; z-index: 4; display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 8px; }
   #zoombar input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 4px; height: 100%; -webkit-appearance: slider-vertical; }
   #zoombar .tag { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
@@ -191,8 +192,28 @@
   #hud { position: absolute; left: 16px; bottom: 16px; z-index: 5; max-width: calc(100% - 32px); padding: 10px 34px 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--bg) 58%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); text-shadow: none; }
   #hoverTip { position: absolute; z-index: 9; pointer-events: none; display: none; padding: 6px 11px; border-radius: 9px; font-size: 14px; white-space: nowrap; color: #fff; background: color-mix(in srgb, var(--bg) 78%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); text-shadow: none; }
   #hoverTip small { color: var(--muted); margin-left: 6px; }
+  #hoverTip .phys { display: block; font-size: 12px; color: #c9d6e6; margin-top: 2px; font-variant-numeric: tabular-nums; }
   #hoverTip em { display: block; font-style: normal; font-size: 11px; color: var(--accent); margin-top: 1px; letter-spacing: .06em; }
   #hoverRing { position: absolute; z-index: 8; pointer-events: none; display: none; border: 1.5px solid var(--accent); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 10px rgba(159,184,171,0.35); }
+  /* navigation HUD, bottom right: zoom, pan or fly, look, mode and speed */
+  #navhud { position: absolute; right: 16px; bottom: 16px; z-index: 5; padding: 10px 34px 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--bg) 58%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); text-shadow: none; display: flex; flex-direction: column; gap: 8px; }
+  #navhud[hidden], #navOpen[hidden] { display: none; }
+  #navhud .hudk { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+  #navhud .navrow { display: flex; align-items: center; gap: 8px; }
+  #navhud .navrow input[type=range] { flex: 1; min-width: 96px; width: auto; }
+  #navhud .navtag { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-align: center; }
+  #navhud .navval { font-size: 12px; color: var(--accent); min-width: 44px; text-align: right; font-variant-numeric: tabular-nums; }
+  #navhud .navpads { display: flex; gap: 14px; align-items: center; }
+  #navhud .navpad { display: grid; grid-template-columns: repeat(3, 34px); grid-auto-rows: 30px; gap: 4px; align-items: center; justify-items: center; }
+  #navhud button { min-width: 34px; height: 30px; padding: 0 6px; font-size: 14px; line-height: 1; border-radius: 9px; background: transparent; border: 1px solid var(--line2, #303133); color: var(--text); cursor: pointer; touch-action: none; user-select: none; box-shadow: none; }
+  #navhud button.sm { font-size: 10px; letter-spacing: 0.04em; }
+  #navhud button:hover { border-color: var(--accent); color: var(--accent); }
+  #navhud button:active, #navhud button.held, #navhud #navMode.on { border-color: var(--accent); color: var(--accent); background: rgba(26,26,26,0.85); }
+  body:not(.flying) #navhud .flyonly { opacity: 0.35; }
+  #navhud #navClose { position: absolute; top: 6px; right: 6px; width: 24px; min-width: 0; height: 24px; padding: 0; border: 0; border-radius: 50%; font-size: 16px; color: var(--muted); }
+  #navOpen { position: absolute; right: 16px; bottom: 16px; z-index: 5; }
+  body.drawer-open #navhud, body.navdrawer-open #navhud, body.fxdrawer-open #navhud, body.drawer-open #navOpen, body.navdrawer-open #navOpen, body.fxdrawer-open #navOpen { right: 416px; }
+  @media (max-width: 900px) { #hud .hudcube, #hud .hudnote { display: none; } #hud { max-width: 280px; } #navhud .navpads { gap: 8px; } }
   #hud[hidden], #hudOpen[hidden] { display: none; }
   #hud .hudbody { display: flex; gap: 16px; align-items: flex-start; }
   #hud .hudcube { text-align: center; flex: none; }
@@ -323,6 +344,8 @@
   <div class="row"><label for="fxTwinkle">Twinkle</label><input type="range" id="fxTwinkle" min="0" max="1" step="0.02"><span class="val" id="fxTwinkle-v"></span></div>
   <div class="row"><label for="fxGain">Brightness</label><input type="range" id="fxGain" min="0.3" max="3" step="0.05"><span class="val" id="fxGain-v"></span></div>
   <div class="row"><label for="fxAdd">Additive glow (light adds up)</label><input type="checkbox" id="fxAdd"></div>
+  <div class="row"><label for="fxReal">Real light: brightness falls with distance squared</label><input type="checkbox" id="fxReal"></div>
+  <div class="row"><label for="fxExposure">Exposure</label><input type="range" id="fxExposure" min="0.3" max="4" step="0.05"><span class="val" id="fxExposure-v"></span></div>
   <div class="head" style="margin-top:14px"><h3 style="font-size:15px">Flight</h3></div>
   <div class="row"><label for="fxFly">Flight mode (G): fly where you look</label><input type="checkbox" id="fxFly"></div>
   <div class="row"><label for="fxFlySpeed">Speed (view widths / s)</label><input type="range" id="fxFlySpeed" min="-2.3" max="1.6" step="0.01"><span class="val" id="fxFlySpeed-v"></span></div>
@@ -368,7 +391,35 @@
     <span class="tag">true</span><input type="range" id="vBal" min="0" max="1" step="0.01" orient="vertical"><span class="tag">equal</span><span class="cap">balance</span><span class="v" id="vBal-v"></span>
   </div>
 </div>
-<div id="zoombar" class="glass"><span class="tag">out</span><input type="range" id="zoom" min="6.5" max="27" step="0.01" orient="vertical"><span class="tag">in</span></div>
+<div id="zoombar" hidden></div>
+<div id="navhud" class="glass" aria-label="Navigation controls">
+  <button id="navClose" type="button" aria-label="Close the navigation controls" title="Close">×</button>
+  <div class="hudk">Navigate</div>
+  <div class="navrow">
+    <button type="button" data-k="e" title="Zoom in (E)">+</button>
+    <span class="navtag">in</span><input type="range" id="zoom" min="6.5" max="27" step="0.01" aria-label="Zoom"><span class="navtag">out</span>
+    <button type="button" data-k="q" title="Zoom out (Q)">−</button>
+  </div>
+  <div class="navpads">
+    <div class="navpad" aria-label="Pan or fly">
+      <button type="button" data-k="shift" class="sm" title="Boost (Shift)">boost</button><button type="button" data-k="w" title="Pan up / fly forward (W)">▲</button><button type="button" data-k="x" class="sm flyonly" title="Fly up (X)">up</button>
+      <button type="button" data-k="a" title="Pan left / strafe left (A)">◀</button><button type="button" data-k="b" class="sm" title="Brake (B)">stop</button><button type="button" data-k="d" title="Pan right / strafe right (D)">▶</button>
+      <button type="button" data-k="z" class="sm flyonly" title="Fly down (Z)">down</button><button type="button" data-k="s" title="Pan down / fly back (S)">▼</button><span></span>
+    </div>
+    <div class="navpad" aria-label="Look around">
+      <span></span><button type="button" data-k="arrowup" title="Look up (↑)">↑</button><span></span>
+      <button type="button" data-k="arrowleft" title="Look left (←)">←</button><span class="navtag">look</span><button type="button" data-k="arrowright" title="Look right (→)">→</button>
+      <span></span><button type="button" data-k="arrowdown" title="Look down (↓)">↓</button><span></span>
+    </div>
+  </div>
+  <div class="navrow">
+    <button type="button" id="navMode" title="Orbit around the view centre, or fly where you look (G)">Orbit</button>
+    <span class="navtag">speed</span><input type="range" id="navSpeed" min="-2.3" max="1.6" step="0.01" aria-label="Flight speed"><span class="navval" id="navSpeed-v"></span>
+  </div>
+</div>
+<button id="navOpen" class="orb" type="button" hidden aria-label="Show the navigation controls" title="Navigate">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8l-1.9 4.5-4.5 1.9 1.9-4.5z"/></svg>
+</button>
 <div id="hud" class="glass" aria-label="Current location">
   <button id="hudClose" type="button" aria-label="Close the location readout" title="Close">×</button>
   <div class="hudk">Current location</div>
@@ -746,13 +797,13 @@ const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 42
 const gauss = () => Math.sqrt(-2 * Math.log(1 - rnd())) * Math.cos(2 * Math.PI * rnd());
 // ---- Star look: sprite shapes, halo, twinkle, brightness. Every point cloud registers its material here, and the
 // "Stars" drawer (the sparkle button) edits `fx`; choices persist in localStorage ("kosmoFx"). ----
-const FX_DEFAULTS = { shape: 'round', size: 1, halo: 0.7, spike: 0.7, rot: 0, twinkle: 0, gain: 1, additive: true, warp: true, warpAmt: 1, flight: 'hop', pull: 1, flightSpeed: 1, ease: 'smooth', arc: 0 };
+const FX_DEFAULTS = { shape: 'round', size: 1, halo: 0.7, spike: 0.7, rot: 0, twinkle: 0, gain: 1, additive: true, real: true, exposure: 1, warp: true, warpAmt: 1, flight: 'hop', pull: 1, flightSpeed: 1, ease: 'smooth', arc: 0 };
 const fx = { ...FX_DEFAULTS };
 try { Object.assign(fx, JSON.parse(localStorage.getItem('kosmoFx') || '{}')); } catch { /* storage blocked or bad JSON: defaults */ }
 window.kosmoTimeline.fx = fx;   // debug hook
 const FX_SHAPES = [['pixel', 'Pixel'], ['round', 'Soft glow'], ['cross', 'Hubble cross'], ['jwst', 'Webb 6+2'], ['eight', 'Eight-point'], ['streak', 'Streak']];
 const FX_SPRITE_SCALE = 4;                       // a sprite is mostly glow and spikes, so it is drawn this much larger than the old square
-const fxUTime = { value: 0 }, fxUTwinkle = { value: fx.twinkle };
+const fxUTime = { value: 0 }, fxUTwinkle = { value: fx.twinkle }, fxUReal = { value: 1 }, fxUExposure = { value: 1 }, fxURef = { value: 3 };
 const FX_MAX_CSS_PX = 56;                      // largest a star sprite may get on screen (CSS px); stops overdraw and white-out when zoomed in
 const fxUMaxPx = { value: 1e6 };               // the same limit in framebuffer pixels, set in fxApply (no limit for the old square points)
 const fxMats = [];
@@ -783,32 +834,36 @@ function fxStarTexture() {
   }
   const t = new THREE.CanvasTexture(cvs); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
+const fxCompactNow = () => state.skyK < 1 || state.skyB < 1;
+let fxCompact = false;   // last value seen by the frame loop, so a change restyles the points
 function fxStyle(m) {
   const sprite = fx.shape !== 'pixel';
   if (!!m.map !== sprite) m.needsUpdate = true;   // a texture appearing or going away changes the shader; nothing else here does
   m.map = sprite ? fxTex : null; m.alphaTest = sprite ? 0.002 : 0;
-  const pm = Math.pow(state.sizeMul, 0.55);   // the Size slider on points: x63 -> about x10, x1000 -> about x45
-  m.size = m.userData.baseSize * fx.size * (sprite ? FX_SPRITE_SCALE : 1) * pm;
+  // The Size slider swells soft sprites only (x63 -> about x10): enlarged square points turn into voxels. In the compressed-sky views the real
+  // star systems are drawn, so the background points shrink to a third and stop competing with them.
+  const pm = sprite ? Math.pow(state.sizeMul, 0.55) : 1, compact = fxCompactNow() ? 0.33 : 1;
+  m.size = m.userData.baseSize * fx.size * (sprite ? FX_SPRITE_SCALE : 1) * pm * compact;
   m.blending = fx.additive ? THREE.AdditiveBlending : THREE.NormalBlending;
   m.color.setScalar(fx.gain / Math.sqrt(pm)); m.opacity = sprite ? 1 : 0.9;   // a bigger blur spreads the same light, so dim it (keeps the sky from whiting out)
 }
 // regenerate the sprite when its drawing changed, then restyle every cloud
 function fxApply(redrawSprite = true) {
   if (fx.shape !== 'pixel' && (redrawSprite || !fxTex)) { fxTex?.dispose(); fxTex = fxStarTexture(); }
-  fxUTwinkle.value = fx.twinkle;
-  fxUMaxPx.value = (fx.shape === 'pixel' ? 160 : FX_MAX_CSS_PX) * renderer.getPixelRatio();
+  fxUTwinkle.value = fx.twinkle; fxUReal.value = fx.real ? 1 : 0; fxUExposure.value = fx.exposure;
+  fxUMaxPx.value = (fx.shape === 'pixel' ? 14 : FX_MAX_CSS_PX) * renderer.getPixelRatio();
   for (const m of fxMats) fxStyle(m);
 }
 // twinkle: a per-star size and brightness flicker with its own phase, injected into PointsMaterial's vertex shader
 function fxPatch(sh) {
-  sh.uniforms.uTime = fxUTime; sh.uniforms.uTwinkle = fxUTwinkle; sh.uniforms.uMaxPx = fxUMaxPx;
-  sh.vertexShader = 'attribute float phase;\nuniform float uTime;\nuniform float uTwinkle;\nuniform float uMaxPx;\n' + sh.vertexShader
+  sh.uniforms.uTime = fxUTime; sh.uniforms.uTwinkle = fxUTwinkle; sh.uniforms.uMaxPx = fxUMaxPx; sh.uniforms.uRealLight = fxUReal; sh.uniforms.uExposure = fxUExposure; sh.uniforms.uRefDist = fxURef;
+  sh.vertexShader = 'attribute float phase;\nuniform float uTime;\nuniform float uTwinkle;\nuniform float uMaxPx;\nuniform float uRealLight;\nuniform float uExposure;\nuniform float uRefDist;\n' + sh.vertexShader
     .replace('#include <begin_vertex>', '#include <begin_vertex>\n float tw_ = 1.0 + uTwinkle * (0.5 * sin(uTime * 2.7 + phase) + 0.3 * sin(uTime * 6.1 + phase * 3.7));')
-    .replace('#include <logdepthbuf_vertex>', 'gl_PointSize = min(gl_PointSize * (1.0 + 0.25 * (tw_ - 1.0)), uMaxPx);\n#ifdef USE_COLOR\n vColor *= clamp(0.65 + 0.35 * tw_, 0.2, 1.6);\n#endif\n#include <logdepthbuf_vertex>');
+    .replace('#include <logdepthbuf_vertex>', 'gl_PointSize = min(gl_PointSize * (1.0 + 0.25 * (tw_ - 1.0)), uMaxPx);\n#ifdef USE_COLOR\n vColor *= clamp(0.65 + 0.35 * tw_, 0.2, 1.6);\n  if (uRealLight > 0.5) {\n   float flux = uRefDist / max(length(mvPosition.xyz), 1e-4); flux *= flux;   // inverse-square law, relative to a point at the reference distance (auto-exposure)\n   float seen = smoothstep(0.015, 0.16, flux * uExposure);                   // below the limiting flux a point fades out, so zooming out never piles up glare\n   vColor *= (0.3 + 0.7 * min(flux, 3.0)) * uExposure * seen;\n  }\n#endif\n#include <logdepthbuf_vertex>');
 }
 function fxRegister(m, baseSize) {
   m.userData.baseSize = baseSize; m.onBeforeCompile = fxPatch; fxMats.push(m);
-  fxUMaxPx.value = (fx.shape === 'pixel' ? 160 : FX_MAX_CSS_PX) * renderer.getPixelRatio();
+  fxUMaxPx.value = (fx.shape === 'pixel' ? 14 : FX_MAX_CSS_PX) * renderer.getPixelRatio();
   if (fx.shape !== 'pixel' && !fxTex) fxTex = fxStarTexture();
   fxStyle(m);
 }
@@ -1149,13 +1204,26 @@ function pickAt(mx, my) {
   }
   return best && { ...best, ringPx: Math.min(2 * bestPx + 10, 340) };
 }
+// real mass, light and size for the hover label (from the catalogue row)
+const fmtMass = kg => kg >= 1e29 ? `${(kg / 1.989e30).toPrecision(3)} M☉` : kg >= 1e26 ? `${(kg / 1.898e27).toPrecision(3)} M♃` : kg >= 1e22 ? `${(kg / 5.972e24).toPrecision(3)} M⊕` : `${kg.toExponential(1)} kg`;
+function physicsLine(row) {
+  if (!row) return '';
+  const bits = [];
+  if (row.mass_kg > 0) bits.push(fmtMass(row.mass_kg));
+  if (row.luminosity_W > 0) bits.push(`${(row.luminosity_W / 3.828e26).toPrecision(2)} L☉`);
+  if (row.temperature_K > 0) bits.push(`${Math.round(row.temperature_K)} K`);
+  if (row.radius_m > 0) bits.push(`R ${P.fmtLength(row.radius_m)}`);
+  if (row.spectral_type) bits.push(row.spectral_type);
+  return bits.join(' · ');
+}
 function updateHover() {
   if (!hoverMouse) { hoverTip.style.display = hoverRing.style.display = 'none'; hoverDest = null; return; }
   const hit = pickAt(hoverMouse.x, hoverMouse.y);
   hoverDest = hit && hit.d; renderer.domElement.style.cursor = hit ? 'pointer' : '';
   if (!hit) { hoverTip.style.display = hoverRing.style.display = 'none'; return; }
   const dist = Math.hypot(hit.p[0] - focus[0], hit.p[1] - focus[1], hit.p[2] - focus[2]);
-  hoverTip.innerHTML = `${hit.d.name}<small>${hit.d.type || ''}</small><em>${dist > 1 ? P.fmtLength(dist) + ' from the view centre' : 'here'} · click to fly there</em>`;
+  const phys = physicsLine(hit.d.meta);
+  hoverTip.innerHTML = `${hit.d.name}<small>${hit.d.type || ''}</small>${phys ? `<span class="phys">${phys}</span>` : ''}<em>${dist > 1 ? P.fmtLength(dist) + ' from the view centre' : 'here'} · click to fly there</em>`;
   hoverTip.style.display = 'block';
   const tw = hoverTip.offsetWidth; hoverTip.style.left = `${Math.min(hit.sx + 18, view.clientWidth - tw - 8)}px`; hoverTip.style.top = `${Math.max(hit.sy - 8, 8)}px`;
   hoverRing.style.display = 'block'; hoverRing.style.left = `${hit.sx}px`; hoverRing.style.top = `${hit.sy}px`; hoverRing.style.width = hoverRing.style.height = `${hit.ringPx}px`;
@@ -1317,7 +1385,7 @@ function setHud(open) {
 }
 $('hudClose').addEventListener('click', () => setHud(false));
 $('hudOpen').addEventListener('click', () => setHud(true));
-setHud(!hudClosed);
+// the first draw (setHud(!hudClosed)) happens below, after the flight state it reads has been declared
 
 // search UI
 const results = $('results');
@@ -1402,6 +1470,7 @@ function flightMove(dt) {
 function setFlight(on) {
   fly.on = on; if (!on) flyVel.set(0, 0, 0);
   $('flyBtn').classList.toggle('open', on); $('flyBtn').setAttribute('aria-expanded', String(on)); $('fxFly').checked = on;
+  document.body.classList.toggle('flying', on); $('navMode').textContent = on ? 'Flight' : 'Orbit'; $('navMode').classList.toggle('on', on);
   toast(on ? 'Flight mode: W/S fly, A/D strafe, X/Z up/down, Shift boost, B brake, drag to look' : 'Orbit mode');
 }
 function steer(dt) {
@@ -1604,6 +1673,7 @@ function flySync() {
   $('fxFlyBoost').value = fly.boost; $('fxFlyBoost-v').textContent = `${fly.boost.toFixed(0)}×`;
   $('fxFlyGlide').value = fly.glide; $('fxFlyGlide-v').textContent = `${fly.glide.toFixed(2)} s`;
   $('fxFlyLook').value = fly.look; $('fxFlyLook-v').textContent = `${fly.look.toFixed(2)}×`;
+  $('navSpeed').value = Math.log10(fly.speed); $('navSpeed-v').textContent = `${fly.speed < 1 ? fly.speed.toFixed(2) : fly.speed.toFixed(1)}×/s`;
   controls.rotateSpeed = fly.look; $('fxFly').checked = fly.on;
   try { localStorage.setItem('kosmoFly', JSON.stringify({ speed: fly.speed, boost: fly.boost, glide: fly.glide, look: fly.look })); } catch { /* storage blocked */ }
 }
@@ -1617,14 +1687,28 @@ $('fxFlyReset').addEventListener('click', () => { Object.assign(fly, FLY_DEFAULT
 // the on-screen pad: hold a button to press its key
 document.querySelectorAll('#fx .flypad button[data-k]').forEach(b => {
   const k = b.dataset.k, down = () => { keys.add(k); b.classList.add('held'); if (!fly.on && k !== 'shift') setFlight(true); }, up = () => { keys.delete(k); b.classList.remove('held'); };
-  b.addEventListener('pointerdown', e => { b.setPointerCapture(e.pointerId); down(); }); b.addEventListener('pointerup', up); b.addEventListener('pointercancel', up); b.addEventListener('lostpointercapture', up);
+  b.addEventListener('pointerdown', e => { try { b.setPointerCapture(e.pointerId); } catch { /* synthetic or already released pointer */ } down(); }); b.addEventListener('pointerup', up); b.addEventListener('pointercancel', up); b.addEventListener('lostpointercapture', up);
 });
+// Navigation HUD (bottom right): hold buttons press the same keys as the keyboard; the zoom slider is the old zoom bar's input, moved here
+document.querySelectorAll('#navhud button[data-k]').forEach(b => {
+  const k = b.dataset.k, down = () => { keys.add(k); b.classList.add('held'); }, up = () => { keys.delete(k); b.classList.remove('held'); };
+  b.addEventListener('pointerdown', e => { try { b.setPointerCapture(e.pointerId); } catch { /* synthetic or already released pointer */ } down(); }); b.addEventListener('pointerup', up); b.addEventListener('pointercancel', up); b.addEventListener('lostpointercapture', up);
+});
+$('navMode').addEventListener('click', () => setFlight(!fly.on));
+$('navSpeed').addEventListener('input', e => { fly.speed = 10 ** parseFloat(e.target.value); flySync(); });
+function setNav(open) {
+  $('navhud').hidden = !open; $('navOpen').hidden = open; document.body.classList.toggle('nav-closed', !open);
+  try { localStorage.setItem('kosmoNav', open ? 'open' : 'closed'); } catch { /* storage blocked */ }
+}
+$('navClose').addEventListener('click', () => setNav(false)); $('navOpen').addEventListener('click', () => setNav(true));
+{ let closed = false; try { closed = localStorage.getItem('kosmoNav') === 'closed'; } catch { /* storage blocked */ } setNav(!closed); }
 flySync();
-const FX_SLIDERS = [['fxSize', 'size', v => v.toFixed(2) + '×', false], ['fxHalo', 'halo', v => v.toFixed(2), true], ['fxSpike', 'spike', v => v.toFixed(2), true], ['fxRot', 'rot', v => v.toFixed(0) + '°', true], ['fxTwinkle', 'twinkle', v => v.toFixed(2), false], ['fxGain', 'gain', v => v.toFixed(2) + '×', false], ['fxWarpAmt', 'warpAmt', v => v.toFixed(2) + '×', false], ['fxPull', 'pull', v => v.toFixed(2) + '×', false], ['fxSpeed', 'flightSpeed', v => v.toFixed(2) + '×', false], ['fxArc', 'arc', v => v.toFixed(2), false]];
+setHud(!hudClosed);   // first draw of the location HUD: it reads fly/flyVel, so it must come after their declaration
+const FX_SLIDERS = [['fxSize', 'size', v => v.toFixed(2) + '×', false], ['fxHalo', 'halo', v => v.toFixed(2), true], ['fxSpike', 'spike', v => v.toFixed(2), true], ['fxRot', 'rot', v => v.toFixed(0) + '°', true], ['fxTwinkle', 'twinkle', v => v.toFixed(2), false], ['fxGain', 'gain', v => v.toFixed(2) + '×', false], ['fxWarpAmt', 'warpAmt', v => v.toFixed(2) + '×', false], ['fxExposure', 'exposure', v => v.toFixed(2) + '×', false], ['fxPull', 'pull', v => v.toFixed(2) + '×', false], ['fxSpeed', 'flightSpeed', v => v.toFixed(2) + '×', false], ['fxArc', 'arc', v => v.toFixed(2), false]];
 // `redraw` = the change alters the sprite drawing itself (otherwise only material settings change)
 function fxSync() {
   for (const [id, key, f] of FX_SLIDERS) { $(id).value = fx[key]; $(id + '-v').textContent = f(fx[key]); }
-  $('fxAdd').checked = fx.additive; $('fxWarp').checked = fx.warp; $('fxWarpAmt').disabled = !fx.warp;
+  $('fxAdd').checked = fx.additive; $('fxReal').checked = fx.real; $('fxExposure').disabled = !fx.real; $('fxWarp').checked = fx.warp; $('fxWarpAmt').disabled = !fx.warp;
   $('fxFlight').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === fx.flight));
   $('fxEase').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === fx.ease));
   $('fxPull').disabled = fx.flight === 'direct';
@@ -1637,6 +1721,7 @@ $('fxShapes').innerHTML = FX_SHAPES.map(([k, name]) => `<button type="button" da
 $('fxShapes').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { fx.shape = b.dataset.shape; fxChanged(true); }));
 for (const [id, key, , redraw] of FX_SLIDERS) $(id).addEventListener('input', e => { fx[key] = parseFloat(e.target.value); fxChanged(redraw); });
 $('fxAdd').addEventListener('change', e => { fx.additive = e.target.checked; fxChanged(false); });
+$('fxReal').addEventListener('change', e => { fx.real = e.target.checked; fxChanged(false); });
 $('fxWarp').addEventListener('change', e => { fx.warp = e.target.checked; fxChanged(false); });
 const FX_FLIGHTS = [['hop', 'Pull back first'], ['direct', 'Direct flight']], FX_EASES = [['smooth', 'Smooth'], ['cruise', 'Cruise']];
 for (const [id, list, key] of [['fxFlight', FX_FLIGHTS, 'flight'], ['fxEase', FX_EASES, 'ease']]) {
@@ -1800,7 +1885,7 @@ const t0 = performance.now();
 let last = performance.now(), frame = 0;
 function animate(now) {
   requestAnimationFrame(animate);
-  const dt = Math.min((now - last) / 1000, 0.05); last = now; fxUTime.value = now / 1000;
+  const dt = Math.min((now - last) / 1000, 0.05); last = now; fxUTime.value = now / 1000; fxURef.value = camera.position.length();
   if (state.play) { state.logA = Math.min(0, state.logA + state.speed * dt); sync('logA', 2); if (state.logA >= 0) { state.play = false; $('play').checked = false; } }
   if (!state.pause) clock.jd += dt * 10 ** state.rate / 86400;
   if (frame % 6 === 0) $('clockDate').textContent = clockDate() + (state.pause ? ' (paused)' : '');
@@ -1813,6 +1898,7 @@ function animate(now) {
   if (frame % 2 === 0) { drawTimeline(); drawMinimap(); drawCube(); }
   if (frame % 10 === 0) updateDrawer();
   if (frame % 3 === 0) updateHover();
+  if (frame % 15 === 0 && fxCompactNow() !== fxCompact) { fxCompact = fxCompactNow(); fxApply(false); }
   if (frame % 2 === 1) stepDial();
   if (frame % 15 === 0) readout();
   frame++;

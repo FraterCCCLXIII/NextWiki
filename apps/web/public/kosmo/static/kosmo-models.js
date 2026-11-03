@@ -290,9 +290,12 @@ export function createModel(THREE, spec = {}) {
       disposables.push(m); tickers.push(t => { m.uniforms.uTime.value = t; });
       group.add(new THREE.Mesh(sphere(), m));
       const dwarf = kind === 'browndwarf';
-      addSprite(dwarf ? 5 : 9, c1, C(r * 0.3, g * 0.2, b * 0.2), 3, 2.4, dwarf ? 0.4 : 0.95);        // corona: starts bright at the limb, fades outward
-      addSprite(dwarf ? 11 : 30, c1, C(0, 0, 0), 3, 0.55, dwarf ? 0.12 : 0.3);                       // wide halo of scattered light
-      if (!dwarf) addSprite(22, c1.clone().lerp(C(1, 1, 1), 0.6), C(0, 0, 0), 4, 1, 0.5);            // diffraction-like rays
+      // real light: L = 4 pi R^2 sigma T^4 (or the catalogue's luminosity). The glow follows log L, so red dwarfs are faint and giants blaze.
+      const Lw = spec.luminosity_W > 0 ? spec.luminosity_W : spec.radius_m > 0 ? 4 * Math.PI * spec.radius_m ** 2 * 5.670374e-8 * T ** 4 : 3.828e26;
+      const glow = Math.min(1.5, Math.max(0.12, 0.62 + 0.14 * Math.min(6, Math.max(-4, Math.log10(Lw / 3.828e26)))));
+      addSprite(dwarf ? 5 : 9, c1, C(r * 0.3, g * 0.2, b * 0.2), 3, 2.4, (dwarf ? 0.4 : 0.95) * glow);        // corona: starts bright at the limb, fades outward
+      addSprite(dwarf ? 11 : 30, c1, C(0, 0, 0), 3, 0.55, (dwarf ? 0.12 : 0.3) * glow);                       // wide halo of scattered light
+      if (!dwarf) addSprite(22, c1.clone().lerp(C(1, 1, 1), 0.6), C(0, 0, 0), 4, 1, 0.5 * glow);            // diffraction-like rays
       break;
     }
     case 'whitedwarf': { const c1 = C(0.85, 0.9, 1.0); const m = new THREE.ShaderMaterial({ vertexShader: BODY_VERT, fragmentShader: STAR_FRAG, uniforms: { uTime: { value: 0 }, uSeed: { value: seed }, uHasMap: { value: 0 }, uMap: { value: new THREE.Texture() }, uColor: { value: c1 }, uColor2: { value: C(0.6, 0.7, 1.0) } } }); disposables.push(m); group.add(new THREE.Mesh(sphere(32), m)); addSprite(4, c1, C(0.2, 0.3, 0.6), 0, 5, 0.7); break; }
