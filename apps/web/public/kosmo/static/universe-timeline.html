@@ -314,6 +314,10 @@
   #tDialWrap { display: flex; flex-direction: column; align-items: center; gap: 2px; } #tDial { cursor: grab; touch-action: none; outline: none; } #tDial:active { cursor: grabbing; }
   #tDial .dt { fill: none; stroke: rgba(255,255,255,0.12); stroke-width: 1; } #tDial .dk { fill: rgba(255,255,255,0.07); stroke: rgba(255,255,255,0.28); stroke-width: 1; } #tDial .dh { stroke: #fff; stroke-width: 2.4; stroke-linecap: round; } #tDial .dp { fill: var(--accent, #7fc3ff); filter: drop-shadow(0 0 4px var(--accent, #7fc3ff)); }
   #tDial .tk { stroke: rgba(255,255,255,0.45); stroke-width: 1.2; } #tDial .tk.on { stroke: var(--accent, #7fc3ff); stroke-width: 2; }
+  #speedscale { margin: 4px 0 2px; font-size: 11px; color: var(--muted); } #sRuler { position: relative; height: 24px; margin: 0 46px 0 44px; border-top: 1px solid rgba(160,195,235,0.3); }
+  #sRuler i { position: absolute; top: 0; width: 1px; height: 5px; background: rgba(160,195,235,0.6); } #sRuler b { position: absolute; top: 8px; transform: translateX(-50%); font: 400 9px/1 ui-monospace, Menlo, monospace; color: #8fa6c4; white-space: nowrap; } #sRuler b.lo { top: 16px; }
+  #sRuler i.c { background: #ffd37a; height: 9px; } #sRuler b.c { color: #ffd37a; } #sRuler u { position: absolute; top: -4px; width: 2px; height: 9px; background: #fff; transform: translateX(-1px); box-shadow: 0 0 6px #fff; }
+  #sRead { text-align: center; color: #cfe3ff; margin-top: 4px; } #sTarget { text-align: center; margin-top: 2px; } #sTarget.warn { color: #ff8a7a; } #sTarget.ok { color: #8fe0a8; } #sSafe { display: block; text-align: center; margin-top: 4px; cursor: pointer; }
   #timehud { position: absolute; left: 50%; bottom: 46px; transform: translateX(-50%); z-index: 5; padding: 8px 12px; border-radius: 14px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #c9d6e6; }
   #timehud .trow { display: flex; gap: 6px; align-items: center; justify-content: center; flex-wrap: wrap; }
   #timehud button { padding: 3px 9px; min-width: 30px; font-size: 12px; }
@@ -521,7 +525,7 @@
     <button type="button" id="navMode" title="Orbit around the view centre, or fly where you look (G)">Orbit</button><button type="button" id="navCruise" title="Keep flying forward at the speed set by the slider (U); B or S stops">Cruise</button><button type="button" id="navPad" title="Controller layout: two thumbsticks, triggers and buttons (0). A real gamepad works too.">Pad</button><button type="button" id="navHelm" title="Ship helm: throttle gears from walking pace to warp, and set a course">Helm</button>
     <span class="navtag">max speed</span><input type="range" id="navSpeed" min="-2.3" max="1.6" step="0.01" aria-label="Flight speed"><span class="navval" id="navSpeed-v"></span>
   </div>
-<details id="navkeys"><summary>Controls</summary><div class="kgrid"><span class="kk">drag</span><span class="kv">spin the view</span><span class="kk">right-drag / W A S D</span><span class="kv">pan</span><span class="kk">wheel / Q E</span><span class="kv">zoom (throttle in helm)</span><span class="kk">← → ↑ ↓</span><span class="kv">orbit (pitch / yaw in helm)</span><span class="kk">Space</span><span class="kv">thrust (flight: hold · helm: engine on/off) · timeline play otherwise</span><span class="kk">G</span><span class="kv">flight mode</span><span class="kk">U</span><span class="kv">cruise</span><span class="kk">H</span><span class="kv">helm</span><span class="kk">W S · wheel</span><span class="kv">throttle (helm)</span><span class="kk">Q E</span><span class="kv">roll (helm)</span><span class="kk">V F O J ⌫</span><span class="kv">reverse · align · autopilot · jump · clear</span><span class="kk">B</span><span class="kv">brake / all stop</span><span class="kk">⇧</span><span class="kv">boost</span><span class="kk">P</span><span class="kv">pause the clock</span><span class="kk">; ' · , . · N</span><span class="kv">clock speed · day step · now</span><span class="kk">⇧R ⇧F</span><span class="kv">clock backwards / forwards</span><span class="kk">R</span><span class="kv">spin the universe</span><span class="kk">T</span><span class="kv">timeline</span><span class="kk">[ ]</span><span class="kv">pan time</span><span class="kk">C</span><span class="kv">chronicle</span><span class="kk">M · K</span><span class="kv">minimal look · hide labels</span></div></details>
+<details id="navkeys"><summary>Controls</summary><div class="kgrid"><span class="kk">drag</span><span class="kv">spin the view</span><span class="kk">right-drag / W A S D</span><span class="kv">pan</span><span class="kk">wheel / Q E</span><span class="kv">zoom (throttle in helm)</span><span class="kk">← → ↑ ↓</span><span class="kv">orbit (pitch / yaw in helm)</span><span class="kk">Space</span><span class="kv">hold to thrust (the speed ramps up to the max speed)</span><span class="kk">Enter</span><span class="kv">play / pause the timeline</span><span class="kk">G</span><span class="kv">flight mode</span><span class="kk">U</span><span class="kv">cruise</span><span class="kk">H</span><span class="kv">helm</span><span class="kk">W S · wheel</span><span class="kv">throttle (helm)</span><span class="kk">Q E</span><span class="kv">roll (helm)</span><span class="kk">V F O J ⌫</span><span class="kv">reverse · align · autopilot · jump · clear</span><span class="kk">B</span><span class="kv">brake / all stop</span><span class="kk">⇧</span><span class="kv">boost</span><span class="kk">P</span><span class="kv">pause the clock</span><span class="kk">; ' · , . · N</span><span class="kv">clock speed · day step · now</span><span class="kk">⇧R ⇧F</span><span class="kv">clock backwards / forwards</span><span class="kk">R</span><span class="kv">spin the universe</span><span class="kk">T</span><span class="kv">timeline</span><span class="kk">[ ]</span><span class="kv">pan time</span><span class="kk">C</span><span class="kv">chronicle</span><span class="kk">M · K</span><span class="kv">minimal look · hide labels</span></div></details>
 </div>
 <button id="navOpen" class="orb" type="button" hidden aria-label="Show the navigation controls" title="Navigate">
   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8l-1.9 4.5-4.5 1.9 1.9-4.5z"/></svg>
@@ -557,7 +561,7 @@
     <label class="hsub"><input type="checkbox" id="hZoom" checked> scale the view to the speed</label>
   </div>
 </div>
-<div id="pilot" hidden><span class="pr"></span><span class="ps"></span><span class="ph">drag = stick · arrows pitch/yaw · Q E roll · W S throttle · Space engine</span></div>
+<div id="pilot" hidden><span class="pr"></span><span class="ps"></span><span class="ph">drag = stick · arrows pitch/yaw · Q E roll · W S max speed · hold Space to thrust</span></div>
 <div id="course" hidden><span class="cm"></span><span class="cl"></span></div>
 <div id="timehud" class="glass" aria-label="Simulation clock">
   <div class="hudk ttitle">TimeMachine</div>
@@ -1681,8 +1685,8 @@ const keys = new Set();
 window.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
   keys.add(e.key.toLowerCase());
-  if (e.key === ' ' && (fly.on || helm.on)) { e.preventDefault(); if (helm.on && !e.repeat) { helm.engine = !helm.engine; toast(helm.engine ? 'Engine on' : 'Engine off: coasting to a stop'); } }   // in flight, hold Space to thrust; in the helm it cuts and restores the engine
-  else if (e.key === ' ') { e.preventDefault(); state.play = !state.play; $('play').checked = state.play; if (state.play && state.logA >= 0) state.logA = -16; }
+  if (e.key === ' ') { e.preventDefault(); if (!fly.on) setFlight(true); }   // Space is the thrust: hold it and the ship accelerates (it switches flight mode on if needed)
+  else if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') { state.play = !state.play; $('play').checked = state.play; if (state.play && state.logA >= 0) state.logA = -16; }   // timeline play moved to Enter
   if (e.key.toLowerCase() === 'r') { state.spin = !state.spin; $('spin').checked = state.spin; }
   if (e.key.toLowerCase() === 't') toggleTimeline();
   if (e.key.toLowerCase() === 'g') setFlight(!fly.on);
@@ -1690,7 +1694,7 @@ window.addEventListener('keydown', e => {
   if (e.key.toLowerCase() === 'c') toggleDrawer();
   if (e.key.startsWith('Arrow')) e.preventDefault();
 });
-window.addEventListener('keyup', e => keys.delete(e.key.toLowerCase()));
+window.addEventListener('keyup', e => { keys.delete(e.key.toLowerCase()); if (e.key === ' ' && !/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) e.preventDefault(); });   // Space must not also click a focused button
 const tmpV = new THREE.Vector3(), tmpR = new THREE.Vector3(), tmpU = new THREE.Vector3(), tmpM = new THREE.Vector3(), tmpS = new THREE.Vector3();
 // ---- Flight: W/S fly forward and back along your view, A/D strafe, X/Z up and down, Shift boosts, B brakes, G toggles. Speed is in view-widths
 // per second, so the same controls fly you across a planet or a galaxy; dragging turns your head (the camera stays put, it does not orbit). ----
@@ -1717,7 +1721,7 @@ function flightMove(dt) {
   const thrust = keys.has('w') || keys.has(' ') || fly.cruise || padAx.rt > 0.1;   // forward thrust: speed climbs exponentially while it is held, up to the max speed
   if (keys.has('s')) tmpM.sub(tmpV); if (keys.has('d')) tmpM.add(tmpR); if (keys.has('a')) tmpM.sub(tmpR); if (keys.has('x')) tmpM.add(tmpU); if (keys.has('z')) tmpM.sub(tmpU);
   const braking = keys.has('b');
-  const vmax = fly.speed * viewW * boost; rampSpeed(thrust && !braking, vmax, dt); if (braking) ship.v = 0;
+  const vmax = safeCap(fly.speed * viewW * boost); rampSpeed(thrust && !braking, vmax, dt); if (braking) ship.v = 0;
   if (tmpM.lengthSq() > 0 && !braking) tmpM.normalize().multiplyScalar(vmax); else tmpM.set(0, 0, 0);   // sideways and reverse keep the plain max speed
   tmpM.addScaledVector(tmpV, ship.v);   // metres per second
   flyVel.lerp(tmpM, 1 - Math.exp(-dt / (braking ? 0.08 : Math.max(fly.glide, 0.02))));                                    // glide: inertia in seconds
@@ -1763,7 +1767,10 @@ function collapsible(panelSel, rows) {
 { const row = $('navSpeed').parentElement, box = document.createElement('div'); box.className = 'drive';
   for (const k of ['shift', 'b']) { const b = document.querySelector(`#navhud .navpad button[data-k="${k}"]`); if (!b) continue; b.parentElement.insertBefore(document.createElement('span'), b); box.appendChild(b); }
   row.prepend(box); }
-collapsible('#navhud', [[p => p.querySelector('#zoom').parentElement, 'Zoom'], ['#zscale', 'Camera scale'], ['.navpads', 'Move & look'], [p => p.querySelector('#navSpeed').parentElement, 'Max speed'], ['#navkeys', 'Hotkeys']]);
+{ const row = $('navSpeed').parentElement, box = document.createElement('div'); box.id = 'speedscale';
+  box.innerHTML = '<div id="sRuler"></div><div id="sRead"></div><div id="sTarget"></div><label id="sSafe"><input type="checkbox" id="sSafeCb" checked> auto-brake before targets</label>';
+  row.after(box); row.parentElement.classList.add('speedgroup'); const wrap = document.createElement('div'); row.before(wrap); wrap.append(row, box); }
+collapsible('#navhud', [[p => p.querySelector('#zoom').parentElement, 'Zoom'], ['#zscale', 'Camera scale'], ['.navpads', 'Move & look'], [p => p.querySelector('#speedscale').parentElement, 'Max speed'], ['#navkeys', 'Hotkeys']]);
 collapsible('#helm', [['.hrow', 'Throttle'], ['.hcourse', 'Course']]);
 collapsible('#timehud', [['.trow:nth-child(1)', 'Clock'], ['.trow:nth-child(2)', 'Date & follow']]);
 // the clock-speed dial: drag around the ring (or scroll / arrow keys) through 0 to 100 years per second; it clicks into the named speeds
@@ -1782,6 +1789,33 @@ collapsible('#timehud', [['.trow:nth-child(1)', 'Clock'], ['.trow:nth-child(2)',
 // keep the vertical sliders clear of the Navigate panel: they stop just above it, whatever its height (rows fold, look changes)
 { const nh = $('navhud'), upd = () => document.body.style.setProperty('--navh', `${document.body.classList.contains('nav-closed') ? 56 : Math.round(nh.getBoundingClientRect().height)}px`);
   new ResizeObserver(upd).observe(nh); upd(); new MutationObserver(upd).observe(document.body, { attributes: true, attributeFilter: ['class'] }); }
+// ---- speed scale: the max-speed slider in real units with landmark speeds on its ruler, and a check against the target ahead ----
+const fmtSpd = v => `${P.fmtLength(v)}/s`, safe = { on: true };
+function targetAhead(k) {   // the course target, else the destination being flown to / last reached: its name, distance (m) and whether it lies ahead
+  const t = helm.course ? { name: helm.course.name, pos: helm.course.pos } : (loadedDest() ? { name: loadedDest().name, pos: loadedDest().target } : null); if (!t || !t.pos) return null;
+  const o = toScene(at(t.pos), focus, k), v = tmpS.set(o[0], o[1], o[2]), dist = v.length() / k; camera.getWorldDirection(tmpV);
+  return { name: t.name, dist, ahead: dist > 0 && v.clone().normalize().dot(tmpV) > 0.3 };
+}
+function safeCap(vmax) {   // heading for a target: let the top speed fall with the distance left, so the approach tapers off instead of overshooting
+  if (!safe.on) return vmax; const T = targetAhead(2 / 10 ** state.zoom); if (!T || !T.ahead) return vmax;
+  const stop = helm.course ? Math.max(at(helm.course.w || 1) * 0.6, 2) : 0; return Math.min(vmax, Math.max(T.dist - stop, 0) * 3);
+}
+{
+  const GS = [['walk', 1.4], ['car', 27.8], ['jet', 250], ['orbit', 7.8e3], ['1%c', 3e6], ['c', 299792458, 1], ['warp 1', 3e9], ['1 AU/s', 1.496e11], ['1 ly/s', 9.461e15], ['1 kly/s', 9.461e18], ['1 Mly/s', 9.461e21], ['Gly/s', 9.461e24]];
+  const LO = -2.3, HI = 1.6, pos = v => (Math.log10(v) - LO) / (HI - LO); let key = '';
+  $('sSafeCb').addEventListener('change', e => { safe.on = e.target.checked; });
+  setInterval(() => {
+    const viewW = 10 ** state.zoom, v = fly.speed * viewW, k = `${state.zoom.toFixed(1)}`;
+    if (k !== key) { key = k; $('sRuler').innerHTML = GS.map(([n, g, c], idx) => { const x = pos(g / viewW); return x < 0 || x > 1 ? '' : `<i class="${c ? 'c' : ''}" style="left:${x * 100}%"></i><b class="${c ? 'c' : ''}${idx % 2 ? ' lo' : ''}" style="left:${x * 100}%">${n}</b>`; }).join('') + '<u id="sCur"></u>'; }
+    $('sCur').style.left = `${clamp(pos(Math.max(v, 1e-9) / viewW), 0, 1) * 100}%`;
+    $('navSpeed-v').textContent = fmtSpd(v);
+    const near = GS.reduce((b, g) => Math.abs(Math.log10(g[1] / v)) < Math.abs(Math.log10(b[1] / v)) ? g : b), cf = v / 299792458;
+    $('sRead').textContent = `max ${fmtSpd(v)} · ${cf >= 0.01 ? cf.toFixed(2) : cf.toExponential(1)} c · near ${near[0]}`;
+    const T = targetAhead(2 / viewW), el = $('sTarget'); if (!T) { el.textContent = 'no target: click a body to set one'; el.className = ''; return; }
+    const coast = v * 0.27, eta = T.dist / Math.max(v, 1e-9), over = T.ahead && coast > T.dist;
+    el.className = over ? 'warn' : 'ok'; el.textContent = `${T.name}: ${P.fmtLength(T.dist)} away · ${fmtEta(eta)} at max · coasts ${P.fmtLength(coast)}${over ? (safe.on ? ' · auto-brake will slow you' : ' · you would overshoot') : ''}`;
+  }, 150);
+}
 // ---- camera scale: the zoom slider reads as a ruler of landmark sizes, from a person to the observable universe ----
 {
   const MARKS = [[2, 'room'], [7.1, 'Earth'], [9.15, 'Sun'], [12.9, 'Solar Sys.'], [15.97, '1 ly'], [17.5, '10 pc'], [20.5, 'Milky Way'], [22.6, 'Local Grp'], [24, 'Virgo'], [26.95, 'Universe']];
@@ -1852,7 +1886,7 @@ function helmMove(dt) {
   dy -= padAx.rx * 1.8 * dt; dp -= padAx.ry * 1.8 * dt; helm.thr = clamp(helm.thr + (padAx.rt - padAx.lt) * 2.2 * dt, 0, GEARS.length - 1);
   if (dp || dy || dr) helmAttitude(dp, dy, dr);
   camera.getWorldDirection(tmpV); tmpR.crossVectors(tmpV, camera.up).normalize(); tmpU.crossVectors(tmpR, tmpV).normalize();
-  const vmaxH = speedAt(helm.thr); rampSpeed(helm.engine, vmaxH, dt); if (keys.has('b')) ship.v = 0;
+  const vmaxH = safeCap(speedAt(helm.thr)); helm.engine = keys.has(' ') || fly.cruise || padAx.rt > 0.1; rampSpeed(helm.engine, vmaxH, dt); if (keys.has('b')) ship.v = 0;
   let cmd = ship.v, dist = Infinity;
   if (helm.course) {
     const T = courseVec(k); dist = T.length() / k;
@@ -1873,7 +1907,7 @@ function helmMove(dt) {
   const w = clamp((Math.log10(Math.max(sp, 1)) - 8.5) / 6.5, 0, 1.2);   // beyond light speed the field stretches and the stars streak
   if (w > 0.02) { warpAmt = w; camera.fov = baseFov + 38 * Math.min(w, 1.2); camera.updateProjectionMatrix(); drawWarp(w, dt); } else warpEnd();
   const G = GEARS[helm.gear];
-  $('hGear').textContent = G[0] + (helm.rev && helm.gear ? ' (reverse)' : '') + (helm.engine ? '' : ' · engine off');
+  $('hGear').textContent = G[0] + (helm.rev && helm.gear ? ' (reverse)' : '') + (helm.engine ? ' · thrusting' : ' · idle: hold Space');
   $('hSpeed').textContent = `max ${vmaxH ? P.fmtLength(vmaxH) + '/s' : '0'} · ramps up while thrusting`;
   $('hVelo').textContent = `now ${sp < 0.01 ? '0' : P.fmtLength(sp) + '/s'} · ${(sp / 299792458 >= 0.01 ? (sp / 299792458).toFixed(2) : (sp / 299792458).toExponential(1))} c`;
   $('hEta').textContent = helm.course ? `${P.fmtLength(dist)} away${sp > 1 ? ' · ETA ' + fmtEta(dist / sp) : ''}${helm.auto ? ' · autopilot' : ''}` : '';
