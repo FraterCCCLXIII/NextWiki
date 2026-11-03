@@ -1,0 +1,87 @@
+   away with the page: pinning the whole header cost about 140px of every
+   screen, which on a laptop is a sixth of the viewport spent on chrome. */
+/* ------------------------------------------------------------- atlas band */
+/* The atlas owns the first 34px. Kosmographica's serif wordmark and its ten
+   sections, so a reader always knows which site they are inside and can leave
+   without going back a page. It sits above the lab's own lockup and pins with
+   it; the lab's topbar then sticks below this band rather than at zero, which
+   is why theme.js writes --atlas-h.
+
+   Graphite, not the atlas's navy: the band borrows the atlas's typography, not
+   its palette, so the lab still looks like the lab. */
+.atlasbar {
+  position: sticky;
+  top: 0;
+  z-index: 21;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 30px;
+  flex-wrap: wrap;
+  min-height: 34px;
+  padding: 5px 40px;
+  background: #08090c;
+  border-bottom: 1px solid var(--line);
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.atlasbar a {
+  color: var(--dim);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color .14s;
+}
+.atlasbar a:hover { color: var(--text); }
+
+/* Serif wordmark: the one piece of the atlas's own lettering, which is what
+   makes the band read as the parent and not as a second Oracle nav. */
+.atlas-mark {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+}
+.atlas-mark b {
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: .3em;
+  color: var(--text);
+}
+.atlas-mark span {
+  font-size: 10.5px;
+  font-style: italic;
+  letter-spacing: .04em;
+  text-transform: none;
+  color: var(--dim2);
+}
+
+.atlasnav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.atlasnav a.on {
+  color: var(--text);
+  box-shadow: inset 0 -1px 0 rgba(232,232,230,.5);
+}
+
+@media (max-width: 1180px) {
+  .atlasbar { padding: 5px 26px; gap: 4px 18px; }
+  .atlasnav { gap: 14px; }
+  .atlas-mark span { display: none; }
+}
+@media (max-width: 640px) {
+  /* Ten sections will not fit a phone in one row, and wrapped they cost 87px
+     of pinned screen. One row that scrolls sideways costs 30px and keeps the
+     parent reachable by thumb. */
+  .atlasbar { padding: 4px 18px; font-size: 9.5px; flex-wrap: nowrap; gap: 14px; min-height: 30px; }
+  .atlas-mark { flex: 0 0 auto; }
+  .atlas-mark b { font-size: 10px; letter-spacing: .22em; }
+  .atlasnav { gap: 12px; flex-wrap: nowrap; overflow-x: auto; min-width: 0; scrollbar-width: none; }
+  .atlasnav::-webkit-scrollbar { display: none; }
+}
+
+.topbar {

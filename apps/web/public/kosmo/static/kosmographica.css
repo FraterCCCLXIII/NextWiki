@@ -512,3 +512,11 @@ main { padding: 32px 32px 64px; }
 
 /* List spacing, where the atlas relied on borders to separate rows. */
 #detail td { padding: 4px 14px 4px 0; }
+
+/* Embedded in NextWiki: the site header replaces the atlas top nav. The bar is kept
+   only where it also holds page controls (the timeline's clock and Chronicle button).
+   The original design is stashed in docs/kosmo-legacy-top-nav. */
+html.embedded #logo,
+html.embedded #menu { display: none !important; }
+html.embedded #navbar:not(:has(#drawerBtn, #navTime)) { display: none !important; }
+html.embedded #navbar { justify-content: flex-end; }

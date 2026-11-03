@@ -100,6 +100,9 @@
 
   var band = document.createElement("div");
   band.className = "atlasbar";
+  /* Embedded in NextWiki the site header replaces this band; display:none keeps
+     --atlas-h at 0 so the sticky offsets below stay right. */
+  if (window.top !== window.self) band.style.display = "none";
 
   var mark = document.createElement("a");
   mark.className = "atlas-mark";
