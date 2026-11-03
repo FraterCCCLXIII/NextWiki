@@ -185,6 +185,8 @@
   #results .grp { cursor: pointer; user-select: none; } #results .grp .cv { display: inline-block; width: 12px; transition: transform .2s ease; } #results .grp.closed .cv { transform: rotate(-90deg); } #results .grpbox.closed { display: none; }
   #results mark { background: none; color: var(--accent); font-weight: 600; }
   /* eye buttons: turn a place (or a whole group) on or off the map */
+  .dclose { position: absolute; top: 10px; right: 12px; z-index: 5; width: 34px; height: 34px; padding: 0; border-radius: 50%; border: 1px solid rgba(255,255,255,0.18); background: rgba(20,22,28,0.85); color: #e6edf7; font-size: 22px; line-height: 1; cursor: pointer; display: grid; place-items: center; }
+  .dclose:hover { background: rgba(255,255,255,0.16); color: #fff; }
   button.eye { flex: none; width: 30px; height: 30px; padding: 0; margin: 0 2px; border: 0; border-radius: 8px; background: transparent; color: rgba(160,175,200,0.4); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
   button.eye:hover { color: #fff; background: rgba(255,255,255,0.08); } button.eye.on { color: var(--accent); }
   button.eye svg { display: block; pointer-events: none; }
@@ -2803,6 +2805,9 @@ let land = null;   // GeoJSON land polygons (world-atlas 110m) once loaded; fals
 const mapC = $('map'), mapCtx = mapC.getContext('2d');
 const proj = (lat, lon, W, H) => [(lon + 180) / 360 * W, (90 - lat) / 180 * H];
 let drawerOpen = false, navOpen = false, fxOpen = false, hoverEv = null;
+// every drawer gets a close button of its own (the round buttons that open them can end up underneath), and Escape closes whichever is open
+const drawerCloseBtn = (id, close) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'dclose'; b.setAttribute('aria-label', 'Close'); b.title = 'Close (Esc)'; b.textContent = '×'; b.addEventListener('click', close); $(id).appendChild(b); };
+function closeDrawers() { if (drawerOpen) toggleDrawer(); if (navOpen) setNavDrawer(false); if (fxOpen) setFxDrawer(false); }
 function toggleDrawer() { drawerOpen = !drawerOpen; if (drawerOpen) { if (navOpen) setNavDrawer(false); if (fxOpen) setFxDrawer(false); } $('drawer').classList.toggle('open', drawerOpen); document.body.classList.toggle('drawer-open', drawerOpen); $('drawerBtn').classList.toggle('open', drawerOpen); $('drawerBtn').setAttribute('aria-expanded', String(drawerOpen)); if (drawerOpen) buildList(); setTimeout(resize, 300); }
 $('drawerBtn').addEventListener('click', toggleDrawer);
 function setNavDrawer(open) {
@@ -2820,6 +2825,8 @@ function setFxDrawer(open) {
   setTimeout(resize, 300);
 }
 $('fxBtn').addEventListener('click', () => setFxDrawer(!fxOpen));
+drawerCloseBtn('drawer', closeDrawers); drawerCloseBtn('fx', closeDrawers); drawerCloseBtn('nav', closeDrawers);
+window.addEventListener('keydown', e => { if (e.key === 'Escape' && (drawerOpen || navOpen || fxOpen) && !/SELECT/.test(e.target.tagName)) { if (e.target.tagName === 'INPUT' && e.target.id === 'search' && $('search').value) return; closeDrawers(); } });
 // Flight controls in the settings drawer
 function flySync() {
   $('fxFlySpeed').value = Math.log10(fly.speed); $('fxFlySpeed-v').textContent = `${fly.speed < 1 ? fly.speed.toFixed(2) : fly.speed.toFixed(1)}×`;
