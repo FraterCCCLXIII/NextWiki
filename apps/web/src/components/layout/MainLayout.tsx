@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
+import { SiteFooter } from "./SiteFooter";
 
 export interface PageMetadata {
   title?: string;
@@ -32,6 +33,9 @@ export function MainLayout({ children, pageMetadata }: MainLayoutProps) {
         <Header pageMetadata={pageMetadata} />
         <Suspense fallback={<div>Loading...</div>}>
           <main className="flex-1 overflow-auto">{children}</main>
+        </Suspense>
+        <Suspense fallback={null}>
+          <SiteFooter />
         </Suspense>
       </div>
     </div>

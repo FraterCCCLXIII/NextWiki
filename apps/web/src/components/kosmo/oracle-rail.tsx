@@ -17,7 +17,7 @@ export function OracleRail() {
   return (
     <nav
       aria-label="Oracle sections"
-      className="w-full shrink-0 overflow-y-auto [scrollbar-color:#303133_transparent] [scrollbar-width:thin] border-b border-kosmo-line bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-4rem)] md:w-48 md:border-b-0 md:border-r"
+      className="w-full shrink-0 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-6.25rem)] md:w-48"
     >
       <p className="mb-4 text-[13px] font-semibold uppercase tracking-[0.28em] text-kosmo-text">
         Oracle

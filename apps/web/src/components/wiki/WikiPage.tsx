@@ -276,10 +276,10 @@ export function WikiPage({
 
   return (
     <>
-      <ScrollArea className="h-[calc(100vh-4rem)]">
+      <ScrollArea className="h-[calc(100vh-6.25rem)]">
         <div className="flex justify-center w-full">
           {/* Left Column: Table of Contents */}
-          <aside className="hidden xl:block sticky top-0 h-[calc(100vh-4rem)] flex-shrink-0">
+          <aside className="hidden xl:block sticky top-0 h-[calc(100vh-6.25rem)] flex-shrink-0">
             <TableOfContents />
           </aside>
 

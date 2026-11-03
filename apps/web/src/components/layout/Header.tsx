@@ -6,7 +6,6 @@ import { PageMetadata } from "./MainLayout";
 import { getSettingValue } from "~/lib/utils/settings";
 import { getSetting } from "~/lib/services/settings";
 import { SearchTrigger } from "./SearchTrigger";
-import { NavigationDropdown } from "./NavigationDropdown";
 import { KosmoMenu } from "./KosmoMenu";
 import { AIAssistantTrigger } from "~/components/ai/AIAssistantTrigger";
 
@@ -17,7 +16,6 @@ export async function Header({
 }) {
   noStore();
   // Get site title and logo from settings
-  const siteTitle = await getSettingValue("site.title");
   const siteLogo = await getSettingValue("site.logo");
   const aiEnabled = await getSetting("ai.enabled");
 
@@ -28,10 +26,8 @@ export async function Header({
       }
     >
       <div className="flex items-center flex-shrink-0 gap-2">
-        {/* Navigation Dropdown */}
-        <NavigationDropdown siteTitle={siteTitle} siteLogo={siteLogo} />
-        {/* Kosmographica: atlas pages plus the original HTML pages not yet converted */}
-        <KosmoMenu />
+        {/* One menu: Kosmographica, the wiki's own pages, and About */}
+        <KosmoMenu siteLogo={siteLogo} />
       </div>
 
       {/* Center: Search Bar */}
