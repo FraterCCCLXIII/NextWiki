@@ -1418,9 +1418,9 @@ async function loadCatalog() {
       if (o.type === 'planet' || o.type === 'dwarf_planet' || o.type === 'moon') continue;   // Solar System bodies come from the ephemeris
       if ((o.type === 'exoplanet' || o.type === 'exomoon_candidate') && o.parent) continue;   // placed on their orbits below
       const pos = gal(l, b, o.dist_pc * pc), isStar = o.type === 'star' || o.type === 'white_dwarf';
-      const FRAME = { black_hole: 60, quasar: 40, pulsar: 30, neutron_star: 30, white_dwarf: 12 }, TRUE_R = { supernova_remnant: 12 * pc, black_hole: 3e4, pulsar: 1.2e4, neutron_star: 1.2e4, white_dwarf: 7e6, quasar: 1e10, other: 7e7 }, rr = o.radius_m || TRUE_R[o.type];
-      // arrival framing: compact objects are tiny next to a "default" view, so frame them by their own size (a black hole's lens is ~22 radii wide) instead of dropping you on a dot
-      const w = FRAME[o.type] && rr ? FRAME[o.type] * rr : o.type === 'supernova_remnant' ? 2.6 * rr : o.type === 'other' && !o.radius_m ? 40 * rr : o.radius_m ? 5 * o.radius_m : o.type === 'galaxy' ? 40 * kpc : o.type === 'galaxy_cluster' ? 4 * Mpc : (o.type === 'nebula' || o.type === 'star_cluster') ? 8 * pc : 0.2 * pc;
+      const FRAME = { black_hole: 180, quasar: 120, pulsar: 35, neutron_star: 35, white_dwarf: 40 }, TRUE_R = { supernova_remnant: 12 * pc, black_hole: 3e4, pulsar: 1.2e4, neutron_star: 1.2e4, white_dwarf: 7e6, quasar: 1e10, other: 7e7 }, rr = o.radius_m || TRUE_R[o.type];
+      // arrival framing: far enough back that the object sits in its surroundings (a black hole about 180 radii across the view, a remnant six radii), never zoomed into its centre or left a dot
+      const w = FRAME[o.type] && rr ? FRAME[o.type] * rr : o.type === 'supernova_remnant' ? 6 * rr : o.type === 'other' && !o.radius_m ? 100 * rr : o.radius_m ? 5 * o.radius_m : o.type === 'galaxy' ? 40 * kpc : o.type === 'galaxy_cluster' ? 8 * Mpc : (o.type === 'nebula' || o.type === 'star_cluster') ? 20 * pc : 0.2 * pc;
       if (isStar) { const key = hostKeyOf(o.name); HOSTS.set(key, { star: o, pos, planets: [] }); for (const alt of o.alt_names || []) if (!HOSTS.has(hostKeyOf(alt))) HOSTS.set(hostKeyOf(alt), HOSTS.get(key)); }
       add({ name: o.name, pos: isStar ? () => skyPosOf(hostKeyOf(o.name), pos) : pos, w: isStar && o.radius_m ? () => 5 * (exoShownR(o.name) ?? o.radius_m) : w, type: String(o.type || '').replace('_', ' '), parent: o.parent, meta: o, sys: isStar ? hostKeyOf(o.name) : undefined }); n++;
     }
