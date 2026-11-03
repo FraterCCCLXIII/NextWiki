@@ -178,8 +178,10 @@ void main(){
   }
   vec3 dirOut = cos(phi) * ez + sin(phi) * eb;                      // where on the sky this ray ends up
   float bo = 1.0 - smoothstep(5.5, uSize * 0.5, b);                // replace the real sky near the hole, blend back out to the quad's edge
-  vec3 rgb = captured ? acc : acc + T * skyAt(dirOut) * bo;
-  float alpha = captured ? 1.0 : (1.0 - T) + T * bo;
+  vec3 sk = skyAt(dirOut) * bo;                                       // the lensed sky replaces the real one only where it actually has light (stars); black sky stays transparent, so the page background shows through instead of a darker square
+  float skL = clamp(max(max(sk.r, sk.g), sk.b) * 4.0, 0.0, 1.0);
+  vec3 rgb = captured ? acc : acc + T * sk;
+  float alpha = captured ? 1.0 : (1.0 - T) + T * skL;
   gl_FragColor = vec4(rgb, alpha);                                  // premultiplied
 }`;
 
