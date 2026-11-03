@@ -14,7 +14,6 @@ import {
 import { cn } from "~/lib/utils";
 import { useTRPC } from "~/server/client";
 import { NextWikiLogo } from "./NextWikiLogo";
-import { KosmoLogo } from "./KosmoLogo";
 import { NAV_GROUPS, isNavActive } from "~/lib/kosmo/nav";
 import { ORACLE_GROUPS } from "~/lib/kosmo/oracle-nav";
 
@@ -68,9 +67,7 @@ export function KosmoMenu({ siteLogo }: { siteLogo?: string | null }) {
           type="button"
           className="group flex items-center rounded-md px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-background-level1"
         >
-          <span className="mr-0 inline-flex max-w-0 shrink-0 -translate-x-2 items-center overflow-hidden opacity-0 transition-all duration-300 ease-out group-hover:mr-2 group-hover:max-w-[24px] group-hover:translate-x-0 group-hover:opacity-100 group-data-[state=open]:mr-2 group-data-[state=open]:max-w-[24px] group-data-[state=open]:translate-x-0 group-data-[state=open]:opacity-100">
-            <KosmoLogo size={24} />
-          </span>
+          <NextWikiLogo src={siteLogo} className="mr-2 h-6 w-6 shrink-0" />
           <span>Kosmographica</span>
           <ChevronDown className="ml-2 h-4 w-4" />
         </button>

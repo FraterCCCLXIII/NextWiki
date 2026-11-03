@@ -235,6 +235,14 @@
   #course { position: absolute; z-index: 7; pointer-events: none; transform: translate(-50%, -50%); }
   #course .cm { display: block; width: 22px; height: 22px; border: 1.5px solid var(--accent); transform: rotate(45deg); margin: 0 auto; box-shadow: 0 0 10px var(--accent); }
   #course .cl { display: block; margin-top: 6px; font-size: 12px; color: var(--accent); white-space: nowrap; text-align: center; text-shadow: 0 0 6px #000; }
+  /* video-game HUD: cut corners, hairline accent frame, monospace caps, a keycap on every control */
+  #navhud, #helm, #timehud, #hud { border-radius: 2px !important; border: 1px solid rgba(127,195,255,0.3) !important; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; letter-spacing: 0.04em;
+    clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px); box-shadow: inset 0 0 22px rgba(80,140,255,0.07), 0 0 14px rgba(80,140,255,0.08); }
+  #navhud button, #helm button, #timehud button, #navhud .navpad button { position: relative; border-radius: 3px !important; font-family: inherit; text-transform: uppercase; letter-spacing: 0.1em; font-size: 11px; border: 1px solid rgba(160,195,235,0.35); background: rgba(20,30,48,0.55); }
+  #navhud button:hover, #helm button:hover, #timehud button:hover { border-color: rgba(140,190,255,0.9); box-shadow: 0 0 8px rgba(110,170,255,0.35); }
+  #navhud .navrow button[data-k] { min-width: 40px; }
+  kbd.kc { position: absolute; top: -7px; right: -6px; min-width: 15px; height: 15px; padding: 0 3px; box-sizing: border-box; font: 600 9px/13px ui-monospace, Menlo, monospace; text-align: center; color: #cfe3ff; background: #0d1420; border: 1px solid rgba(140,190,255,0.6); border-bottom-width: 2px; border-radius: 3px; letter-spacing: 0; pointer-events: none; text-transform: none; }
+  #navhud .hudk, #helm .hudk, #hud .hudk { color: #7fc3ff; letter-spacing: 0.28em; }
   #timehud { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 5; padding: 8px 12px; border-radius: 14px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #c9d6e6; }
   #timehud .trow { display: flex; gap: 6px; align-items: center; justify-content: center; flex-wrap: wrap; }
   #timehud button { padding: 3px 9px; min-width: 30px; font-size: 12px; }
@@ -1665,8 +1673,25 @@ $('hAlign').onclick = () => { if (helm.course) { const T = courseVec(2 / 10 ** s
 $('hAuto').onclick = () => { if (!helm.course) { toast('Click a body first to set a course'); return; } helm.auto = !helm.auto; if (helm.auto && helm.gear === 0) setGear(8); };
 $('hJump').onclick = () => { if (helm.course) { const d = helm.course; setGear(0); goDest(d, true); } };
 $('hClear').onclick = () => { helm.course = null; helm.auto = false; };
-window.addEventListener('keydown', e => { if (!helm.on || e.repeat || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return; const k = e.key.toLowerCase(); if (k === 'w') setGear(helm.gear + 1); else if (k === 's') setGear(helm.gear - 1); else if (k === 'r') helm.rev = !helm.rev; });
+window.addEventListener('keydown', e => { if (!helm.on || e.repeat || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return; const k = e.key.toLowerCase(); if (k === 'w') setGear(helm.gear + 1); else if (k === 's') setGear(helm.gear - 1); });
 setGear(0); window.kosmoTimeline.helm = helm;
+// keycaps: every control shows its hotkey; the extra hotkeys below work from anywhere (not while typing in a field)
+const KEYCAPS = { navMode: 'G', navHelm: 'H', tPlay: 'P', tSlow: ';', tFast: "'", tStepB: ',', tStepF: '.', tNow: 'N', tRev: '⇧R', tFwd: '⇧F',
+  hUp: 'W', hDown: 'S', hStop: 'B', hRev: 'V', hAlign: 'F', hAuto: 'O', hJump: 'J', hClear: '⌫' };
+const KEYCAP_DATAK = { e: 'E', q: 'Q', shift: '⇧', w: 'W', x: 'X', a: 'A', b: 'B', d: 'D', z: 'Z', s: 'S' };
+for (const [id, k] of Object.entries(KEYCAPS)) { const b = $(id); if (b) b.insertAdjacentHTML('beforeend', `<kbd class="kc">${k}</kbd>`); }
+document.querySelectorAll('#navhud button[data-k]').forEach(b => { const k = KEYCAP_DATAK[b.dataset.k]; if (k) b.insertAdjacentHTML('beforeend', `<kbd class="kc">${k}</kbd>`); });
+window.addEventListener('keydown', e => {
+  if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+  const k = e.key;
+  if (k === 'h' || k === 'H') setHelm(!helm.on);
+  else if (k === 'n' || k === 'N') $('tNow').click();
+  else if (k === ',') $('tStepB').click(); else if (k === '.') $('tStepF').click();
+  else if (k === ';') $('tSlow').click(); else if (k === "'") $('tFast').click();
+  else if (k === 'R') $('tRev').click(); else if (k === 'F') $('tFwd').click();
+  else if (helm.on) { const l = k.toLowerCase(); if (l === 'v') $('hRev').click(); else if (l === 'f') $('hAlign').click(); else if (l === 'o') $('hAuto').click(); else if (l === 'j') $('hJump').click(); else if (k === 'Delete' || k === 'Backspace') $('hClear').click(); }
+});
+
 function steer(dt) {
   const fast = keys.has('shift') ? 3 : 1, rot = 1.2 * dt * fast, viewW = 10 ** state.zoom, pan = 0.6 * viewW * dt * fast;
   if (keys.has('arrowleft')) orbitBy(rot, 0); if (keys.has('arrowright')) orbitBy(-rot, 0);
@@ -2140,7 +2165,7 @@ function animate(now) {
   // look around instead of orbit: undo the camera's movement by moving the focus the opposite way
   if (camBefore) moveFocusScene(camBefore.sub(camera.position).divideScalar(2 / 10 ** state.zoom));
   updateScene();
-  if (frame % 2 === 0) { drawTimeline(); drawMinimap(); drawCube(); }
+  if (frame % 2 === 0) { if (frame % 8 === 0 || state.play || travel) drawTimeline(); drawMinimap(); drawCube(); }
   if (frame % 10 === 0) updateDrawer();
   if (frame % 3 === 0) updateHover();
   if (frame % 15 === 0 && fxCompactNow() !== fxCompact) { fxCompact = fxCompactNow(); fxApply(false); }
@@ -2150,7 +2175,7 @@ function animate(now) {
   renderer.render(scene, camera);
 }
 requestAnimationFrame(animate);
-window.kosmo = { get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
+window.kosmo = { drawCube, drawTimeline, drawMinimap, updateHover, updateDrawer, stepDial, get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
 </script>
 </body>
 </html>
