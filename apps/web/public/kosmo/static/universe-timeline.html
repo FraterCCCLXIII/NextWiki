@@ -71,6 +71,9 @@
   #drawer .chips { display: flex; flex-wrap: wrap; gap: 5px; padding: 8px 16px; }
   #drawer .chips button { font-size: 13px; padding: 2px 8px; }
   #drawer .chips button.on { border-color: var(--accent); color: var(--accent); }
+  /* no filled squares behind the Chronicle tabs and category chips: just text and an underline */
+  .tabs button, .tabs button.on, #drawer .chips button, #drawer .chips button.on { background: transparent; box-shadow: none; }
+  .tabs button:hover, #drawer .chips button:hover { background: rgba(26,26,26,0.7); }
   #vlist { flex: 1; overflow: auto; padding: 6px 16px 24px 16px; position: relative; }
   #vlist::before { content: ''; position: absolute; left: 86px; top: 0; bottom: 0; width: 1px; background: linear-gradient(180deg, rgba(127,195,255,0.5), rgba(255,184,107,0.5)); }
   .ev { display: grid; grid-template-columns: 62px 16px 1fr; gap: 6px; align-items: start; padding: 4px 0; cursor: pointer; border-radius: 6px; }

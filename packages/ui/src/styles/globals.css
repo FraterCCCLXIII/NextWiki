@@ -611,3 +611,27 @@
 }
 .scroll-fade.fade-t { --fade-top: 32px; }
 .scroll-fade.fade-b { --fade-bottom: 32px; }
+
+/* The Kosmographica mark (KosmoLogo): every pixel cycles the 16-hue rainbow; each starts at a different point
+   along the Hilbert curve (inline animation-delay), so colour waves travel through the fractal. */
+@keyframes kosmo-hue {
+  0% { fill: hsl(0 100% 56%); }
+  6.25% { fill: hsl(22.5 100% 56%); }
+  12.5% { fill: hsl(45 100% 56%); }
+  18.75% { fill: hsl(67.5 100% 56%); }
+  25% { fill: hsl(90 100% 56%); }
+  31.25% { fill: hsl(112.5 100% 56%); }
+  37.5% { fill: hsl(135 100% 56%); }
+  43.75% { fill: hsl(157.5 100% 56%); }
+  50% { fill: hsl(180 100% 56%); }
+  56.25% { fill: hsl(202.5 100% 56%); }
+  62.5% { fill: hsl(225 100% 56%); }
+  68.75% { fill: hsl(247.5 100% 56%); }
+  75% { fill: hsl(270 100% 56%); }
+  81.25% { fill: hsl(292.5 100% 56%); }
+  87.5% { fill: hsl(315 100% 56%); }
+  93.75% { fill: hsl(337.5 100% 56%); }
+  100% { fill: hsl(0 100% 56%); }
+}
+.kosmo-pixel { animation: kosmo-hue 12s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .kosmo-pixel { animation: none; } }
