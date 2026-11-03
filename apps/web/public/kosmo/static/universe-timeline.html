@@ -303,6 +303,10 @@
   #navhud .navpad button { width: 46px !important; height: 46px !important; min-width: 0 !important; padding: 0 !important; border-radius: 50% !important; font-size: 17px; }
   #navhud .navpad button.sm { font-size: 10px; letter-spacing: 0.04em; }
   #navhud .navpad { gap: 6px; justify-items: center; }
+  #timehud button[hidden] { display: none !important; }
+  #tDialWrap { display: flex; flex-direction: column; align-items: center; gap: 2px; } #tDial { cursor: grab; touch-action: none; outline: none; } #tDial:active { cursor: grabbing; }
+  #tDial .dt { fill: none; stroke: rgba(255,255,255,0.12); stroke-width: 1; } #tDial .dk { fill: rgba(255,255,255,0.07); stroke: rgba(255,255,255,0.28); stroke-width: 1; } #tDial .dh { stroke: #fff; stroke-width: 2.4; stroke-linecap: round; } #tDial .dp { fill: var(--accent, #7fc3ff); filter: drop-shadow(0 0 4px var(--accent, #7fc3ff)); }
+  #tDial .tk { stroke: rgba(255,255,255,0.45); stroke-width: 1.2; } #tDial .tk.on { stroke: var(--accent, #7fc3ff); stroke-width: 2; }
   #timehud { position: absolute; left: 50%; bottom: 46px; transform: translateX(-50%); z-index: 5; padding: 8px 12px; border-radius: 14px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #c9d6e6; }
   #timehud .trow { display: flex; gap: 6px; align-items: center; justify-content: center; flex-wrap: wrap; }
   #timehud button { padding: 3px 9px; min-width: 30px; font-size: 12px; }
@@ -551,7 +555,7 @@
 <div id="timehud" class="glass" aria-label="Simulation clock">
   <div class="trow">
     <button id="tRev" type="button" title="Play backwards">◀</button><button id="tPlay" type="button" title="Play / pause (P)">❚❚</button><button id="tFwd" type="button" title="Play forwards">▶</button>
-    <button id="tSlow" type="button" title="Slower">−</button><span id="tRate" title="Simulated time per real second"></span><button id="tFast" type="button" title="Faster">+</button>
+    <button id="tSlow" type="button" title="Slower" hidden>−</button><div id="tDialWrap"><svg id="tDial" viewBox="-50 -50 100 100" width="76" height="76" role="slider" aria-label="Clock speed" tabindex="0"><circle r="44" class="dt"/><g id="tTicks"></g><g id="tHand"><circle r="31" class="dk"/><line x1="0" y1="-10" x2="0" y2="-29" class="dh"/><circle cx="0" cy="-29" r="3" class="dp"/></g></svg><span id="tRate" title="Simulated time per real second"></span></div><button id="tFast" type="button" title="Faster" hidden>+</button>
     <button id="tStepB" type="button" title="Back one day">−1 d</button><button id="tStepF" type="button" title="Forward one day">+1 d</button><button id="tNow" type="button" title="Jump to now">now</button>
   </div>
   <div class="trow">
@@ -1724,6 +1728,19 @@ function collapsible(panelSel, rows) {
 collapsible('#navhud', [[p => p.querySelector('#zoom').parentElement, 'Zoom'], ['#zscale', 'Camera scale'], ['.navpads', 'Move & look'], [p => p.querySelector('#navMode').parentElement, 'Mode & speed'], ['#navkeys', 'Hotkeys']]);
 collapsible('#helm', [['.hrow', 'Throttle'], ['.hcourse', 'Course']]);
 collapsible('#timehud', [['.trow:nth-child(1)', 'Clock'], ['.trow:nth-child(2)', 'Date & follow']]);
+// the clock-speed dial: drag around the ring (or scroll / arrow keys) through 0 to 100 years per second; it clicks into the named speeds
+{
+  const dial = $('tDial'), DET = [0, 3.5563, 4.9365, 6.4197, 7.4991, 8.4991, 9.4991], A0 = -135, SWEEP = 270, MAXR = 9.5, ang = r => A0 + SWEEP * clamp(r, 0, MAXR) / MAXR;
+  $('tTicks').innerHTML = DET.map(r => `<line class="tk" data-r="${r}" x1="0" y1="-40" x2="0" y2="-45" transform="rotate(${ang(r)})"/>`).join('');
+  const setR = r => { const near = DET.reduce((b, d) => Math.abs(d - r) < Math.abs(b - r) ? d : b, 0); state.rate = Math.abs(near - r) < 0.22 ? near : clamp(r, 0, MAXR); sync('rate', 1); };
+  let on = false;
+  const aim = e => { const b = dial.getBoundingClientRect(), a = Math.atan2(e.clientX - (b.left + b.width / 2), -(e.clientY - (b.top + b.height / 2))) * 180 / Math.PI; setR((clamp(a, A0, A0 + SWEEP) - A0) / SWEEP * MAXR); };
+  dial.addEventListener('pointerdown', e => { on = true; try { dial.setPointerCapture(e.pointerId); } catch { /* synthetic pointer */ } aim(e); });
+  dial.addEventListener('pointermove', e => { if (on) aim(e); }); dial.addEventListener('pointerup', () => { on = false; }); dial.addEventListener('pointercancel', () => { on = false; });
+  dial.addEventListener('wheel', e => { e.preventDefault(); setR(state.rate - Math.sign(e.deltaY) * 0.35); }, { passive: false });
+  dial.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { setR(state.rate + 0.35); e.preventDefault(); } if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { setR(state.rate - 0.35); e.preventDefault(); } });
+  setInterval(() => { $('tHand').setAttribute('transform', `rotate(${ang(state.rate)})`); dial.querySelectorAll('.tk').forEach(t => t.classList.toggle('on', Math.abs(+t.dataset.r - state.rate) < 0.05)); }, 100);
+}
 // ---- camera scale: the zoom slider reads as a ruler of landmark sizes, from a person to the observable universe ----
 {
   const MARKS = [[2, 'room'], [7.1, 'Earth'], [9.15, 'Sun'], [12.9, 'Solar Sys.'], [15.97, '1 ly'], [17.5, '10 pc'], [20.5, 'Milky Way'], [22.6, 'Local Grp'], [24, 'Virgo'], [26.95, 'Universe']];
