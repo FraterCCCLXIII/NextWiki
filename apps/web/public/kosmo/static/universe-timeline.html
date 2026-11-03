@@ -488,6 +488,7 @@
   <div class="fxshapes" id="fxEase" title="Smooth: ease in and out. Cruise: a short ramp, then a steady speed."></div>
   <div class="row"><label for="fxArc">Path curve</label><input type="range" id="fxArc" min="0" max="1" step="0.02"><span class="val" id="fxArc-v"></span></div>
   <div class="row"><label for="fxWarp" title="Radiating line streaks and a stretched field of view while travelling or flying very fast. Off by default.">Streak effects while travelling (warp lines)</label><input type="checkbox" id="fxWarp"></div>
+  <div class="row"><label for="fxTrail" title="Stars and bodies leave soft long-exposure trails when the camera moves fast. 0 turns it off.">Motion trails</label><input type="range" id="fxTrail" min="0" max="1" step="0.05"><span class="val" id="fxTrail-v"></span></div>
   <div class="row"><label for="fxWarpAmt">Warp intensity</label><input type="range" id="fxWarpAmt" min="0" max="1.5" step="0.05"><span class="val" id="fxWarpAmt-v"></span></div>
 </aside>
 
@@ -987,7 +988,7 @@ const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 42
 const gauss = () => Math.sqrt(-2 * Math.log(1 - rnd())) * Math.cos(2 * Math.PI * rnd());
 // ---- Star look: sprite shapes, halo, twinkle, brightness. Every point cloud registers its material here, and the
 // "Stars" drawer (the sparkle button) edits `fx`; choices persist in localStorage ("kosmoFx"). ----
-const FX_DEFAULTS = { shape: 'round', size: 1, halo: 0.7, spike: 0.7, rot: 0, twinkle: 0, gain: 1, additive: true, real: true, exposure: 1, warp: false, warpAmt: 1, flight: 'hop', pull: 1, flightSpeed: 1, ease: 'smooth', arc: 0 };
+const FX_DEFAULTS = { shape: 'round', size: 1, halo: 0.7, spike: 0.7, rot: 0, twinkle: 0, gain: 1, additive: true, real: true, exposure: 1, trail: 0.6, warp: false, warpAmt: 1, flight: 'hop', pull: 1, flightSpeed: 1, ease: 'smooth', arc: 0 };
 const fx = { ...FX_DEFAULTS };
 try { Object.assign(fx, JSON.parse(localStorage.getItem('kosmoFx') || '{}')); if (!localStorage.getItem('kosmoFxStreaksOff')) { fx.warp = false; localStorage.setItem('kosmoFxStreaksOff', '1'); } } catch { /* storage blocked or bad JSON: defaults */ }   // streak effects are off unless the user switches them on (one-time reset of older saved settings)
 window.kosmoTimeline.fx = fx;   // debug hook
@@ -2437,7 +2438,7 @@ $('navClose').addEventListener('click', () => setNav(false)); $('navOpen').addEv
 { let closed = false; try { closed = localStorage.getItem('kosmoNav') === 'closed'; } catch { /* storage blocked */ } setNav(!closed); }
 flySync();
 setHud(!hudClosed);   // first draw of the location HUD: it reads fly/flyVel, so it must come after their declaration
-const FX_SLIDERS = [['fxSize', 'size', v => v.toFixed(2) + '×', false], ['fxHalo', 'halo', v => v.toFixed(2), true], ['fxSpike', 'spike', v => v.toFixed(2), true], ['fxRot', 'rot', v => v.toFixed(0) + '°', true], ['fxTwinkle', 'twinkle', v => v.toFixed(2), false], ['fxGain', 'gain', v => v.toFixed(2) + '×', false], ['fxWarpAmt', 'warpAmt', v => v.toFixed(2) + '×', false], ['fxExposure', 'exposure', v => v.toFixed(2) + '×', false], ['fxPull', 'pull', v => v.toFixed(2) + '×', false], ['fxSpeed', 'flightSpeed', v => v.toFixed(2) + '×', false], ['fxArc', 'arc', v => v.toFixed(2), false]];
+const FX_SLIDERS = [['fxSize', 'size', v => v.toFixed(2) + '×', false], ['fxHalo', 'halo', v => v.toFixed(2), true], ['fxSpike', 'spike', v => v.toFixed(2), true], ['fxRot', 'rot', v => v.toFixed(0) + '°', true], ['fxTwinkle', 'twinkle', v => v.toFixed(2), false], ['fxGain', 'gain', v => v.toFixed(2) + '×', false], ['fxWarpAmt', 'warpAmt', v => v.toFixed(2) + '×', false], ['fxTrail', 'trail', v => v.toFixed(2), false], ['fxExposure', 'exposure', v => v.toFixed(2) + '×', false], ['fxPull', 'pull', v => v.toFixed(2) + '×', false], ['fxSpeed', 'flightSpeed', v => v.toFixed(2) + '×', false], ['fxArc', 'arc', v => v.toFixed(2), false]];
 // `redraw` = the change alters the sprite drawing itself (otherwise only material settings change)
 function fxSync() {
   for (const [id, key, f] of FX_SLIDERS) { $(id).value = fx[key]; $(id + '-v').textContent = f(fx[key]); }
@@ -2635,6 +2636,46 @@ function adaptQuality(ms, now) {
 }
 const burstDetail = (ms = 450) => { quality.burstUntil = performance.now() + ms; };
 document.addEventListener('input', e => { if (e.target.matches && e.target.matches('#scalebars input, #zoom, #navSpeed')) burstDetail(); }, true);
+// ---- motion trails: a long-exposure look. While the camera moves (turns, zooms, flies) the frame is blended with a decaying copy of the previous
+// frames, so every star and body drags a soft fading trail along its own screen path; at rest the effect switches itself off and costs nothing. ----
+const trail = { rt: [null, null], cur: null, w: 0, h: 0, i: 0, motion: 0, prev: null, active: false, scene: new THREE.Scene(), cam: new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1) };
+trail.mat = new THREE.ShaderMaterial({
+  uniforms: { tCur: { value: null }, tHist: { value: null }, uDecay: { value: 0 } }, depthTest: false, depthWrite: false,
+  vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+  fragmentShader: 'uniform sampler2D tCur; uniform sampler2D tHist; uniform float uDecay; varying vec2 vUv;\nvoid main() { vec4 c = texture2D(tCur, vUv); vec4 h = texture2D(tHist, vUv) * uDecay * vec4(0.985, 0.99, 1.0, 1.0); gl_FragColor = vec4(max(c.rgb, h.rgb), 1.0); }',
+});
+trail.blit = new THREE.ShaderMaterial({
+  uniforms: { tMap: { value: null } }, depthTest: false, depthWrite: false,
+  vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+  fragmentShader: 'uniform sampler2D tMap; varying vec2 vUv;\nvoid main() { gl_FragColor = texture2D(tMap, vUv); \n#include <colorspace_fragment>\n }',
+});
+trail.quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), trail.mat); trail.scene.add(trail.quad);
+function trailTargets() {
+  const v = renderer.getDrawingBufferSize(new THREE.Vector2());
+  if (trail.w !== v.x || trail.h !== v.y) {
+    for (const r of [...trail.rt, trail.cur]) if (r) r.dispose();
+    const opt = { type: THREE.HalfFloatType, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, depthBuffer: true };
+    trail.rt = [new THREE.WebGLRenderTarget(v.x, v.y, { ...opt, depthBuffer: false }), new THREE.WebGLRenderTarget(v.x, v.y, { ...opt, depthBuffer: false })]; trail.cur = new THREE.WebGLRenderTarget(v.x, v.y, opt);
+    trail.w = v.x; trail.h = v.y; trail.fresh = true;
+  }
+}
+function renderFrame(dt) {
+  // how fast is the picture changing? turning (radians/s), zooming (decades/s) and sliding sideways (view widths/s) all count
+  const q = camera.quaternion, viewW = 10 ** state.zoom; let m = 0;
+  if (trail.prev) { const ang = 2 * Math.acos(Math.min(1, Math.abs(q.dot(trail.prev.q)))), dz = Math.abs(state.zoom - trail.prev.z), lat = Math.hypot(focus[0] - trail.prev.f[0], focus[1] - trail.prev.f[1], focus[2] - trail.prev.f[2]) / viewW; m = (ang * 0.9 + dz * 1.2 + lat * 1.2) / Math.max(dt, 1e-3); }
+  trail.prev = { q: q.clone(), z: state.zoom, f: [...focus] };
+  trail.motion += (m - trail.motion) * (1 - Math.exp(-dt * 10));
+  const strength = fx.trail * Math.min(1, trail.motion / 2.5) * 0.93;
+  if (strength < 0.04) { if (trail.active) { trail.active = false; } renderer.render(scene, camera); return; }
+  trailTargets(); const [a, b] = [trail.rt[trail.i], trail.rt[1 - trail.i]];
+  if (!trail.active || trail.fresh) { renderer.setRenderTarget(trail.rt[1 - trail.i]); renderer.clear(); renderer.setRenderTarget(null); trail.fresh = false; }
+  trail.active = true;
+  renderer.setRenderTarget(trail.cur); renderer.clear(); renderer.render(scene, camera);                                  // 1: this frame, linear
+  trail.quad.material = trail.mat; trail.mat.uniforms.tCur.value = trail.cur.texture; trail.mat.uniforms.tHist.value = b.texture; trail.mat.uniforms.uDecay.value = Math.pow(strength, Math.max(dt, 0.004) * 60);
+  renderer.setRenderTarget(a); renderer.render(trail.scene, trail.cam);                                                      // 2: max(this frame, faded history)
+  renderer.setRenderTarget(null); trail.quad.material = trail.blit; trail.blit.uniforms.tMap.value = a.texture; renderer.render(trail.scene, trail.cam);   // 3: to the screen
+  trail.i = 1 - trail.i;
+}
 let tlLastSig = '';
 function animate(now) {
   requestAnimationFrame(animate);
@@ -2659,10 +2700,10 @@ function animate(now) {
   if (frame % 2 === 1) stepDial();
   if (frame % 15 === 0) readout();
   frame++;
-  renderer.render(scene, camera);
+  renderFrame(dt);
 }
 requestAnimationFrame(animate);
-window.kosmo = { quality, drawCube, drawTimeline, drawMinimap, updateHover, updateDrawer, stepDial, get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
+window.kosmo = { trail, renderFrame, quality, drawCube, drawTimeline, drawMinimap, updateHover, updateDrawer, stepDial, get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
 </script>
 </body>
 </html>
