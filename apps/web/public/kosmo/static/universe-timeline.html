@@ -188,7 +188,12 @@
   #scalebars .tag { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
   #scalebars .cap { font-size: 11px; color: #c9d6e6; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
   #scalebars .v { font-size: 12px; color: var(--accent); font-variant-numeric: tabular-nums; min-height: 15px; }
-  #scalebars input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 4px; height: 100%; -webkit-appearance: slider-vertical; }
+  /* big, easy vertical levers: a 34 px wide hit area, a fat track, a large thumb; scroll over one to nudge it, double-click to put it back to true */
+  #scalebars input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 34px !important; height: 100%; -webkit-appearance: none; appearance: none; background: none !important; box-shadow: none !important; cursor: ns-resize; margin: 0; padding: 0; }
+  #scalebars input[type=range]::-webkit-slider-runnable-track { width: 8px; border-radius: 8px; background: linear-gradient(0deg, rgba(90,160,255,0.85), rgba(255,175,80,0.85)); box-shadow: 0 0 8px rgba(130,170,255,0.2); }
+  #scalebars input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; margin-left: -10px; border-radius: 50%; background: #fff; border: 2px solid rgba(120,175,255,0.95); box-shadow: 0 0 0 5px rgba(255,255,255,0.1), 0 2px 10px rgba(0,0,0,0.5); }
+  #scalebars input[type=range]:hover::-webkit-slider-thumb, #scalebars input[type=range]:active::-webkit-slider-thumb { box-shadow: 0 0 0 8px rgba(255,255,255,0.16), 0 2px 12px rgba(0,0,0,0.5); }
+  #scalebars .col { width: 62px; }
   body.drawer-open #scalebars, body.navdrawer-open #scalebars, body.fxdrawer-open #scalebars { right: 418px; }
   body.nav-closed #scalebars { bottom: 90px; }
   #navhud { max-height: calc(100vh - var(--tlh, 210px) - 130px); overflow-y: auto; overflow-x: hidden; }
@@ -1916,6 +1921,11 @@ collapsible('#timehud', [['.trow:nth-child(1)', 'Clock'], ['.trow:nth-child(2)',
 // keep the vertical sliders clear of the Navigate panel: they stop just above it, whatever its height (rows fold, look changes)
 { const nh = $('navhud'), upd = () => document.body.style.setProperty('--navh', `${document.body.classList.contains('nav-closed') ? 56 : Math.round(nh.getBoundingClientRect().height)}px`);
   new ResizeObserver(upd).observe(nh); upd(); new MutationObserver(upd).observe(document.body, { attributes: true, attributeFilter: ['class'] }); }
+document.querySelectorAll('#scalebars input[type=range]').forEach(r => {
+  const reset = { vDist: 1, vSize: 0, vBal: 1 }[r.id];
+  r.addEventListener('wheel', e => { e.preventDefault(); r.value = clamp(+r.value - Math.sign(e.deltaY) * (r.max - r.min) / 40, +r.min, +r.max); r.dispatchEvent(new Event('input', { bubbles: true })); }, { passive: false });
+  r.addEventListener('dblclick', () => { if (reset != null) { r.value = reset; r.dispatchEvent(new Event('input', { bubbles: true })); } });
+});
 // ---- speed scale: the max-speed slider in real units with landmark speeds on its ruler, and a check against the target ahead ----
 const fmtSpd = v => `${P.fmtLength(v)}/s`, safe = { on: true };
 function targetAhead(k) {   // the course target, else the destination being flown to / last reached: its name, distance (m) and whether it lies ahead
