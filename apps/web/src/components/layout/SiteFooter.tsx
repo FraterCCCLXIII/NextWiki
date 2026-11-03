@@ -17,6 +17,10 @@ export async function SiteFooter() {
         <img src="/assets/images/artek-logo.svg" alt="Artek" className="h-4 w-auto dark:hidden" />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/assets/images/artek-logo-white.svg" alt="" aria-hidden="true" className="hidden h-4 w-auto dark:block" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/assets/images/nasa-worm-black.svg" alt="NASA" className="h-3 w-auto rotate-180 dark:hidden" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/assets/images/nasa-worm-white.svg" alt="" aria-hidden="true" className="hidden h-3 w-auto rotate-180 dark:block" />
       </div>
       <Link
         href="/about"
