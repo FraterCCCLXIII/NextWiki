@@ -45,9 +45,26 @@ export function EmbedFrame({ src, title }: EmbedFrameProps) {
   // Internal look switch: /kosmo/tools/<tool>?kosmoBg=original|match is forwarded to the page
   // (kosmo-theme.js stores it), so it can be flipped from the wiki URL.
   useEffect(() => {
-    const bg = new URLSearchParams(window.location.search).get("kosmoBg");
-    setFrameSrc(bg === "original" || bg === "match" ? `${src}?kosmoBg=${bg}` : src);
+    const params = new URLSearchParams(window.location.search);
+    const bg = params.get("kosmoBg");
+    const addr = params.get("a"); // a cosmic address (KA1~...) to open the atlas at
+    const base = bg === "original" || bg === "match" ? `${src}?kosmoBg=${bg}` : src;
+    setFrameSrc(addr?.startsWith("KA1~") ? `${base}#a=${encodeURIComponent(addr)}` : base);
   }, [src]);
+
+  // The atlas posts its camera state as a cosmic address; keep it in this page's URL (?a=...) so a view can be shared and reopened.
+  useEffect(() => {
+    const onMessage = (e: MessageEvent) => {
+      if (e.origin !== window.location.origin || e.source !== frameRef.current?.contentWindow) return;
+      const d = e.data as { kosmo?: string; a?: string } | null;
+      if (d?.kosmo !== "address" || typeof d.a !== "string" || !d.a.startsWith("KA1~")) return;
+      const url = new URL(window.location.href);
+      url.searchParams.set("a", d.a);
+      window.history.replaceState(window.history.state, "", url);
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
 
   return (
     <div className="relative h-full w-full">

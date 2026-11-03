@@ -329,6 +329,9 @@
   #hud { position: absolute; }
   #hud .hudlogo { position: absolute; right: 14px; bottom: 12px; width: 46px; height: auto; opacity: 0.8; transform: rotate(180deg) scaleX(-1); pointer-events: none; }
   body.hud-nolabels #hud .hudlogo { display: block; }
+  #tmHide { margin-left: 10px; width: 20px; height: 20px; min-width: 0 !important; padding: 0 !important; border-radius: 50% !important; font-size: 13px; line-height: 1; vertical-align: middle; background: transparent !important; color: var(--muted) !important; border: 0 !important; }
+  #tmShow { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 5; } #tmShow[hidden] { display: none; }
+  #timehud { transition: opacity .25s ease, transform .35s cubic-bezier(.4,0,.2,1); } body.tm-hidden #timehud { opacity: 0; transform: translate(-50%, 30px); pointer-events: none; }
   #timehud .ttitle { font-size: 13px; letter-spacing: 0.28em; color: #7fc3ff; text-align: left; margin-bottom: 2px; }
   body.hud-nolabels #timehud .ttitle { display: block !important; }
   #tDialWrap { display: flex; flex-direction: column; align-items: center; gap: 2px; } #tDial { cursor: grab; touch-action: none; outline: none; } #tDial:active { cursor: grabbing; }
@@ -550,7 +553,7 @@
     </div>
   </div>
   <div class="navrow">
-    <button type="button" id="navMode" title="Orbit around the view centre, or fly where you look (G)">Orbit</button><button type="button" id="navCruise" title="Keep flying forward at the speed set by the slider (U); B or S stops">Cruise</button><button type="button" id="navPad" title="Controller layout: two thumbsticks, triggers and buttons (0). A real gamepad works too.">Pad</button><button type="button" id="navHelm" title="Ship helm: throttle gears from walking pace to warp, and set a course">Helm</button>
+    <button type="button" id="navCentre" title="Centre the camera on the object (Y, or double-click it)">Centre</button><button type="button" id="navMode" title="Orbit around the view centre, or fly where you look (G)">Orbit</button><button type="button" id="navCruise" title="Keep flying forward at the speed set by the slider (U); B or S stops">Cruise</button><button type="button" id="navPad" title="Controller layout: two thumbsticks, triggers and buttons (0). A real gamepad works too.">Pad</button><button type="button" id="navHelm" title="Ship helm: throttle gears from walking pace to warp, and set a course">Helm</button>
     <span class="navtag">max speed</span><input type="range" id="navSpeed" min="-2.3" max="1.6" step="0.01" aria-label="Flight speed"><span class="navval" id="navSpeed-v"></span>
   </div>
 <details id="navkeys"><summary>Controls</summary><div class="kgrid"><span class="kk">drag</span><span class="kv">spin the view</span><span class="kk">right-drag / W A S D</span><span class="kv">pan</span><span class="kk">wheel / Q E</span><span class="kv">zoom (throttle in helm)</span><span class="kk">← → ↑ ↓</span><span class="kv">orbit (pitch / yaw in helm)</span><span class="kk">Space</span><span class="kv">hold to thrust (the speed ramps up to the max speed)</span><span class="kk">Enter</span><span class="kv">play / pause the timeline</span><span class="kk">G</span><span class="kv">flight mode</span><span class="kk">U</span><span class="kv">cruise</span><span class="kk">H</span><span class="kv">helm</span><span class="kk">W S · wheel</span><span class="kv">throttle (helm)</span><span class="kk">Q E</span><span class="kv">roll (helm)</span><span class="kk">V F O J ⌫</span><span class="kv">reverse · align · autopilot · jump · clear</span><span class="kk">B</span><span class="kv">brake / all stop</span><span class="kk">⇧</span><span class="kv">boost</span><span class="kk">P</span><span class="kv">pause the clock</span><span class="kk">; ' · , . · N</span><span class="kv">clock speed · day step · now</span><span class="kk">⇧R ⇧F</span><span class="kv">clock backwards / forwards</span><span class="kk">R</span><span class="kv">spin the universe</span><span class="kk">T</span><span class="kv">timeline</span><span class="kk">[ ]</span><span class="kv">pan time</span><span class="kk">C</span><span class="kv">chronicle</span><span class="kk">M · K</span><span class="kv">minimal look · hide labels</span></div></details>
@@ -591,8 +594,9 @@
 </div>
 <div id="pilot" hidden><span class="pr"></span><span class="ps"></span><span class="ph">drag = stick · arrows pitch/yaw · Q E roll · W S max speed · hold Space to thrust</span></div>
 <div id="course" hidden><span class="cm"></span><span class="cl"></span></div>
+<button id="tmShow" class="orb" type="button" hidden aria-label="Show the TimeMachine" title="Show the TimeMachine"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></svg></button>
 <div id="timehud" class="glass" aria-label="Simulation clock">
-  <div class="hudk ttitle">TimeMachine</div>
+  <div class="hudk ttitle">TimeMachine<button id="tmHide" type="button" title="Hide the TimeMachine" aria-label="Hide the TimeMachine">×</button></div>
   <div class="trow">
     <button id="tRev" type="button" title="Play backwards">◀</button><button id="tPlay" type="button" title="Play / pause (P)">❚❚</button><button id="tFwd" type="button" title="Play forwards">▶</button>
     <button id="tSlow" type="button" title="Slower" hidden>−</button><div id="tDialWrap"><svg id="tDial" viewBox="-50 -50 100 100" width="76" height="76" role="slider" aria-label="Clock speed" tabindex="0"><circle r="44" class="dt"/><g id="tTicks"></g><g id="tHand"><circle r="31" class="dk"/><line x1="0" y1="-10" x2="0" y2="-29" class="dh"/><circle cx="0" cy="-29" r="3" class="dp"/></g></svg><span id="tRate" title="Simulated time per real second"></span></div><button id="tFast" type="button" title="Faster" hidden>+</button>
@@ -1294,8 +1298,8 @@ const CENSUS = { key: null, built: new Map(), group: new THREE.Group() };
 scene.add(CENSUS.group);
 const CENSUS_DEFS = {
   mw: { name: 'Milky Way census: nebulae, remnants, clusters, pulsars', centre: () => [0, 0, 0], width: 70 * kpc, minFrac: 0.012, rows: o => ['nebula', 'supernova_remnant', 'star_cluster', 'pulsar', 'neutron_star'].includes(o.type) && o.dist_pc < 40e3, pts: 500 },
-  lg: { name: 'Local Group: every galaxy by its real type', centre: () => gal(121, -22, 380e3 * pc), width: 3.2 * Mpc, minFrac: 0.02, mul: 12, rows: o => o.type === 'galaxy' && o.dist_pc < 12e6, pts: 1600, extra: ['mw'] },
-  virgo: { name: 'Local supercluster: galaxies and clusters to 40 Mpc', centre: () => CL.pos, width: 60 * Mpc, minFrac: 0.012, mul: 30, rows: o => (o.type === 'galaxy' || o.type === 'galaxy_cluster') && o.dist_pc < 45e6, pts: 500 },
+  lg: { name: 'Local Group: every galaxy by its real type', centre: () => gal(121, -22, 380e3 * pc), width: 3.2 * Mpc, minFrac: 0.02, mul: 12, resolvePx: 9, rows: o => o.type === 'galaxy' && o.dist_pc < 12e6, pts: 1600, extra: ['mw'] },
+  virgo: { name: 'Local supercluster: galaxies and clusters to 40 Mpc', centre: () => CL.pos, width: 60 * Mpc, minFrac: 0.012, mul: 30, resolvePx: 12, rows: o => (o.type === 'galaxy' || o.type === 'galaxy_cluster') && o.dist_pc < 45e6, pts: 500 },
   compact: { name: 'Compact objects: black holes, neutron stars, white dwarfs', centre: () => SUN, width: 24 * kpc, minFrac: 0.014, rows: o => ['black_hole', 'neutron_star', 'pulsar', 'white_dwarf', 'quasar'].includes(o.type) && o.dist_pc < 20e6, pts: 400 },
   zoo: { name: 'Stellar zoo: the largest and nearest stars', centre: () => SUN, width: 600 * pc, minFrac: 0.008, rows: o => o.type === 'star' && o.radius_m > 0 && o.dist_pc < 3e3, limit: 260, pts: 0 },
   ladder: { name: 'Size ladder: every kind of body, small to large', ladder: true, minFrac: 0, rows: o => o.radius_m > 0 && o.type !== 'galaxy_cluster' || o.type === 'galaxy_cluster', limit: 180, pts: 500 },
@@ -1947,7 +1951,7 @@ function collapsible(panelSel, rows) {
 }
 // the four mode buttons become small pills stacked between the move pad and the look pad
 { const pads = document.querySelector('#navhud .navpads'), mid = document.createElement('div'); mid.className = 'modecol'; pads.insertBefore(mid, pads.children[1]);
-  for (const id of ['navMode', 'navCruise', 'navPad', 'navHelm']) mid.appendChild($(id)); }
+  for (const id of ['navCentre', 'navMode', 'navCruise', 'navPad', 'navHelm']) mid.appendChild($(id)); }
 // boost and stop move out of the d-pad to sit beside the speed slider with the other driving controls (the d-pad keeps empty cells in their place)
 { const row = $('navSpeed').parentElement, box = document.createElement('div'); box.className = 'drive';
   for (const k of ['shift', 'b']) { const b = document.querySelector(`#navhud .navpad button[data-k="${k}"]`); if (!b) continue; b.parentElement.insertBefore(document.createElement('span'), b); box.appendChild(b); }
@@ -1985,6 +1989,61 @@ document.querySelectorAll('#scalebars input[type=range]').forEach(r => {
   $('sbHide').addEventListener('click', () => set(true)); $('sbShow').addEventListener('click', () => set(false));
   window.addEventListener('keydown', e => { if (!e.repeat && !e.ctrlKey && !e.metaKey && !e.altKey && (e.key === 'l' || e.key === 'L') && !/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) set(!document.body.classList.contains('levers-hidden')); });
   let h = false; try { h = localStorage.getItem('kosmoLevers') === 'hidden'; } catch { /* storage blocked */ } set(h);
+}
+// show / hide the TimeMachine (remembered)
+{
+  const set = hidden => { document.body.classList.toggle('tm-hidden', hidden); $('tmShow').hidden = !hidden; try { localStorage.setItem('kosmoTM', hidden ? 'hidden' : 'shown'); } catch { /* storage blocked */ } };
+  $('tmHide').addEventListener('click', () => set(true)); $('tmShow').addEventListener('click', () => set(false));
+  let h = false; try { h = localStorage.getItem('kosmoTM') === 'hidden'; } catch { /* storage blocked */ } set(h);
+}
+// ---- centre the camera on an object: the course target, else the destination being flown to / last reached, else the object under the pointer.
+// The view centre glides there (3D cursor point, named body, or the map point under the pointer) and the camera turns to look straight at it. ----
+function centreTarget() {
+  if (hoverDest && hoverDest.pos) return { pos: hoverDest.pos, name: hoverDest.name };
+  if (hoverSnap) return { pos: hoverSnap.pos, name: 'map point' };
+  if (helm.on && helm.course) return { pos: helm.course.pos, name: helm.course.name };
+  const d = loadedDest(); return d && d.target ? { pos: d.target, name: d.name || 'destination' } : null;
+}
+function centreOnTarget(t = centreTarget(), secs = 0.9) {
+  if (!t) { toast('Nothing to centre on: hover an object or pick a destination first'); return; }
+  const target = typeof t.pos === 'function' ? t.pos : (() => t.pos); const keep = state.zoom;
+  travelTo(target, keep, t.name, secs);
+  // point the camera straight at it too: look along the line from the camera through the view centre (orbit view keeps the target in the middle)
+  camera.lookAt(0, 0, 0); controls.update();
+}
+$('navCentre').addEventListener('click', () => centreOnTarget());
+window.addEventListener('keydown', e => { if (!e.repeat && !e.ctrlKey && !e.metaKey && !e.altKey && (e.key === 'y' || e.key === 'Y') && !/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) centreOnTarget(); });
+renderer.domElement.addEventListener('dblclick', () => { if (hoverDest || hoverSnap) centreOnTarget(); });
+// ---- cosmic address: the whole camera state as one string in the page hash, mirrored to the parent wiki page (?a=...) so a view can be shared, bookmarked and reopened.
+// KA1 ~ zoom (log10 of the view width in metres) ~ view centre x,y,z in parsecs in the galactic frame (Sun-centred: +x to the galactic centre, +z to the north
+// galactic pole) ~ camera orientation quaternion ~ simulation Julian day ~ logA (cosmic time slider) ~ distortion levers (distK, sizeMul, sizeK, cosK). ----
+const addrNum = v => (+v).toPrecision(9).replace(/\.?0+(e|$)/, '$1');
+function encodeAddress() {
+  const q = camera.quaternion, rel = [focus[0] - SUN[0], focus[1] - SUN[1], focus[2] - SUN[2]].map(v => addrNum(v / pc));
+  return ['KA1', addrNum(state.zoom), rel.join(','), [q.x, q.y, q.z, q.w].map(v => addrNum(v)).join(','), addrNum(clock.jd), addrNum(state.logA), [state.distK, state.sizeMul, state.sizeK, state.cosK].map(addrNum).join(',')].join('~');
+}
+function applyAddress(str) {
+  const p = String(str || '').split('~'); if (p[0] !== 'KA1' || p.length < 4) return false;
+  const z = parseFloat(p[1]), xyz = p[2].split(',').map(parseFloat), q = p[3].split(',').map(parseFloat);
+  if (![z, ...xyz].every(Number.isFinite)) return false;
+  travel = null; follow = null; state.zoom = clamp(z, 1, 27.5); focus[0] = SUN[0] + xyz[0] * pc; focus[1] = SUN[1] + xyz[1] * pc; focus[2] = SUN[2] + xyz[2] * pc;
+  if (q.length === 4 && q.every(Number.isFinite)) { camera.quaternion.set(q[0], q[1], q[2], q[3]).normalize(); camera.position.set(0, 0, 1).applyQuaternion(camera.quaternion).multiplyScalar(camera.position.length() || 2); }
+  if (p[4] && Number.isFinite(+p[4])) clock.jd = +p[4]; if (p[5] && Number.isFinite(+p[5])) state.logA = +p[5];
+  if (p[6]) { const l = p[6].split(',').map(parseFloat); if (l.every(Number.isFinite)) { [state.distK, state.sizeMul, state.sizeK, state.cosK] = l; state.skyK = state.distK; state.skyB = state.sizeK; syncScaleBars(); fxApply(false); } }
+  sync('zoom', 2); return true;
+}
+{
+  let lastSent = '', held = false;
+  const m = /[#&]a=([^&]+)/.exec(location.hash); if (m) held = true;
+  const tryApply = () => { const mm = /[#&]a=([^&]+)/.exec(location.hash); if (mm) applyAddress(decodeURIComponent(mm[1])); };
+  if (held) setTimeout(tryApply, 1500);   // after the catalogue and levels are up
+  window.addEventListener('hashchange', () => { if (/[#&]a=/.test(location.hash)) tryApply(); });
+  setInterval(() => {
+    if (travel || document.hidden) return; const a = encodeAddress(); if (a === lastSent) return; lastSent = a;
+    try { history.replaceState(null, '', `#a=${encodeURIComponent(a)}`); } catch { /* sandboxed */ }
+    try { window.parent !== window && window.parent.postMessage({ kosmo: 'address', a }, '*'); } catch { /* cross-origin parent */ }
+  }, 900);
+  window.kosmoAddress = { encode: encodeAddress, apply: applyAddress };
 }
 // Each lever only changes things at the scales it acts on; say so (and where to look) instead of leaving a lever that seems dead
 {
@@ -2154,7 +2213,7 @@ $('hJump').onclick = () => { if (helm.course) { const d = helm.course; setGear(0
 $('hClear').onclick = () => { helm.course = null; helm.auto = false; };
 setGear(0); window.kosmoTimeline.helm = helm;
 // keycaps: every control shows its hotkey; the extra hotkeys below work from anywhere (not while typing in a field)
-const KEYCAPS = { navCruise: 'U', navMode: 'G', navHelm: 'H', tPlay: 'P', tSlow: ';', tFast: "'", tStepB: ',', tStepF: '.', tNow: 'N', tRev: '⇧R', tFwd: '⇧F',
+const KEYCAPS = { navCentre: 'Y', navCruise: 'U', navMode: 'G', navHelm: 'H', tPlay: 'P', tSlow: ';', tFast: "'", tStepB: ',', tStepF: '.', tNow: 'N', tRev: '⇧R', tFwd: '⇧F',
   hUp: 'W', hDown: 'S', hStop: 'B', hRev: 'V', hAlign: 'F', hAuto: 'O', hJump: 'J', hClear: '⌫' };
 const KEYCAP_DATAK = { e: 'E', q: 'Q', shift: '⇧', w: 'W', x: 'X', a: 'A', b: 'B', d: 'D', z: 'Z', s: 'S' };
 for (const [id, k] of Object.entries(KEYCAPS)) { const b = $(id); if (b) b.insertAdjacentHTML('beforeend', `<kbd class="kc">${k}</kbd>`); }
@@ -2211,6 +2270,33 @@ function updateBlackHoles(k) {
 }
 // ---- census views: a catalogue slice drawn as real models at real positions (or, for the size ladder, in a row), each at least a fixed
 // fraction of the view wide so even a neutron star is findable; true size takes over once you zoom in ----
+// Census objects far from resolved are drawn the way a telescope records them (soft point-spread glows, tinted by kind, spikes only on the sharp ones); the
+// full model takes over once an object's true size passes `resolvePx` on screen.
+const CENSUS_SPRITE_MAT = new THREE.ShaderMaterial({
+  transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending, uniforms: { uPx: { value: 1 } },
+  vertexShader: 'attribute float aSize; attribute vec3 aColor; attribute float aKind; varying vec3 vC; varying float vK; uniform float uPx; void main() { vC = aColor; vK = aKind; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); gl_PointSize = aSize * uPx; }',
+  fragmentShader: 'varying vec3 vC; varying float vK; void main() { vec2 p = (gl_PointCoord - 0.5) * 2.0; float d2 = dot(p, p); if (d2 > 1.0) discard;\n float core = exp(-d2 * (vK > 1.5 ? 6.0 : 14.0)), halo = exp(-d2 * 3.2) * (vK > 1.5 ? 0.7 : 0.28), sp = vK > 0.5 && vK < 1.5 ? (exp(-abs(p.x) * 70.0) * exp(-abs(p.y) * 5.0) + exp(-abs(p.y) * 70.0) * exp(-abs(p.x) * 5.0)) * 0.55 : 0.0;\n float a = clamp(core + halo + sp, 0.0, 1.0); vec3 col = mix(vC, vec3(1.0), core * 0.55); gl_FragColor = vec4(col * a, a); }',
+});
+function bbRGB(T) {   // blackbody colour, T in kelvin (Tanner Helland fit)
+  const t = clamp(T, 1500, 40000) / 100; let r, g, b;
+  r = t <= 66 ? 255 : clamp(329.7 * (t - 60) ** -0.1332, 0, 255); g = t <= 66 ? clamp(99.47 * Math.log(t) - 161.1, 0, 255) : clamp(288.1 * (t - 60) ** -0.0755, 0, 255); b = t >= 66 ? 255 : t <= 19 ? 0 : clamp(138.5 * Math.log(t - 10) - 305, 0, 255);
+  return [r / 255, g / 255, b / 255];
+}
+function censusStyle(o) {   // colour, size in px and kind (0 soft smudge, 1 sharp with spikes, 2 big diffuse) for an unresolved object
+  switch (o.type) {
+    case 'galaxy': return { c: [1.0, 0.9, 0.72], s: 15, k: 0 };
+    case 'galaxy_cluster': return { c: [1.0, 0.82, 0.6], s: 24, k: 2 };
+    case 'nebula': return { c: [1.0, 0.36, 0.52], s: 30, k: 2 };
+    case 'supernova_remnant': return { c: [0.45, 0.85, 0.95], s: 22, k: 2 };
+    case 'star_cluster': return { c: [1.0, 0.94, 0.8], s: 14, k: 1 };
+    case 'pulsar': case 'neutron_star': return { c: [0.68, 0.8, 1.0], s: 9, k: 1 };
+    case 'black_hole': return { c: [1.0, 0.7, 0.42], s: 9, k: 1 };
+    case 'white_dwarf': return { c: [0.86, 0.92, 1.0], s: 8, k: 1 };
+    case 'quasar': return { c: [0.8, 0.9, 1.0], s: 13, k: 1 };
+    case 'star': { const L = o.luminosity_W > 0 ? o.luminosity_W / 3.828e26 : 1; return { c: bbRGB(o.temperature_K > 0 ? o.temperature_K : 5500), s: clamp(5 + 3.2 * Math.log10(Math.max(L, 1e-3)) + 3, 4, 16), k: 1 }; }
+    default: return { c: [0.85, 0.88, 1.0], s: 9, k: 1 };
+  }
+}
 function censusBuild(key) {
   const def = CENSUS_DEFS[key], items = [], rows = [];
   for (const d of DEST) { const o = d.meta; if (o && o.radius_m !== 0 && def.rows(o) && (def.ladder || (o.ra_deg != null && o.dist_pc > 0))) rows.push({ meta: o, pos: Array.isArray(d.pos) ? d.pos : (([l, b]) => gal(l, b, o.dist_pc * pc))(eqToGal(o.ra_deg, o.dec_deg)) }); }
@@ -2221,13 +2307,15 @@ function censusBuild(key) {
   let cursor = 0;
   for (const d of use) {
     const o = d.meta, r = o.radius_m > 0 ? o.radius_m : dflt[o.type] || 1e6;
-    const obj = createModel(THREE, { ...o, radius_m: r, points: def.pts || undefined, tilt: true, segments: 20 }); obj.visible = false; CENSUS.group.add(obj);
-    const it = { name: o.name, r, obj, pos: d.pos };
+    const it = { name: o.name, r, obj: null, spec: { ...o, radius_m: r, points: def.pts || undefined, tilt: true, segments: 20 }, pos: d.pos, style: censusStyle(o) };
     if (def.ladder) { cursor += r * 1.3; it.pos = [SUN[0] + cursor, SUN[1], SUN[2]]; cursor += r * 1.3; it.raw = true; }
     items.push(it);
   }
-  if (def.extra) { const mw = createModel(THREE, { name: 'Milky Way', type: 'galaxy', notes: 'Barred spiral galaxy; morphology: SBbc', radius_m: 15 * kpc, points: 2600, tilt: true }); mw.visible = false; CENSUS.group.add(mw); items.push({ name: 'Milky Way', r: 15 * kpc, obj: mw, pos: [0, 0, 0] }); }
-  const built = { items, centre: def.ladder ? [SUN[0] + cursor / 2, SUN[1], SUN[2]] : def.centre(), width: def.ladder ? cursor * 1.1 : def.width, def };
+  if (def.extra) items.push({ name: 'Milky Way', r: 15 * kpc, obj: null, spec: { name: 'Milky Way', type: 'galaxy', notes: 'Barred spiral galaxy; morphology: SBbc', radius_m: 15 * kpc, points: 2600, tilt: true }, pos: [0, 0, 0], style: { c: [1, 0.9, 0.7], s: 18, k: 0 } });
+  const n = items.length, geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 3), 3)); geo.setAttribute('aSize', new THREE.BufferAttribute(new Float32Array(n), 1)); geo.setAttribute('aColor', new THREE.BufferAttribute(new Float32Array(n * 3), 3)); geo.setAttribute('aKind', new THREE.BufferAttribute(new Float32Array(n), 1));
+  items.forEach((it, i) => { geo.attributes.aColor.setXYZ(i, ...it.style.c); geo.attributes.aKind.setX(i, it.style.k); });
+  const pts = new THREE.Points(geo, CENSUS_SPRITE_MAT); pts.frustumCulled = false; pts.visible = false; CENSUS.group.add(pts);
+  const built = { pts, items, centre: def.ladder ? [SUN[0] + cursor / 2, SUN[1], SUN[2]] : def.centre(), width: def.ladder ? cursor * 1.1 : def.width, def };
   CENSUS.built.set(key, built); return built;
 }
 // ---- the destination itself: a catalogue object with no level of its own (a galaxy, nebula, remnant, cluster, compact object, loose star) gets
@@ -2252,15 +2340,18 @@ function updateDestModel(k) {
   DM.obj.position.set(sc[0], sc[1], sc[2]); DM.obj.scale.setScalar(size); DM.obj.tick(performance.now() / 1000); if (DM.obj.update) DM.obj.update(camera, renderer);
 }
 function updateCensus(k) {
-  for (const [key, B] of CENSUS.built) for (const it of B.items) if (key !== CENSUS.key) it.obj.visible = false;
+  for (const [key, B] of CENSUS.built) if (key !== CENSUS.key) { B.pts.visible = false; for (const it of B.items) if (it.obj) it.obj.visible = false; }
   if (!CENSUS.key) return;
-  const B = CENSUS.built.get(CENSUS.key) || censusBuild(CENSUS.key), def = B.def, viewW = 10 ** state.zoom, t = performance.now() / 1000, pxPerScene = view.clientHeight / 2;
-  for (const it of B.items) {
-    const sc = toScene(it.raw ? it.pos : at(it.pos), focus, k), metres = Math.max(it.r * (def.mul || 1), viewW * def.minFrac), size = metres * k, px = size * pxPerScene;
-    const show = px > 1.5 && px < 6000 && Math.hypot(sc[0], sc[1], sc[2]) < 1e5;
-    it.obj.visible = show; if (!show) continue;
-    it.obj.position.set(sc[0], sc[1], sc[2]); it.obj.scale.setScalar(size); it.obj.tick(t); if (it.obj.update) it.obj.update(camera, renderer);
-  }
+  const B = CENSUS.built.get(CENSUS.key) || censusBuild(CENSUS.key), def = B.def, t = performance.now() / 1000, pxPerScene = view.clientHeight / 2, resolve = def.resolvePx || 45, pos = B.pts.geometry.attributes.position, sz = B.pts.geometry.attributes.aSize;
+  CENSUS_SPRITE_MAT.uniforms.uPx.value = renderer.getPixelRatio(); B.pts.visible = true;
+  B.items.forEach((it, i) => {
+    const sc = toScene(it.raw ? it.pos : at(it.pos), focus, k), size = it.r * (def.mul || 1) * k, px = size * pxPerScene, inView = Math.hypot(sc[0], sc[1], sc[2]) < 1e5;
+    const resolved = inView && px >= resolve && px < 6000;
+    if (resolved && !it.obj) { it.obj = createModel(THREE, it.spec); it.obj.visible = false; CENSUS.group.add(it.obj); }
+    if (it.obj) { it.obj.visible = resolved; if (resolved) { it.obj.position.set(sc[0], sc[1], sc[2]); it.obj.scale.setScalar(size); it.obj.tick(t); if (it.obj.update) it.obj.update(camera, renderer); } }
+    pos.setXYZ(i, sc[0], sc[1], sc[2]); sz.setX(i, inView && !resolved && px < 6000 ? Math.max(it.style.s, Math.min(60, px * 2)) : 0);
+  });
+  pos.needsUpdate = true; sz.needsUpdate = true;
 }
 let activeL = LEVELS[0];
 function updateScene() {
