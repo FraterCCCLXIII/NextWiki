@@ -212,6 +212,7 @@ const MEARTH = 5.9722e24, REARTH = 6.371e6, MJUP = 1.89813e27;
 // ---------------------------------------------------------------------------------------------------
 // texture registry: textures.register('Earth', 'textures/earth.jpg'); textures.register('type:planet', url)
 // ---------------------------------------------------------------------------------------------------
+import { createNebula } from './nebula-gen.js';
 export const textures = {
   map: new Map(), cache: new Map(), loader: null,
   register(key, url) { this.map.set(String(key).toLowerCase(), url); },
@@ -249,7 +250,10 @@ export function classify(spec) {
 
 const SOLAR_NAMES = new Set(['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'moon']);
 export function createModel(THREE, spec = {}) {
-  const kind = classify(spec), seed = seedOf(spec.name), R = rng(seed), group = new THREE.Group();
+  const kind = classify(spec), seed = seedOf(spec.name), R = rng(seed);
+  // nebulae and supernova remnants: raymarched volumes over a shared 3D noise texture (nebula-gen.js); the old sprite stack below stays as the fallback
+  if (kind === 'nebula' || kind === 'pnebula' || kind === 'snr') { try { const n = createNebula(THREE, spec); n.userData = { ...(n.userData || {}), kind, spec }; return n; } catch (err) { console.warn('nebula volume failed, using sprites', err); } }
+  const group = new THREE.Group();
   group.userData = { kind, spec };
   const tickers = [], disposables = [];
   const C = (r, g, b) => new THREE.Color(r, g, b);

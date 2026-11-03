@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nebula Lab</title>
+<style>
+html,body{margin:0;height:100%;background:#02030a;color:#cfd6e6;font:12px/1.4 ui-monospace,Menlo,monospace;overflow:hidden}
+canvas{display:block;width:100%;height:100%}
+#ui{position:fixed;top:8px;left:8px;background:#0a0e1acc;border:1px solid #223;padding:8px;border-radius:6px;max-width:340px}
+#ui label{display:block;margin:3px 0}#ui select,#ui button{background:#111827;color:#dde;border:1px solid #334;border-radius:4px;font:inherit;padding:2px 4px;max-width:230px}
+#info{white-space:pre;margin-top:6px;color:#8fa}#bench{white-space:pre;margin-top:6px;color:#fc8}
+</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+</head><body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <label>class <select id="cls"></select></label>
+  <label>catalogue <select id="obj"></select></label>
+  <label>approach <select id="app"><option value="march">b+d raymarch + 3D noise tex</option><option value="slices">c view-aligned slices</option><option value="sprites">a sprites (kosmo-models)</option></select></label>
+  <label>palette <select id="pal"><option value="0">natural</option><option value="1">Hubble (SII/Ha/OIII)</option></select></label>
+  <label>zoom <input id="zoom" type="range" min="0.2" max="3" step="0.01" value="1"> <button id="bench-btn">bench 1080p</button></label>
+  <div id="info"></div><div id="bench"></div>
+</div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { createNebula, nebulaParams, NEB_CLASSES } from './nebula-gen.js';
+import { createModel } from './kosmo-models.js';
+
+const canvas = document.getElementById('c'), renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(innerWidth, innerHeight, false);
+const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.05, 2000); camera.position.set(0, 0.3, 2.7);
+const controls = new OrbitControls(camera, canvas); controls.enableDamping = true;
+// background star field
+{ const n = 1500, p = new Float32Array(n * 3), c = new Float32Array(n * 3), s = new Float32Array(n); for (let i = 0; i < n; i++) { const v = new THREE.Vector3().randomDirection().multiplyScalar(60 + Math.random() * 20); p.set([v.x, v.y, v.z], 3 * i); const k = 0.2 + Math.random() * 0.8; c.set([k, k * 0.95, k], 3 * i); s[i] = 1 + Math.random() * 2.5 * Math.random(); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3)); g.setAttribute('aColor', new THREE.BufferAttribute(c, 3)); g.setAttribute('aSize', new THREE.BufferAttribute(s, 1));
+  scene.add(new THREE.Points(g, new THREE.ShaderMaterial({ vertexShader: 'attribute float aSize; attribute vec3 aColor; varying vec3 vC; void main(){vC=aColor; gl_PointSize=aSize*1.5; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}', fragmentShader: 'varying vec3 vC; void main(){float r=length(gl_PointCoord-.5)*2.; float a=max(1.-r,0.); gl_FragColor=vec4(vC*a,a);}', transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }))); }
+
+const $ = id => document.getElementById(id);
+const classLabels = { auto: 'auto (from catalogue)', hii: 'emission / HII', reflection: 'reflection', dark: 'dark', pn_ring: 'planetary ring', pn_bipolar: 'planetary bipolar', snr_shell: 'SNR shell (Tycho/Cas A)', snr_pwn: 'SNR + pulsar wind (Crab)', snr_sheet: 'SNR sheet (Veil)' };
+for (const k of ['auto', ...NEB_CLASSES]) $('cls').add(new Option(classLabels[k], k));
+const examples = [
+  { name: 'Orion Nebula', alt_names: ['M42'], type: 'nebula', notes: 'H II region nebula' }, { name: 'Lagoon Nebula', type: 'nebula', notes: 'Nebula with cluster; diffuse nebula (emission/reflection/dark)' },
+  { name: 'Pleiades Merope Nebula', type: 'nebula', notes: 'reflection nebula' }, { name: 'Horsehead Nebula', type: 'nebula', notes: 'dark nebula; Barnard 33' }, { name: 'Ring Nebula', alt_names: ['M57'], type: 'nebula', notes: 'Planetary nebula', temperature_K: 120000 },
+  { name: 'Butterfly Nebula NGC 6302', type: 'nebula', notes: 'Planetary nebula; bipolar', temperature_K: 220000 }, { name: 'Crab Nebula', type: 'supernova_remnant', notes: 'Supernova remnant; SN type II; pulsar wind nebula' },
+  { name: 'Tycho SN 1572', type: 'supernova_remnant', notes: 'Supernova remnant; SN type Ia' }, { name: 'Veil Nebula', type: 'supernova_remnant', notes: 'Supernova remnant; Cygnus Loop' }, { name: 'Cassiopeia A', type: 'supernova_remnant', notes: 'Supernova remnant; SN type IIb' },
+];
+const sel = $('obj'); examples.forEach((e, i) => sel.add(new Option('* ' + e.name, 'e' + i)));
+fetch('catalog/objects.json').then(r => r.json()).then(o => { const a = Array.isArray(o) ? o : (o.objects || Object.values(o)); a.filter(r => /nebula|supernova_remnant/.test(r.type)).slice(0, 400).forEach((r, i) => { examples.push(r); sel.add(new Option(`${r.type === 'nebula' ? 'N' : 'S'} ${r.name}`.slice(0, 40), 'e' + (examples.length - 1))); }); applyUrl(); }).catch(() => applyUrl());
+
+let model = null, spriteMode = false, t0 = performance.now();
+function build() {
+  if (model) { scene.remove(model); model.dispose(); model = null; }
+  const spec = Object.assign({}, examples[+sel.value.slice(1)] || examples[0]); const cls = $('cls').value; if (cls !== 'auto') spec.cls = cls;
+  const approach = $('app').value; spriteMode = approach === 'sprites';
+  const P = nebulaParams(spec);
+  if (spriteMode) { const k = P.cls.startsWith('snr') ? 'snr' : P.cls.startsWith('pn') ? 'pnebula' : 'nebula'; model = createModel(THREE, { type: spec.type, name: spec.name, notes: spec.notes }); model.userData.kind = k; }
+  else model = createNebula(THREE, spec, { approach, hubble: $('pal').value === '1' });
+  scene.add(model);
+  $('info').textContent = `${spec.name}\nclass ${P.cls}  mode ${P.mode}  T* ${P.T} K  seed ${P.seed}\nscale ${P.scale.toFixed(2)} warp ${P.warp.toFixed(2)} fil ${P.fil.toFixed(2)} oiii ${P.oiiiAmt.toFixed(2)}`;
+  history.replaceState(null, '', `?obj=${sel.value}&cls=${cls}&app=${approach}&pal=${$('pal').value}`);
+}
+function applyUrl() { const q = new URLSearchParams(location.search); if (q.get('obj') && [...sel.options].some(o => o.value === q.get('obj'))) sel.value = q.get('obj'); if (q.get('cls')) $('cls').value = q.get('cls'); if (q.get('app')) $('app').value = q.get('app'); if (q.get('pal')) $('pal').value = q.get('pal'); build(); }
+['cls', 'obj', 'app', 'pal'].forEach(id => $(id).addEventListener('change', build));
+$('zoom').addEventListener('input', () => { const d = 2.7 / +$('zoom').value; camera.position.setLength(d); });
+addEventListener('resize', () => { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); });
+
+// ---- benchmark: 1920x1080, pixel ratio 1, object fills the frame height, GPU-synchronised wall time per frame
+const gl = renderer.getContext(), timerExt = gl.getExtension('EXT_disjoint_timer_query_webgl2');
+async function benchOne(approach, cls, name) {
+  const spec = Object.assign({}, examples.find(e => e.name === name) || examples[0], { cls });
+  const m = approach === 'sprites' ? createModel(THREE, { type: 'nebula', name }) : createNebula(THREE, spec, { approach });
+  const sc = new THREE.Scene(); sc.add(m);
+  const cam = new THREE.PerspectiveCamera(50, 16 / 9, 0.05, 100); cam.position.set(0, 0, 2.3); cam.lookAt(0, 0, 0); cam.updateMatrixWorld();
+  const px = new Uint8Array(4); let tot = 0, n = 24;
+  for (let i = 0; i < n + 6; i++) {
+    m.tick?.(i * 0.1); m.update?.(cam, renderer);
+    const a = performance.now(); renderer.render(sc, cam); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); if (i >= 6) tot += performance.now() - a;
+  }
+  sc.remove(m); m.dispose(); return tot / n;
+}
+$('bench-btn').onclick = async () => {
+  const out = $('bench'); out.textContent = 'running...'; const oldPR = renderer.getPixelRatio(); renderer.setPixelRatio(1); renderer.setSize(1920, 1080, false);
+  const rows = []; const cases = [['hii', 'Orion Nebula'], ['reflection', 'Pleiades Merope Nebula'], ['dark', 'Horsehead Nebula'], ['pn_ring', 'Ring Nebula'], ['pn_bipolar', 'Butterfly Nebula NGC 6302'], ['snr_shell', 'Tycho SN 1572'], ['snr_pwn', 'Crab Nebula']];
+  for (const [cls, name] of cases) { const r = [cls.padEnd(11)]; for (const ap of ['march', 'slices', 'sprites']) { await new Promise(r => setTimeout(r, 30)); r.push(ap + ' ' + (await benchOne(ap, cls, name)).toFixed(2) + 'ms'); } rows.push(r.join('  ')); }
+  window.__bench = rows; out.textContent = 'fills 1920x1080 frame height (ms/frame, GPU-synced)\n' + rows.join('\n');
+  renderer.setPixelRatio(oldPR); renderer.setSize(innerWidth, innerHeight, false);
+};
+window.__lab = { build, sel, examples, THREE, renderer, camera, benchOne };
+
+renderer.setAnimationLoop(() => {
+  const t = (performance.now() - t0) / 1000; controls.update();
+  if (model) { model.tick?.(t); if (!spriteMode) model.update(camera, renderer); }
+  renderer.render(scene, camera);
+  if (!window.__fps) window.__fps = { n: 0, t: performance.now() }; window.__fps.n++;
+});
+</script></body></html>

@@ -2217,7 +2217,7 @@ function updateDestModel(k) {
   if (!DM.obj) return;
   const sc = toScene(at(DM.pos), focus, k), viewW = 10 ** state.zoom, size = Math.max(DM.r, viewW * 0.012) * k, px = size * view.clientHeight / 2;
   DM.obj.visible = px > 1.5 && px < 8000 && Math.hypot(sc[0], sc[1], sc[2]) < 1e5; if (!DM.obj.visible) return;
-  DM.obj.position.set(sc[0], sc[1], sc[2]); DM.obj.scale.setScalar(size); DM.obj.tick(performance.now() / 1000);
+  DM.obj.position.set(sc[0], sc[1], sc[2]); DM.obj.scale.setScalar(size); DM.obj.tick(performance.now() / 1000); if (DM.obj.update) DM.obj.update(camera, renderer);
 }
 function updateCensus(k) {
   for (const [key, B] of CENSUS.built) for (const it of B.items) if (key !== CENSUS.key) it.obj.visible = false;
@@ -2227,7 +2227,7 @@ function updateCensus(k) {
     const sc = toScene(it.raw ? it.pos : at(it.pos), focus, k), metres = Math.max(it.r * (def.mul || 1), viewW * def.minFrac), size = metres * k, px = size * pxPerScene;
     const show = px > 1.5 && px < 6000 && Math.hypot(sc[0], sc[1], sc[2]) < 1e5;
     it.obj.visible = show; if (!show) continue;
-    it.obj.position.set(sc[0], sc[1], sc[2]); it.obj.scale.setScalar(size); it.obj.tick(t);
+    it.obj.position.set(sc[0], sc[1], sc[2]); it.obj.scale.setScalar(size); it.obj.tick(t); if (it.obj.update) it.obj.update(camera, renderer);
   }
 }
 let activeL = LEVELS[0];
