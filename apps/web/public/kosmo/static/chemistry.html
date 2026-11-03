@@ -54,9 +54,11 @@
   #legend span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 10px; margin-right: 4px; vertical-align: middle; }
   #help { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 4; color: var(--muted); font-size: 13px; text-shadow: 0 1px 6px #000; }
   kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); }
+  /* Embedded: the top bar is gone, so the panel and legend start near the top edge. */
+  html.embedded #panel, html.embedded #legend { top: 16px; }
 </style>
 <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
-  <link rel="stylesheet" href="kosmographica.css?v=11">
+  <link rel="stylesheet" href="kosmographica.css?v=13">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>

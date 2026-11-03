@@ -85,8 +85,10 @@
   .state.ready { color: #7fe3a0; border-color: rgba(127,227,160,0.4); } .state.locked { color: var(--muted); border-color: rgba(138,155,184,0.35); } .state.complete { color: var(--accent2); border-color: rgba(255,184,107,0.4); }
   .subjects { display: flex; flex-wrap: wrap; gap: 5px; }
   .subjects button { font-size: 14px; padding: 3px 8px; } .subjects button.on { border-color: var(--accent); color: var(--accent); }
+  /* Embedded: the top bar is gone, so the sticky sidebar starts near the top edge. */
+  html.embedded aside { top: 22px; max-height: calc(100vh - 44px); }
 </style>
-  <link rel="stylesheet" href="kosmographica.css?v=11">
+  <link rel="stylesheet" href="kosmographica.css?v=13">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>

@@ -39,6 +39,8 @@
   summary { cursor: pointer; font-weight: 600; }
   details p { margin: 6px 0; font-size: 14px; }
   @media (max-width: 600px) { #panel { width: auto; right: 12px; max-height: 55%; } }
+  /* Embedded: the top bar is gone, so the panel starts near the top edge. */
+  html.embedded #panel { top: 12px; max-height: calc(100% - 24px); }
 </style>
 <script type="importmap">
 { "imports": {
@@ -46,7 +48,7 @@
     "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
 } }
 </script>
-  <link rel="stylesheet" href="kosmographica.css?v=11">
+  <link rel="stylesheet" href="kosmographica.css?v=13">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>

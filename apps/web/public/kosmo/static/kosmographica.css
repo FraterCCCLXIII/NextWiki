@@ -556,5 +556,3 @@ html.embedded .orbwrap { flex-direction: column; gap: 10px; align-items: flex-en
 html.embedded #navTime { top: 21px; }
 html.embedded body.navdrawer-open .orbwrap { right: 416px; }
 
-/* Embedded timeline: the controls panel sits below the timeline strip, which now starts at the top. */
-html.embedded #panel { top: 232px; }

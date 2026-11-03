@@ -41,17 +41,26 @@
   #logo .word { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif; font-weight: 500; letter-spacing: 0.3em; font-size: 20px; text-transform: uppercase; color: #fff; }
   #logo .sub { display: block; font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-style: italic; letter-spacing: 0.06em; font-size: 13px; color: #fff; opacity: 0.8; margin-top: 2px; }
 
-  #top { position: absolute; left: 0; right: 0; top: 58px; height: 210px; z-index: 3; transition: height .25s ease; }
+  #top { position: absolute; left: 0; right: 0; top: 58px; height: var(--tlh, 210px); z-index: 3; transition: height .25s ease; }
   /* Readability: a soft dark overlay with a light backdrop blur behind the timeline strip, fading out at its bottom edge. */
-  #top::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-    background: color-mix(in srgb, var(--bg) 62%, transparent);
-    -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
-    -webkit-mask-image: linear-gradient(to bottom, #000 90%, transparent); mask-image: linear-gradient(to bottom, #000 90%, transparent); }
+  #top::before { content: ''; position: absolute; inset: 0 0 -40px 0; z-index: -1; pointer-events: none;
+    background: color-mix(in srgb, var(--bg) 74%, transparent);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 30px), transparent), linear-gradient(to right, transparent 0, #000 var(--tl-fade, 72px), #000 calc(100% - var(--tl-fade, 72px)), transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 30px), transparent), linear-gradient(to right, transparent 0, #000 var(--tl-fade, 72px), #000 calc(100% - var(--tl-fade, 72px)), transparent 100%);
+    -webkit-mask-composite: source-in; mask-composite: intersect; }
   #top.collapsed { height: 0; }
   #top.collapsed canvas { opacity: 0; pointer-events: none; }
-  #timeline { display: block; width: 100%; height: 210px; cursor: crosshair; transition: opacity .2s; }
-  #minimap { position: absolute; left: 0; right: 0; bottom: 0; height: 12px; cursor: grab; z-index: 8; }
+  #timeline { display: block; width: 100%; height: var(--tlh, 210px); cursor: crosshair; transition: opacity .2s;
+    /* alpha-channel fades on the left and right edges; --tl-fade sets how wide they are */
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--tl-fade, 72px), #000 calc(100% - var(--tl-fade, 72px)), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 var(--tl-fade, 72px), #000 calc(100% - var(--tl-fade, 72px)), transparent 100%); }
+  #minimap { position: absolute; left: 0; width: 100%; top: 2px; height: 12px; cursor: grab; z-index: 8; }
   #minimap:active { cursor: grabbing; }
+  #tlzoom { position: absolute; right: 70px; top: calc(100% + 8px); z-index: 8; display: flex; gap: 4px; }
+  #tlzoom button { min-width: 32px; height: 28px; padding: 0 10px; font-size: 15px; line-height: 1; border-radius: 999px; background: rgba(26,26,26,0.88); border: 1px solid var(--line2, #303133); color: var(--text); cursor: pointer; }
+  #tlzoom button:hover { border-color: var(--accent); color: var(--accent); }
+  #tlbrush { position: absolute; top: 22px; bottom: 66px; display: none; pointer-events: none; z-index: 6; background: rgba(127,195,255,0.16); border-left: 1px solid rgba(127,195,255,0.7); border-right: 1px solid rgba(127,195,255,0.7); }
   #tl-handle { position: absolute; left: 0; right: 0; bottom: -14px; height: 14px; cursor: pointer; z-index: 7; }
   #drawer { position: absolute; top: 58px; right: 0; bottom: 0; width: 400px; z-index: 7; transform: translateX(100%); transition: transform .28s ease; display: flex; flex-direction: column; background: linear-gradient(90deg, rgba(13,13,13,0.6), rgba(13,13,13,0.92) 12%); border-left: 1px solid var(--line); }
   #drawer.open { transform: none; }
@@ -97,7 +106,7 @@
   #top.collapsed #tl-handle::after { content: '▸ timeline'; letter-spacing: 0.1em; }
 
   .glass { background: transparent; border: 0; border-radius: var(--radius); text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
-  #panel { position: absolute; left: 16px; top: 290px; bottom: 96px; width: 330px; z-index: 4; overflow: auto; padding: 8px 14px 14px; }
+  #panel { position: absolute; left: 16px; top: calc(var(--tlh, 210px) + 80px); bottom: 96px; width: 330px; z-index: 4; overflow: auto; padding: 8px 14px 14px; }
   #panel.collapsed { bottom: auto; height: 46px; overflow: hidden; }
   /* Controls reveal as transparent text from the round button at the top-left. */
   #panel { opacity: 0; pointer-events: none; transform: translateX(-14px); transition: opacity .25s ease, transform .25s ease; }
@@ -145,7 +154,7 @@
   body.drawer-open #zoombar, body.drawer-open #scalebar, body.drawer-open #help,
   body.navdrawer-open #zoombar, body.navdrawer-open #scalebar, body.navdrawer-open #help { right: 418px; }
   body.drawer-open #top, body.navdrawer-open #top { right: 400px; }
-  #zoombar { position: absolute; right: 18px; top: 296px; bottom: 150px; width: 54px; z-index: 4; display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 8px; }
+  #zoombar { position: absolute; right: 18px; top: calc(var(--tlh, 210px) + 86px); bottom: 150px; width: 54px; z-index: 4; display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 8px; }
   #zoombar input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 4px; height: 100%; -webkit-appearance: slider-vertical; }
   #zoombar .tag { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
   #scalebar { position: absolute; right: 18px; bottom: 96px; z-index: 4; color: #c9d6e6; text-align: right; font-variant-numeric: tabular-nums; }
@@ -155,19 +164,21 @@
   #label { position: absolute; z-index: 3; pointer-events: none; transform: translate(-50%, -140%); color: #fff; font-size: 14px; letter-spacing: 0.04em; text-shadow: 0 0 8px rgba(0,0,0,0.9); white-space: nowrap; }
   #syslabels span { position: absolute; z-index: 2; pointer-events: none; transform: translate(-50%, 8px); color: rgba(220,232,250,0.85); font-size: 13px; letter-spacing: 0.03em; text-shadow: 0 0 6px rgba(0,0,0,0.95); white-space: nowrap; }
   #label::after { content: ''; position: absolute; left: 50%; top: 100%; width: 1px; height: 16px; background: rgba(255,255,255,0.6); }
-  #toast { position: absolute; left: 50%; top: 290px; transform: translateX(-50%); z-index: 6; padding: 8px 14px; color: var(--text); opacity: 0; transition: opacity .3s; pointer-events: none; }
+  #toast { position: absolute; left: 50%; top: calc(var(--tlh, 210px) + 80px); transform: translateX(-50%); z-index: 6; padding: 8px 14px; color: var(--text); opacity: 0; transition: opacity .3s; pointer-events: none; }
+  /* Embedded: the controls panel sits just below the timeline strip, which now starts at the top. */
+  html.embedded #panel { top: calc(var(--tlh, 210px) + 22px); }
 </style>
 <script type="importmap">
 { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/", "topojson-client": "https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm" } }
 </script>
-  <link rel="stylesheet" href="kosmographica.css?v=11">
+  <link rel="stylesheet" href="kosmographica.css?v=13">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>
 <body>
 <div id="view"></div>
 <div id="navbar"><div id="logo"><div class="mark"></div><div><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div></div><nav id="menu"><a href="universe-timeline.html" class="here">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span class="orbwrap"><span class="dim" id="navTime"></span><button id="drawerBtn" class="orb" type="button" title="Chronicle: vertical timeline and map" aria-label="Chronicle" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></button><button id="destBtn" class="orb" type="button" title="Locations: travel to a destination" aria-label="Locations" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></button></span></div>
-<div id="top"><canvas id="timeline"></canvas><canvas id="minimap" title="Drag the window to pan the timeline"></canvas><div id="tl-handle" title="Show or hide the timeline"></div></div>
+<div id="top"><canvas id="timeline"></canvas><canvas id="minimap" title="Drag the window to pan the timeline"></canvas><div id="tl-handle" title="Click to show or hide the timeline; drag to resize it"></div><div id="tlbrush"></div><div id="tlzoom" title="Wheel: zoom at the pointer · drag: pan · double-click: zoom in · shift-drag: zoom to a range"><button id="tlOut" type="button" aria-label="Zoom out">−</button><button id="tlIn" type="button" aria-label="Zoom in">+</button><button id="tlFit" type="button" aria-label="Show the whole timeline">fit</button></div></div>
 <aside id="drawer">
   <div class="head"><h3 class="serif">Chronicle</h3><span class="dim" id="drawerWhen"></span></div>
   <canvas id="map"></canvas>
@@ -520,13 +531,29 @@ function drawTimeline() {
   cv._geom = { padL, pw };
 }
 let tlDrag = null;
-cv.addEventListener('pointerdown', e => { tlDrag = { x: e.offsetX, x0: tlView.x0, x1: tlView.x1, moved: false }; cv.setPointerCapture(e.pointerId); });
+cv.addEventListener('pointerdown', e => { if (e.shiftKey) { startBrush(e); return; } tlDrag = { x: e.offsetX, x0: tlView.x0, x1: tlView.x1, moved: false }; cv.setPointerCapture(e.pointerId); });
 cv.addEventListener('pointermove', e => {
+  if (tlBrush) { moveBrush(e); return; }
   if (!tlDrag) return; const g = cv._geom, dx = e.offsetX - tlDrag.x;
   if (Math.abs(dx) > 3) tlDrag.moved = true;
   if (tlDrag.moved) { const span = tlDrag.x1 - tlDrag.x0, d = -dx / g.pw * span; tlView.x0 = clamp(tlDrag.x0 + d, 0, 1 - span); tlView.x1 = tlView.x0 + span; }
 });
-cv.addEventListener('pointerup', e => { if (tlDrag && !tlDrag.moved) scrub(e); tlDrag = null; });
+cv.addEventListener('pointerup', e => { if (tlBrush) { endBrush(e); return; } if (tlDrag && !tlDrag.moved) scrub(e); tlDrag = null; });
+cv.addEventListener('dblclick', e => { const g = cv._geom; if (g) tlZoom(0.35, clamp((e.offsetX - g.padL) / g.pw, 0, 1)); });
+// shift-drag a range on the timeline to zoom into it
+let tlBrush = null;
+const brushEl = $('tlbrush');
+function startBrush(e) { const g = cv._geom; if (!g) return; tlBrush = { x: clamp(e.offsetX, g.padL, g.padL + g.pw) }; brushEl.style.display = 'block'; brushEl.style.left = tlBrush.x + 'px'; brushEl.style.width = '0px'; cv.setPointerCapture(e.pointerId); }
+function moveBrush(e) { const g = cv._geom, x = clamp(e.offsetX, g.padL, g.padL + g.pw); brushEl.style.left = Math.min(x, tlBrush.x) + 'px'; brushEl.style.width = Math.abs(x - tlBrush.x) + 'px'; }
+function endBrush(e) {
+  const g = cv._geom, x = clamp(e.offsetX, g.padL, g.padL + g.pw), a = (Math.min(x, tlBrush.x) - g.padL) / g.pw, b = (Math.max(x, tlBrush.x) - g.padL) / g.pw;
+  if (b - a > 0.01) { const span = tlView.x1 - tlView.x0, x0 = tlView.x0 + span * a, x1 = tlView.x0 + span * b; tlView.x0 = x0; tlView.x1 = x1; }
+  tlBrush = null; brushEl.style.display = 'none';
+}
+$('tlIn').addEventListener('click', () => tlZoom(1 / 1.6));
+$('tlOut').addEventListener('click', () => tlZoom(1.6));
+$('tlFit').addEventListener('click', () => { tlView.x0 = 0; tlView.x1 = 1; });
+window.kosmoTimeline = { view: tlView, show: tlShow, zoom: tlZoom };   // debug hook: the view is module-scoped otherwise
 cv.addEventListener('wheel', e => {
   e.preventDefault(); const g = cv._geom; if (!g) return;
   if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) { tlPan((e.deltaX || e.deltaY) * 0.0012); return; }   // shift-wheel or trackpad sideways pans
@@ -1229,8 +1256,25 @@ dialC.addEventListener('wheel', e => { e.preventDefault(); dialTarget = clamp(Ma
 ALL_EVENTS.push(...folderIndex.flatMap(n => n.evs).filter(e => !ALL_EVENTS.some(x => x.label === e.label)));
 ALL_EVENTS.sort((a, b) => a.t - b.t);
 
-function toggleTimeline() { const c = $('top').classList.toggle('collapsed'); $('panel').style.top = (c ? 84 : 290) - (document.documentElement.classList.contains('embedded') ? 58 : 0) + 'px'; $('zoombar').style.top = c ? '90px' : '296px'; $('toast').style.top = c ? '84px' : '290px'; }
-$('tl-handle').addEventListener('click', toggleTimeline);
+function toggleTimeline() {
+  const c = $('top').classList.toggle('collapsed'), o = document.documentElement.classList.contains('embedded') ? 58 : 0;
+  $('panel').style.top = c ? (84 - o) + 'px' : `calc(var(--tlh, 210px) + ${80 - o}px)`;
+  $('zoombar').style.top = c ? '90px' : 'calc(var(--tlh, 210px) + 86px)'; $('toast').style.top = c ? '84px' : 'calc(var(--tlh, 210px) + 80px)';
+}
+// Drag the handle under the strip to scale its height; a click without movement still hides or shows it.
+function setTimelineHeight(h, save = true) {
+  h = clamp(Math.round(h), 140, 460); document.documentElement.style.setProperty('--tlh', h + 'px');
+  if (save) try { localStorage.setItem('kosmoTlH', String(h)); } catch { /* storage blocked */ }
+}
+let hDrag = null;
+const handle = $('tl-handle');
+handle.addEventListener('pointerdown', e => { hDrag = { y: e.clientY, h: $('top').getBoundingClientRect().height, moved: false }; handle.setPointerCapture(e.pointerId); });
+handle.addEventListener('pointermove', e => {
+  if (!hDrag) return; const dy = e.clientY - hDrag.y;
+  if (Math.abs(dy) > 4 && !$('top').classList.contains('collapsed')) { hDrag.moved = true; $('top').style.transition = 'none'; setTimelineHeight(hDrag.h + dy); }
+});
+handle.addEventListener('pointerup', () => { if (hDrag && !hDrag.moved) toggleTimeline(); $('top').style.transition = ''; hDrag = null; });
+try { const saved = Number(localStorage.getItem('kosmoTlH')); if (saved) setTimelineHeight(saved, false); } catch { /* storage blocked */ }
 function setPanel(open) { $('panel').classList.toggle('shown', open); $('panelBtn').classList.toggle('open', open); $('panelBtn').setAttribute('aria-expanded', String(open)); }
 $('panelBtn').addEventListener('click', () => setPanel(!$('panel').classList.contains('shown')));
 $('panel-toggle').addEventListener('click', () => setPanel(false));
