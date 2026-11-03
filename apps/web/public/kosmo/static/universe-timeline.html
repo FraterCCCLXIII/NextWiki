@@ -303,6 +303,7 @@
   /* pad buttons are true circles */
   #navhud .navpad button { width: 46px !important; height: 46px !important; min-width: 0 !important; padding: 0 !important; border-radius: 50% !important; font-size: 17px; }
   #navhud .navpad button.sm { font-size: 10px; letter-spacing: 0.04em; }
+  #navhud .drive { display: flex; gap: 6px; } #navhud .drive button { width: auto !important; height: 26px !important; min-width: 0 !important; padding: 0 12px !important; border-radius: 999px !important; font-size: 11px; }
   #navhud .modecol { display: flex; flex-direction: column; align-items: center; gap: 6px; }
   #navhud .modecol button { width: auto !important; min-width: 64px; height: 24px; padding: 0 14px !important; border-radius: 999px !important; font-size: 11px; }
   #navhud .navpad { grid-template-columns: repeat(3, 46px); grid-auto-rows: 46px; gap: 8px; justify-items: center; }   /* cells as big as the circles, so none overlap */
@@ -1755,6 +1756,10 @@ function collapsible(panelSel, rows) {
 // the four mode buttons become small pills stacked between the move pad and the look pad
 { const pads = document.querySelector('#navhud .navpads'), mid = document.createElement('div'); mid.className = 'modecol'; pads.insertBefore(mid, pads.children[1]);
   for (const id of ['navMode', 'navCruise', 'navPad', 'navHelm']) mid.appendChild($(id)); }
+// boost and stop move out of the d-pad to sit beside the speed slider with the other driving controls (the d-pad keeps empty cells in their place)
+{ const row = $('navSpeed').parentElement, box = document.createElement('div'); box.className = 'drive';
+  for (const k of ['shift', 'b']) { const b = document.querySelector(`#navhud .navpad button[data-k="${k}"]`); if (!b) continue; b.parentElement.insertBefore(document.createElement('span'), b); box.appendChild(b); }
+  row.prepend(box); }
 collapsible('#navhud', [[p => p.querySelector('#zoom').parentElement, 'Zoom'], ['#zscale', 'Camera scale'], ['.navpads', 'Move & look'], [p => p.querySelector('#navSpeed').parentElement, 'Max speed'], ['#navkeys', 'Hotkeys']]);
 collapsible('#helm', [['.hrow', 'Throttle'], ['.hcourse', 'Course']]);
 collapsible('#timehud', [['.trow:nth-child(1)', 'Clock'], ['.trow:nth-child(2)', 'Date & follow']]);
