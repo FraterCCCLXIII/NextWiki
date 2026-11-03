@@ -207,6 +207,12 @@
   #navhud .hudk { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
   #navhud .navrow { display: flex; align-items: center; gap: 8px; }
   #navhud .navrow input[type=range] { flex: 1; min-width: 96px; width: auto; }
+  #zscale { margin: 2px 0 8px; } #zread { font-size: 11px; color: #cfe3ff; letter-spacing: 0.08em; text-transform: uppercase; text-align: center; margin-bottom: 3px; white-space: nowrap; }
+  #zrule { position: relative; height: 38px; margin: 0 46px; border-top: 1px solid rgba(160,195,235,0.35); }
+  #zrule i { position: absolute; top: 0; width: 1px; height: 5px; background: rgba(160,195,235,0.6); }
+  #zrule b { position: absolute; top: 7px; transform: translateX(-50%); font: 400 9px/1 ui-monospace, Menlo, monospace; color: #8fa6c4; white-space: nowrap; letter-spacing: 0.04em; text-transform: uppercase; }
+  #zrule b.on { color: #ffd37a; } #zrule i.on { background: #ffd37a; height: 8px; }
+  #zrule u { position: absolute; top: -4px; width: 2px; height: 9px; background: #fff; box-shadow: 0 0 6px #fff; transform: translateX(-1px); }
   #navhud .navtag { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-align: center; }
   #navhud .navval { font-size: 12px; color: var(--accent); min-width: 44px; text-align: right; font-variant-numeric: tabular-nums; }
   #navhud .navpads { display: flex; gap: 14px; align-items: center; }
@@ -432,9 +438,10 @@
   <div class="hudk">Navigate</div>
   <div class="navrow">
     <button type="button" data-k="e" title="Zoom in (E)">+</button>
-    <span class="navtag">in</span><input type="range" id="zoom" min="6.5" max="27" step="0.01" aria-label="Zoom"><span class="navtag">out</span>
+    <span class="navtag">in</span><input type="range" id="zoom" min="1" max="27" step="0.01" aria-label="Zoom"><span class="navtag">out</span>
     <button type="button" data-k="q" title="Zoom out (Q)">−</button>
   </div>
+  <div id="zscale" aria-hidden="true"><div id="zread"></div><div id="zrule"></div></div>
   <div class="navpads">
     <div class="navpad" aria-label="Pan or fly">
       <button type="button" data-k="shift" class="sm" title="Boost (Shift)">boost</button><button type="button" data-k="w" title="Pan up / fly forward (W)">▲</button><button type="button" data-k="x" class="sm flyonly" title="Fly up (X)">up</button>
@@ -448,7 +455,7 @@
     </div>
   </div>
   <div class="navrow">
-    <button type="button" id="navMode" title="Orbit around the view centre, or fly where you look (G)">Orbit</button><button type="button" id="navHelm" title="Ship helm: throttle gears from walking pace to warp, and set a course">Helm</button>
+    <button type="button" id="navMode" title="Orbit around the view centre, or fly where you look (G)">Orbit</button><button type="button" id="navCruise" title="Keep flying forward at the speed set by the slider (U); B or S stops">Cruise</button><button type="button" id="navHelm" title="Ship helm: throttle gears from walking pace to warp, and set a course">Helm</button>
     <span class="navtag">speed</span><input type="range" id="navSpeed" min="-2.3" max="1.6" step="0.01" aria-label="Flight speed"><span class="navval" id="navSpeed-v"></span>
   </div>
 </div>
@@ -1606,17 +1613,34 @@ function flightMove(dt) {
   const viewW = 10 ** state.zoom, boost = keys.has('shift') ? fly.boost : 1;
   camera.getWorldDirection(tmpV); tmpR.crossVectors(tmpV, camera.up).normalize(); tmpU.crossVectors(tmpR, tmpV).normalize();
   tmpM.set(0, 0, 0);
-  if (keys.has('w')) tmpM.add(tmpV); if (keys.has('s')) tmpM.sub(tmpV); if (keys.has('d')) tmpM.add(tmpR); if (keys.has('a')) tmpM.sub(tmpR); if (keys.has('x')) tmpM.add(tmpU); if (keys.has('z')) tmpM.sub(tmpU);
+  if (fly.cruise && (keys.has('s') || keys.has('b'))) setCruise(false);
+  if (keys.has('w') || fly.cruise) tmpM.add(tmpV); if (keys.has('s')) tmpM.sub(tmpV); if (keys.has('d')) tmpM.add(tmpR); if (keys.has('a')) tmpM.sub(tmpR); if (keys.has('x')) tmpM.add(tmpU); if (keys.has('z')) tmpM.sub(tmpU);
   const braking = keys.has('b');
   if (tmpM.lengthSq() > 0 && !braking) tmpM.normalize().multiplyScalar(fly.speed * viewW * boost); else tmpM.set(0, 0, 0);   // metres per second
   flyVel.lerp(tmpM, 1 - Math.exp(-dt / (braking ? 0.08 : Math.max(fly.glide, 0.02))));                                    // glide: inertia in seconds
   moveFocusScene(tmpS.copy(flyVel).multiplyScalar(dt)); travel = null; follow = null;
 }
+function setCruise(on) { fly.cruise = on; $('navCruise').classList.toggle('on', on); if (on && !fly.on) setFlight(true); }
+$('navCruise').addEventListener('click', () => setCruise(!fly.cruise));
+window.addEventListener('keydown', e => { if (!e.repeat && (e.key === 'u' || e.key === 'U') && !/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) setCruise(!fly.cruise); });
 function setFlight(on) {
+  if (!on) fly.cruise = false, $('navCruise').classList.remove('on');
   fly.on = on; if (!on) flyVel.set(0, 0, 0);
   $('flyBtn').classList.toggle('open', on); $('flyBtn').setAttribute('aria-expanded', String(on)); $('fxFly').checked = on;
   document.body.classList.toggle('flying', on); $('navMode').textContent = on ? 'Flight' : 'Orbit'; $('navMode').classList.toggle('on', on);
   toast(on ? 'Flight mode: W/S fly, A/D strafe, X/Z up/down, Shift boost, B brake, drag to look' : 'Orbit mode');
+}
+// ---- camera scale: the zoom slider reads as a ruler of landmark sizes, from a person to the observable universe ----
+{
+  const MARKS = [[2, 'room'], [7.1, 'Earth'], [9.15, 'Sun'], [12.9, 'Solar Sys.'], [15.97, '1 ly'], [17.5, '10 pc'], [20.5, 'Milky Way'], [22.6, 'Local Grp'], [24, 'Virgo'], [26.95, 'Universe']];
+  const lo = 1, hi = 27, rule = $('zrule'), pct = z => `${(z - lo) / (hi - lo) * 100}%`;
+  rule.innerHTML = MARKS.map(([z, n], i) => `<i data-z="${z}" style="left:${pct(z)}"></i><b data-z="${z}" style="left:${pct(z)};${i % 2 ? 'top:18px' : ''}">${n}</b>`).join('') + '<u id="zcur"></u>';
+  const compare = z => { let best = MARKS[0]; for (const m of MARKS) if (Math.abs(m[0] - z) < Math.abs(best[0] - z)) best = m; return best; };
+  setInterval(() => {
+    const z = state.zoom, m = compare(z); $('zcur').style.left = pct(z);
+    rule.querySelectorAll('[data-z]').forEach(el => el.classList.toggle('on', +el.dataset.z === m[0]));
+    const ratio = 10 ** (z - m[0]); $('zread').textContent = `camera sees ${P.fmtLength(10 ** z)} · ${Math.abs(ratio - 1) < 0.25 ? `about ${m[1]} size` : ratio > 1 ? `${ratio >= 100 ? '×' + ratio.toExponential(0).replace('e+', '·10^') : ratio.toFixed(1) + '×'} ${m[1]}` : `${(1 / ratio) >= 100 ? '1/' + (1 / ratio).toExponential(0).replace('e+', '·10^') : '1/' + (1 / ratio).toFixed(1)} ${m[1]}`}`;
+  }, 200);
 }
 // ---- helm: a throttle lever of speed gears (walking pace to a gigalight-year per second), a course, align and autopilot ----
 const GEARS = [['Stop', 0], ['Walking', 1.4], ['Car · 100 km/h', 27.8], ['Jet airliner', 250], ['Orbital speed', 7.8e3], ['Solar escape', 6.2e5], ['1% light speed', 3e6], ['10% light speed', 3e7], ['Light speed', 299792458],
@@ -1679,7 +1703,7 @@ $('hClear').onclick = () => { helm.course = null; helm.auto = false; };
 window.addEventListener('keydown', e => { if (!helm.on || e.repeat || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return; const k = e.key.toLowerCase(); if (k === 'w') setGear(helm.gear + 1); else if (k === 's') setGear(helm.gear - 1); });
 setGear(0); window.kosmoTimeline.helm = helm;
 // keycaps: every control shows its hotkey; the extra hotkeys below work from anywhere (not while typing in a field)
-const KEYCAPS = { navMode: 'G', navHelm: 'H', tPlay: 'P', tSlow: ';', tFast: "'", tStepB: ',', tStepF: '.', tNow: 'N', tRev: '⇧R', tFwd: '⇧F',
+const KEYCAPS = { navCruise: 'U', navMode: 'G', navHelm: 'H', tPlay: 'P', tSlow: ';', tFast: "'", tStepB: ',', tStepF: '.', tNow: 'N', tRev: '⇧R', tFwd: '⇧F',
   hUp: 'W', hDown: 'S', hStop: 'B', hRev: 'V', hAlign: 'F', hAuto: 'O', hJump: 'J', hClear: '⌫' };
 const KEYCAP_DATAK = { e: 'E', q: 'Q', shift: '⇧', w: 'W', x: 'X', a: 'A', b: 'B', d: 'D', z: 'Z', s: 'S' };
 for (const [id, k] of Object.entries(KEYCAPS)) { const b = $(id); if (b) b.insertAdjacentHTML('beforeend', `<kbd class="kc">${k}</kbd>`); }
@@ -1699,8 +1723,8 @@ function steer(dt) {
   const fast = keys.has('shift') ? 3 : 1, rot = 1.2 * dt * fast, viewW = 10 ** state.zoom, pan = 0.6 * viewW * dt * fast;
   if (keys.has('arrowleft')) orbitBy(rot, 0); if (keys.has('arrowright')) orbitBy(-rot, 0);
   if (keys.has('arrowup')) orbitBy(0, rot); if (keys.has('arrowdown')) orbitBy(0, -rot);
-  if (keys.has('q')) { state.zoom = clamp(state.zoom + 0.9 * dt * fast, 6.5, 27); sync('zoom', 2); travel = null; }
-  if (keys.has('e')) { state.zoom = clamp(state.zoom - 0.9 * dt * fast, 6.5, 27); sync('zoom', 2); travel = null; }
+  if (keys.has('q')) { state.zoom = clamp(state.zoom + 0.9 * dt * fast, 1, 27); sync('zoom', 2); travel = null; }
+  if (keys.has('e')) { state.zoom = clamp(state.zoom - 0.9 * dt * fast, 1, 27); sync('zoom', 2); travel = null; }
   if (fly.on) flightMove(dt); else flyVel.set(0, 0, 0);
   if (!fly.on && (keys.has('w') || keys.has('a') || keys.has('s') || keys.has('d'))) {
     camera.getWorldDirection(tmpV); tmpR.crossVectors(tmpV, camera.up).normalize(); tmpU.crossVectors(tmpR, tmpV).normalize();
