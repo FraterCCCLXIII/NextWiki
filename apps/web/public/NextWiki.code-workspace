@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../OpenHands-UI"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"globals.css": "tailwindcss",
+			"markdown.css": "tailwindcss",
+			"*.scss": "tailwindcss"
+		}
+	}
+}

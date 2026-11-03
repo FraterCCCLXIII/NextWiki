@@ -547,3 +547,6 @@ html.embedded #navbar { background: none !important; height: 0 !important; paddi
 html.embedded .orbwrap { position: fixed; top: 14px; right: 16px; z-index: 9; pointer-events: auto; transition: right .28s ease; }
 html.embedded #top, html.embedded #drawer { top: 0 !important; }
 html.embedded body.drawer-open .orbwrap { right: 416px; }
+
+/* Internal look switch (kosmo-theme.js): "original" restores the atlas's navy-black grounds. */
+html[data-kosmo-bg="original"] { --bg: #05070d; --bg2: #101011; --panel: #141415; }

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kosmographica</title>
@@ -133,7 +134,7 @@
 <script type="importmap">
 { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/", "topojson-client": "https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm" } }
 </script>
-  <link rel="stylesheet" href="kosmographica.css?v=8">
+  <link rel="stylesheet" href="kosmographica.css?v=9">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>
@@ -532,7 +533,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'hi
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 view.appendChild(renderer.domElement);
 renderer.domElement.tabIndex = 0;
-const scene = new THREE.Scene(); scene.background = new THREE.Color(0x05070d);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(window.KOSMO_BG ? KOSMO_BG.pick(0x05070d) : 0x05070d);
 const camera = new THREE.PerspectiveCamera(50, 1, 1e-4, 1e5);
 camera.position.set(0.35, 0.75, 1.9).setLength(1 / Math.tan(25 * Math.PI / 180));   // 2 scene units = the frame height
 const controls = new OrbitControls(camera, renderer.domElement);

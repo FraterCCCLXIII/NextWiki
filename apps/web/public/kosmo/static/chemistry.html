@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Chemistry</title>
@@ -55,7 +56,7 @@
   kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); }
 </style>
 <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
-  <link rel="stylesheet" href="kosmographica.css?v=8">
+  <link rel="stylesheet" href="kosmographica.css?v=9">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>
@@ -108,7 +109,7 @@ const PERIOD = z => z <= 2 ? 1 : z <= 10 ? 2 : z <= 18 ? 3 : z <= 36 ? 4 : z <= 
 // ---- scene ----
 const view = $('view'), renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); view.appendChild(renderer.domElement);
-const scene = new THREE.Scene(); scene.background = new THREE.Color(0x05070d);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(window.KOSMO_BG ? KOSMO_BG.pick(0x05070d) : 0x05070d);
 const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 5000); camera.position.set(0, 0, 30);
 const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true;
 scene.add(new THREE.AmbientLight(0xffffff, 0.55)); const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(5, 8, 10); scene.add(key); const fill = new THREE.DirectionalLight(0x9fd3ff, 0.5); fill.position.set(-6, -4, -8); scene.add(fill);

@@ -2216,3 +2216,6 @@ html.embedded .titlebar .sub {
   letter-spacing: 0 !important;
   text-transform: none !important;
 }
+
+/* Internal look switch (kosmo-theme.js): "original" restores the atlas's navy-black grounds. */
+html[data-kosmo-bg="original"] { --bg: #05070d; --bg2: #101011; --panel: #141415; }

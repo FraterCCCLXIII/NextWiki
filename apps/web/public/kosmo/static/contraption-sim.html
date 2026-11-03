@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Contraption Sim</title>
@@ -45,7 +46,7 @@
     "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
 } }
 </script>
-  <link rel="stylesheet" href="kosmographica.css?v=8">
+  <link rel="stylesheet" href="kosmographica.css?v=9">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>
@@ -238,7 +239,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x07090f);
+scene.background = new THREE.Color(window.KOSMO_BG ? KOSMO_BG.pick(0x07090f) : 0x07090f);
 
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
 camera.position.set(7, 5, 9);
@@ -821,7 +822,7 @@ function disposeCosmo() {
   scene.remove(cosmo.points, cosmo.box);
   cosmo.points.geometry.dispose(); cosmo.points.material.dispose();
   cosmo.box.geometry.dispose(); cosmo.box.material.dispose();
-  scene.background.set(0x07090f);
+  scene.background.set(window.KOSMO_BG ? KOSMO_BG.pick(0x07090f) : 0x07090f);
   grid.visible = true;
   if (fieldLines) fieldLines.visible = state.lines;
   cosmo = null;
