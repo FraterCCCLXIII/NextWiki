@@ -519,7 +519,7 @@
   </div>
   <div class="dim fxnote">Mouse wheel sets the speed while flying. Drag to look; right-drag pans. Speed scales with how far you are zoomed in, so the same speed works at any scale.</div>
   <div class="head" style="margin-top:14px"><h3 style="font-size:15px">Travel</h3></div>
-  <div class="fxshapes" id="fxFlight" title="Pull back first: zoom out to see both ends, fly, zoom in. Direct flight: fly straight there without zooming out."></div>
+  <div class="fxshapes" id="fxFlight" title="Instant jump: you arrive at once. Pull back first: zoom out to see both ends, fly, zoom in. Direct flight: fly straight there without zooming out."></div>
   <div class="row"><label for="fxPull">Pull-back</label><input type="range" id="fxPull" min="0" max="1.5" step="0.05"><span class="val" id="fxPull-v"></span></div>
   <div class="row"><label for="fxSpeed">Flight speed</label><input type="range" id="fxSpeed" min="0.4" max="3" step="0.05"><span class="val" id="fxSpeed-v"></span></div>
   <div class="fxshapes" id="fxEase" title="Smooth: ease in and out. Cruise: a short ramp, then a steady speed."></div>
@@ -1039,9 +1039,9 @@ const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 42
 const gauss = () => Math.sqrt(-2 * Math.log(1 - rnd())) * Math.cos(2 * Math.PI * rnd());
 // ---- Star look: sprite shapes, halo, twinkle, brightness. Every point cloud registers its material here, and the
 // "Stars" drawer (the sparkle button) edits `fx`; choices persist in localStorage ("kosmoFx"). ----
-const FX_DEFAULTS = { shape: 'round', size: 1, halo: 0.7, spike: 0.7, rot: 0, twinkle: 0, gain: 1, additive: true, real: true, exposure: 1, trail: 0.6, warp: false, warpAmt: 1, flight: 'hop', pull: 1, flightSpeed: 1, ease: 'smooth', arc: 0 };
+const FX_DEFAULTS = { shape: 'round', size: 1, halo: 0.7, spike: 0.7, rot: 0, twinkle: 0, gain: 1, additive: true, real: true, exposure: 1, trail: 0.6, warp: false, warpAmt: 1, flight: 'instant', pull: 1, flightSpeed: 1, ease: 'smooth', arc: 0 };
 const fx = { ...FX_DEFAULTS };
-try { Object.assign(fx, JSON.parse(localStorage.getItem('kosmoFx') || '{}')); if (!localStorage.getItem('kosmoFxStreaksOff')) { fx.warp = false; localStorage.setItem('kosmoFxStreaksOff', '1'); } } catch { /* storage blocked or bad JSON: defaults */ }   // streak effects are off unless the user switches them on (one-time reset of older saved settings)
+try { Object.assign(fx, JSON.parse(localStorage.getItem('kosmoFx') || '{}')); if (!localStorage.getItem('kosmoFxStreaksOff')) { fx.warp = false; localStorage.setItem('kosmoFxStreaksOff', '1'); } if (!localStorage.getItem('kosmoFxInstant')) { fx.flight = 'instant'; localStorage.setItem('kosmoFxInstant', '1'); } } catch { /* storage blocked or bad JSON: defaults */ }   // streak effects are off unless the user switches them on (one-time reset of older saved settings)
 window.kosmoTimeline.fx = fx;   // debug hook
 const FX_SHAPES = [['pixel', 'Pixel'], ['round', 'Soft glow'], ['cross', 'Hubble cross'], ['jwst', 'Webb 6+2'], ['eight', 'Eight-point'], ['streak', 'Streak']];
 const FX_SPRITE_SCALE = 4;                       // a sprite is mostly glow and spikes, so it is drawn this much larger than the old square
@@ -1605,6 +1605,11 @@ function goDest(d, force) {
   if (d.sys) systemFor(d.sys); travelTo(d.pos, Math.log10(at(d.w)), d.name);
 }
 function travelTo(target, zoom, name, secs) {
+  if (fx.flight === 'instant') {   // instant mode: no flight at all, the view is simply there (links, search, the list and map clicks all land this way)
+    const at0 = at(target); travel = null; follow = typeof target === 'function' ? target : null; zfxPrev = null;
+    focus[0] = at0[0]; focus[1] = at0[1]; focus[2] = at0[2]; state.zoom = clamp(zoom, 1, 27); sync('zoom', 2);
+    lastDest = { target, name }; warpEnd(); camera.lookAt(0, 0, 0); controls.update(); toast(`At ${name}`); return;
+  }
   const pos = at(target), p0 = [...focus], z0 = state.zoom, dist = Math.hypot(pos[0] - p0[0], pos[1] - p0[1], pos[2] - p0[2]);
   const rawBump = Math.max(0, Math.log10(Math.max(dist, 1)) + 0.4 - Math.max(z0, zoom));   // how far to zoom out to see both ends
   const direct = fx.flight === 'direct';                                                      // direct flight: no pull-back, just fly there
@@ -2806,7 +2811,7 @@ function fxSync() {
   $('fxAdd').checked = fx.additive; $('fxReal').checked = fx.real; $('fxExposure').disabled = !fx.real; $('fxWarp').checked = fx.warp; $('fxWarpAmt').disabled = !fx.warp;
   $('fxFlight').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === fx.flight));
   $('fxEase').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === fx.ease));
-  $('fxPull').disabled = fx.flight === 'direct';
+  $('fxPull').disabled = fx.flight !== 'hop';
   $('fxShapes').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.shape === fx.shape));
   const sprite = fx.shape !== 'pixel';
   for (const id of ['fxHalo', 'fxSpike', 'fxRot']) $(id).disabled = !sprite;
@@ -2818,7 +2823,7 @@ for (const [id, key, , redraw] of FX_SLIDERS) $(id).addEventListener('input', e 
 $('fxAdd').addEventListener('change', e => { fx.additive = e.target.checked; fxChanged(false); });
 $('fxReal').addEventListener('change', e => { fx.real = e.target.checked; fxChanged(false); });
 $('fxWarp').addEventListener('change', e => { fx.warp = e.target.checked; fxChanged(false); });
-const FX_FLIGHTS = [['hop', 'Pull back first'], ['direct', 'Direct flight']], FX_EASES = [['smooth', 'Smooth'], ['cruise', 'Cruise']];
+const FX_FLIGHTS = [['instant', 'Instant jump'], ['hop', 'Pull back first'], ['direct', 'Direct flight']], FX_EASES = [['smooth', 'Smooth'], ['cruise', 'Cruise']];
 for (const [id, list, key] of [['fxFlight', FX_FLIGHTS, 'flight'], ['fxEase', FX_EASES, 'ease']]) {
   $(id).innerHTML = list.map(([v, name]) => `<button type="button" data-v="${v}">${name}</button>`).join('');
   $(id).querySelectorAll('button').forEach(b => b.addEventListener('click', () => { fx[key] = b.dataset.v; fxChanged(false); }));
