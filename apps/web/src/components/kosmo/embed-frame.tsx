@@ -61,6 +61,7 @@ export function EmbedFrame({ src, title }: EmbedFrameProps) {
       if (d?.kosmo !== "address" || typeof d.a !== "string" || !d.a.startsWith("KA1~")) return;
       const url = new URL(window.location.href);
       url.searchParams.set("a", d.a);
+      url.searchParams.delete("go"); // once the address is recorded it says where you are; a stale ?go= would fight it on reload
       window.history.replaceState(window.history.state, "", url);
     };
     window.addEventListener("message", onMessage);
