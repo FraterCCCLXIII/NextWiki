@@ -42,6 +42,11 @@
   #logo .sub { display: block; font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-style: italic; letter-spacing: 0.06em; font-size: 13px; color: #fff; opacity: 0.8; margin-top: 2px; }
 
   #top { position: absolute; left: 0; right: 0; top: 58px; height: 210px; z-index: 3; transition: height .25s ease; }
+  /* Readability: a soft dark overlay with a light backdrop blur behind the timeline strip, fading out at its bottom edge. */
+  #top::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: color-mix(in srgb, var(--bg) 62%, transparent);
+    -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
+    -webkit-mask-image: linear-gradient(to bottom, #000 90%, transparent); mask-image: linear-gradient(to bottom, #000 90%, transparent); }
   #top.collapsed { height: 0; }
   #top.collapsed canvas { opacity: 0; pointer-events: none; }
   #timeline { display: block; width: 100%; height: 210px; cursor: crosshair; transition: opacity .2s; }
