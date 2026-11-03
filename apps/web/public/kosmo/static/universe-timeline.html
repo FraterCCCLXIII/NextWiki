@@ -1725,6 +1725,27 @@ function censusBuild(key) {
   const built = { items, centre: def.ladder ? [SUN[0] + cursor / 2, SUN[1], SUN[2]] : def.centre(), width: def.ladder ? cursor * 1.1 : def.width, def };
   CENSUS.built.set(key, built); return built;
 }
+// ---- the destination itself: a catalogue object with no level of its own (a galaxy, nebula, remnant, cluster, compact object, loose star) gets
+// its own model at its real place and size, so arriving somewhere never shows an empty frame ----
+const DM = { name: null, obj: null, r: 0, pos: null, count: -1, byName: new Map() };
+const DM_TYPES = new Set(['galaxy', 'nebula', 'supernova_remnant', 'star_cluster', 'galaxy_cluster', 'black_hole', 'pulsar', 'neutron_star', 'white_dwarf', 'quasar', 'star', 'other']);
+const DM_DEFAULT_R = { nebula: 5 * pc, supernova_remnant: 12 * pc, star_cluster: 8 * pc, galaxy_cluster: 2 * Mpc, galaxy: 8 * kpc, black_hole: 3e4, neutron_star: 1.2e4, pulsar: 1.2e4, white_dwarf: 7e6, star: 7e8, quasar: 1e10 };
+function updateDestModel(k) {
+  const name = CENSUS.key ? null : (travel ? travel.name : lastDest && lastDest.name);
+  if (name !== DM.name) {
+    DM.name = name; if (DM.obj) { CENSUS.group.remove(DM.obj); DM.obj.dispose && DM.obj.dispose(); DM.obj = null; }
+    if (DM.count !== DEST.length) { DM.byName.clear(); for (const d of DEST) if (d.meta && !DM.byName.has(d.name)) DM.byName.set(d.name, d); DM.count = DEST.length; }
+    const d = name && DM.byName.get(name), o = d && d.meta;
+    if (o && DM_TYPES.has(o.type) && Array.isArray(d.pos) && !(o.type === 'star' && d.sys)) {
+      DM.r = o.radius_m > 0 ? o.radius_m : DM_DEFAULT_R[o.type] || 1e6; DM.pos = d.pos;
+      DM.obj = createModel(THREE, { ...o, radius_m: DM.r, points: o.type === 'galaxy' ? 7000 : undefined, tilt: true, segments: 32 }); DM.obj.visible = false; CENSUS.group.add(DM.obj);
+    }
+  }
+  if (!DM.obj) return;
+  const sc = toScene(at(DM.pos), focus, k), viewW = 10 ** state.zoom, size = Math.max(DM.r, viewW * 0.012) * k, px = size * view.clientHeight / 2;
+  DM.obj.visible = px > 1.5 && px < 8000 && Math.hypot(sc[0], sc[1], sc[2]) < 1e5; if (!DM.obj.visible) return;
+  DM.obj.position.set(sc[0], sc[1], sc[2]); DM.obj.scale.setScalar(size); DM.obj.tick(performance.now() / 1000);
+}
 function updateCensus(k) {
   for (const [key, B] of CENSUS.built) for (const it of B.items) if (key !== CENSUS.key) it.obj.visible = false;
   if (!CENSUS.key) return;
@@ -1753,7 +1774,7 @@ function updateScene() {
     if (L.update) L.update(L.obj);
   }
   const sp = toScene(SUN, focus, k); sunLight.position.set(sp[0], sp[1], sp[2]);
-  updateBlackHoles(k); updateCensus(k); courseMarker(k);
+  updateBlackHoles(k); updateCensus(k); updateDestModel(k); courseMarker(k);
   if (megaObj) {
     const mg = MEGAS[state.mega], cover = mg.width() / viewW;
     megaObj.visible = state.mega !== 'none' && cover > 1e-4 && cover < 1e8;
