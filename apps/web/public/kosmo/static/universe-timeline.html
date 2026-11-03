@@ -509,6 +509,9 @@
   <div class="col" title="Relative scale: top keeps true size ratios, bottom pulls giants and dwarfs toward one size so big objects do not hide small ones">
     <span class="tag">true</span><input type="range" id="vBal" min="0" max="1" step="0.01" orient="vertical"><span class="tag">equal</span><span class="cap">balance</span><span class="v" id="vBal-v"></span>
   </div>
+  <div class="col" title="Cosmic distance: warps the distance between galaxies, clusters and superclusters (beyond 3 Mpc). Top spreads them apart, the middle is true, the bottom pulls everything toward us. Directions are kept.">
+    <span class="tag">wide</span><input type="range" id="vCos" min="0.75" max="1.2" step="0.005" orient="vertical"><span class="tag">tight</span><span class="cap">cosmic</span><span class="v" id="vCos-v"></span>
+  </div>
 </div>
 <div id="zoombar" hidden></div>
 <div id="navhud" class="glass" aria-label="Navigation controls">
@@ -696,7 +699,7 @@ const OMEGA_B = 0.0224 / (C.H0 / 100) ** 2, VOL = 4 / 3 * Math.PI * CHI0 ** 3;
 const M_BARYON = OMEGA_B * tab.p.rhoCrit0 * VOL, N_BARYON = M_BARYON / 1.67262192e-27, M_DARK = (tab.p.OmegaM - OMEGA_B) * tab.p.rhoCrit0 * VOL;
 const COUNTS = { galaxies: 2e12, stars: 1e23 };
 
-const state = { dir: 1, stretch: 0.8, logA: 0, play: false, speed: 0.5, zoom: 26.97, spin: false, rate: 0, pause: false, resU: 150, resG: 150, resS: 30, resC: 20, sizeMul: 1, mega: 'none', megaR: 1, megaF: -2, megaSigma: 1, habR: 4, megaMat: 'cnt', distK: 1, sizeK: 1, skyK: 1, skyB: 1, skyN: 60 };
+const state = { cosK: 1, dir: 1, stretch: 0.8, logA: 0, play: false, speed: 0.5, zoom: 26.97, spin: false, rate: 0, pause: false, resU: 150, resG: 150, resS: 30, resC: 20, sizeMul: 1, mega: 'none', megaR: 1, megaF: -2, megaSigma: 1, habR: 4, megaMat: 'cnt', distK: 1, sizeK: 1, skyK: 1, skyB: 1, skyN: 60 };
 const $ = id => document.getElementById(id);
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 
@@ -790,7 +793,12 @@ function layout() {
 }
 const EARTH = () => layout().pos.Earth, MOON = () => layout().pos.Moon, L5 = () => layout().pos.L5;
 const shownR = name => layout().r[name] ?? exoShownR(name), shownExag = name => layout().exag[name] ?? exoExag(name);
-const at = c => typeof c === 'function' ? c() : c;   // level / structure / destination centres may move
+const atRaw = c => typeof c === 'function' ? c() : c;   // level / structure / destination centres may move
+// Cosmic distance warp: beyond COS_R0 from the Sun, distances are re-mapped r' = R0 (r/R0)^k (direction kept). k < 1 pulls galaxies and superclusters
+// together, k > 1 spreads them apart; nearer than R0 nothing changes. Every displayed position goes through at(); the point clouds do the same in their shader.
+const COS_R0 = 3 * 3.0856775814913673e22 / 1e6 * 1e6;   // 3 Mpc in metres
+const cosWarp = p => { const k = state.cosK; if (k === 1) return p; const rx = p[0] - SUN[0], ry = p[1] - SUN[1], rz = p[2] - SUN[2], r = Math.hypot(rx, ry, rz); if (r <= COS_R0) return p; const f = (r / COS_R0) ** (k - 1); return [SUN[0] + rx * f, SUN[1] + ry * f, SUN[2] + rz * f]; };
+const at = c => { const v = atRaw(c); return state.cosK !== 1 && Array.isArray(v) ? cosWarp(v) : v; };
 let follow = null;   // function returning the position the focus should track (after travelling to a moving body)
 
 // focus = where the camera looks (metres, galactic); zoom = log10 of the view width in metres
@@ -979,7 +987,7 @@ try { Object.assign(fx, JSON.parse(localStorage.getItem('kosmoFx') || '{}')); if
 window.kosmoTimeline.fx = fx;   // debug hook
 const FX_SHAPES = [['pixel', 'Pixel'], ['round', 'Soft glow'], ['cross', 'Hubble cross'], ['jwst', 'Webb 6+2'], ['eight', 'Eight-point'], ['streak', 'Streak']];
 const FX_SPRITE_SCALE = 4;                       // a sprite is mostly glow and spikes, so it is drawn this much larger than the old square
-const fxUTime = { value: 0 }, fxUTwinkle = { value: fx.twinkle }, fxUReal = { value: 1 }, fxUExposure = { value: 1 }, fxURef = { value: 3 };
+const fxUCosK = { value: 1 }, fxUTime = { value: 0 }, fxUTwinkle = { value: fx.twinkle }, fxUReal = { value: 1 }, fxUExposure = { value: 1 }, fxURef = { value: 3 };
 const FX_MAX_CSS_PX = 56;                      // largest a star sprite may get on screen (CSS px); stops overdraw and white-out when zoomed in
 const fxUMaxPx = { value: 1e6 };               // the same limit in framebuffer pixels, set in fxApply (no limit for the old square points)
 const fxMats = [];
@@ -1031,14 +1039,15 @@ function fxApply(redrawSprite = true) {
   for (const m of fxMats) fxStyle(m);
 }
 // twinkle: a per-star size and brightness flicker with its own phase, injected into PointsMaterial's vertex shader
-function fxPatch(sh) {
+function fxPatch(sh, mat) {
+  const cu = mat.userData.cosU ||= { centre: { value: new THREE.Vector3() }, unit: { value: 0 } }; sh.uniforms.uCosK = fxUCosK; sh.uniforms.uCosCentre = cu.centre; sh.uniforms.uCosUnit = cu.unit;
   sh.uniforms.uTime = fxUTime; sh.uniforms.uTwinkle = fxUTwinkle; sh.uniforms.uMaxPx = fxUMaxPx; sh.uniforms.uRealLight = fxUReal; sh.uniforms.uExposure = fxUExposure; sh.uniforms.uRefDist = fxURef;
-  sh.vertexShader = 'attribute float phase;\nuniform float uTime;\nuniform float uTwinkle;\nuniform float uMaxPx;\nuniform float uRealLight;\nuniform float uExposure;\nuniform float uRefDist;\n' + sh.vertexShader
-    .replace('#include <begin_vertex>', '#include <begin_vertex>\n float tw_ = 1.0 + uTwinkle * (0.5 * sin(uTime * 2.7 + phase) + 0.3 * sin(uTime * 6.1 + phase * 3.7));')
+  sh.vertexShader = 'attribute float phase;\nuniform float uCosK;\nuniform float uCosUnit;\nuniform vec3 uCosCentre;\nuniform float uTime;\nuniform float uTwinkle;\nuniform float uMaxPx;\nuniform float uRealLight;\nuniform float uExposure;\nuniform float uRefDist;\n' + sh.vertexShader
+    .replace('#include <begin_vertex>', '#include <begin_vertex>\n if (uCosUnit > 0.0 && uCosK != 1.0) { vec3 wp_ = uCosCentre + transformed * uCosUnit; float r_ = length(wp_); if (r_ > 1.0) wp_ *= pow(r_, uCosK - 1.0); transformed = (wp_ - uCosCentre) / uCosUnit; }\n float tw_ = 1.0 + uTwinkle * (0.5 * sin(uTime * 2.7 + phase) + 0.3 * sin(uTime * 6.1 + phase * 3.7));')
     .replace('#include <logdepthbuf_vertex>', 'gl_PointSize = min(gl_PointSize * (1.0 + 0.25 * (tw_ - 1.0)), uMaxPx);\n#ifdef USE_COLOR\n vColor *= clamp(0.65 + 0.35 * tw_, 0.2, 1.6);\n  if (uRealLight > 0.5) {\n   float flux = uRefDist / max(length(mvPosition.xyz), 1e-4); flux *= flux;   // inverse-square law, relative to a point at the reference distance (auto-exposure)\n   float seen = smoothstep(0.015, 0.16, flux * uExposure);                   // below the limiting flux a point fades out, so zooming out never piles up glare\n   vColor *= (0.3 + 0.7 * min(flux, 3.0)) * uExposure * seen;\n  }\n#endif\n#include <logdepthbuf_vertex>');
 }
 function fxRegister(m, baseSize) {
-  m.userData.baseSize = baseSize; m.onBeforeCompile = fxPatch; fxMats.push(m);
+  m.userData.baseSize = baseSize; m.onBeforeCompile = sh => fxPatch(sh, m); fxMats.push(m);
   fxUMaxPx.value = (fx.shape === 'pixel' ? 14 : FX_MAX_CSS_PX) * renderer.getPixelRatio();
   if (fx.shape !== 'pixel' && !fxTex) fxTex = fxStarTexture();
   fxStyle(m);
@@ -1192,8 +1201,8 @@ function updateEarth(g) {   // the same shown positions and radii as the Solar l
 }
 
 const LEVELS = [
-  { key: 'universe', name: 'Observable universe', unit: CHI0, width: 2 * CHI0, centre: SUN, build: () => buildUniverse(state.resU * 1000), count: () => COUNTS.galaxies, what: 'galaxies', comoving: true },
-  { key: 'cluster', name: 'Virgo cluster', unit: CL.R, width: 2 * CL.R, centre: CL.pos, build: () => buildCluster(state.resC * 1000), count: () => CL.nGal, what: 'galaxies (+ hot gas)' },
+  { key: 'universe', cosmic: true, name: 'Observable universe', unit: CHI0, width: 2 * CHI0, centre: SUN, build: () => buildUniverse(state.resU * 1000), count: () => COUNTS.galaxies, what: 'galaxies', comoving: true },
+  { key: 'cluster', cosmic: true, name: 'Virgo cluster', unit: CL.R, width: 2 * CL.R, centre: CL.pos, build: () => buildCluster(state.resC * 1000), count: () => CL.nGal, what: 'galaxies (+ hot gas)' },
   { key: 'galaxy', name: 'Milky Way', unit: GAL.R, width: 2 * GAL.R, centre: [0, 0, 0], build: () => buildGalaxy(state.resG * 1000), count: () => GAL.stars, what: 'stars' },
   { key: 'stars', name: 'Solar neighbourhood (50 pc)', unit: NB.R, width: 2 * NB.R, centre: SUN, build: () => buildStars(state.resS * 1000), count: () => NB.density * 4 / 3 * Math.PI * NB.R ** 3, what: 'stars' },
   { key: 'sky', name: 'Planetary systems (compressed sky)', unit: pc, width: () => skyPack().on ? skyPack().width : 2.3 * (skyPack().truest || 12 * pc), centre: SUN, build: () => new THREE.Group(), count: () => Math.min(state.skyN, SKY_HOSTS.length), what: 'planetary systems (built as you look)', update: updateSky },
@@ -1416,20 +1425,28 @@ function physicsLine(row) {
 // ---- 3D cursor: over a big point map (the galaxy web and the like) the pointer snaps to the nearest point; click warps there in 3 seconds ----
 const _pm = new THREE.Matrix4(), _pw = new THREE.Vector3();
 let snapCache = null, snapMouse = null, snapFrame = -99, hoverSnap = null;
+const _wl = [0, 0, 0];
+function warpLocal(cu, x, y, z) {   // the point cloud shader's cosmic warp, repeated here so picking matches what is drawn
+  const c = cu.centre.value, u = cu.unit.value; let wx = c.x + x * u, wy = c.y + y * u, wz = c.z + z * u; const r = Math.hypot(wx, wy, wz);
+  if (r > 1) { const f = r ** (state.cosK - 1); wx *= f; wy *= f; wz *= f; }
+  _wl[0] = (wx - c.x) / u; _wl[1] = (wy - c.y) / u; _wl[2] = (wz - c.z) / u; return _wl;
+}
 function pickPoint(mx, my) {
   const W = view.clientWidth, H = view.clientHeight, cand = [], R2 = 44 * 44; let best = null, bd = R2;
   scene.traverse(o => {
     if (!o.isPoints || !o.geometry.attributes.position) return; for (let v = o; v; v = v.parent) if (!v.visible) return;
     const pos = o.geometry.attributes.position, a = pos.array, n = pos.count; if (n > 600000) return;
     o.updateWorldMatrix(true, false); _pm.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse).multiply(o.matrixWorld); const e = _pm.elements;
+    const cu = state.cosK !== 1 && o.material.userData.cosU && o.material.userData.cosU.unit.value > 0 ? o.material.userData.cosU : null;
     for (let i = 0; i < n; i++) {
-      const x = a[3 * i], y = a[3 * i + 1], z = a[3 * i + 2], w = e[3] * x + e[7] * y + e[11] * z + e[15]; if (w <= 0) continue;
+      let x = a[3 * i], y = a[3 * i + 1], z = a[3 * i + 2]; if (cu) { const q = warpLocal(cu, x, y, z); x = q[0]; y = q[1]; z = q[2]; }
+      const w = e[3] * x + e[7] * y + e[11] * z + e[15]; if (w <= 0) continue;
       const sx = ((e[0] * x + e[4] * y + e[8] * z + e[12]) / w + 1) / 2 * W - mx, sy = (1 - (e[1] * x + e[5] * y + e[9] * z + e[13]) / w) / 2 * H - my, d = sx * sx + sy * sy;
       if (d < R2) { const c = { o, i, sx: mx + sx, sy: my + sy, d }; if (cand.length < 900) cand.push(c); if (d < bd) { bd = d; best = c; } }
     }
   });
   if (!best) return null;
-  const world = c => { const a = c.o.geometry.attributes.position.array; return _pw.set(a[3 * c.i], a[3 * c.i + 1], a[3 * c.i + 2]).applyMatrix4(c.o.matrixWorld).toArray(); };
+  const world = c => { const a = c.o.geometry.attributes.position.array, cu = state.cosK !== 1 && c.o.material.userData.cosU && c.o.material.userData.cosU.unit.value > 0 ? c.o.material.userData.cosU : null; let x = a[3 * c.i], y = a[3 * c.i + 1], z = a[3 * c.i + 2]; if (cu) { const q = warpLocal(cu, x, y, z); x = q[0]; y = q[1]; z = q[2]; } return _pw.set(x, y, z).applyMatrix4(c.o.matrixWorld).toArray(); };
   // clustered points snap as a group: everything within 16 px of the nearest point is one target at its centroid, sized by the group's spread
   const mem = cand.filter(c => (c.sx - best.sx) ** 2 + (c.sy - best.sy) ** 2 < 16 * 16).slice(0, 220);
   let cx = 0, cy = 0, cz = 0; for (const c of mem) { const w = world(c); cx += w[0]; cy += w[1]; cz += w[2]; }
@@ -1922,7 +1939,7 @@ collapsible('#timehud', [['.trow:nth-child(1)', 'Clock'], ['.trow:nth-child(2)',
 { const nh = $('navhud'), upd = () => document.body.style.setProperty('--navh', `${document.body.classList.contains('nav-closed') ? 56 : Math.round(nh.getBoundingClientRect().height)}px`);
   new ResizeObserver(upd).observe(nh); upd(); new MutationObserver(upd).observe(document.body, { attributes: true, attributeFilter: ['class'] }); }
 document.querySelectorAll('#scalebars input[type=range]').forEach(r => {
-  const reset = { vDist: 1, vSize: 0, vBal: 1 }[r.id];
+  const reset = { vDist: 1, vSize: 0, vBal: 1, vCos: 1 }[r.id];
   r.addEventListener('wheel', e => { e.preventDefault(); r.value = clamp(+r.value - Math.sign(e.deltaY) * (r.max - r.min) / 40, +r.min, +r.max); r.dispatchEvent(new Event('input', { bubbles: true })); }, { passive: false });
   r.addEventListener('dblclick', () => { if (reset != null) { r.value = reset; r.dispatchEvent(new Event('input', { bubbles: true })); } });
 });
@@ -2196,7 +2213,8 @@ function updateScene() {
   activeL = LEVELS.reduce((best, L) => Math.abs(Math.log10(at(L.width)) - state.zoom) < Math.abs(Math.log10(at(best.width)) - state.zoom) ? L : best, LEVELS[0]);
   for (const L of [...LEVELS, ...SYSTEMS.values()]) {
     const grow = L.comoving ? a : 1, cover = at(L.width) * grow / viewW;
-    const off = toScene(at(L.centre), focus, k), far = Math.hypot(off[0], off[1], off[2]) / 2;   // in view widths
+    if (L.cosmic && L.obj.material) { const cu = L.obj.material.userData.cosU, c0 = atRaw(L.centre); if (cu) { cu.centre.value.set((c0[0] - SUN[0]) / COS_R0, (c0[2] - SUN[2]) / COS_R0, -(c0[1] - SUN[1]) / COS_R0); cu.unit.value = at(L.unit) * grow / COS_R0; } }
+    const off = toScene(L.cosmic ? atRaw(L.centre) : at(L.centre), focus, k), far = Math.hypot(off[0], off[1], off[2]) / 2;   // in view widths
     L.obj.visible = cover > 1e-4 && cover < 1e8 && far < cover * 1.5 + 3e3;
     if (!L.obj.visible) continue;
     L.obj.scale.setScalar(at(L.unit) * k * grow); L.obj.position.set(off[0], off[1], off[2]);
@@ -2248,6 +2266,7 @@ function updateScene() {
   if (!hudClosed) { $('hudScale').textContent = `${m} ${name}`; $('hudBar').style.width = `${barPx}px`; }
   const fmtMag = x => x >= 1e5 ? x.toExponential(1).replace('e+', 'e') : x.toFixed(0);
   const notes = []; if (state.sizeMul > 1) notes.push(`objects enlarged ×${state.sizeMul.toFixed(state.sizeMul < 10 ? 1 : 0)}`); if (state.distK < 1) notes.push(`distances compressed γ = ${state.distK.toFixed(2)}`); if (state.sizeK < 1) notes.push(`sizes balanced β = ${state.sizeK.toFixed(2)}`);
+  if (state.cosK !== 1) notes.push(`galaxy and supercluster distances ${state.cosK < 1 ? 'pulled together' : 'spread apart'} κ = ${state.cosK.toFixed(2)}`);
   if (state.skyK < 1) notes.push(`star distances compressed γ = ${state.skyK.toFixed(2)}`); if (skyPack().on) notes.push(`systems magnified ×${fmtMag(skyPack().mags[0])}–×${fmtMag(skyPack().mags[1])}`);
   const noteText = notes.length ? `⚠ ${notes.join(' · ')} (star and galaxy positions stay true; their points swell with the size slider)` : '';
   $('scalenote').textContent = noteText; if (!hudClosed) $('hudNote').textContent = noteText;
@@ -2287,13 +2306,15 @@ function syncScaleBars() {
   $('vDist').value = state.distK; $('vDist-v').textContent = `γ ${state.distK.toFixed(2)}`;
   $('vSize').value = Math.log10(state.sizeMul); $('vSize-v').textContent = `×${state.sizeMul < 10 ? state.sizeMul.toFixed(1) : state.sizeMul.toFixed(0)}`;
   $('vBal').value = state.sizeK; $('vBal-v').textContent = `β ${state.sizeK.toFixed(2)}`;
+  $('vCos').value = state.cosK; $('vCos-v').textContent = `κ ${state.cosK.toFixed(2)}`; fxUCosK.value = state.cosK;
 }
+$('vCos').addEventListener('input', e => { let v = parseFloat(e.target.value); if (Math.abs(v - 1) < 0.03) v = 1; state.cosK = v; hoverSnap = null; syncScaleBars(); });
 $('vDist').addEventListener('input', e => { state.distK = state.skyK = parseFloat(e.target.value); sync('distK', 2); sync('skyK', 2); syncScaleBars(); });
 $('vSize').addEventListener('input', e => { state.sizeMul = Math.max(1, Math.round(10 ** parseFloat(e.target.value) * 2) / 2); sync('sizeMul', 1); syncScaleBars(); fxApply(false); });
 $('vBal').addEventListener('input', e => { state.sizeK = state.skyB = parseFloat(e.target.value); sync('sizeK', 2); sync('skyB', 2); syncScaleBars(); });
 for (const id of ['distK', 'sizeK', 'sizeMul']) $(id).addEventListener('input', syncScaleBars);   // the panel's sliders move the verticals too
 $('sizeMul').addEventListener('input', () => fxApply(false));
-$('trueScale').addEventListener('click', () => { state.distK = 1; state.sizeK = 1; state.sizeMul = 1; state.skyK = 1; state.skyB = 1; sync('distK', 2); sync('sizeK', 2); sync('sizeMul', 1); sync('skyK', 2); sync('skyB', 2); syncScaleBars(); fxApply(false); });
+$('trueScale').addEventListener('click', () => { state.cosK = 1; state.distK = 1; state.sizeK = 1; state.sizeMul = 1; state.skyK = 1; state.skyB = 1; sync('distK', 2); sync('sizeK', 2); sync('sizeMul', 1); sync('skyK', 2); sync('skyB', 2); syncScaleBars(); fxApply(false); });
 syncScaleBars();
 document.querySelectorAll('button[data-sb]').forEach(b => b.addEventListener('click', () => { const [g, be] = b.dataset.sb.split(',').map(Number); state.distK = g; state.sizeK = be; state.skyK = g; state.skyB = be; sync('distK', 2); sync('sizeK', 2); sync('skyK', 2); sync('skyB', 2); syncScaleBars(); }));
 $('play').addEventListener('change', () => { state.play = $('play').checked; if (state.play && state.logA >= 0) state.logA = -16; });
