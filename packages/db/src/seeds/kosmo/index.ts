@@ -24,5 +24,8 @@ export async function seedKosmo(db: Db): Promise<void> {
   const { importHistory } = await import("./history.js");
   await importHistory(db, userId);
 
+  const { importDatasets } = await import("./datasets.js");
+  await importDatasets(db);
+
   console.log("  -> Kosmographica seeding finished.");
 }

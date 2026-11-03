@@ -199,6 +199,17 @@ export const kosmoEntityTaxaRelations = relations(
   })
 );
 
+/**
+ * Whole data files served to the original Kosmographica HTML pages at their old URLs
+ * (the Oracle *-data.js files, university-exams.json). Editable rows, not entity-shaped.
+ */
+export const kosmoDatasets = pgTable("kosmo_datasets", {
+  key: text("key").primaryKey(),
+  contentType: text("content_type").notNull(),
+  body: text("body").notNull(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Inferred types
 
 export type KosmoSource = typeof kosmoSources.$inferSelect;
@@ -215,3 +226,6 @@ export type NewKosmoTaxon = typeof kosmoTaxa.$inferInsert;
 
 export type KosmoEntityTaxon = typeof kosmoEntityTaxa.$inferSelect;
 export type NewKosmoEntityTaxon = typeof kosmoEntityTaxa.$inferInsert;
+
+export type KosmoDataset = typeof kosmoDatasets.$inferSelect;
+export type NewKosmoDataset = typeof kosmoDatasets.$inferInsert;

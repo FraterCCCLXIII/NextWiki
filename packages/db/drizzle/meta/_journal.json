@@ -43,6 +43,13 @@
       "when": 1801963900000,
       "tag": "0005_spooky_mercury",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1801964000000,
+      "tag": "0006_bizarre_wilson_fisk",
+      "breakpoints": true
     }
   ]
 }

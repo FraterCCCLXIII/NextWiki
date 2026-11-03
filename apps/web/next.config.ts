@@ -9,6 +9,37 @@ const nextConfig: NextConfig = {
     };
     return config;
   },
+  // The original Kosmographica HTML pages fetch their data by relative URL. These
+  // rewrites (beforeFiles, so they win over the file copies in public/) answer
+  // those URLs from the database instead.
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/kosmo/static/catalog/objects.json",
+          destination: "/api/kosmo/data/catalog/objects.json",
+        },
+        {
+          source: "/kosmo/static/university-tree.js",
+          destination: "/api/kosmo/data/university-tree.js",
+        },
+        {
+          source: "/kosmo/static/history-taxonomy.js",
+          destination: "/api/kosmo/data/history-taxonomy.js",
+        },
+        {
+          source: "/kosmo/static/university-exams.json",
+          destination: "/api/kosmo/data/university-exams.json",
+        },
+        {
+          source: "/kosmo/static/oracle/:file(.+-(?:data|claims)\\.js)",
+          destination: "/api/kosmo/data/oracle/:file",
+        },
+      ],
+      afterFiles: [],
+      fallback: [],
+    };
+  },
   async headers() {
     return [
       {
