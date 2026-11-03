@@ -59,7 +59,13 @@
   .ev .what { color: #d6e0ee; font-size: 12.5px; }
   .ev .what small { display: block; color: var(--muted); font-size: 11px; }
   .ev.now { background: rgba(255,255,255,0.08); } .ev.now .what { color: #fff; }
-  #drawerBtn { margin-left: 18px; }
+  /* Chronicle is a round button; the clock readout is its hover label. */
+  .orbwrap { position: relative; display: flex; align-items: center; }
+  #drawerBtn.orb { width: 42px; height: 42px; margin: 0; padding: 0; border-radius: 50%; display: grid; place-items: center; background: rgba(26,26,26,0.85); border: 1px solid var(--line2, #303133); color: var(--text); cursor: pointer; transition: border-color .2s, color .2s, background .2s; }
+  #drawerBtn.orb:hover, #drawerBtn.orb:focus-visible { border-color: var(--accent); color: var(--accent); }
+  #drawerBtn.orb.open { border-color: var(--accent); color: var(--accent); background: rgba(26,26,26,0.95); }
+  #navTime { position: absolute; right: calc(100% + 10px); top: 50%; transform: translateY(-50%); white-space: nowrap; padding: 6px 12px; border-radius: 999px; background: rgba(26,26,26,0.92); border: 1px solid var(--line2, #303133); font-size: 12px; opacity: 0; pointer-events: none; transition: opacity .18s; }
+  .orbwrap:hover #navTime, .orbwrap:focus-within #navTime { opacity: 1; }
   .tabs { display: flex; gap: 4px; padding: 6px 16px 0; } .tabs button { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 10px; } .tabs button.on { border-color: var(--accent); color: var(--accent); }
   #atlas { flex: 1; display: none; grid-template-columns: 74px 1fr; min-height: 0; }
   #atlas.on { display: grid; }
@@ -133,7 +139,7 @@
 </head>
 <body>
 <div id="view"></div>
-<div id="navbar"><div id="logo"><div class="mark"></div><div><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div></div><nav id="menu"><a href="universe-timeline.html" class="here">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span><span class="dim" id="navTime"></span><button id="drawerBtn" title="Vertical timeline and map">Chronicle ◂</button></span></div>
+<div id="navbar"><div id="logo"><div class="mark"></div><div><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div></div><nav id="menu"><a href="universe-timeline.html" class="here">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span class="orbwrap"><span class="dim" id="navTime"></span><button id="drawerBtn" class="orb" type="button" title="Chronicle: vertical timeline and map" aria-label="Chronicle" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></button></span></div>
 <div id="top"><canvas id="timeline"></canvas><canvas id="minimap" title="Drag the window to pan the timeline"></canvas><div id="tl-handle" title="Show or hide the timeline"></div></div>
 <aside id="drawer">
   <div class="head"><h3 class="serif">Chronicle</h3><span class="dim" id="drawerWhen"></span></div>
@@ -1015,7 +1021,7 @@ let land = null;   // GeoJSON land polygons (world-atlas 110m) once loaded; fals
 const mapC = $('map'), mapCtx = mapC.getContext('2d');
 const proj = (lat, lon, W, H) => [(lon + 180) / 360 * W, (90 - lat) / 180 * H];
 let drawerOpen = false, hoverEv = null;
-function toggleDrawer() { drawerOpen = !drawerOpen; $('drawer').classList.toggle('open', drawerOpen); document.body.classList.toggle('drawer-open', drawerOpen); $('drawerBtn').textContent = drawerOpen ? 'Chronicle ▸' : 'Chronicle ◂'; if (drawerOpen) buildList(); setTimeout(resize, 300); }
+function toggleDrawer() { drawerOpen = !drawerOpen; $('drawer').classList.toggle('open', drawerOpen); document.body.classList.toggle('drawer-open', drawerOpen); $('drawerBtn').classList.toggle('open', drawerOpen); $('drawerBtn').setAttribute('aria-expanded', String(drawerOpen)); if (drawerOpen) buildList(); setTimeout(resize, 300); }
 $('drawerBtn').addEventListener('click', toggleDrawer);
 $('chips').innerHTML = CATS.map(c => `<button data-c="${c}" class="on" style="color:${CAT_COLOR[c]}">${c}</button>`).join('');
 $('chips').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { const c = b.dataset.c; catOn.has(c) ? catOn.delete(c) : catOn.add(c); b.classList.toggle('on', catOn.has(c)); buildList(); }));
