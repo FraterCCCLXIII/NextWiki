@@ -332,6 +332,7 @@
   #speedscale { margin: 4px 0 2px; font-size: 11px; color: var(--muted); } #sRuler { position: relative; height: 24px; margin: 0 46px 0 44px; border-top: 1px solid rgba(160,195,235,0.3); }
   #sRuler i { position: absolute; top: 0; width: 1px; height: 5px; background: rgba(160,195,235,0.6); } #sRuler b { position: absolute; top: 8px; transform: translateX(-50%); font: 400 9px/1 ui-monospace, Menlo, monospace; color: #8fa6c4; white-space: nowrap; } #sRuler b.lo { top: 16px; }
   #sRuler i.c { background: #ffd37a; height: 9px; } #sRuler b.c { color: #ffd37a; } #sRuler u { position: absolute; top: -4px; width: 2px; height: 9px; background: #fff; transform: translateX(-1px); box-shadow: 0 0 6px #fff; }
+  #sFrame { display: block; text-align: center; margin-top: 2px; cursor: pointer; }
   #sRead .wnum { font-size: 15px; color: #ffd37a; letter-spacing: 0.08em; }
   #sRead { text-align: center; color: #cfe3ff; margin-top: 4px; } #sTarget { text-align: center; margin-top: 2px; } #sTarget.warn { color: #ff8a7a; } #sTarget.ok { color: #8fe0a8; } #sSafe { display: block; text-align: center; margin-top: 4px; cursor: pointer; }
   #timehud { position: absolute; left: 50%; bottom: 46px; transform: translateX(-50%); z-index: 5; padding: 8px 12px; border-radius: 14px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #c9d6e6; }
@@ -1944,7 +1945,7 @@ function collapsible(panelSel, rows) {
   for (const k of ['shift', 'b']) { const b = document.querySelector(`#navhud .navpad button[data-k="${k}"]`); if (!b) continue; b.parentElement.insertBefore(document.createElement('span'), b); box.appendChild(b); }
   row.prepend(box); }
 { const row = $('navSpeed').parentElement, box = document.createElement('div'); box.id = 'speedscale';
-  box.innerHTML = '<div id="sRuler"></div><div id="sRead"></div><div id="sTarget"></div><label id="sSafe"><input type="checkbox" id="sSafeCb" checked> auto-brake before targets</label>';
+  box.innerHTML = '<div id="sRuler"></div><div id="sRead"></div><div id="sTarget"></div><label id="sSafe"><input type="checkbox" id="sSafeCb" checked> auto-brake before targets</label><label id="sFrame"><input type="checkbox" id="sFrameCb" checked> keep something in frame</label>';
   row.after(box); row.parentElement.classList.add('speedgroup'); const wrap = document.createElement('div'); row.before(wrap); wrap.append(row, box); }
 collapsible('#navhud', [[p => p.querySelector('#zoom').parentElement, 'Zoom'], ['#zscale', 'Camera scale'], ['.navpads', 'Move & look'], [p => p.querySelector('#speedscale').parentElement, 'Max speed'], ['#navkeys', 'Hotkeys']]);
 collapsible('#helm', [['.hrow', 'Throttle'], ['.hcourse', 'Course']]);
@@ -1983,6 +1984,8 @@ document.querySelectorAll('#scalebars input[type=range]').forEach(r => {
   for (const id of ['vCos', 'vDist', 'vBal', 'vSize']) $(id).addEventListener('change', () => { const m = hintFor(id), now = performance.now(); if (m && now - lastHint > 2500) { lastHint = now; toast(m); } });
 }
 // ---- speed scale: the max-speed slider in real units with landmark speeds on its ruler, and a check against the target ahead ----
+const autoFrame = { on: true, to: null, nextCheck: 0, lastToast: 0, last: null };
+try { if (localStorage.getItem('kosmoAutoFrame') === '0') autoFrame.on = false; } catch { /* storage blocked */ }
 const fmtSpd = v => `${P.fmtLength(v)}/s`, safe = { on: true };
 function targetAhead(k) {   // the course target, else the destination being flown to / last reached: its name, distance (m) and whether it lies ahead
   const t = helm.course ? { name: helm.course.name, pos: helm.course.pos } : (loadedDest() ? { name: loadedDest().name, pos: loadedDest().target } : null); if (!t || !t.pos) return null;
@@ -1997,6 +2000,7 @@ function safeCap(vmax) {   // heading for a target: let the top speed fall with 
   const GS = [['walk', 1.4], ['car', 27.8], ['jet', 250], ['orbit', 7.8e3], ['1%c', 3e6], ['warp 1', 299792458, 1], ['W2', 3e9], ['W3.7', 1.496e11], ['W8.5', 9.461e15], ['W11.5', 9.461e18], ['W14.5', 9.461e21], ['W17.5', 9.461e24]];
   const LO = -2.3, HI = 1.6, pos = v => (Math.log10(v) - LO) / (HI - LO); let key = '';
   $('sSafeCb').addEventListener('change', e => { safe.on = e.target.checked; });
+  $('sFrameCb').checked = autoFrame.on; $('sFrameCb').addEventListener('change', e => { autoFrame.on = e.target.checked; autoFrame.to = null; try { localStorage.setItem('kosmoAutoFrame', e.target.checked ? '1' : '0'); } catch { /* storage blocked */ } });
   setInterval(() => {
     const viewW = 10 ** state.zoom, v = fly.speed * viewW, k = `${state.zoom.toFixed(1)}`;
     if (k !== key) { key = k; $('sRuler').innerHTML = GS.map(([n, g, c], idx) => { const x = pos(g / viewW); return x < 0 || x > 1 ? '' : `<i class="${c ? 'c' : ''}" style="left:${x * 100}%"></i><b class="${c ? 'c' : ''}${idx % 2 ? ' lo' : ''}" style="left:${x * 100}%">${n}</b>`; }).join('') + '<u id="sCur"></u>'; }
@@ -2676,6 +2680,42 @@ function renderFrame(dt) {
   renderer.setRenderTarget(null); trail.quad.material = trail.blit; trail.blit.uniforms.tMap.value = a.texture; renderer.render(trail.scene, trail.cam);   // 3: to the screen
   trail.i = 1 - trail.i;
 }
+// ---- keep something in frame: a nearest-neighbour count around the view centre. If fewer than a handful of bodies or map points sit inside the view, the
+// camera eases out to the scale at which the nearest few would fill it (never zooms in on its own, and backs off as soon as you steer) ----
+function frameStats() {
+  const k = 2 / 10 ** state.zoom, bins = new Uint32Array(64); let nPts = 0, total = 0;
+  scene.traverse(o => {
+    if (!o.isPoints || !o.geometry.attributes.position) return; for (let v = o; v; v = v.parent) if (!v.visible) return;
+    const a = o.geometry.attributes.position.array, n = Math.min(o.geometry.attributes.position.count, o.geometry.drawRange.count); o.updateWorldMatrix(true, false); const m = o.matrixWorld.elements;
+    for (let i = 0; i < n; i++) {
+      const x = a[3 * i], y = a[3 * i + 1], z = a[3 * i + 2], wx = m[0] * x + m[4] * y + m[8] * z + m[12], wy = m[1] * x + m[5] * y + m[9] * z + m[13], wz = m[2] * x + m[6] * y + m[10] * z + m[14], d = Math.sqrt(wx * wx + wy * wy + wz * wz);
+      if (d < 1.2) nPts++; bins[Math.max(0, Math.min(63, Math.floor(Math.log2(d + 1e-30)) + 30))]++; total++;
+    }
+  });
+  let cum = 0, rK = Infinity; for (let b = 0; b < 64; b++) { cum += bins[b]; if (cum >= 40) { rK = 2 ** (b - 30 + 1); break; } }
+  const near = [Infinity, Infinity, Infinity]; let nDest = 0;
+  for (const d of DEST) {
+    if (!d.pos || d.viaParent || d.preset || d.census) continue; const q = at(d.pos), o = toScene(q, focus, k), r = Math.hypot(o[0], o[1], o[2]);
+    if (r < 1.2) nDest++; if (r < near[2]) { near[2] = r; near.sort((p, q2) => p - q2); }
+  }
+  return { nPts, nDest, rPts: rK / k, rDest: near[2] / k, k };
+}
+function autoFrameCheck(now) {
+  if (!autoFrame.on || now < autoFrame.nextCheck || travel || document.hidden || helm.on && ship.v > 0) return; autoFrame.nextCheck = now + 600;
+  if (keys.has('q') || keys.has('e') || keys.has('w') || keys.has(' ')) return;
+  const st = frameStats(); autoFrame.last = st;
+  if (st.nPts >= 25 || st.nDest >= 1) { autoFrame.to = null; return; }
+  const r = Math.min(st.rPts, st.rDest); if (!isFinite(r) || r <= 0) return;
+  const z = clamp(Math.log10(r * 2.8), 1, 27);
+  if (z > state.zoom + 0.15) { autoFrame.to = z; if (now - autoFrame.lastToast > 4000) { autoFrame.lastToast = now; toast('Nothing in frame: pulling back to the nearest bodies'); } }
+}
+function autoFrameStep(dt) {
+  if (autoFrame.to == null) return;
+  if (travel || keys.has('q') || keys.has('e')) { autoFrame.to = null; return; }
+  const dz = autoFrame.to - state.zoom; if (dz < 0.02) { autoFrame.to = null; return; }
+  state.zoom += dz * (1 - Math.exp(-dt * 2.5)); sync('zoom', 2);
+}
+['wheel', 'pointerdown'].forEach(ev => renderer.domElement.addEventListener(ev, () => { autoFrame.to = null; }, { passive: true }));
 let tlLastSig = '';
 function animate(now) {
   requestAnimationFrame(animate);
@@ -2700,10 +2740,11 @@ function animate(now) {
   if (frame % 2 === 1) stepDial();
   if (frame % 15 === 0) readout();
   frame++;
+  autoFrameStep(dt); autoFrameCheck(now);
   renderFrame(dt);
 }
 requestAnimationFrame(animate);
-window.kosmo = { trail, renderFrame, quality, drawCube, drawTimeline, drawMinimap, updateHover, updateDrawer, stepDial, get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
+window.kosmo = { autoFrame, frameStats, trail, renderFrame, quality, drawCube, drawTimeline, drawMinimap, updateHover, updateDrawer, stepDial, get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
 </script>
 </body>
 </html>
