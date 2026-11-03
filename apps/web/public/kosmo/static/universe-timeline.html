@@ -88,6 +88,10 @@
   /* Chronicle is a round button; the clock readout is its hover label. */
   .orbwrap { position: relative; display: flex; align-items: center; }
   button.orb { width: 42px; height: 42px; margin: 0; padding: 0; border-radius: 50%; display: grid; place-items: center; background: rgba(26,26,26,0.85); border: 1px solid var(--line2, #303133); color: var(--text); cursor: pointer; transition: border-color .2s, color .2s, background .2s; }
+  /* icons and glyphs dead-centre in their buttons */
+  button.orb svg, #navhud button svg, #timehud button svg { display: block; margin: auto; }
+  #navhud button, #helm button, #timehud button, #hudClose, #navClose, #helmClose, #tlzoom button { display: inline-flex; align-items: center; justify-content: center; text-align: center; line-height: 1; }
+  #hudClose, #navClose, #helmClose { padding: 0; }
   button.orb:hover, button.orb:focus-visible { border-color: var(--accent); color: var(--accent); }
   button.orb.open { border-color: var(--accent); color: var(--accent); background: rgba(26,26,26,0.95); }
   #navTime { position: absolute; right: calc(100% + 10px); top: 50%; transform: translateY(-50%); white-space: nowrap; padding: 6px 12px; border-radius: 999px; background: rgba(26,26,26,0.92); border: 1px solid var(--line2, #303133); font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .18s; }
