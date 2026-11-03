@@ -201,6 +201,8 @@
   #hoverTip small { color: var(--muted); margin-left: 6px; }
   #hoverTip .phys { display: block; font-size: 12px; color: #c9d6e6; margin-top: 2px; font-variant-numeric: tabular-nums; }
   #hoverTip em { display: block; font-style: normal; font-size: 11px; color: var(--accent); margin-top: 1px; letter-spacing: .06em; }
+  #hoverRing.snap { border-radius: 4px; border-style: dashed; border-color: #ffd37a; box-shadow: 0 0 12px rgba(255,211,122,0.55); animation: snapspin 3s linear infinite; }
+  @keyframes snapspin { to { transform: translate(-50%, -50%) rotate(360deg); } }
   #hoverRing { position: absolute; z-index: 8; pointer-events: none; display: none; border: 1.5px solid var(--accent); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 10px rgba(159,184,171,0.35); }
   /* navigation HUD, bottom right: zoom, pan or fly, look, mode and speed */
   #navhud { position: absolute; right: 16px; bottom: 16px; z-index: 5; padding: 10px 34px 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--bg) 58%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); text-shadow: none; display: flex; flex-direction: column; gap: 8px; }
@@ -317,6 +319,7 @@
   #speedscale { margin: 4px 0 2px; font-size: 11px; color: var(--muted); } #sRuler { position: relative; height: 24px; margin: 0 46px 0 44px; border-top: 1px solid rgba(160,195,235,0.3); }
   #sRuler i { position: absolute; top: 0; width: 1px; height: 5px; background: rgba(160,195,235,0.6); } #sRuler b { position: absolute; top: 8px; transform: translateX(-50%); font: 400 9px/1 ui-monospace, Menlo, monospace; color: #8fa6c4; white-space: nowrap; } #sRuler b.lo { top: 16px; }
   #sRuler i.c { background: #ffd37a; height: 9px; } #sRuler b.c { color: #ffd37a; } #sRuler u { position: absolute; top: -4px; width: 2px; height: 9px; background: #fff; transform: translateX(-1px); box-shadow: 0 0 6px #fff; }
+  #sRead .wnum { font-size: 15px; color: #ffd37a; letter-spacing: 0.08em; }
   #sRead { text-align: center; color: #cfe3ff; margin-top: 4px; } #sTarget { text-align: center; margin-top: 2px; } #sTarget.warn { color: #ff8a7a; } #sTarget.ok { color: #8fe0a8; } #sSafe { display: block; text-align: center; margin-top: 4px; cursor: pointer; }
   #timehud { position: absolute; left: 50%; bottom: 46px; transform: translateX(-50%); z-index: 5; padding: 8px 12px; border-radius: 14px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #c9d6e6; }
   #timehud .trow { display: flex; gap: 6px; align-items: center; justify-content: center; flex-wrap: wrap; }
@@ -1401,11 +1404,45 @@ function physicsLine(row) {
   if (row.spectral_type) bits.push(row.spectral_type);
   return bits.join(' · ');
 }
+// ---- 3D cursor: over a big point map (the galaxy web and the like) the pointer snaps to the nearest point; click warps there in 3 seconds ----
+const _pm = new THREE.Matrix4(), _pw = new THREE.Vector3();
+let snapCache = null, snapMouse = null, snapFrame = -99, hoverSnap = null;
+function pickPoint(mx, my) {
+  const W = view.clientWidth, H = view.clientHeight; let best = null, bd = 26 * 26;
+  scene.traverse(o => {
+    if (!o.isPoints || !o.geometry.attributes.position) return; for (let v = o; v; v = v.parent) if (!v.visible) return;
+    const pos = o.geometry.attributes.position, a = pos.array, n = pos.count; if (n > 600000) return;
+    o.updateWorldMatrix(true, false); _pm.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse).multiply(o.matrixWorld); const e = _pm.elements;
+    for (let i = 0; i < n; i++) {
+      const x = a[3 * i], y = a[3 * i + 1], z = a[3 * i + 2], w = e[3] * x + e[7] * y + e[11] * z + e[15]; if (w <= 0) continue;
+      const sx = ((e[0] * x + e[4] * y + e[8] * z + e[12]) / w + 1) / 2 * W - mx, sy = (1 - (e[1] * x + e[5] * y + e[9] * z + e[13]) / w) / 2 * H - my, d = sx * sx + sy * sy;
+      if (d < bd) { bd = d; best = { o, i, sx: mx + sx, sy: my + sy }; }
+    }
+  });
+  if (!best) return null;
+  const a = best.o.geometry.attributes.position.array; _pw.set(a[3 * best.i], a[3 * best.i + 1], a[3 * best.i + 2]).applyMatrix4(best.o.matrixWorld);
+  const k = 2 / 10 ** state.zoom, g = [focus[0] + _pw.x / k, focus[1] - _pw.z / k, focus[2] + _pw.y / k];   // scene (x, z, -y) back to galactic metres
+  return { sx: best.sx, sy: best.sy, pos: g, dist: dist3(g, focus) };
+}
+function snapTravel(sn) {
+  const z = Math.max(clamp(state.zoom - 1.6, 6.5, 27), Math.min(state.zoom, Math.log10(Math.max(sn.dist, 1)) - 1));
+  if (helm.on) { setCourse({ name: 'map point', pos: sn.pos, w: 10 ** z / 5 }); return; }
+  travelTo(sn.pos, z, 'map point', 3);
+}
 function updateHover() {
   if (!hoverMouse) { hoverTip.style.display = hoverRing.style.display = 'none'; hoverDest = null; return; }
   const hit = pickAt(hoverMouse.x, hoverMouse.y);
   hoverDest = hit && hit.d; renderer.domElement.style.cursor = hit ? 'pointer' : '';
-  if (!hit) { hoverTip.style.display = hoverRing.style.display = 'none'; return; }
+  hoverSnap = null;
+  if (!hit) {
+    if (!travel && !fly.on && hoverMouse) { if (!snapMouse || snapMouse.x !== hoverMouse.x || snapMouse.y !== hoverMouse.y || frame - snapFrame > 20) { snapMouse = { ...hoverMouse }; snapFrame = frame; hoverSnap = pickPoint(hoverMouse.x, hoverMouse.y); snapCache = hoverSnap; } else hoverSnap = snapCache; }
+    if (hoverSnap) {
+      renderer.domElement.style.cursor = 'crosshair'; hoverRing.classList.add('snap'); hoverRing.style.display = 'block'; hoverRing.style.left = `${hoverSnap.sx}px`; hoverRing.style.top = `${hoverSnap.sy}px`; hoverRing.style.width = hoverRing.style.height = '30px';
+      hoverTip.innerHTML = `Map point<small>${P.fmtLength(hoverSnap.dist)} from the view centre</small><em>click to warp there · 3 s</em>`; hoverTip.style.display = 'block'; hoverTip.style.left = `${Math.min(hoverSnap.sx + 22, view.clientWidth - hoverTip.offsetWidth - 8)}px`; hoverTip.style.top = `${Math.max(hoverSnap.sy - 8, 8)}px`; return;
+    }
+    hoverRing.classList.remove('snap'); hoverTip.style.display = hoverRing.style.display = 'none'; return;
+  }
+  hoverRing.classList.remove('snap');
   const dist = Math.hypot(hit.p[0] - focus[0], hit.p[1] - focus[1], hit.p[2] - focus[2]);
   const phys = physicsLine(hit.d.meta);
   hoverTip.innerHTML = `${hit.d.name}<small>${hit.d.type || ''}</small>${phys ? `<span class="phys">${phys}</span>` : ''}<em>${dist > 1 ? P.fmtLength(dist) + ' from the view centre' : 'here'} · click to fly there</em>`;
@@ -1423,6 +1460,7 @@ function updateHover() {
     if (moved > 5 || !quick || e.button !== 0) return;
     const r = cvs.getBoundingClientRect(), hit = pickAt(e.clientX - r.left, e.clientY - r.top);
     if (hit) { if (helm.on && !hit.d.census) setCourse(hit.d); else { goDest(hit.d); $('search').value = hit.d.name; } }
+    else if (hoverSnap) snapTravel(hoverSnap);
   });
 }
 function applyScalePreset(p) {
@@ -1442,7 +1480,7 @@ function goDest(d, force) {
   }
   if (d.sys) systemFor(d.sys); travelTo(d.pos, Math.log10(at(d.w)), d.name);
 }
-function travelTo(target, zoom, name) {
+function travelTo(target, zoom, name, secs) {
   const pos = at(target), p0 = [...focus], z0 = state.zoom, dist = Math.hypot(pos[0] - p0[0], pos[1] - p0[1], pos[2] - p0[2]);
   const rawBump = Math.max(0, Math.log10(Math.max(dist, 1)) + 0.4 - Math.max(z0, zoom));   // how far to zoom out to see both ends
   const direct = fx.flight === 'direct';                                                      // direct flight: no pull-back, just fly there
@@ -1453,7 +1491,7 @@ function travelTo(target, zoom, name) {
   const dir = [(pos[0] - p0[0]) / (dist || 1), (pos[1] - p0[1]) / (dist || 1), (pos[2] - p0[2]) / (dist || 1)];
   let perp = [dir[1], -dir[0], 0]; let pl = Math.hypot(perp[0], perp[1], perp[2]); if (pl < 1e-6) { perp = [0, 1, 0]; pl = 1; }
   perp = perp.map(c => c / pl);
-  travel = { p0, target, z0, z1: clamp(zoom, 6.5, 27), bump, direct, warpK, perp, dist, t: 0, dur: (1.8 + Math.min(2.4, rawBump * 0.4) + warpK * 2.4) / fx.flightSpeed, name };
+  travel = { p0, target, z0, z1: clamp(zoom, 6.5, 27), bump, direct, warpK, perp, dist, t: 0, dur: secs || (1.8 + Math.min(2.4, rawBump * 0.4) + warpK * 2.4) / fx.flightSpeed, name };
   follow = null;
   if (name) toast(warpK > 0.05 && fx.warp ? `Warping to ${name}` : `Travelling to ${name}`);
 }
@@ -1535,7 +1573,7 @@ function hudUpdate(near) {
   $('hudCoords').textContent = d < 1e3 ? 'at the Sun' : `l ${l.toFixed(1)}°  b ${b.toFixed(1)}°  ·  ${P.fmtLength(d)} from the Sun`;
   $('hudGC').textContent = `${P.fmtLength(Math.hypot(focus[0], focus[1], focus[2]))} from the galactic centre`;
   $('hudView').textContent = `view ${P.fmtLength(10 ** state.zoom)} across`;
-  const spd = flyVel.length(), cFrac = spd / 299792458; $('hudFly').textContent = fly.on ? `flight · ${spd < 1 ? 'stopped' : P.fmtLength(spd) + '/s (' + (cFrac >= 0.01 ? cFrac.toFixed(2) : cFrac.toExponential(1)) + ' c)'}` : '';
+  const spd = flyVel.length(), cFrac = spd / 299792458; $('hudFly').textContent = fly.on ? `flight · ${spd < 1 ? 'stopped' : warpText(spd) + ' · ' + P.fmtLength(spd) + '/s'}` : '';
 }
 // ---- the mini cube: a box of space centred on the Sun that turns with the camera. Shows the Sun, the view centre and the loaded
 // destination (the one being travelled to, else the last one reached) at their real positions, with a drop line to the galactic plane. ----
@@ -1801,16 +1839,16 @@ function safeCap(vmax) {   // heading for a target: let the top speed fall with 
   const stop = helm.course ? Math.max(at(helm.course.w || 1) * 0.6, 2) : 0; return Math.min(vmax, Math.max(T.dist - stop, 0) * 3);
 }
 {
-  const GS = [['walk', 1.4], ['car', 27.8], ['jet', 250], ['orbit', 7.8e3], ['1%c', 3e6], ['c', 299792458, 1], ['warp 1', 3e9], ['1 AU/s', 1.496e11], ['1 ly/s', 9.461e15], ['1 kly/s', 9.461e18], ['1 Mly/s', 9.461e21], ['Gly/s', 9.461e24]];
+  const GS = [['walk', 1.4], ['car', 27.8], ['jet', 250], ['orbit', 7.8e3], ['1%c', 3e6], ['warp 1', 299792458, 1], ['W2', 3e9], ['W3.7', 1.496e11], ['W8.5', 9.461e15], ['W11.5', 9.461e18], ['W14.5', 9.461e21], ['W17.5', 9.461e24]];
   const LO = -2.3, HI = 1.6, pos = v => (Math.log10(v) - LO) / (HI - LO); let key = '';
   $('sSafeCb').addEventListener('change', e => { safe.on = e.target.checked; });
   setInterval(() => {
     const viewW = 10 ** state.zoom, v = fly.speed * viewW, k = `${state.zoom.toFixed(1)}`;
     if (k !== key) { key = k; $('sRuler').innerHTML = GS.map(([n, g, c], idx) => { const x = pos(g / viewW); return x < 0 || x > 1 ? '' : `<i class="${c ? 'c' : ''}" style="left:${x * 100}%"></i><b class="${c ? 'c' : ''}${idx % 2 ? ' lo' : ''}" style="left:${x * 100}%">${n}</b>`; }).join('') + '<u id="sCur"></u>'; }
     $('sCur').style.left = `${clamp(pos(Math.max(v, 1e-9) / viewW), 0, 1) * 100}%`;
-    $('navSpeed-v').textContent = fmtSpd(v);
+    $('navSpeed-v').textContent = warpText(v);
     const near = GS.reduce((b, g) => Math.abs(Math.log10(g[1] / v)) < Math.abs(Math.log10(b[1] / v)) ? g : b), cf = v / 299792458;
-    $('sRead').textContent = `max ${fmtSpd(v)} · ${cf >= 0.01 ? cf.toFixed(2) : cf.toExponential(1)} c · near ${near[0]}`;
+    $('sRead').innerHTML = `<b class="wnum">${warpText(v)}</b> · ${fmtSpd(v)} · ${cText(v)}`;
     const T = targetAhead(2 / viewW), el = $('sTarget'); if (!T) { el.textContent = 'no target: click a body to set one'; el.className = ''; return; }
     const coast = v * 0.27, eta = T.dist / Math.max(v, 1e-9), over = T.ahead && coast > T.dist;
     el.className = over ? 'warn' : 'ok'; el.textContent = `${T.name}: ${P.fmtLength(T.dist)} away · ${fmtEta(eta)} at max · coasts ${P.fmtLength(coast)}${over ? (safe.on ? ' · auto-brake will slow you' : ' · you would overshoot') : ''}`;
@@ -1857,8 +1895,12 @@ function pollPad() {
 }
 window.addEventListener('gamepadconnected', e => toast(`Controller connected: ${e.gamepad.id.slice(0, 40)}`));
 // ---- helm: a throttle lever of speed gears (walking pace to a gigalight-year per second), a course, align and autopilot ----
+// Warp factor: 1 is light speed and every step multiplies the speed by 10 (warp 2 = 10 c, warp 4 = 1000 c); below light speed it is a fraction of c
+const C_LIGHT = 299792458, warpOf = v => 1 + Math.log10(v / C_LIGHT);
+const warpText = v => v > C_LIGHT * 1.001 ? `WARP ${warpOf(v).toFixed(warpOf(v) < 10 ? 2 : 1)}` : `${(v / C_LIGHT).toPrecision(2)} c`;
+const cText = v => { const f = v / C_LIGHT; return f >= 1e4 ? `${f.toExponential(1).replace('e+', '×10^')} c` : f >= 10 ? `${f.toFixed(0)} c` : `${f.toPrecision(2)} c`; };
 const GEARS = [['Stop', 0], ['Walking', 1.4], ['Car · 100 km/h', 27.8], ['Jet airliner', 250], ['Orbital speed', 7.8e3], ['Solar escape', 6.2e5], ['1% light speed', 3e6], ['10% light speed', 3e7], ['Light speed', 299792458],
-  ['Warp 1 · 10 c', 3e9], ['Warp 2 · 1 AU/s', 1.496e11], ['Warp 3 · 1 ly/s', 9.461e15], ['Warp 4 · 1 kly/s', 9.461e18], ['Warp 5 · 1 Mly/s', 9.461e21], ['Warp 6 · 100 Mly/s', 9.461e23], ['Warp 7 · 1 Gly/s', 9.461e24]];
+  ['Warp 2 · 10 c', 3e9], ['Warp 3.7 · 1 AU/s', 1.496e11], ['Warp 8.5 · 1 ly/s', 9.461e15], ['Warp 11.5 · 1 kly/s', 9.461e18], ['Warp 14.5 · 1 Mly/s', 9.461e21], ['Warp 16.5 · 100 Mly/s', 9.461e23], ['Warp 17.5 · 1 Gly/s', 9.461e24]];
 const helm = { on: false, engine: true, gear: 0, thr: 0, stick: null, rev: false, course: null, auto: false }, _hv = new THREE.Vector3();
 const courseVec = k => { const o = toScene(at(helm.course.pos), focus, k); return _hv.set(o[0], o[1], o[2]); };
 function setGear(i) { helm.thr = clamp(i, 0, GEARS.length - 1); helm.gear = Math.round(helm.thr); $('hThr').value = GEARS.length - 1 - helm.thr; }
@@ -1908,8 +1950,8 @@ function helmMove(dt) {
   if (w > 0.02) { warpAmt = w; camera.fov = baseFov + 38 * Math.min(w, 1.2); camera.updateProjectionMatrix(); drawWarp(w, dt); } else warpEnd();
   const G = GEARS[helm.gear];
   $('hGear').textContent = G[0] + (helm.rev && helm.gear ? ' (reverse)' : '') + (helm.engine ? ' · thrusting' : ' · idle: hold Space');
-  $('hSpeed').textContent = `max ${vmaxH ? P.fmtLength(vmaxH) + '/s' : '0'} · ramps up while thrusting`;
-  $('hVelo').textContent = `now ${sp < 0.01 ? '0' : P.fmtLength(sp) + '/s'} · ${(sp / 299792458 >= 0.01 ? (sp / 299792458).toFixed(2) : (sp / 299792458).toExponential(1))} c`;
+  $('hSpeed').textContent = `max ${vmaxH ? warpText(vmaxH) + ' · ' + P.fmtLength(vmaxH) + '/s' : '0'}`;
+  $('hVelo').textContent = `now ${sp < 0.01 ? '0' : warpText(sp) + ' · ' + P.fmtLength(sp) + '/s'}`;
   $('hEta').textContent = helm.course ? `${P.fmtLength(dist)} away${sp > 1 ? ' · ETA ' + fmtEta(dist / sp) : ''}${helm.auto ? ' · autopilot' : ''}` : '';
   $('hTarget').textContent = helm.course ? helm.course.name : 'none · click any body';
   $('hAuto').classList.toggle('on', helm.auto); $('hRev').classList.toggle('on', helm.rev);
