@@ -1914,6 +1914,7 @@ function pagedList(box, items, ql) {
   };
   more.addEventListener('click', draw); draw();
 }
+const FAR_SCENE = 2e5;
 const VIS = { set: new Set(), pts: null, cap: 0, lines: null, cache: [], dirty: true, group: new THREE.Group() };
 scene.add(VIS.group);
 try { for (const n of JSON.parse(localStorage.getItem('kosmoVisible') || '[]')) VIS.set.add(n); } catch { /* none saved */ }
@@ -2428,7 +2429,8 @@ function updateBlackHoles(k) {
 // Census objects far from resolved are drawn the way a telescope records them (soft point-spread glows, tinted by kind, spikes only on the sharp ones); the
 // full model takes over once an object's true size passes `resolvePx` on screen.
 const CENSUS_SPRITE_MAT = new THREE.ShaderMaterial({
-  transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending, uniforms: { uPx: { value: 1 } },
+  transparent: true, depthWrite: false, depthTest: true, blending: THREE.AdditiveBlending, uniforms: { uPx: { value: 1 } },   // depth-tested: a far marker (the Sun, a star) hides behind a nearer body instead of showing through it
+ 
   vertexShader: 'attribute float aSize; attribute vec3 aColor; attribute float aKind; varying vec3 vC; varying float vK; uniform float uPx; void main() { vC = aColor; vK = aKind; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); gl_PointSize = aSize * uPx; }',
   fragmentShader: 'varying vec3 vC; varying float vK; void main() { vec2 p = (gl_PointCoord - 0.5) * 2.0; float d2 = dot(p, p); if (d2 > 1.0) discard;\n float core = exp(-d2 * (vK > 1.5 ? 6.0 : 14.0)), halo = exp(-d2 * 3.2) * (vK > 1.5 ? 0.7 : 0.28), sp = vK > 0.5 && vK < 1.5 ? (exp(-abs(p.x) * 70.0) * exp(-abs(p.y) * 5.0) + exp(-abs(p.y) * 70.0) * exp(-abs(p.x) * 5.0)) * 0.55 : 0.0;\n float a = clamp(core + halo + sp, 0.0, 1.0); vec3 col = mix(vC, vec3(1.0), core * 0.55); gl_FragColor = vec4(col * a, a); }',
 });
@@ -2533,7 +2535,7 @@ function updateConstellation(k) {
     ent.line = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(segs.length * 3), 3)), new THREE.LineBasicMaterial({ color: 0x7fa7ff, transparent: true, opacity: 0.65, depthTest: false }));
     ent.line.frustumCulled = false;
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(used.length * 3), 3)); g.setAttribute('aSize', new THREE.BufferAttribute(new Float32Array(used.length), 1)); g.setAttribute('aColor', new THREE.BufferAttribute(new Float32Array(used.length * 3), 3)); g.setAttribute('aKind', new THREE.BufferAttribute(new Float32Array(used.length).fill(1), 1));
-    used.forEach((id, i) => { const st = j.stars[id], col = CONST_STAR_COLOUR[String(st[5] || 'G')[0]] || CONST_STAR_COLOUR.G; g.attributes.aColor.setXYZ(i, ...col); g.attributes.aSize.setX(i, clamp(22 - 3.2 * (st[3] ?? 4), 8, 40)); });
+    ent.sizes = []; used.forEach((id, i) => { const st = j.stars[id], col = CONST_STAR_COLOUR[String(st[5] || 'G')[0]] || CONST_STAR_COLOUR.G; g.attributes.aColor.setXYZ(i, ...col); ent.sizes[i] = clamp(22 - 3.2 * (st[3] ?? 4), 8, 40); g.attributes.aSize.setX(i, ent.sizes[i]); });
     ent.pts = new THREE.Points(g, CENSUS_SPRITE_MAT); ent.pts.frustumCulled = false; CONST.group.add(ent.line, ent.pts);
     // the line of sight from the Sun (us) to the figure: the shape only exists from here, because its stars lie at very different distances along it
     ent.sun = new THREE.Line(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3)), new THREE.LineBasicMaterial({ color: 0xffd37a, transparent: true, opacity: 0.35, depthTest: false })); ent.sun.frustumCulled = false; CONST.group.add(ent.sun);
@@ -2541,10 +2543,11 @@ function updateConstellation(k) {
   CONST.group.visible = true; CENSUS_SPRITE_MAT.uniforms.uPx.value = renderer.getPixelRatio();
   const lp = ent.line.geometry.attributes.position, pp = ent.pts.geometry.attributes.position, cache = new Map();
   const sceneOf = id => { let v = cache.get(id); if (!v) { v = toScene(at(ent.starPos(id)), focus, k); cache.set(id, v); } return v; };
-  ent.segs.forEach((id, i) => { const v = ent.starPos(id) ? sceneOf(id) : [0, 0, 0]; lp.setXYZ(i, v[0], v[1], v[2]); });
-  ent.ids.forEach((id, i) => { const v = sceneOf(id); pp.setXYZ(i, v[0], v[1], v[2]); });
+  const off = v => Math.hypot(v[0], v[1], v[2]) > FAR_SCENE;
+  ent.segs.forEach((id, i) => { let v = ent.starPos(id) ? sceneOf(id) : [0, 0, 0]; const w = ent.segs[i ^ 1], vw = ent.starPos(w) ? sceneOf(w) : [0, 0, 0]; if (off(v) || off(vw)) v = [0, 0, 0]; lp.setXYZ(i, v[0], v[1], v[2]); });
+  ent.ids.forEach((id, i) => { const v = sceneOf(id), farv = off(v); pp.setXYZ(i, farv ? 0 : v[0], farv ? 0 : v[1], farv ? 0 : v[2]); ent.pts.geometry.attributes.aSize.setX(i, farv ? 0 : ent.sizes[i]); }); ent.pts.geometry.attributes.aSize.needsUpdate = true;
   lp.needsUpdate = true; pp.needsUpdate = true;
-  if (ent.sun) { const a = toScene(SUN, focus, k), dd = DEST.find(x => x.name === name), b = dd ? toScene(at(dd.pos), focus, k) : a, sp = ent.sun.geometry.attributes.position; sp.setXYZ(0, a[0], a[1], a[2]); sp.setXYZ(1, b[0], b[1], b[2]); sp.needsUpdate = true; }
+  if (ent.sun) { const a = toScene(SUN, focus, k), dd = DEST.find(x => x.name === name), b = dd ? toScene(at(dd.pos), focus, k) : a, sp = ent.sun.geometry.attributes.position; const fa = Math.hypot(a[0], a[1], a[2]) > FAR_SCENE || Math.hypot(b[0], b[1], b[2]) > FAR_SCENE; sp.setXYZ(0, fa ? 0 : a[0], fa ? 0 : a[1], fa ? 0 : a[2]); sp.setXYZ(1, fa ? 0 : b[0], fa ? 0 : b[1], fa ? 0 : b[2]); sp.needsUpdate = true; }
 }
 loadConstellations();
 // ---- visibility: an eye on each place and each group pins it on the map (a glow marker at its real position; a constellation draws its whole figure), at any
@@ -2577,7 +2580,8 @@ function updateVisible(k) {
   }
   const have = VIS.cache.length > 0 && VIS.pts; if (VIS.pts) VIS.pts.visible = !!have; CENSUS_SPRITE_MAT.uniforms.uPx.value = renderer.getPixelRatio();
   if (have) { const pa = VIS.pts.geometry.attributes, H2 = view.clientHeight / 2; VIS.cache.forEach((it, i) => { const p = at(typeof it.d.pos === 'function' ? it.d.pos() : it.d.pos), sc = toScene(p, focus, k), near = Math.hypot(sc[0], sc[1], sc[2]) < 1e5; pa.position.setXYZ(i, sc[0], sc[1], sc[2]); const w = typeof it.d.w === 'function' ? it.d.w() : it.d.w || 0; pa.aSize.setX(i, near ? Math.max(it.style.s, Math.min(60, (w / 5) * k * H2 * 2)) : 0); }); pa.position.needsUpdate = true; pa.aSize.needsUpdate = true; }
-  if (VIS.lines) { const lp = VIS.lines.geometry.attributes.position, cache = new Map(); const so = (ent, id) => { const key = id; let v = cache.get(key); if (!v) { const sp = ent.starPos(id); v = sp ? toScene(at(sp), focus, k) : [0, 0, 0]; cache.set(key, v); } return v; }; VIS.segs.forEach(([ent, a, b], i) => { const va = so(ent, a), vb = so(ent, b); lp.setXYZ(2 * i, va[0], va[1], va[2]); lp.setXYZ(2 * i + 1, vb[0], vb[1], vb[2]); }); lp.needsUpdate = true; }
+  if (VIS.lines) { const lp = VIS.lines.geometry.attributes.position, cache = new Map(); const so = (ent, id) => { const key = id; let v = cache.get(key); if (!v) { const sp = ent.starPos(id); v = sp ? toScene(at(sp), focus, k) : [0, 0, 0]; cache.set(key, v); } return v; }; VIS.segs.forEach(([ent, a, b], i) => { const va = so(ent, a), vb = so(ent, b), far = Math.hypot(va[0], va[1], va[2]) > FAR_SCENE || Math.hypot(vb[0], vb[1], vb[2]) > FAR_SCENE;   // single-precision lines fall apart far from the origin: drop segments that far away
+    if (far) { lp.setXYZ(2 * i, 0, 0, 0); lp.setXYZ(2 * i + 1, 0, 0, 0); } else { lp.setXYZ(2 * i, va[0], va[1], va[2]); lp.setXYZ(2 * i + 1, vb[0], vb[1], vb[2]); } }); lp.needsUpdate = true; }
 }
 function updateCensus(k) {
   for (const [key, B] of CENSUS.built) if (key !== CENSUS.key) { B.pts.visible = false; for (const it of B.items) if (it.obj) it.obj.visible = false; }
