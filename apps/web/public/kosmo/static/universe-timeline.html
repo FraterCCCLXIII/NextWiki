@@ -519,7 +519,7 @@
     <button type="button" id="navMode" title="Orbit around the view centre, or fly where you look (G)">Orbit</button><button type="button" id="navCruise" title="Keep flying forward at the speed set by the slider (U); B or S stops">Cruise</button><button type="button" id="navPad" title="Controller layout: two thumbsticks, triggers and buttons (0). A real gamepad works too.">Pad</button><button type="button" id="navHelm" title="Ship helm: throttle gears from walking pace to warp, and set a course">Helm</button>
     <span class="navtag">speed</span><input type="range" id="navSpeed" min="-2.3" max="1.6" step="0.01" aria-label="Flight speed"><span class="navval" id="navSpeed-v"></span>
   </div>
-<details id="navkeys"><summary>Controls</summary><div class="kgrid"><span class="kk">drag</span><span class="kv">spin the view</span><span class="kk">right-drag / W A S D</span><span class="kv">pan</span><span class="kk">wheel / Q E</span><span class="kv">zoom (throttle in helm)</span><span class="kk">← → ↑ ↓</span><span class="kv">orbit (pitch / yaw in helm)</span><span class="kk">G</span><span class="kv">flight mode</span><span class="kk">U</span><span class="kv">cruise</span><span class="kk">H</span><span class="kv">helm</span><span class="kk">W S · wheel</span><span class="kv">throttle (helm)</span><span class="kk">Q E</span><span class="kv">roll (helm)</span><span class="kk">V F O J ⌫</span><span class="kv">reverse · align · autopilot · jump · clear</span><span class="kk">B</span><span class="kv">brake / all stop</span><span class="kk">⇧</span><span class="kv">boost</span><span class="kk">P</span><span class="kv">pause the clock</span><span class="kk">; ' · , . · N</span><span class="kv">clock speed · day step · now</span><span class="kk">⇧R ⇧F</span><span class="kv">clock backwards / forwards</span><span class="kk">R</span><span class="kv">spin the universe</span><span class="kk">T</span><span class="kv">timeline</span><span class="kk">[ ]</span><span class="kv">pan time</span><span class="kk">C</span><span class="kv">chronicle</span><span class="kk">M · K</span><span class="kv">minimal look · hide labels</span></div></details>
+<details id="navkeys"><summary>Controls</summary><div class="kgrid"><span class="kk">drag</span><span class="kv">spin the view</span><span class="kk">right-drag / W A S D</span><span class="kv">pan</span><span class="kk">wheel / Q E</span><span class="kv">zoom (throttle in helm)</span><span class="kk">← → ↑ ↓</span><span class="kv">orbit (pitch / yaw in helm)</span><span class="kk">Space</span><span class="kv">thrust (flight: hold · helm: engine on/off) · timeline play otherwise</span><span class="kk">G</span><span class="kv">flight mode</span><span class="kk">U</span><span class="kv">cruise</span><span class="kk">H</span><span class="kv">helm</span><span class="kk">W S · wheel</span><span class="kv">throttle (helm)</span><span class="kk">Q E</span><span class="kv">roll (helm)</span><span class="kk">V F O J ⌫</span><span class="kv">reverse · align · autopilot · jump · clear</span><span class="kk">B</span><span class="kv">brake / all stop</span><span class="kk">⇧</span><span class="kv">boost</span><span class="kk">P</span><span class="kv">pause the clock</span><span class="kk">; ' · , . · N</span><span class="kv">clock speed · day step · now</span><span class="kk">⇧R ⇧F</span><span class="kv">clock backwards / forwards</span><span class="kk">R</span><span class="kv">spin the universe</span><span class="kk">T</span><span class="kv">timeline</span><span class="kk">[ ]</span><span class="kv">pan time</span><span class="kk">C</span><span class="kv">chronicle</span><span class="kk">M · K</span><span class="kv">minimal look · hide labels</span></div></details>
 </div>
 <button id="navOpen" class="orb" type="button" hidden aria-label="Show the navigation controls" title="Navigate">
   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8l-1.9 4.5-4.5 1.9 1.9-4.5z"/></svg>
@@ -555,7 +555,7 @@
     <label class="hsub"><input type="checkbox" id="hZoom" checked> scale the view to the speed</label>
   </div>
 </div>
-<div id="pilot" hidden><span class="pr"></span><span class="ps"></span><span class="ph">drag = stick · arrows pitch/yaw · Q E roll · W S throttle</span></div>
+<div id="pilot" hidden><span class="pr"></span><span class="ps"></span><span class="ph">drag = stick · arrows pitch/yaw · Q E roll · W S throttle · Space engine</span></div>
 <div id="course" hidden><span class="cm"></span><span class="cl"></span></div>
 <div id="timehud" class="glass" aria-label="Simulation clock">
   <div class="trow">
@@ -1678,7 +1678,8 @@ const keys = new Set();
 window.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
   keys.add(e.key.toLowerCase());
-  if (e.key === ' ') { e.preventDefault(); state.play = !state.play; $('play').checked = state.play; if (state.play && state.logA >= 0) state.logA = -16; }
+  if (e.key === ' ' && (fly.on || helm.on)) { e.preventDefault(); if (helm.on && !e.repeat) { helm.engine = !helm.engine; toast(helm.engine ? 'Engine on' : 'Engine off: coasting to a stop'); } }   // in flight, hold Space to thrust; in the helm it cuts and restores the engine
+  else if (e.key === ' ') { e.preventDefault(); state.play = !state.play; $('play').checked = state.play; if (state.play && state.logA >= 0) state.logA = -16; }
   if (e.key.toLowerCase() === 'r') { state.spin = !state.spin; $('spin').checked = state.spin; }
   if (e.key.toLowerCase() === 't') toggleTimeline();
   if (e.key.toLowerCase() === 'g') setFlight(!fly.on);
@@ -1700,7 +1701,7 @@ function flightMove(dt) {
   tmpM.set(0, 0, 0);
   if (fly.cruise && (keys.has('s') || keys.has('b'))) setCruise(false);
   if (padAx.lx || padAx.ly || padAx.rt || padAx.lt) { tmpM.addScaledVector(tmpV, padAx.rt - padAx.lt - padAx.ly); tmpM.addScaledVector(tmpR, padAx.lx); }
-  if (keys.has('w') || fly.cruise) tmpM.add(tmpV); if (keys.has('s')) tmpM.sub(tmpV); if (keys.has('d')) tmpM.add(tmpR); if (keys.has('a')) tmpM.sub(tmpR); if (keys.has('x')) tmpM.add(tmpU); if (keys.has('z')) tmpM.sub(tmpU);
+  if (keys.has('w') || keys.has(' ') || fly.cruise) tmpM.add(tmpV); if (keys.has('s')) tmpM.sub(tmpV); if (keys.has('d')) tmpM.add(tmpR); if (keys.has('a')) tmpM.sub(tmpR); if (keys.has('x')) tmpM.add(tmpU); if (keys.has('z')) tmpM.sub(tmpU);
   const braking = keys.has('b');
   if (tmpM.lengthSq() > 0 && !braking) tmpM.normalize().multiplyScalar(fly.speed * viewW * boost); else tmpM.set(0, 0, 0);   // metres per second
   flyVel.lerp(tmpM, 1 - Math.exp(-dt / (braking ? 0.08 : Math.max(fly.glide, 0.02))));                                    // glide: inertia in seconds
@@ -1802,7 +1803,7 @@ window.addEventListener('gamepadconnected', e => toast(`Controller connected: ${
 // ---- helm: a throttle lever of speed gears (walking pace to a gigalight-year per second), a course, align and autopilot ----
 const GEARS = [['Stop', 0], ['Walking', 1.4], ['Car · 100 km/h', 27.8], ['Jet airliner', 250], ['Orbital speed', 7.8e3], ['Solar escape', 6.2e5], ['1% light speed', 3e6], ['10% light speed', 3e7], ['Light speed', 299792458],
   ['Warp 1 · 10 c', 3e9], ['Warp 2 · 1 AU/s', 1.496e11], ['Warp 3 · 1 ly/s', 9.461e15], ['Warp 4 · 1 kly/s', 9.461e18], ['Warp 5 · 1 Mly/s', 9.461e21], ['Warp 6 · 100 Mly/s', 9.461e23], ['Warp 7 · 1 Gly/s', 9.461e24]];
-const helm = { on: false, gear: 0, thr: 0, stick: null, rev: false, course: null, auto: false }, _hv = new THREE.Vector3();
+const helm = { on: false, engine: true, gear: 0, thr: 0, stick: null, rev: false, course: null, auto: false }, _hv = new THREE.Vector3();
 const courseVec = k => { const o = toScene(at(helm.course.pos), focus, k); return _hv.set(o[0], o[1], o[2]); };
 function setGear(i) { helm.thr = clamp(i, 0, GEARS.length - 1); helm.gear = Math.round(helm.thr); $('hThr').value = GEARS.length - 1 - helm.thr; }
 function speedAt(t) { const i = Math.floor(t), f = t - i, a = GEARS[i][1], b = GEARS[Math.min(i + 1, GEARS.length - 1)][1]; if (!a) return b * f; return Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * f); }   // analog lever: log-interpolated between gears
@@ -1829,7 +1830,7 @@ function helmMove(dt) {
   dy -= padAx.rx * 1.8 * dt; dp -= padAx.ry * 1.8 * dt; helm.thr = clamp(helm.thr + (padAx.rt - padAx.lt) * 2.2 * dt, 0, GEARS.length - 1);
   if (dp || dy || dr) helmAttitude(dp, dy, dr);
   camera.getWorldDirection(tmpV); tmpR.crossVectors(tmpV, camera.up).normalize(); tmpU.crossVectors(tmpR, tmpV).normalize();
-  let cmd = speedAt(helm.thr), dist = Infinity;
+  let cmd = helm.engine ? speedAt(helm.thr) : 0, dist = Infinity;
   if (helm.course) {
     const T = courseVec(k); dist = T.length() / k;
     if (helm.auto && dist > 0) {   // autopilot: turn the nose toward the target, and slow so as to stop at it
@@ -1849,7 +1850,7 @@ function helmMove(dt) {
   const w = clamp((Math.log10(Math.max(sp, 1)) - 8.5) / 6.5, 0, 1.2);   // beyond light speed the field stretches and the stars streak
   if (w > 0.02) { warpAmt = w; camera.fov = baseFov + 38 * Math.min(w, 1.2); camera.updateProjectionMatrix(); drawWarp(w, dt); } else warpEnd();
   const G = GEARS[helm.gear];
-  $('hGear').textContent = G[0] + (helm.rev && helm.gear ? ' (reverse)' : '');
+  $('hGear').textContent = G[0] + (helm.rev && helm.gear ? ' (reverse)' : '') + (helm.engine ? '' : ' · engine off');
   $('hSpeed').textContent = `set ${G[1] ? P.fmtLength(G[1]) + '/s' : '0'}`;
   $('hVelo').textContent = `now ${sp < 0.01 ? '0' : P.fmtLength(sp) + '/s'} · ${(sp / 299792458 >= 0.01 ? (sp / 299792458).toFixed(2) : (sp / 299792458).toExponential(1))} c`;
   $('hEta').textContent = helm.course ? `${P.fmtLength(dist)} away${sp > 1 ? ' · ETA ' + fmtEta(dist / sp) : ''}${helm.auto ? ' · autopilot' : ''}` : '';
