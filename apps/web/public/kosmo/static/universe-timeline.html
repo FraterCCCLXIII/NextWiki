@@ -303,9 +303,8 @@
   /* pad buttons are true circles */
   #navhud .navpad button { width: 46px !important; height: 46px !important; min-width: 0 !important; padding: 0 !important; border-radius: 50% !important; font-size: 17px; }
   #navhud .navpad button.sm { font-size: 10px; letter-spacing: 0.04em; }
-  #navhud .navrow.moderow { flex-direction: column; align-items: center; gap: 8px; }
-  #navhud .navrow.moderow button { width: 150px; justify-content: center; }
-  #navhud .navrow.moderow input[type=range] { width: 150px; flex: none; } #navhud .navrow.moderow .navtag, #navhud .navrow.moderow .navval { text-align: center; min-width: 0; }
+  #navhud .modecol { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  #navhud .modecol button { width: auto !important; min-width: 64px; height: 24px; padding: 0 14px !important; border-radius: 999px !important; font-size: 11px; }
   #navhud .navpad { grid-template-columns: repeat(3, 46px); grid-auto-rows: 46px; gap: 8px; justify-items: center; }   /* cells as big as the circles, so none overlap */
   #navhud .navpad .navtag { width: 46px; }
   #timehud button[hidden] { display: none !important; }
@@ -517,7 +516,7 @@
   </div>
   <div class="navrow">
     <button type="button" id="navMode" title="Orbit around the view centre, or fly where you look (G)">Orbit</button><button type="button" id="navCruise" title="Keep flying forward at the speed set by the slider (U); B or S stops">Cruise</button><button type="button" id="navPad" title="Controller layout: two thumbsticks, triggers and buttons (0). A real gamepad works too.">Pad</button><button type="button" id="navHelm" title="Ship helm: throttle gears from walking pace to warp, and set a course">Helm</button>
-    <span class="navtag">speed</span><input type="range" id="navSpeed" min="-2.3" max="1.6" step="0.01" aria-label="Flight speed"><span class="navval" id="navSpeed-v"></span>
+    <span class="navtag">max speed</span><input type="range" id="navSpeed" min="-2.3" max="1.6" step="0.01" aria-label="Flight speed"><span class="navval" id="navSpeed-v"></span>
   </div>
 <details id="navkeys"><summary>Controls</summary><div class="kgrid"><span class="kk">drag</span><span class="kv">spin the view</span><span class="kk">right-drag / W A S D</span><span class="kv">pan</span><span class="kk">wheel / Q E</span><span class="kv">zoom (throttle in helm)</span><span class="kk">← → ↑ ↓</span><span class="kv">orbit (pitch / yaw in helm)</span><span class="kk">Space</span><span class="kv">thrust (flight: hold · helm: engine on/off) · timeline play otherwise</span><span class="kk">G</span><span class="kv">flight mode</span><span class="kk">U</span><span class="kv">cruise</span><span class="kk">H</span><span class="kv">helm</span><span class="kk">W S · wheel</span><span class="kv">throttle (helm)</span><span class="kk">Q E</span><span class="kv">roll (helm)</span><span class="kk">V F O J ⌫</span><span class="kv">reverse · align · autopilot · jump · clear</span><span class="kk">B</span><span class="kv">brake / all stop</span><span class="kk">⇧</span><span class="kv">boost</span><span class="kk">P</span><span class="kv">pause the clock</span><span class="kk">; ' · , . · N</span><span class="kv">clock speed · day step · now</span><span class="kk">⇧R ⇧F</span><span class="kv">clock backwards / forwards</span><span class="kk">R</span><span class="kv">spin the universe</span><span class="kk">T</span><span class="kv">timeline</span><span class="kk">[ ]</span><span class="kv">pan time</span><span class="kk">C</span><span class="kv">chronicle</span><span class="kk">M · K</span><span class="kv">minimal look · hide labels</span></div></details>
 </div>
@@ -1694,16 +1693,29 @@ const tmpV = new THREE.Vector3(), tmpR = new THREE.Vector3(), tmpU = new THREE.V
 const FLY_DEFAULTS = { speed: 0.3, boost: 8, glide: 0.4, look: 1 };
 const fly = { on: false, ...FLY_DEFAULTS }, flyVel = new THREE.Vector3();
 try { const sv = JSON.parse(localStorage.getItem('kosmoFly') || '{}'); for (const k of Object.keys(FLY_DEFAULTS)) if (typeof sv[k] === 'number') fly[k] = sv[k]; } catch { /* defaults */ }
+// Thrust curve: the speed setting is the MAXIMUM; holding thrust multiplies speed by a constant factor every moment (exponential), so from a crawl
+// to any maximum (walking pace to many times light speed, any warp) takes the same ship.ramp seconds; letting go bleeds it off the same way.
+const ship = { v: 0, ramp: 7 };
+function rampSpeed(on, vmax, dt) {
+  const tau = ship.ramp / Math.log(1e9);
+  if (on && vmax > 0) ship.v = Math.min(vmax, Math.max(ship.v, Math.max(0.5, vmax * 1e-9)) * Math.exp(dt / tau));
+  else ship.v *= Math.exp(-dt / (tau * 0.8));
+  if (ship.v > vmax) ship.v = Math.max(vmax, ship.v * Math.exp(-dt / (tau * 0.4)));   // a lowered maximum pulls the speed down to it
+  if (ship.v < 0.05) ship.v = 0;
+}
 function flightMove(dt) {
   if (helm.on) { helmMove(dt); return; }
   const viewW = 10 ** state.zoom, boost = keys.has('shift') ? fly.boost : 1;
   camera.getWorldDirection(tmpV); tmpR.crossVectors(tmpV, camera.up).normalize(); tmpU.crossVectors(tmpR, tmpV).normalize();
   tmpM.set(0, 0, 0);
   if (fly.cruise && (keys.has('s') || keys.has('b'))) setCruise(false);
-  if (padAx.lx || padAx.ly || padAx.rt || padAx.lt) { tmpM.addScaledVector(tmpV, padAx.rt - padAx.lt - padAx.ly); tmpM.addScaledVector(tmpR, padAx.lx); }
-  if (keys.has('w') || keys.has(' ') || fly.cruise) tmpM.add(tmpV); if (keys.has('s')) tmpM.sub(tmpV); if (keys.has('d')) tmpM.add(tmpR); if (keys.has('a')) tmpM.sub(tmpR); if (keys.has('x')) tmpM.add(tmpU); if (keys.has('z')) tmpM.sub(tmpU);
+  if (padAx.lx || padAx.ly || padAx.lt) { tmpM.addScaledVector(tmpV, -padAx.lt - padAx.ly); tmpM.addScaledVector(tmpR, padAx.lx); }
+  const thrust = keys.has('w') || keys.has(' ') || fly.cruise || padAx.rt > 0.1;   // forward thrust: speed climbs exponentially while it is held, up to the max speed
+  if (keys.has('s')) tmpM.sub(tmpV); if (keys.has('d')) tmpM.add(tmpR); if (keys.has('a')) tmpM.sub(tmpR); if (keys.has('x')) tmpM.add(tmpU); if (keys.has('z')) tmpM.sub(tmpU);
   const braking = keys.has('b');
-  if (tmpM.lengthSq() > 0 && !braking) tmpM.normalize().multiplyScalar(fly.speed * viewW * boost); else tmpM.set(0, 0, 0);   // metres per second
+  const vmax = fly.speed * viewW * boost; rampSpeed(thrust && !braking, vmax, dt); if (braking) ship.v = 0;
+  if (tmpM.lengthSq() > 0 && !braking) tmpM.normalize().multiplyScalar(vmax); else tmpM.set(0, 0, 0);   // sideways and reverse keep the plain max speed
+  tmpM.addScaledVector(tmpV, ship.v);   // metres per second
   flyVel.lerp(tmpM, 1 - Math.exp(-dt / (braking ? 0.08 : Math.max(fly.glide, 0.02))));                                    // glide: inertia in seconds
   moveFocusScene(tmpS.copy(flyVel).multiplyScalar(dt)); travel = null; follow = null;
 }
@@ -1740,8 +1752,10 @@ function collapsible(panelSel, rows) {
     try { const st = localStorage.getItem(id); if (st === '0' || (st === null && ['Camera scale', 'Hotkeys'].includes(label))) sec.classList.add('closed'); } catch { /* storage blocked */ }
   }
 }
-$('navMode').parentElement.classList.add('moderow');
-collapsible('#navhud', [[p => p.querySelector('#zoom').parentElement, 'Zoom'], ['#zscale', 'Camera scale'], ['.navpads', 'Move & look'], [p => p.querySelector('#navMode').parentElement, 'Mode & speed'], ['#navkeys', 'Hotkeys']]);
+// the four mode buttons become small pills stacked between the move pad and the look pad
+{ const pads = document.querySelector('#navhud .navpads'), mid = document.createElement('div'); mid.className = 'modecol'; pads.insertBefore(mid, pads.children[1]);
+  for (const id of ['navMode', 'navCruise', 'navPad', 'navHelm']) mid.appendChild($(id)); }
+collapsible('#navhud', [[p => p.querySelector('#zoom').parentElement, 'Zoom'], ['#zscale', 'Camera scale'], ['.navpads', 'Move & look'], [p => p.querySelector('#navSpeed').parentElement, 'Max speed'], ['#navkeys', 'Hotkeys']]);
 collapsible('#helm', [['.hrow', 'Throttle'], ['.hcourse', 'Course']]);
 collapsible('#timehud', [['.trow:nth-child(1)', 'Clock'], ['.trow:nth-child(2)', 'Date & follow']]);
 // the clock-speed dial: drag around the ring (or scroll / arrow keys) through 0 to 100 years per second; it clicks into the named speeds
@@ -1830,7 +1844,8 @@ function helmMove(dt) {
   dy -= padAx.rx * 1.8 * dt; dp -= padAx.ry * 1.8 * dt; helm.thr = clamp(helm.thr + (padAx.rt - padAx.lt) * 2.2 * dt, 0, GEARS.length - 1);
   if (dp || dy || dr) helmAttitude(dp, dy, dr);
   camera.getWorldDirection(tmpV); tmpR.crossVectors(tmpV, camera.up).normalize(); tmpU.crossVectors(tmpR, tmpV).normalize();
-  let cmd = helm.engine ? speedAt(helm.thr) : 0, dist = Infinity;
+  const vmaxH = speedAt(helm.thr); rampSpeed(helm.engine, vmaxH, dt); if (keys.has('b')) ship.v = 0;
+  let cmd = ship.v, dist = Infinity;
   if (helm.course) {
     const T = courseVec(k); dist = T.length() / k;
     if (helm.auto && dist > 0) {   // autopilot: turn the nose toward the target, and slow so as to stop at it
@@ -1838,7 +1853,7 @@ function helmMove(dt) {
       const part = new THREE.Quaternion().slerp(_hq, 1 - Math.exp(-dt * 2.2)); camera.quaternion.premultiply(part).normalize();
       camera.position.set(0, 0, 1).applyQuaternion(camera.quaternion).multiplyScalar(camera.position.length()); camera.updateMatrixWorld(); camera.getWorldDirection(tmpV);
       const stop = Math.max(at(helm.course.w || 1) * 0.6, 2); cmd = Math.min(cmd, Math.max(dist - stop, 0) / 4);
-      if (dist <= stop * 1.02) { setGear(0); helm.auto = false; toast(`Arrived at ${helm.course.name}`); cmd = 0; }
+      if (dist <= stop * 1.02) { setGear(0); helm.auto = false; toast(`Arrived at ${helm.course.name}`); cmd = 0; ship.v = 0; } else ship.v = Math.min(ship.v, cmd);
     }
   }
   tmpM.copy(tmpV).multiplyScalar(helm.rev ? -cmd : cmd); if (padAx.lx || padAx.ly) { tmpM.addScaledVector(tmpR, padAx.lx * viewW * 0.3); tmpM.addScaledVector(tmpU, -padAx.ly * viewW * 0.3); }
@@ -1851,7 +1866,7 @@ function helmMove(dt) {
   if (w > 0.02) { warpAmt = w; camera.fov = baseFov + 38 * Math.min(w, 1.2); camera.updateProjectionMatrix(); drawWarp(w, dt); } else warpEnd();
   const G = GEARS[helm.gear];
   $('hGear').textContent = G[0] + (helm.rev && helm.gear ? ' (reverse)' : '') + (helm.engine ? '' : ' · engine off');
-  $('hSpeed').textContent = `set ${G[1] ? P.fmtLength(G[1]) + '/s' : '0'}`;
+  $('hSpeed').textContent = `max ${vmaxH ? P.fmtLength(vmaxH) + '/s' : '0'} · ramps up while thrusting`;
   $('hVelo').textContent = `now ${sp < 0.01 ? '0' : P.fmtLength(sp) + '/s'} · ${(sp / 299792458 >= 0.01 ? (sp / 299792458).toFixed(2) : (sp / 299792458).toExponential(1))} c`;
   $('hEta').textContent = helm.course ? `${P.fmtLength(dist)} away${sp > 1 ? ' · ETA ' + fmtEta(dist / sp) : ''}${helm.auto ? ' · autopilot' : ''}` : '';
   $('hTarget').textContent = helm.course ? helm.course.name : 'none · click any body';
