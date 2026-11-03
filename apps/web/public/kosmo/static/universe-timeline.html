@@ -258,6 +258,22 @@
   #navhud .navrow button[data-k] { min-width: 40px; }
   kbd.kc { position: absolute; top: -7px; right: -6px; min-width: 15px; height: 15px; padding: 0 3px; box-sizing: border-box; font: 600 9px/13px ui-monospace, Menlo, monospace; text-align: center; color: #cfe3ff; background: #0d1420; border: 1px solid rgba(140,190,255,0.6); border-bottom-width: 2px; border-radius: 3px; letter-spacing: 0; pointer-events: none; text-transform: none; }
   #navhud .hudk, #helm .hudk, #hud .hudk { color: #7fc3ff; letter-spacing: 0.28em; }
+  .hudtog { position: absolute; top: 8px; right: 40px; display: flex; gap: 4px; z-index: 2; }
+  #navhud .hudtog button { min-width: 26px; height: 22px; padding: 0 6px; font-size: 11px; letter-spacing: 0; text-transform: none; }
+  #navhud .hudtog button.on { color: var(--accent); border-color: var(--accent); }
+  /* labels off: no keycaps, no word tags, no ruler captions */
+  body.hud-nolabels kbd.kc, body.hud-nolabels #navhud .navtag, body.hud-nolabels #zrule b, body.hud-nolabels #zread, body.hud-nolabels #helm .hsub, body.hud-nolabels #hud .hudk, body.hud-nolabels #navhud .hudk, body.hud-nolabels #helm .hudk { display: none !important; }
+  /* minimal look: system sans, no frames, soft glass pills */
+  body.hud-min #navhud, body.hud-min #helm, body.hud-min #timehud, body.hud-min #hud { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; letter-spacing: 0; border-radius: 20px !important; background: color-mix(in srgb, var(--bg) 42%, transparent) !important; -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2); box-shadow: none; }
+  body.hud-min #navhud button, body.hud-min #helm button, body.hud-min #timehud button { border: 0 !important; border-radius: 999px !important; background: rgba(255,255,255,0.07); text-transform: none; letter-spacing: 0; font-size: 12px; font-weight: 500; color: #e6edf7; }
+  body.hud-min #navhud button:hover, body.hud-min #helm button:hover, body.hud-min #timehud button:hover { background: rgba(255,255,255,0.15); box-shadow: none; }
+  body.hud-min #navhud button.on, body.hud-min #helm button.on, body.hud-min #timehud button.on { background: rgba(127,195,255,0.28); color: #fff; }
+  body.hud-min #navhud .hudk, body.hud-min #helm .hudk, body.hud-min #hud .hudk { letter-spacing: 0.08em; font-weight: 500; color: rgba(230,237,247,0.55); }
+  body.hud-min #navhud .navtag { letter-spacing: 0.04em; text-transform: none; color: rgba(230,237,247,0.5); }
+  body.hud-min #navhud .navrow input[type=range], body.hud-min input[type=range] { height: 3px; box-shadow: none; background: rgba(255,255,255,0.22); }
+  body.hud-min input[type=range]::-webkit-slider-thumb { width: 12px; height: 12px; background: #fff; border: 0; box-shadow: 0 0 0 4px rgba(255,255,255,0.12); }
+  body.hud-min #zrule { border-top-color: rgba(255,255,255,0.18); } body.hud-min #zrule b { text-transform: none; font-family: inherit; color: rgba(230,237,247,0.5); } body.hud-min #zread { text-transform: none; letter-spacing: 0.02em; color: rgba(230,237,247,0.8); }
+  body.hud-min kbd.kc { background: rgba(255,255,255,0.1); border: 0; color: rgba(230,237,247,0.7); border-radius: 5px; }
   #timehud { position: absolute; left: 50%; bottom: 46px; transform: translateX(-50%); z-index: 5; padding: 8px 12px; border-radius: 14px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #c9d6e6; }
   #timehud .trow { display: flex; gap: 6px; align-items: center; justify-content: center; flex-wrap: wrap; }
   #timehud button { padding: 3px 9px; min-width: 30px; font-size: 12px; }
@@ -440,6 +456,7 @@
 </div>
 <div id="zoombar" hidden></div>
 <div id="navhud" class="glass" aria-label="Navigation controls">
+  <div class="hudtog"><button id="hudStyle" type="button" title="Minimal HUD look (M)" aria-pressed="false">◐</button><button id="hudLabels" type="button" title="Hide labels and keycaps (K)" aria-pressed="false">Aa</button></div>
   <button id="navClose" type="button" aria-label="Close the navigation controls" title="Close">×</button>
   <div class="hudk">Navigate</div>
   <div class="navrow">
@@ -1636,6 +1653,16 @@ function setFlight(on) {
   $('flyBtn').classList.toggle('open', on); $('flyBtn').setAttribute('aria-expanded', String(on)); $('fxFly').checked = on;
   document.body.classList.toggle('flying', on); $('navMode').textContent = on ? 'Flight' : 'Orbit'; $('navMode').classList.toggle('on', on);
   toast(on ? 'Flight mode: W/S fly, A/D strafe, X/Z up/down, Shift boost, B brake, drag to look' : 'Orbit mode');
+}
+// HUD look: classic (framed, monospace, keycaps) or minimal (soft glass, plain type); labels can be hidden in either
+{
+  const read = k => { try { return localStorage.getItem(k) === '1'; } catch { return false; } }, save = (k, v) => { try { localStorage.setItem(k, v ? '1' : '0'); } catch { /* storage blocked */ } };
+  const apply = () => { document.body.classList.toggle('hud-min', min); document.body.classList.toggle('hud-nolabels', nolabels); $('hudStyle').classList.toggle('on', min); $('hudLabels').classList.toggle('on', nolabels); $('hudStyle').setAttribute('aria-pressed', String(min)); $('hudLabels').setAttribute('aria-pressed', String(nolabels)); };
+  let min = read('kosmoHudMin'), nolabels = read('kosmoHudNoLabels');
+  const tMin = () => { min = !min; save('kosmoHudMin', min); apply(); }, tLab = () => { nolabels = !nolabels; save('kosmoHudNoLabels', nolabels); apply(); };
+  $('hudStyle').addEventListener('click', tMin); $('hudLabels').addEventListener('click', tLab);
+  window.addEventListener('keydown', e => { if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return; if (e.key === 'm' || e.key === 'M') tMin(); else if (e.key === 'k' || e.key === 'K') tLab(); });
+  apply();
 }
 // ---- camera scale: the zoom slider reads as a ruler of landmark sizes, from a person to the observable universe ----
 {
