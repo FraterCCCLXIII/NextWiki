@@ -98,7 +98,7 @@ export function AtlasNav() {
   return (
     <nav
       aria-label="Atlas"
-      className="w-full border-b border-kosmo-line bg-kosmo-bg p-4 md:sticky md:top-0 md:h-screen md:w-60 md:shrink-0 md:overflow-y-auto md:border-b-0 md:border-r"
+      className="w-full border-b border-kosmo-line bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-4rem)] md:w-60 md:shrink-0 md:overflow-y-auto md:border-b-0 md:border-r"
     >
       <Link href="/kosmo" className="mb-5 flex items-center gap-2 text-kosmo-text">
         <LogoOrb />
