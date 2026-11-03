@@ -52,7 +52,7 @@ export function KosmoLogo({ size = 24, className }: { size?: number; className?:
       role="img"
       aria-label="Kosmographica"
       shapeRendering="crispEdges"
-      className={cn("shrink-0", className)}
+      className={cn("kosmo-logo shrink-0", className)}
     >
       <clipPath id="kosmo-logo-clip">
         <rect width="24" height="24" rx="4.5" />

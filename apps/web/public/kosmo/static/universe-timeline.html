@@ -172,6 +172,14 @@
   body.navdrawer-open #zoombar, body.navdrawer-open #scalebar, body.navdrawer-open #help,
   body.fxdrawer-open #zoombar, body.fxdrawer-open #scalebar, body.fxdrawer-open #help { right: 418px; }
   body.drawer-open #top, body.navdrawer-open #top, body.fxdrawer-open #top { right: 400px; }
+  /* vertical distortion sliders, left of the zoom bar; they shift left with the right-hand drawers like the zoom bar does */
+  #scalebars { position: absolute; right: 78px; top: calc(var(--tlh, 210px) + 86px); bottom: 150px; z-index: 4; display: flex; gap: 4px; }
+  #scalebars .col { width: 50px; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 0 6px; }
+  #scalebars .tag { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  #scalebars .cap { font-size: 11px; color: #c9d6e6; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+  #scalebars .v { font-size: 12px; color: var(--accent); font-variant-numeric: tabular-nums; min-height: 15px; }
+  #scalebars input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 4px; height: 100%; -webkit-appearance: slider-vertical; }
+  body.drawer-open #scalebars, body.navdrawer-open #scalebars, body.fxdrawer-open #scalebars { right: 478px; }
   #zoombar { position: absolute; right: 18px; top: calc(var(--tlh, 210px) + 86px); bottom: 150px; width: 54px; z-index: 4; display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 8px; }
   #zoombar input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 4px; height: 100%; -webkit-appearance: slider-vertical; }
   #zoombar .tag { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
@@ -246,6 +254,7 @@
   <details open><summary>Scale balance (a map projection, not physics)</summary>
     <div class="row"><label for="distK">Distance compression γ (1 = true)</label><input type="range" id="distK" min="0.2" max="1" step="0.01"><span class="val" id="distK-v"></span></div>
     <div class="row"><label for="sizeK">Size balance β (1 = true)</label><input type="range" id="sizeK" min="0" max="1" step="0.01"><span class="val" id="sizeK-v"></span></div>
+    <div class="row"><label for="sizeMul">Object size × (1 = true)</label><input type="range" id="sizeMul" min="1" max="63" step="0.5"><span class="val" id="sizeMul-v"></span></div>
     <div><button id="trueScale">true scale</button><button data-sb="0.6,0.5">balanced</button><button data-sb="0.35,0.15">see everything</button></div>
     <div class="dim" style="margin-top:4px">Within a system, distances from the host follow d′ = d₀·(d/d₀)^γ (order and direction kept; the innermost orbit stays put) and radii r′ = r_ref^(1−β)·r^β, capped so no body reaches a neighbour's orbit. The scale bar says when the view is compressed; labels show each body's size exaggeration.</div>
   </details>
@@ -323,6 +332,17 @@
   </div>
 </aside>
 
+<div id="scalebars" class="glass" aria-label="Distort the space between objects">
+  <div class="col" title="Distance between objects and their orbits: top is true, bottom pulls everything in toward the middle (order and direction kept)">
+    <span class="tag">true</span><input type="range" id="vDist" min="0.2" max="1" step="0.01" orient="vertical"><span class="tag">tight</span><span class="cap">distance</span><span class="v" id="vDist-v"></span>
+  </div>
+  <div class="col" title="Size of objects: bottom is true size, top enlarges every object (never past its neighbours' orbits)">
+    <span class="tag">big</span><input type="range" id="vSize" min="0" max="1.8" step="0.01" orient="vertical"><span class="tag">true</span><span class="cap">size</span><span class="v" id="vSize-v"></span>
+  </div>
+  <div class="col" title="Relative scale: top keeps true size ratios, bottom pulls giants and dwarfs toward one size so big objects do not hide small ones">
+    <span class="tag">true</span><input type="range" id="vBal" min="0" max="1" step="0.01" orient="vertical"><span class="tag">equal</span><span class="cap">balance</span><span class="v" id="vBal-v"></span>
+  </div>
+</div>
 <div id="zoombar" class="glass"><span class="tag">out</span><input type="range" id="zoom" min="6.5" max="27" step="0.01" orient="vertical"><span class="tag">in</span></div>
 <div id="hud" class="glass" aria-label="Current location">
   <button id="hudClose" type="button" aria-label="Close the location readout" title="Close">×</button>
@@ -431,7 +451,7 @@ const OMEGA_B = 0.0224 / (C.H0 / 100) ** 2, VOL = 4 / 3 * Math.PI * CHI0 ** 3;
 const M_BARYON = OMEGA_B * tab.p.rhoCrit0 * VOL, N_BARYON = M_BARYON / 1.67262192e-27, M_DARK = (tab.p.OmegaM - OMEGA_B) * tab.p.rhoCrit0 * VOL;
 const COUNTS = { galaxies: 2e12, stars: 1e23 };
 
-const state = { stretch: 0.8, logA: 0, play: false, speed: 0.5, zoom: 26.97, spin: false, rate: 0, pause: false, resU: 150, resG: 150, resS: 30, resC: 20, mega: 'none', megaR: 1, megaF: -2, megaSigma: 1, habR: 4, megaMat: 'cnt', distK: 1, sizeK: 1, skyK: 1, skyB: 1, skyN: 60 };
+const state = { stretch: 0.8, logA: 0, play: false, speed: 0.5, zoom: 26.97, spin: false, rate: 0, pause: false, resU: 150, resG: 150, resS: 30, resC: 20, sizeMul: 1, mega: 'none', megaR: 1, megaF: -2, megaSigma: 1, habR: 4, megaMat: 'cnt', distK: 1, sizeK: 1, skyK: 1, skyB: 1, skyN: 60 };
 const $ = id => document.getElementById(id);
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 
@@ -497,10 +517,10 @@ const skyPosOf = (key, truePos) => { const s = skyOf(key); if (s) return s.pos; 
 const sunMag = () => skyOf('sun')?.mag ?? 1;
 const layoutCache = { key: '', pos: {}, r: {}, exag: {}, d0: 0, moonEcl: null, magSun: 1 };
 function layout() {
-  const key = `${clock.jd}|${state.distK}|${state.sizeK}|${MOONS.length}|${skyPack().key}`;
+  const key = `${clock.jd}|${state.distK}|${state.sizeK}|${state.sizeMul}|${MOONS.length}|${skyPack().key}`;
   if (layoutCache.key === key) return layoutCache;
   layoutCache.key = key;
-  const pos = {}, r = {}, exag = {}, knobs = { gamma: state.distK, beta: state.sizeK }, M = sunMag();   // M: the Solar System's magnification in the compressed sky
+  const pos = {}, r = {}, exag = {}, knobs = { gamma: state.distK, beta: state.sizeK, size: state.sizeMul }, M = sunMag();   // M: the Solar System's magnification in the compressed sky
   layoutCache.magSun = M;
   const planets = Object.keys(P.ORBITS).map(n => ({ name: n, r: P.ORBITS[n].radius, d: dist3(bodyPos(n), SUN), a: P.ORBITS[n].el[0] * AU }));
   const L = SB.layoutSystem(planets, { r: R_SUN }, knobs);
@@ -1002,9 +1022,9 @@ function systemFor(key) {
   const S = { key, name: H.star?.name || key, unit: AU, centre: () => skyPosOf(key, H.pos), obj: g, used: performance.now(), planets, models, star, lay: { key: '', shown: {}, r: {}, exag: {}, width: 0 },
     width: () => S.layout().width };
   S.layout = () => {
-    const k = `${clock.jd}|${state.distK}|${state.sizeK}|${skyPack().key}`; if (S.lay.key === k) return S.lay; S.lay.key = k;
+    const k = `${clock.jd}|${state.distK}|${state.sizeK}|${state.sizeMul}|${skyPack().key}`; if (S.lay.key === k) return S.lay; S.lay.key = k;
     const M = skyOf(key)?.mag ?? 1, c = S.centre();   // M: this system's magnification in the compressed sky
-    const L = SB.layoutSystem(planets.map(p => ({ name: p.name, r: p.r, d: p.a, a: p.a })), { r: starRadius(H.star) }, { gamma: state.distK, beta: state.sizeK });
+    const L = SB.layoutSystem(planets.map(p => ({ name: p.name, r: p.r, d: p.a, a: p.a })), { r: starRadius(H.star) }, { gamma: state.distK, beta: state.sizeK, size: state.sizeMul });
     const shown = {}, r = {}, exag = {}; r[S.name] = L.host.r * M; exag[S.name] = L.host.exag * M; let aMaxShown = 0;
     L.bodies.forEach((b, i) => { const p = planets[i], th = 2 * Math.PI * ((clock.jd - P.EPHEM.J2000) / p.T + p.phase), d = b.d * M; const sx = u.x * Math.cos(th) + v.x * Math.sin(th), sy = u.y * Math.cos(th) + v.y * Math.sin(th), sz = u.z * Math.cos(th) + v.z * Math.sin(th);
       shown[p.name] = { scene: [sx * d / AU, sy * d / AU, sz * d / AU], gal: [c[0] + sx * d, c[1] - sz * d, c[2] + sy * d], a: d }; r[p.name] = b.r * M; exag[p.name] = b.exag * M; aMaxShown = Math.max(aMaxShown, d); });
@@ -1340,7 +1360,7 @@ function updateScene() {
   const barPx = clamp(m * u * k * pxPerScene, 12, 420);
   $('scaletxt').textContent = `${m} ${name}`; $('bar').style.width = `${barPx}px`;
   if (!hudClosed) { $('hudScale').textContent = `${m} ${name}`; $('hudBar').style.width = `${barPx}px`; }
-  const notes = []; if (state.distK < 1) notes.push(`distances compressed γ = ${state.distK.toFixed(2)}`); if (state.sizeK < 1) notes.push(`sizes balanced β = ${state.sizeK.toFixed(2)}`);
+  const notes = []; if (state.sizeMul > 1) notes.push(`objects enlarged ×${state.sizeMul.toFixed(state.sizeMul < 10 ? 1 : 0)}`); if (state.distK < 1) notes.push(`distances compressed γ = ${state.distK.toFixed(2)}`); if (state.sizeK < 1) notes.push(`sizes balanced β = ${state.sizeK.toFixed(2)}`);
   if (state.skyK < 1) notes.push(`star distances compressed γ = ${state.skyK.toFixed(2)}`); if (skyPack().on) notes.push(`systems magnified ×${skyPack().mags[0].toFixed(0)}–×${skyPack().mags[1].toFixed(0)}`);
   $('scalenote').textContent = notes.length ? `⚠ ${notes.join(' · ')} (galaxies and the star field stay true)` : '';
   for (const b of levelBtns.children) b.classList.toggle('on', b.dataset.key === activeL.key);
@@ -1370,11 +1390,22 @@ bind('stretch', 2); bind('logA', 2, () => { state.play = false; $('play').checke
 const byKey = k => LEVELS.find(L => L.key === k);
 bind('resU', 0, () => rebuild(byKey('universe'))); bind('resG', 0, () => rebuild(byKey('galaxy'))); bind('resS', 0, () => rebuild(byKey('stars'))); bind('resC', 0, () => rebuild(byKey('cluster')));
 bind('megaR', 2, rebuildMega); bind('megaF', 1); bind('megaSigma', 1); bind('habR', 2, rebuildMega);
-bind('distK', 2); bind('sizeK', 2); bind('skyK', 2); bind('skyB', 2); bind('skyN', 0);
+bind('distK', 2); bind('sizeK', 2); bind('sizeMul', 1); bind('skyK', 2); bind('skyB', 2); bind('skyN', 0);
 const goSky = () => { const L = byKey('sky'); travelTo(L.centre, Math.log10(at(L.width)), L.name); };
 $('skyOff').addEventListener('click', () => { state.skyK = 1; state.skyB = 1; sync('skyK', 2); sync('skyB', 2); });
 document.querySelectorAll('button[data-sky]').forEach(b => b.addEventListener('click', () => { const [g, be] = b.dataset.sky.split(',').map(Number); state.skyK = g; state.skyB = be; sync('skyK', 2); sync('skyB', 2); goSky(); }));
-$('trueScale').addEventListener('click', () => { state.distK = 1; state.sizeK = 1; sync('distK', 2); sync('sizeK', 2); });
+// Vertical distortion sliders <-> state <-> the Controls panel's own sliders. Size is logarithmic so x1..x63 feels even.
+function syncScaleBars() {
+  $('vDist').value = state.distK; $('vDist-v').textContent = `γ ${state.distK.toFixed(2)}`;
+  $('vSize').value = Math.log10(state.sizeMul); $('vSize-v').textContent = `×${state.sizeMul < 10 ? state.sizeMul.toFixed(1) : state.sizeMul.toFixed(0)}`;
+  $('vBal').value = state.sizeK; $('vBal-v').textContent = `β ${state.sizeK.toFixed(2)}`;
+}
+$('vDist').addEventListener('input', e => { state.distK = parseFloat(e.target.value); sync('distK', 2); syncScaleBars(); });
+$('vSize').addEventListener('input', e => { state.sizeMul = Math.max(1, Math.round(10 ** parseFloat(e.target.value) * 2) / 2); sync('sizeMul', 1); syncScaleBars(); });
+$('vBal').addEventListener('input', e => { state.sizeK = parseFloat(e.target.value); sync('sizeK', 2); syncScaleBars(); });
+for (const id of ['distK', 'sizeK', 'sizeMul']) $(id).addEventListener('input', syncScaleBars);   // the panel's sliders move the verticals too
+$('trueScale').addEventListener('click', () => { state.distK = 1; state.sizeK = 1; state.sizeMul = 1; sync('distK', 2); sync('sizeK', 2); sync('sizeMul', 1); syncScaleBars(); });
+syncScaleBars();
 document.querySelectorAll('button[data-sb]').forEach(b => b.addEventListener('click', () => { const [g, be] = b.dataset.sb.split(',').map(Number); state.distK = g; state.sizeK = be; sync('distK', 2); sync('sizeK', 2); }));
 $('play').addEventListener('change', () => { state.play = $('play').checked; if (state.play && state.logA >= 0) state.logA = -16; });
 $('spin').addEventListener('change', () => { state.spin = $('spin').checked; });

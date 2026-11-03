@@ -643,3 +643,10 @@
 }
 .kosmo-eye { transform-box: fill-box; transform-origin: center; animation: kosmo-blink 5.2s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .kosmo-eye { animation: none; } }
+
+/* The mark rests as a muted grayscale pixel screen (eyes still blinking); on hover, or while its menu is open,
+   it lights up in colour and the rainbow animation runs. */
+.kosmo-logo { filter: grayscale(1) brightness(0.55); transition: filter 0.25s ease; }
+.kosmo-logo .kosmo-pixel { animation-play-state: paused; }
+.kosmo-logo:hover, [data-state="open"] > .kosmo-logo, button:hover > .kosmo-logo { filter: none; }
+.kosmo-logo:hover .kosmo-pixel, [data-state="open"] > .kosmo-logo .kosmo-pixel, button:hover > .kosmo-logo .kosmo-pixel { animation-play-state: running; }

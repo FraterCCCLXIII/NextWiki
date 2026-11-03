@@ -58,7 +58,7 @@ export function balanceRadius(r, rRef, beta = 1) {
  *         (semi-major axis) is used instead of `d` for the neighbour gaps so a body on an eccentric orbit
  *         does not resize as it moves. host: { r } true host radius; pass `fixed: true` with an already
  *         chosen (shown) radius when the host was sized by an outer layout (a planet whose moons are laid out).
- * opts:   gamma, beta (the knobs), d0 (reference distance; default innermost orbit), rRef (default
+ * opts:   gamma, beta (the knobs), size (overall radius multiplier, default 1), d0 (reference distance; default innermost orbit), rRef (default
  *         refFrac · d0'), refFrac (0.08), fill (0.4: fraction of a gap a body may fill), hostFill (0.5).
  *
  * returns { host: { r, exag }, bodies: [{ name, d, r, exag, clamped, scale }], d0, rRef, compressed, balanced }
@@ -67,6 +67,7 @@ export function balanceRadius(r, rRef, beta = 1) {
 export function layoutSystem(bodies, host, opts = {}) {
   const gamma = isNum(opts.gamma) ? Math.min(1, Math.max(1e-3, opts.gamma)) : 1;
   const beta = isNum(opts.beta) ? Math.min(1, Math.max(0, opts.beta)) : 1;
+  const size = isNum(opts.size) && opts.size > 0 ? opts.size : 1;   // overall enlargement, on top of the balance; still clamped to the gaps below
   const fill = isNum(opts.fill) ? opts.fill : 0.4, hostFill = isNum(opts.hostFill) ? opts.hostFill : 0.5, refFrac = isNum(opts.refFrac) ? opts.refFrac : 0.08;
   const list = bodies.filter(b => b && b.d > 0);
   const gapOf = b => (b.a > 0 ? b.a : b.d);
@@ -88,12 +89,12 @@ export function layoutSystem(bodies, host, opts = {}) {
   const rRef = opts.rRef > 0 ? opts.rRef : refFrac * gMinShown;
   let hostR = hostTrue;
   if (host && !host.fixed) {
-    hostR = balanceRadius(hostTrue, rRef, beta);
+    hostR = balanceRadius(hostTrue, rRef, beta) * size;
     if (out.length && hostR > hostFill * gMinShown) hostR = hostFill * gMinShown;
   }
   const byGap = [...out].sort((p, q) => p.g - q.g);
   for (let i = 0; i < byGap.length; i++) {
-    const o = byGap[i], want = balanceRadius(o.src.r, rRef, beta);
+    const o = byGap[i], want = balanceRadius(o.src.r, rRef, beta) * size;
     const inner = i === 0 ? o.g - hostR : o.g - byGap[i - 1].g;
     const outer = i === byGap.length - 1 ? Infinity : byGap[i + 1].g - o.g;
     const gap = Math.min(inner > 0 ? inner : Infinity, outer > 0 ? outer : Infinity);   // co-orbital pairs (gap 0) are not clamped against each other
