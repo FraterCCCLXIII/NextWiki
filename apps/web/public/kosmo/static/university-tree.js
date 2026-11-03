@@ -4,6 +4,24 @@
 // Module names are unique across the tree so prerequisites can be resolved by name.
 const M = (name, req, lessons) => ({ name, req, lessons });
 export const TREE = [
+  { id: 'public', name: 'Public', ages: 'everyone', color: '#f2efe6', blurb: 'No prerequisites and no homework: short, visual tours of the sky, the planets and the whole universe for anyone, at any age, in any order.',
+    programs: [
+      { name: 'Look Up', modules: [
+        M('Your Sky Tonight', [], ['What you can see with no equipment', { t: 'The Moon, up close', go: 'Moon' }, 'Planets that look like bright stars', 'How to tell a satellite from a star', 'Dark skies and light pollution']),
+        M('Seasons, Eclipses and Tides', [], ['Why the seasons turn', 'What an eclipse really is', 'Tides: the Moon pulling on the sea', { t: 'See the Earth from space', go: 'Earth' }]),
+        M('Stories in the Stars', [], ['Constellations across cultures', 'How sailors and farmers used the sky', 'The Milky Way as a road', 'Shooting stars and where they come from']),
+      ] },
+      { name: 'Our Neighbours', modules: [
+        M('A Tour of the Planets', [], [{ t: 'Mars: a cold desert world', go: 'Mars' }, { t: 'Jupiter: a planet bigger than all the others together', go: 'Jupiter' }, { t: 'Saturn and its rings', go: 'Saturn' }, 'Worlds with oceans under the ice', 'Dwarf planets and the edge of the Sun\'s family']),
+        M('Rocks, Comets and Craters', [], ['Asteroids: leftovers from the start', 'Comets: dirty snowballs with tails', 'What killed the dinosaurs', 'Watching the sky for dangerous rocks']),
+        M('Living in Space', [], ['Why astronauts float', 'Life on the Space Station', 'Could people live on Mars?', 'Looking for life elsewhere']),
+      ] },
+      { name: 'The Big Picture', modules: [
+        M('How Big Is the Universe?', [], ['Walking across the Solar System', 'A light-year, explained', { t: 'The Milky Way, our home galaxy', go: 'Milky Way' }, { t: 'Andromeda, our nearest big neighbour', go: 'Andromeda Galaxy' }, 'Billions of galaxies']),
+        M('Stars: Birth, Life and Death', [], ['Where stars are born', { t: 'A star that exploded: the Crab Nebula', go: 'Crab Nebula' }, 'White dwarfs, neutron stars, black holes', 'We are made of old stars']),
+        M('The Story of Everything', [], ['The Big Bang in plain words', 'Looking back in time with telescopes', 'Dark matter and dark energy: what we do not know', 'Where it all might be going']),
+      ] },
+    ] },
   { id: 'preschool', name: 'Preschool', ages: '3–5', color: '#ffd1a0', blurb: 'Looking, naming, wondering. Day and night, the Moon, the Sun, up and down.',
     programs: [
       { name: 'Sky Watchers', modules: [

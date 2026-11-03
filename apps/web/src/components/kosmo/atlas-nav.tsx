@@ -21,7 +21,7 @@ function NavGroupSection({ group }: { group: NavGroup }) {
         onClick={() => setOpen((v) => !v)}
         className={`flex w-full items-center gap-2 py-1 text-left text-[12px] uppercase tracking-[0.16em] select-none ${
           hasActive ? "text-kosmo-mint" : "text-kosmo-dim"
-        } hover:text-kosmo-text`}
+        } kosmo-rainbow`}
       >
         <span>{group.name}</span>
         {/* the caret sits by the name: it points right when collapsed and down when open */}
@@ -44,7 +44,7 @@ function NavGroupSection({ group }: { group: NavGroup }) {
                 className={`-mx-2 block rounded px-2 py-1 text-base transition-colors ${
                   active
                     ? "bg-kosmo-panel text-kosmo-mint"
-                    : "text-kosmo-text hover:bg-kosmo-panel hover:text-kosmo-mint"
+                    : "text-kosmo-text kosmo-rainbow"
                 }`}
               >
                 {page.label}
@@ -63,7 +63,7 @@ export function AtlasNav() {
     <nav
       ref={fadeRef}
       aria-label="Atlas"
-      className="w-full bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-6.25rem)] md:w-max md:min-w-40 md:shrink-0 md:overflow-y-auto kosmo-scroll scroll-fade"
+      className="kosmo-atlas-nav w-full bg-kosmo-bg p-4 md:sticky md:top-0 md:h-[calc(100vh-6.25rem)] md:w-max md:min-w-40 md:shrink-0 md:overflow-y-auto kosmo-scroll scroll-fade"
     >
       {NAV_GROUPS.map((group) => (
         <NavGroupSection key={group.name} group={group} />

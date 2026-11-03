@@ -7,6 +7,7 @@ import { getSettingValue } from "~/lib/utils/settings";
 import { getSetting } from "~/lib/services/settings";
 import { SearchTrigger } from "./SearchTrigger";
 import { KosmoMenu } from "./KosmoMenu";
+import { KosmoNavToggle } from "./KosmoNavToggle";
 import { AIAssistantTrigger } from "~/components/ai/AIAssistantTrigger";
 
 export async function Header({
@@ -28,6 +29,8 @@ export async function Header({
       <div className="flex items-center flex-shrink-0 gap-2">
         {/* One menu: Kosmographica, the wiki's own pages, and About */}
         <KosmoMenu siteLogo={siteLogo} />
+        {/* show / hide the left nav, right of the menu chevron */}
+        <KosmoNavToggle />
       </div>
 
       {/* Center: Search Bar */}
