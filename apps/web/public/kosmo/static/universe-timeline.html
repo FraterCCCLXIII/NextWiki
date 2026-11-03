@@ -1337,6 +1337,7 @@ const CENSUS_DEFS = {
   virgo: { name: 'Local supercluster: galaxies and clusters to 40 Mpc', centre: () => CL.pos, width: 60 * Mpc, minFrac: 0.012, mul: 30, resolvePx: 12, rows: o => (o.type === 'galaxy' || o.type === 'galaxy_cluster') && o.dist_pc < 45e6, pts: 500 },
   compact: { name: 'Compact objects: black holes, neutron stars, white dwarfs', centre: () => SUN, width: 24 * kpc, minFrac: 0.014, rows: o => ['black_hole', 'neutron_star', 'pulsar', 'white_dwarf', 'quasar'].includes(o.type) && o.dist_pc < 20e6, pts: 400 },
   zoo: { name: 'Stellar zoo: the largest and nearest stars', centre: () => SUN, width: 600 * pc, minFrac: 0.008, rows: o => o.type === 'star' && o.radius_m > 0 && o.dist_pc < 3e3, limit: 260, pts: 0 },
+  all: { name: 'Everything: every body in the database, clustered', cluster: true, solo: true, spriteScale: 0.42, minFrac: 0, resolvePx: 40, rows: o => o.type !== 'constellation', pts: 400 },
   ladder: { name: 'Size ladder: every kind of body, small to large', ladder: true, minFrac: 0, rows: o => o.radius_m > 0 && o.type !== 'galaxy_cluster' || o.type === 'galaxy_cluster', limit: 180, pts: 500 },
 };
 const DEST = [
@@ -1349,6 +1350,7 @@ const DEST = [
   { name: CENSUS_DEFS.virgo.name, type: 'view', pos: CENSUS_DEFS.virgo.centre ? CENSUS_DEFS.virgo.centre() : SUN, w: CENSUS_DEFS.virgo.width || 1e20, census: 'virgo' },
   { name: CENSUS_DEFS.compact.name, type: 'view', pos: CENSUS_DEFS.compact.centre ? CENSUS_DEFS.compact.centre() : SUN, w: CENSUS_DEFS.compact.width || 1e20, census: 'compact' },
   { name: CENSUS_DEFS.zoo.name, type: 'view', pos: CENSUS_DEFS.zoo.centre ? CENSUS_DEFS.zoo.centre() : SUN, w: CENSUS_DEFS.zoo.width || 1e20, census: 'zoo' },
+  { name: CENSUS_DEFS.all.name, type: 'view', pos: SUN, w: 1e20, census: 'all' },
   { name: CENSUS_DEFS.ladder.name, type: 'view', pos: CENSUS_DEFS.ladder.centre ? CENSUS_DEFS.ladder.centre() : SUN, w: CENSUS_DEFS.ladder.width || 1e20, census: 'ladder' },
   { name: 'Solar System cluster: every known body, compressed', type: 'view', pos: SUN, w: 3e12, preset: { distK: 0.35, sizeK: 0.15, skyK: 1, skyB: 1, sizeMul: 16 } },
   { name: 'Galactic centre (Sgr A*)', pos: [0, 0, 0], w: 2 * 100 * pc, type: 'black hole' },
@@ -2455,14 +2457,50 @@ function censusStyle(o) {   // colour, size in px and kind (0 soft smudge, 1 sha
     default: return { c: [0.85, 0.88, 1.0], s: 9, k: 1 };
   }
 }
+// The clustered "everything" layout: every body in the database, regardless of true distances or sizes, packed into clusters that are small enough to see at once.
+// Hierarchy first: a moon sits in a ring round its planet, a planet in a ring round its star. Then the top-level bodies of each kind form one cluster (a golden-spiral
+// disc, bigger ones nearer the middle), and the kind-clusters sit side by side. Displayed sizes are the real radius squeezed onto a log scale, so order is true but
+// a galaxy is only a few times a moon, and nothing hides anything else. Positions are not physical: this is a map of what exists, not where it is.
+function clusterLayout(rows) {
+  const U = 1e15, GA = 2.39996323, byName = new Map();
+  for (const r of rows) byName.set(r.meta.name.toLowerCase(), r);
+  for (const r of rows) for (const a of r.meta.alt_names || []) { const k = String(a).toLowerCase(); if (!byName.has(k)) byName.set(k, r); }
+  const kids = new Map(), top = [];
+  for (const r of rows) { const par = r.meta.parent && byName.get(String(r.meta.parent).toLowerCase()); if (par && par !== r) { if (!kids.has(par)) kids.set(par, []); kids.get(par).push(r); } else top.push(r); }
+  const fp = r => { const k = (kids.get(r) || []).length; return k ? 0.7 * U + 0.4 * U * Math.sqrt(k) : 0.45 * U; };   // footprint radius of a body with its children
+  const fams = new Map(); for (const r of top) { const f = familyOf({ type: String(r.meta.type).replace(/_/g, ' ') }); if (!fams.has(f)) fams.set(f, []); fams.get(f).push(r); }
+  const out = [], rd = m => { const t = clamp((Math.log10(Math.max(m, 1e3)) - 3) / 23, 0, 1); return U * (0.1 + 0.55 * Math.pow(t, 1.2)); };
+  const dflt = { nebula: 5 * pc, supernova_remnant: 12 * pc, star_cluster: 8 * pc, galaxy_cluster: 2 * Mpc, galaxy: 8 * kpc, black_hole: 3e4, neutron_star: 1.2e4, pulsar: 1.2e4, white_dwarf: 7e6, star: 7e8, quasar: 1e10, other: 7e7, exoplanet: 7e7, planet: 6e6, moon: 1.7e6 };
+  const radiusOf = r => r.meta.radius_m > 0 ? r.meta.radius_m : dflt[r.meta.type] || 1e6;
+  const hash = (str, salt) => { let h = 2166136261 ^ salt; for (let i = 0; i < str.length; i++) h = Math.imul(h ^ str.charCodeAt(i), 16777619); return ((h >>> 0) / 4294967296) - 0.5; };
+  const famList = [...fams.entries()].map(([id, members]) => { members.sort((a, b) => radiusOf(b) - radiusOf(a) || a.meta.name.localeCompare(b.meta.name)); const area = members.reduce((t, r) => t + fp(r) ** 2, 0); return { id, members, R: Math.sqrt(area) * 1.15 }; }).sort((a, b) => b.R - a.R);
+  let cursor = 0, i = 0;
+  for (const F of famList) {
+    const cx = cursor + F.R, cy = (i++ % 2 ? 1 : -1) * F.R * 0.3; cursor += 2 * F.R + 4 * U; let cum = 0;
+    F.members.forEach((r, j) => {
+      cum += fp(r) ** 2; const rho = F.R * Math.sqrt(cum / (F.members.reduce((t, q) => t + fp(q) ** 2, 0))), ang = (j + 1) * GA, z = hash(r.meta.name, 7) * 0.5 * F.R * Math.min(1, rho / F.R + 0.2);
+      const px = cx + rho * Math.cos(ang), py = cy + rho * Math.sin(ang), ch = kids.get(r) || [];
+      out.push({ r, pos: [px, py, z], rad: rd(radiusOf(r)), fam: F.id });
+      ch.sort((a, b) => radiusOf(b) - radiusOf(a)); ch.forEach((c, q) => { const ring = fp(r) * (0.55 + 0.45 * Math.sqrt((q + 1) / ch.length)), a2 = (q + 1) * GA; out.push({ r: c, pos: [px + ring * Math.cos(a2), py + ring * Math.sin(a2), z + hash(c.meta.name, 3) * 0.3 * U], rad: rd(radiusOf(c)) * 0.8, fam: F.id }); });
+    });
+  }
+  const xs = out.map(o => o.pos[0]), ys = out.map(o => o.pos[1]), zs = out.map(o => o.pos[2]), ext = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys), Math.max(...zs) - Math.min(...zs));
+  const mid = [(Math.max(...xs) + Math.min(...xs)) / 2, (Math.max(...ys) + Math.min(...ys)) / 2, (Math.max(...zs) + Math.min(...zs)) / 2];
+  return { items: out, mid, width: ext * 1.25 };
+}
 function censusBuild(key) {
   const def = CENSUS_DEFS[key], items = [], rows = [];
-  for (const d of DEST) { const o = d.meta; if (o && o.radius_m !== 0 && def.rows(o) && (def.ladder || (o.ra_deg != null && o.dist_pc > 0))) rows.push({ meta: o, pos: Array.isArray(d.pos) ? d.pos : (([l, b]) => gal(l, b, o.dist_pc * pc))(eqToGal(o.ra_deg, o.dec_deg)) }); }
+  for (const d of DEST) { const o = d.meta; if (o && o.radius_m !== 0 && def.rows(o) && (def.ladder || def.cluster || (o.ra_deg != null && o.dist_pc > 0))) rows.push({ meta: o, pos: Array.isArray(d.pos) ? d.pos : (([l, b]) => gal(l, b, o.dist_pc * pc))(eqToGal(o.ra_deg, o.dec_deg)) }); }
   let use = rows;
   if (def.ladder) { use = rows.filter(d => d.meta.radius_m > 0).sort((p, q) => p.meta.radius_m - q.meta.radius_m); const step = Math.max(1, use.length / def.limit); use = Array.from({ length: Math.min(def.limit, use.length) }, (_, i) => use[Math.floor(i * step)]); }
   else if (def.limit) use = rows.sort((p, q) => dist3(at(p.pos), SUN) - dist3(at(q.pos), SUN)).slice(0, def.limit);
   const dflt = { nebula: 5 * pc, supernova_remnant: 12 * pc, star_cluster: 8 * pc, galaxy_cluster: 2 * Mpc, galaxy: 8 * kpc, black_hole: 3e4, neutron_star: 1.2e4, pulsar: 1.2e4, white_dwarf: 7e6, star: 7e8, quasar: 1e10 };
-  let cursor = 0;
+  let cursor = 0, clusterBuilt = null;
+  if (def.cluster) {
+    const L = clusterLayout(rows), origin = [SUN[0], SUN[1] + 4e18, SUN[2]]; clusterBuilt = { centre: [origin[0] + L.mid[0], origin[1] + L.mid[1], origin[2] + L.mid[2]], width: L.width };
+    for (const e of L.items) { const o = e.r.meta; items.push({ name: o.name, r: e.rad, obj: null, spec: { ...o, radius_m: e.rad, points: def.pts || undefined, tilt: true, segments: 16 }, pos: [origin[0] + e.pos[0], origin[1] + e.pos[1], origin[2] + e.pos[2]], raw: true, style: censusStyle(o) }); }
+    use = [];
+  }
   for (const d of use) {
     const o = d.meta, r = o.radius_m > 0 ? o.radius_m : dflt[o.type] || 1e6;
     const it = { name: o.name, r, obj: null, spec: { ...o, radius_m: r, points: def.pts || undefined, tilt: true, segments: 20 }, pos: d.pos, style: censusStyle(o) };
@@ -2473,7 +2511,7 @@ function censusBuild(key) {
   const n = items.length, geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 3), 3)); geo.setAttribute('aSize', new THREE.BufferAttribute(new Float32Array(n), 1)); geo.setAttribute('aColor', new THREE.BufferAttribute(new Float32Array(n * 3), 3)); geo.setAttribute('aKind', new THREE.BufferAttribute(new Float32Array(n), 1));
   items.forEach((it, i) => { geo.attributes.aColor.setXYZ(i, ...it.style.c); geo.attributes.aKind.setX(i, it.style.k); });
   const pts = new THREE.Points(geo, CENSUS_SPRITE_MAT); pts.frustumCulled = false; pts.visible = false; CENSUS.group.add(pts);
-  const built = { pts, items, centre: def.ladder ? [SUN[0] + cursor / 2, SUN[1], SUN[2]] : def.centre(), width: def.ladder ? cursor * 1.1 : def.width, def };
+  const built = { pts, items, centre: clusterBuilt ? clusterBuilt.centre : def.ladder ? [SUN[0] + cursor / 2, SUN[1], SUN[2]] : def.centre(), width: clusterBuilt ? clusterBuilt.width : def.ladder ? cursor * 1.1 : def.width, def };
   CENSUS.built.set(key, built); return built;
 }
 // ---- the destination itself: a catalogue object with no level of its own (a galaxy, nebula, remnant, cluster, compact object, loose star) gets
@@ -2614,7 +2652,7 @@ function updateCensus(k) {
     const resolved = inView && px >= resolve && px < 6000;
     if (resolved && !it.obj) { it.obj = createModel(THREE, it.spec); it.obj.visible = false; CENSUS.group.add(it.obj); }
     if (it.obj) { it.obj.visible = resolved; if (resolved) { it.obj.position.set(sc[0], sc[1], sc[2]); it.obj.scale.setScalar(size); it.obj.tick(t); if (it.obj.update) it.obj.update(camera, renderer); } }
-    pos.setXYZ(i, sc[0], sc[1], sc[2]); sz.setX(i, inView && !resolved && px < 6000 ? Math.max(it.style.s, Math.min(60, px * 2)) : 0);
+    pos.setXYZ(i, sc[0], sc[1], sc[2]); sz.setX(i, inView && !resolved && px < 6000 ? Math.max(it.style.s, Math.min(60, px * 2)) * (def.spriteScale || 1) : 0);
   });
   pos.needsUpdate = true; sz.needsUpdate = true;
 }
@@ -2629,7 +2667,7 @@ function updateScene() {
     const grow = L.comoving ? a : 1, cover = at(L.width) * grow / viewW;
     if (L.cosmic && L.obj.material) { const cu = L.obj.material.userData.cosU, c0 = atRaw(L.centre); if (cu) { cu.centre.value.set((c0[0] - SUN[0]) / COS_R0, (c0[2] - SUN[2]) / COS_R0, -(c0[1] - SUN[1]) / COS_R0); cu.unit.value = at(L.unit) * grow / COS_R0; } }
     const off = toScene(L.cosmic ? atRaw(L.centre) : at(L.centre), focus, k), far = Math.hypot(off[0], off[1], off[2]) / 2;   // in view widths
-    L.obj.visible = cover > 1e-4 && cover < 1e8 && far < cover * 1.5 + 3e3 && !(L.key === 'stars' && CONST.active);   // the generated 50 pc star cloud is not real data: hide it while a constellation's real stars are shown
+    L.obj.visible = cover > 1e-4 && cover < 1e8 && far < cover * 1.5 + 3e3 && !(L.key === 'stars' && CONST.active) && !(CENSUS.key && CENSUS_DEFS[CENSUS.key] && CENSUS_DEFS[CENSUS.key].solo);   // the generated 50 pc star cloud is not real data: hide it while a constellation's real stars are shown
     if (!L.obj.visible) continue;
     L.obj.scale.setScalar(at(L.unit) * k * grow); L.obj.position.set(off[0], off[1], off[2]);
     if (L.comoving) updateUniverse(L.obj, a);
