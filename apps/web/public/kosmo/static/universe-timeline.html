@@ -1422,7 +1422,7 @@ function pickPoint(mx, my) {
   if (!best) return null;
   const a = best.o.geometry.attributes.position.array; _pw.set(a[3 * best.i], a[3 * best.i + 1], a[3 * best.i + 2]).applyMatrix4(best.o.matrixWorld);
   const k = 2 / 10 ** state.zoom, g = [focus[0] + _pw.x / k, focus[1] - _pw.z / k, focus[2] + _pw.y / k];   // scene (x, z, -y) back to galactic metres
-  return { sx: best.sx, sy: best.sy, pos: g, dist: dist3(g, focus) };
+  return { sx: best.sx, sy: best.sy, pos: g, dist: dist3(g, focus), scene: [_pw.x, _pw.y, _pw.z] };
 }
 function snapTravel(sn) {
   const z = Math.max(clamp(state.zoom - 1.6, 6.5, 27), Math.min(state.zoom, Math.log10(Math.max(sn.dist, 1)) - 1));
@@ -1430,19 +1430,19 @@ function snapTravel(sn) {
   travelTo(sn.pos, z, 'map point', 3);
 }
 function updateHover() {
-  if (!hoverMouse) { hoverTip.style.display = hoverRing.style.display = 'none'; hoverDest = null; return; }
+  if (!hoverMouse) { hoverTip.style.display = hoverRing.style.display = 'none'; hoverDest = null; cursor3d = null; return; }
   const hit = pickAt(hoverMouse.x, hoverMouse.y);
   hoverDest = hit && hit.d; renderer.domElement.style.cursor = hit ? 'pointer' : '';
-  hoverSnap = null;
+  hoverSnap = null; cursor3d = null;
   if (!hit) {
     if (!travel && !fly.on && hoverMouse) { if (!snapMouse || snapMouse.x !== hoverMouse.x || snapMouse.y !== hoverMouse.y || frame - snapFrame > 20) { snapMouse = { ...hoverMouse }; snapFrame = frame; hoverSnap = pickPoint(hoverMouse.x, hoverMouse.y); snapCache = hoverSnap; } else hoverSnap = snapCache; }
     if (hoverSnap) {
-      renderer.domElement.style.cursor = 'crosshair'; hoverRing.classList.add('snap'); hoverRing.style.display = 'block'; hoverRing.style.left = `${hoverSnap.sx}px`; hoverRing.style.top = `${hoverSnap.sy}px`; hoverRing.style.width = hoverRing.style.height = '30px';
+      cursor3d = hoverSnap.scene; renderer.domElement.style.cursor = 'crosshair'; hoverRing.classList.add('snap'); hoverRing.style.display = 'block'; hoverRing.style.left = `${hoverSnap.sx}px`; hoverRing.style.top = `${hoverSnap.sy}px`; hoverRing.style.width = hoverRing.style.height = '30px';
       hoverTip.innerHTML = `Map point<small>${P.fmtLength(hoverSnap.dist)} from the view centre</small><em>click to warp there · 3 s</em>`; hoverTip.style.display = 'block'; hoverTip.style.left = `${Math.min(hoverSnap.sx + 22, view.clientWidth - hoverTip.offsetWidth - 8)}px`; hoverTip.style.top = `${Math.max(hoverSnap.sy - 8, 8)}px`; return;
     }
     hoverRing.classList.remove('snap'); hoverTip.style.display = hoverRing.style.display = 'none'; return;
   }
-  hoverRing.classList.remove('snap');
+  hoverRing.classList.remove('snap'); { const kk = 2 / 10 ** state.zoom, o = toScene(hit.p, focus, kk); cursor3d = [o[0], o[1], o[2]]; }
   const dist = Math.hypot(hit.p[0] - focus[0], hit.p[1] - focus[1], hit.p[2] - focus[2]);
   const phys = physicsLine(hit.d.meta);
   hoverTip.innerHTML = `${hit.d.name}<small>${hit.d.type || ''}</small>${phys ? `<span class="phys">${phys}</span>` : ''}<em>${dist > 1 ? P.fmtLength(dist) + ' from the view centre' : 'here'} · click to fly there</em>`;
@@ -1585,7 +1585,8 @@ const niceCeil = x => { const e = 10 ** Math.floor(Math.log10(x)), m = x / e; re
 const CUBE_UNITS = [1e9 * ly, 1e6 * ly, 1e3 * ly, ly, AU, 1e9, 1e6, 1e3, 1];
 const niceSide = x => { const u = CUBE_UNITS.find(u => x >= u) || 1; return niceCeil(x / u) * u; };
 const loadedDest = () => travel ? { target: travel.target, name: travel.name } : lastDest;
-const _cq = new THREE.Quaternion(), _cv = new THREE.Vector3();
+const _cq = new THREE.Quaternion(), _cv = new THREE.Vector3(), CUBE_OFF = new THREE.Quaternion().setFromEuler(new THREE.Euler(-0.42, 0.72, 0)), _cr = new THREE.Vector3(), _cu = new THREE.Vector3();
+let cursor3d = null;   // the 3D cursor in scene units (the same units as the cube), set by the hover code
 const CUBE_COL = { star: '255,236,200', galaxy: '255,184,107', planet: '127,195,255', exoplanet: '127,195,255', moon: '170,200,170', nebula: '230,130,200', 'dwarf planet': '200,170,255' };
 function drawCube() {
   if (hudClosed) return;
@@ -1594,8 +1595,8 @@ function drawCube() {
   cctx.setTransform(dpr, 0, 0, dpr, 0, 0); cctx.clearRect(0, 0, S, S);
   // the cube is the camera's own box of space: centred on the view centre, one view-width on a side, turning with the camera
   const side = 10 ** state.zoom, half = side / 2, dst = loadedDest();
-  _cq.copy(camera.quaternion).invert();
-  const R = S * 0.225, c = S / 2, tmp = new THREE.Vector3();
+  _cq.copy(camera.quaternion).invert(); _cq.premultiply(CUBE_OFF);   // seen from outside and a little above, so the camera itself is visible in the box
+  const R = S * 0.19, c = S / 2, tmp = new THREE.Vector3();
   const toCube = p => { tmp.set((p[0] - focus[0]) / half, (p[2] - focus[2]) / half, -(p[1] - focus[1]) / half); return tmp; };   // scene axes: (x, z, -y)
   const proj = (v) => { _cv.copy(v).applyQuaternion(_cq); const k = 1 / (1 - _cv.z * 0.16); return [c + _cv.x * k * R, c - _cv.y * k * R, _cv.z]; };
   const P3 = CUBE_V.map(v => proj(tmp.set(v[0], v[1], v[2])));
@@ -1614,6 +1615,19 @@ function drawCube() {
   const sp = toCube(SUN); if (Math.max(Math.abs(sp.x), Math.abs(sp.y), Math.abs(sp.z)) <= 1) { const p = proj(sp); cctx.fillStyle = '#ffd37a'; cctx.beginPath(); cctx.arc(p[0], p[1], 2.4, 0, 2 * Math.PI); cctx.fill(); }
   const dp = dst ? at(dst.target) : null;
   if (dp) { const v = toCube(dp); if (Math.max(Math.abs(v.x), Math.abs(v.y), Math.abs(v.z)) <= 1) { const p = proj(v); cctx.fillStyle = '#7fc3ff'; cctx.beginPath(); cctx.arc(p[0], p[1], 3, 0, 2 * Math.PI); cctx.fill(); } }
+  { // the camera: a small frustum sitting out in front of the box, looking at its centre
+    const pc = camera.position, d = _cr.copy(pc).negate().normalize(), right = _cu.set(1, 0, 0).applyQuaternion(camera.quaternion), up = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion);
+    const apex = proj(tmp.copy(pc)), corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => proj(tmp.copy(pc).addScaledVector(d, 0.8).addScaledVector(right, a * 0.38).addScaledVector(up, b * 0.28)));
+    cctx.strokeStyle = 'rgba(255,211,122,0.9)'; cctx.lineWidth = 1; cctx.beginPath();
+    for (const q of corners) { cctx.moveTo(apex[0], apex[1]); cctx.lineTo(q[0], q[1]); } corners.forEach((q, i) => { const n = corners[(i + 1) % 4]; cctx.moveTo(q[0], q[1]); cctx.lineTo(n[0], n[1]); }); cctx.stroke();
+    cctx.fillStyle = '#ffd37a'; cctx.beginPath(); cctx.arc(apex[0], apex[1], 2.2, 0, 2 * Math.PI); cctx.fill();
+    if (cursor3d) {   // the 3D cursor: a cross at the snapped point, and the line of sight to it from the camera
+      const cp = proj(tmp.set(cursor3d[0], cursor3d[1], cursor3d[2]));
+      cctx.setLineDash([2, 2]); cctx.strokeStyle = 'rgba(255,211,122,0.45)'; cctx.beginPath(); cctx.moveTo(apex[0], apex[1]); cctx.lineTo(cp[0], cp[1]); cctx.stroke(); cctx.setLineDash([]);
+      cctx.strokeStyle = '#ffe9a8'; cctx.lineWidth = 1.4; cctx.beginPath(); cctx.moveTo(cp[0] - 4, cp[1]); cctx.lineTo(cp[0] + 4, cp[1]); cctx.moveTo(cp[0], cp[1] - 4); cctx.lineTo(cp[0], cp[1] + 4); cctx.stroke();
+      cctx.beginPath(); cctx.arc(cp[0], cp[1], 5.5, 0, 2 * Math.PI); cctx.stroke();
+    }
+  }
   cctx.strokeStyle = 'rgba(255,255,255,0.9)'; cctx.lineWidth = 1.2; cctx.beginPath(); cctx.arc(c, c, 3.4, 0, 2 * Math.PI); cctx.stroke();   // the view centre
   $('cubeNote').textContent = `view cube ${P.fmtLength(side)} · ${shown.toLocaleString()} bodies · drag to turn`;
   const fl = Math.hypot(focus[0] - SUN[0], focus[1] - SUN[1], focus[2] - SUN[2]);
