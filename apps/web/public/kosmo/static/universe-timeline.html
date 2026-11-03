@@ -148,6 +148,10 @@
   #fx .head { display: flex; align-items: baseline; justify-content: space-between; }
   #fx .head button { font-size: 12px; padding: 2px 10px; }
   #fx .fxnote { font-size: 13px; line-height: 1.45; }
+  #fx { overflow-y: auto; }
+  #fx .flypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 6px 0; }
+  #fx .flypad button { padding: 8px 4px; font-size: 13px; background: transparent; border: 1px solid var(--line2, #303133); border-radius: 10px; color: var(--text); cursor: pointer; touch-action: none; user-select: none; }
+  #fx .flypad button:active, #fx .flypad button.held { border-color: var(--accent); color: var(--accent); background: rgba(26,26,26,0.8); }
   #fx .fxshapes { display: flex; flex-wrap: wrap; gap: 4px; }
   #fx .fxshapes button { font-size: 13px; padding: 3px 10px; background: transparent; box-shadow: none; }
   #fx .fxshapes button.on { border-color: var(--accent); color: var(--accent); }
@@ -185,6 +189,10 @@
   #zoombar .tag { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
   /* HUD: where you are, in the lower left; the x folds it into a small round button */
   #hud { position: absolute; left: 16px; bottom: 16px; z-index: 5; max-width: calc(100% - 32px); padding: 10px 34px 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--bg) 58%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); text-shadow: none; }
+  #hoverTip { position: absolute; z-index: 9; pointer-events: none; display: none; padding: 6px 11px; border-radius: 9px; font-size: 14px; white-space: nowrap; color: #fff; background: color-mix(in srgb, var(--bg) 78%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); text-shadow: none; }
+  #hoverTip small { color: var(--muted); margin-left: 6px; }
+  #hoverTip em { display: block; font-style: normal; font-size: 11px; color: var(--accent); margin-top: 1px; letter-spacing: .06em; }
+  #hoverRing { position: absolute; z-index: 8; pointer-events: none; display: none; border: 1.5px solid var(--accent); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 10px rgba(159,184,171,0.35); }
   #hud[hidden], #hudOpen[hidden] { display: none; }
   #hud .hudbody { display: flex; gap: 16px; align-items: flex-start; }
   #hud .hudcube { text-align: center; flex: none; }
@@ -194,10 +202,14 @@
   #hud .hudmain { font-size: 18px; color: #fff; margin: 3px 0 2px; font-variant-numeric: tabular-nums; }
   #hud .hudsub { font-size: 13px; line-height: 1.5; color: var(--muted); font-variant-numeric: tabular-nums; }
   #hud .hudscale { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 13px; color: #c9d6e6; font-variant-numeric: tabular-nums; }
+  #hud .hudnote { margin-top: 6px; max-width: 380px; font-size: 12px; line-height: 1.4; color: var(--muted); white-space: normal; }
+  #hud .hudnote:empty { display: none; }
   #hud .hudbar { height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
   #hudClose { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; padding: 0; line-height: 1; font-size: 16px; border-radius: 50%; background: transparent; border: 0; color: var(--muted); cursor: pointer; }
   #hudClose:hover { color: var(--accent); background: rgba(26,26,26,0.8); }
   #hudOpen { position: absolute; left: 16px; bottom: 16px; z-index: 5; }
+  #scalebar { display: none; }
+  body.hud-closed #scalebar { display: block; }
   #scalebar { position: absolute; right: 18px; bottom: 96px; z-index: 4; color: #c9d6e6; text-align: right; font-variant-numeric: tabular-nums; }
   #scalebar .bar { height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); margin: 4px 0 0 auto; border-radius: 2px; }
   #help { position: absolute; right: 18px; bottom: 18px; z-index: 4; padding: 8px 12px; color: var(--muted); font-size: 13px; line-height: 1.5; }
@@ -219,7 +231,8 @@
 <body>
 <div id="view"></div>
 <canvas id="warp" aria-hidden="true"></canvas>
-<div id="navbar"><div id="logo"><div class="mark"></div><div><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div></div><nav id="menu"><a href="universe-timeline.html" class="here">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span class="orbwrap"><span class="dim" id="navTime"></span><button id="drawerBtn" class="orb" type="button" title="Chronicle: vertical timeline and map" aria-label="Chronicle" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></button><button id="destBtn" class="orb" type="button" title="Locations: travel to a destination" aria-label="Locations" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></button><button id="fxBtn" class="orb" type="button" title="Star effects" aria-label="Star effects" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.1 6.9L21 12l-6.9 2.1L12 21l-2.1-6.9L3 12l6.9-2.1z"/></svg></button></span></div>
+<div id="hoverRing"></div><div id="hoverTip"></div>
+<div id="navbar"><div id="logo"><div class="mark"></div><div><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div></div><nav id="menu"><a href="universe-timeline.html" class="here">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span class="orbwrap"><span class="dim" id="navTime"></span><button id="drawerBtn" class="orb" type="button" title="Chronicle: vertical timeline and map" aria-label="Chronicle" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></button><button id="destBtn" class="orb" type="button" title="Locations: travel to a destination" aria-label="Locations" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></button><button id="fxBtn" class="orb" type="button" title="Star effects" aria-label="Star effects" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.1 6.9L21 12l-6.9 2.1L12 21l-2.1-6.9L3 12l6.9-2.1z"/></svg></button><button id="flyBtn" class="orb" type="button" title="Flight mode (G)" aria-label="Flight mode" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3.2 2.4 4.6 5.6 4.6 9.2L12 21l-4.6-8.8C7.4 8.6 8.8 5.4 12 3z"/><circle cx="12" cy="10.5" r="1.6"/></svg></button></span></div>
 <div id="top"><canvas id="timeline"></canvas><canvas id="minimap" title="Drag the window to pan the timeline"></canvas><div id="tl-handle" title="Click to show or hide the timeline; drag to resize it"></div><div id="tlbrush"></div><div id="tlzoom" title="Wheel: zoom at the pointer · drag: pan · double-click: zoom in · shift-drag: zoom to a range"><button id="tlOut" type="button" aria-label="Zoom out">−</button><button id="tlIn" type="button" aria-label="Zoom in">+</button><button id="tlFit" type="button" aria-label="Show the whole timeline">fit</button></div></div>
 <aside id="drawer">
   <div class="head"><h3 class="serif">Chronicle</h3><span class="dim" id="drawerWhen"></span></div>
@@ -310,6 +323,18 @@
   <div class="row"><label for="fxTwinkle">Twinkle</label><input type="range" id="fxTwinkle" min="0" max="1" step="0.02"><span class="val" id="fxTwinkle-v"></span></div>
   <div class="row"><label for="fxGain">Brightness</label><input type="range" id="fxGain" min="0.3" max="3" step="0.05"><span class="val" id="fxGain-v"></span></div>
   <div class="row"><label for="fxAdd">Additive glow (light adds up)</label><input type="checkbox" id="fxAdd"></div>
+  <div class="head" style="margin-top:14px"><h3 style="font-size:15px">Flight</h3></div>
+  <div class="row"><label for="fxFly">Flight mode (G): fly where you look</label><input type="checkbox" id="fxFly"></div>
+  <div class="row"><label for="fxFlySpeed">Speed (view widths / s)</label><input type="range" id="fxFlySpeed" min="-2.3" max="1.6" step="0.01"><span class="val" id="fxFlySpeed-v"></span></div>
+  <div class="row"><label for="fxFlyBoost">Boost (Shift)</label><input type="range" id="fxFlyBoost" min="2" max="40" step="1"><span class="val" id="fxFlyBoost-v"></span></div>
+  <div class="row"><label for="fxFlyGlide">Glide (inertia, s)</label><input type="range" id="fxFlyGlide" min="0.02" max="2.5" step="0.02"><span class="val" id="fxFlyGlide-v"></span></div>
+  <div class="row"><label for="fxFlyLook">Look sensitivity</label><input type="range" id="fxFlyLook" min="0.3" max="2.5" step="0.05"><span class="val" id="fxFlyLook-v"></span></div>
+  <div class="flypad" aria-label="On-screen flight pad: hold a button to fly">
+    <button type="button" data-k="x">up</button><button type="button" data-k="w">forward</button><button type="button" data-k="shift">boost</button>
+    <button type="button" data-k="a">left</button><button type="button" data-k="b">brake</button><button type="button" data-k="d">right</button>
+    <button type="button" data-k="z">down</button><button type="button" data-k="s">back</button><button type="button" id="fxFlyReset">reset</button>
+  </div>
+  <div class="dim fxnote">Mouse wheel sets the speed while flying. Drag to look; right-drag pans. Speed scales with how far you are zoomed in, so the same speed works at any scale.</div>
   <div class="head" style="margin-top:14px"><h3 style="font-size:15px">Travel</h3></div>
   <div class="fxshapes" id="fxFlight" title="Pull back first: zoom out to see both ends, fly, zoom in. Direct flight: fly straight there without zooming out."></div>
   <div class="row"><label for="fxPull">Pull-back</label><input type="range" id="fxPull" min="0" max="1.5" step="0.05"><span class="val" id="fxPull-v"></span></div>
@@ -354,6 +379,7 @@
       <div class="hudsub" id="hudGC"></div>
       <div class="hudsub" id="hudView"></div>
       <div class="hudsub hudaccent" id="hudDest"></div>
+      <div class="hudsub hudaccent" id="hudFly"></div>
     </div>
     <div class="hudcube" title="A cube of space around the Sun, turning with your view. Yellow: the Sun. White ring: where you are looking. Blue: the loaded destination, with a line down to the galactic plane.">
       <canvas id="cube"></canvas>
@@ -361,6 +387,7 @@
     </div>
   </div>
   <div class="hudscale"><div class="hudbar" id="hudBar"></div><span id="hudScale"></span></div>
+  <div class="hudnote" id="hudNote"></div>
 </div>
 <button id="hudOpen" class="orb" type="button" hidden aria-label="Show the location readout" title="Current location">
   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
@@ -702,7 +729,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 view.appendChild(renderer.domElement);
 renderer.domElement.tabIndex = 0;
 const scene = new THREE.Scene(); scene.background = new THREE.Color(window.KOSMO_BG ? KOSMO_BG.pick(0x05070d) : 0x05070d);
-Object.assign(window.kosmoTimeline, { renderer, scene, state });   // debug hook (profiling)
+Object.assign(window.kosmoTimeline, { renderer, scene, state, focus });   // debug hook (profiling)
 const camera = new THREE.PerspectiveCamera(50, 1, 1e-4, 1e5);
 camera.position.set(0.35, 0.75, 1.9).setLength(1 / Math.tan(25 * Math.PI / 180));   // 2 scene units = the frame height
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -711,7 +738,7 @@ controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIG
 scene.add(new THREE.AmbientLight(0xffffff, 0.45));
 const sunLight = new THREE.PointLight(0xfff2d0, 2.5, 0, 0); scene.add(sunLight);
 // the wheel travels in scale (not a camera dolly), so every level keeps its true size
-renderer.domElement.addEventListener('wheel', e => { e.preventDefault(); state.zoom = clamp(state.zoom + Math.sign(e.deltaY) * 0.08, 6.5, 27); sync('zoom', 2); travel = null; }, { passive: false });
+renderer.domElement.addEventListener('wheel', e => { e.preventDefault(); if (fly.on) { fly.speed = clamp(fly.speed * Math.exp(-Math.sign(e.deltaY) * 0.18), 0.005, 40); flySync(); return; } state.zoom = clamp(state.zoom + Math.sign(e.deltaY) * 0.08, 6.5, 27); sync('zoom', 2); travel = null; }, { passive: false });
 renderer.domElement.addEventListener('contextmenu', e => e.preventDefault());
 
 let seed = 12345;
@@ -1103,6 +1130,48 @@ function goHash() {
 }
 window.addEventListener('hashchange', goHash);
 
+// ---- Pick any body: hover to see its name, click to fly there. Candidates are the destination list at their DISPLAYED positions (at() follows the
+// compressed and size-skewed layouts), projected to the screen; the nearest one within its on-screen radius wins. ----
+const hoverTip = $('hoverTip'), hoverRing = $('hoverRing'), _pk = new THREE.Vector3();
+let hoverDest = null, hoverMouse = null;
+function pickAt(mx, my) {
+  const k = 2 / 10 ** state.zoom, W = view.clientWidth, H = view.clientHeight, pxPerScene = H / 2;
+  let best = null, bestScore = 1, bestPx = 0;
+  for (const d of DEST) {
+    if (!d.pos || d.viaParent || d.preset) continue;
+    const p = at(d.pos);
+    _pk.set((p[0] - focus[0]) * k, (p[2] - focus[2]) * k, -(p[1] - focus[1]) * k).project(camera);
+    if (_pk.z > 1 || _pk.z < -1) continue;
+    const sx = (_pk.x + 1) / 2 * W, dx = sx - mx; if (dx > 320 || dx < -320) continue;
+    const sy = (1 - _pk.y) / 2 * H, dy = sy - my; if (dy > 320 || dy < -320) continue;
+    const bodyPx = d.w ? (at(d.w) / 5) * k * pxPerScene : 0, hit = Math.min(300, Math.max(13, bodyPx)), score = Math.hypot(dx, dy) / hit;
+    if (score < bestScore) { bestScore = score; best = { d, sx, sy, p }; bestPx = Math.max(bodyPx, 8); }
+  }
+  return best && { ...best, ringPx: Math.min(2 * bestPx + 10, 340) };
+}
+function updateHover() {
+  if (!hoverMouse) { hoverTip.style.display = hoverRing.style.display = 'none'; hoverDest = null; return; }
+  const hit = pickAt(hoverMouse.x, hoverMouse.y);
+  hoverDest = hit && hit.d; renderer.domElement.style.cursor = hit ? 'pointer' : '';
+  if (!hit) { hoverTip.style.display = hoverRing.style.display = 'none'; return; }
+  const dist = Math.hypot(hit.p[0] - focus[0], hit.p[1] - focus[1], hit.p[2] - focus[2]);
+  hoverTip.innerHTML = `${hit.d.name}<small>${hit.d.type || ''}</small><em>${dist > 1 ? P.fmtLength(dist) + ' from the view centre' : 'here'} · click to fly there</em>`;
+  hoverTip.style.display = 'block';
+  const tw = hoverTip.offsetWidth; hoverTip.style.left = `${Math.min(hit.sx + 18, view.clientWidth - tw - 8)}px`; hoverTip.style.top = `${Math.max(hit.sy - 8, 8)}px`;
+  hoverRing.style.display = 'block'; hoverRing.style.left = `${hit.sx}px`; hoverRing.style.top = `${hit.sy}px`; hoverRing.style.width = hoverRing.style.height = `${hit.ringPx}px`;
+}
+{ // pointer wiring on the 3D canvas: track the pointer for hover; a press-and-release without dragging is a click
+  const cvs = renderer.domElement; let down = null;
+  cvs.addEventListener('pointermove', e => { const r = cvs.getBoundingClientRect(); hoverMouse = { x: e.clientX - r.left, y: e.clientY - r.top }; });
+  cvs.addEventListener('pointerleave', () => { hoverMouse = null; });
+  cvs.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY, t: performance.now() }; });
+  cvs.addEventListener('pointerup', e => {
+    if (!down) return; const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y), quick = performance.now() - down.t < 500; down = null;
+    if (moved > 5 || !quick || e.button !== 0) return;
+    const r = cvs.getBoundingClientRect(), hit = pickAt(e.clientX - r.left, e.clientY - r.top);
+    if (hit) { goDest(hit.d); $('search').value = hit.d.name; }
+  });
+}
 function applyScalePreset(p) {
   Object.assign(state, p);
   for (const [id, dec] of [['distK', 2], ['sizeK', 2], ['skyK', 2], ['skyB', 2], ['skyN', 0], ['sizeMul', 1]]) sync(id, dec);
@@ -1197,6 +1266,7 @@ function hudUpdate(near) {
   $('hudCoords').textContent = d < 1e3 ? 'at the Sun' : `l ${l.toFixed(1)}°  b ${b.toFixed(1)}°  ·  ${P.fmtLength(d)} from the Sun`;
   $('hudGC').textContent = `${P.fmtLength(Math.hypot(focus[0], focus[1], focus[2]))} from the galactic centre`;
   $('hudView').textContent = `view ${P.fmtLength(10 ** state.zoom)} across`;
+  const spd = flyVel.length(), cFrac = spd / 299792458; $('hudFly').textContent = fly.on ? `flight · ${spd < 1 ? 'stopped' : P.fmtLength(spd) + '/s (' + (cFrac >= 0.01 ? cFrac.toFixed(2) : cFrac.toExponential(1)) + ' c)'}` : '';
 }
 // ---- the mini cube: a box of space centred on the Sun that turns with the camera. Shows the Sun, the view centre and the loaded
 // destination (the one being travelled to, else the last one reached) at their real positions, with a drop line to the galactic plane. ----
@@ -1241,7 +1311,7 @@ function drawCube() {
   $('hudDest').textContent = dst ? `→ ${dst.name || 'destination'}${dp ? ' · ' + P.fmtLength(Math.hypot(dp[0], dp[1], dp[2])) + ' from the Sun' : ''}` : '';
 }
 function setHud(open) {
-  hudClosed = !open; $('hud').hidden = !open; $('hudOpen').hidden = open;
+  hudClosed = !open; document.body.classList.toggle('hud-closed', !open); $('hud').hidden = !open; $('hudOpen').hidden = open;
   try { localStorage.setItem('kosmoHud', open ? 'open' : 'closed'); } catch { /* storage blocked */ }
   if (open) hudUpdate(nearestName());
 }
@@ -1307,19 +1377,41 @@ window.addEventListener('keydown', e => {
   if (e.key === ' ') { e.preventDefault(); state.play = !state.play; $('play').checked = state.play; if (state.play && state.logA >= 0) state.logA = -16; }
   if (e.key.toLowerCase() === 'r') { state.spin = !state.spin; $('spin').checked = state.spin; }
   if (e.key.toLowerCase() === 't') toggleTimeline();
+  if (e.key.toLowerCase() === 'g') setFlight(!fly.on);
   if (e.key === '[') tlPan(-0.2); if (e.key === ']') tlPan(0.2); if (e.key === '-') tlZoom(1.6); if (e.key === '=' || e.key === '+') tlZoom(1 / 1.6);
   if (e.key.toLowerCase() === 'c') toggleDrawer();
   if (e.key.startsWith('Arrow')) e.preventDefault();
 });
 window.addEventListener('keyup', e => keys.delete(e.key.toLowerCase()));
-const tmpV = new THREE.Vector3(), tmpR = new THREE.Vector3(), tmpU = new THREE.Vector3(), tmpM = new THREE.Vector3();
+const tmpV = new THREE.Vector3(), tmpR = new THREE.Vector3(), tmpU = new THREE.Vector3(), tmpM = new THREE.Vector3(), tmpS = new THREE.Vector3();
+// ---- Flight: W/S fly forward and back along your view, A/D strafe, X/Z up and down, Shift boosts, B brakes, G toggles. Speed is in view-widths
+// per second, so the same controls fly you across a planet or a galaxy; dragging turns your head (the camera stays put, it does not orbit). ----
+const FLY_DEFAULTS = { speed: 0.3, boost: 8, glide: 0.4, look: 1 };
+const fly = { on: false, ...FLY_DEFAULTS }, flyVel = new THREE.Vector3();
+try { const sv = JSON.parse(localStorage.getItem('kosmoFly') || '{}'); for (const k of Object.keys(FLY_DEFAULTS)) if (typeof sv[k] === 'number') fly[k] = sv[k]; } catch { /* defaults */ }
+function flightMove(dt) {
+  const viewW = 10 ** state.zoom, boost = keys.has('shift') ? fly.boost : 1;
+  camera.getWorldDirection(tmpV); tmpR.crossVectors(tmpV, camera.up).normalize(); tmpU.crossVectors(tmpR, tmpV).normalize();
+  tmpM.set(0, 0, 0);
+  if (keys.has('w')) tmpM.add(tmpV); if (keys.has('s')) tmpM.sub(tmpV); if (keys.has('d')) tmpM.add(tmpR); if (keys.has('a')) tmpM.sub(tmpR); if (keys.has('x')) tmpM.add(tmpU); if (keys.has('z')) tmpM.sub(tmpU);
+  const braking = keys.has('b');
+  if (tmpM.lengthSq() > 0 && !braking) tmpM.normalize().multiplyScalar(fly.speed * viewW * boost); else tmpM.set(0, 0, 0);   // metres per second
+  flyVel.lerp(tmpM, 1 - Math.exp(-dt / (braking ? 0.08 : Math.max(fly.glide, 0.02))));                                    // glide: inertia in seconds
+  moveFocusScene(tmpS.copy(flyVel).multiplyScalar(dt)); travel = null; follow = null;
+}
+function setFlight(on) {
+  fly.on = on; if (!on) flyVel.set(0, 0, 0);
+  $('flyBtn').classList.toggle('open', on); $('flyBtn').setAttribute('aria-expanded', String(on)); $('fxFly').checked = on;
+  toast(on ? 'Flight mode: W/S fly, A/D strafe, X/Z up/down, Shift boost, B brake, drag to look' : 'Orbit mode');
+}
 function steer(dt) {
   const fast = keys.has('shift') ? 3 : 1, rot = 1.2 * dt * fast, viewW = 10 ** state.zoom, pan = 0.6 * viewW * dt * fast;
   if (keys.has('arrowleft')) orbitBy(rot, 0); if (keys.has('arrowright')) orbitBy(-rot, 0);
   if (keys.has('arrowup')) orbitBy(0, rot); if (keys.has('arrowdown')) orbitBy(0, -rot);
   if (keys.has('q')) { state.zoom = clamp(state.zoom + 0.9 * dt * fast, 6.5, 27); sync('zoom', 2); travel = null; }
   if (keys.has('e')) { state.zoom = clamp(state.zoom - 0.9 * dt * fast, 6.5, 27); sync('zoom', 2); travel = null; }
-  if (keys.has('w') || keys.has('a') || keys.has('s') || keys.has('d')) {
+  if (fly.on) flightMove(dt); else flyVel.set(0, 0, 0);
+  if (!fly.on && (keys.has('w') || keys.has('a') || keys.has('s') || keys.has('d'))) {
     camera.getWorldDirection(tmpV); tmpR.crossVectors(tmpV, camera.up).normalize(); tmpU.crossVectors(tmpR, tmpV).normalize();
     tmpM.set(0, 0, 0);
     if (keys.has('w')) tmpM.add(tmpU); if (keys.has('s')) tmpM.sub(tmpU); if (keys.has('d')) tmpM.add(tmpR); if (keys.has('a')) tmpM.sub(tmpR);
@@ -1383,11 +1475,23 @@ function updateScene() {
   const sl = $('syslabels'), sk = skyPack();
   if (sk.on) {
     const items = [['sun', 'Solar System', SUN, 2.1 * Math.max(...Object.keys(P.ORBITS).map(n => dist3(layout().pos[n], SUN)))], ...[...SYSTEMS.values()].filter(S => sk.set.has(S.key)).map(S => [S.key, S.name, S.centre(), S.layout().width])];
-    let i = 0;
+    // Labels that would overlap are skipped, never stacked: the biggest systems claim their spot first (the Solar System always does), and the
+    // big centre label is an obstacle too. The estimate of a label's width avoids reading layout for every label.
+    const cands = [];
     for (const [key, name, c, w] of items) {
       const px = w / viewW * view.clientHeight; if (px > 200) continue;
       const o = toScene(c, focus, k), p = new THREE.Vector3(o[0], o[1], o[2]); if (p.length() > 3) continue; p.project(camera); if (p.z >= 1 || Math.abs(p.x) > 1 || Math.abs(p.y) > 1) continue;
-      const el = sl.children[i] || sl.appendChild(document.createElement('span')); el.textContent = name; el.style.left = `${(p.x + 1) / 2 * view.clientWidth}px`; el.style.top = `${(1 - p.y) / 2 * view.clientHeight + Math.max(6, px / 2)}px`; el.style.opacity = clamp((200 - px) / 80, 0.25, 1); i++;
+      cands.push({ name, px, x: (p.x + 1) / 2 * view.clientWidth, y: (1 - p.y) / 2 * view.clientHeight + Math.max(6, px / 2), pri: key === 'sun' ? 1e9 : px });
+    }
+    cands.sort((a, b) => b.pri - a.pri);
+    const boxes = [];
+    if (!lab.hidden) { const vr = view.getBoundingClientRect(), lr = lab.getBoundingClientRect(); boxes.push({ x0: lr.left - vr.left - 8, x1: lr.right - vr.left + 8, y0: lr.top - vr.top - 6, y1: lr.bottom - vr.top + 6 }); }
+    let i = 0;
+    for (const c of cands) {
+      const wpx = c.name.length * 7.4 + 10, box = { x0: c.x - wpx / 2, x1: c.x + wpx / 2, y0: c.y + 8, y1: c.y + 8 + 17 };   // CSS shifts the label 8px down and centres it
+      if (boxes.some(o => box.x0 < o.x1 && box.x1 > o.x0 && box.y0 < o.y1 && box.y1 > o.y0)) continue;
+      boxes.push(box);
+      const el = sl.children[i] || sl.appendChild(document.createElement('span')); el.textContent = c.name; el.style.left = `${c.x}px`; el.style.top = `${c.y}px`; el.style.opacity = clamp((200 - c.px) / 80, 0.25, 1); i++;
     }
     while (sl.children.length > i) sl.lastChild.remove();
   } else if (sl.children.length) sl.innerHTML = '';
@@ -1399,9 +1503,11 @@ function updateScene() {
   const barPx = clamp(m * u * k * pxPerScene, 12, 420);
   $('scaletxt').textContent = `${m} ${name}`; $('bar').style.width = `${barPx}px`;
   if (!hudClosed) { $('hudScale').textContent = `${m} ${name}`; $('hudBar').style.width = `${barPx}px`; }
+  const fmtMag = x => x >= 1e5 ? x.toExponential(1).replace('e+', 'e') : x.toFixed(0);
   const notes = []; if (state.sizeMul > 1) notes.push(`objects enlarged ×${state.sizeMul.toFixed(state.sizeMul < 10 ? 1 : 0)}`); if (state.distK < 1) notes.push(`distances compressed γ = ${state.distK.toFixed(2)}`); if (state.sizeK < 1) notes.push(`sizes balanced β = ${state.sizeK.toFixed(2)}`);
-  if (state.skyK < 1) notes.push(`star distances compressed γ = ${state.skyK.toFixed(2)}`); if (skyPack().on) notes.push(`systems magnified ×${skyPack().mags[0].toFixed(0)}–×${skyPack().mags[1].toFixed(0)}`);
-  $('scalenote').textContent = notes.length ? `⚠ ${notes.join(' · ')} (star and galaxy positions stay true; their points swell with the size slider)` : '';
+  if (state.skyK < 1) notes.push(`star distances compressed γ = ${state.skyK.toFixed(2)}`); if (skyPack().on) notes.push(`systems magnified ×${fmtMag(skyPack().mags[0])}–×${fmtMag(skyPack().mags[1])}`);
+  const noteText = notes.length ? `⚠ ${notes.join(' · ')} (star and galaxy positions stay true; their points swell with the size slider)` : '';
+  $('scalenote').textContent = noteText; if (!hudClosed) $('hudNote').textContent = noteText;
   for (const b of levelBtns.children) b.classList.toggle('on', b.dataset.key === activeL.key);
 }
 
@@ -1492,6 +1598,28 @@ function setFxDrawer(open) {
   setTimeout(resize, 300);
 }
 $('fxBtn').addEventListener('click', () => setFxDrawer(!fxOpen));
+// Flight controls in the settings drawer
+function flySync() {
+  $('fxFlySpeed').value = Math.log10(fly.speed); $('fxFlySpeed-v').textContent = `${fly.speed < 1 ? fly.speed.toFixed(2) : fly.speed.toFixed(1)}×`;
+  $('fxFlyBoost').value = fly.boost; $('fxFlyBoost-v').textContent = `${fly.boost.toFixed(0)}×`;
+  $('fxFlyGlide').value = fly.glide; $('fxFlyGlide-v').textContent = `${fly.glide.toFixed(2)} s`;
+  $('fxFlyLook').value = fly.look; $('fxFlyLook-v').textContent = `${fly.look.toFixed(2)}×`;
+  controls.rotateSpeed = fly.look; $('fxFly').checked = fly.on;
+  try { localStorage.setItem('kosmoFly', JSON.stringify({ speed: fly.speed, boost: fly.boost, glide: fly.glide, look: fly.look })); } catch { /* storage blocked */ }
+}
+$('fxFlySpeed').addEventListener('input', e => { fly.speed = 10 ** parseFloat(e.target.value); flySync(); });
+$('fxFlyBoost').addEventListener('input', e => { fly.boost = parseFloat(e.target.value); flySync(); });
+$('fxFlyGlide').addEventListener('input', e => { fly.glide = parseFloat(e.target.value); flySync(); });
+$('fxFlyLook').addEventListener('input', e => { fly.look = parseFloat(e.target.value); flySync(); });
+$('fxFly').addEventListener('change', e => setFlight(e.target.checked));
+$('flyBtn').addEventListener('click', () => setFlight(!fly.on));
+$('fxFlyReset').addEventListener('click', () => { Object.assign(fly, FLY_DEFAULTS); flySync(); });
+// the on-screen pad: hold a button to press its key
+document.querySelectorAll('#fx .flypad button[data-k]').forEach(b => {
+  const k = b.dataset.k, down = () => { keys.add(k); b.classList.add('held'); if (!fly.on && k !== 'shift') setFlight(true); }, up = () => { keys.delete(k); b.classList.remove('held'); };
+  b.addEventListener('pointerdown', e => { b.setPointerCapture(e.pointerId); down(); }); b.addEventListener('pointerup', up); b.addEventListener('pointercancel', up); b.addEventListener('lostpointercapture', up);
+});
+flySync();
 const FX_SLIDERS = [['fxSize', 'size', v => v.toFixed(2) + '×', false], ['fxHalo', 'halo', v => v.toFixed(2), true], ['fxSpike', 'spike', v => v.toFixed(2), true], ['fxRot', 'rot', v => v.toFixed(0) + '°', true], ['fxTwinkle', 'twinkle', v => v.toFixed(2), false], ['fxGain', 'gain', v => v.toFixed(2) + '×', false], ['fxWarpAmt', 'warpAmt', v => v.toFixed(2) + '×', false], ['fxPull', 'pull', v => v.toFixed(2) + '×', false], ['fxSpeed', 'flightSpeed', v => v.toFixed(2) + '×', false], ['fxArc', 'arc', v => v.toFixed(2), false]];
 // `redraw` = the change alters the sprite drawing itself (otherwise only material settings change)
 function fxSync() {
@@ -1676,11 +1804,15 @@ function animate(now) {
   if (state.play) { state.logA = Math.min(0, state.logA + state.speed * dt); sync('logA', 2); if (state.logA >= 0) { state.play = false; $('play').checked = false; } }
   if (!state.pause) clock.jd += dt * 10 ** state.rate / 86400;
   if (frame % 6 === 0) $('clockDate').textContent = clockDate() + (state.pause ? ' (paused)' : '');
+  const camBefore = fly.on ? camera.position.clone() : null;
   steer(dt); stepTravel(dt);
   controls.update();
+  // look around instead of orbit: undo the camera's movement by moving the focus the opposite way
+  if (camBefore) moveFocusScene(camBefore.sub(camera.position).divideScalar(2 / 10 ** state.zoom));
   updateScene();
   if (frame % 2 === 0) { drawTimeline(); drawMinimap(); drawCube(); }
   if (frame % 10 === 0) updateDrawer();
+  if (frame % 3 === 0) updateHover();
   if (frame % 2 === 1) stepDial();
   if (frame % 15 === 0) readout();
   frame++;
