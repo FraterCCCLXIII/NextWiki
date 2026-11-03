@@ -52,7 +52,7 @@
     -webkit-mask-composite: source-in; mask-composite: intersect; }
   #top.collapsed { height: 0; }
   #top.collapsed canvas { opacity: 0; pointer-events: none; }
-  #timeline { display: block; width: 100%; height: var(--tlh, 210px); cursor: crosshair; transition: opacity .2s;
+  #timeline { display: block; width: 100%; height: var(--tlh, 210px); cursor: crosshair; touch-action: none; transition: opacity .2s;
     /* alpha-channel fades on the left and right edges; --tl-fade sets how wide they are */
     -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--tl-fade, 72px), #000 calc(100% - var(--tl-fade, 72px)), transparent 100%);
     mask-image: linear-gradient(to right, transparent 0, #000 var(--tl-fade, 72px), #000 calc(100% - var(--tl-fade, 72px)), transparent 100%); }
@@ -103,8 +103,12 @@
   #folders .hv:hover { background: rgba(127,195,255,0.06); } #folders .hv .y { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; } #folders .hv.now { background: rgba(255,255,255,0.08); color: #fff; }
   #folders summary.sel { background: rgba(127,195,255,0.12); }
   #tl-handle::before { content: ''; position: absolute; left: 16px; right: 16px; top: 6px; height: 1px; background: linear-gradient(90deg, transparent, rgba(127,195,255,0.55) 15%, rgba(255,184,107,0.55) 85%, transparent); }
-  #tl-handle::after { content: '▾'; position: absolute; left: 50%; top: -2px; transform: translateX(-50%); font-size: 12px; color: var(--accent); background: var(--bg); padding: 0 8px; }
-  #top.collapsed #tl-handle::after { content: '▸ timeline'; letter-spacing: 0.1em; }
+  /* a grip pill: drag it to scale the strip, click it to hide or show the strip */
+  #tl-handle { cursor: ns-resize; }
+  #tl-handle::after { content: ''; position: absolute; left: 50%; top: -3px; transform: translateX(-50%); width: 56px; height: 18px; box-sizing: border-box; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line2, #303133);
+    background-color: rgba(26,26,26,0.94); background-image: radial-gradient(circle, #8d8e91 1.3px, transparent 1.8px); background-size: 8px 8px; background-position: center; background-repeat: space; background-clip: content-box; transition: border-color .2s; }
+  #tl-handle:hover::after { border-color: var(--accent); }
+  #top.collapsed #tl-handle::after { content: 'timeline'; width: auto; height: auto; padding: 2px 14px; font-size: 12px; line-height: 14px; letter-spacing: 0.12em; color: var(--accent); background-image: none; cursor: pointer; }
 
   .glass { background: transparent; border: 0; border-radius: var(--radius); text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
   #panel { position: absolute; left: 16px; top: calc(var(--tlh, 210px) + 80px); bottom: 96px; width: 330px; z-index: 4; overflow: auto; padding: 8px 14px 14px; }
@@ -532,14 +536,26 @@ function drawTimeline() {
   cv._geom = { padL, pw };
 }
 let tlDrag = null;
-cv.addEventListener('pointerdown', e => { if (e.shiftKey) { startBrush(e); return; } tlDrag = { x: e.offsetX, x0: tlView.x0, x1: tlView.x1, moved: false }; cv.setPointerCapture(e.pointerId); });
+// two-finger touch pinch: the stretch of time under the fingers stays under them
+const tlPtr = new Map(); let tlPinch = null;
+function startPinch() { const [a, b] = [...tlPtr.values()]; tlPinch = { d: Math.max(1, Math.abs(a - b)), x0: tlView.x0, span: tlView.x1 - tlView.x0, mid: (a + b) / 2 }; }
+function movePinch() {
+  const g = cv._geom; if (!g || tlPtr.size < 2) return; const [a, b] = [...tlPtr.values()];
+  const d = Math.max(1, Math.abs(a - b)), mid = (a + b) / 2;
+  const u0 = clamp((tlPinch.mid - g.padL) / g.pw, 0, 1), u = clamp((mid - g.padL) / g.pw, 0, 1);
+  const span = clamp(tlPinch.span * tlPinch.d / d, 1e-7, 1), xm = tlPinch.x0 + tlPinch.span * u0;
+  tlView.x0 = clamp(xm - u * span, 0, 1 - span); tlView.x1 = tlView.x0 + span;
+}
+cv.addEventListener('pointerdown', e => { tlPtr.set(e.pointerId, e.offsetX); if (tlPtr.size === 2) { startPinch(); tlDrag = null; tlBrush = null; brushEl.style.display = 'none'; return; } if (e.shiftKey) { startBrush(e); return; } tlDrag = { x: e.offsetX, x0: tlView.x0, x1: tlView.x1, moved: false }; cv.setPointerCapture(e.pointerId); });
 cv.addEventListener('pointermove', e => {
+  if (tlPtr.has(e.pointerId)) tlPtr.set(e.pointerId, e.offsetX); if (tlPinch) { movePinch(); return; }
   if (tlBrush) { moveBrush(e); return; }
   if (!tlDrag) return; const g = cv._geom, dx = e.offsetX - tlDrag.x;
   if (Math.abs(dx) > 3) tlDrag.moved = true;
   if (tlDrag.moved) { const span = tlDrag.x1 - tlDrag.x0, d = -dx / g.pw * span; tlView.x0 = clamp(tlDrag.x0 + d, 0, 1 - span); tlView.x1 = tlView.x0 + span; }
 });
-cv.addEventListener('pointerup', e => { if (tlBrush) { endBrush(e); return; } if (tlDrag && !tlDrag.moved) scrub(e); tlDrag = null; });
+cv.addEventListener('pointerup', e => { tlPtr.delete(e.pointerId); if (tlPinch) { if (tlPtr.size < 2) tlPinch = null; tlDrag = null; return; } if (tlBrush) { endBrush(e); return; } if (tlDrag && !tlDrag.moved) scrub(e); tlDrag = null; });
+cv.addEventListener('pointercancel', e => { tlPtr.delete(e.pointerId); tlPinch = null; tlDrag = null; });
 cv.addEventListener('dblclick', e => { const g = cv._geom; if (g) tlZoom(0.35, clamp((e.offsetX - g.padL) / g.pw, 0, 1)); });
 // shift-drag a range on the timeline to zoom into it
 let tlBrush = null;
@@ -557,9 +573,16 @@ $('tlFit').addEventListener('click', () => { tlView.x0 = 0; tlView.x1 = 1; });
 window.kosmoTimeline = { view: tlView, show: tlShow, zoom: tlZoom };   // debug hook: the view is module-scoped otherwise
 cv.addEventListener('wheel', e => {
   e.preventDefault(); const g = cv._geom; if (!g) return;
-  if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) { tlPan((e.deltaX || e.deltaY) * 0.0012); return; }   // shift-wheel or trackpad sideways pans
-  tlZoom(Math.exp(e.deltaY * 0.0015), clamp((e.offsetX - g.padL) / g.pw, 0, 1));
+  const k = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1, dx = e.deltaX * k, dy = e.deltaY * k;   // lines and pages to pixels
+  const u = clamp((e.offsetX - g.padL) / g.pw, 0, 1);
+  if (e.ctrlKey) { tlZoom(Math.exp(dy * 0.012), u); return; }                                  // trackpad pinch (browsers send it as ctrl+wheel) zooms at the pointer
+  if (e.shiftKey || Math.abs(dx) > Math.abs(dy)) { tlPan((dx || dy) * 0.0012); return; }        // shift-wheel or a sideways two-finger swipe pans
+  tlZoom(Math.exp(dy * 0.0015), u);                                                             // wheel or a vertical swipe zooms at the pointer
 }, { passive: false });
+// Safari reports a trackpad pinch as gesture events instead
+let gScale = 1;
+cv.addEventListener('gesturestart', e => { e.preventDefault(); gScale = 1; });
+cv.addEventListener('gesturechange', e => { e.preventDefault(); const g = cv._geom; if (!g) return; tlZoom(gScale / e.scale, clamp((e.offsetX - g.padL) / g.pw, 0, 1)); gScale = e.scale; });
 // minimap: the whole range with the visible window; drag the window, click to jump
 const mm = $('minimap'), mctx = mm.getContext('2d');
 function drawMinimap() {
