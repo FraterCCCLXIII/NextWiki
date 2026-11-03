@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Abundance — can the guarantees be funded when the wages go?</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+<div class="titlebar">
+    <div class="titles">
+      <h1>Abundance</h1>
+      <p class="sub">Jobs, healthcare, savings, housing and a basic income in an economy that needs few workers</p>
+    </div>
+    <div class="presets" id="presets" role="group" aria-label="Scenarios"></div>
+  </div>
+
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Policy levers">
+    <div class="levers-head">
+      <span>Levers</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="leverGroups"></div>
+    <p class="aside-note">
+      Measured 2026 anchors are fixed; everything you can move is a policy choice or an
+      assumption about behaviour. The model is accounting, not forecasting &mdash; it says
+      whether a bundle balances, not whether it will be chosen.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>The claim being tested.</strong> Every guarantee in the ask is a claim on output:
+      a job is a wage, healthcare is a service, housing is a building, savings is deferred
+      income, a basic income is a transfer. None of them can be produced by willing them.
+      This page prices each one, funds it from a tax base that is shrinking, and shows what
+      happens to the arithmetic as the wage bill falls from 58% of GDP to 27%.
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>The squeeze: employment falls, the bill for the guarantees rises</h2>
+          <p>Employment as a share of adults, and labour's share of GDP. The second line is the
+            tax base for the first guarantee. They are the same line seen from two sides.</p>
+        </figcaption>
+        <div id="chartSqueeze" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Where household income comes from</h2>
+          <p>Wages, private capital income, the sovereign dividend, the basic income and legacy
+            transfers, as a share of GDP. The crossover is the transition.</p>
+        </figcaption>
+        <div id="chartIncome" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Which tax base survives</h2>
+          <p>Revenue by base. Labour income tax shrinks with the wage bill; consumption, land
+            and capital do not. This is the whole fiscal problem in one chart.</p>
+        </figcaption>
+        <div id="chartBases" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Revenue against spending</h2>
+          <p>Total government revenue and total spending, with the debt ratio on the right axis.
+            The shaded band is where the closure rule bites.</p>
+        </figcaption>
+        <div id="chartFiscal" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Do all five guarantees hold?</h2>
+          <p>Each as coverage of the population entitled to it. The index below is their geometric
+            mean, so one failure cannot be traded against four successes.</p>
+        </figcaption>
+        <div id="chartCoverage" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>The fund against the wage bill</h2>
+          <p>Sovereign fund assets as a multiple of GDP, and the share of the capital stock it
+            owns. The fund is the only asset that grows as labour disappears.</p>
+        </figcaption>
+        <div id="chartFund" class="chartwrap"></div>
+      </figure>
+
+    </div>
+
+    <section class="panel">
+      <h2>The transition, in five phases</h2>
+      <p class="muted" style="margin-bottom:12px;">
+        Dates are computed from the current settings, not asserted. Each phase begins when the
+        model crosses a threshold, and the thresholds are the ones that matter in the accounting.
+      </p>
+      <div id="phases"></div>
+    </section>
+
+    <section class="panel">
+      <div class="sectors-head">
+        <div>
+          <h2>The bundle, line by line</h2>
+          <p class="muted">What each guarantee costs, in percent of GDP, under the current settings.
+            The last two rows are what the fund pays and what the taxpayer pays.</p>
+        </div>
+        <div class="yearpick">
+          <label for="bundleYear">Year <output id="bundleYearOut">2050</output></label>
+          <input id="bundleYear" type="range" min="2026" max="2100" value="2050" step="1">
+        </div>
+      </div>
+      <div id="bundleTable" class="calib-scroll"></div>
+    </section>
+
+    <section class="panel">
+      <h2>What the answer depends on</h2>
+      <p class="muted" style="margin-bottom:12px;">
+        Each bar is the model run twice with one assumption at a plausible low and high, holding
+        everything else at your current levers. The length is how far the end-state index moves.
+      </p>
+      <div id="sens" class="sens"></div>
+    </section>
+
+    <section class="panel method">
+      <h2>How the thing actually works</h2>
+      <div class="method-grid">
+        <div>
+          <h3>1. The guarantee is a claim on output</h3>
+          <p>A basic income of $900 a month for every adult is 9.4% of GDP, and it buys nothing
+          unless the economy produces goods someone can buy with it. Housing is 1% of GDP in
+          construction but the stock is three times GDP. Health is 16.6% of GDP and rising.
+          A job guarantee paying three-quarters of the average wage costs $80,000 a year per
+          participant, which is why the ceiling matters more than the promise.</p>
+          <p>The model prices all five and adds them. That total is the number that has to be
+          funded, and it is between 18 and 30 percent of GDP depending on the settings.</p>
+        </div>
+        <div>
+          <h3>2. The tax base is the wage bill</h3>
+          <p>Income tax on labour is 32% of a wage bill that is 58% of GDP today. When labour's
+          share falls to 27%, that base halves even if the rate does not move. So a state that
+          funds its guarantees from wages is running into a wall that is already scheduled.</p>
+          <p>Three bases survive automation: consumption, which is still 60% of GDP; land, which
+          cannot be offshored; and capital income, which grows exactly as labour's share falls.
+          The chart on this page is mostly the story of revenue migrating between those four.</p>
+        </div>
+        <div>
+          <h3>3. Ownership is the hinge</h3>
+          <p>A sovereign fund that owns a share of the capital stock earns a return whether or
+          not anyone works. The model caps its share of the capital stock at 50% and the annual
+          contribution at 3.5% of GDP &mdash; both far beyond anything attempted, and both
+          necessary for the arithmetic to close.</p>
+          <p>Once the fund is large enough, the basic income is paid out of capital income and
+          the tax cost falls to zero. That is the transition: not a tax that rises for ever, but
+          a tax that buys assets and then stops needing to.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel method">
+      <h2>The transition, practically</h2>
+      <div class="method-grid">
+        <div>
+          <h3>Build the meter before the bill</h3>
+          <p>Nothing in this is administratively new. Every rich country already runs a
+          retirement pension, a health insurer, a housing programme and a tax authority. The
+          scarce input is <em>sequencing</em>: the fund has to start buying capital while the
+          wage base is still large, because the capital tax that seeds it is levied on a wage
+          economy.</p>
+          <p>The sensitivity bars at the bottom test what actually moves the transition, and
+          the answer is uncomfortable: the depth of the dip is set mostly by <em>how much you
+          promise</em>, not by how fast the machines arrive. A generous payment made before the
+          fund matures is a payment you cannot keep.</p>
+        </div>
+        <div>
+          <h3>Pay for care, not for idleness</h3>
+          <p>The job guarantee is not make-work in this model: 45&ndash;60% of the wage is counted
+          as real output, because care, repair, restoration and community work are services
+          people want and markets under-provide. That is also the only large sector where
+          productivity resists automation, so it is where the remaining jobs are.</p>
+          <p>But a guarantee that pays three-quarters of the average wage for a quarter of the
+          output is expensive, and the model's ceiling is a budget constraint rather than a
+          moral one. At 22% of adults it is the single largest line item.</p>
+        </div>
+        <div>
+          <h3>The three ways it breaks</h3>
+          <p><strong>Demand:</strong> if the transfers arrive without the fund, the state borrows,
+          the debt compounds, the closure rule cuts the payment, and the floor falls exactly when
+          it is needed. <strong>Inflation:</strong> if the payment is financed by creation rather
+          than taxation, the floor is denominated in money that buys less each year.
+          <strong>Sequencing:</strong> if the fund is delayed past the wage cliff, the assets are
+          bought at the top with a tax base that has already gone.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Calibration &mdash; does it reproduce 2026?</h2>
+      <p class="muted" style="margin-bottom:10px;">
+        The model run on today's policy settings, against measured 2026 aggregates. This is the
+        only table on the page that can be wrong in a checkable way.
+      </p>
+      <div id="calib" class="calib-scroll"></div>
+    </section>
+
+    <section class="panel method">
+      <h2>What this cannot tell you</h2>
+      <div class="method-grid">
+        <div>
+          <h3>The political economy is absent</h3>
+          <p>Nothing here models whether a 45% tax take is electable, whether capital is
+          mobile, or whether a state that owns half the capital stock remains a democracy. Those
+          are the binding constraints in practice, and they are unmodelled.</p>
+        </div>
+        <div>
+          <h3>Prices are doing too much work</h3>
+          <p>Housing is modelled as units and construction cost, not as a market with land
+          prices; health as a share of GDP that drifts, not as a supply of clinicians. The
+          physical ledgers are the weakest part and they are the part a real programme would
+          fail on first.</p>
+        </div>
+        <div>
+          <h3>It is one country</h3>
+          <p>A closed economy. No trade, no migration, no capital flight, no reserve currency.
+          For the United States those omissions are large and they all point the same way: the
+          real version is harder than this one.</p>
+        </div>
+      </div>
+    </section>
+
+  </section>
+</main>
+
+<footer class="foot">
+  <span id="footRange">Annual model &middot; 2026&ndash;2100 &middot; four ledgers: household, fiscal, labour, physical</span>
+  <span>Anchors: BEA, BLS, CMS, Treasury. Everything else is a labelled assumption.</span>
+</footer>
+
+<script src="abundance.js?v=2"></script>
+<script src="hover.js?v=2"></script>
+<script src="abundance-app.js?v=5"></script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metabolism — what has to keep moving</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+
+<div class="titlebar">
+  <div class="titles">
+    <h1>Metabolism</h1>
+    <p class="sub">Food, fresh water, the reach of the health system and the traffic that carries a pathogen</p>
+  </div>
+</div>
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Chart controls">
+    <div class="levers-head">
+      <span>Controls</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="controls"></div>
+    <p class="aside-note">
+      World Development Indicators from the World Bank, 1960 to the latest year.
+      Food and population are indexed to 1961 so the two can share an axis; the
+      levels themselves are not comparable and are not shown.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>Why this page exists.</strong> Every other page here is about what
+      production becomes. This one is about the throughput that has to keep working
+      for there to be anybody to produce for: calories, fresh water, a health system
+      that reaches the people who need it, and the air traffic that moves a novel
+      pathogen to every continent inside a week. A civilisation fails through this
+      layer first and usually without warning &mdash; not because the machines
+      stopped, but because the distribution did.
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Food against people, 1961 = 100</h2>
+          <p>Total calories available and world population, indexed to the same
+             base year so that one axis is honest. Food supply rose <b>3.6×</b>
+             while the number of people rose <b>2.6×</b>, so the world eats <b>38%</b>
+             more per person than it did in 1961 — a real gain, and not the
+             threefold one this chart used to show. The World Bank's food
+             production index was discarded: its World row changes reporting set
+             and steps 57% in a single reported year, which turned a 3.6-fold rise
+             into an eightfold one and made population look flat beside it.</p>
+        </figcaption>
+        <div id="chartFood" class="chartwrap"></div>
+        <div id="legendFood" class="legend"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Undernourishment</h2>
+          <p>Share of the world population below the minimum dietary energy
+             requirement. It fell for two decades and then stopped falling. The
+             stall is the finding: the system's remaining failure is not output.</p>
+        </figcaption>
+        <div id="chartUnder" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Health system reach</h2>
+          <p>Measles immunisation against health spending. Coverage is a measure of
+             whether the state can reach a child twice, which is a better proxy for
+             pandemic capacity than any published index of preparedness.</p>
+        </figcaption>
+        <div id="chartHealth" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>The vector, 1970 = 100</h2>
+          <p>Passengers carried, indexed. This is how fast a novel pathogen reaches
+             everywhere, and the 2020 collapse is the only natural experiment anyone
+             has run on the question. It took four years to recover, and the recovery
+             is now within a few points of the old peak.</p>
+        </figcaption>
+        <div id="chartAir" class="chartwrap"></div>
+        <div id="legendAir" class="legend"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Who is already using their water</h2>
+          <p>Freshwater withdrawal as a share of internal renewable resources, one
+             country per bin. Above 100% a country is drawing down groundwater or
+             importing virtual water; the countries in that tail are the ones whose
+             food system is a claim on somebody else's river.</p>
+        </figcaption>
+        <div id="chartWater" class="chartwrap"></div>
+      </figure>
+
+    </div>
+
+    <!-- ================================================ what is taken, from what -->
+    <section class="panel" id="reserves">
+      <h2>What is taken, against what is actually there</h2>
+      <p class="lede">
+        The charts above are all indexed &mdash; shapes without magnitudes. This section is in
+        cubic kilometres and megatonnes, because a share tells you how close to the edge
+        something is and a volume tells you how much is being moved to get there. Both are
+        flows measured against flows: the water a country's territory renews each year, the
+        calories its people need each day.
+      </p>
+
+      <div class="grid">
+
+        <figure class="card span2">
+          <figcaption>
+            <h2>Withdrawal against the water that renews, 1992&ndash;2022</h2>
+            <p>The mint line is what humanity takes out of rivers, reservoirs and aquifers in a
+               year; the dashed line is what the world's land renews in the same year. The second
+               is not a tank that empties &mdash; it is an annual flow, so the right-hand axis is
+               the only number that matters and it has stayed near <b>9%</b>. The global picture
+               is comfortable. The country picture is not.</p>
+          </figcaption>
+          <div id="chartWaterAbs" class="chartwrap"></div>
+          <div id="legendWaterAbs" class="legend"></div>
+        </figure>
+
+        <figure class="card span2">
+          <figcaption>
+            <h2>Every country, what it takes against what falls on it</h2>
+            <p>One dot per country in the latest year with full reporting, logarithmic on both
+               axes. On the dashed line, a country takes exactly what renews inside its border;
+               above it, it is living on water that does not. Red dots are the deficit, and they
+               are two different situations wearing one colour: mining groundwater, or standing
+               downstream of somebody else's river. Egypt is not withdrawing seventy-seven times
+               its own rainfall &mdash; it is using the Nile.</p>
+          </figcaption>
+          <div id="chartStress" class="chartwrap"></div>
+        </figure>
+
+        <figure class="card">
+          <figcaption>
+            <h2>The deficit in volume</h2>
+            <p>Ranked by cubic kilometres, not by ratio, because a country at 7,750% of its own
+               supply may matter less than one at 326% in a larger basin.</p>
+          </figcaption>
+          <div id="chartDeficit" class="chartwrap"></div>
+        </figure>
+
+        <figure class="card">
+          <figcaption>
+            <h2>Calories as a total</h2>
+            <p>Not per person: the FAO supply figure multiplied by everyone alive, against
+               2,100&nbsp;kcal for each of them. The gap is the world's calorie surplus, and it
+               has widened for sixty years while undernourishment stopped falling.</p>
+          </figcaption>
+          <div id="chartCalories" class="chartwrap"></div>
+          <div id="legendCalories" class="legend"></div>
+        </figure>
+
+        <figure class="card span2">
+          <figcaption>
+            <h2>Cereal in megatonnes, and the people eating it</h2>
+            <p>The one absolute mass series with a sixty-year history. Output rose from
+               741&nbsp;Mt to 3,130&nbsp;Mt while population went from 3.1 to 8.2&nbsp;billion, so
+               cereal per person roughly doubled. That is a flow, not a reserve: the buffer that
+               absorbs a bad harvest is grain in store, and stock-to-use ratios are not in this
+               dataset &mdash; which is the honest limit of the food half of this page.</p>
+          </figcaption>
+          <div id="chartCereal" class="chartwrap"></div>
+          <div id="legendCereal" class="legend"></div>
+        </figure>
+
+      </div>
+    </section>
+
+    <div class="panel wpane" id="checks"></div>
+    <div class="panel wpane" id="sources"></div>
+
+  </section>
+</main>
+
+<script src="metabolism-data.js?v=6"></script>
+<script src="hover.js?v=2"></script>
+<script src="metabolism-app.js?v=16"></script>
+</body>
+</html>

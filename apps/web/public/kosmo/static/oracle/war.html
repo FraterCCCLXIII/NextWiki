@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>War — conflict, displacement and the cost of a strike, 1946 to now</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+<div class="titlebar">
+    <div class="titles">
+      <h1>War</h1>
+      <p class="sub">Every other page here assumes the future is an economy. This one is the reason that assumption has never held for long &mdash; and why a $500 aircraft just changed what a war costs</p>
+    </div>
+</div>
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Chart controls">
+    <div class="levers-head">
+      <span>Controls</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="controls"></div>
+    <p class="aside-note">
+      The year control moves the country frame on the war-versus-income chart. It does
+      not filter the long series, which are world totals: eight frames of country data
+      is all the panel supports once income has to be joined in. Play steps those eight
+      frames, and the movement between them is a transition drawn over 0.8s &mdash;
+      nothing is interpolated in the numbers, and the year never shows a frame that
+      does not exist.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>What these numbers are, and what they leave out.</strong> Everything left of
+      the last measured year is UCDP's conflict register, UNHCR's displacement caseload and
+      the World Bank's military spending. Nothing on this page is modelled, and nothing
+      forecasts. That is deliberate: war is the one series in this lab where a smooth
+      extrapolation would be worse than no line at all. Battle deaths are also the narrowest
+      possible measure of a war's cost &mdash; they exclude every indirect death from famine,
+      destroyed hospitals and disease, which in most wars are the larger number.
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Everyone UCDP counts as killed, 1989&ndash;2024</h2>
+          <p>Battle deaths stacked under one-sided violence: civilians deliberately killed by a
+             government or an armed group. The shaded ribbon is the published low&ndash;high
+             range. The shape is the argument &mdash; 1994 is not a footnote to the 2020s, and a
+             chart of fighting deaths alone is what hides it.</p>
+        </figcaption>
+        <div id="deathsChart" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Conflicts in progress</h2>
+          <p>Counted from 1946. A conflict enters the register at 25 battle deaths in a year;
+             intensity 2 is war. The count is at a record, and some of that record is better
+             reporting rather than more fighting.</p>
+        </figcaption>
+        <div id="conflictChart" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Who is fighting whom</h2>
+          <p>Fighting deaths by conflict type. The grey line flattening at zero is the end of
+             colonial wars; the return of the amber and red bands after 2021 is the return of
+             state-on-state war, which the 1990s had written off.</p>
+        </figcaption>
+        <div id="typeChart" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Forced displacement, 1951&ndash;2024</h2>
+          <p>Refugees across a border, people displaced inside their own country, asylum
+             claimants, and stateless people. These are UNHCR's own caseloads &mdash; which is
+             why the total here is 112 million and the headline figure people quote is higher.</p>
+        </figcaption>
+        <div id="displacedChart" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Military spending</h2>
+          <p>World total, current US$. Nominal: it mixes inflation with arsenal growth, so the
+             shape is real and the level is not comparable across decades.</p>
+        </figcaption>
+        <div id="milexChart" class="chartwrap"></div>
+        <p class="cardnote">SIPRI's own world figure for 2024 is higher than the sum of the World
+          Bank's country rows, which is what is plotted here. The gap is countries that do not
+          report.</p>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>The deadliest country-years</h2>
+          <p>One country, one year, from the battle-death series. The top of this list is not
+             where most readers expect: the deadliest fighting of the 2020s happened in
+             Ethiopia, not Ukraine.</p>
+        </figcaption>
+        <div id="deadliest" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>War and income, country by country</h2>
+          <p>Income per person against deaths per 100,000, bubble area is the death toll. Log
+             axes on both. Move the year to watch the cloud: the poor-country concentration is
+             stable, and the exceptions are the whole story.</p>
+        </figcaption>
+        <div id="scatterChart" class="chartwrap"></div>
+        <div id="scatterNote" class="chartnote"></div>
+      </figure>
+
+    </div>
+
+    <div class="sectbreak" id="droneBreak">
+      <span class="sectkick">Part two</span>
+      <h2>Drones, and the collapse in the price of a strike</h2>
+      <p>Everything above is measured history, and its shape is mostly a story about states
+        fighting each other less. The chart below is the reason that may not continue. It is
+        the one place in this lab where a technology curve and a violence curve meet: the cost
+        of putting one warhead on one target has fallen by four orders of magnitude in thirty
+        years, and the cheapest airframe on the chart is now the primary anti-armour weapon in
+        a European land war.</p>
+    </div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>What one weapon costs</h2>
+          <p>Cost to field a single munition or airframe, current dollars, log scale. Bars are the
+             low&ndash;high range each source supports &mdash; there is no single price for a
+             Reaper, and the difference is definitional rather than inflationary. Hover a point
+             for what is being counted.</p>
+        </figcaption>
+        <div id="droneCost" class="chartwrap"></div>
+        <div id="droneLegend" class="legend"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Ukrainian FPV output</h2>
+          <p>Declared production, log scale, with the 2025 industrial capacity as a hollow marker.
+             Four years of roughly doubling: the constraint was supply, not money.</p>
+        </figcaption>
+        <div id="droneProd" class="chartwrap"></div>
+        <p class="cardnote">Government statements, not audited deliveries. Nothing here
+          verifies the units were built, delivered or flown.</p>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>The exchange ratios</h2>
+          <p>Computed from the table above, so they cannot drift from it. What a strike costs
+             relative to what it used to cost, and how many of the cheap thing fit inside one of
+             the expensive thing.</p>
+        </figcaption>
+        <div id="droneRatio" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>How the drone became a weapon</h2>
+          <p>Dates, not estimates. Each of these is a moment when a drone changed what a state
+             could do &mdash; not a moment when a drone was invented, most of which happened
+             decades earlier and changed nothing.</p>
+        </figcaption>
+        <div id="droneTimeline" class="chartwrap"></div>
+      </figure>
+
+    </div>
+
+    <div class="panel wpane" id="implications"></div>
+    <div class="panel wpane" id="checks"></div>
+    <div class="panel wpane" id="sources"></div>
+
+  </section>
+</main>
+
+<script src="war-data.js?v=2"></script>
+<script src="drones-data.js?v=1"></script>
+<script src="hover.js?v=2"></script>
+<script src="war-app.js?v=9"></script>
+</body>
+</html>

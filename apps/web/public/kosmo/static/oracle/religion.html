@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Awakening — how traditions update and where a critical mass could form</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+
+<div class="titlebar">
+  <div class="titles">
+    <h1>Awakening</h1>
+    <p class="sub">Traditions update, practices spread, and a critical mass has an arithmetic</p>
+  </div>
+</div>
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Controls">
+    <div class="levers-head">
+      <span>Controls</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="controls"></div>
+    <p class="aside-note">
+      The demography and the practice figures are published. The research counts
+      and pageviews are fetched. The trajectories are a model, and every lever
+      below moves only the model — no measured chart changes when you drag one.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>Three different objects, never mixed.</strong> This page asks how
+      religious and spiritual culture develops, whether a post-integral share could
+      become self-sustaining, and what that would take. It answers in three
+      currencies. The <em>demography</em> is measured — Pew's 36,908-adult survey,
+      2,700 censuses, the General Social Survey. The <em>practice</em> is measured —
+      how many adults meditate, how many papers mention mindfulness. The
+      <em>stages</em> are not measured at all. No instrument scores a person as
+      integral, no survey counts nondual awareness, and the words "metamodern" and
+      "evolutionary" name claims rather than variables. Everything of that kind is
+      drawn hollow or dashed, and the model that projects it is labelled wherever
+      it appears.
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Identity, measured</h2>
+          <p>World shares of religious affiliation, 2010 and 2020, from 2,700 censuses
+             and surveys covering 99.98% of the world's population. The 2010 column is
+             Pew's own back-subtraction from reported point changes, not an independent
+             measurement, and the two are drawn as a change rather than as a trend.
+             The finding is the flatness: affiliation fell by 0.9 points in a decade.
+             A century of secularisation theory predicted more, and the reason it has
+             not arrived is on the next chart.</p>
+        </figcaption>
+        <div id="chartComposition" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>What keeps people</h2>
+          <p>Share of people raised in a tradition who still identify with it. The
+             gap between Hinduism at 82% and Catholicism at 57% is the largest single
+             number on this page, and it is not about belief — it is about whether the
+             institution still holds the people it raised.</p>
+        </figcaption>
+        <div id="chartRetention" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>What loses them</h2>
+          <p>People who leave for each one who joins, US adults. Catholicism loses more
+             than eight for every one it gains. A tradition with an 8:1 ratio does not
+             need a theological argument to shrink; it needs a birth rate.</p>
+        </figcaption>
+        <div id="chartRatio" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Believing without belonging</h2>
+          <p>The GSS asks a six-point question about God; only the 1988 and 2022
+             endpoints are published in a form this page could verify, so only those
+             are drawn. Certain belief fell 13 points and outright disbelief rose
+             4.7-fold, but belief in "a higher power" nearly doubled — the middle did
+             not empty, it changed shape. Pew's differently worded question gives
+             92 → 89 → 83 across 2007, 2014 and 2023, and is reported in prose rather
+             than joined to a series it does not belong to. In the same 2023 survey,
+             45% of Americans reported a sudden feeling of connection with something
+             beyond the world and 22% called themselves spiritual but not religious.</p>
+        </figcaption>
+        <div id="chartBelief" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>The practices are moving faster than the identities</h2>
+          <p>US adults who used each practice in the past year. Meditation more than
+             quadrupled between 2012 and 2022; yoga rose by 78%. The jump
+             after 2012 is partly a survey redesign — other tabulations put meditation
+             at 7.5–8.3% that year — so the slope is real and the multiple is
+             overstated. The hollow marks are single surveys with their own
+             denominators: NSDUH counts everyone aged 12 and over, RAND counts adults,
+             and they disagree by half.</p>
+        </figcaption>
+        <div id="chartPractice" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>The paper trail</h2>
+          <p>Works whose title or abstract mention each term, per year, from OpenAlex.
+             Mindfulness went from 230 papers in 2000 to 11,277 in 2024 — a 49-fold
+             rise — while the psychedelic literature fell to 13 papers in 1990 and then
+             rebounded 134-fold. Nondual is the honest outlier: 61 papers in the whole
+             of 2024. Whatever is spreading, it is not being written about under that
+             name.</p>
+        </figcaption>
+        <div id="chartResearch" class="chartwrap"></div>
+        <div class="legend" id="legendResearch"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>The reading, and the shrinking channel</h2>
+          <p>Monthly pageviews per 10,000 English Wikipedia views. This is the negative
+             result of the page and it is drawn rather than dropped: every topic here
+             lost share, the contemplative basket included. Part of that is real and
+             part is the channel — total English Wikipedia views fell from 7.67 to 6.10
+             billion a month as answers moved into AI assistants. The spikes that
+             remain are dated events: mindfulness peaked in October 2017, metamodernism
+             in June 2023. Attention is not adoption, and this instrument cannot tell
+             a topic losing interest from a medium losing readers.</p>
+        </figcaption>
+        <div id="chartAttention" class="chartwrap"></div>
+        <div class="legend" id="legendAttention"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Where the pool already is</h2>
+          <p>If post-conventional development tracks the World Values Survey's
+             self-expression axis — a mapping this page constructs and anchors to
+             Cook-Greuter's ~10% estimate for US adults — then the largest absolute
+             pool is not in the countries with the highest share. It is in the ones
+             with enough population to make a middling share large. China's 63 million
+             is the least trustworthy number here and the biggest: its WVS sample is
+             urban and small, and a two-point error in the coordinate moves millions.
+             105 of 112 countries joined to population; the total is a floor.</p>
+        </figcaption>
+        <div id="chartWhere" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>The developmental map, asserted</h2>
+          <p>Where each tradition's institutions, liturgies and authorities sit, and
+             the form the next stage takes inside it. This is the chart the page trusts
+             least and the one the argument needs most: a tradition's centre of gravity
+             determines what it can transmit, which is the mechanism the model's update
+             lever stands for. Cell values are judgements, drawn with dashed borders.
+             The distinction that matters is between a tradition that already carries
+             a nondual lineage — Advaita, Sufism, dzogchen — and one that must invent
+             one.</p>
+        </figcaption>
+        <div id="chartLadder" class="chartwrap"></div>
+        <div class="legend" id="legendLadder"></div>
+      </figure>
+
+    </div>
+
+    <!-- ============================================== the vessel =========== -->
+    <section class="panel wpane" id="vessel">
+      <h2>Keeping the vessel, moving the centre</h2>
+      <p class="lede">
+        A tradition's cultural identity is not stored in its cosmology. It is
+        stored in what its people do with their bodies on a schedule — the
+        assembly, the burial, the fast, the chant, the festival, the pilgrimage,
+        the language of prayer. Those things keep working after the cosmology is
+        no longer believed, which is why "culturally Catholic" is a coherent
+        sentence and "culturally Arian" is not. That distinction is the whole
+        mechanism by which a religion can keep who it is while changing what it
+        thinks the universe is.
+      </p>
+
+      <div class="caution">
+        <strong>Both axes here are asserted.</strong> No instrument scores a
+        tradition's centre of gravity, and none scores how much of its membership
+        is held by the carriers. What follows is an argument drawn as a diagram:
+        the boundary is the claim, the shading is its consequence, and the three
+        measured points on it are Pew's retention rates placed by hand. This is
+        the weakest evidence on the page and the most practical section of it.
+      </div>
+
+      <h3>What an evolutionary cosmology would actually say</h3>
+      <p>
+        Not "the universe was created and the matter is settled", but "the
+        universe has a history and is still under construction": matter, then
+        life, then interiority, then culture, then a phase in which the process
+        can notice itself and choose. The sacred is the process rather than a
+        maker standing outside it; revelation is continuous rather than closed;
+        and human development is not a fall from a golden age but a direction.
+        This is not a new religion. It is a reading — Teilhard's noosphere,
+        Whitehead's process, the evolutionary spirituality inside every
+        contemplative school — and the traditions on this page that have a
+        mystical wing already contain the materials for it. The ones that do not
+        are the ones with a calendar and no interior.
+      </p>
+      <p>
+        Awakening inside that reading has three modes, and they are not
+        interchangeable. <b>Personal</b>: the witness — awareness that persists
+        across states, the "I am" behind the changing content, carried by
+        devotion, confession, solitary prayer and retreat. <b>Impersonal</b>:
+        emptiness — awareness with no subject at all, the nondual, carried only by
+        transmission lineages, which is why <a href="lineage.html">the last page
+        in this group</a> can count 36 acharyas and 1,701 Chan masters and still
+        not tell you how many people were awake. <b>Collective</b>: the shared
+        field — a group whose attention becomes one thing, carried by assembly,
+        chant, festival and service. The first is measured by practice surveys,
+        the second only by recognition, and the third by nothing at all.
+      </p>
+
+      <div class="grid">
+
+        <figure class="card span2">
+          <figcaption>
+            <h2>Where a tradition sits</h2>
+            <p>Carrier strength against centre shift. The dashed boundary is the
+               claim: the further a centre moves from what the surrounding culture
+               already teaches, the more the form has to carry, because nobody's
+               schooling, law or media will carry it for free. Move the centre and
+               keep the carriers and the tradition lives; move it and drop them and
+               you get the fastest-growing religious category in the rich world —
+               practice with no body, no children and no transmission; keep the
+               carriers and freeze the centre and you get the museum.</p>
+          </figcaption>
+          <div id="chartVessel" class="chartwrap"></div>
+          <div class="modelnote" id="vesselNote"></div>
+        </figure>
+
+        <figure class="card span2">
+          <figcaption>
+            <h2>What carries what</h2>
+            <p>The inventory a reformer needs before removing anything. Lineage
+               transmission carries the impersonal mode almost alone, and it is the
+               carrier most often discarded as hierarchical. Assembly and festival
+               carry the collective mode, and they are the ones treated as
+               inessential. Recitation carries all three, which is why the text is
+               the last thing a tradition gives up — and why re-reading it is a
+               different act from replacing it.</p>
+          </figcaption>
+          <div id="chartCarriers" class="chartwrap"></div>
+          <div class="legend" id="legendCarriers"></div>
+        </figure>
+
+      </div>
+
+      <h3>Six moves, each attached to a carrier</h3>
+      <p>
+        A transition that is argued doctrinally will fail, because doctrine is
+        not what holds anyone. The moves that can work are all carrier moves.
+      </p>
+      <ol class="moves">
+        <li><b>Re-read the canon, do not replace it.</b> Read scripture as a
+            first-person record of awakening — what a practitioner reported from
+            the inside — rather than as physics or history. The text survives
+            Darwin and Copernicus this way; it did not survive being read as a
+            cosmology. This is the same move Augustine made with Genesis and the
+            same one the Buddha's followers made with the Vedas.</li>
+        <li><b>Keep the calendar and change what it commemorates.</b> The year is
+            the strongest carrier a tradition owns: it is public, it is repeated,
+            it needs no belief to attend, and it is what makes a child belong
+            before they can argue. A festival of the birth of a cosmos reads the
+            same dates as a festival of the birth of a god.</li>
+        <li><b>Keep the assembly, and say why.</b> The collective mode is
+            impossible without bodies in a room, and it is the mode with the
+            weakest evidence and the highest ceiling. A tradition that keeps only
+            private practice has kept the personal mode and abandoned the one it
+            cannot replace.</li>
+        <li><b>Ordain for competence, not assent.</b> Transmission should pass
+            what can be checked in a person — stability, ethical conduct, the
+            capacity to sit and to teach — rather than agreement with a
+            proposition. This is the only form of authority that an evolutionary
+            cosmology can license, and it is what a lineage is for.</li>
+        <li><b>Let the sacred language stay sacred.</b> Liturgical languages
+            survive as sound, rhythm and shared memory, not as claims about the
+            world. The Latin, the Arabic, the Sanskrit or the Hebrew in the ear is
+            identity; the same sentence as a factual assertion is a fight.</li>
+        <li><b>Bury the dead, feed the poor, name the children.</b> The carriers
+            that carry collective awakening are the same ones that carry ordinary
+            social life. A tradition that keeps its burial society and its soup
+            kitchen keeps a congregation it will need for anything harder.</li>
+      </ol>
+
+      <h3>Who will do it, and what will resist</h3>
+      <p>
+        The move is led by the smallest group on this page — the integral and
+        nondual share, roughly two to three per cent — and that group cannot staff
+        an institution, which is the model's central constraint. The resistance
+        comes from both directions at once. The modern stage finds the new
+        cosmology plausible and drops the carriers, because the carriers look
+        like superstition to it; it produces the unaffiliated at 73% retention and
+        no grandchildren. The traditional stage keeps the carriers and refuses the
+        centre, because moving the centre looks like surrender; it produces the
+        tradition that still buries its dead and cannot speak to anyone under
+        forty. Both are stable, and both lose. The carrier-strong,
+        centre-moved quadrant is the only one that is both alive and
+        transmissible, and it is the one nobody is staffing.
+      </p>
+      <p>
+        None of this predicts that any tradition will do it. What it does say is
+        that the version of the transition people usually imagine — a new
+        religion replacing the old, or belief quietly evaporating — is not how
+        institutions change. They change by keeping the vessel and re-reading
+        what is inside it, which is why the traditions with the deepest
+        transmission lineages are the ones with the most to work with, and why
+        the ones with the strongest calendar but no mystical wing are the ones
+        most likely to fossilise into identity alone.
+      </p>
+    </section>
+
+    <!-- ============================================== the model ============ -->
+    <section class="panel" id="model">
+      <h2>Could a critical mass form, and what would it take?</h2>
+      <p class="lede">
+        Five stages, four transmission channels, one threshold. This is a
+        bookkeeping device, not a forecast: it has no regions, no war, no economy
+        and no migration, and its initial shares are assumptions. What it can do is
+        separate the levers — because the question "when does integral reach 25%"
+        has a different answer depending on whether the bottleneck is persuasion,
+        institutions, or the number of people who could sustain the stage at all.
+      </p>
+
+      <div class="grid">
+
+        <figure class="card span2">
+          <figcaption>
+            <h2>Stage shares, 2025 to the horizon</h2>
+            <p>The model's trajectories under the current levers. It is not calibrated
+               to any stage count, because none exists; it is calibrated only to Pew's
+               switching and retention rates. The dashed rule is the 25% threshold the
+               next chart explains. Watch the top two lines: under baseline they rise
+               and flatten, because their reach is confined to people who already hold
+               them.</p>
+          </figcaption>
+          <div id="chartStages" class="chartwrap"></div>
+        </figure>
+
+        <figure class="card span2">
+          <div id="modelNote" class="modelnote"></div>
+          <div id="modelTable"></div>
+        </figure>
+
+        <figure class="card span2">
+          <figcaption>
+            <h2>What a critical mass actually is</h2>
+            <p>With frequency-dependent conversion and no institutions, growth is
+               <code>κs<sup>α−1</sup>(1−s) − δ</code>, which has an interior threshold only
+               where the first term exceeds the second. That function peaks at
+               <code>(α−1)/α</code>, so <b>no exponent can produce a critical mass above
+               that share</b> — the threshold is capped by conformity itself. Read the
+               chart the other way round and the empirical literature falls into place:
+               a coordination game with a cash incentive tips at 25%, which corresponds
+               to α ≈ 1.7 and an advantage of about 3.5. The 50–65% band estimated for a
+               real behaviour needs α between 2 and 2.9. The number was never the
+               finding; the exponent is.</p>
+          </figcaption>
+          <div id="chartCritical" class="chartwrap"></div>
+          <div class="legend" id="legendCritical"></div>
+        </figure>
+
+        <figure class="card">
+          <figcaption>
+            <h2>Collective awakening, as a scaling law</h2>
+            <p>If a collective event needs a cluster of people who already hold
+               nondual awareness, its rate scales faster than their number — pairwise
+               encounters go as the square. Three exponents are drawn. At baseline the
+               model is at about one event every seven centuries in 2100; the fully
+               levered scenario is roughly two hundred times higher. The unit — one
+               event per century at 100 million adults — is an assumption with nothing
+               behind it.</p>
+          </figcaption>
+          <div id="chartEvents" class="chartwrap"></div>
+        </figure>
+
+        <figure class="card">
+          <figcaption>
+            <h2>Which lever moves the date</h2>
+            <p>Each lever moved ±30% on its own, measured against the post-integral
+               share in 2100. Institutional update dominates by a factor of three.
+               Conformity is the only lever that reliably moves the answer backwards,
+               which is the model's version of a well-known finding: a stage that
+               depends on social proof is a stage that cannot start.</p>
+          </figcaption>
+          <div id="chartSens" class="chartwrap"></div>
+        </figure>
+
+      </div>
+    </section>
+
+    <div class="panel wpane" id="checks"></div>
+    <div class="panel wpane" id="sources"></div>
+    <div class="panel wpane" id="limits"></div>
+
+  </section>
+</main>
+
+<script src="religion-data.js?v=2"></script>
+<script src="religion-claims.js?v=3"></script>
+<script src="religion-model.js?v=3"></script>
+<script src="hover.js?v=2"></script>
+<script src="religion-app.js?v=6"></script>
+</body>
+</html>

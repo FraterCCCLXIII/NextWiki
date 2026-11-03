@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cyber — the layer nobody models</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+
+<div class="titlebar">
+  <div class="titles">
+    <h1>Cyber</h1>
+    <p class="sub">What is actually being exploited, and why one product can be a systemic risk</p>
+  </div>
+</div>
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Chart controls">
+    <div class="levers-head">
+      <span>Controls</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="controls"></div>
+    <p class="aside-note">
+      CISA's Known Exploited Vulnerabilities catalogue: every CVE the US
+      government has confirmed is being used in the wild. One JSON document,
+      no key, refreshed continuously.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>Why this page exists.</strong> Logistics, payments, grid control, food
+      distribution and military command all run on the same internet, and not one
+      model in this lab contains a cyber term &mdash; because it is hard to quantify,
+      which is not the same as unimportant. This page quantifies the part that is
+      published, and is explicit about what the published part leaves out. The
+      honest summary is that exploitation is dominated by known, patchable, years-old
+      flaws in a handful of internet-facing products, which makes it less like
+      espionage and more like maintenance.
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Additions per month</h2>
+          <p>How many vulnerabilities were confirmed as exploited each month. The
+             first bar is not a rate: the catalogue opened in November 2021 by
+             backfilling what was already known, so 291 entries land in one month.
+             Everything after the opening should be read as flow.</p>
+        </figcaption>
+        <div id="chartFlow" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Cumulative, post-backfill</h2>
+          <p>The catalogue's growth once the opening accumulation is left out.
+             Roughly a hundred and fifty to three hundred a year, remarkably steady
+             for a series this noisy at the month level.</p>
+        </figcaption>
+        <div id="chartCum" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Ransomware share by year</h2>
+          <p>Entries flagged as used in ransomware campaigns, against the total.
+             This is the commercialisation of exploitation: a vulnerability with
+             customers.</p>
+        </figcaption>
+        <div id="chartYear" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>The ten that carry half of it</h2>
+          <p>Vendors by number of exploited products. Concentration at this level is
+             why a single flaw behaves like systemic risk: the exposure is not
+             distributed across the economy, it is installed on it.</p>
+        </figcaption>
+        <div id="chartVendors" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>How it gets in</h2>
+          <p>Entries matching a keyword list of internet-facing products &mdash; VPNs,
+             firewalls, gateways, mail and web servers &mdash; against everything else.
+             A heuristic on product names, not a taxonomy, and labelled as such.</p>
+        </figcaption>
+        <div id="chartClass" class="chartwrap"></div>
+      </figure>
+
+    </div>
+
+    <div class="panel wpane" id="checks"></div>
+    <div class="panel wpane" id="sources"></div>
+
+  </section>
+</main>
+
+<script src="cyber-data.js?v=1"></script>
+<script src="hover.js?v=2"></script>
+<script src="cyber-app.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Century — where the AI economy lands, 2026 to 2126</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+<div class="titlebar">
+    <div class="titles">
+      <h1>Century</h1>
+      <p class="sub">Where the economy lands, 2026&ndash;2126 &mdash; a distribution of paths, not a forecast</p>
+    </div>
+    <div class="presets" id="presets" role="group" aria-label="Scenarios"></div>
+  </div>
+
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Model levers">
+    <div class="levers-head">
+      <span>Levers</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="leverGroups"></div>
+    <p class="aside-note">
+      Calibrated to measured trends where they exist &mdash; Epoch AI on compute, UN WPP on
+      population, Acemoglu&ndash;Restrepo on task shares. Where no measurement exists the value is a
+      judgement, and the levers say so.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>Read this before the numbers.</strong> Point forecasts beyond about five years carry
+      little information: Tetlock's expert-forecasting study found accuracy decaying toward chance by
+      five years, and there is no scored, resolved dataset at 10&ndash;25 years. Nothing here is a
+      prediction for 2126. What the model produces is a <em>distribution of paths</em> and an
+      attribution of what the spread depends on &mdash; which is the only honest output available at
+      this horizon.
+    </div>
+
+    <div class="horizon-bar">
+      <span class="hbar-label">Horizon</span>
+      <div class="horizon" id="horizon" role="group" aria-label="Projection horizon"></div>
+      <span class="hbar-note" id="hbarNote">100 years is the economic frame; anything longer is a physics extrapolation</span>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2" id="fanGdpCard">
+        <figcaption>
+          <h2>Output per person, 2026&ndash;2126</h2>
+          <p>Median path with 10&ndash;90 and 25&ndash;75 percentile bands. Log scale, so the fan spans orders of magnitude. Pinch or &#8984;/ctrl&nbsp;+&nbsp;scroll to zoom, drag to pan, double-click to reset — a plain scroll moves the page.</p>
+        </figcaption>
+        <div id="fanGdp" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Labour share of income</h2>
+          <p>The variable the whole century turns on. Below ~45% the demand side starts to fail.</p>
+        </figcaption>
+        <div id="fanShare" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Unemployment</h2>
+          <p>What happens to people is not the same question as what happens to output.</p>
+        </figcaption>
+        <div id="fanUnemp" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>What the model says binds</h2>
+          <p>Compute is bounded by the electricity that can be directed at it, multiplied by compute per joule.</p>
+        </figcaption>
+        <div id="bindPanel"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>What ends the exponential</h2>
+          <p>Only matters past ~2200. Real output is bounded by the exergy a civilisation can capture and by how much value a joule can carry &mdash; both finite, so compounding stops.</p>
+        </figcaption>
+        <div id="deepPanel"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Where the paths end up</h2>
+          <p>Share of simulated paths landing in each end state.</p>
+        </figcaption>
+        <div id="regimePanel"></div>
+      </figure>
+
+    </div>
+
+    <section class="panel" id="clocks">
+      <h2>The two clocks underneath</h2>
+      <p class="muted" style="margin-bottom:18px;max-width:74ch;">
+        Every version of this century depends on two rates that are measured elsewhere and
+        assumed here. Longevity decides how many people are working in 2060 and how many are
+        being carried; the price of a unit of machine capability decides how fast the automation
+        curve arrives. Neither number appears anywhere above, which is a defect: a model whose
+        answer moves with a parameter should show the parameter's evidence.
+      </p>
+
+      <div class="grid">
+        <figure class="card span2">
+          <figcaption>
+            <h2>How long people live, and how much of it is healthy</h2>
+            <p>World life expectancy since 1770, with WHO's healthy life expectancy dashed
+               from 2000 &mdash; the only years it is measured. The red bar at the end is the
+               difference between the two: years lived, minus years lived in full health.</p>
+          </figcaption>
+          <div id="clockLife" class="chartwrap"></div>
+        </figure>
+
+        <figure class="card">
+          <figcaption>
+            <h2>What a decade of medicine buys now</h2>
+            <p>Years of life expectancy gained per year, by decade. The last bar is why
+               longevity does not rescue a century-scale model on its own.</p>
+          </figcaption>
+          <div id="clockGains" class="chartwrap"></div>
+        </figure>
+
+        <figure class="card">
+          <figcaption>
+            <h2>Reading the two clocks together</h2>
+            <div id="clockRead"></div>
+          </figcaption>
+        </figure>
+
+        <figure class="card span2">
+          <figcaption>
+            <h2>Training compute, 474 models since 2010</h2>
+            <p>Epoch AI's measurements, logarithmic, every model rather than a chosen few. The
+               amber line is the running frontier, the dashed mint line is the least-squares fit
+               through it, and the two rates printed at the right are what the model's capability
+               curve is built on.</p>
+          </figcaption>
+          <div id="clockCompute" class="chartwrap"></div>
+        </figure>
+      </div>
+
+      <div class="panel wpane" id="clockChecks" style="padding-left:0;padding-right:0;"></div>
+    </section>
+
+    <section class="panel method">
+      <h2>What this borrows, and from whom</h2>
+      <div class="cites" id="cites"></div>
+    </section>
+
+    <section class="panel">
+      <h2>The discount rate is doing most of the work</h2>
+      <p class="muted" style="margin-bottom:10px;">
+        At a century, the present value of anything depends far more on the rate you choose than on the
+        economics. The same earnings stream, valued three ways:
+      </p>
+      <table class="dr-table" id="drTable"></table>
+      <p class="regime-note">
+        This is why century-scale models should not be read as point estimates. Stern's 1.4% treats all
+        generations as equally worthy of concern; Nordhaus's 4.3% imports present-day impatience. That is
+        an ethical choice, not a measurement, and it moves the answer by an order of magnitude.
+      </p>
+    </section>
+
+  </section>
+</main>
+
+<footer class="foot">
+  <span id="footRange">Long-horizon model &middot; annual steps &middot; 2026&ndash;2126 &middot; Monte Carlo over the contested parameters</span>
+  <span>Growth accounting after Trammell &amp; Korinek; task shares after Acemoglu &amp; Restrepo; compute trends after Epoch AI.</span>
+</footer>
+
+<script src="century.js?v=2"></script>
+<script src="hover.js?v=2"></script>
+<script src="century-app.js?v=5"></script>
+<script src="clocks-data.js?v=1"></script>
+<script src="clocks-app.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transmission — what the records can count about awakened people</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+
+<div class="titlebar">
+  <div class="titles">
+    <h1>Transmission</h1>
+    <p class="sub">What the records can count about the people a tradition recognised — and what they cannot</p>
+  </div>
+</div>
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Controls">
+    <div class="levers-head">
+      <span>Controls</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="controls"></div>
+    <p class="aside-note">
+      The registers, the censuses and the survey are published counts. The
+      branching rate is arithmetic on a register. The reach per teacher is an
+      assumption, and only the last two charts move when you drag it.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>Recognition, not realisation.</strong> Nothing on this page counts
+      enlightened people, because nothing can. What can be counted is
+      <em>recognition</em>: the names a tradition wrote into its own transmission
+      list, the people living inside a monastery when a census was taken, and the
+      adults who told a survey they practised. Those are three different
+      instruments measuring three different things. The page keeps them apart,
+      computes what follows from them, and marks the step where the evidence
+      stops: no survey has a denominator for persistent nondual awareness.
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Three registers, three instruments</h2>
+          <p>The largest surviving transmission genealogy against two single-succession
+             lines, on a log axis because the range is two orders of magnitude. The
+             Chan register lists <b>1,701</b> names across 52 generations in 1004, of
+             which only <b>951</b> have a recorded saying — the inner bar. Sringeri has
+             had <b>36</b> acharyas in twelve centuries; the Karmapa <b>17</b>
+             incarnations in nine. None of these is a count of awakened people; each is
+             a count of who the institution kept.</p>
+        </figcaption>
+        <div id="chartRegisters" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Architecture, not depth</h2>
+          <p>Branching rate against generation length, computed from each register's own
+             counts. Chan produced <b>1.36</b> names per generation and grew a tree.
+             Sringeri and the Karmapa line produced exactly <b>1.00</b> — one successor
+             each — and grew a chain. The difference between 1,701 recognised masters
+             and 36 is not a difference in realisation. It is a difference in whether
+             the institution allowed a holder to name more than one heir.</p>
+        </figcaption>
+        <div id="chartBranch" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>What branching does over generations</h2>
+          <p>The same rates projected forward from one founder, with the Chan register's
+             endpoint marked. A rate below one dies out; a rate of exactly one is a
+             chain that only an institution can keep alive; a rate of 1.36 becomes a
+             thousand names in 24 generations. Nothing here requires anyone to be
+             awake — it is the arithmetic of who was authorised to authorise.</p>
+        </figcaption>
+        <div id="chartFan" class="chartwrap"></div>
+        <div id="legendFan" class="legend"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>How much of a society was monastic</h2>
+          <p>Monastics as a share of the surrounding population, on a log axis because
+             the range is three orders of magnitude. Pre-1959 Tibet put about
+             <b>10%</b> of its people in monasteries, roughly ten times medieval
+             Europe's density. Thailand is at <b>0.39%</b> today; the Catholic
+             Church's vowed religious are <b>0.044%</b> of Catholics. This is the
+             denominator for realisation: the share of a society that could devote a
+             life to practice at all.</p>
+        </figcaption>
+        <div id="chartMonastic" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Why the knowledge graph cannot answer this</h2>
+          <p>The same four traditions in Wikidata, counted by occupation label and birth
+             century. The rise after 1800 is the growth of the written record, not of
+             contemplatives. The clearest evidence is the label itself: in the 1900s,
+             <b>20</b> people are tagged "Zen master" while <b>473</b> are tagged
+             "Buddhist monk" — the same tradition, the same century, a twentyfold
+             difference produced by editors. That is why the page measures registers
+             instead.</p>
+        </figcaption>
+        <div id="chartCatalogue" class="chartwrap"></div>
+        <div id="legendCatalogue" class="legend"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>The funnel, and where it ends</h2>
+          <p>US adults, from Pew's 36,908-person survey. <b>23%</b> meditate for
+             spiritual reasons at least weekly; adding its two lower bands gives
+             <b>51%</b> at any frequency, which Pew never publishes as a topline and
+             is drawn with a dashed edge for that reason. Retreats: <b>14%</b> go at
+             least yearly, <b>3%</b> more than once a year, and <b>72%</b> never go.
+             Then the measured bars stop. The final row is a modelled band, drawn
+             hollow because no survey has ever established a denominator for
+             persistent nondual awareness.</p>
+        </figcaption>
+        <div id="chartFunnel" class="chartwrap"></div>
+      </figure>
+
+    </div>
+
+    <!-- ================================================= the fallout ======= -->
+    <section class="panel" id="fallout">
+      <h2>Enlightened fallout</h2>
+      <p class="lede">
+        Define fallout as the people a recognised teacher actually trained. It is
+        computable from the register's growth and one assumption — how many students
+        one teacher takes in a life. The first chart is that product over the Chan
+        register's 472 years. The second is the only place the page can put a number
+        on nondual awareness today, and it is a band, not a point.
+      </p>
+
+      <div class="grid">
+
+        <figure class="card span2">
+          <figcaption>
+            <h2>The people a lineage touched</h2>
+            <p>Cumulative students taught, at 5, 20 and 100 per recognised master.
+               At the central assumption the whole Chan register touches about
+               <b>34,000</b> people over five centuries — roughly <b>0.01%</b> of the
+               world's population in the year 1000. Even the most productive
+               transmission lineage in the record is a thin channel.</p>
+          </figcaption>
+          <div id="chartFallout" class="chartwrap"></div>
+        </figure>
+
+        <figure class="card span2">
+          <figcaption>
+            <h2>The band nobody has measured</h2>
+            <p>World adults with persistent nondual awareness under three conversion
+               rates among weekly practitioners. The spread is two orders of magnitude
+               because the last step is genuinely unknown: Martin's 1,200 claimants
+               were recruited, not sampled, and the published analysis rests on the
+               first fifty interviews. Anyone quoting a single figure is quoting an
+               assumption.</p>
+          </figcaption>
+          <div id="chartBounds" class="chartwrap"></div>
+        </figure>
+
+      </div>
+    </section>
+
+    <div class="panel wpane" id="checks"></div>
+    <div class="panel wpane" id="sources"></div>
+    <div class="panel wpane" id="limits"></div>
+
+  </section>
+</main>
+
+<script src="lineage-data.js"></script>
+<script src="lineage-claims.js?v=2"></script>
+<script src="lineage-model.js?v=1"></script>
+<script src="hover.js?v=2"></script>
+<script src="lineage-app.js?v=2"></script>
+</body>
+</html>

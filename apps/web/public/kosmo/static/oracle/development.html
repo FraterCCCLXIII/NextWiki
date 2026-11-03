@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Development — six maps of how minds and societies grow up</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+<div class="titlebar">
+  <div class="titles">
+    <h1>Development</h1>
+    <p class="sub">Six maps of how minds and societies grow up. One of them has an instrument</p>
+  </div>
+</div>
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Controls">
+    <div class="levers-head">
+      <span>Controls</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="controls"></div>
+    <p class="aside-note">
+      Everything on this page is either measured or cited, and the two are never
+      mixed in one chart. The measured charts come from a Seshat release fetched
+      at build time. The asserted ones — every colour on the ladder, every
+      altitude — are drawn as dashes, because there is no instrument behind them.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>The problem with developmental models is that they are all partly true.</strong>
+      Spiral Dynamics, integral theory, Loevinger's ego stages, Kohlberg's moral
+      stages, Kegan's orders and the Lectical scale all describe something real —
+      that meaning-making gets more complex in an order that cannot easily be
+      reversed. But only three of the six have an instrument, only two have
+      published reliability on a sample anyone has described, and none of them
+      has a population estimate. This page separates the ladder from the
+      measurement, and puts the measurable history of complexity next to it.
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>What actually diffuses</h2>
+          <p>Share of the polities alive in each century that carry a coding for each
+             capability, from Seshat's 619 polities joined to their own start and
+             end years. No composite and no weights — but no missing data read as
+             absence either: a capability is counted only where a polity is
+             actually coded for it, and a share appears only once at least five
+             polities are. Writing is 56% in 400 BCE among the eighteen polities
+             coded that century, which is the honest version of a number that
+             reads 0% if you divide by polities that simply have no writing row.</p>
+        </figcaption>
+        <div id="chartCaps" class="chartwrap"></div>
+        <div id="legendCaps" class="legend"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Complexity, up and down</h2>
+          <p>Nine characteristics combined into one index, per region, over 5,000
+             years. The bold line is the median across regions and the band is the
+             10th to 90th percentile. The falls are the point: complexity is not a
+             ratchet in the short run. The median runs −1.3 at 1000 BCE, +1.0 around
+             600 CE and +2.1 by 1900 — so the dip is real in this panel, and it is
+             shallower than the story usually told about it.</p>
+        </figcaption>
+        <div id="chartComposite" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Aligned on the take-off</h2>
+          <p>Each region shifted so that year zero is the century it first crossed
+             the complexity threshold. If development has a characteristic rate,
+             the curves should stack into one S. They roughly do — and the rise
+             measured here is 1,700 years, against the 2,500 the published logistic
+             reports between its plateaus.</p>
+        </figcaption>
+        <div id="chartAlign" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>What has an instrument</h2>
+          <p>Six models against five questions. Filled is published and
+             peer-reviewed, half is present with a named gap, empty is absent. The
+             top two rows are the ones with the largest readership and the smallest
+             evidence base.</p>
+        </figcaption>
+        <div id="chartEvidence" class="chartwrap"></div>
+        <div id="legendEvidence" class="legend"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Values, from surveys</h2>
+          <p>The Inglehart–Welzel dimensions: 112 countries on two axes computed as
+             the first two principal components of a fixed ten-item battery, weighted
+             and varimax-rotated, then rescaled. This is the best-measured cultural
+             variable on the page — representative national samples, four decades of
+             waves. Two caveats carried in the open: the coordinates are an
+             independent recomputation, because the official 2023 poster is
+             distributed only as a flat image, and the coloured zones are labels,
+             not boundaries. The WVS itself says the zones are hand-drawn.</p>
+        </figcaption>
+        <div id="chartWvs" class="chartwrap"></div>
+        <div id="legendWvs" class="legend"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Values, from tweets</h2>
+          <p>The same idea built a different way: a county-level individualism index
+             from 1.5 billion geolocated tweets, 2009–2015, by counting words that
+             cluster near fifteen collectivist and sixteen individualist seeds. The
+             national map that circulates is a kriged surface over counties that
+             had enough tweets. What can actually be checked is narrower — the fifty
+             states against a behavioural index from 1999 — and it is checked here,
+             at about a fifth of the variance.</p>
+        </figcaption>
+        <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start">
+          <div id="chartCounty" class="chartwrap" style="flex:1 1 340px;min-width:300px"></div>
+          <div id="chartCountyHist" class="chartwrap" style="flex:1 1 300px;min-width:280px"></div>
+        </div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>The ladder, and what is holding it up</h2>
+          <p>The same stages placed on the Lectical scale. Solid marks are stages an
+             instrument measured; dashed marks are the colours and altitudes that
+             have been mapped onto them afterwards. The bands behind the axis are
+             the colour sequence — the one part of this whole page with no
+             measurement in it at all.</p>
+        </figcaption>
+        <div id="chartStack" class="chartwrap"></div>
+        <div id="legendStack" class="legend"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>165 texts, five millennia</h2>
+          <p>The Cultural Complexity Index scores historical texts on the same
+             scale. The range is published; two of the six corpus means are.</p>
+        </figcaption>
+        <div id="chartCCI" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>The validated part</h2>
+          <p>The instrument's convergence with the stage models, on 543 scored
+             performances. This is the strongest number on the page — and it
+             validates the scale, not the history.</p>
+        </figcaption>
+        <div id="chartValid" class="chartwrap"></div>
+      </figure>
+
+    </div>
+
+    <div class="panel wpane" id="checks"></div>
+    <div class="panel wpane" id="sources"></div>
+    <div class="panel wpane" id="limits"></div>
+
+  </section>
+</main>    <script src="development-data.js?v=2"></script>
+    <script src="culture-data.js?v=1"></script>
+<script src="development-claims.js?v=3"></script>
+<script src="hover.js?v=2"></script>
+<script src="development-app.js?v=10"></script>
+</body>
+</html>

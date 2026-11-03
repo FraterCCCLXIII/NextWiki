@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capacity — who can actually govern</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+
+<div class="titlebar">
+  <div class="titles">
+    <h1>Capacity</h1>
+    <p class="sub">State capacity, fiscal room and legitimacy &mdash; the variable that decides whether a shock becomes a collapse</p>
+  </div>
+</div>
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Chart controls">
+    <div class="levers-head">
+      <span>Controls</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="controls"></div>
+    <p class="aside-note">
+      World Bank Worldwide Governance Indicators, plus tax, debt and income from
+      the World Development Indicators. Perception-based estimates in normal
+      units &mdash; comparable across countries in a year, only loosely across years.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>Why this page exists.</strong> Every forecast in this lab ends with the
+      same unstated assumption: that somebody capable is in charge. Two countries can
+      take an identical shock &mdash; a war, a pandemic, an AI-driven collapse in
+      white-collar work &mdash; and one absorbs it while the other comes apart. The
+      difference is not in any model here. It is whether the state can tax, staff,
+      procure, count its own population and be obeyed. That is what these six
+      perception indices measure, and it is the largest hole the audit found.
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Effectiveness, 1996&ndash;now</h2>
+          <p>Government effectiveness: the quality of public services, the civil
+             service, the competence of policy and the credibility of the
+             government's commitment to them. The dashed line is the median country;
+             the coloured lines are eight large ones. Watch how little the median
+             moves and how far the individual paths travel.</p>
+        </figcaption>
+        <div id="chartGov" class="chartwrap"></div>
+        <div id="legendGov" class="legend"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Capacity to govern against capacity to fund</h2>
+          <p>Effectiveness against tax revenue as a share of GDP, one point per
+             country, area by population, colour by region. The relationship is
+             positive and loose: r = 0.32. A state that cannot collect a fifth of
+             national income is not a state that can run an unemployment insurance
+             system, and the chart is the evidence for that sentence.</p>
+        </figcaption>
+        <div id="chartScatter" class="chartwrap"></div>
+        <div id="legendScatter" class="legend"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Rule of law, 2015 to now</h2>
+          <p>The dozen largest gains and losses since 2015. Institutional change is
+             slow in most places and abrupt in a few, and the asymmetries matter:
+             a country that loses a point of rule of law in a decade does not
+             recover it in the next.</p>
+        </figcaption>
+        <div id="chartMove" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Debt, by income group</h2>
+          <p>Central government debt as a share of GDP, median of each group. The
+             ordering is the surprise: the poorest governments are not the least
+             indebted, and the room to borrow through a shock is a function of who
+             is lending and in what currency, not of the number alone.</p>
+        </figcaption>
+        <div id="chartDebt" class="chartwrap"></div>
+      </figure>
+
+    </div>
+
+    <div class="panel wpane" id="checks"></div>
+    <div class="panel wpane" id="sources"></div>
+
+  </section>
+</main>
+
+<script src="capacity-data.js?v=1"></script>
+<script src="hover.js?v=2"></script>
+<script src="capacity-app.js?v=1"></script>
+</body>
+</html>

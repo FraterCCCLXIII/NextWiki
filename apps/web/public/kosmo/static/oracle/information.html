@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Information — what the world reads, and how much of it is about the machine</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+
+<div class="titlebar">
+  <div class="titles">
+    <h1>Information</h1>
+    <p class="sub">What the world reads, what it stopped reading, and how much of the reading is now about the machine</p>
+  </div>
+</div>
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Chart controls">
+    <div class="levers-head">
+      <span>Controls</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="controls"></div>
+    <p class="aside-note">
+      GDELT measures the share of every monitored news article that matches a
+      phrase, so it is a share and not a count. Wikimedia's figures are human
+      views only, bots excluded. Neither source is a sample.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>Why this page exists.</strong> The Dark Factory model turns on
+      expectations, and expectations are made of what people read. The audit of
+      that model found no term for attention, trust or narrative anywhere in it &mdash;
+      belief enters as a single smoothing constant. That is the largest missing
+      amplifier after credit, because a job loss is a fact and a wave of job
+      losses is a story, and the story is what moves the spending that the model
+      is trying to predict. This page measures the story: how much of the world's
+      news is about the machine, how much of the world's reading follows it, how
+      free that reading is, and how much of it anybody believes.
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Share of all news, 2017&ndash;2026</h2>
+          <p>Daily share of every article GDELT monitors that mentions the phrase,
+             smoothed. Two phrases on one axis, which is the only comparison this
+             source supports: a share of the same corpus. The AI line is not
+             &ldquo;more coverage of AI&rdquo;; it is AI displacing other subjects
+             from the front page.</p>
+        </figcaption>
+        <div id="chartNews" class="chartwrap"></div>
+        <div id="legendNews" class="legend"></div>
+        <div id="noteNews"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Attention per 10,000 Wikipedia views</h2>
+          <p>Ten articles summed &mdash; the field, not the fad &mdash; divided by every
+             human view of English Wikipedia that month. The denominator matters
+             and is drawn dashed: Wikipedia's own audience fell about a sixth over
+             the same decade, so part of the rise in the ratio is a shrinking
+             base rather than a growing numerator.</p>
+        </figcaption>
+        <div id="chartAttention" class="chartwrap"></div>
+        <div id="legendAttention" class="legend"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Freedom of expression, 1789&ndash;2025</h2>
+          <p>V-Dem's index: how far a country permits discussion, and how far it
+             suppresses it. The thick line is the mean across every country V-Dem
+             scores &mdash; there is no World row in this dataset, and a mean of
+             countries is not a population-weighted world. Read the shape rather
+             than the level: the global mean rose for two centuries and has been
+             falling since about 2012.</p>
+        </figcaption>
+        <div id="chartFreedom" class="chartwrap"></div>
+        <div id="legendFreedom" class="legend"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Reach</h2>
+          <p>Share of the population using the internet. Five lines, chosen to
+             span the range rather than to flatter it: near-saturation, rapid
+             catch-up, and the two largest populations still arriving.</p>
+        </figcaption>
+        <div id="chartReach" class="chartwrap"></div>
+        <div id="legendReach" class="legend"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Trust in news, two questions</h2>
+          <p>Gallup has asked since 1972 whether people trust the mass media a
+             great deal or a fair amount. Pew has asked since 2016 whether they
+             trust national news organizations a lot or some. The second question
+             is easier, which is why its line sits higher &mdash; these are two
+             instruments, not one series with a gap.</p>
+        </figcaption>
+        <div id="chartTrust" class="chartwrap"></div>
+        <div id="legendTrust" class="legend"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Where the attention went</h2>
+          <p>Share of the ten-article basket's total views, 2016&ndash;2026. One
+             article holds more than half of it. A subject can look like it is
+             everywhere while the reading is concentrated on a single page.</p>
+        </figcaption>
+        <div id="chartConcentration" class="chartwrap"></div>
+      </figure>
+
+    </div>
+
+    <div class="panel wpane" id="checks"></div>
+    <div class="panel wpane" id="sources"></div>
+
+  </section>
+</main>
+
+<script src="information-data.js?v=1"></script>
+<script src="hover.js?v=2"></script>
+<script src="information-app.js?v=1"></script>
+</body>
+</html>

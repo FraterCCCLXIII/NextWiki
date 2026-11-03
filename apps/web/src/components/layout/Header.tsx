@@ -7,6 +7,7 @@ import { getSettingValue } from "~/lib/utils/settings";
 import { getSetting } from "~/lib/services/settings";
 import { SearchTrigger } from "./SearchTrigger";
 import { NavigationDropdown } from "./NavigationDropdown";
+import { KosmoMenu } from "./KosmoMenu";
 import { AIAssistantTrigger } from "~/components/ai/AIAssistantTrigger";
 
 export async function Header({
@@ -29,6 +30,8 @@ export async function Header({
       <div className="flex items-center flex-shrink-0 gap-2">
         {/* Navigation Dropdown */}
         <NavigationDropdown siteTitle={siteTitle} siteLogo={siteLogo} />
+        {/* Kosmographica: atlas pages plus the original HTML pages not yet converted */}
+        <KosmoMenu />
       </div>
 
       {/* Center: Search Bar */}

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From the Abacus to the Singularity — a timeline, and what the curves actually say</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+<div class="titlebar">
+    <div class="titles">
+      <h1>From the Abacus to the Singularity</h1>
+      <p class="sub">Four thousand years of computation, seventy of AI, and the measured growth rates that current timeline claims rest on</p>
+    </div>
+  </div>
+
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Contents">
+    <div class="levers-head"><span>Contents</span></div>
+    <nav class="toc">
+      <a href="#chrono-section">The chronology</a>
+      <a href="#projection">Where the curve goes</a>
+      <a href="#rates">The measured rates</a>
+      <a href="#walls">The five walls</a>
+      <a href="#forecasts">The forecast spread</a>
+      <a href="#definitions">AGI vs SI vs Singularity</a>
+      <a href="#track">The track record</a>
+      <a href="#reading">How to read the dates</a>
+    </nav>
+    <p class="aside-note">
+      Timeline claims are usually stated as single dates. Almost none of them are derived from a
+      benchmark. This page separates three things that get merged: what has been <b>measured</b>, what
+      has been <b>extrapolated</b> from it, and what has merely been <b>asserted</b>. The chronology is
+      the part with evidence behind it. Everything after 2026 is arithmetic on a curve, and the curve
+      is already meeting physical limits.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>The short answer.</strong> Computation has improved at a staggeringly steady rate for
+      eighty-six years — compute per dollar has doubled roughly every 2.3 years since 1940, a factor of
+      about 10<sup>11</sup>. AI capability has followed a faster curve for six years. But <b>AGI,
+      superintelligence and the Singularity are three different kinds of claim</b>, and only the first is
+      the kind a benchmark can address. Current forecasts for "human-level AI" span <b>2027 to 2116</b>,
+      and the spread reflects definitional disagreement more than technological uncertainty.
+    </div>
+
+    <!-- ========================================================== chronology -->
+    <section class="panel" id="chrono-section">
+      <h2>The chronology</h2>
+      <p class="lede">
+        Four threads run through it, colour-coded below. The <b>substrate</b> is the hardware and
+        architecture. <b>Capability</b> is what the software can do. <b>Life span</b> is the other clock
+        the machine is racing: how long people live, and whether the extra years arrive in a state worth
+        having. <b>Theory</b> is what people claimed the machine would become. Five of the forty-four
+        entries are theory, and every one of them was written before the thing it described existed.
+      </p>
+      <p class="regime-note" style="margin-bottom:14px;">
+        The life-span track was not here in earlier versions of this page, which is a real omission rather
+        than a presentational one. The labour force in 2060 is decided by two things: how many people are
+        alive and how many of them are well enough to work. A ten-year gain in working life is a decade of
+        extra output; a ten-year gain in <em>dependency</em> costs the same economy twice. Neither shows up
+        in any compute benchmark, and both change the answer.
+      </p>
+      <div class="track-filter" id="trackFilter"></div>
+      <div class="chrono" id="chrono"></div>
+      <p class="regime-note">
+        <b>On the numbers.</b> Each entry is tagged <span class="conf-verified">verified</span>,
+        <span class="conf-standard">standard</span> or <span class="conf-flagged">flagged</span>.
+        Nothing before 1940 has a meaningful operations-per-second figure — tally notches, abacus beads,
+        gear ratios and FLOPS are not commensurable, and any long-run cost series before the electronic
+        era is an illustration rather than a measurement. The 1946 and 1971 figures are real and
+        documented; the 1837 figure is Babbage's own estimate for a machine that was never built.
+      </p>
+    </section>
+
+    <!-- ========================================================== projection -->
+    <section class="panel" id="projection">
+      <h2>Where the curve goes</h2>
+      <p class="lede">
+        Training compute for the largest known model, on a log scale. The dashed line is the measured
+        rate since 2020 — <b>5×/yr</b>, a doubling every 5.2 months. The solid line is your choice.
+        The red band at the top is the latency wall: above roughly 10<sup>30</sup> FLOP, a single
+        training run cannot synchronise across a cluster fast enough, whatever the chips.
+      </p>
+      <div class="proj-wrap">
+        <div id="projChart"></div>
+        <div class="proj-controls">
+          <label for="rateSlider">Assumed growth rate</label>
+          <input type="range" id="rateSlider" min="1.1" max="8" step="0.1" value="5">
+          <div class="proj-read" id="projRead"></div>
+        </div>
+      </div>
+      <p class="regime-note">
+        The thresholds are real policy and physics, not invented for the chart. California's SB 53
+        defines a frontier model as one trained above <b>10<sup>26</sup> FLOP</b> — GPT-4.5 crossed it.
+        Epoch AI estimates a <b>2×10<sup>29</sup> FLOP</b> run is likely feasible by 2030. The latency
+        ceiling of <b>3×10<sup>30</sup> to 10<sup>32</sup> FLOP</b> is their hard cap absent new
+        interconnect topologies. One caveat on the recent points: GPT-5 is estimated at around
+        5×10<sup>25</sup> FLOP — <em>less</em> than GPT-4.5 — because effort shifted to post-training
+        and inference-time compute. The frontier is no longer simply the biggest training run, which is
+        the first sign that this particular curve is losing its grip.
+      </p>
+    </section>
+
+    <!-- =============================================================== rates -->
+    <section class="panel" id="rates">
+      <h2>The measured rates</h2>
+      <p class="lede">
+        These are the benchmarks of growth that timeline claims are built from. They are not the same
+        rate, they do not compound into one another, and combining them is the most common error in the
+        genre. Note especially that the long-run rate is <em>slower</em> than Moore's law — because
+        Moore's law is transistors, not compute per dollar, and the two diverged decades ago.
+      </p>
+      <div id="rates"></div>
+      <p class="regime-note">
+        <b>The one number that matters most here.</b> Compute per dollar has doubled every 2.32 years
+        since 1940 — about 0.13 orders of magnitude a year, 10× every 7.7 years, a factor of roughly
+        10<sup>11</sup> in total. Different studies put the doubling anywhere from 1.5 years (Median
+        Group) to 4.4 years (Bergal), which over eighty-six years is a spread of nine orders of
+        magnitude. Anyone quoting a single compute trend is quoting one study's fit.
+      </p>
+    </section>
+
+    <!-- =============================================================== walls -->
+    <section class="panel" id="walls">
+      <h2>The five walls</h2>
+      <p class="lede">
+        Extrapolation is only valid until something binds. Five things are visibly binding now, and
+        they are ranked by how soon. The disturbing part is not the list; it is that the two firmest
+        walls — power and latency — are physical, while the one most often invoked as the rescue —
+        algorithmic progress — is the weakest measured rate here and contributes the minority of
+        observed gains.
+      </p>
+      <div class="walls" id="walls-list"></div>
+    </section>
+
+    <!-- =========================================================== forecasts -->
+    <section class="panel" id="forecasts">
+      <h2>The forecast spread</h2>
+      <p class="lede">
+        Every dated prediction for AGI, superintelligence or transformative AI that I could source,
+        plotted on one axis. Position is the predicted year; colour is the kind of evidence behind it.
+        The point of the chart is the <em>spread</em> — 2027 to 2116 for what people loosely call
+        the same event.
+      </p>
+      <div id="forecastChart"></div>
+      <div class="forecast-legend" id="forecastLegend"></div>
+      <p class="regime-note">
+        Two clues about how soft these numbers are, both internal to the surveys themselves. The same
+        2023 expert survey returns <b>2047</b> for "all tasks" and <b>2116</b> for "all occupations" —
+        arguably the same question, answered seventy years apart. And the same survey instrument moved
+        thirteen years in one year between its 2022 and 2023 editions. That is a change in the news,
+        not in the technology.
+      </p>
+    </section>
+
+    <!-- ========================================================= definitions -->
+    <section class="panel" id="definitions">
+      <h2>AGI vs superintelligence vs the Singularity</h2>
+      <p class="lede">
+        These are routinely used as if they were one target at different distances. They are three
+        different kinds of claim, and the difference determines whether a benchmark could in principle
+        settle it.
+      </p>
+      <div class="defs" id="defs-list"></div>
+      <p class="regime-note">
+        <b>The practical consequence.</b> AGI is a <em>coverage</em> claim — which tasks. Superintelligence
+        is a <em>degree</em> claim — how much better than the best humans, across nearly everything.
+        The Singularity is a <em>predictive-discontinuity</em> claim — that forecasting stops working.
+        You can have AGI with a slow takeoff, superintelligence without discontinuity, and an
+        intelligence explosion that is superhuman but not singular. Most public argument about "when
+        AGI" is really about the third thing while citing the first.
+      </p>
+    </section>
+
+    <!-- =============================================================== track -->
+    <section class="panel" id="track">
+      <h2>The track record, and the winters</h2>
+      <p class="lede">
+        Forecasting this field has a history worth knowing before trusting any date on this page —
+        including the ones I have just plotted.
+      </p>
+      <div class="track" id="track-record"></div>
+      <p class="regime-note">
+        <b>What the winters actually punished.</b> Neither collapse came from the core technology
+        failing. 1973 punished an over-claim about scope — reasoning would generalise from toy problems.
+        1987 punished a hardware bet — specialised Lisp machines lost to general-purpose workstations.
+        Both are live risks now: the first in the assumption that benchmark scores transfer to
+        messy contexts, the second in the assumption that purpose-built accelerators stay ahead of
+        general-purpose ones.
+      </p>
+    </section>
+
+    <!-- ============================================================= reading -->
+    <section class="panel" id="reading">
+      <h2>How to read the dates</h2>
+      <p class="lede">
+        A closing note on method, because the timeline above is only as good as how it is used.
+      </p>
+      <div class="reading">
+        <div class="read-item">
+          <h3>Separate the measurement from the extrapolation</h3>
+          <p>That training compute has grown 5×/yr since 2020 is a measurement with a tight confidence
+          interval. That it will continue is an assumption. The page keeps these visually separate —
+          dotted for measured, solid for assumed — and so should any argument built on them.</p>
+        </div>
+        <div class="read-item">
+          <h3>Do not compound the rates</h3>
+          <p>Training compute, chip efficiency, algorithmic efficiency and inference price are four
+          different quantities with four different sources and four different confidence levels.
+          Multiplying them is a common move and it is not legitimate: the algorithmic share of measured
+          progress has been <em>declining</em>, and the fastest price declines come from a mid-tier that
+          is not the frontier.</p>
+        </div>
+        <div class="read-item">
+          <h3>Ask what the date is a date for</h3>
+          <p>"AGI by 2033" can mean a coverage threshold, a degree threshold, or a scenario's pacing.
+          The single most useful question for any timeline claim is which of the three it means, and
+          almost no popular claim answers it.</p>
+        </div>
+        <div class="read-item">
+          <h3>Watch the instruments, not the models</h3>
+          <p>MMLU, GSM8K and MATH are saturated; GPQA is compressed to noise at the top; METR's task
+          suite cannot resolve above sixteen hours. Capability is still rising while the instruments
+          that measured it stop discriminating — which means the next few years of "AI progress" will
+          be unusually hard to assess, and unusually easy to over-claim in either direction.</p>
+        </div>
+      </div>
+      <p class="regime-note">
+        <b>What would change this page.</b> A demonstrated substitute for human text at scale; a
+        working non-CMOS substrate that resets the efficiency curve; a frontier model that again
+        requires more compute than its predecessor rather than less; or three consecutive years where
+        the task-horizon curve flattens on a suite that can still resolve the frontier. Any one of
+        those would move the central estimates by a decade.
+      </p>
+    </section>
+
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Compiled from Epoch AI, METR, the Stanford AI Index, the Cascade Institute&rsquo;s risk work, and the primary papers cited in each entry.</span>
+  <span>Figures tagged by provenance &middot; forecasts plotted by predicted year, not by confidence</span>
+</footer>
+
+<script src="timeline-data.js?v=2"></script>
+<script src="hover.js?v=2"></script>
+<script src="timeline.js?v=3"></script>
+</body>
+</html>

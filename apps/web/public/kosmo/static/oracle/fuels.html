@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fuels — energy, climate and population, 1800 to 2500</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+<div class="titlebar">
+    <div class="titles">
+      <h1>Fuels</h1>
+      <p class="sub">Energy, emissions, temperature and population &mdash; 1800 to 2500, measured history and computed future</p>
+    </div>
+    <div class="presets" id="presets" role="group" aria-label="Scenarios"></div>
+  </div>
+
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Model levers">
+    <div class="levers-head">
+      <span>Levers</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="leverGroups"></div>
+    <p class="aside-note">
+      History to 2025 is measured (see <a href="#sources">sources</a> and the checks
+      below). Everything after it is computed by three separable models &mdash; energy
+      costs, a carbon cycle, a two-layer climate &mdash; that are calibrated to
+      reproduce this year before they are asked about 2500.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>Two different kinds of number.</strong> Left of the hairline the charts show
+      measured history: Energy Institute primary energy from 1800, ice cores and the Keeling
+      curve, HadCRUT temperature, Church &amp; White sea level. Right of it is a model, and the
+      model has no idea what happens in 2400 &mdash; nobody does. What it can do is hold the
+      physics fixed and show what the choices imply, including the part that keeps going after
+      emissions stop.
+    </div>
+
+    <div class="horizon-bar">
+      <span class="hbar-label">Show to</span>
+      <div class="horizon" id="horizon" role="group" aria-label="Chart horizon"></div>
+      <span class="hbar-note" id="hbarNote">2500 is past the point where the deep ocean equilibrates</span>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Primary energy by source, 1800&ndash;2500</h2>
+          <p>Exajoules. The vertical line is today. Everything to its right is computed.</p>
+        </figcaption>
+        <div id="chartEnergy" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Fossil share of primary energy</h2>
+          <p>The transition, as a single number. It has never fallen since 1800.</p>
+        </figcaption>
+        <div id="chartShare" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Energy per person</h2>
+          <p>Gigajoules a year. The world uses 78; the United States uses 290.</p>
+        </figcaption>
+        <div id="chartPerCap" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Annual CO<sub>2</sub> emissions</h2>
+          <p>Gigatonnes a year, fossil plus land-use change. The measured series is the Global Carbon Project.</p>
+        </figcaption>
+        <div id="chartEmissions" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Atmospheric CO<sub>2</sub></h2>
+          <p>Parts per million. Ice cores before 1959, Mauna Loa after, then the four-box carbon cycle.</p>
+        </figcaption>
+        <div id="chartConc" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Global mean temperature, with the sensitivity spread</h2>
+          <p>Degrees above 1850&ndash;1900. Shaded band: the measured uncertainty to 2025, then the 10&ndash;90% spread of 96 runs drawn from the AR6 climate-sensitivity distribution. The dashed lines are the two policy targets.</p>
+        </figcaption>
+        <div id="chartTemp" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Ocean heat and the energy imbalance</h2>
+          <p>The amber line is what the model says is still trapped at the top of the atmosphere; the teal line is the heat that has accumulated in the ocean since 2025. Around 90% of the imbalance ends up there, which is why sea level keeps rising after the surface stops warming.</p>
+        </figcaption>
+        <div id="chartOhc" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Population</h2>
+          <p>The UN medium projection is measured to 2100. After that it is the lever.</p>
+        </figcaption>
+        <div id="chartPop" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Sea level</h2>
+          <p>Metres relative to 1993&ndash;2012. Split into the fast part and the slow part, because they are not the same problem.</p>
+        </figcaption>
+        <div id="chartSea" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Measured ice sheet loss, 2002&ndash;2025</h2>
+          <p>GRACE gravimetry, both basins, cumulative. This is the only chart on the page that is entirely measured &mdash; it is the empirical counterpart to the ice term in the sea-level chart above. 361 Gt of ice is about 1&nbsp;mm of global mean sea level.</p>
+        </figcaption>
+        <div id="chartIce" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Ocean pH</h2>
+          <p>Surface ocean, derived from CO<sub>2</sub>. The scale is logarithmic: this is a 30% fall in hydrogen ion concentration since 1800.</p>
+        </figcaption>
+        <div id="chartPH" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Cumulative emissions</h2>
+          <p>Gigatonnes of CO<sub>2</sub> since 2025, against the remaining budget for each target.</p>
+        </figcaption>
+        <div id="chartBudget" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>What the warming costs</h2>
+          <p>Percent of global output lost to the damage function, after adaptation. The only economic number on this page.</p>
+        </figcaption>
+        <div id="chartDamage" class="chartwrap"></div>
+      </figure>
+
+    </div>
+
+    <section class="panel">
+      <div class="calib-head">
+        <div>
+          <h2>The record, in five sentences</h2>
+          <p class="muted">Computed from the ingested series, so it updates when the data does.</p>
+        </div>
+        <div class="calib-stamp" id="recordStamp"></div>
+      </div>
+      <div class="readings" id="record"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Which assumption is the answer hanging from</h2>
+      <p class="muted" style="margin-bottom:10px;">
+        Each lever moved a quarter of its range either way, alone, measured on temperature in 2100.
+        Everything else held at the current scenario. A lever near the bottom of this list is one you
+        can argue about without changing the conclusion.
+      </p>
+      <div id="sensBody"></div>
+    </section>
+
+    <section class="panel" id="sources">
+      <h2>Sources, spans and the checks that gate the model</h2>
+      <p class="muted" style="margin-bottom:12px;">
+        Ten datasets, fetched by <code>ingest-energy.mjs</code>. The table below is generated from
+        the file it wrote, including whether each source answered.
+      </p>
+      <div id="srcBody"></div>
+      <div id="checkBody" style="margin-top:14px;"></div>
+    </section>
+
+    <section class="panel method">
+      <h2>What is modelled, and what cannot be</h2>
+      <div class="method-grid">
+        <div>
+          <h3>The three layers</h3>
+          <p><strong>Energy.</strong> Each fuel has a levelised cost. Fossil costs rise with cumulative extraction against ultimately recoverable resources, and with whatever carbon price actually reaches them. Clean costs fall on a learning curve but rise with penetration, because storage and grid are real. Share moves toward the cheapest mix at each fuel's own turnover speed.</p>
+          <p><strong>Carbon.</strong> Emissions enter a four-box impulse response. About a quarter stays airborne essentially forever, which is why the concentration charts do not come back down even when emissions hit zero.</p>
+          <p><strong>Climate.</strong> A two-layer energy balance: a thin mixed layer that responds in years, a deep ocean that takes centuries. That split is what produces committed warming, and it is why 2500 looks nothing like 2100.</p>
+        </div>
+        <div>
+          <h3>Why the price is not enough</h3>
+          <p>Two levers exist because one is not sufficient. <em>Coverage</em> is the share of emissions a price actually reaches &mdash; about 24% today, most of it under $30/t. <em>Phase-out</em> is the mandate. In a model where fuels compete on cost, a high price makes coal small but never zero, because some use will always pay it. Every published net-zero pathway closes that gap with regulation, not with a bigger number.</p>
+        </div>
+        <div>
+          <h3>What it cannot tell you</h3>
+          <p>There are no tipping points beyond the one feedback lever, no ice-sheet dynamics, no regional climate, no agriculture or water, no migration, no conflict, and no finance. Population is exogenous. The damage function is a quadratic guess, and the literature disagrees about it by an order of magnitude. Treat the far right of any chart as a shape, not a level.</p>
+        </div>
+      </div>
+    </section>
+
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Energy 1800&ndash;2025 measured &middot; climate and energy computed to 2500 &middot; annual steps</span>
+  <span id="footStamp"></span>
+</footer>
+
+<script src="fuels-data.js?v=2"></script>
+<script src="fuels.js?v=2"></script>
+<script src="hover.js?v=2"></script>
+<script src="fuels-app.js?v=6"></script>
+</body>
+</html>

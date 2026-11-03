@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dark Factory — AI displacement &amp; macro fragility model</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+<div class="titlebar">
+    <div class="titles">
+      <h1>Dark Factory</h1>
+      <p class="sub">A lever-driven model of AI labour displacement, software deflation and equity fragility</p>
+    </div>
+    <div class="presets" id="presets" role="group" aria-label="Scenarios"></div>
+  </div>
+
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Model levers">
+    <div class="levers-head">
+      <span>Levers</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="leverGroups"></div>
+    <p class="aside-note">
+      Every lever feeds a monthly macro simulation across 17 sectors. Sector employment,
+      wages and value added are measured (see <a href="#calibBody">calibration</a>); the
+      behavioural levers are still assumptions, and the whole thing is a structural model
+      rather than a forecast of any actual series.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+      <figure class="card span2">
+        <figcaption>
+          <h2>Equity index &amp; drawdown</h2>
+          <p>Earnings power &times; the multiple the market is willing to pay for it. Index today = 100.</p>
+        </figcaption>
+        <div id="chartIndex" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Labour market</h2>
+          <p>Unemployment and labour's share of GDP. The share is the consumer's budget.</p>
+        </figcaption>
+        <div id="chartLabour" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Output &amp; demand</h2>
+          <p>Real GDP, household consumption and the AI capex slice that is itself demand.</p>
+        </figcaption>
+        <div id="chartMacro" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Capability vs. sector thresholds</h2>
+          <p>When the capability frontier clears each sector's automation threshold.</p>
+        </figcaption>
+        <div id="chartThreshold" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Drawdown distribution</h2>
+          <p>180 Monte Carlo draws over the model's real uncertainties: capability, adoption, elasticity, capex.</p>
+        </figcaption>
+        <div id="chartHist" class="chartwrap"></div>
+      </figure>
+    </div>
+
+    <section class="panel sectors">
+      <div class="sectors-head">
+        <div>
+          <h2>Where the jobs go</h2>
+          <p class="muted">Employment change by sector, and how much of the work is done by machines.</p>
+        </div>
+        <div class="yearpick">
+          <label for="focusYear">Year <output id="focusYearOut">2033</output></label>
+          <input id="focusYear" type="range" min="1" max="10" value="7" step="1">
+        </div>
+      </div>
+      <div id="sectorTable" class="sector-table"></div>
+    </section>
+
+    <section class="panel calib">
+      <div class="calib-head">
+        <div>
+          <h2>Calibration &amp; provenance</h2>
+          <p class="muted">Where each number comes from. <strong>Measured</strong> figures are fetched live
+            from BLS, BEA and O*NET by <code>ingest.mjs</code>; <strong>derived</strong> figures are computed
+            from those; <strong>assumed</strong> figures have no public series and are labelled as assumptions.</p>
+        </div>
+        <div class="calib-stamp" id="calibStamp"></div>
+      </div>
+      <div id="calibBody"></div>
+    </section>
+
+    <section class="panel method">
+      <h2>How the model works, and what it cannot do</h2>
+      <div class="method-grid">
+        <div>
+          <h3>The three mechanisms</h3>
+          <p><strong>Margin expansion.</strong> Labour is a cost. A machine that does the task removes it, so unit costs fall and earnings rise.</p>
+          <p><strong>Demand destruction.</strong> Wages are the consumer's budget. If labour's share of income falls faster than prices do, the revenue base of every sector shrinks even as costs fall. The two forces are the same event.</p>
+          <p><strong>Reflexivity.</strong> AI datacenter capex is itself a slice of GDP and revenue for chips, energy and construction. When earnings disappoint, capex is cut, supplier revenue falls, and the first leg down becomes a second one.</p>
+        </div>
+        <div>
+          <h3>Why capability is not adoption</h3>
+          <p>The model separates the capability frontier from deployment. Capability is driven by installed compute and algorithmic efficiency; deployment is gated by a literacy S-curve, organisational friction and sector ceilings. A world where the frontier reaches senior-professional parity but only a tenth of firms can operate it looks nothing like a world where everyone learns agentic automation — the levers let you see the difference.</p>
+        </div>
+        <div>
+          <h3>What it cannot tell you</h3>
+          <p>This is a structural accounting model, not a forecast. It has no financial sector, no credit cycle, no geopolitics, and no new-task creation beyond the reabsorption parameter. Its purpose is to make the <em>shape</em> of the argument inspectable: which channel dominates, at what threshold it flips, and which assumptions have to hold for a crash to be the base case.</p>
+        </div>
+      </div>
+    </section>
+
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Structural simulation &middot; 17 sectors &middot; monthly steps &middot; Monte Carlo over 7 uncertain parameters</span>
+  <span id="footBaseline">Baseline from ingested BLS/BEA data.</span>
+</footer>
+
+<script src="calibration.js?v=2"></script>
+<script src="model.js?v=2"></script>
+<script src="hover.js?v=2"></script>
+<script src="app.js?v=5"></script>
+</body>
+</html>

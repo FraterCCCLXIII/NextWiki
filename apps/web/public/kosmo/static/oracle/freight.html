@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Freight — 28 straits, measured daily</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+<div class="titlebar">
+    <div class="titles">
+      <h1>Freight</h1>
+      <p class="sub">The only daily series in this lab. Distribution fails before production does, and this is the distribution</p>
+    </div>
+</div>
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Chart controls">
+    <div class="levers-head">
+      <span>Controls</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="controls"></div>
+    <p class="aside-note">
+      Every line here is a seven-day mean of daily transit calls reported by the
+      IMF's PortWatch programme. Capacity is the carrying capacity of the ships
+      that passed, not the tonnage of cargo they carried.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>Why this page exists.</strong> Every other page in this lab moves in
+      years or decades. A strait closes in an afternoon. Food and fuel stop moving
+      weeks before they stop being produced, and the 28 passages below are where
+      that happens: a handful of gaps between seas that carry most of the world's
+      manufactured goods and a large share of its energy. This page is here to keep
+      the slow models honest about how fast the fast layer moves.
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>What moved, indexed to 2019</h2>
+          <p>Weekly transit calls, each strait divided by its own 2019 mean, so
+             straits with 30 ships a day and straits with 300 sit on one scale.
+             100 is the pre-pandemic baseline. The two big departures are the Red
+             Sea, where traffic diverted around Africa from late 2023, and Panama,
+             where drought cut the locks.</p>
+        </figcaption>
+        <div id="chartIndex" class="chartwrap"></div>
+        <div id="legendIndex" class="legend"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>The four that carry the story</h2>
+          <p>Absolute daily calls at Suez, Panama, Bab el-Mandeb and the Cape of
+             Good Hope. When the Red Sea closes, the first two fall and the Cape
+             rises: the same ships, 6,000 kilometres further round. Watch the
+             handover happen in the same weeks.</p>
+        </figcaption>
+        <div id="chartBig" class="chartwrap"></div>
+        <div id="legendBig" class="legend"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>What each strait carries</h2>
+          <p>Mean daily carrying capacity over the last four weeks, by vessel
+             type. This is the closest public proxy for the value that passes
+             through a gap in the map.</p>
+        </figcaption>
+        <div id="chartCapacity" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Now against 2019</h2>
+          <p>Change in transit calls, last four weeks against the 2019 mean. The
+             bar is the honest measure of a disruption; the label is the strait.</p>
+        </figcaption>
+        <div id="chartChange" class="chartwrap"></div>
+      </figure>
+
+    </div>
+
+    <div class="panel wpane" id="checks"></div>
+    <div class="panel wpane" id="sources"></div>
+
+  </section>
+</main>
+
+<script src="freight-data.js?v=1"></script>
+<script src="hover.js?v=2"></script>
+<script src="freight-app.js?v=2"></script>
+</body>
+</html>

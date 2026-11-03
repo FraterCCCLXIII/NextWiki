@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robots — stock, unit cost, ownership and the wealth they produce</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+<div class="titlebar">
+    <div class="titles">
+      <h1>Robots</h1>
+      <p class="sub">Sixty-five years of machine labour, what one now costs, and who ends up owning the income it produces</p>
+    </div>
+  </div>
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Model levers">
+    <div class="levers-head">
+      <span>Levers</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div class="presets" id="presets" role="group" aria-label="Scenarios"></div>
+    <div id="leverGroups"></div>
+    <p class="aside-note">
+      The stock to 2025 is measured (IFR World Robotics). The price curve is
+      anchored to published unit prices. Everything after 2025 is arithmetic on
+      those anchors plus the levers above &mdash; and the ownership lever has no
+      measured global series at all, which is why it is the one worth moving.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>One number on this page is measured and one is a choice.</strong>
+      How many robots exist, and what one costs, are published figures. Who owns
+      them is not: there is no global register of robot ownership, so the split is
+      a lever. That matters because the model says the ownership split dominates
+      every physical parameter &mdash; cheaper robots change the size of the pie,
+      ownership changes who eats.
+    </div>
+
+    <div class="horizon-bar">
+      <span class="hbar-label">Read at</span>
+      <div class="horizon" id="horizon" role="group" aria-label="Read-out year"></div>
+      <span class="hbar-note" id="hbarNote"></span>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Robots in operation, 1961&ndash;2100</h2>
+          <p>Log scale, because the range is five orders of magnitude. The vertical line is 2025 &mdash; left of it is IFR's measured stock, right of it is the model. Markers are the milestones listed below.</p>
+        </figcaption>
+        <div id="chartStock" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>The price of a machine</h2>
+          <p>USD per unit, log scale. Measured 1995&ndash;2024, then the decline lever to its floor. The two dots are humanoids that actually shipped: $16,000 (G1, 2024) and $5,900 (R1, 2025).</p>
+        </figcaption>
+        <div id="chartPrice" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Payback</h2>
+          <p>Years for an installed system to repay itself against the wage it displaces. Below about three years, adoption stops being a capital-budget question. A gap means the machine did not repay itself within twenty years at a global average wage.</p>
+        </figcaption>
+        <div id="chartPayback" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Work displaced, and labour's share</h2>
+          <p>Left: share of all work done by machines. Right: labour's share of national income. The second follows the first, and it is the number that shows up as wages.</p>
+        </figcaption>
+        <div id="chartLabour" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Where the income goes</h2>
+          <p>Trillions a year: wages plus capital income, split by owner. Redistribution moves income; it does not by itself move wealth, because dividends are spent.</p>
+        </figcaption>
+        <div id="chartIncome" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Wealth shares</h2>
+          <p>Net personal wealth by group, with the implied Gini on the right. Starts at the measured 2025 split: 45% / 39% / 16%.</p>
+        </figcaption>
+        <div id="chartWealth" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Markets</h2>
+          <p>The equity index capitalises the labour share's loss as earnings growth. Robot capex is the annual spend on new machines as a share of GDP &mdash; a boom that is small in GDP terms and enormous in labour terms.</p>
+        </figcaption>
+        <div id="chartMarkets" class="chartwrap"></div>
+      </figure>
+
+    </div>
+
+    <section class="panel" id="timeline">
+      <h2>The timeline, in the order it happened</h2>
+      <p class="muted" style="margin-bottom:18px">Every entry to 2025 is a dated event. The last three are projections and marked as such.</p>
+      <div id="milestones"></div>
+    </section>
+
+    <section class="panel" id="assume">
+      <h2>Every number that is not a lever</h2>
+      <p class="muted" style="margin-bottom:18px">Constants, where they came from, and how confident anyone should be. Anything not on this list is a lever and is stated on the page.</p>
+      <div id="assumptions"></div>
+    </section>
+
+    <section class="panel" id="checks">
+      <h2>Checks</h2>
+      <p class="muted" style="margin-bottom:18px">Run on load against the published anchors. A failure here means the data file, not the model.</p>
+      <div id="checkBody"></div>
+    </section>
+
+    <section class="panel" id="sources">
+      <h2>Sources</h2>
+      <div id="sourceBody"></div>
+    </section>
+
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Structural accounting &middot; IFR stock and price anchors &middot; ownership is a lever, not a measurement</span>
+  <span id="footNote"></span>
+</footer>
+
+<script src="robots-data.js?v=2"></script>
+<script src="robots.js?v=2"></script>
+<script src="hover.js?v=2"></script>
+<script src="robots-app.js?v=6"></script>
+</body>
+</html>

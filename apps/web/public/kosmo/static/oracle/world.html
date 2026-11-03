@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>World — 233 countries, 1800 to 2023</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+<div class="titlebar">
+    <div class="titles">
+      <h1>World</h1>
+      <p class="sub">Every other page in this lab draws one number for one planet. This one draws the countries that the number is an average of</p>
+    </div>
+</div>
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Chart controls">
+    <div class="levers-head">
+      <span>Controls</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="controls"></div>
+    <p class="aside-note">
+      The year control moves one frame of measured data, not an interpolation between
+      frames: before 1950 the panel is decadal because the underlying reconstruction is.
+      Population sizes the bubbles and weights every average here.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>Why this page exists.</strong> "World GDP per capita is $17,000" and "world
+      life expectancy is 74" are both true and both describe nobody. The same planet holds
+      countries at $700 a head and at $120,000, with life expectancies of 52 and 85. The
+      models on the other pages run on the average, and the average is exactly the thing
+      that hides who gets displaced, who pays for the transfers, and which countries have
+      the fiscal room to absorb a shock that arrives in five years rather than fifty.
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>The dispersion</h2>
+          <p>Income per person (log) against life expectancy at birth. Area is population and
+             colour is region. Move the year to watch the cloud rise; switch on Trails to see
+             where each country came from since 1800 &mdash; off by default, because 185 paths
+             is a hairball that hides the cloud.</p>
+        </figcaption>
+        <div id="bubbleChart" class="chartwrap"></div>
+        <div id="bubbleLegend" class="legend"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>The distribution under the average</h2>
+          <p>People, not countries, stacked by income. The amber line is the population-weighted
+             mean — the number the other pages use. The blue line is the median person.</p>
+        </figcaption>
+        <div id="mountains" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Mean and median, 1800&ndash;2019</h2>
+          <p>What the average person earns against what the median country earns. The gap is
+             where the world's population sits relative to its spread.</p>
+        </figcaption>
+        <div id="incomeGap" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Life expectancy, the whole spread</h2>
+          <p>Population-weighted 10th, 50th and 90th percentiles across countries. The bands
+             converging is the single clearest fact about the last seventy years.</p>
+        </figcaption>
+        <div id="lifeSpread" class="chartwrap"></div>
+      </figure>
+
+    </div>
+
+    <div class="panel wpane" id="coverage"></div>
+    <div class="panel wpane" id="checks"></div>
+    <div class="panel wpane" id="sources"></div>
+
+  </section>
+</main>
+
+<script src="gapminder-data.js?v=2"></script>
+<script src="hover.js?v=2"></script>
+<script src="world-app.js?v=3"></script>
+</body>
+</html>

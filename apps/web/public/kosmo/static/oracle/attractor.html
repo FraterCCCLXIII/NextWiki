@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polycrisis, Metacrisis, Third Attractor — an analysis</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+<div class="titlebar">
+    <div class="titles">
+      <h1>Three Words for the Same Predicament</h1>
+      <p class="sub">Polycrisis, metacrisis, third attractor &mdash; what each one claims, who made it, and where the evidence thins</p>
+    </div>
+  </div>
+
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Contents">
+    <div class="levers-head"><span>Contents</span></div>
+    <nav class="toc">
+      <a href="#terms">The three terms</a>
+      <a href="#timeline">Provenance, 1970&ndash;2026</a>
+      <a href="#attractors">The attractors</a>
+      <a href="#basin">Why the middle is hard</a>
+      <a href="#generators">The generators</a>
+      <a href="#corpus">The corpus</a>
+      <a href="#claims">Fifteen claims</a>
+      <a href="#paradoxes">Twenty paradoxes</a>
+      <a href="#derived">What the numbers say</a>
+      <a href="#anchors">Quantitative anchors</a>
+      <a href="#critiques">The criticisms</a>
+      <a href="#audit">Data audit</a>
+      <a href="#sources">Sources</a>
+    </nav>
+    <p class="aside-note">
+      Two bodies of material sit on this page and are kept apart. The <b>corpus</b> is the public output of
+      a 72-conversation project: 1,210 codings, fifteen propositions, twenty paradoxes. The <b>literature</b>
+      is where the three terms came from, with primary sources. The corpus is evidence about what a
+      community thinks. The literature is evidence about what the words mean. Neither settles the other.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>What this page is not.</strong> It is not an endorsement of the metacrisis framing, nor a
+      debunking. It is an attempt to separate three things that routinely get merged: the <em>description</em>
+      of the crisis, the <em>claim about its cause</em>, and the <em>claim about where to go</em>. Each rests on
+      different evidence, and only the first one has much of it.
+    </div>
+
+    <!-- ============================================================ terms -->
+    <section class="panel" id="terms">
+      <h2>The three terms</h2>
+      <p class="lede">
+        They are often used interchangeably. They are not interchangeable, and the differences are the
+        whole argument.
+      </p>
+      <div class="terms" id="terms-grid"></div>
+    </section>
+
+    <div class="panel note-strip">
+      <span class="ns-label">The one-line version</span>
+      <p><b>Polycrisis</b> says the crises are entangled. <b>Metacrisis</b> says they have a common cause.
+      <b>Third attractor</b> says there is somewhere else to go. The first is a description, the second is a
+      diagnosis, the third is a prescription &mdash; and the evidence gets thinner at each step.</p>
+    </div>
+
+    <!-- ========================================================= timeline -->
+    <section class="panel" id="timeline">
+      <h2>Provenance, 1970&ndash;2026</h2>
+      <p class="lede">
+        Both terms have older roots than their current fame suggests, and the order in which they became
+        famous is the reverse of the order in which they were made. <b>Metacrisis</b> has priority in the
+        literature &mdash; 1970, 2011, 2015 &mdash; but <b>polycrisis</b> became the public word first in 2022.
+        Much of the current framing of metacrisis as a <em>correction</em> to polycrisis is retrofitting.
+      </p>
+      <ol class="timeline" id="timeline-list"></ol>
+      <p class="regime-note">
+        Dating caution: the French <em>polycrise</em> appears in <em>Terre-Patrie</em> (1993) and in English in
+        1999. The Polycrisis Observatory itself notes that 1993 is a bibliographic marker, not proof of first
+        occurrence. Sources regularly state 1999, and at least one places the coinage in &ldquo;the 1970s&rdquo;;
+        both are wrong.
+      </p>
+    </section>
+
+    <!-- ========================================================= attractors -->
+    <section class="panel" id="attractors">
+      <h2>The three attractors</h2>
+      <p class="lede">
+        Not three policies. Three <em>basins</em> &mdash; states the system falls into and stays in. The argument
+        that makes this more than a metaphor is that the first two feed each other: every move away from
+        chaos strengthens control, and every move away from control strengthens chaos.
+      </p>
+      <div class="atts" id="attractors-grid"></div>
+      <p class="regime-note">
+        Attribution caution: Schmachtenberger developed this across podcasts and films, and there is no single
+        canonical text where all three attractors are defined in numbered form. The clearest published summary
+        is Benjamin Life&rsquo;s, quoted on the P2P Foundation wiki; the clearest naming of the two failure
+        attractors in writing is from the <em>Your Undivided Attention</em> episode. Popular retellings frequently
+        renumber them &mdash; some render attractor 1 as &ldquo;tribalism&rdquo; and attractor 2 as &ldquo;the
+        current industrial model&rdquo;, which is not his frame.
+      </p>
+    </section>
+
+    <!-- ============================================================= basin -->
+    <section class="panel" id="basin">
+      <h2>Why the middle is hard</h2>
+      <p class="lede">
+        A schematic of the argument, not a model of the world. The horizontal axis is the coordination regime;
+        the vertical is how strongly the system is pulled toward each state. Two failure basins sit at the
+        walls. The third sits between them and is <em>shallower by default</em>, which is the whole problem.
+      </p>
+      <div class="basin-wrap">
+        <div id="basinChart"></div>
+        <div class="basin-controls">
+          <label for="basinSlider">Anti-rivalry capacity</label>
+          <input type="range" id="basinSlider" min="0" max="1" step="0.01" value="0.12">
+          <div class="basin-read" id="basinRead"></div>
+        </div>
+      </div>
+      <p class="regime-note">
+        Move the slider and the middle basin deepens. That is the entire content of the claim: the third
+        attractor is not achieved by preferring it, but by building anti-rivalrous structure &mdash; arrangements
+        in which one actor&rsquo;s gain is not another&rsquo;s loss &mdash; until the middle is a place the system
+        can rest rather than a ridge it rolls off. The shape is invented for legibility; the parameters mean
+        nothing.
+      </p>
+    </section>
+
+    <!-- ======================================================== generators -->
+    <section class="panel" id="generators">
+      <h2>The generators</h2>
+      <p class="lede">
+        Schmachtenberger&rsquo;s written account gives <b>two</b> generator functions with a third underneath
+        them, not the flat list of three that interview summaries usually report. Both versions are real; they
+        are different granulations of one argument.
+      </p>
+      <div class="gens" id="generators-list"></div>
+    </section>
+
+    <!-- ============================================================ corpus -->
+    <section class="panel" id="corpus">
+      <h2>The corpus</h2>
+      <p class="lede">
+        <em>Co-creating the Third Attractor</em> is a podcast and research project by Daniela Bomatter.
+        One question is prepared for each guest, the conversation is allowed to go where it goes, and afterwards
+        the transcripts are read against a fixed set of propositions. This is the most systematic attempt I
+        have seen to turn a podcast into a dataset &mdash; and it is worth being precise about what kind of
+        dataset it is.
+      </p>
+      <div class="stats" id="corpusStats"></div>
+      <div id="corpusBar"></div>
+      <h3 class="subhead">Nine series</h3>
+      <div class="series" id="seriesList"></div>
+    </section>
+
+    <!-- ============================================================ claims -->
+    <section class="panel" id="claims">
+      <h2>Fifteen claims, and where the conversations stand</h2>
+      <p class="lede">
+        Each conversation was coded as <b>agreeing</b> with a claim, <b>expanding</b> it, or <b>disagreeing</b>.
+        The bars are proportional across claims, so their length is evidence and their colour is the split.
+        Select any claim for the argument on both sides.
+      </p>
+      <div class="claim-sorts" id="claimSorts"></div>
+      <div class="claim-legend">
+        <span><i style="background:#7df9c4"></i>agrees</span>
+        <span><i style="background:#6ea8fe"></i>expands</span>
+        <span><i style="background:#ff5f6d"></i>disagrees</span>
+        <span class="cl-note">number on the right = contested score</span>
+      </div>
+      <div class="claim-list" id="claimList"></div>
+      <div class="claim-detail" id="claimDetail"></div>
+    </section>
+
+    <!-- ========================================================= paradoxes -->
+    <section class="panel" id="paradoxes">
+      <h2>Twenty paradoxes</h2>
+      <p class="lede">
+        The corpus&rsquo;s own synthesis, published before the claims and the thing the claims were built from.
+        Each pole is true; each pole becomes its own worst version when held alone. Bomatter calls them paradoxes
+        rather than polarities deliberately &mdash; a polarity gets balanced, a paradox gets held, and holding is
+        a trainable capacity rather than a decision.
+      </p>
+      <div class="paradox-filter" id="paradoxFilter"></div>
+      <div class="paradoxes" id="paradoxList"></div>
+    </section>
+
+    <!-- ============================================================ derived -->
+    <section class="panel" id="derived">
+      <h2>What the numbers say</h2>
+      <p class="lede">
+        These five readings are mine, computed from the published counts rather than stated on the analysis
+        page. The arithmetic is checkable in the audit below.
+      </p>
+      <div class="derived" id="derived-list"></div>
+    </section>
+
+    <!-- ============================================================ anchors -->
+    <section class="panel" id="anchors">
+      <h2>Quantitative anchors</h2>
+      <p class="lede">
+        This literature is mostly qualitative, and the numbers that circulate around it come from adjacent
+        fields rather than from its own authors. Each is tagged by how much weight it will bear.
+      </p>
+      <div class="anchors" id="anchors-list"></div>
+      <p class="regime-note">
+        <b>The honest summary.</b> Ord&rsquo;s &ldquo;1 in 6&rdquo; is one philosopher&rsquo;s synthesis and he
+        says so. The p(doom) spread &mdash; from below 0.01% to above 99% among people who study this for a
+        living &mdash; is a more important fact than any central estimate. The planetary boundary and nuclear
+        figures are measured and contested at the margin. The topsoil numbers in circulation are inflated by a
+        factor of two. Do not add these together; they are in different units and different centuries.
+      </p>
+    </section>
+
+    <!-- ========================================================== critiques -->
+    <section class="panel" id="critiques">
+      <h2>The criticisms</h2>
+      <p class="lede">
+        Strongest first. The most damaging objections come from <em>inside</em> the framing &mdash; people who
+        accept the predicament and reject the label or the prescription.
+      </p>
+      <table class="crit-table">
+        <thead><tr><th>Critic</th><th>Target</th><th>Objection</th><th>How much it bites</th></tr></thead>
+        <tbody id="critiques-body"></tbody>
+      </table>
+      <p class="regime-note">
+        <b>What is missing from the critical literature.</b> There is no published scholarly critique of the
+        third attractor arguing that it is unfalsifiable or that it lacks a theory of transition, even though
+        both are the obvious objections. The nearest documented version is McLeod&rsquo;s &ldquo;politically
+        implausible&rdquo;. That absence is itself a finding: the framing has been discussed almost entirely by
+        people sympathetic to it.
+      </p>
+    </section>
+
+    <!-- ============================================================== audit -->
+    <section class="panel" id="audit">
+      <h2>Data audit</h2>
+      <p class="lede">
+        What reconciles, what does not, and what the aggregate numbers can and cannot support.
+      </p>
+      <div class="audit" id="audit-list"></div>
+    </section>
+
+    <!-- ============================================================ sources -->
+    <section class="panel" id="sources">
+      <h2>Sources</h2>
+      <ul class="srclist" id="sources-list"></ul>
+    </section>
+
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Analysis written from the public corpus and the primary literature. No claim here is the corpus&rsquo;s own.</span>
+  <span>Corpus read October 2026 &middot; 72 conversations &middot; 1,210 codings</span>
+</footer>
+
+<script src="attractor-data.js?v=2"></script>
+<script src="attractor.js?v=2"></script>
+</body>
+</html>

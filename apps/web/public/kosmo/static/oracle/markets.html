@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Markets — the amplifier the model does not have</title>
+<link rel="stylesheet" href="styles.css?v=36">
+<script src="theme.js?v=15" defer></script>
+  <script src="../accordion.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="toprow">
+    <a class="logo" href="index.html" aria-label="Oracle home">
+      <span class="logo-orb" aria-hidden="true"></span>
+      <span class="logo-word">Oracle</span>
+    </a>
+    <nav class="pagenav" data-nav aria-label="Sections"></nav>
+  </div>
+</header>
+
+<div class="titlebar">
+  <div class="titles">
+    <h1>Markets</h1>
+    <p class="sub">Credit, rates and the price of expectations &mdash; the channel that turns a bad quarter into a contraction</p>
+  </div>
+</div>
+
+<main class="layout">
+
+  <aside class="levers" aria-label="Chart controls">
+    <div class="levers-head">
+      <span>Controls</span>
+      <button id="reset" class="ghost" type="button">Reset</button>
+    </div>
+    <div id="controls"></div>
+    <p class="aside-note">
+      Monthly means of daily and weekly series from the Federal Reserve Bank of
+      St. Louis. Spreads are Moody's seasoned corporate yields less the 10-year
+      Treasury; nothing here is interpolated across a gap.
+    </p>
+  </aside>
+
+  <section class="content">
+
+    <div class="caution">
+      <strong>Why this page exists.</strong> The Dark Factory model has no debt, no
+      interest rate and no credit spread in it anywhere &mdash; an audit of the code
+      found the words do not occur. That is a real absence, because a falling index
+      is not how a market shock reaches the economy. It reaches it through margin
+      calls, covenant breaches, collateral calls and a contraction in lending, which
+      cuts spending, which cuts earnings, which widens spreads again. That loop is
+      the amplifier in every modern equity crash, and it is what this page measures.
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="panel verdict" id="verdict"></div>
+
+    <div class="grid">
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>The amplifier, 1990&ndash;now</h2>
+          <p>Moody's Baa corporate yield less the 10-year Treasury, with NBER
+             recessions shaded. The spread is what a firm without an investment-grade
+             rating pays over the government, so a widening is the price of doubt
+             about being repaid. Note where it peaks relative to the bands: credit
+             moves <em>into</em> the recession it is pricing, not after it.</p>
+        </figcaption>
+        <div id="chartCredit" class="chartwrap"></div>
+        <div id="legendCredit" class="legend"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Financial conditions, which lead everything else here</h2>
+          <p>Two independent indices, both centred on zero: the Chicago Fed's
+             national conditions index and the St Louis Fed's stress index. They are
+             built from different inputs and disagree about nothing important. Above
+             zero is tighter than average. This is the closest thing the public data
+             has to a single number for &ldquo;how easily money is moving&rdquo;.</p>
+        </figcaption>
+        <div id="chartConditions" class="chartwrap"></div>
+        <div id="legendConditions" class="legend"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>The curve</h2>
+          <p>10-year minus 2-year, with inversion filled below zero. Every
+             recession in this window was preceded by an inversion, with a lag
+             that ranged from six months to two years.</p>
+        </figcaption>
+        <div id="chartCurve" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>Openings and unemployment</h2>
+          <p>The labour side of the same story. Postings fall first and the
+             unemployment rate follows; the gap between the two lines is the
+             buffer that absorbs a shock before it reaches people.</p>
+        </figcaption>
+        <div id="chartLabour" class="chartwrap"></div>
+      </figure>
+
+      <figure class="card span2">
+        <figcaption>
+          <h2>Equity, stripped of the price level</h2>
+          <p>Nasdaq Composite indexed to 100 at the start of the window, once
+             nominal and once deflated by CPI. Over 36 years the two lines separate
+             by a factor of two, which is the amount of the return that is simply
+             the unit of account changing.</p>
+        </figcaption>
+        <div id="chartEquity" class="chartwrap"></div>
+        <div id="legendEquity" class="legend"></div>
+      </figure>
+
+      <figure class="card">
+        <figcaption>
+          <h2>When credit actually tightened</h2>
+          <p>Three-month widenings of the Baa spread of at least 60 basis points,
+             de-duplicated to the peak of each episode. Seven dates in 36 years, and
+             the largest are all recognisable without a caption.</p>
+        </figcaption>
+        <div id="chartStress" class="chartwrap"></div>
+      </figure>
+
+    </div>
+
+    <div class="panel wpane" id="checks"></div>
+    <div class="panel wpane" id="sources"></div>
+
+  </section>
+</main>
+
+<script src="markets-data.js?v=1"></script>
+<script src="hover.js?v=2"></script>
+<script src="markets-app.js?v=1"></script>
+</body>
+</html>
