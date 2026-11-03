@@ -321,11 +321,28 @@ export function createModel(THREE, spec = {}) {
       break;
     }
     case 'galaxy': case 'gcluster': case 'scluster': {
-      const n = kind === 'galaxy' ? 9000 : kind === 'gcluster' ? 1500 : 2500, pos = new Float32Array(n * 3), col = new Float32Array(n * 3), size = new Float32Array(n);
-      const elliptical = kind === 'galaxy' && (/elliptical|^M8[67]$|NGC 4[0-9]{3}/i.test(spec.notes || '') || R() < 0.25);
+      const n = kind === 'galaxy' ? (spec.points || 9000) : kind === 'gcluster' ? 1500 : 2500, pos = new Float32Array(n * 3), col = new Float32Array(n * 3), size = new Float32Array(n);
+      const nt = spec.notes || '', mo = (/morphology:\s*([^;]+)/i.exec(nt) || [])[1] || '';
+      // Hubble type from the catalogue's morphology note (falls back to the first words of the note, then a guess)
+      const morph = kind !== 'galaxy' ? '' : /irr|^I[mB]|magellanic|^dI/i.test(mo) || /irregular/i.test(nt.slice(0, 40)) ? 'irr'
+        : /^\s*S0|lenticular/i.test(mo + nt.slice(0, 40)) ? 'lent' : /^\s*(E|dE|dSph|cE)|elliptical|spheroidal/i.test(mo + ' ' + nt.slice(0, 40)) || /^M8[67]$/.test(spec.name || '') ? 'ell'
+        : /^\s*(SB|SAB)|barred/i.test(mo + nt.slice(0, 60)) ? 'bar' : /^\s*S|spiral/i.test(mo + nt.slice(0, 40)) ? 'spiral' : (R() < 0.25 ? 'ell' : 'spiral');
+      const elliptical = morph === 'ell';
       for (let i = 0; i < n; i++) {
         let x, y, z, t;
-        if (kind === 'galaxy' && !elliptical) {
+        if (kind === 'galaxy' && morph === 'irr') {
+          const c = Math.floor(R() * 6), cx = Math.sin(c * 12.9) * 0.45, cz = Math.cos(c * 7.3) * 0.45, r = Math.pow(R(), 0.8) * 0.4, th = R() * 2 * Math.PI;
+          x = cx + r * Math.cos(th); z = cz + r * Math.sin(th); y = (R() - 0.5) * 0.25; t = 0.1 + 0.5 * R();
+        } else if (kind === 'galaxy' && morph === 'lent') {
+          const u = R(), r = u > 0.6 ? Math.abs(R() - R()) * 0.25 : Math.min(1, -Math.log(1 - R()) * 0.3), th = R() * 2 * Math.PI;
+          x = r * Math.cos(th); z = r * Math.sin(th); y = (R() - 0.5) * (u > 0.6 ? 0.2 : 0.04); t = u > 0.6 ? 0.95 : 0.6 + 0.3 * R();
+        } else if (kind === 'galaxy' && morph === 'bar') {
+          const u = R(); let x0, z0, tt;
+          if (u < 0.35) { const a = (R() - 0.5) * 0.7; x0 = a; z0 = (R() - 0.5) * 0.07; tt = 0.9; }
+          else { let r; do { r = -Math.log(1 - R()) * 0.35; } while (r > 1); const arm = Math.floor(R() * 2), th = Math.log(Math.max(r, 0.05) / 0.2) / Math.tan(0.3) + arm * Math.PI + (R() - 0.5) * 0.6, r2 = 0.35 + r * 0.65;
+            x0 = r2 * Math.cos(th); z0 = r2 * Math.sin(th); tt = 0.2 + 0.7 * R(); }
+          x = x0; z = z0; y = (R() - 0.5) * 0.05; t = tt;
+        } else if (kind === 'galaxy' && !elliptical) {
           const u = R(); let r; do { r = -Math.log(1 - R()) * 0.35; } while (r > 1); let th = R() * 2 * Math.PI;
           const arm = Math.floor(R() * 2), thArm = Math.log(Math.max(r, 0.03) / 0.08) / Math.tan(0.28) + arm * Math.PI; if (u < 0.65) th = thArm + (R() - 0.5) * 0.8;
           const bulge = u > 0.88; const rb = bulge ? Math.abs(R() - R()) * 0.22 : r;
@@ -338,10 +355,10 @@ export function createModel(THREE, spec = {}) {
       }
       const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('aColor', new THREE.BufferAttribute(col, 3)); g.setAttribute('aSize', new THREE.BufferAttribute(size, 1));
       const m = new THREE.ShaderMaterial({ vertexShader: POINT_VERT, fragmentShader: POINT_FRAG, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, uniforms: { uScale: { value: 300 } } });
-      const pts = new THREE.Points(g, m); group.add(pts); disposables.push(g, m); group.userData.points = m;
+      const pts = new THREE.Points(g, m); group.add(pts); disposables.push(g, m); group.userData.points = m; group.userData.morph = morph;
       if (kind === 'galaxy') addSprite(1.2, C(1.0, 0.9, 0.7), C(0.3, 0.2, 0.1), 0, 3, 0.8);
       if (kind === 'gcluster') addSprite(2.4, C(0.6, 0.3, 0.6), C(0, 0, 0), 2, 1, 0.35);   // hot intracluster gas
-      tickers.push(t => { pts.rotation.y = t * 0.03; });
+      if (kind === 'galaxy' && spec.tilt) { pts.rotation.x = Math.acos(2 * R() - 1) - 1.2; pts.rotation.z = R() * 6.28; } tickers.push(t => { pts.rotation.y = t * 0.03; });
       break;
     }
     case 'nebula': case 'pnebula': case 'snr': {

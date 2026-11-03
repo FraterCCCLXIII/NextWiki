@@ -1065,11 +1065,27 @@ function megaReadout() {
 // ---------------------------------------------------------------------------
 // Destinations: built-in (l, b, distance) plus catalog/objects.json when present.
 // ---------------------------------------------------------------------------
+const CENSUS = { key: null, built: new Map(), group: new THREE.Group() };
+scene.add(CENSUS.group);
+const CENSUS_DEFS = {
+  mw: { name: 'Milky Way census: nebulae, remnants, clusters, pulsars', centre: () => [0, 0, 0], width: 70 * kpc, minFrac: 0.012, rows: o => ['nebula', 'supernova_remnant', 'star_cluster', 'pulsar', 'neutron_star'].includes(o.type) && o.dist_pc < 40e3, pts: 500 },
+  lg: { name: 'Local Group: every galaxy by its real type', centre: () => gal(121, -22, 380e3 * pc), width: 3.2 * Mpc, minFrac: 0.02, mul: 12, rows: o => o.type === 'galaxy' && o.dist_pc < 12e6, pts: 1600, extra: ['mw'] },
+  virgo: { name: 'Local supercluster: galaxies and clusters to 40 Mpc', centre: () => CL.pos, width: 60 * Mpc, minFrac: 0.012, mul: 30, rows: o => (o.type === 'galaxy' || o.type === 'galaxy_cluster') && o.dist_pc < 45e6, pts: 500 },
+  compact: { name: 'Compact objects: black holes, neutron stars, white dwarfs', centre: () => SUN, width: 24 * kpc, minFrac: 0.014, rows: o => ['black_hole', 'neutron_star', 'pulsar', 'white_dwarf', 'quasar'].includes(o.type) && o.dist_pc < 20e6, pts: 400 },
+  zoo: { name: 'Stellar zoo: the largest and nearest stars', centre: () => SUN, width: 600 * pc, minFrac: 0.008, rows: o => o.type === 'star' && o.radius_m > 0 && o.dist_pc < 3e3, limit: 260, pts: 0 },
+  ladder: { name: 'Size ladder: every kind of body, small to large', ladder: true, minFrac: 0, rows: o => o.radius_m > 0 && o.type !== 'galaxy_cluster' || o.type === 'galaxy_cluster', limit: 180, pts: 500 },
+};
 const DEST = [
   { name: 'Sun', pos: SUN, w: () => 5 * shownR('Sun'), type: 'star' }, { name: 'Moon', pos: MOON, w: () => 5 * shownR('Moon'), type: 'moon' },
   ...Object.entries(P.ORBITS).map(([n, o]) => ({ name: n, pos: () => layout().pos[n], w: () => Math.max(5 * shownR(n), ...MOONS.filter(m => m.parent === n).map(m => 2.6 * m.shownA)), type: o.dwarf ? 'dwarf planet' : 'planet' })),
   // special views: not places but arrangements. Selecting one sets the scale knobs (skewed distances and sizes) and flies to the view.
   { name: 'Galactic Neighborhood: every nearby system, compressed', type: 'view', pos: SUN, w: 1e17, skyView: true, preset: { distK: 0.35, sizeK: 0.2, skyK: 0.3, skyB: 0.1, skyN: 200, sizeMul: 6 } },
+  { name: CENSUS_DEFS.lg.name, type: 'view', pos: CENSUS_DEFS.lg.centre ? CENSUS_DEFS.lg.centre() : SUN, w: CENSUS_DEFS.lg.width || 1e20, census: 'lg' },
+  { name: CENSUS_DEFS.mw.name, type: 'view', pos: CENSUS_DEFS.mw.centre ? CENSUS_DEFS.mw.centre() : SUN, w: CENSUS_DEFS.mw.width || 1e20, census: 'mw' },
+  { name: CENSUS_DEFS.virgo.name, type: 'view', pos: CENSUS_DEFS.virgo.centre ? CENSUS_DEFS.virgo.centre() : SUN, w: CENSUS_DEFS.virgo.width || 1e20, census: 'virgo' },
+  { name: CENSUS_DEFS.compact.name, type: 'view', pos: CENSUS_DEFS.compact.centre ? CENSUS_DEFS.compact.centre() : SUN, w: CENSUS_DEFS.compact.width || 1e20, census: 'compact' },
+  { name: CENSUS_DEFS.zoo.name, type: 'view', pos: CENSUS_DEFS.zoo.centre ? CENSUS_DEFS.zoo.centre() : SUN, w: CENSUS_DEFS.zoo.width || 1e20, census: 'zoo' },
+  { name: CENSUS_DEFS.ladder.name, type: 'view', pos: CENSUS_DEFS.ladder.centre ? CENSUS_DEFS.ladder.centre() : SUN, w: CENSUS_DEFS.ladder.width || 1e20, census: 'ladder' },
   { name: 'Solar System cluster: every known body, compressed', type: 'view', pos: SUN, w: 3e12, preset: { distK: 0.35, sizeK: 0.15, skyK: 1, skyB: 1, sizeMul: 16 } },
   { name: 'Galactic centre (Sgr A*)', pos: [0, 0, 0], w: 2 * 100 * pc, type: 'black hole' },
   { name: 'Sgr A* event horizon', pos: [0, 0, 0], w: 40 * 1.27e10, type: 'black hole' },
@@ -1177,7 +1193,7 @@ async function loadCatalog() {
     goHash();
   } catch { $('catStatus').textContent = `${DEST.length} built-in destinations (catalog/objects.json not found yet)`; }
 }
-loadCatalog();
+loadCatalog(); Object.assign(window.kosmoTimeline, { goDest, DEST, CENSUS });   // debug hook
 function goHash() {
   const m = /go=([^&]+)/.exec(location.hash); if (!m) return;
   const q = decodeURIComponent(m[1]).toLowerCase(), d = DEST.find(d => d.name.toLowerCase() === q) || DEST.find(d => d.name.toLowerCase().includes(q));
@@ -1193,16 +1209,16 @@ function pickAt(mx, my) {
   const k = 2 / 10 ** state.zoom, W = view.clientWidth, H = view.clientHeight, pxPerScene = H / 2;
   let best = null, bestScore = 1, bestPx = 0;
   for (const d of DEST) {
-    if (!d.pos || d.viaParent || d.preset) continue;
+    if (!d.pos || d.viaParent || d.preset || d.census) continue;
     const p = at(d.pos);
     _pk.set((p[0] - focus[0]) * k, (p[2] - focus[2]) * k, -(p[1] - focus[1]) * k).project(camera);
     if (_pk.z > 1 || _pk.z < -1) continue;
     const sx = (_pk.x + 1) / 2 * W, dx = sx - mx; if (dx > 320 || dx < -320) continue;
     const sy = (1 - _pk.y) / 2 * H, dy = sy - my; if (dy > 320 || dy < -320) continue;
-    const bodyPx = d.w ? (at(d.w) / 5) * k * pxPerScene : 0, hit = Math.min(300, Math.max(13, bodyPx)), score = Math.hypot(dx, dy) / hit;
+    const bodyPx = d.w ? (at(d.w) / 5) * k * pxPerScene : 0, hit = Math.min(34, Math.max(13, bodyPx)), score = Math.hypot(dx, dy) / hit;
     if (score < bestScore) { bestScore = score; best = { d, sx, sy, p }; bestPx = Math.max(bodyPx, 8); }
   }
-  return best && { ...best, ringPx: Math.min(2 * bestPx + 10, 340) };
+  return best && { ...best, ringPx: Math.min(2 * bestPx + 10, 56) };
 }
 // real mass, light and size for the hover label (from the catalogue row)
 const fmtMass = kg => kg >= 1e29 ? `${(kg / 1.989e30).toPrecision(3)} M☉` : kg >= 1e26 ? `${(kg / 1.898e27).toPrecision(3)} M♃` : kg >= 1e22 ? `${(kg / 5.972e24).toPrecision(3)} M⊕` : `${kg.toExponential(1)} kg`;
@@ -1246,6 +1262,8 @@ function applyScalePreset(p) {
   syncScaleBars(); fxApply(false);
 }
 function goDest(d) {
+  CENSUS.key = d.census || null;
+  if (d.census) { const B = CENSUS.built.get(d.census) || censusBuild(d.census); toast(`${B.def.name.split(':')[0]}: ${B.items.length} bodies drawn as models; pick any other place to leave`); travelTo(B.centre, Math.log10(B.width), B.def.name); return; }
   if (d.preset) {                                  // a special view: set the distortion first, then fly to it
     applyScalePreset(d.preset);
     if (d.skyView) goSky(); else travelTo(d.pos, Math.log10(at(d.w)), d.name);
@@ -1287,7 +1305,10 @@ function stepTravel(dt) {
 }
 // ---- warp drive: the field of view stretches, stars streak outward from the centre, a blue tunnel glow builds and fades ----
 const warpC = $('warp'), wctx = warpC.getContext('2d'), baseFov = camera.fov;
-const WARP_N = 260, warpStars = Array.from({ length: WARP_N }, (_, i) => ({ a: (i * 2.399963229728653) % (2 * Math.PI), r: ((i * 0.618034) % 1), s: 0.45 + ((i * 0.37) % 1) * 0.9, h: (i * 0.131) % 1 }));
+// relativistic star field: every star has a fixed direction (angle th0 from the heading); at speed beta the light aberrates forward
+// (cos th' = (cos th0 + beta) / (1 + beta cos th0)), so the sky bunches into a bright ring ahead and empties behind, with Doppler colour
+// (blue ahead, red behind) and headlight beaming. Stars slide from ahead to behind as you pass them.
+const WARP_N = 420, warpStars = Array.from({ length: WARP_N }, (_, i) => ({ a: (i * 2.399963229728653) % (2 * Math.PI), th: Math.acos(1 - 2 * ((i * 0.618034) % 1)), v: 0.5 + ((i * 0.37) % 1), m: 0.3 + ((i * 0.731) % 1) }));
 let warpAmt = 0;
 function warpStep(u, dt) {
   const k = travel.warpK * fx.warpAmt;
@@ -1300,19 +1321,29 @@ function drawWarp(w, dt) {
   const dpr = Math.min(devicePixelRatio || 1, 2), W = warpC.clientWidth, H = warpC.clientHeight;
   if (warpC.width !== W * dpr || warpC.height !== H * dpr) { warpC.width = W * dpr; warpC.height = H * dpr; }
   wctx.setTransform(dpr, 0, 0, dpr, 0, 0); wctx.clearRect(0, 0, W, H);
-  const cx = W / 2, cy = H / 2, R = Math.hypot(cx, cy);
+  const cx = W / 2, cy = H / 2, R = Math.hypot(cx, cy), wm = Math.min(w, 1.2), beta = Math.min(0.9995, wm * 0.97), gam = 1 / Math.sqrt(1 - beta * beta);
   wctx.globalCompositeOperation = 'lighter';
-  const glow = wctx.createRadialGradient(cx, cy, 0, cx, cy, R * 0.85);
-  glow.addColorStop(0, `rgba(160,200,255,${0.26 * Math.min(w, 1)})`); glow.addColorStop(0.4, `rgba(80,110,255,${0.09 * Math.min(w, 1)})`); glow.addColorStop(1, 'rgba(0,0,0,0)');
+  // cold tunnel glow where the blueshifted sky piles up ahead
+  const glow = wctx.createRadialGradient(cx, cy, 0, cx, cy, R * 0.7);
+  glow.addColorStop(0, `rgba(190,215,255,${0.34 * Math.min(w, 1)})`); glow.addColorStop(0.25, `rgba(90,130,255,${0.14 * Math.min(w, 1)})`); glow.addColorStop(1, 'rgba(0,0,0,0)');
   wctx.fillStyle = glow; wctx.fillRect(0, 0, W, H);
+  const proj = th => { const t = Math.min(th, 2.5); return Math.tan(t / 2) * R * 0.42; };   // stereographic: angles near the heading stay legible
+  const aber = c0 => { const c = (c0 + beta) / (1 + beta * c0); return Math.acos(Math.max(-1, Math.min(1, c))); };
   for (const s of warpStars) {
-    s.r += dt * (0.2 + 2.4 * w) * s.s;                                  // stars stream outward, faster as the warp builds
-    if (s.r > 1) { s.r -= 1; s.a = (s.a + 2.399963229728653) % (2 * Math.PI); }
-    const r1 = s.r * s.r * R, len = (0.015 + 0.5 * Math.min(w, 1.2)) * s.r * R * s.s, ca = Math.cos(s.a), sa = Math.sin(s.a);
-    wctx.strokeStyle = `hsla(${205 + s.h * 55}, 90%, ${72 + s.h * 20}%, ${Math.min(1, (0.1 + s.r) * w * 1.3)})`;
-    wctx.lineWidth = 0.6 + s.r * 1.9;
-    wctx.beginPath(); wctx.moveTo(cx + ca * Math.max(0, r1 - len), cy + sa * Math.max(0, r1 - len)); wctx.lineTo(cx + ca * r1, cy + sa * r1); wctx.stroke();
+    const d0 = dt * (0.15 + 1.9 * wm) * s.v, th1 = s.th + d0 * 0.6, ca = Math.cos(s.a), sa = Math.sin(s.a);
+    s.th = th1 > 3.0 ? 0.05 + 0.5 * Math.abs(Math.sin(s.a * 7)) : th1;                 // passed: re-enter ahead
+    const c0 = Math.cos(s.th), thA = aber(c0), thB = aber(Math.cos(Math.max(0, s.th - (0.03 + 0.5 * wm * wm))));
+    const rA = proj(thA), rB = proj(thB); if (rA > R * 1.05 && rB > R * 1.05) continue;
+    const D = 1 / (gam * (1 - beta * c0)), beam = Math.min(1, 0.1 + 0.28 * Math.pow(D, 2.2)) * s.m;   // Doppler factor and headlight beaming
+    const hue = 12 + 205 * Math.max(0, Math.min(1, (Math.log2(D) + 1.2) / 2.6));                     // red when receding, blue when approaching
+    wctx.strokeStyle = `hsla(${hue}, ${70 + 25 * Math.min(1, D / 2)}%, ${62 + 28 * Math.min(1, D / 3)}%, ${Math.min(1, beam * Math.min(w, 1) * 1.4)})`;
+    wctx.lineWidth = 0.5 + 1.6 * Math.min(1, D / 2);
+    wctx.beginPath(); wctx.moveTo(cx + ca * rB, cy + sa * rB); wctx.lineTo(cx + ca * rA, cy + sa * rA); wctx.stroke();
   }
+  // vignette: the field darkens toward the corners as speed builds
+  wctx.globalCompositeOperation = 'source-over';
+  const vg = wctx.createRadialGradient(cx, cy, R * 0.45, cx, cy, R); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, `rgba(0,0,8,${0.5 * Math.min(w, 1)})`);
+  wctx.fillStyle = vg; wctx.fillRect(0, 0, W, H);
 }
 function warpEnd() {
   if (warpAmt === 0 && camera.fov === baseFov) return;
@@ -1347,36 +1378,38 @@ const CUBE_UNITS = [1e9 * ly, 1e6 * ly, 1e3 * ly, ly, AU, 1e9, 1e6, 1e3, 1];
 const niceSide = x => { const u = CUBE_UNITS.find(u => x >= u) || 1; return niceCeil(x / u) * u; };
 const loadedDest = () => travel ? { target: travel.target, name: travel.name } : lastDest;
 const _cq = new THREE.Quaternion(), _cv = new THREE.Vector3();
+const CUBE_COL = { star: '255,236,200', galaxy: '255,184,107', planet: '127,195,255', exoplanet: '127,195,255', moon: '170,200,170', nebula: '230,130,200', 'dwarf planet': '200,170,255' };
 function drawCube() {
   if (hudClosed) return;
   const dpr = Math.min(devicePixelRatio || 1, 2), S = 116;
   if (cubeC.width !== S * dpr) { cubeC.width = S * dpr; cubeC.height = S * dpr; }
   cctx.setTransform(dpr, 0, 0, dpr, 0, 0); cctx.clearRect(0, 0, S, S);
-  const rel = a => [a[0] - SUN[0], a[1] - SUN[1], a[2] - SUN[2]];
-  const f = rel(focus), dst = loadedDest(), dp = dst ? rel(at(dst.target)) : null;
-  const ext = Math.max(10 * ly, Math.hypot(f[0], f[1], f[2]), dp ? Math.hypot(dp[0], dp[1], dp[2]) : 0);
-  const side = niceSide(2.4 * ext), half = side / 2;
-  _cq.copy(camera.quaternion).invert();                                   // world -> view, so the cube turns with what you see
-  const R = S * 0.3, c = S / 2;
-  const proj = v => { _cv.set(v[0] / half, v[1] / half, v[2] / half).applyQuaternion(_cq); const k = 1 / (1 - _cv.z * 0.16); return [c + _cv.x * k * R, c - _cv.y * k * R, _cv.z]; };
-  const P3 = CUBE_V.map(v => proj([v[0] * half, v[1] * half, v[2] * half]));
+  // the cube is the camera's own box of space: centred on the view centre, one view-width on a side, turning with the camera
+  const side = 10 ** state.zoom, half = side / 2, dst = loadedDest();
+  _cq.copy(camera.quaternion).invert();
+  const R = S * 0.3, c = S / 2, tmp = new THREE.Vector3();
+  const toCube = p => { tmp.set((p[0] - focus[0]) / half, (p[2] - focus[2]) / half, -(p[1] - focus[1]) / half); return tmp; };   // scene axes: (x, z, -y)
+  const proj = (v) => { _cv.copy(v).applyQuaternion(_cq); const k = 1 / (1 - _cv.z * 0.16); return [c + _cv.x * k * R, c - _cv.y * k * R, _cv.z]; };
+  const P3 = CUBE_V.map(v => proj(tmp.set(v[0], v[1], v[2])));
   cctx.lineWidth = 1;
   for (const [a, b] of CUBE_E) { const z = (P3[a][2] + P3[b][2]) / 2; cctx.strokeStyle = `rgba(201,214,230,${0.28 + 0.3 * (z + 1) / 2})`; cctx.beginPath(); cctx.moveTo(P3[a][0], P3[a][1]); cctx.lineTo(P3[b][0], P3[b][1]); cctx.stroke(); }
-  // the galactic plane through the Sun: a faint square, so heights above and below it read
-  cctx.strokeStyle = 'rgba(127,195,255,0.22)'; cctx.beginPath(); [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([x, y], i) => { const p = proj([x * half, y * half, 0]); i ? cctx.lineTo(p[0], p[1]) : cctx.moveTo(p[0], p[1]); }); cctx.closePath(); cctx.stroke();
-  const dot = (v, r, col, ring) => { const p = proj(v); cctx.beginPath(); cctx.arc(p[0], p[1], r, 0, 2 * Math.PI); if (ring) { cctx.strokeStyle = col; cctx.lineWidth = 1.4; cctx.stroke(); } else { cctx.fillStyle = col; cctx.fill(); } return p; };
-  const gc = rel([0, 0, 0]); if (Math.max(Math.abs(gc[0]), Math.abs(gc[1]), Math.abs(gc[2])) <= half) dot(gc, 1.6, 'rgba(255,184,107,0.7)');   // galactic centre, when it fits
-  dot([0, 0, 0], 2.6, '#ffd37a');                                                                                      // the Sun
-  if (dp) {
-    const inside = Math.max(Math.abs(dp[0]), Math.abs(dp[1]), Math.abs(dp[2])) <= half * 1.0001;
-    const a = proj(dp), b = proj([dp[0], dp[1], 0]);
-    cctx.strokeStyle = 'rgba(127,195,255,0.45)'; cctx.lineWidth = 1; cctx.setLineDash([2, 2]); cctx.beginPath(); cctx.moveTo(a[0], a[1]); cctx.lineTo(b[0], b[1]); cctx.stroke(); cctx.setLineDash([]);
-    dot([dp[0], dp[1], 0], 1.5, 'rgba(127,195,255,0.6)');
-    dot(dp, inside ? 3.2 : 2.4, '#7fc3ff');                                                                          // the destination
+  // dot matrix: every known body inside the box, at its displayed position, depth-shaded, coloured by kind
+  let shown = 0;
+  for (const d of DEST) {
+    if (!d.pos || d.viaParent || d.preset) continue;
+    const q = at(d.pos), x = (q[0] - focus[0]) / half, y = (q[2] - focus[2]) / half, z = -(q[1] - focus[1]) / half;
+    if (x > 1 || x < -1 || y > 1 || y < -1 || z > 1 || z < -1) continue;
+    const p = proj(tmp.set(x, y, z)), a = 0.25 + 0.6 * (p[2] + 1) / 2;
+    cctx.fillStyle = `rgba(${CUBE_COL[d.type] || '190,200,215'},${a})`; cctx.fillRect(p[0] - 0.7, p[1] - 0.7, 1.4, 1.4);
+    if (++shown > 4000) break;
   }
-  dot(f, 4.2, 'rgba(255,255,255,0.95)', true);                                                                         // where the view is centred
-  $('cubeNote').textContent = `cube ${P.fmtLength(side)}`;
-  $('hudDest').textContent = dst ? `→ ${dst.name || 'destination'}${dp ? ' · ' + P.fmtLength(Math.hypot(dp[0], dp[1], dp[2])) + ' from the Sun' : ''}` : '';
+  const sp = toCube(SUN); if (Math.max(Math.abs(sp.x), Math.abs(sp.y), Math.abs(sp.z)) <= 1) { const p = proj(sp); cctx.fillStyle = '#ffd37a'; cctx.beginPath(); cctx.arc(p[0], p[1], 2.4, 0, 2 * Math.PI); cctx.fill(); }
+  const dp = dst ? at(dst.target) : null;
+  if (dp) { const v = toCube(dp); if (Math.max(Math.abs(v.x), Math.abs(v.y), Math.abs(v.z)) <= 1) { const p = proj(v); cctx.fillStyle = '#7fc3ff'; cctx.beginPath(); cctx.arc(p[0], p[1], 3, 0, 2 * Math.PI); cctx.fill(); } }
+  cctx.strokeStyle = 'rgba(255,255,255,0.9)'; cctx.lineWidth = 1.2; cctx.beginPath(); cctx.arc(c, c, 3.4, 0, 2 * Math.PI); cctx.stroke();   // the view centre
+  $('cubeNote').textContent = `view cube ${P.fmtLength(side)} · ${shown.toLocaleString()} bodies`;
+  const fl = Math.hypot(focus[0] - SUN[0], focus[1] - SUN[1], focus[2] - SUN[2]);
+  $('hudDest').textContent = dst ? `→ ${dst.name || 'destination'}${!travel && lastDest && SB.fmtExag(shownExag(lastDest.name)) ? ' · size ' + SB.fmtExag(shownExag(lastDest.name)) : ''}${dp ? ' · ' + P.fmtLength(Math.hypot(dp[0] - SUN[0], dp[1] - SUN[1], dp[2] - SUN[2])) + ' from the Sun' : ''}` : (fl > 1 ? `view centre ${P.fmtLength(fl)} from the Sun` : '');
 }
 function setHud(open) {
   hudClosed = !open; document.body.classList.toggle('hud-closed', !open); $('hud').hidden = !open; $('hudOpen').hidden = open;
@@ -1510,6 +1543,38 @@ function updateBlackHoles(k) {
     bh.obj.position.set(sc[0], sc[1], sc[2]); bh.obj.scale.setScalar(size); bh.obj.tick(t);
   }
 }
+// ---- census views: a catalogue slice drawn as real models at real positions (or, for the size ladder, in a row), each at least a fixed
+// fraction of the view wide so even a neutron star is findable; true size takes over once you zoom in ----
+function censusBuild(key) {
+  const def = CENSUS_DEFS[key], items = [], rows = [];
+  for (const d of DEST) { const o = d.meta; if (o && o.radius_m !== 0 && def.rows(o) && (def.ladder || (o.ra_deg != null && o.dist_pc > 0))) rows.push({ meta: o, pos: Array.isArray(d.pos) ? d.pos : (([l, b]) => gal(l, b, o.dist_pc * pc))(eqToGal(o.ra_deg, o.dec_deg)) }); }
+  let use = rows;
+  if (def.ladder) { use = rows.filter(d => d.meta.radius_m > 0).sort((p, q) => p.meta.radius_m - q.meta.radius_m); const step = Math.max(1, use.length / def.limit); use = Array.from({ length: Math.min(def.limit, use.length) }, (_, i) => use[Math.floor(i * step)]); }
+  else if (def.limit) use = rows.sort((p, q) => dist3(at(p.pos), SUN) - dist3(at(q.pos), SUN)).slice(0, def.limit);
+  const dflt = { nebula: 5 * pc, supernova_remnant: 12 * pc, star_cluster: 8 * pc, galaxy_cluster: 2 * Mpc, galaxy: 8 * kpc, black_hole: 3e4, neutron_star: 1.2e4, pulsar: 1.2e4, white_dwarf: 7e6, star: 7e8, quasar: 1e10 };
+  let cursor = 0;
+  for (const d of use) {
+    const o = d.meta, r = o.radius_m > 0 ? o.radius_m : dflt[o.type] || 1e6;
+    const obj = createModel(THREE, { ...o, radius_m: r, points: def.pts || undefined, tilt: true, segments: 20 }); obj.visible = false; CENSUS.group.add(obj);
+    const it = { name: o.name, r, obj, pos: d.pos };
+    if (def.ladder) { cursor += r * 1.3; it.pos = [SUN[0] + cursor, SUN[1], SUN[2]]; cursor += r * 1.3; it.raw = true; }
+    items.push(it);
+  }
+  if (def.extra) { const mw = createModel(THREE, { name: 'Milky Way', type: 'galaxy', notes: 'Barred spiral galaxy; morphology: SBbc', radius_m: 15 * kpc, points: 2600, tilt: true }); mw.visible = false; CENSUS.group.add(mw); items.push({ name: 'Milky Way', r: 15 * kpc, obj: mw, pos: [0, 0, 0] }); }
+  const built = { items, centre: def.ladder ? [SUN[0] + cursor / 2, SUN[1], SUN[2]] : def.centre(), width: def.ladder ? cursor * 1.1 : def.width, def };
+  CENSUS.built.set(key, built); return built;
+}
+function updateCensus(k) {
+  for (const [key, B] of CENSUS.built) for (const it of B.items) if (key !== CENSUS.key) it.obj.visible = false;
+  if (!CENSUS.key) return;
+  const B = CENSUS.built.get(CENSUS.key) || censusBuild(CENSUS.key), def = B.def, viewW = 10 ** state.zoom, t = performance.now() / 1000, pxPerScene = view.clientHeight / 2;
+  for (const it of B.items) {
+    const sc = toScene(it.raw ? it.pos : at(it.pos), focus, k), metres = Math.max(it.r * (def.mul || 1), viewW * def.minFrac), size = metres * k, px = size * pxPerScene;
+    const show = px > 1.5 && px < 6000 && Math.hypot(sc[0], sc[1], sc[2]) < 1e5;
+    it.obj.visible = show; if (!show) continue;
+    it.obj.position.set(sc[0], sc[1], sc[2]); it.obj.scale.setScalar(size); it.obj.tick(t);
+  }
+}
 let activeL = LEVELS[0];
 function updateScene() {
   const a = 10 ** state.logA, viewW = 10 ** state.zoom, k = 2 / viewW;
@@ -1527,7 +1592,7 @@ function updateScene() {
     if (L.update) L.update(L.obj);
   }
   const sp = toScene(SUN, focus, k); sunLight.position.set(sp[0], sp[1], sp[2]);
-  updateBlackHoles(k);
+  updateBlackHoles(k); updateCensus(k);
   if (megaObj) {
     const mg = MEGAS[state.mega], cover = mg.width() / viewW;
     megaObj.visible = state.mega !== 'none' && cover > 1e-4 && cover < 1e8;
@@ -1535,11 +1600,8 @@ function updateScene() {
   }
   // destination label
   const lab = $('label');
-  if (lastDest && !travel) {
-    const o = toScene(at(lastDest.target), focus, k), p = new THREE.Vector3(o[0], o[1], o[2]), r = p.length(); p.project(camera);
-    const ex = SB.fmtExag(shownExag(lastDest.name));
-    if (r < 3 && p.z < 1) { lab.hidden = false; lab.textContent = lastDest.name + (ex ? ` · size ${ex}` : ''); lab.style.left = `${(p.x + 1) / 2 * view.clientWidth}px`; lab.style.top = `${(1 - p.y) / 2 * view.clientHeight}px`; } else lab.hidden = true;
-  } else lab.hidden = true;
+  lab.hidden = true;   // the destination's name lives in the bottom-left HUD (hudDest), not over the map
+  const destEx = lastDest && !travel ? SB.fmtExag(shownExag(lastDest.name)) : '';
   // names of the packed systems (compressed sky), while each is small on screen
   const sl = $('syslabels'), sk = skyPack();
   if (sk.on) {

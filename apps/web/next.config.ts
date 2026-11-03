@@ -28,6 +28,10 @@ const nextConfig: NextConfig = {
           destination: "/api/kosmo/data/history-taxonomy.js",
         },
         {
+          source: "/kosmo/static/small-bodies.json",
+          destination: "/api/kosmo/data/small-bodies.json",
+        },
+        {
           source: "/kosmo/static/university-exams.json",
           destination: "/api/kosmo/data/university-exams.json",
         },

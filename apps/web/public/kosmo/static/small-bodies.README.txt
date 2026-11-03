@@ -1,0 +1,5 @@
+small-bodies.json: osculating orbital elements of solar-system small bodies (heliocentric ecliptic J2000).
+Source: NASA/JPL Small-Body Database query API (ssd-api.jpl.nasa.gov/sbdb_query.api), fetched 2026-11-03.
+Selection: numbered asteroids H<=13.5; NEAs (IEO ATE APO AMO) H<=20 brightest 2500; numbered/sized TNO+CEN brightest 2500; periodic comets e<1, P<200y brightest 400 (a=q/(1-e), epoch=tp, ma=0, H=total mag M1); key bodies forced in.
+Rows sorted by H ascending. Fields: name cls a(au) e i om w ma (deg) epoch(JD) H d(km or null).
+Rows: 17870 total. By class: MBA 9709, TJN 2721, APO 1260, AMO 1146, OMB 1137, TNO 1054, JFc 321, CEN 240, ATE 77, MCA 75, HTC 40, IMB 26, ETc 21, IEO 20, CTc 17, AST 4, JFC 2

@@ -66,11 +66,13 @@ export function KosmoMenu({ siteLogo }: { siteLogo?: string | null }) {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-background-level1"
+          className="group flex items-center rounded-md px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-background-level1"
         >
-          <KosmoLogo size={24} />
+          <span className="mr-0 inline-flex max-w-0 shrink-0 -translate-x-2 items-center overflow-hidden opacity-0 transition-all duration-300 ease-out group-hover:mr-2 group-hover:max-w-[24px] group-hover:translate-x-0 group-hover:opacity-100 group-data-[state=open]:mr-2 group-data-[state=open]:max-w-[24px] group-data-[state=open]:translate-x-0 group-data-[state=open]:opacity-100">
+            <KosmoLogo size={24} />
+          </span>
           <span>Kosmographica</span>
-          <ChevronDown className="h-4 w-4" />
+          <ChevronDown className="ml-2 h-4 w-4" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
