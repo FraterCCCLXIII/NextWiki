@@ -215,9 +215,17 @@
   body.drawer-open #navhud, body.navdrawer-open #navhud, body.fxdrawer-open #navhud, body.drawer-open #navOpen, body.navdrawer-open #navOpen, body.fxdrawer-open #navOpen { right: 416px; }
   @media (max-width: 900px) { #hud .hudcube, #hud .hudnote { display: none; } #hud { max-width: 280px; } #navhud .navpads { gap: 8px; } }
   #hud[hidden], #hudOpen[hidden] { display: none; }
-  #hud .hudbody { display: flex; gap: 16px; align-items: flex-start; }
-  #hud .hudcube { text-align: center; flex: none; }
-  #cube { width: 116px; height: 116px; display: block; }
+  #hud .hudbody { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+  #hud .hudcube { text-align: center; flex: none; align-self: center; }
+  #cube { width: 150px; height: 150px; display: block; margin: 0 auto; cursor: grab; touch-action: none; }
+  #cube:active { cursor: grabbing; }
+  #timehud { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 5; padding: 8px 12px; border-radius: 14px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #c9d6e6; }
+  #timehud .trow { display: flex; gap: 6px; align-items: center; justify-content: center; flex-wrap: wrap; }
+  #timehud button { padding: 3px 9px; min-width: 30px; font-size: 12px; }
+  #timehud button.on { color: var(--accent); border-color: var(--accent); }
+  #timehud #tRate { min-width: 64px; text-align: center; font-variant-numeric: tabular-nums; color: var(--accent); }
+  #timehud input, #timehud select { background: rgba(0,0,0,0.35); color: #e8eef8; border: 1px solid var(--line, #333); border-radius: 8px; padding: 3px 6px; font-size: 12px; color-scheme: dark; }
+  @media (max-width: 1250px) { #timehud { bottom: 270px; left: 16px; transform: none; max-width: 330px; } }
   #hud .hudaccent { color: var(--accent); }
   #hud .hudk { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
   #hud .hudmain { font-size: 18px; color: #fff; margin: 3px 0 2px; font-variant-numeric: tabular-nums; }
@@ -420,10 +428,25 @@
 <button id="navOpen" class="orb" type="button" hidden aria-label="Show the navigation controls" title="Navigate">
   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8l-1.9 4.5-4.5 1.9 1.9-4.5z"/></svg>
 </button>
+<div id="timehud" class="glass" aria-label="Simulation clock">
+  <div class="trow">
+    <button id="tRev" type="button" title="Play backwards">◀</button><button id="tPlay" type="button" title="Play / pause (P)">❚❚</button><button id="tFwd" type="button" title="Play forwards">▶</button>
+    <button id="tSlow" type="button" title="Slower">−</button><span id="tRate" title="Simulated time per real second"></span><button id="tFast" type="button" title="Faster">+</button>
+    <button id="tStepB" type="button" title="Back one day">−1 d</button><button id="tStepF" type="button" title="Forward one day">+1 d</button><button id="tNow" type="button" title="Jump to now">now</button>
+  </div>
+  <div class="trow">
+    <input type="datetime-local" id="tDate" step="1" title="Exact date and time (UTC): the planets move to where they really were">
+    <label class="tfollow">follow <select id="tFollow"></select></label>
+  </div>
+</div>
 <div id="hud" class="glass" aria-label="Current location">
   <button id="hudClose" type="button" aria-label="Close the location readout" title="Close">×</button>
   <div class="hudk">Current location</div>
   <div class="hudbody">
+    <div class="hudcube" title="A cube of space around the Sun, turning with your view. Yellow: the Sun. White ring: where you are looking. Blue: the loaded destination, with a line down to the galactic plane.">
+      <canvas id="cube"></canvas>
+      <div class="hudsub" id="cubeNote"></div>
+    </div>
     <div class="hudtxt">
       <div class="hudmain" id="hudNear">&nbsp;</div>
       <div class="hudsub" id="hudCoords"></div>
@@ -431,10 +454,6 @@
       <div class="hudsub" id="hudView"></div>
       <div class="hudsub hudaccent" id="hudDest"></div>
       <div class="hudsub hudaccent" id="hudFly"></div>
-    </div>
-    <div class="hudcube" title="A cube of space around the Sun, turning with your view. Yellow: the Sun. White ring: where you are looking. Blue: the loaded destination, with a line down to the galactic plane.">
-      <canvas id="cube"></canvas>
-      <div class="hudsub" id="cubeNote"></div>
     </div>
   </div>
   <div class="hudscale"><div class="hudbar" id="hudBar"></div><span id="hudScale"></span></div>
@@ -529,7 +548,7 @@ const OMEGA_B = 0.0224 / (C.H0 / 100) ** 2, VOL = 4 / 3 * Math.PI * CHI0 ** 3;
 const M_BARYON = OMEGA_B * tab.p.rhoCrit0 * VOL, N_BARYON = M_BARYON / 1.67262192e-27, M_DARK = (tab.p.OmegaM - OMEGA_B) * tab.p.rhoCrit0 * VOL;
 const COUNTS = { galaxies: 2e12, stars: 1e23 };
 
-const state = { stretch: 0.8, logA: 0, play: false, speed: 0.5, zoom: 26.97, spin: false, rate: 0, pause: false, resU: 150, resG: 150, resS: 30, resC: 20, sizeMul: 1, mega: 'none', megaR: 1, megaF: -2, megaSigma: 1, habR: 4, megaMat: 'cnt', distK: 1, sizeK: 1, skyK: 1, skyB: 1, skyN: 60 };
+const state = { dir: 1, stretch: 0.8, logA: 0, play: false, speed: 0.5, zoom: 26.97, spin: false, rate: 0, pause: false, resU: 150, resG: 150, resS: 30, resC: 20, sizeMul: 1, mega: 'none', megaR: 1, megaF: -2, megaSigma: 1, habR: 4, megaMat: 'cnt', distK: 1, sizeK: 1, skyK: 1, skyB: 1, skyN: 60 };
 const $ = id => document.getElementById(id);
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 
@@ -973,6 +992,10 @@ function addMoonModels(g) {   // catalogue moons (and the Moon) as textured bodi
   g.userData.nMoons = MOONS.length;
 }
 const simT = () => (performance.now() - t0) / 1000;
+// sidereal rotation periods in days (negative: retrograde). The spin angle follows the SIMULATION clock, so a body turns the right
+// number of times between two dates; at high clock rates it is only a blur, as it should be.
+const SPIN_DAYS = { Sun: 25.38, Mercury: 58.646, Venus: -243.02, Earth: 0.99726968, Moon: 27.321661, Mars: 1.02595676, Jupiter: 0.41354, Saturn: 0.44401, Uranus: -0.71833, Neptune: 0.67125, Pluto: -6.3872, Ceres: 0.3781, Eris: 1.08 };
+function spinAngle(name, t) { const d = SPIN_DAYS[name]; if (!d) return t * 0.1; return 2 * Math.PI * (((clock.jd - 2451545) / d) % 1); }
 function updateSky() {   // build the packed systems a few per frame so the first look does not stall
   if (!skyPack().on) return;
   let n = 0; for (const H of SKY_HOSTS.slice(0, state.skyN)) { if (SYSTEMS.has(H.key)) continue; systemFor(H.key); if (++n >= 3) break; }
@@ -988,7 +1011,7 @@ function updateSolar(g) {
     m.position.set((p[0] - SUN[0]) / AU, (p[2] - SUN[2]) / AU, -(p[1] - SUN[1]) / AU);
     m.scale.setScalar(r[name] / AU);
     if (m.userData.lightDir) m.userData.lightDir.copy(m.position).multiplyScalar(-1).normalize();   // lit from the Sun
-    m.rotation.y = t * 0.1;
+    m.rotation.y = spinAngle(name, t);
   }
   for (const mo of MOONS) { const line = g.userData.moonOrbits[mo.name], pp = pos[mo.parent]; if (!line || !pp || !(mo.shownA > 0)) continue; line.position.set((pp[0] - SUN[0]) / AU, (pp[2] - SUN[2]) / AU, -(pp[1] - SUN[1]) / AU); line.scale.setScalar(mo.shownA / AU); }
   for (const m of g.userData.models) m.tick(t);
@@ -1007,7 +1030,8 @@ function updateEarth(g) {   // the same shown positions and radii as the Solar l
   g.userData.moon.scale.setScalar((Lo.r.Moon || 1737.4e3) / R);
   const ld = new THREE.Vector3(SUN[0] - e[0], SUN[2] - e[2], -(SUN[1] - e[1])).normalize();
   for (const b of [g.userData.earth, g.userData.moon]) { if (b.userData.lightDir) b.userData.lightDir.copy(ld); b.tick(t); }
-  g.userData.earth.rotation.y = t * 0.05;
+  g.userData.earth.rotation.y = spinAngle('Earth', t);
+  g.userData.moon.rotation.y = spinAngle('Moon', t);
 }
 
 const LEVELS = [
@@ -1381,7 +1405,7 @@ const _cq = new THREE.Quaternion(), _cv = new THREE.Vector3();
 const CUBE_COL = { star: '255,236,200', galaxy: '255,184,107', planet: '127,195,255', exoplanet: '127,195,255', moon: '170,200,170', nebula: '230,130,200', 'dwarf planet': '200,170,255' };
 function drawCube() {
   if (hudClosed) return;
-  const dpr = Math.min(devicePixelRatio || 1, 2), S = 116;
+  const dpr = Math.min(devicePixelRatio || 1, 2), S = 150;
   if (cubeC.width !== S * dpr) { cubeC.width = S * dpr; cubeC.height = S * dpr; }
   cctx.setTransform(dpr, 0, 0, dpr, 0, 0); cctx.clearRect(0, 0, S, S);
   // the cube is the camera's own box of space: centred on the view centre, one view-width on a side, turning with the camera
@@ -1410,6 +1434,46 @@ function drawCube() {
   $('cubeNote').textContent = `view cube ${P.fmtLength(side)} · ${shown.toLocaleString()} bodies`;
   const fl = Math.hypot(focus[0] - SUN[0], focus[1] - SUN[1], focus[2] - SUN[2]);
   $('hudDest').textContent = dst ? `→ ${dst.name || 'destination'}${!travel && lastDest && SB.fmtExag(shownExag(lastDest.name)) ? ' · size ' + SB.fmtExag(shownExag(lastDest.name)) : ''}${dp ? ' · ' + P.fmtLength(Math.hypot(dp[0] - SUN[0], dp[1] - SUN[1], dp[2] - SUN[2])) + ' from the Sun' : ''}` : (fl > 1 ? `view centre ${P.fmtLength(fl)} from the Sun` : '');
+}
+// ---- the cube is a handle: drag to turn the view, shift-drag to move the view centre, wheel to zoom ----
+{
+  let drag = null; const up = new THREE.Vector3(0, 1, 0), ax = new THREE.Vector3();
+  cubeC.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, shift: e.shiftKey }; try { cubeC.setPointerCapture(e.pointerId); } catch { /* synthetic pointer */ } });
+  cubeC.addEventListener('pointermove', e => {
+    if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.x = e.clientX; drag.y = e.clientY;
+    if (e.shiftKey) {   // move the map: the view centre slides across the cube's own face
+      const m = 10 ** state.zoom / (150 * 0.6); travel = null; follow = null;
+      moveFocusScene(tmpM.set(-dx * m, dy * m, 0).applyQuaternion(camera.quaternion)); return;
+    }
+    camera.position.applyAxisAngle(up, -dx * 0.012);
+    ax.set(1, 0, 0).applyQuaternion(camera.quaternion); camera.position.applyAxisAngle(ax, -dy * 0.012);
+    camera.lookAt(0, 0, 0); controls.update();
+  });
+  const end = () => { drag = null; }; cubeC.addEventListener('pointerup', end); cubeC.addEventListener('pointercancel', end);
+  cubeC.addEventListener('wheel', e => { e.preventDefault(); state.zoom = clamp(state.zoom + e.deltaY * 0.002, -1, 27.5); sync('zoom', 2); }, { passive: false });
+  cubeC.title = 'Drag to turn the view · shift-drag to move the map · scroll to zoom';
+}
+// ---- simulation clock panel: exact date, play either way, speed steps, day steps, and follow any body ----
+{
+  const RATES = [[0, 'real time'], [3.5563, '1 hour/s'], [4.9365, '1 day/s'], [6.4197, '1 month/s'], [7.4991, '1 year/s'], [8.4991, '10 years/s'], [9.4991, '100 years/s']];
+  const rateIdx = () => RATES.reduce((b, r, i) => Math.abs(r[0] - state.rate) < Math.abs(RATES[b][0] - state.rate) ? i : b, 0);
+  const sel = $('tFollow'); sel.innerHTML = '<option value="">nothing</option>' + ['Sun', ...Object.keys(P.ORBITS), 'Moon'].map(n => `<option>${n}</option>`).join('');
+  const setRate = i => { state.rate = RATES[clamp(i, 0, RATES.length - 1)][0]; sync('rate', 1); };
+  const run = dir => { state.dir = dir; state.pause = false; $('pause').checked = false; if (state.rate === 0 && dir) { /* real time is fine */ } };
+  $('tPlay').onclick = () => { state.pause = !state.pause; $('pause').checked = state.pause; };
+  $('tFwd').onclick = () => run(1); $('tRev').onclick = () => run(-1);
+  $('tSlow').onclick = () => setRate(rateIdx() - 1); $('tFast').onclick = () => setRate(rateIdx() + 1);
+  $('tStepB').onclick = () => { clock.jd -= 1; }; $('tStepF').onclick = () => { clock.jd += 1; };
+  $('tNow').onclick = () => { clock.jd = P.jdFromDate(Date.now()); state.rate = 0; state.dir = 1; state.pause = false; $('pause').checked = false; sync('rate', 1); };
+  $('tDate').onchange = e => { const ms = Date.parse(e.target.value + 'Z'); if (Number.isFinite(ms)) clock.jd = P.jdFromDate(ms); };
+  sel.onchange = () => { if (!sel.value) { follow = null; return; } const d = DEST.find(x => x.name === sel.value && typeof x.pos === 'function'); if (d) goDest(d); };
+  window.timeHudUpdate = () => {
+    $('tPlay').textContent = state.pause ? '▶▶' : '❚❚'; $('tRev').classList.toggle('on', !state.pause && state.dir === -1); $('tFwd').classList.toggle('on', !state.pause && state.dir !== -1);
+    $('tRate').textContent = (state.dir === -1 ? '− ' : '') + (Math.abs(RATES[rateIdx()][0] - state.rate) < 0.05 ? RATES[rateIdx()][1] : `10^${state.rate.toFixed(1)} s/s`);
+    const d = new Date((clock.jd - 2440587.5) * 86400000), y = d.getUTCFullYear(), el = $('tDate');
+    if (document.activeElement !== el && Number.isFinite(y) && y > 0 && y < 9999) el.value = d.toISOString().slice(0, 19);
+    if (!follow && sel.value && document.activeElement !== sel) sel.value = '';
+  };
 }
 function setHud(open) {
   hudClosed = !open; document.body.classList.toggle('hud-closed', !open); $('hud').hidden = !open; $('hudOpen').hidden = open;
@@ -1949,7 +2013,8 @@ function animate(now) {
   requestAnimationFrame(animate);
   const dt = Math.min((now - last) / 1000, 0.05); last = now; fxUTime.value = now / 1000; fxURef.value = camera.position.length();
   if (state.play) { state.logA = Math.min(0, state.logA + state.speed * dt); sync('logA', 2); if (state.logA >= 0) { state.play = false; $('play').checked = false; } }
-  if (!state.pause) clock.jd += dt * 10 ** state.rate / 86400;
+  if (!state.pause) clock.jd += (state.dir || 1) * dt * 10 ** state.rate / 86400;
+  if (frame % 6 === 0 && window.timeHudUpdate) window.timeHudUpdate();
   if (frame % 6 === 0) $('clockDate').textContent = clockDate() + (state.pause ? ' (paused)' : '');
   const camBefore = fly.on ? camera.position.clone() : null;
   steer(dt); stepTravel(dt);
