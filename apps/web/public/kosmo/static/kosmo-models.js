@@ -89,14 +89,18 @@ void main(){
 // Additive glow sprite (coronae, photon rings, nebular haze); uShape 0 soft disc, 1 ring, 2 fbm cloud
 const SPRITE_VERT = /* glsl */`varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`;
 const SPRITE_FRAG = NOISE + /* glsl */`
-uniform vec3 uColor, uColor2; uniform float uShape, uTime, uSeed, uSoft, uAlpha; varying vec2 vUv;
+uniform vec3 uColor, uColor2; uniform float uShape, uTime, uSeed, uSoft, uAlpha, uSize; varying vec2 vUv;
 void main(){
   vec2 q = vUv - 0.5; float r = length(q) * 2.0; float a;
+  float rR = r * uSize * 0.5;   // distance from the centre in body radii: the quad is uSize radii wide
   if (uShape < 0.5) a = pow(max(1.0 - r, 0.0), uSoft);
   else if (uShape < 1.5) { a = exp(-pow((r - 0.72) / 0.06, 2.0)) + 0.25 * exp(-pow((r - 0.72) / 0.25, 2.0)); }
-  else { float n = fbm(vec3(q * 3.0, uSeed + uTime * 0.03)); a = smoothstep(0.0, 1.0, (1.0 - r) * 1.2) * (0.55 + 0.6 * n); a *= smoothstep(1.0, 0.6, r); }
+  else if (uShape < 2.5) { float n = fbm(vec3(q * 3.0, uSeed + uTime * 0.03)); a = smoothstep(0.0, 1.0, (1.0 - r) * 1.2) * (0.55 + 0.6 * n); a *= smoothstep(1.0, 0.6, r); }
+  else if (uShape < 3.5) { a = rR < 1.0 ? 1.0 : exp(-(rR - 1.0) * uSoft); a *= smoothstep(1.0, 0.72, r); }   // limb glow: bright at the edge of the body, fading outward (atmospheres, coronae)
+  else { float ang = atan(q.y, q.x); float rays = pow(abs(cos(ang * 3.0 + uSeed)), 22.0) * 0.9 + pow(abs(cos(ang * 5.0 + uSeed * 2.3)), 44.0) * 0.6; a = pow(max(1.0 - r, 0.0), 2.2) * (0.06 + rays); }   // radiating spikes
   vec3 col = mix(uColor2, uColor, clamp(a, 0.0, 1.0));
-  gl_FragColor = vec4(col * a * uAlpha, a * uAlpha);
+  float k = a * uAlpha;
+  gl_FragColor = uShape > 2.5 ? vec4(col, k) : vec4(col * k, k);   // the new shapes are already additive-weighted by alpha once
 }`;
 
 // Accretion disc: thin annulus, temperature falls outward, Doppler beaming brightens the approaching side
@@ -112,6 +116,71 @@ void main(){
   vec3 col = mix(uColor2, uColor, pow(1.0 - t, 2.0)) * bright * doppler;
   float edge = smoothstep(uInner, uInner + 0.04, r) * smoothstep(1.0, 0.85, r);
   gl_FragColor = vec4(col * edge, edge * (0.5 + 0.5 * bright));
+}`;
+
+
+// Black hole: every pixel traces a light ray backward from the camera through Schwarzschild spacetime (units: horizon radius r_s = 1).
+// A photon with impact parameter b obeys  u'' + u = 1.5 u^2  (u = 1/r, phi = angle in the ray's plane; 3M u^2 with M = r_s / 2), so we integrate that.
+// Rays that reach u = 1 fall in (the shadow, about 2.6 r_s across the photon sphere); the rest escape bent, and show a procedural sky (Einstein ring and arcs).
+// A thin accretion disc from the ISCO (3 r_s) outwards is hit wherever a ray crosses its plane: that gives the far side lensed over and under the hole, and the
+// photon ring from light that loops. Doppler beaming (Keplerian orbit speed) and gravitational redshift set the brightness and colour.
+const BH_FRAG = /* glsl */`
+uniform vec3 uN; uniform float uSize, uTime, uSeed; varying vec2 vUv;
+const float RIN = 3.0, ROUT = 8.0;
+float h31(vec3 p){ p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
+vec3 skyAt(vec3 d){
+  vec3 g = d * 48.0, id = floor(g), f = fract(g) - 0.5;
+  float h = h31(id), star = step(0.955, h) * smoothstep(0.42, 0.0, length(f));
+  vec3 tint = mix(vec3(1.0, 0.82, 0.65), vec3(0.65, 0.78, 1.0), h31(id + 7.0));
+  return tint * star * (0.5 + 2.0 * h31(id + 3.0));
+}
+vec3 heat(float T){
+  T = clamp(T, 0.0, 3.0);
+  vec3 c = mix(vec3(0.9, 0.18, 0.02), vec3(1.0, 0.65, 0.25), smoothstep(0.0, 0.6, T));
+  c = mix(c, vec3(1.0, 0.95, 0.85), smoothstep(0.5, 1.1, T));
+  return mix(c, vec3(0.75, 0.85, 1.0), smoothstep(1.1, 2.0, T));
+}
+void main(){
+  vec2 p = (vUv - 0.5) * uSize; float b = length(p);
+  vec3 eb = b > 1e-4 ? vec3(p / b, 0.0) : vec3(1.0, 0.0, 0.0), ez = vec3(0.0, 0.0, 1.0);
+  float nb = dot(uN, eb), nz = uN.z;
+  vec3 hlp = abs(uN.y) < 0.9 ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0);
+  vec3 a1 = normalize(cross(uN, hlp)), a2 = cross(uN, a1);
+  float u = 0.0, up = 1.0 / max(b, 0.05), phi = 0.0, dphi = 0.05;
+  float s0 = nz, uPrev = 0.0, upPrev = up, phiPrev = 0.0, T = 1.0;
+  vec3 acc = vec3(0.0); bool captured = false;
+  for (int i = 0; i < 210; i++) {
+    uPrev = u; upPrev = up; phiPrev = phi;
+    up += (-u + 1.5 * u * u) * dphi; u += up * dphi; phi += dphi;
+    if (u >= 1.0) { captured = true; break; }
+    float s = cos(phi) * nz + sin(phi) * nb;                       // height of the ray above the disc plane (times r)
+    if (s0 * s < 0.0 && u > 1e-3) {
+      float t = s0 / (s0 - s), uc = mix(uPrev, u, t), phc = mix(phiPrev, phi, t), r = 1.0 / uc;
+      if (r > RIN && r < ROUT) {
+        vec3 ph = cos(phc) * ez + sin(phc) * eb;
+        float beta = min(sqrt(0.5 / (r - 1.0)), 0.85);             // circular-orbit speed seen by a static observer, c = 1
+        vec3 vdir = normalize(cross(uN, ph));
+        float upc = mix(upPrev, up, t);
+        vec3 dP = (-upc / (uc * uc)) * ph + r * (-sin(phc) * ez + cos(phc) * eb);
+        vec3 k = -normalize(dP);                                   // the way the light travels, toward us
+        float gam = inversesqrt(1.0 - beta * beta);
+        float g = (1.0 / (gam * (1.0 - beta * dot(vdir, k)))) * sqrt(max(1.0 - 1.0 / r, 0.0));   // Doppler x gravitational redshift
+        float Tobs = pow(RIN / r, 0.75) * g;                       // disc temperature falls as r^-3/4
+        float azim = atan(dot(ph, a2), dot(ph, a1));
+        float band = 0.8 + 0.2 * sin(2.0 * azim + r * 3.0 - uTime * 2.0 / pow(r, 1.5) + uSeed);   // differential rotation
+        float edge = smoothstep(RIN, RIN + 0.25, r) * smoothstep(ROUT, ROUT - 1.2, r), al = 0.92 * edge;
+        acc += T * heat(Tobs) * pow(Tobs, 3.5) * band * al * 1.6; T *= 1.0 - al;
+      }
+    }
+    s0 = s;
+    if (phi > 1.57 && u < 0.002 && up < 0.0) break;                // escaped to infinity
+    if (T < 0.02) break;
+  }
+  vec3 dirOut = cos(phi) * ez + sin(phi) * eb;                      // where on the sky this ray ends up
+  float bo = 1.0 - smoothstep(5.5, uSize * 0.5, b);                // replace the real sky near the hole, blend back out to the quad's edge
+  vec3 rgb = captured ? acc : acc + T * skyAt(dirOut) * bo;
+  float alpha = captured ? 1.0 : (1.0 - T) + T * bo;
+  gl_FragColor = vec4(rgb, alpha);                                  // premultiplied
 }`;
 
 // Points (galaxies, clusters): soft round sprites with size attenuation
@@ -186,7 +255,7 @@ export function createModel(THREE, spec = {}) {
   const C = (r, g, b) => new THREE.Color(r, g, b);
   const sphere = (segments = spec.segments || 64) => { const g = new THREE.SphereGeometry(1, segments, segments / 2); disposables.push(g); return g; };   // spec.segments lowers the mesh detail for scenes with many bodies
   const addSprite = (size, color, color2, shape, soft = 2.5, alpha = 1, depthWrite = false) => {
-    const g = new THREE.PlaneGeometry(size, size), m = new THREE.ShaderMaterial({ vertexShader: SPRITE_VERT, fragmentShader: SPRITE_FRAG, transparent: true, depthWrite, blending: THREE.AdditiveBlending, uniforms: { uColor: { value: color }, uColor2: { value: color2 }, uShape: { value: shape }, uTime: { value: 0 }, uSeed: { value: seed }, uSoft: { value: soft }, uAlpha: { value: alpha } } });
+    const g = new THREE.PlaneGeometry(size, size), m = new THREE.ShaderMaterial({ vertexShader: SPRITE_VERT, fragmentShader: SPRITE_FRAG, transparent: true, depthWrite, blending: THREE.AdditiveBlending, uniforms: { uColor: { value: color }, uColor2: { value: color2 }, uShape: { value: shape }, uTime: { value: 0 }, uSeed: { value: seed }, uSoft: { value: soft }, uAlpha: { value: alpha }, uSize: { value: size } } });
     const s = new THREE.Mesh(g, m); s.onBeforeRender = (r, sc, cam) => { s.quaternion.copy(cam.quaternion); }; group.add(s); disposables.push(g, m); tickers.push(t => { m.uniforms.uTime.value = t; }); return s;
   };
   const bodyMat = (opts) => {
@@ -201,11 +270,11 @@ export function createModel(THREE, spec = {}) {
   const pick = arr => arr[Math.floor(R() * arr.length)];
 
   switch (kind) {
-    case 'ocean': { group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 4, c1: C(0.08, 0.25, 0.55), c2: C(0.2, 0.42, 0.18), c3: C(0.55, 0.5, 0.35), atmo: 0.6 }))); addSprite(2.3, C(0.4, 0.6, 1.0), C(0, 0, 0), 0, 6, 0.35); break; }
+    case 'ocean': { group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 4, c1: C(0.08, 0.25, 0.55), c2: C(0.2, 0.42, 0.18), c3: C(0.55, 0.5, 0.35), atmo: 0.6 }))); addSprite(2.5, C(0.45, 0.65, 1.0), C(0.1, 0.2, 0.5), 3, 11, 0.85); break; }   // Earth-like: blue limb glow
     case 'lava': { group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 3, c1: C(0.12, 0.08, 0.07), c2: C(1.0, 0.45, 0.1), c3: C(1.0, 0.8, 0.3), atmo: 0 }))); break; }
     case 'icy': { group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 2, c1: C(0.7, 0.74, 0.8), c2: C(0.88, 0.9, 0.95), c3: C(0.5, 0.55, 0.6), atmo: 0 }))); break; }
-    case 'gasgiant': { const [c1, c2, c3] = pick(pal.gasgiant); group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 1, c1, c2, c3, atmo: 0.35 }))); const nm = String(spec.name || '').toLowerCase(); if (nm === 'saturn' || nm === 'uranus' || (!SOLAR_NAMES.has(nm) && R() < 0.3)) { /* Jupiter's and Neptune's rings are too faint to draw at this scale */ const rg = new THREE.RingGeometry(nm === 'uranus' ? 1.6 : 1.25, nm === 'uranus' ? 1.75 : 2.3, 96), rm = new THREE.MeshBasicMaterial({ color: c3, transparent: true, opacity: 0.45, side: THREE.DoubleSide }); const ring = new THREE.Mesh(rg, rm); ring.rotation.x = Math.PI / 2 + 0.3; group.add(ring); disposables.push(rg, rm); } break; }
-    case 'rocky': { const [c1, c2, c3] = pick(pal.rocky); group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 0, c1, c2, c3, atmo: spec.type === 'moon' ? 0 : 0.2 }))); break; }
+    case 'gasgiant': { const [c1, c2, c3] = pick(pal.gasgiant); group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 1, c1, c2, c3, atmo: 0.35 }))); const nm = String(spec.name || '').toLowerCase(); if (nm === 'saturn' || nm === 'uranus' || (!SOLAR_NAMES.has(nm) && R() < 0.3)) { /* Jupiter's and Neptune's rings are too faint to draw at this scale */ const rg = new THREE.RingGeometry(nm === 'uranus' ? 1.6 : 1.25, nm === 'uranus' ? 1.75 : 2.3, 96), rm = new THREE.MeshBasicMaterial({ color: c3, transparent: true, opacity: 0.45, side: THREE.DoubleSide }); const ring = new THREE.Mesh(rg, rm); ring.rotation.x = Math.PI / 2 + 0.3; group.add(ring); disposables.push(rg, rm); } addSprite(2.45, c1.clone().lerp(C(1, 1, 1), 0.3), C(0, 0, 0), 3, 12, 0.5); break; }
+    case 'rocky': { const [c1, c2, c3] = pick(pal.rocky); group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 0, c1, c2, c3, atmo: spec.type === 'moon' ? 0 : 0.2 }))); if (spec.type !== 'moon') addSprite(2.3, C(0.85, 0.72, 0.6), C(0, 0, 0), 3, 14, 0.3); break; }
     case 'asteroid': case 'comet': {
       const g = new THREE.IcosahedronGeometry(1, 4); const pos = g.attributes.position; const v = new THREE.Vector3();
       for (let i = 0; i < pos.count; i++) { v.fromBufferAttribute(pos, i); const n = 0.75 + 0.25 * (Math.sin(v.x * 3 + seed) * Math.cos(v.y * 4) + Math.sin(v.z * 5 + v.x * 2)) * 0.6; v.multiplyScalar(n * (kind === 'comet' ? 0.6 : 1)); pos.setXYZ(i, v.x, v.y, v.z); }
@@ -220,8 +289,10 @@ export function createModel(THREE, spec = {}) {
       const m = new THREE.ShaderMaterial({ vertexShader: BODY_VERT, fragmentShader: STAR_FRAG, uniforms: { uTime: { value: 0 }, uSeed: { value: seed }, uHasMap: { value: map ? 1 : 0 }, uMap: { value: map || new THREE.Texture() }, uColor: { value: c1 }, uColor2: { value: c2 } } });
       disposables.push(m); tickers.push(t => { m.uniforms.uTime.value = t; });
       group.add(new THREE.Mesh(sphere(), m));
-      addSprite(kind === 'browndwarf' ? 2.4 : 3.6, c1, C(r * 0.3, g * 0.2, b * 0.2), 0, 4, kind === 'browndwarf' ? 0.35 : 0.8);
-      addSprite(6, c1, C(0, 0, 0), 0, 9, 0.35);
+      const dwarf = kind === 'browndwarf';
+      addSprite(dwarf ? 5 : 9, c1, C(r * 0.3, g * 0.2, b * 0.2), 3, 2.4, dwarf ? 0.4 : 0.95);        // corona: starts bright at the limb, fades outward
+      addSprite(dwarf ? 11 : 30, c1, C(0, 0, 0), 3, 0.55, dwarf ? 0.12 : 0.3);                       // wide halo of scattered light
+      if (!dwarf) addSprite(22, c1.clone().lerp(C(1, 1, 1), 0.6), C(0, 0, 0), 4, 1, 0.5);            // diffraction-like rays
       break;
     }
     case 'whitedwarf': { const c1 = C(0.85, 0.9, 1.0); const m = new THREE.ShaderMaterial({ vertexShader: BODY_VERT, fragmentShader: STAR_FRAG, uniforms: { uTime: { value: 0 }, uSeed: { value: seed }, uHasMap: { value: 0 }, uMap: { value: new THREE.Texture() }, uColor: { value: c1 }, uColor2: { value: C(0.6, 0.7, 1.0) } } }); disposables.push(m); group.add(new THREE.Mesh(sphere(32), m)); addSprite(4, c1, C(0.2, 0.3, 0.6), 0, 5, 0.7); break; }
@@ -236,10 +307,13 @@ export function createModel(THREE, spec = {}) {
       break;
     }
     case 'blackhole': case 'quasar': {
-      const hole = new THREE.Mesh(sphere(48), new THREE.MeshBasicMaterial({ color: 0x000000 })); group.add(hole); disposables.push(hole.material);
-      const dg = new THREE.PlaneGeometry(7, 7), dm = new THREE.ShaderMaterial({ vertexShader: SPRITE_VERT, fragmentShader: DISC_FRAG, transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, uniforms: { uTime: { value: 0 }, uSeed: { value: seed }, uInner: { value: 0.36 }, uBeam: { value: 0.55 }, uColor: { value: C(1.0, 0.92, 0.75) }, uColor2: { value: C(0.9, 0.35, 0.1) } } });
-      const disc = new THREE.Mesh(dg, dm); disc.rotation.x = Math.PI / 2 - 0.35; group.add(disc); disposables.push(dg, dm); tickers.push(t => { dm.uniforms.uTime.value = t; });
-      addSprite(2.6, C(1.0, 0.9, 0.7), C(1.0, 0.5, 0.2), 1, 1, 0.9);           // photon ring
+      // a screen-facing quad that ray-traces the hole (see BH_FRAG): shadow, lensed sky, lensed disc, photon ring, Doppler beaming
+      const bg = new THREE.PlaneGeometry(22, 22), bm = new THREE.ShaderMaterial({ vertexShader: SPRITE_VERT, fragmentShader: BH_FRAG, transparent: true, depthTest: false, depthWrite: false,
+        blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.OneFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
+        uniforms: { uN: { value: new THREE.Vector3(0, 1, 0) }, uSize: { value: 22 }, uTime: { value: 0 }, uSeed: { value: seed } } });
+      const hole = new THREE.Mesh(bg, bm); hole.renderOrder = 10; group.add(hole); disposables.push(bg, bm); tickers.push(t => { bm.uniforms.uTime.value = t; });
+      const spin = new THREE.Vector3(0.18, 1, 0.08).normalize(), qi = new THREE.Quaternion();   // the disc's axis in the world; its tilt follows the camera
+      hole.onBeforeRender = (r, sc, cam) => { hole.quaternion.copy(cam.quaternion); qi.copy(cam.quaternion).invert(); bm.uniforms.uN.value.copy(spin).applyQuaternion(qi); };
       if (kind === 'quasar') { for (const sgn of [1, -1]) { const cg = new THREE.CylinderGeometry(0.15, 0.6, 9, 16, 1, true), cm = new THREE.MeshBasicMaterial({ color: 0x9fd3ff, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }); const jet = new THREE.Mesh(cg, cm); jet.position.y = sgn * 5; jet.rotation.x = sgn > 0 ? 0 : Math.PI; group.add(jet); disposables.push(cg, cm); } addSprite(5, C(0.7, 0.85, 1.0), C(0.1, 0.2, 0.5), 0, 4, 0.9); }
       break;
     }

@@ -252,14 +252,14 @@
     <div class="dim" style="margin-top:4px">Positions from JPL's Keplerian mean elements (1800–2050 table, arcminute accuracy); the Moon is a circular approximation.</div>
   </details>
   <details open><summary>Scale balance (a map projection, not physics)</summary>
-    <div class="row"><label for="distK">Distance compression γ (1 = true)</label><input type="range" id="distK" min="0.2" max="1" step="0.01"><span class="val" id="distK-v"></span></div>
+    <div class="row"><label for="distK">Distance compression γ (1 = true)</label><input type="range" id="distK" min="0.05" max="1" step="0.005"><span class="val" id="distK-v"></span></div>
     <div class="row"><label for="sizeK">Size balance β (1 = true)</label><input type="range" id="sizeK" min="0" max="1" step="0.01"><span class="val" id="sizeK-v"></span></div>
-    <div class="row"><label for="sizeMul">Object size × (1 = true)</label><input type="range" id="sizeMul" min="1" max="63" step="0.5"><span class="val" id="sizeMul-v"></span></div>
+    <div class="row"><label for="sizeMul">Object size × (1 = true)</label><input type="range" id="sizeMul" min="1" max="1000" step="1"><span class="val" id="sizeMul-v"></span></div>
     <div><button id="trueScale">true scale</button><button data-sb="0.6,0.5">balanced</button><button data-sb="0.35,0.15">see everything</button></div>
     <div class="dim" style="margin-top:4px">Within a system, distances from the host follow d′ = d₀·(d/d₀)^γ (order and direction kept; the innermost orbit stays put) and radii r′ = r_ref^(1−β)·r^β, capped so no body reaches a neighbour's orbit. The scale bar says when the view is compressed; labels show each body's size exaggeration.</div>
   </details>
   <details open><summary>Compressed sky: many systems in one window</summary>
-    <div class="row"><label for="skyK">Distance between systems γ (1 = true)</label><input type="range" id="skyK" min="0.2" max="1" step="0.01"><span class="val" id="skyK-v"></span></div>
+    <div class="row"><label for="skyK">Distance between systems γ (1 = true)</label><input type="range" id="skyK" min="0.05" max="1" step="0.005"><span class="val" id="skyK-v"></span></div>
     <div class="row"><label for="skyB">System size balance β (1 = true)</label><input type="range" id="skyB" min="0" max="1" step="0.01"><span class="val" id="skyB-v"></span></div>
     <div class="row"><label for="skyN">Nearest planetary systems shown</label><input type="range" id="skyN" min="10" max="200" step="10"><span class="val" id="skyN-v"></span></div>
     <div><button data-sky="0.3,0.1">all nearby systems in one window</button><button data-sky="0.6,0.5">gentle</button><button id="skyOff">true sky</button></div>
@@ -333,11 +333,11 @@
 </aside>
 
 <div id="scalebars" class="glass" aria-label="Distort the space between objects">
-  <div class="col" title="Distance between objects and their orbits: top is true, bottom pulls everything in toward the middle (order and direction kept)">
-    <span class="tag">true</span><input type="range" id="vDist" min="0.2" max="1" step="0.01" orient="vertical"><span class="tag">tight</span><span class="cap">distance</span><span class="v" id="vDist-v"></span>
+  <div class="col" title="Distance between objects, orbits and star systems: top is true, bottom pulls everything in toward the middle (order and direction kept)">
+    <span class="tag">true</span><input type="range" id="vDist" min="0.05" max="1" step="0.005" orient="vertical"><span class="tag">tight</span><span class="cap">distance</span><span class="v" id="vDist-v"></span>
   </div>
-  <div class="col" title="Size of objects: bottom is true size, top enlarges every object (never past its neighbours' orbits)">
-    <span class="tag">big</span><input type="range" id="vSize" min="0" max="1.8" step="0.01" orient="vertical"><span class="tag">true</span><span class="cap">size</span><span class="v" id="vSize-v"></span>
+  <div class="col" title="Size of objects: bottom is true size, top enlarges every object up to x1000 (planets never past their neighbours' orbits; stars and galaxies swell too)">
+    <span class="tag">big</span><input type="range" id="vSize" min="0" max="3" step="0.01" orient="vertical"><span class="tag">true</span><span class="cap">size</span><span class="v" id="vSize-v"></span>
   </div>
   <div class="col" title="Relative scale: top keeps true size ratios, bottom pulls giants and dwarfs toward one size so big objects do not hide small ones">
     <span class="tag">true</span><input type="range" id="vBal" min="0" max="1" step="0.01" orient="vertical"><span class="tag">equal</span><span class="cap">balance</span><span class="v" id="vBal-v"></span>
@@ -760,15 +760,16 @@ function fxStyle(m) {
   const sprite = fx.shape !== 'pixel';
   if (!!m.map !== sprite) m.needsUpdate = true;   // a texture appearing or going away changes the shader; nothing else here does
   m.map = sprite ? fxTex : null; m.alphaTest = sprite ? 0.002 : 0;
-  m.size = m.userData.baseSize * fx.size * (sprite ? FX_SPRITE_SCALE : 1);
+  const pm = Math.pow(state.sizeMul, 0.55);   // the Size slider on points: x63 -> about x10, x1000 -> about x45
+  m.size = m.userData.baseSize * fx.size * (sprite ? FX_SPRITE_SCALE : 1) * pm;
   m.blending = fx.additive ? THREE.AdditiveBlending : THREE.NormalBlending;
-  m.color.setScalar(fx.gain); m.opacity = sprite ? 1 : 0.9;
+  m.color.setScalar(fx.gain / Math.sqrt(pm)); m.opacity = sprite ? 1 : 0.9;   // a bigger blur spreads the same light, so dim it (keeps the sky from whiting out)
 }
 // regenerate the sprite when its drawing changed, then restyle every cloud
 function fxApply(redrawSprite = true) {
   if (fx.shape !== 'pixel' && (redrawSprite || !fxTex)) { fxTex?.dispose(); fxTex = fxStarTexture(); }
   fxUTwinkle.value = fx.twinkle;
-  fxUMaxPx.value = fx.shape === 'pixel' ? 1e6 : FX_MAX_CSS_PX * renderer.getPixelRatio();
+  fxUMaxPx.value = (fx.shape === 'pixel' ? 160 : FX_MAX_CSS_PX) * renderer.getPixelRatio();
   for (const m of fxMats) fxStyle(m);
 }
 // twinkle: a per-star size and brightness flicker with its own phase, injected into PointsMaterial's vertex shader
@@ -780,7 +781,7 @@ function fxPatch(sh) {
 }
 function fxRegister(m, baseSize) {
   m.userData.baseSize = baseSize; m.onBeforeCompile = fxPatch; fxMats.push(m);
-  fxUMaxPx.value = fx.shape === 'pixel' ? 1e6 : FX_MAX_CSS_PX * renderer.getPixelRatio();
+  fxUMaxPx.value = (fx.shape === 'pixel' ? 160 : FX_MAX_CSS_PX) * renderer.getPixelRatio();
   if (fx.shape !== 'pixel' && !fxTex) fxTex = fxStarTexture();
   fxStyle(m);
 }
@@ -985,7 +986,13 @@ function megaReadout() {
 const DEST = [
   { name: 'Sun', pos: SUN, w: () => 5 * shownR('Sun'), type: 'star' }, { name: 'Moon', pos: MOON, w: () => 5 * shownR('Moon'), type: 'moon' },
   ...Object.entries(P.ORBITS).map(([n, o]) => ({ name: n, pos: () => layout().pos[n], w: () => Math.max(5 * shownR(n), ...MOONS.filter(m => m.parent === n).map(m => 2.6 * m.shownA)), type: o.dwarf ? 'dwarf planet' : 'planet' })),
+  // special views: not places but arrangements. Selecting one sets the scale knobs (skewed distances and sizes) and flies to the view.
+  { name: 'Galactic Neighborhood: every nearby system, compressed', type: 'view', pos: SUN, w: 1e17, skyView: true, preset: { distK: 0.35, sizeK: 0.2, skyK: 0.3, skyB: 0.1, skyN: 200, sizeMul: 6 } },
+  { name: 'Solar System cluster: every known body, compressed', type: 'view', pos: SUN, w: 3e12, preset: { distK: 0.35, sizeK: 0.15, skyK: 1, skyB: 1, sizeMul: 16 } },
   { name: 'Galactic centre (Sgr A*)', pos: [0, 0, 0], w: 2 * 100 * pc, type: 'black hole' },
+  { name: 'Sgr A* event horizon', pos: [0, 0, 0], w: 40 * 1.27e10, type: 'black hole' },
+  { name: 'M87* event horizon', lbd: [283.78, 74.49, 16.4e6 * pc], w: 40 * 1.9e13, type: 'black hole' },
+  { name: 'Cygnus X-1 event horizon', lbd: [71.33, 3.07, 2220 * pc], w: 40 * 6.2e4, type: 'black hole' },
   { name: 'Proxima Centauri', lbd: [313.94, -1.93, 1.30 * pc], w: 0.2 * pc, type: 'star' }, { name: 'Alpha Centauri AB', lbd: [315.73, -0.68, 1.34 * pc], w: 0.2 * pc, type: 'star' },
   { name: 'Sirius', lbd: [227.23, -8.89, 2.64 * pc], w: 0.2 * pc, type: 'star' }, { name: 'Vega', lbd: [67.45, 19.24, 7.68 * pc], w: 0.3 * pc, type: 'star' },
   { name: 'Betelgeuse', lbd: [199.79, -8.96, 170 * pc], w: 3 * pc, type: 'star' }, { name: 'Eta Carinae', lbd: [287.60, -0.63, 2300 * pc], w: 10 * pc, type: 'star' },
@@ -1096,7 +1103,20 @@ function goHash() {
 }
 window.addEventListener('hashchange', goHash);
 
-function goDest(d) { if (d.sys) systemFor(d.sys); travelTo(d.pos, Math.log10(at(d.w)), d.name); }
+function applyScalePreset(p) {
+  Object.assign(state, p);
+  for (const [id, dec] of [['distK', 2], ['sizeK', 2], ['skyK', 2], ['skyB', 2], ['skyN', 0], ['sizeMul', 1]]) sync(id, dec);
+  syncScaleBars(); fxApply(false);
+}
+function goDest(d) {
+  if (d.preset) {                                  // a special view: set the distortion first, then fly to it
+    applyScalePreset(d.preset);
+    if (d.skyView) goSky(); else travelTo(d.pos, Math.log10(at(d.w)), d.name);
+    toast(`${d.name.split(':')[0]}: distances and sizes are skewed (see the sliders)`);
+    return;
+  }
+  if (d.sys) systemFor(d.sys); travelTo(d.pos, Math.log10(at(d.w)), d.name);
+}
 function travelTo(target, zoom, name) {
   const pos = at(target), p0 = [...focus], z0 = state.zoom, dist = Math.hypot(pos[0] - p0[0], pos[1] - p0[1], pos[2] - p0[2]);
   const rawBump = Math.max(0, Math.log10(Math.max(dist, 1)) + 0.4 - Math.max(z0, zoom));   // how far to zoom out to see both ends
@@ -1163,7 +1183,7 @@ function warpEnd() {
 }
 let lastDest = null;
 function toast(msg) { const t = $('toast'); t.textContent = msg; t.style.opacity = 1; clearTimeout(t._h); t._h = setTimeout(() => t.style.opacity = 0, 1800); }
-function nearestName() { let best = null, bd = Infinity; for (const d of DEST) { if (!d.pos || d.viaParent) continue; /* list-only rows have no sky position of their own */ const p = at(d.pos), r = Math.hypot(p[0] - focus[0], p[1] - focus[1], p[2] - focus[2]); if (r < bd) { bd = r; best = d; } } return best ? `${P.fmtLength(bd)} from ${best.name}` : ''; }
+function nearestName() { let best = null, bd = Infinity; for (const d of DEST) { if (!d.pos || d.viaParent || d.preset) continue; /* list-only rows have no sky position of their own */ const p = at(d.pos), r = Math.hypot(p[0] - focus[0], p[1] - focus[1], p[2] - focus[2]); if (r < bd) { bd = r; best = d; } } return best ? `${P.fmtLength(bd)} from ${best.name}` : ''; }
 
 // HUD (lower left): nearest object, galactic position of the view centre, view size; the scale bar is filled in with the main one.
 // `var`, not `let`: updateScene can run before this point is reached.
@@ -1268,7 +1288,7 @@ function showResults(q) {
   // browsing: everything in the catalog, grouped by type, biggest groups first, A to Z inside each
   const groups = new Map();
   for (const d of DEST) { const t = d.type || 'other'; if (!groups.has(t)) groups.set(t, []); groups.get(t).push(d); }
-  for (const [type, items] of [...groups.entries()].sort((a, b) => b[1].length - a[1].length)) {
+  for (const [type, items] of [...groups.entries()].sort((a, b) => (b[0] === 'view') - (a[0] === 'view') || b[1].length - a[1].length)) {
     items.sort((a, b) => a.name.localeCompare(b.name));
     const head = document.createElement('div'); head.className = 'grp'; head.innerHTML = `<span>${type}</span><span>${items.length.toLocaleString()}</span>`;
     const box = document.createElement('div'); box.className = 'grpbox'; results.append(head, box); pagedList(box, items);
@@ -1311,6 +1331,24 @@ function orbitBy(dAz, dPol) { const sph = new THREE.Spherical().setFromVector3(c
 function moveFocusScene(v) { focus[0] += v.x; focus[2] += v.y; focus[1] -= v.z; }   // scene metres -> galactic metres
 
 // ---- per-frame placement ----
+// ---- black holes: each is a screen-facing lens quad that ray-traces Schwarzschild spacetime (see BH_FRAG in kosmo-models.js).
+// Placed at the real position with the real horizon radius r_s = 2GM/c^2, and drawn only while its lens would be a sensible size on screen. ----
+const BLACK_HOLES = [
+  { name: 'Sgr A*', pos: [0, 0, 0], rs: 1.27e10 },                       // 4.1 million solar masses
+  { name: 'M87*', pos: gal(283.78, 74.49, 16.4e6 * pc), rs: 1.9e13 },    // 6.5 billion solar masses
+  { name: 'Cygnus X-1', pos: gal(71.33, 3.07, 2220 * pc), rs: 6.2e4 },   // about 21 solar masses
+];
+const bhGroup = new THREE.Group(); scene.add(bhGroup);
+for (const bh of BLACK_HOLES) { bh.obj = createModel(THREE, { name: bh.name, type: 'black_hole', radius_m: bh.rs }); bh.obj.visible = false; bhGroup.add(bh.obj); }
+function updateBlackHoles(k) {
+  const pxPerScene = view.clientHeight / 2, t = performance.now() / 1000;
+  for (const bh of BLACK_HOLES) {
+    const sc = toScene(bh.pos, focus, k), size = bh.rs * k, px = 22 * size * pxPerScene;   // px: the lens quad's width on screen
+    const show = px > 12 && px < 8000 && Math.hypot(sc[0], sc[1], sc[2]) < 1e5;
+    bh.obj.visible = show; if (!show) continue;
+    bh.obj.position.set(sc[0], sc[1], sc[2]); bh.obj.scale.setScalar(size); bh.obj.tick(t);
+  }
+}
 let activeL = LEVELS[0];
 function updateScene() {
   const a = 10 ** state.logA, viewW = 10 ** state.zoom, k = 2 / viewW;
@@ -1328,6 +1366,7 @@ function updateScene() {
     if (L.update) L.update(L.obj);
   }
   const sp = toScene(SUN, focus, k); sunLight.position.set(sp[0], sp[1], sp[2]);
+  updateBlackHoles(k);
   if (megaObj) {
     const mg = MEGAS[state.mega], cover = mg.width() / viewW;
     megaObj.visible = state.mega !== 'none' && cover > 1e-4 && cover < 1e8;
@@ -1362,7 +1401,7 @@ function updateScene() {
   if (!hudClosed) { $('hudScale').textContent = `${m} ${name}`; $('hudBar').style.width = `${barPx}px`; }
   const notes = []; if (state.sizeMul > 1) notes.push(`objects enlarged ×${state.sizeMul.toFixed(state.sizeMul < 10 ? 1 : 0)}`); if (state.distK < 1) notes.push(`distances compressed γ = ${state.distK.toFixed(2)}`); if (state.sizeK < 1) notes.push(`sizes balanced β = ${state.sizeK.toFixed(2)}`);
   if (state.skyK < 1) notes.push(`star distances compressed γ = ${state.skyK.toFixed(2)}`); if (skyPack().on) notes.push(`systems magnified ×${skyPack().mags[0].toFixed(0)}–×${skyPack().mags[1].toFixed(0)}`);
-  $('scalenote').textContent = notes.length ? `⚠ ${notes.join(' · ')} (galaxies and the star field stay true)` : '';
+  $('scalenote').textContent = notes.length ? `⚠ ${notes.join(' · ')} (star and galaxy positions stay true; their points swell with the size slider)` : '';
   for (const b of levelBtns.children) b.classList.toggle('on', b.dataset.key === activeL.key);
 }
 
@@ -1400,13 +1439,14 @@ function syncScaleBars() {
   $('vSize').value = Math.log10(state.sizeMul); $('vSize-v').textContent = `×${state.sizeMul < 10 ? state.sizeMul.toFixed(1) : state.sizeMul.toFixed(0)}`;
   $('vBal').value = state.sizeK; $('vBal-v').textContent = `β ${state.sizeK.toFixed(2)}`;
 }
-$('vDist').addEventListener('input', e => { state.distK = parseFloat(e.target.value); sync('distK', 2); syncScaleBars(); });
-$('vSize').addEventListener('input', e => { state.sizeMul = Math.max(1, Math.round(10 ** parseFloat(e.target.value) * 2) / 2); sync('sizeMul', 1); syncScaleBars(); });
-$('vBal').addEventListener('input', e => { state.sizeK = parseFloat(e.target.value); sync('sizeK', 2); syncScaleBars(); });
+$('vDist').addEventListener('input', e => { state.distK = state.skyK = parseFloat(e.target.value); sync('distK', 2); sync('skyK', 2); syncScaleBars(); });
+$('vSize').addEventListener('input', e => { state.sizeMul = Math.max(1, Math.round(10 ** parseFloat(e.target.value) * 2) / 2); sync('sizeMul', 1); syncScaleBars(); fxApply(false); });
+$('vBal').addEventListener('input', e => { state.sizeK = state.skyB = parseFloat(e.target.value); sync('sizeK', 2); sync('skyB', 2); syncScaleBars(); });
 for (const id of ['distK', 'sizeK', 'sizeMul']) $(id).addEventListener('input', syncScaleBars);   // the panel's sliders move the verticals too
-$('trueScale').addEventListener('click', () => { state.distK = 1; state.sizeK = 1; state.sizeMul = 1; sync('distK', 2); sync('sizeK', 2); sync('sizeMul', 1); syncScaleBars(); });
+$('sizeMul').addEventListener('input', () => fxApply(false));
+$('trueScale').addEventListener('click', () => { state.distK = 1; state.sizeK = 1; state.sizeMul = 1; state.skyK = 1; state.skyB = 1; sync('distK', 2); sync('sizeK', 2); sync('sizeMul', 1); sync('skyK', 2); sync('skyB', 2); syncScaleBars(); fxApply(false); });
 syncScaleBars();
-document.querySelectorAll('button[data-sb]').forEach(b => b.addEventListener('click', () => { const [g, be] = b.dataset.sb.split(',').map(Number); state.distK = g; state.sizeK = be; sync('distK', 2); sync('sizeK', 2); }));
+document.querySelectorAll('button[data-sb]').forEach(b => b.addEventListener('click', () => { const [g, be] = b.dataset.sb.split(',').map(Number); state.distK = g; state.sizeK = be; state.skyK = g; state.skyB = be; sync('distK', 2); sync('sizeK', 2); sync('skyK', 2); sync('skyB', 2); syncScaleBars(); }));
 $('play').addEventListener('change', () => { state.play = $('play').checked; if (state.play && state.logA >= 0) state.logA = -16; });
 $('spin').addEventListener('change', () => { state.spin = $('spin').checked; });
 $('mega').value = state.mega; $('mega').addEventListener('change', () => { state.mega = $('mega').value; rebuildMega(); goMega(); });
