@@ -753,4 +753,4 @@ export const settingsHistoryRelations = relations(
   })
 );
 
-export * from "./kosmo";
+export * from "./kosmo.js";

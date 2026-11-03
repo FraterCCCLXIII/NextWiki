@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { kosmoEntities } from "../../schema";
+import { kosmoEntities } from "../../schema/index.js";
 import {
   addClaim,
   ensurePage,
@@ -7,8 +7,8 @@ import {
   slugify,
   upsertEntity,
   upsertSource,
-} from "./util";
-import { loadKosmoModule, type Db, type UserId } from "./domains";
+} from "./util.js";
+import { loadKosmoModule, type Db, type UserId } from "./domains.js";
 
 type LessonSpec = { t: string; go?: string; sim?: unknown; pedia?: string };
 type Lesson = string | LessonSpec;

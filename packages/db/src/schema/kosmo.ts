@@ -18,7 +18,7 @@ import {
 import { relations } from "drizzle-orm";
 // wikiPages is referenced lazily (thunks below), so the circular import with
 // ./index is safe at runtime.
-import { wikiPages } from "./index";
+import { wikiPages } from "./index.js";
 
 type KosmoEntityKind =
   | "object"

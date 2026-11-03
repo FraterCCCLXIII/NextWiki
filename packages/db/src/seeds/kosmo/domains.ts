@@ -9,7 +9,7 @@ import {
   slugify,
   upsertEntity,
   upsertSource,
-} from "./util";
+} from "./util.js";
 
 export type Db = Parameters<typeof upsertSource>[0];
 export type UserId = Parameters<typeof ensurePage>[1]["userId"];

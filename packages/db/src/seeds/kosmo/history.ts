@@ -5,8 +5,8 @@ import {
   slugify,
   upsertEntity,
   upsertSource,
-} from "./util";
-import { loadKosmoModule, type Db, type UserId } from "./domains";
+} from "./util.js";
+import { loadKosmoModule, type Db, type UserId } from "./domains.js";
 
 type Event = [label: string, year: number, lat: number, lon: number];
 type Folder = {
