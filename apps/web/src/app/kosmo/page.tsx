@@ -30,7 +30,8 @@ const ROWS: { title: string; items: Section[] }[] = [
   },
 ];
 
-const go = (name: string) => `/kosmo/tools/timeline#go=${encodeURIComponent(name)}`;
+// opens the star map and flies to the body (the embed frame forwards ?go= to the atlas)
+const go = (name: string) => `/kosmo/tools/timeline?go=${encodeURIComponent(name)}`;
 const PLANETS: BodySpec[] = [
   { name: "Mercury", label: "Mercury", tag: "Planet", blurb: "The smallest planet, a cratered iron-rich world.", href: go("Mercury"), spec: { name: "Mercury", type: "planet", radius_m: 2.44e6, mass_kg: 3.3e23 }, glow: "rgba(200,180,150,0.25)" },
   { name: "Venus", label: "Venus", tag: "Planet", blurb: "A choked, sulphur-clouded greenhouse hotter than Mercury.", href: go("Venus"), spec: { name: "Venus", type: "planet", radius_m: 6.05e6, mass_kg: 4.87e24 }, glow: "rgba(255,190,110,0.3)" },
@@ -47,9 +48,9 @@ const CELESTIAL: BodySpec[] = [
   { name: "Pillars", label: "Pillars of Creation", tag: "Nebula", blurb: "Columns of gas and dust where new stars are being born.", href: go("Eagle Nebula"), spec: { name: "Pillars of Creation", type: "nebula", notes: "Pillars of Creation; Eagle Nebula M16 emission nebula" }, dist: 3.8, glow: "rgba(255,150,70,0.22)" },
   { name: "Crab", label: "Crab Nebula", tag: "Supernova remnant", blurb: "The wreck of a star that exploded in 1054, with a pulsar at its heart.", href: go("Crab Nebula"), spec: { name: "Crab Nebula", type: "supernova_remnant", notes: "Crab Nebula supernova remnant with pulsar wind nebula" }, dist: 3.8, glow: "rgba(100,200,220,0.2)" },
   { name: "Andromeda", label: "Andromeda", tag: "Galaxy", blurb: "Our nearest big neighbour, 2.5 million light-years away.", href: go("Andromeda Galaxy"), spec: { name: "Andromeda Galaxy", type: "galaxy", radius_m: 7.2e20, notes: "Spiral galaxy; morphology: SA(s)b" }, dist: 3.2, glow: "rgba(150,170,255,0.22)" },
-  { name: "Sgr A*", label: "Sagittarius A*", tag: "Black hole", blurb: "The four-million-sun black hole at the centre of our galaxy.", href: go("Sgr A*"), spec: { name: "Sgr A*", type: "black_hole", radius_m: 1.27e10 }, dist: 3.6, glow: "rgba(255,160,80,0.18)" },
+  { name: "Sgr A*", label: "Sagittarius A*", tag: "Black hole", blurb: "The four-million-sun black hole at the centre of our galaxy.", href: go("Sagittarius A*"), spec: { name: "Sgr A*", type: "black_hole", radius_m: 1.27e10 }, dist: 3.6, glow: "rgba(255,160,80,0.18)" },
   { name: "Crab Pulsar", label: "Crab Pulsar", tag: "Neutron star", blurb: "A city-sized star spinning thirty times a second.", href: go("Crab Pulsar"), spec: { name: "Crab Pulsar", type: "pulsar", radius_m: 1.2e4 }, dist: 3.8, glow: "rgba(130,170,255,0.25)" },
-  { name: "Omega Centauri", label: "Omega Centauri", tag: "Star cluster", blurb: "A swarm of ten million ancient stars.", href: go("Omega Centauri"), spec: { name: "Omega Centauri", type: "star_cluster", radius_m: 2.0e17 }, dist: 3.2, glow: "rgba(255,230,180,0.2)" },
+  { name: "Great Hercules Cluster", label: "Great Hercules Cluster", tag: "Star cluster", blurb: "Messier 13: a swarm of several hundred thousand ancient stars.", href: go("Great Hercules Cluster"), spec: { name: "Great Hercules Cluster", type: "star_cluster", radius_m: 7.0e17 }, dist: 3.2, glow: "rgba(255,230,180,0.2)" },
 ];
 
 /** A poster tile: a world as backdrop, a dark grade up from the bottom, the title big, the blurb sliding up on hover; neighbours dim and the tile lifts. */

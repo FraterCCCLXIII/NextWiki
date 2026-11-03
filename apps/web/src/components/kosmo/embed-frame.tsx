@@ -48,8 +48,9 @@ export function EmbedFrame({ src, title }: EmbedFrameProps) {
     const params = new URLSearchParams(window.location.search);
     const bg = params.get("kosmoBg");
     const addr = params.get("a"); // a cosmic address (KA1~...) to open the atlas at
+    const goTo = params.get("go"); // a body to fly to (the home page tiles link here)
     const base = bg === "original" || bg === "match" ? `${src}?kosmoBg=${bg}` : src;
-    setFrameSrc(addr?.startsWith("KA1~") ? `${base}#a=${encodeURIComponent(addr)}` : base);
+    setFrameSrc(addr?.startsWith("KA1~") ? `${base}#a=${encodeURIComponent(addr)}` : goTo ? `${base}#go=${encodeURIComponent(goTo)}` : base);
   }, [src]);
 
   // The atlas posts its camera state as a cosmic address; keep it in this page's URL (?a=...) so a view can be shared and reopened.
