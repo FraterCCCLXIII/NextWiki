@@ -201,6 +201,10 @@
   #hoverTip small { color: var(--muted); margin-left: 6px; }
   #hoverTip .phys { display: block; font-size: 12px; color: #c9d6e6; margin-top: 2px; font-variant-numeric: tabular-nums; }
   #hoverTip em { display: block; font-style: normal; font-size: 11px; color: var(--accent); margin-top: 1px; letter-spacing: .06em; }
+  #locCard { position: fixed; z-index: 30; width: 300px; padding: 12px 14px; border-radius: 14px; pointer-events: none; font-size: 13px; line-height: 1.45; color: #cfd8e6; box-shadow: 0 8px 30px rgba(0,0,0,0.45); }
+  #locCard[hidden] { display: none; } #locCard h4 { margin: 0 0 2px; font-size: 17px; font-weight: 600; color: #fff; } #locCard .lt { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #7fc3ff; }
+  #locCard .lp { margin-top: 6px; color: #e8eef8; } #locCard .ld { margin-top: 6px; color: var(--muted); } #locCard .ln { margin-top: 6px; color: #aab6c8; font-size: 12px; } #locCard .lg { margin-top: 8px; font-size: 11px; color: #ffd37a; }
+  #snapdots { position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: 7; pointer-events: none; }
   #hoverRing.snap { border-radius: 4px; border-style: dashed; border-color: #ffd37a; box-shadow: 0 0 12px rgba(255,211,122,0.55); animation: snapspin 3s linear infinite; }
   @keyframes snapspin { to { transform: translate(-50%, -50%) rotate(360deg); } }
   #hoverRing { position: absolute; z-index: 8; pointer-events: none; display: none; border: 1.5px solid var(--accent); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 10px rgba(159,184,171,0.35); }
@@ -362,7 +366,7 @@
 <body>
 <div id="view"></div>
 <canvas id="warp" aria-hidden="true"></canvas>
-<div id="hoverRing"></div><div id="hoverTip"></div>
+<div id="locCard" class="glass" hidden></div><canvas id="snapdots"></canvas><div id="hoverRing"></div><div id="hoverTip"></div>
 <div id="navbar"><div id="logo"><div class="mark"></div><div><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div></div><nav id="menu"><a href="universe-timeline.html" class="here">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span class="orbwrap"><span class="dim" id="navTime"></span><button id="drawerBtn" class="orb" type="button" title="Chronicle: vertical timeline and map" aria-label="Chronicle" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></button><button id="destBtn" class="orb" type="button" title="Locations: travel to a destination" aria-label="Locations" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></button><button id="fxBtn" class="orb" type="button" title="Star effects" aria-label="Star effects" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.1 6.9L21 12l-6.9 2.1L12 21l-2.1-6.9L3 12l6.9-2.1z"/></svg></button><button id="flyBtn" class="orb" type="button" title="Flight mode (G)" aria-label="Flight mode" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3.2 2.4 4.6 5.6 4.6 9.2L12 21l-4.6-8.8C7.4 8.6 8.8 5.4 12 3z"/><circle cx="12" cy="10.5" r="1.6"/></svg></button></span></div>
 <div id="top"><canvas id="timeline"></canvas><canvas id="minimap" title="Drag the window to pan the timeline"></canvas><div id="tl-handle" title="Click to show or hide the timeline; drag to resize it"></div><div id="tlbrush"></div><div id="tlzoom" title="Wheel: zoom at the pointer · drag: pan · double-click: zoom in · shift-drag: zoom to a range"><button id="tlOut" type="button" aria-label="Zoom out">−</button><button id="tlIn" type="button" aria-label="Zoom in">+</button><button id="tlFit" type="button" aria-label="Show the whole timeline">fit</button></div></div>
 <aside id="drawer">
@@ -1408,7 +1412,7 @@ function physicsLine(row) {
 const _pm = new THREE.Matrix4(), _pw = new THREE.Vector3();
 let snapCache = null, snapMouse = null, snapFrame = -99, hoverSnap = null;
 function pickPoint(mx, my) {
-  const W = view.clientWidth, H = view.clientHeight; let best = null, bd = 26 * 26;
+  const W = view.clientWidth, H = view.clientHeight, cand = [], R2 = 44 * 44; let best = null, bd = R2;
   scene.traverse(o => {
     if (!o.isPoints || !o.geometry.attributes.position) return; for (let v = o; v; v = v.parent) if (!v.visible) return;
     const pos = o.geometry.attributes.position, a = pos.array, n = pos.count; if (n > 600000) return;
@@ -1416,18 +1420,34 @@ function pickPoint(mx, my) {
     for (let i = 0; i < n; i++) {
       const x = a[3 * i], y = a[3 * i + 1], z = a[3 * i + 2], w = e[3] * x + e[7] * y + e[11] * z + e[15]; if (w <= 0) continue;
       const sx = ((e[0] * x + e[4] * y + e[8] * z + e[12]) / w + 1) / 2 * W - mx, sy = (1 - (e[1] * x + e[5] * y + e[9] * z + e[13]) / w) / 2 * H - my, d = sx * sx + sy * sy;
-      if (d < bd) { bd = d; best = { o, i, sx: mx + sx, sy: my + sy }; }
+      if (d < R2) { const c = { o, i, sx: mx + sx, sy: my + sy, d }; if (cand.length < 900) cand.push(c); if (d < bd) { bd = d; best = c; } }
     }
   });
   if (!best) return null;
-  const a = best.o.geometry.attributes.position.array; _pw.set(a[3 * best.i], a[3 * best.i + 1], a[3 * best.i + 2]).applyMatrix4(best.o.matrixWorld);
-  const k = 2 / 10 ** state.zoom, g = [focus[0] + _pw.x / k, focus[1] - _pw.z / k, focus[2] + _pw.y / k];   // scene (x, z, -y) back to galactic metres
-  return { sx: best.sx, sy: best.sy, pos: g, dist: dist3(g, focus), scene: [_pw.x, _pw.y, _pw.z] };
+  const world = c => { const a = c.o.geometry.attributes.position.array; return _pw.set(a[3 * c.i], a[3 * c.i + 1], a[3 * c.i + 2]).applyMatrix4(c.o.matrixWorld).toArray(); };
+  // clustered points snap as a group: everything within 16 px of the nearest point is one target at its centroid, sized by the group's spread
+  const mem = cand.filter(c => (c.sx - best.sx) ** 2 + (c.sy - best.sy) ** 2 < 16 * 16).slice(0, 220);
+  let cx = 0, cy = 0, cz = 0; for (const c of mem) { const w = world(c); cx += w[0]; cy += w[1]; cz += w[2]; }
+  const n = Math.max(1, mem.length), sc = n >= 4 ? [cx / n, cy / n, cz / n] : world(best);
+  const k = 2 / 10 ** state.zoom, pxPerScene = H / 2, radius = 16 / pxPerScene / k;   // physical radius of the 16 px grouping circle (metres)
+  const g = [focus[0] + sc[0] / k, focus[1] - sc[2] / k, focus[2] + sc[1] / k];
+  const near = cand.sort((p, q) => p.d - q.d).slice(0, 24).map(c => [c.sx, c.sy]);
+  return { sx: best.sx, sy: best.sy, pos: g, dist: dist3(g, focus), scene: sc, count: n, radius: n >= 4 ? radius : 0, near };
 }
+const snapKind = r => r > 8 * Mpc ? 'supercluster region' : r > 0.5 * Mpc ? 'galaxy cluster / group' : r > 20 * kpc ? 'galaxy group' : r > 1e3 * pc ? 'galaxy-scale cloud' : r > 5 * pc ? 'star group' : 'point';
 function snapTravel(sn) {
-  const z = Math.max(clamp(state.zoom - 1.6, 6.5, 27), Math.min(state.zoom, Math.log10(Math.max(sn.dist, 1)) - 1));
-  if (helm.on) { setCourse({ name: 'map point', pos: sn.pos, w: 10 ** z / 5 }); return; }
-  travelTo(sn.pos, z, 'map point', 3);
+  const fill = sn.radius > 0 ? Math.log10(sn.radius * 7) : Math.max(state.zoom - 1.6, 6.5);   // zoom until the clicked group fills the view
+  const z = clamp(Math.min(fill, state.zoom - 0.5), 6.5, 27), name = sn.radius > 0 ? `${snapKind(sn.radius)} · ${sn.count} objects` : 'map point';
+  if (helm.on) { setCourse({ name, pos: sn.pos, w: 10 ** z / 5 }); return; }
+  travelTo(sn.pos, z, name, 3);
+}
+const snapDots = $('snapdots'), sdx = snapDots.getContext('2d');
+function drawSnapDots(sn) {   // faint dots on every candidate near the pointer (the snapped target ringed), so clustered choices are visible
+  const dpr = Math.min(devicePixelRatio || 1, 2), W = view.clientWidth, H = view.clientHeight;
+  if (snapDots.width !== W * dpr || snapDots.height !== H * dpr) { snapDots.width = W * dpr; snapDots.height = H * dpr; }
+  sdx.setTransform(dpr, 0, 0, dpr, 0, 0); sdx.clearRect(0, 0, W, H); if (!sn) return;
+  sdx.fillStyle = 'rgba(255,233,168,0.7)'; for (const [x, y] of sn.near) { sdx.beginPath(); sdx.arc(x, y, 1.6, 0, 2 * Math.PI); sdx.fill(); }
+  if (sn.radius > 0) { sdx.strokeStyle = 'rgba(255,211,122,0.5)'; sdx.lineWidth = 1; sdx.beginPath(); sdx.arc(sn.sx, sn.sy, 16, 0, 2 * Math.PI); sdx.stroke(); }
 }
 function updateHover() {
   if (!hoverMouse) { hoverTip.style.display = hoverRing.style.display = 'none'; hoverDest = null; cursor3d = null; return; }
@@ -1437,10 +1457,10 @@ function updateHover() {
   if (!hit) {
     if (!travel && !fly.on && hoverMouse) { if (!snapMouse || snapMouse.x !== hoverMouse.x || snapMouse.y !== hoverMouse.y || frame - snapFrame > 20) { snapMouse = { ...hoverMouse }; snapFrame = frame; hoverSnap = pickPoint(hoverMouse.x, hoverMouse.y); snapCache = hoverSnap; } else hoverSnap = snapCache; }
     if (hoverSnap) {
-      cursor3d = hoverSnap.scene; renderer.domElement.style.cursor = 'crosshair'; hoverRing.classList.add('snap'); hoverRing.style.display = 'block'; hoverRing.style.left = `${hoverSnap.sx}px`; hoverRing.style.top = `${hoverSnap.sy}px`; hoverRing.style.width = hoverRing.style.height = '30px';
-      hoverTip.innerHTML = `Map point<small>${P.fmtLength(hoverSnap.dist)} from the view centre</small><em>click to warp there · 3 s</em>`; hoverTip.style.display = 'block'; hoverTip.style.left = `${Math.min(hoverSnap.sx + 22, view.clientWidth - hoverTip.offsetWidth - 8)}px`; hoverTip.style.top = `${Math.max(hoverSnap.sy - 8, 8)}px`; return;
+      drawSnapDots(hoverSnap); cursor3d = hoverSnap.scene; renderer.domElement.style.cursor = 'crosshair'; hoverRing.classList.add('snap'); hoverRing.style.display = 'block'; hoverRing.style.left = `${hoverSnap.sx}px`; hoverRing.style.top = `${hoverSnap.sy}px`; hoverRing.style.width = hoverRing.style.height = '30px';
+      hoverTip.innerHTML = hoverSnap.radius > 0 ? `${snapKind(hoverSnap.radius)}<small>${hoverSnap.count} objects · ~${P.fmtLength(hoverSnap.radius * 2)} across</small><span class="phys">${P.fmtLength(hoverSnap.dist)} from the view centre</span><em>click to warp in · 3 s</em>` : `Map point<small>${P.fmtLength(hoverSnap.dist)} from the view centre</small><em>click to warp there · 3 s</em>`; hoverTip.style.display = 'block'; hoverTip.style.left = `${Math.min(hoverSnap.sx + 22, view.clientWidth - hoverTip.offsetWidth - 8)}px`; hoverTip.style.top = `${Math.max(hoverSnap.sy - 8, 8)}px`; return;
     }
-    hoverRing.classList.remove('snap'); hoverTip.style.display = hoverRing.style.display = 'none'; return;
+    drawSnapDots(null); hoverRing.classList.remove('snap'); hoverTip.style.display = hoverRing.style.display = 'none'; return;
   }
   hoverRing.classList.remove('snap'); { const kk = 2 / 10 ** state.zoom, o = toScene(hit.p, focus, kk); cursor3d = [o[0], o[1], o[2]]; }
   const dist = Math.hypot(hit.p[0] - focus[0], hit.p[1] - focus[1], hit.p[2] - focus[2]);
@@ -1722,7 +1742,7 @@ const results = $('results');
 const RESULT_STEP = 150;
 const wikiHref = o => o && o.id != null ? '/kosmo/object/' + String(o.id).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') : null;
 function destButton(d) {
-  const row = document.createElement('div'); row.className = 'drow';
+  const row = document.createElement('div'); row.className = 'drow'; row._d = d;
   const b = document.createElement('button'); b.className = 'dest';
   b.innerHTML = `<span class="nm">${d.name}</span><small>${d.type || ''}${d.viaParent ? ' · via ' + d.parent : ''}${d.unplaced ? ' · no sky position' : ''}</small>`;
   b.addEventListener('click', () => { if (d.unplaced) { toast(`${d.name} has no position in the catalogue; open it in Kosmopedia (↗)`); return; } goDest(d); $('search').value = d.name; });
@@ -1730,6 +1750,26 @@ function destButton(d) {
   const href = wikiHref(d.meta);
   if (href) { const a = document.createElement('a'); a.className = 'wk'; a.href = href; a.target = '_top'; a.title = `Open ${d.name} in Kosmopedia`; a.textContent = '↗'; row.appendChild(a); }
   return row;
+}
+// ---- hover cards on the Locations list: type, real numbers from the catalogue, distance from here, and a note ----
+{
+  const card = $('locCard'); let timer = null, cur = null;
+  const hide = () => { clearTimeout(timer); cur = null; card.hidden = true; };
+  const show = (row, d) => {
+    const o = d.meta || {}, pos = d.pos && !d.unplaced ? at(typeof d.pos === 'function' ? d.pos() : d.pos) : null, here = pos ? dist3(pos, focus) : null, sun = pos ? dist3(pos, SUN) : null;
+    const bits = [o.discovery_year ? `discovered ${o.discovery_year}` : '', o.parent ? `in ${o.parent}` : '', o.redshift != null && Math.abs(o.redshift) > 1e-4 ? `redshift ${(+o.redshift).toPrecision(3)}` : ''].filter(Boolean);
+    const note = String(o.notes || '').replace(/morphology: ?/i, 'type ').split(';').slice(0, 3).join(' · ').slice(0, 240);
+    card.innerHTML = `<div class="lt">${d.type || 'place'}</div><h4>${d.name}</h4>${physicsLine(o) ? `<div class="lp">${physicsLine(o)}</div>` : ''}`
+      + (pos ? `<div class="ld">${P.fmtLength(here)} from the view centre${sun != null ? ' · ' + P.fmtLength(sun) + ' from the Sun' : ''}</div>` : `<div class="ld">${d.unplaced ? 'no position in the catalogue' : 'view'}</div>`)
+      + (bits.length ? `<div class="ld">${bits.join(' · ')}</div>` : '') + (note ? `<div class="ln">${note}</div>` : '') + `<div class="lg">click to fly there${o.id != null ? ' · ↗ opens its Kosmopedia page' : ''}</div>`;
+    card.hidden = false; const r = row.getBoundingClientRect(), cw = card.offsetWidth, ch = card.offsetHeight;
+    card.style.left = `${Math.max(8, r.left - cw - 12)}px`; card.style.top = `${clamp(r.top - 8, 8, innerHeight - ch - 8)}px`;
+  };
+  document.addEventListener('mouseover', e => {
+    const row = e.target.closest && e.target.closest('.drow'); if (!row || !row._d) { if (cur) hide(); return; }
+    if (row === cur) return; clearTimeout(timer); cur = row; timer = setTimeout(() => show(row, row._d), 140);
+  });
+  $('drawer').addEventListener('mouseleave', hide); $('drawer').addEventListener('scroll', hide, true);
 }
 // Appends `items` to `box` RESULT_STEP at a time behind a "show more" button, so ~12,000 rows never hit the DOM at once.
 function pagedList(box, items) {
