@@ -79,7 +79,7 @@ export function ClientRequirePermission({
   }
 
   // --- Path Check ---
-  const isPublic = isPublicPath(pathname, publicPaths);
+  const isPublic = isPublicPath(pathname ?? "", publicPaths);
 
   // --- Authorization Check ---
   let isAuthorized = false;

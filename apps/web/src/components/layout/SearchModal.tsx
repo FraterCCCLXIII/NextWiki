@@ -44,7 +44,7 @@ export function SearchModal({
 }) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const initialHighlight = searchParams.get("highlight") || "";
+  const initialHighlight = searchParams?.get("highlight") || "";
   const inputRef = useRef<HTMLInputElement>(null);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const listRef = useRef<HTMLUListElement>(null); // Ref for the list for scrolling

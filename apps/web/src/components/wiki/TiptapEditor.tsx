@@ -164,7 +164,7 @@ export function TiptapEditor({
     if (!editor) return;
     const currentMarkdown = editor.storage.markdown.getMarkdown();
     if (currentMarkdown !== content) {
-      editor.commands.setContent(content, false);
+      editor.commands.setContent(content, { emitUpdate: false });
     }
   }, [content, editor]);
 
@@ -496,7 +496,6 @@ export function TiptapEditor({
         <>
           <BubbleMenu
             editor={editor}
-            tippyOptions={{ duration: 150 }}
             className="border-border flex items-center gap-1 rounded-md border bg-background-level1 p-1 shadow-md"
           >
             <Button
@@ -608,7 +607,6 @@ export function TiptapEditor({
           </BubbleMenu>
           <FloatingMenu
             editor={editor}
-            tippyOptions={{ duration: 150 }}
             className="border-border flex items-center gap-1 rounded-md border bg-background-level1 p-1 shadow-md"
           >
             <Button

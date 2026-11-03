@@ -13,8 +13,8 @@ const RESULTS_PER_PAGE = 20;
 export function SearchResults() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const searchQuery = searchParams.get("search") || "";
-  const pageParam = searchParams.get("page");
+  const searchQuery = searchParams?.get("search") || "";
+  const pageParam = searchParams?.get("page");
   const currentPage = pageParam ? parseInt(pageParam, 10) : 1;
   
   const trpc = useTRPC();

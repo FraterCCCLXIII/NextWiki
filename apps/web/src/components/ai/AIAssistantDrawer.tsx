@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, { type Components } from "react-markdown";
 import {
   Button,
   Drawer,
@@ -12,6 +12,7 @@ import {
   ScrollArea,
 } from "@repo/ui";
 import { ArrowLeft, ArrowUp, Square, Wand2, FileText } from "lucide-react";
+import { z } from "zod";
 import { useTRPC, useTRPCClient } from "~/server/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { PageMetadata } from "~/components/layout/MainLayout";
@@ -46,6 +47,22 @@ const defaultToolAccess: AIAssistantToolAccess = {
 };
 
 const AI_CHAT_STORAGE_KEY = "ai:chat:state";
+
+// The dispatchers return a union that does not declare every field they can
+// carry, so the extras are validated before they reach state or the UI.
+const sessionMetricsSchema = z.object({
+  summaryAgeMinutes: z.number().nullable(),
+  messageCount: z.number(),
+  sourceCount: z.number(),
+  loopCount: z.number(),
+});
+
+const liveEditSchema = z.object({
+  content: z.string().optional(),
+  text: z.string().optional(),
+  mode: z.enum(["append", "replace", "remove"]),
+  path: z.string().optional(),
+});
 
 const dispatchLiveEdit = (detail: {
   content?: string;
@@ -131,7 +148,7 @@ export function AIAssistantPanel({
     loopCount: number;
   } | null>(null);
   const markdownConfig = useMemo(() => createClientMarkdownProcessor(), []);
-  const linkComponents = useMemo(() => {
+  const linkComponents = useMemo<Components>(() => {
     if (apiVariant !== "widget") {
       return markdownConfig.components;
     }
@@ -645,15 +662,19 @@ export function AIAssistantPanel({
       });
       if (stopRequestedRef.current) return;
 
-      if ("sessionMetrics" in response && response.sessionMetrics) {
-        setSessionMetrics(response.sessionMetrics);
+      if ("sessionMetrics" in response) {
+        const parsedMetrics = sessionMetricsSchema.safeParse(
+          response.sessionMetrics
+        );
+        if (parsedMetrics.success) {
+          setSessionMetrics(parsedMetrics.data);
+        }
       }
 
-      if ("liveEdit" in response && response.liveEdit) {
-        const liveEdit = response.liveEdit;
-        const mode = liveEdit.mode;
-        if (mode === "append" || mode === "replace" || mode === "remove") {
-          dispatchLiveEdit({ ...liveEdit, mode });
+      if ("liveEdit" in response) {
+        const parsedLiveEdit = liveEditSchema.safeParse(response.liveEdit);
+        if (parsedLiveEdit.success) {
+          dispatchLiveEdit(parsedLiveEdit.data);
         }
       }
 

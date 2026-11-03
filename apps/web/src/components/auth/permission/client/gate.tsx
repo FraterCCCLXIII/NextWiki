@@ -112,7 +112,7 @@ export function ClientPermissionGate({
   }
 
   // Check if path is public
-  const isPublic = isPublicPath(pathname, publicPaths);
+  const isPublic = isPublicPath(pathname ?? "", publicPaths);
 
   // Determine if user is authorized
   if (isPublic) {

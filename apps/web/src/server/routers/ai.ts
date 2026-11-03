@@ -279,7 +279,11 @@ const buildPageSources = (items: SearchResultItem[]) =>
       scoreFromRecency(item.updatedAt) * 0.3,
   }));
 
-const mergeSources = (chunks: ChunkSource[], pages: PageSource[], limit: number) => {
+const mergeSources = (
+  chunks: HybridSource[],
+  pages: PageSource[],
+  limit: number
+) => {
   const combined = [...chunks, ...pages].sort((a, b) => b.score - a.score);
   const seenPaths = new Set<string>();
   const results: HybridSource[] = [];

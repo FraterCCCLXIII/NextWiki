@@ -32,8 +32,9 @@ export function GeneratePageButton({
   const notification = useNotification();
   const trpc = useTRPC();
 
-  const path = pathname.replace("/", "");
-  const title = titleFromPath(pathname);
+  const currentPath = pathname ?? "";
+  const path = currentPath.replace("/", "");
+  const title = titleFromPath(currentPath);
 
   const generateMutation = useMutation(
     trpc.ai.draftPage.mutationOptions({

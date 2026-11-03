@@ -197,7 +197,7 @@ export function NavigationDropdown({ siteTitle, siteLogo }: { siteTitle?: string
                 <div className="space-y-1">
                   {tree.map((item) => (
                     <div key={item.path} onClick={() => setIsOpen(false)}>
-                      <WikiTreeItem item={item} activeItemPath={pathname} />
+                      <WikiTreeItem item={item} activeItemPath={pathname ?? ""} />
                     </div>
                   ))}
                 </div>

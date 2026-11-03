@@ -14,7 +14,7 @@ import { usePermissions } from "./permission/client";
 // Create a separate component to read searchParams to work with Suspense
 function RegistrationSuccessMessage() {
   const searchParams = useSearchParams();
-  const justRegistered = searchParams.get("registered") === "true";
+  const justRegistered = searchParams?.get("registered") === "true";
 
   if (!justRegistered) {
     return null;

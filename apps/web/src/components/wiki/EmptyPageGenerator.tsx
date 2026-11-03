@@ -29,7 +29,7 @@ export function EmptyPageGenerator({
   const [isGenerating, setIsGenerating] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const normalizedPath = pathname.replace(/^\/+/, "").replace(/\/+$/, "");
+  const normalizedPath = (pathname ?? "").replace(/^\/+/, "").replace(/\/+$/, "");
   const titleFromPath = useCallback(() => {
     if (!normalizedPath) return "New Page";
     const segment = normalizedPath.split("/").filter(Boolean).pop() || "New Page";

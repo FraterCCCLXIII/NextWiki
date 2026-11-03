@@ -8,9 +8,20 @@ import {
   deleteSetting,
   initializeDefaultSettings,
 } from "~/lib/services/settings";
-import { DEFAULT_SETTINGS, type SettingKey } from "@repo/types";
+import {
+  DEFAULT_SETTINGS,
+  type BooleanSetting,
+  type SettingDefinition,
+  type SettingKey,
+} from "@repo/types";
 
-const DEFAULT_WIDGET_SETTINGS = {
+// Typed so these definitions carry the same SettingMeta (isSecret,
+// requiresRestart) as the ones in @repo/types; without it the union below
+// loses those optional fields and every lookup on it fails to narrow.
+const DEFAULT_WIDGET_SETTINGS: Record<
+  string,
+  SettingDefinition<BooleanSetting>
+> = {
   "ai.widget.enabled": {
     type: "boolean",
     value: false,
@@ -46,7 +57,7 @@ const DEFAULT_WIDGET_SETTINGS = {
     category: "ai",
     defaultValue: true,
   },
-} as const;
+};
 
 const SETTINGS_DEFINITIONS = {
   ...DEFAULT_SETTINGS,

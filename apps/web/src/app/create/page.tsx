@@ -16,7 +16,7 @@ export default function CreateWikiPage() {
 
   // Check if path was provided in URL (from the location editor)
   useEffect(() => {
-    const pathParam = searchParams.get("path");
+    const pathParam = searchParams?.get("path");
     if (pathParam) {
       setPagePath(decodeURIComponent(pathParam));
       setShowEditor(true);

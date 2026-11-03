@@ -26,7 +26,7 @@ export function HighlightedMarkdown({
   const contentRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const highlightTerm = searchParams.get("highlight");
+  const highlightTerm = searchParams?.get("highlight");
   const router = useRouter();
   const isInitialRender = useRef(true);
 
@@ -64,7 +64,7 @@ export function HighlightedMarkdown({
   // Method to clear highlights
   const clearHighlights = () => {
     // Using Next.js Router and searchParams
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString());
     params.delete("highlight");
 
     // Get the current path and construct a new URL without the highlight parameter
@@ -127,7 +127,7 @@ export function HighlightedContent({
   const contentRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const highlightTerm = searchParams.get("highlight");
+  const highlightTerm = searchParams?.get("highlight");
   const hasBlockquote = /(^|\n)>\s/.test(content);
   const shouldUseRenderedHtml = Boolean(renderedHtml) && !hasBlockquote;
   const router = useRouter();
@@ -206,7 +206,7 @@ export function HighlightedContent({
   // Method to clear highlights
   const clearHighlights = () => {
     // Using Next.js Router and searchParams
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString());
     params.delete("highlight");
 
     // Get the current path and construct a new URL without the highlight parameter
