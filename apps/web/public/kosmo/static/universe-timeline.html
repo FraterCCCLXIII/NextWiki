@@ -195,6 +195,11 @@
   #scalebars input[type=range]:hover::-webkit-slider-thumb, #scalebars input[type=range]:active::-webkit-slider-thumb { box-shadow: 0 0 0 8px rgba(255,255,255,0.16), 0 2px 12px rgba(0,0,0,0.5); }
   #scalebars .col { width: 62px; }
   body.drawer-open #scalebars, body.navdrawer-open #scalebars, body.fxdrawer-open #scalebars { right: 418px; }
+  #scalebars { transition: bottom .3s ease, transform .35s cubic-bezier(.4,0,.2,1), opacity .25s ease; }
+  body.levers-hidden #scalebars { transform: translateX(120%); opacity: 0; pointer-events: none; }
+  #sbHide { position: absolute; top: -34px; right: 4px; width: 28px; height: 28px; padding: 0; border-radius: 50%; display: grid; place-items: center; font-size: 14px; line-height: 1; color: var(--muted); background: rgba(26,26,26,0.7); border: 1px solid var(--line2, #303133); cursor: pointer; }
+  #sbHide:hover { color: var(--accent); border-color: var(--accent); }
+  #sbShow { position: absolute; right: 18px; top: calc(var(--tlh, 210px) + 120px); z-index: 5; } #sbShow[hidden] { display: none; }
   body.nav-closed #scalebars { bottom: 150px; }
   #navhud { max-height: calc(100vh - var(--tlh, 210px) - 130px); overflow-y: auto; overflow-x: hidden; }
   #zoombar { position: absolute; right: 18px; top: calc(var(--tlh, 210px) + 86px); bottom: 150px; width: 54px; z-index: 4; display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 8px; }
@@ -505,7 +510,9 @@
   </div>
 </aside>
 
+<button id="sbShow" class="orb" type="button" hidden aria-label="Show the scale levers (L)" title="Show the scale levers (L)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M6 4v16M12 4v16M18 4v16"/><circle cx="6" cy="9" r="2" fill="currentColor"/><circle cx="12" cy="15" r="2" fill="currentColor"/><circle cx="18" cy="7" r="2" fill="currentColor"/></svg></button>
 <div id="scalebars" class="glass" aria-label="Distort the space between objects">
+  <button id="sbHide" type="button" title="Hide the scale levers (L)" aria-label="Hide the scale levers">⇥</button>
   <div class="col" title="Distance between objects, orbits and star systems: top is true, bottom pulls everything in toward the middle (order and direction kept)">
     <span class="tag">true</span><input type="range" id="vDist" min="0.05" max="1" step="0.005" orient="vertical"><span class="tag">tight</span><span class="cap">distance</span><span class="v" id="vDist-v"></span>
   </div>
@@ -1539,6 +1546,7 @@ function applyScalePreset(p) {
   syncScaleBars(); fxApply(false);
 }
 function goDest(d, force) {
+  if (!d.pos && !d.preset && !d.census) { toast(`${d.name} has no position in the catalogue`); return; }
   if (helm.on && !force && !d.census) { setCourse(d); return; }
   CENSUS.key = d.census || null;
   if (d.census) { const B = CENSUS.built.get(d.census) || censusBuild(d.census); toast(`${B.def.name.split(':')[0]}: ${B.items.length} bodies drawn as models; pick any other place to leave`); travelTo(B.centre, Math.log10(B.width), B.def.name); return; }
@@ -1971,6 +1979,13 @@ document.querySelectorAll('#scalebars input[type=range]').forEach(r => {
   r.addEventListener('wheel', e => { e.preventDefault(); r.value = clamp(+r.value - Math.sign(e.deltaY) * (r.max - r.min) / 40, +r.min, +r.max); r.dispatchEvent(new Event('input', { bubbles: true })); }, { passive: false });
   r.addEventListener('dblclick', () => { if (reset != null) { r.value = reset; r.dispatchEvent(new Event('input', { bubbles: true })); } });
 });
+// show / hide the scale levers (remembered; key L)
+{
+  const set = hidden => { document.body.classList.toggle('levers-hidden', hidden); $('sbShow').hidden = !hidden; try { localStorage.setItem('kosmoLevers', hidden ? 'hidden' : 'shown'); } catch { /* storage blocked */ } };
+  $('sbHide').addEventListener('click', () => set(true)); $('sbShow').addEventListener('click', () => set(false));
+  window.addEventListener('keydown', e => { if (!e.repeat && !e.ctrlKey && !e.metaKey && !e.altKey && (e.key === 'l' || e.key === 'L') && !/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) set(!document.body.classList.contains('levers-hidden')); });
+  let h = false; try { h = localStorage.getItem('kosmoLevers') === 'hidden'; } catch { /* storage blocked */ } set(h);
+}
 // Each lever only changes things at the scales it acts on; say so (and where to look) instead of leaving a lever that seems dead
 {
   let lastHint = 0;

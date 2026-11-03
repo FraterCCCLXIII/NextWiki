@@ -15,29 +15,28 @@ canvas{display:block;width:100%;height:100%}
   <label>class <select id="cls"></select></label>
   <label>catalogue <select id="obj"></select></label>
   <label>approach <select id="app"><option value="march">b+d raymarch + 3D noise tex</option><option value="slices">c view-aligned slices</option><option value="sprites">a sprites (kosmo-models)</option></select></label>
-  <label>palette <select id="pal"><option value="0">natural</option><option value="1">Hubble (SII/Ha/OIII)</option></select></label>
+  <label>palette <select id="pal"><option value="natural">natural (Hubble visible)</option><option value="nircam">NIRCam (JWST)</option><option value="hubble">Hubble false colour</option></select></label>
+  <label>stars <select id="stars"><option value="auto">auto</option><option value="8">8-spike</option><option value="4">4-spike</option><option value="0">off</option></select> <label style="display:inline"><input type="checkbox" id="bg" checked> backdrop</label></label>
   <label>zoom <input id="zoom" type="range" min="0.2" max="3" step="0.01" value="1"> <button id="bench-btn">bench 1080p</button></label>
   <div id="info"></div><div id="bench"></div>
 </div>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { createNebula, nebulaParams, NEB_CLASSES } from './nebula-gen.js';
+import { createNebula, nebulaParams, createStarField, NEB_CLASSES } from './nebula-gen.js';
 import { createModel } from './kosmo-models.js';
 
 const canvas = document.getElementById('c'), renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(innerWidth, innerHeight, false);
 const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.05, 2000); camera.position.set(0, 0.3, 2.7);
 const controls = new OrbitControls(camera, canvas); controls.enableDamping = true;
-// background star field
-{ const n = 1500, p = new Float32Array(n * 3), c = new Float32Array(n * 3), s = new Float32Array(n); for (let i = 0; i < n; i++) { const v = new THREE.Vector3().randomDirection().multiplyScalar(60 + Math.random() * 20); p.set([v.x, v.y, v.z], 3 * i); const k = 0.2 + Math.random() * 0.8; c.set([k, k * 0.95, k], 3 * i); s[i] = 1 + Math.random() * 2.5 * Math.random(); }
-  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3)); g.setAttribute('aColor', new THREE.BufferAttribute(c, 3)); g.setAttribute('aSize', new THREE.BufferAttribute(s, 1));
-  scene.add(new THREE.Points(g, new THREE.ShaderMaterial({ vertexShader: 'attribute float aSize; attribute vec3 aColor; varying vec3 vC; void main(){vC=aColor; gl_PointSize=aSize*1.5; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}', fragmentShader: 'varying vec3 vC; void main(){float r=length(gl_PointCoord-.5)*2.; float a=max(1.-r,0.); gl_FragColor=vec4(vC*a,a);}', transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }))); }
+let starLayer = null;
 
 const $ = id => document.getElementById(id);
-const classLabels = { auto: 'auto (from catalogue)', hii: 'emission / HII', reflection: 'reflection', dark: 'dark', pn_ring: 'planetary ring', pn_bipolar: 'planetary bipolar', snr_shell: 'SNR shell (Tycho/Cas A)', snr_pwn: 'SNR + pulsar wind (Crab)', snr_sheet: 'SNR sheet (Veil)' };
+const classLabels = { auto: 'auto (from catalogue)', hii: 'emission / HII', pillars: 'dust pillars (Eagle/Carina)', lightecho: 'light echo (V838 Mon)', wall: 'emission wall (Orion/Rosette)', reflection: 'reflection', dark: 'dark', pn_ring: 'planetary ring', pn_bipolar: 'planetary bipolar', snr_shell: 'SNR shell (Tycho/Cas A)', snr_pwn: 'SNR + pulsar wind (Crab)', snr_sheet: 'SNR sheet (Veil)' };
 for (const k of ['auto', ...NEB_CLASSES]) $('cls').add(new Option(classLabels[k], k));
 const examples = [
+  { name: 'Pillars of Creation', alt_names: ['M16', 'Eagle Nebula'], type: 'nebula', notes: 'dust pillars' }, { name: 'V838 Monocerotis', type: 'nebula', notes: 'light echo' }, { name: 'Emission wall (generic)', type: 'nebula', notes: 'emission wall', cls: 'wall' },
   { name: 'Orion Nebula', alt_names: ['M42'], type: 'nebula', notes: 'H II region nebula' }, { name: 'Lagoon Nebula', type: 'nebula', notes: 'Nebula with cluster; diffuse nebula (emission/reflection/dark)' },
   { name: 'Pleiades Merope Nebula', type: 'nebula', notes: 'reflection nebula' }, { name: 'Horsehead Nebula', type: 'nebula', notes: 'dark nebula; Barnard 33' }, { name: 'Ring Nebula', alt_names: ['M57'], type: 'nebula', notes: 'Planetary nebula', temperature_K: 120000 },
   { name: 'Butterfly Nebula NGC 6302', type: 'nebula', notes: 'Planetary nebula; bipolar', temperature_K: 220000 }, { name: 'Crab Nebula', type: 'supernova_remnant', notes: 'Supernova remnant; SN type II; pulsar wind nebula' },
@@ -53,13 +52,18 @@ function build() {
   const approach = $('app').value; spriteMode = approach === 'sprites';
   const P = nebulaParams(spec);
   if (spriteMode) { const k = P.cls.startsWith('snr') ? 'snr' : P.cls.startsWith('pn') ? 'pnebula' : 'nebula'; model = createModel(THREE, { type: spec.type, name: spec.name, notes: spec.notes }); model.userData.kind = k; }
-  else model = createNebula(THREE, spec, { approach, hubble: $('pal').value === '1' });
+  else model = createNebula(THREE, spec, { approach, pal: $('pal').value });
   scene.add(model);
+  if (starLayer) { scene.remove(starLayer); starLayer.dispose(); starLayer = null; }
+  const sv = $('stars').value, spikes = sv === 'auto' ? ($('pal').value === 'nircam' ? 8 : 4) : +sv;
+  if (spikes) { starLayer = createStarField(THREE, { spikes, cone: true, seed: P.seed, count: ['pillars', 'wall', 'lightecho'].includes(P.cls) ? 1500 : 800, tint: $('pal').value === 'nircam' ? 'blue' : 'natural' }); starLayer.setPixelRatio(renderer.getPixelRatio()); scene.add(starLayer); }
+  const bgc = { pillars: { nircam: 0x040a30, natural: 0x03120f, hubble: 0x021018 }[$('pal').value], wall: 0x0a0414, lightecho: 0x000000 }[P.cls];
+  scene.background = $('bg').checked && bgc ? new THREE.Color(bgc) : null;
   $('info').textContent = `${spec.name}\nclass ${P.cls}  mode ${P.mode}  T* ${P.T} K  seed ${P.seed}\nscale ${P.scale.toFixed(2)} warp ${P.warp.toFixed(2)} fil ${P.fil.toFixed(2)} oiii ${P.oiiiAmt.toFixed(2)}`;
-  history.replaceState(null, '', `?obj=${sel.value}&cls=${cls}&app=${approach}&pal=${$('pal').value}`);
+  history.replaceState(null, '', `?obj=${sel.value}&cls=${cls}&app=${approach}&pal=${$('pal').value}&stars=${$('stars').value}`);
 }
-function applyUrl() { const q = new URLSearchParams(location.search); if (q.get('obj') && [...sel.options].some(o => o.value === q.get('obj'))) sel.value = q.get('obj'); if (q.get('cls')) $('cls').value = q.get('cls'); if (q.get('app')) $('app').value = q.get('app'); if (q.get('pal')) $('pal').value = q.get('pal'); build(); }
-['cls', 'obj', 'app', 'pal'].forEach(id => $(id).addEventListener('change', build));
+function applyUrl() { const q = new URLSearchParams(location.search); if (q.get('obj') && [...sel.options].some(o => o.value === q.get('obj'))) sel.value = q.get('obj'); if (q.get('cls')) $('cls').value = q.get('cls'); if (q.get('app')) $('app').value = q.get('app'); if (q.get('pal')) $('pal').value = q.get('pal'); if (q.get('stars')) $('stars').value = q.get('stars'); build(); }
+['cls', 'obj', 'app', 'pal', 'stars', 'bg'].forEach(id => $(id).addEventListener('change', build));
 $('zoom').addEventListener('input', () => { const d = 2.7 / +$('zoom').value; camera.position.setLength(d); });
 addEventListener('resize', () => { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); });
 
@@ -79,12 +83,12 @@ async function benchOne(approach, cls, name) {
 }
 $('bench-btn').onclick = async () => {
   const out = $('bench'); out.textContent = 'running...'; const oldPR = renderer.getPixelRatio(); renderer.setPixelRatio(1); renderer.setSize(1920, 1080, false);
-  const rows = []; const cases = [['hii', 'Orion Nebula'], ['reflection', 'Pleiades Merope Nebula'], ['dark', 'Horsehead Nebula'], ['pn_ring', 'Ring Nebula'], ['pn_bipolar', 'Butterfly Nebula NGC 6302'], ['snr_shell', 'Tycho SN 1572'], ['snr_pwn', 'Crab Nebula']];
+  const rows = []; const cases = [['hii', 'Orion Nebula'], ['reflection', 'Pleiades Merope Nebula'], ['dark', 'Horsehead Nebula'], ['pn_ring', 'Ring Nebula'], ['pn_bipolar', 'Butterfly Nebula NGC 6302'], ['snr_shell', 'Tycho SN 1572'], ['snr_pwn', 'Crab Nebula'], ['pillars', 'Pillars of Creation'], ['lightecho', 'V838 Monocerotis'], ['wall', 'Emission wall (generic)']];
   for (const [cls, name] of cases) { const r = [cls.padEnd(11)]; for (const ap of ['march', 'slices', 'sprites']) { await new Promise(r => setTimeout(r, 30)); r.push(ap + ' ' + (await benchOne(ap, cls, name)).toFixed(2) + 'ms'); } rows.push(r.join('  ')); }
   window.__bench = rows; out.textContent = 'fills 1920x1080 frame height (ms/frame, GPU-synced)\n' + rows.join('\n');
   renderer.setPixelRatio(oldPR); renderer.setSize(innerWidth, innerHeight, false);
 };
-window.__lab = { build, sel, examples, THREE, renderer, camera, benchOne };
+window.__lab = { scene, get model() { return model; }, get stars() { return starLayer; }, build, sel, examples, THREE, renderer, camera, benchOne };
 
 renderer.setAnimationLoop(() => {
   const t = (performance.now() - t0) / 1000; controls.update();
