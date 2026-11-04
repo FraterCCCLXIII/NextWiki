@@ -36,3 +36,6 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Local database dumps (contain password hashes and settings - never commit)
+backups/
