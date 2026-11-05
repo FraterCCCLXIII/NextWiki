@@ -85,7 +85,7 @@ export async function upsertSource(
     .insert(schema.kosmoSources)
     .values(values)
     .onConflictDoUpdate({ target: schema.kosmoSources.key, set: values })
-    .returning({ id: schema.kosmoSources.id });
+    .returning();
   if (!row) throw new Error(`Failed to upsert source ${input.key}`);
   return row.id;
 }
@@ -141,7 +141,7 @@ export async function upsertEntity(
         timeKind: values.timeKind,
       },
     })
-    .returning({ id: schema.kosmoEntities.id });
+    .returning();
   if (!row) throw new Error(`Failed to upsert entity ${input.slug}`);
   return row.id;
 }
@@ -199,7 +199,7 @@ export async function addClaim(
         note: input.note ?? null,
       },
     })
-    .returning({ id: schema.kosmoClaims.id });
+    .returning();
   if (!row) throw new Error(`Failed to upsert claim ${input.predicate}`);
   return row.id;
 }
@@ -248,7 +248,7 @@ export async function reconcileRelation(
           : or(textForm, wrongTarget)
       )
     )
-    .returning({ id: claims.id });
+    .returning();
   return deleted.length;
 }
 
@@ -323,7 +323,7 @@ export async function ensureTaxon(
         sortOrder: input.sortOrder ?? 0,
       },
     })
-    .returning({ id: schema.kosmoTaxa.id });
+    .returning();
   if (!row) throw new Error(`Failed to ensure taxon ${input.scheme}/${input.slug}`);
   return row.id;
 }
@@ -379,7 +379,7 @@ export async function ensurePage(
         createdById: input.userId,
         updatedById: input.userId,
       })
-      .returning({ id: schema.wikiPages.id });
+      .returning();
     if (!created) throw new Error(`Failed to create page ${path}`);
     pageId = created.id;
 
