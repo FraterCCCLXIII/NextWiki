@@ -39,12 +39,43 @@ type KosmoTaxonScheme =
   | "curriculum"
   | "history";
 
+/**
+ * How much weight a source carries. `primary` is the archive or agency that
+ * measured the value; `structured` is a linked-data mirror (Wikidata);
+ * `tertiary` is a general encyclopedia; `generated` is machine-written text
+ * that no human has reviewed yet.
+ */
+export type KosmoTrustTier = "primary" | "structured" | "tertiary" | "generated";
+
+/**
+ * How a claim's value reached us. `verbatim` was copied as published;
+ * `converted` was recomputed into our units from a published column;
+ * `derived` was computed from other claims; `inferred` is a guess we made;
+ * `generated` is model output.
+ */
+export type KosmoClaimMethod =
+  | "verbatim"
+  | "converted"
+  | "derived"
+  | "inferred"
+  | "generated";
+
+export type KosmoTimeKind = "instant" | "interval" | "recurring";
+
 // Provenance for catalogue rows, imported documents and other source material.
+// Licence and retrieval date live here, not in the document, so a credit can be
+// rendered for every claim without consulting the page that quotes it.
 export const kosmoSources = pgTable("kosmo_sources", {
   id: serial("id").primaryKey(),
   key: text("key").notNull().unique(),
   title: text("title").notNull(),
   url: text("url"),
+  publisher: text("publisher"),
+  license: text("license"),
+  licenseUrl: text("license_url"),
+  /** When the source was read, for live queries and archives alike. */
+  retrievedAt: timestamp("retrieved_at"),
+  trustTier: text("trust_tier").$type<KosmoTrustTier>(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -63,6 +94,15 @@ export const kosmoEntities = pgTable(
     }),
     data: jsonb("data").$type<Record<string, unknown>>().default({}),
     sourceId: integer("source_id").references(() => kosmoSources.id),
+    /**
+     * Typed time axis, in signed years of the astronomical calendar (year 0 is
+     * 1 BCE). One numeric axis for 13.8 Gyr and for a dated battle: the viewer
+     * and the timeline query the same column at different precision.
+     */
+    timeStart: doublePrecision("time_start"),
+    timeEnd: doublePrecision("time_end"),
+    timePrecisionYears: doublePrecision("time_precision_years"),
+    timeKind: text("time_kind").$type<KosmoTimeKind>(),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
   },
@@ -70,6 +110,7 @@ export const kosmoEntities = pgTable(
     index("kosmo_entities_kind_idx").on(t.kind),
     index("kosmo_entities_type_idx").on(t.type),
     index("kosmo_entities_page_id_idx").on(t.pageId),
+    index("kosmo_entities_time_start_idx").on(t.timeStart),
   ]
 );
 
@@ -88,8 +129,14 @@ export const kosmoClaims = pgTable(
     }),
     valueText: text("value_text"),
     valueNum: doublePrecision("value_num"),
+    /** Symmetric uncertainty of valueNum, in the same unit. */
+    valueErr: doublePrecision("value_err"),
     unit: text("unit"),
+    /** The primary source. Additional sources go in kosmo_claim_sources. */
     sourceId: integer("source_id").references(() => kosmoSources.id),
+    method: text("method").$type<KosmoClaimMethod>(),
+    /** Free-form context: measurement basis, epoch, disputed, "1-bar level". */
+    qualifiers: jsonb("qualifiers").$type<Record<string, unknown>>().default({}),
     note: text("note"),
     createdAt: timestamp("created_at").defaultNow(),
   },
@@ -101,6 +148,53 @@ export const kosmoClaims = pgTable(
       .on(t.subjectId, t.predicate, t.objectId, t.valueText)
       .nullsNotDistinct(),
   ]
+);
+
+/**
+ * Identity beyond our own slug: one row per external scheme. Without this a
+ * catalogue can be imported once and never reconciled against a new release,
+ * because two rows for Sirius have no shared key.
+ */
+export const kosmoEntityExternalIds = pgTable(
+  "kosmo_entity_external_ids",
+  {
+    id: serial("id").primaryKey(),
+    entityId: integer("entity_id")
+      .notNull()
+      .references(() => kosmoEntities.id, { onDelete: "cascade" }),
+    /** wikidata, wikipedia, exoplanet_archive, simbad, ned, hip, gaia, mpc, ... */
+    scheme: text("scheme").notNull(),
+    value: text("value").notNull(),
+    url: text("url"),
+    sourceId: integer("source_id").references(() => kosmoSources.id),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (t) => [
+    unique("kosmo_entity_external_ids_scheme_value_uq").on(t.scheme, t.value),
+    index("kosmo_entity_external_ids_entity_id_idx").on(t.entityId),
+  ]
+);
+
+/**
+ * Every source that supports a claim. A catalogue row commonly cites an archive
+ * query and an encyclopedia article at once, which one sourceId cannot express.
+ */
+export const kosmoClaimSources = pgTable(
+  "kosmo_claim_sources",
+  {
+    claimId: integer("claim_id")
+      .notNull()
+      .references(() => kosmoClaims.id, { onDelete: "cascade" }),
+    sourceId: integer("source_id")
+      .notNull()
+      .references(() => kosmoSources.id, { onDelete: "cascade" }),
+    /** Where inside the source: a URL, a query string, or "field:mass_kg". */
+    locator: text("locator"),
+    stance: text("stance")
+      .$type<"supports" | "disputes" | "mentions">()
+      .default("supports"),
+  },
+  (t) => [primaryKey({ columns: [t.claimId, t.sourceId] })]
 );
 
 // Navigation schemes. Several can coexist; a taxon is not an entity type.
@@ -139,6 +233,8 @@ export const kosmoEntityTaxa = pgTable(
 export const kosmoSourcesRelations = relations(kosmoSources, ({ many }) => ({
   entities: many(kosmoEntities),
   claims: many(kosmoClaims),
+  claimSources: many(kosmoClaimSources),
+  externalIds: many(kosmoEntityExternalIds),
 }));
 
 export const kosmoEntitiesRelations = relations(
@@ -155,10 +251,11 @@ export const kosmoEntitiesRelations = relations(
     outgoingClaims: many(kosmoClaims, { relationName: "claimSubject" }),
     incomingClaims: many(kosmoClaims, { relationName: "claimObject" }),
     taxa: many(kosmoEntityTaxa),
+    externalIds: many(kosmoEntityExternalIds),
   })
 );
 
-export const kosmoClaimsRelations = relations(kosmoClaims, ({ one }) => ({
+export const kosmoClaimsRelations = relations(kosmoClaims, ({ one, many }) => ({
   subject: one(kosmoEntities, {
     fields: [kosmoClaims.subjectId],
     references: [kosmoEntities.id],
@@ -173,7 +270,36 @@ export const kosmoClaimsRelations = relations(kosmoClaims, ({ one }) => ({
     fields: [kosmoClaims.sourceId],
     references: [kosmoSources.id],
   }),
+  claimSources: many(kosmoClaimSources),
 }));
+
+export const kosmoEntityExternalIdsRelations = relations(
+  kosmoEntityExternalIds,
+  ({ one }) => ({
+    entity: one(kosmoEntities, {
+      fields: [kosmoEntityExternalIds.entityId],
+      references: [kosmoEntities.id],
+    }),
+    source: one(kosmoSources, {
+      fields: [kosmoEntityExternalIds.sourceId],
+      references: [kosmoSources.id],
+    }),
+  })
+);
+
+export const kosmoClaimSourcesRelations = relations(
+  kosmoClaimSources,
+  ({ one }) => ({
+    claim: one(kosmoClaims, {
+      fields: [kosmoClaimSources.claimId],
+      references: [kosmoClaims.id],
+    }),
+    source: one(kosmoSources, {
+      fields: [kosmoClaimSources.sourceId],
+      references: [kosmoSources.id],
+    }),
+  })
+);
 
 export const kosmoTaxaRelations = relations(kosmoTaxa, ({ one, many }) => ({
   parent: one(kosmoTaxa, {
@@ -223,6 +349,12 @@ export type NewKosmoClaim = typeof kosmoClaims.$inferInsert;
 
 export type KosmoTaxon = typeof kosmoTaxa.$inferSelect;
 export type NewKosmoTaxon = typeof kosmoTaxa.$inferInsert;
+
+export type KosmoEntityExternalId = typeof kosmoEntityExternalIds.$inferSelect;
+export type NewKosmoEntityExternalId = typeof kosmoEntityExternalIds.$inferInsert;
+
+export type KosmoClaimSource = typeof kosmoClaimSources.$inferSelect;
+export type NewKosmoClaimSource = typeof kosmoClaimSources.$inferInsert;
 
 export type KosmoEntityTaxon = typeof kosmoEntityTaxa.$inferSelect;
 export type NewKosmoEntityTaxon = typeof kosmoEntityTaxa.$inferInsert;

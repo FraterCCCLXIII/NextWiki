@@ -2,18 +2,27 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   addClaim,
+  addExternalId,
   chunk,
+  reconcileRelation,
   ensurePage,
   ensureTaxon,
   inBatch,
+  linkClaimSource,
   linkEntityTaxon,
   slugify,
   upsertEntity,
   upsertSource,
   type Db,
 } from "./util.js";
+import {
+  formatPlanReport,
+  planCatalogue,
+  type CatalogueRow,
+  type ImportPlan,
+} from "./plan.js";
 
-const BATCH_SIZE = 500;
+const BATCH_SIZE = 250;
 const CATALOG_REL = path.join(
   "apps",
   "web",
@@ -21,28 +30,14 @@ const CATALOG_REL = path.join(
   "kosmo",
   "data",
   "catalog",
-  "objects.json"
+  "objects.json",
 );
-/** Object types that orbit a parent; everything else is linked with part_of. */
-const ORBIT_TYPES = new Set([
-  "planet",
-  "dwarf_planet",
-  "moon",
-  "exoplanet",
-  "exomoon_candidate",
-  "asteroid",
-  "comet",
-]);
-const UNIT_SUFFIX = /_(kg|m|W|K|pc|deg|days)$/;
 
-interface RawObject {
-  id: string;
-  name: string;
-  alt_names?: string[] | null;
-  type: string;
-  parent?: string | null;
-  source?: string | null;
-  [key: string]: unknown;
+export interface ObjectImportOptions {
+  /** Plan and report, write nothing. */
+  check?: boolean;
+  /** Import only the first n rows (smoke test). */
+  limit?: number;
 }
 
 function resolveCatalogFile(): string {
@@ -66,12 +61,7 @@ function humanize(s: string): string {
   return spaced.charAt(0).toUpperCase() + spaced.slice(1);
 }
 
-function unitFor(field: string): string | null {
-  const m = field.match(UNIT_SUFFIX);
-  return m ? m[1]! : null;
-}
-
-function objectMarkdown(row: RawObject): string {
+function objectMarkdown(row: CatalogueRow): string {
   return [
     `The Kosmographica object index entry for ${row.name}.`,
     "",
@@ -82,135 +72,204 @@ function objectMarkdown(row: RawObject): string {
   ].join("\n");
 }
 
-/**
- * Imports the catalogue of astronomical objects as entities, claims, taxa and
- * wiki pages. Pages only get dynamic blocks, so all facts render from the DB.
- */
-export async function importObjects(database: Db, userId: number): Promise<void> {
+/** Reads the catalogue and plans it without touching a database. */
+export function readCataloguePlan(
+  options: ObjectImportOptions = {},
+): ImportPlan {
   const file = resolveCatalogFile();
-  const rows = JSON.parse(fs.readFileSync(file, "utf8")) as RawObject[];
-  console.log(`  -> Importing ${rows.length} catalogue objects from ${file}`);
+  const rows = JSON.parse(fs.readFileSync(file, "utf8")) as CatalogueRow[];
+  return planCatalogue(rows, { limit: options.limit });
+}
 
-  // Lookup tables for resolving `parent` strings, which may be ids or names.
-  const idByName = new Map<string, string>();
-  for (const row of rows) {
-    const names = [row.name, ...(row.alt_names ?? [])];
-    for (const n of names) {
-      if (typeof n === "string" && !idByName.has(n.toLowerCase())) {
-        idByName.set(n.toLowerCase(), row.id);
-      }
-    }
+/**
+ * Imports the catalogue of astronomical objects as entities, claims, sources,
+ * external ids, taxa and wiki pages.
+ *
+ * Every number becomes a claim with its unit, method and source; parent names
+ * become relations only when they resolve to exactly one entity, and a citation
+ * list becomes one source row per cited host. `check` prints the same report
+ * without writing, which is how an import is reviewed before it runs.
+ */
+export async function importObjects(
+  database: Db,
+  userId: number,
+  options: ObjectImportOptions = {}
+): Promise<ImportPlan> {
+  const plan = readCataloguePlan(options);
+
+  console.log(`  -> Catalogue plan\n${indent(formatPlanReport(plan))}`);
+  if (options.check) {
+    console.log("  -> check only: nothing written");
+    return plan;
   }
 
-  const sourceCache = new Map<string, number>();
+  // Sources first: every claim and external id points at one.
+  const sourceIdByKey = new Map<string, number>();
+  for (const source of plan.stats.sources) {
+    sourceIdByKey.set(
+      source.key,
+      await upsertSource(database, {
+        key: source.key,
+        title: source.key,
+        url: source.url,
+      })
+    );
+  }
+
   const taxonCache = new Map<string, number>();
   const entityIdByObjectId = new Map<string, number>();
+  const batches = chunk(plan.entities, BATCH_SIZE);
 
-  const batches = chunk(rows, BATCH_SIZE);
-
-  // Pass 1: entities, numeric claims, taxa and pages.
+  // Pass 1: entities, claims, provenance, external ids, taxa and pages.
   let done = 0;
   for (const batch of batches) {
     await inBatch(database, async (tx) => {
-      for (const row of batch) {
-        let sourceId: number | null = null;
-        if (row.source) {
-          const cached = sourceCache.get(row.source);
-          if (cached !== undefined) {
-            sourceId = cached;
-          } else {
-            const isUrl = /^https?:\/\//i.test(row.source);
-            sourceId = await upsertSource(tx, {
-              key: `objects-source:${row.source}`,
-              title: row.source,
-              url: isUrl ? row.source : null,
-            });
-            sourceCache.set(row.source, sourceId);
-          }
-        }
+      for (const planned of batch) {
+        const primarySourceId = planned.sourceKeys.length
+          ? (sourceIdByKey.get(planned.sourceKeys[0]!) ?? null)
+          : null;
 
-        const type = row.type || "other";
         const entityId = await upsertEntity(tx, {
-          slug: `object:${row.id}`,
+          slug: planned.slug,
           kind: "object",
-          name: row.name,
-          type,
-          data: row,
-          sourceId,
+          name: planned.name,
+          type: planned.type,
+          data: planned.data,
+          sourceId: primarySourceId,
         });
-        entityIdByObjectId.set(row.id, entityId);
+        entityIdByObjectId.set(planned.objectId, entityId);
 
-        let taxonId = taxonCache.get(type);
+        let taxonId = taxonCache.get(planned.type);
         if (taxonId === undefined) {
           taxonId = await ensureTaxon(tx, {
             scheme: "astronomy",
-            slug: slugify(type),
-            name: humanize(type),
+            slug: slugify(planned.type),
+            name: humanize(planned.type),
           });
-          taxonCache.set(type, taxonId);
+          taxonCache.set(planned.type, taxonId);
         }
         await linkEntityTaxon(tx, entityId, taxonId);
 
-        for (const [field, value] of Object.entries(row)) {
-          if (typeof value === "number" && Number.isFinite(value)) {
-            await addClaim(tx, {
-              subjectId: entityId,
-              predicate: field,
-              valueNum: value,
-              unit: unitFor(field),
+        for (const claim of planned.claims) {
+          const claimSourceIds = claim.sourceKeys
+            .map((key) => sourceIdByKey.get(key))
+            .filter((id): id is number => id !== undefined);
+
+          // Relations are written in pass 2, once every entity has an id.
+          if (claim.field === "parent") continue;
+
+          const claimId = await addClaim(tx, {
+            subjectId: entityId,
+            predicate: claim.predicate,
+            objectId: null,
+            valueText: claim.valueText ?? null,
+            valueNum: claim.valueNum ?? null,
+            unit: claim.unit ?? null,
+            sourceId: claimSourceIds[0] ?? null,
+            method: claim.method,
+            qualifiers: claim.qualifiers ?? {},
+          });
+
+          for (const sourceId of claimSourceIds) {
+            await linkClaimSource(tx, {
+              claimId,
               sourceId,
+              locator: claim.field,
             });
           }
         }
 
+        for (const ext of planned.externalIds) {
+          await addExternalId(tx, {
+            entityId,
+            scheme: ext.scheme,
+            value: ext.value,
+            url: ext.url ?? null,
+            sourceId: ext.sourceKey
+              ? (sourceIdByKey.get(ext.sourceKey) ?? null)
+              : null,
+          });
+        }
+
         await ensurePage(tx, {
-          path: `/kosmo/object/${slugify(row.id)}`,
-          title: row.name.slice(0, 255),
-          markdown: objectMarkdown(row),
+          path: `/kosmo/object/${slugify(planned.objectId)}`,
+          title: planned.name.slice(0, 255),
+          markdown: objectMarkdown(planned.data),
           userId,
-          tags: [type, "kosmo"],
+          tags: [planned.type, "kosmo"],
           entityId,
         });
       }
     });
     done += batch.length;
-    console.log(`    ↳ objects: ${done}/${rows.length}`);
+    console.log(`    ↳ objects: ${done}/${plan.entities.length}`);
   }
 
-  // Pass 2: orbit / part-of relations, now that every entity has an id.
-  const resolveParent = (parent: string): string | undefined => {
-    if (entityIdByObjectId.has(parent)) return parent;
-    const bySlug = slugify(parent);
-    if (entityIdByObjectId.has(bySlug)) return bySlug;
-    return idByName.get(parent.toLowerCase());
-  };
-
-  done = 0;
+  // Pass 2: relations, now that every entity id is known. A relation that
+  // resolves now replaces any text relation left by an earlier partial import.
+  let relations = 0;
+  let replacedTextRelations = 0;
   for (const batch of batches) {
     await inBatch(database, async (tx) => {
-      for (const row of batch) {
-        if (!row.parent) continue;
-        const subjectId = entityIdByObjectId.get(row.id);
+      for (const planned of batch) {
+        const subjectId = entityIdByObjectId.get(planned.objectId);
         if (subjectId === undefined) continue;
-
-        const predicate = ORBIT_TYPES.has(row.type) ? "orbits" : "part_of";
-        const parentObjectId = resolveParent(row.parent);
-        if (parentObjectId !== undefined && parentObjectId !== row.id) {
-          await addClaim(tx, {
+        for (const claim of planned.claims) {
+          if (claim.field !== "parent") continue;
+          const parentEntityId =
+            claim.objectId === undefined
+              ? undefined
+              : entityIdByObjectId.get(claim.objectId);
+          if (claim.objectId !== undefined && parentEntityId === undefined) {
+            continue;
+          }
+          const claimSourceIds = claim.sourceKeys
+            .map((key) => sourceIdByKey.get(key))
+            .filter((id): id is number => id !== undefined);
+          // The plan drops the parent name once it resolves, so take it from
+          // the catalogue row and clear whatever an older import decided.
+          const parentName = String(planned.data.parent ?? "");
+          if (parentName.trim()) {
+            replacedTextRelations += await reconcileRelation(tx, {
+              subjectId,
+              predicate: claim.predicate,
+              parentName,
+              targetEntityId: parentEntityId,
+            });
+          }
+          const claimId = await addClaim(tx, {
             subjectId,
-            predicate,
-            objectId: entityIdByObjectId.get(parentObjectId),
-            sourceId: null,
+            predicate: claim.predicate,
+            objectId: parentEntityId ?? null,
+            valueText: claim.valueText ?? null,
+            valueNum: null,
+            unit: null,
+            sourceId: claimSourceIds[0] ?? null,
+            method: claim.method,
+            qualifiers: claim.qualifiers ?? {},
           });
-        } else {
-          // Unresolved parent: keep the name as text so nothing is lost.
-          await addClaim(tx, { subjectId, predicate, valueText: row.parent });
+          for (const sourceId of claimSourceIds) {
+            await linkClaimSource(tx, {
+              claimId,
+              sourceId,
+              locator: claim.field,
+            });
+          }
+          relations += 1;
         }
       }
     });
-    done += batch.length;
-    console.log(`    ↳ parent links: ${done}/${rows.length}`);
   }
 
-  console.log(`  -> Objects import finished (${entityIdByObjectId.size} entities).`);
+  console.log(
+    `  -> Objects import finished: ${entityIdByObjectId.size} entities, ${relations} relations${replacedTextRelations ? ` (${replacedTextRelations} stale text relations replaced)` : ""}, ${sourceIdByKey.size} sources.`
+  );
+  return plan;
+}
+
+function indent(text: string): string {
+  return text
+    .split("\n")
+    .map((line) => `     ${line}`)
+    .join("\n");
 }

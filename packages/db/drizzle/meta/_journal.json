@@ -50,6 +50,13 @@
       "when": 1801964000000,
       "tag": "0006_bizarre_wilson_fisk",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1801964100000,
+      "tag": "0007_kosmo_identity_and_time",
+      "breakpoints": true
     }
   ]
 }

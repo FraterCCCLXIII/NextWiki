@@ -1,6 +1,13 @@
-import { eq } from "drizzle-orm";
+import { and, eq, isNull, or, sql } from "drizzle-orm";
 import type { db } from "../../index.js";
 import * as schema from "../../schema/index.js";
+import type { KosmoClaimMethod, KosmoTimeKind } from "../../schema/kosmo.js";
+import { matchRegistryEntry } from "./sources.js";
+import { SOURCE_REGISTRY } from "./sources-registry.js";
+
+// Pure string helpers live in text.ts so plan.ts can be imported without the
+// database client; re-exported here because every seed already imports them.
+export { slugify, chunk } from "./text.js";
 
 export type Db = typeof db;
 
@@ -9,24 +16,6 @@ type TaxonScheme = schema.NewKosmoTaxon["scheme"];
 
 export const KOSMO_IMPORT_EMAIL = "kosmo-import@system.invalid";
 const KOSMO_IMPORT_NAME = "Kosmo Import";
-
-/** Lowercase ASCII slug; diacritics are folded, runs of other chars become "-". */
-export function slugify(s: string): string {
-  const out = s
-    .normalize("NFKD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-  return out || "item";
-}
-
-/** Splits an array into chunks of at most n items. */
-export function chunk<T>(arr: T[], n: number): T[][] {
-  const out: T[][] = [];
-  for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n));
-  return out;
-}
 
 /**
  * Runs fn inside a transaction. The neon-http driver cannot open transactions,
@@ -66,17 +55,36 @@ export async function ensureImportUser(database: Db): Promise<number> {
   return row.id;
 }
 
+/**
+ * Upserts a source. When the key is a registered host, the registry supplies the
+ * licence, publisher and trust tier, so a credit can always be rendered.
+ */
 export async function upsertSource(
   database: Db,
-  input: { key: string; title: string; url?: string | null }
+  input: {
+    key: string;
+    title: string;
+    url?: string | null;
+    retrievedAt?: Date | null;
+  }
 ): Promise<number> {
+  const entry = matchRegistryEntry(input.key, SOURCE_REGISTRY);
+  const values = {
+    key: input.key,
+    title: entry?.name ?? input.title,
+    url: input.url ?? null,
+    publisher: entry?.publisher ?? null,
+    license: entry?.licence ?? null,
+    licenseUrl: entry?.licenceUrl ?? null,
+    trustTier: entry?.trustTier ?? null,
+    retrievedAt:
+      input.retrievedAt ??
+      (entry?.retrievedAt ? new Date(entry.retrievedAt) : null),
+  };
   const [row] = await database
     .insert(schema.kosmoSources)
-    .values({ key: input.key, title: input.title, url: input.url ?? null })
-    .onConflictDoUpdate({
-      target: schema.kosmoSources.key,
-      set: { title: input.title, url: input.url ?? null },
-    })
+    .values(values)
+    .onConflictDoUpdate({ target: schema.kosmoSources.key, set: values })
     .returning({ id: schema.kosmoSources.id });
   if (!row) throw new Error(`Failed to upsert source ${input.key}`);
   return row.id;
@@ -96,6 +104,10 @@ export async function upsertEntity(
     summary?: string | null;
     data?: Record<string, unknown> | null;
     sourceId?: number | null;
+    timeStart?: number | null;
+    timeEnd?: number | null;
+    timePrecisionYears?: number | null;
+    timeKind?: KosmoTimeKind | null;
   }
 ): Promise<number> {
   const values = {
@@ -106,6 +118,10 @@ export async function upsertEntity(
     summary: input.summary ?? null,
     data: input.data ?? {},
     sourceId: input.sourceId ?? null,
+    timeStart: input.timeStart ?? null,
+    timeEnd: input.timeEnd ?? null,
+    timePrecisionYears: input.timePrecisionYears ?? null,
+    timeKind: input.timeKind ?? null,
   };
   const [row] = await database
     .insert(schema.kosmoEntities)
@@ -119,6 +135,10 @@ export async function upsertEntity(
         summary: values.summary,
         data: values.data,
         sourceId: values.sourceId,
+        timeStart: values.timeStart,
+        timeEnd: values.timeEnd,
+        timePrecisionYears: values.timePrecisionYears,
+        timeKind: values.timeKind,
       },
     })
     .returning({ id: schema.kosmoEntities.id });
@@ -126,7 +146,11 @@ export async function upsertEntity(
   return row.id;
 }
 
-/** Adds a claim. Idempotent through the table's unique identity constraint. */
+/**
+ * Adds a claim and returns its id. Idempotent through the table's unique
+ * identity constraint; a re-import refreshes provenance and method in place
+ * rather than creating a second claim with the same value.
+ */
 export async function addClaim(
   database: Db,
   input: {
@@ -135,12 +159,15 @@ export async function addClaim(
     objectId?: number | null;
     valueText?: string | null;
     valueNum?: number | null;
+    valueErr?: number | null;
     unit?: string | null;
     sourceId?: number | null;
+    method?: KosmoClaimMethod | null;
+    qualifiers?: Record<string, unknown> | null;
     note?: string | null;
   }
-): Promise<void> {
-  await database
+): Promise<number> {
+  const [row] = await database
     .insert(schema.kosmoClaims)
     .values({
       subjectId: input.subjectId,
@@ -148,9 +175,123 @@ export async function addClaim(
       objectId: input.objectId ?? null,
       valueText: input.valueText ?? null,
       valueNum: input.valueNum ?? null,
+      valueErr: input.valueErr ?? null,
       unit: input.unit ?? null,
       sourceId: input.sourceId ?? null,
+      method: input.method ?? null,
+      qualifiers: input.qualifiers ?? {},
       note: input.note ?? null,
+    })
+    .onConflictDoUpdate({
+      target: [
+        schema.kosmoClaims.subjectId,
+        schema.kosmoClaims.predicate,
+        schema.kosmoClaims.objectId,
+        schema.kosmoClaims.valueText,
+      ],
+      set: {
+        valueNum: input.valueNum ?? null,
+        valueErr: input.valueErr ?? null,
+        unit: input.unit ?? null,
+        sourceId: input.sourceId ?? null,
+        method: input.method ?? null,
+        qualifiers: input.qualifiers ?? {},
+        note: input.note ?? null,
+      },
+    })
+    .returning({ id: schema.kosmoClaims.id });
+  if (!row) throw new Error(`Failed to upsert claim ${input.predicate}`);
+  return row.id;
+}
+
+/**
+ * Removes earlier relations that the current plan contradicts: an unlinked
+ * `orbits "Sun"` left by a partial import, or a link to the wrong entity when a
+ * name was previously matched case-insensitively ("55 Cnc B" the star vs
+ * "55 Cnc b" the planet). Only relations naming the same parent are touched, so
+ * curated relations to other entities survive.
+ */
+export async function reconcileRelation(
+  database: Db,
+  input: {
+    subjectId: number;
+    predicate: string;
+    parentName: string;
+    /** The entity the plan now points at, if it resolved. */
+    targetEntityId?: number;
+  }
+): Promise<number> {
+  const claims = schema.kosmoClaims;
+  // A link that names this parent but is not the planned target is stale.
+  const wrongTarget = sql`${claims.objectId} is distinct from ${input.targetEntityId ?? null}
+    and ${claims.objectId} in (
+      select id from ${schema.kosmoEntities}
+      where lower(name) = lower(${input.parentName})
+    )`;
+  const textForm = and(
+    isNull(claims.objectId),
+    sql`lower(${claims.valueText}) = lower(${input.parentName})`
+  );
+
+  const deleted = await database
+    .delete(claims)
+    .where(
+      and(
+        eq(claims.subjectId, input.subjectId),
+        eq(claims.predicate, input.predicate),
+        input.targetEntityId === undefined
+          ? // Unresolved or ambiguous: no link should exist, only text.
+            sql`${claims.objectId} in (
+              select id from ${schema.kosmoEntities}
+              where lower(name) = lower(${input.parentName})
+            )`
+          : or(textForm, wrongTarget)
+      )
+    )
+    .returning({ id: claims.id });
+  return deleted.length;
+}
+
+/** Records an additional source for a claim. Idempotent. */
+export async function linkClaimSource(
+  database: Db,
+  input: {
+    claimId: number;
+    sourceId: number;
+    locator?: string | null;
+    stance?: "supports" | "disputes" | "mentions";
+  }
+): Promise<void> {
+  await database
+    .insert(schema.kosmoClaimSources)
+    .values({
+      claimId: input.claimId,
+      sourceId: input.sourceId,
+      locator: input.locator ?? null,
+      stance: input.stance ?? "supports",
+    })
+    .onConflictDoNothing();
+}
+
+/** Records an external identity for an entity. Idempotent per (scheme, value). */
+export async function addExternalId(
+  database: Db,
+  input: {
+    entityId: number;
+    scheme: string;
+    value: string;
+    url?: string | null;
+    sourceId?: number | null;
+  }
+): Promise<void> {
+  await database
+    .insert(schema.kosmoEntityExternalIds)
+    .values({
+      entityId: input.entityId,
+      scheme: input.scheme,
+      value: input.value,
+      url: input.url ?? null,
+      sourceId: input.sourceId ?? null,
     })
     .onConflictDoNothing();
 }
