@@ -25,6 +25,7 @@ const ROWS: { title: string; items: Section[] }[] = [
     items: [
       { href: "/kosmo/tools/university", label: "University", blurb: "A guided path of study through the atlas.", img: `${TEX}/2k_earth_daymap.jpg`, tag: "Learn" },
       { href: "/kosmo/tools/chemistry", label: "Chemistry", blurb: "Elements, bonds and reactions.", img: `${TEX}/2k_venus_surface.jpg`, tag: "Tool" },
+      { href: "/kosmo/tools/spacecraft", label: "Spacecraft", blurb: "Every rocket and spacecraft, in 3D at true scale.", img: `${TEX}/2k_pluto.jpg`, tag: "Tool" },
       { href: "/kosmo/tools/contraption", label: "Simulator", blurb: "Build and run small physical contraptions.", img: `${TEX}/2k_uranus.jpg`, tag: "Tool" },
     ],
   },

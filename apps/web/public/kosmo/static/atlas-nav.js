@@ -31,6 +31,7 @@
     ] },
     { name: "Tools", pages: [
       { href: "chemistry.html", label: "Chemistry" },
+      { href: "spacecraft.html", label: "Spacecraft" },
       { href: "contraption-sim.html", label: "Simulator" }
     ] },
     { name: "Lab", pages: [

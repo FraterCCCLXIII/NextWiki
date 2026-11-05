@@ -14,6 +14,7 @@ export const KOSMO_TOOLS: Record<
   timeline: { file: "universe-timeline.html", title: "Universe timeline", group: "atlas" },
   chemistry: { file: "chemistry.html", title: "Chemistry", group: "atlas" },
   biology: { file: "biology.html", title: "Biology", group: "atlas" },
+  spacecraft: { file: "spacecraft.html", title: "Spacecraft", group: "atlas" },
   contraption: { file: "contraption-sim.html", title: "Contraption simulator", group: "atlas" },
   flight: { file: "flight/index.html", title: "Orbital Flight Deck", group: "atlas" },
 

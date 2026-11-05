@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
+<script src="kosmo-scrollfade.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spacecraft</title>
+<style>
+  :root { --bg: #0d0d0d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --line: rgba(140,170,220,0.14); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 16px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(127,195,255,0.55), rgba(255,184,107,0.45)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+  * { scrollbar-width: thin; scrollbar-color: rgba(127,195,255,0.6) transparent; }
+  .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+  #navbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(13,13,13,0.95), rgba(13,13,13,0.6)); }
+  #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 20px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 13px; color: #fff; opacity: 0.8; margin-top: 2px; }
+  #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.16em; font-size: 14px; text-transform: uppercase; }
+  @media (max-width: 1320px) { #menu { overflow-x: auto; min-width: 0; scrollbar-width: none; } #menu::-webkit-scrollbar { display: none; } }
+  #menu a { color: rgba(255,255,255,0.72); text-decoration: none; white-space: nowrap; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+  #view { position: absolute; inset: 0; } #view canvas { display: block; }
+  #labels { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
+  .lbl { position: absolute; transform: translate(-50%, -100%); white-space: nowrap; font-size: 13px; color: #dbe5f3; text-shadow: 0 1px 6px #000, 0 0 2px #000; text-align: center; }
+  .lbl b { display: block; font-weight: 500; color: #fff; } .lbl span { color: var(--accent2); font-variant-numeric: tabular-nums; }
+  #panel { position: absolute; left: 16px; top: 70px; bottom: 16px; width: 330px; z-index: 4; display: flex; flex-direction: column; padding: 4px 6px 0; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
+  h2 { font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 12px 0 6px; }
+  h1 { font-weight: 500; font-size: 29px; margin: 4px 0 2px; }
+  input[type=text], button, select { background: rgba(26,26,26,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 5px 9px; font: inherit; }
+  input[type=text] { width: 100%; } select { width: 100%; } button { cursor: pointer; margin: 2px 3px 2px 0; } button:hover { border-color: var(--accent); } button.on { border-color: var(--accent); color: var(--accent); }
+  input[type=range] { -webkit-appearance: none; width: 140px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, rgba(127,195,255,0.6), rgba(255,184,107,0.6)); outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #eaf3ff; border: 2px solid #7fc3ff; cursor: pointer; }
+  .row { display: flex; align-items: center; gap: 8px; margin: 4px 0; } .row label { flex: 1; color: #c3d0e2; }
+  .dim { color: var(--muted); } #status { color: var(--accent2); font-size: 14px; }
+  .filters { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px; }
+  #list { flex: 1; min-height: 0; overflow: auto; margin: 8px -4px 0 0; padding-right: 4px; border-top: 1px solid var(--line); }
+  #list button { display: flex; width: 100%; align-items: baseline; gap: 8px; margin: 0; padding: 4px 6px; text-align: left; background: transparent; border: 0; border-radius: 6px; font-size: 15px; }
+  #list button:hover { background: rgba(127,195,255,0.1); } #list button.sel { background: rgba(127,195,255,0.18); color: #fff; }
+  #list .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; align-self: center; }
+  #list .y { margin-left: auto; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; flex: none; }
+  #list .grp { position: sticky; top: 0; background: rgba(13,13,13,0.92); color: var(--muted); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; padding: 6px 6px 3px; }
+  .t-detailed { background: #7fe0a0; } .t-generic { background: #7fc3ff; } .t-placeholder { background: #6b7585; }
+  #info { position: absolute; right: 16px; top: 70px; bottom: 56px; width: 320px; z-index: 4; overflow: auto; font-size: 15px; color: #c3d0e2; text-shadow: 0 1px 6px #000; padding-right: 4px; }
+  #info h3 { font-weight: 500; font-size: 24px; margin: 0 0 2px; color: #fff; }
+  #info table { border-collapse: collapse; width: 100%; margin: 6px 0; } #info td { padding: 2px 0; vertical-align: top; } #info td:first-child { color: var(--muted); width: 46%; padding-right: 8px; }
+  #info .chip { display: inline-block; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 20px; padding: 1px 9px; margin: 0 4px 4px 0; color: var(--muted); }
+  #info .stg td, #info .stg th { font-size: 13px; padding: 2px 4px 2px 0; text-align: left; } #info .stg th { color: var(--muted); font-weight: 400; }
+  #info a { color: var(--accent); }
+  #bar { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 4; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: calc(100vw - 720px); text-shadow: 0 1px 6px #000; font-size: 14px; color: #c3d0e2; }
+  #bar label { display: flex; align-items: center; gap: 6px; } #bar button { margin: 0; padding: 3px 10px; }
+  #help { position: absolute; left: 50%; top: 66px; transform: translateX(-50%); z-index: 4; color: var(--muted); font-size: 13px; text-shadow: 0 1px 6px #000; }
+  kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); }
+  html.embedded #panel, html.embedded #info { top: 16px; } html.embedded #help { top: 10px; }
+  @media (max-width: 1180px) { #info { display: none; } #bar { max-width: calc(100vw - 380px); } }
+</style>
+<script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
+  <link rel="stylesheet" href="kosmographica.css?v=15">
+  <script src="atlas-nav.js" defer></script>
+  <script src="accordion.js" defer></script>
+</head>
+<body>
+<div id="view"></div>
+<div id="labels"></div>
+<div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
+  <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="spacecraft.html" class="here">Spacecraft</a></nav><span></span></div>
+<div id="panel">
+  <h1 class="serif">Spacecraft</h1>
+  <div class="dim">Every rocket, spacecraft, station and experimental craft in the directory, drawn at true scale. Pick one, or add several to the lineup to compare.</div>
+  <h2>Find</h2>
+  <input type="text" id="q" placeholder="name, country, year…">
+  <div class="filters">
+    <select id="cat"><option value="">all kinds</option></select>
+    <select id="stat"><option value="">any status</option></select>
+    <select id="tier"><option value="">any model</option><option value="detailed">detailed model</option><option value="generic">generic model</option><option value="placeholder">no model yet</option></select>
+    <select id="sort"><option value="cat">by kind</option><option value="year">by year</option><option value="size">by height</option><option value="name">by name</option></select>
+  </div>
+  <div id="status"></div>
+  <div id="list"></div>
+</div>
+<div id="info"></div>
+<div id="help">drag · rotate &nbsp; wheel · zoom &nbsp; right-drag · pan &nbsp; <kbd>↑</kbd><kbd>↓</kbd> step through the list</div>
+<div id="bar">
+  <button id="add">+ add to lineup</button><button id="clear">clear lineup</button>
+  <label>explode <input type="range" id="explode" min="0" max="1" step="0.01" value="0"></label>
+  <label><input type="checkbox" id="spin" checked> spin</label>
+  <label><input type="checkbox" id="human" checked> 1.8 m person</label>
+  <button id="glb">export .glb</button>
+</div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+import { buildModel, person, tierOf } from './vehicle-models.js';
+const $ = id => document.getElementById(id);
+
+// ---- data ----
+const FILES = ['launch-vehicles', 'crewed-spacecraft', 'uncrewed-spacecraft', 'stations', 'experimental', 'ships'];
+const KIND = { launch_vehicle: 'Launch vehicles', crewed_spacecraft: 'Crewed spacecraft', spaceplane: 'Spaceplanes', lander: 'Landers', uncrewed_spacecraft: 'Probes & observatories', space_station: 'Stations', experimental: 'Experimental', concept: 'Concepts', original: 'Our ships' };
+const ORDER = Object.keys(KIND);
+const STATUS = { operational: 'Operational', retired: 'Retired', in_development: 'In development', cancelled: 'Cancelled', lost: 'Lost', concept: 'Concept' };
+let all = [], shown = [], byId = new Map(), cur = null, pinned = [];
+const display = () => (pinned.includes(cur) ? pinned : [...pinned, cur]).map(i => byId.get(i));
+const fmt = (n, u = '') => n == null ? '—' : (n >= 1000 ? Math.round(n).toLocaleString() : +n.toPrecision(4)) + u;
+const yearOf = v => { const y = v.first_flight; return y == null ? null : typeof y === 'number' ? y : parseInt(y); };
+const esc = s => String(s ?? '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+async function loadData() {
+  const parts = await Promise.all(FILES.map(f => fetch(`../data/vehicles/${f}.json`).then(r => { if (!r.ok) throw new Error(`${f}.json ${r.status}`); return r.json(); })));
+  all = parts.flat(); for (const v of all) { v._tier = tierOf(v); byId.set(v.id, v); }
+}
+
+// ---- scene ----
+const view = $('view'), renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: false });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); view.appendChild(renderer.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(window.KOSMO_BG ? KOSMO_BG.pick(0x05070d) : 0x05070d);
+const camera = new THREE.PerspectiveCamera(40, 1, 0.05, 20000); camera.position.set(30, 20, 60);
+const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true;
+scene.add(new THREE.AmbientLight(0xffffff, 0.7)); scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x20242c, 0.6));
+const key = new THREE.DirectionalLight(0xffffff, 2.0); key.position.set(40, 80, 60); scene.add(key); const fill = new THREE.DirectionalLight(0x9fd3ff, 0.7); fill.position.set(-50, 20, -40); scene.add(fill);
+const stage = new THREE.Group(); scene.add(stage);
+let ground = null, items = [];
+
+/* Centre the scene in the free space between the two panels, not on the whole canvas. */
+function resize() {
+  const w = view.clientWidth, h = view.clientHeight; renderer.setSize(w, h); camera.aspect = w / h;
+  const left = $('panel').offsetWidth + 16, right = $('info').offsetParent ? $('info').offsetWidth + 16 : 0;
+  camera.setViewOffset(w, h, -(left - right) / 2, 0, w, h); camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize();
+
+function disposeTree(o) { o.traverse(n => { if (n.geometry) n.geometry.dispose(); }); }
+function clearStage() { for (const c of [...stage.children]) { stage.remove(c); disposeTree(c); } items = []; $('labels').innerHTML = ''; ground = null; }
+
+/* Lay the chosen vehicles in a row at true scale, each with a 1.8 m person, and frame them. */
+function showVehicles(list) {
+  clearStage();
+  if (!list.length) return;
+  let x = 0, maxH = 0; const gap0 = 0.0;
+  const built = list.map(v => { const m = buildModel(v); const bb = m.userData.box, w = Math.max(bb.max.x - bb.min.x, bb.max.z - bb.min.z, 0.6), h = bb.max.y - bb.min.y; maxH = Math.max(maxH, h); return { v, m, w, h }; });
+  const gap = Math.max(2.2, maxH * 0.06);
+  for (const b of built) {
+    b.m.position.x = x + b.w / 2; x += b.w + gap; stage.add(b.m);
+    const p = person(); p.position.x = b.m.position.x - b.w / 2 - 0.9 - (b.v.category === 'space_station' ? b.w * 0.1 : 0); p.userData.person = true; stage.add(p);
+    const el = document.createElement('div'); el.className = 'lbl'; el.innerHTML = `<b>${esc(b.v.name)}</b><span>${b.h >= 10 ? b.h.toFixed(1) : b.h.toFixed(2)} m</span>`; $('labels').appendChild(el);
+    items.push({ ...b, el, person: p });
+  }
+  const totalW = x - gap;
+  for (const it of items) it.m.position.x -= totalW / 2, it.person.position.x -= totalW / 2;
+  const R = Math.max(totalW / 2 + 4, maxH * 0.7, 6);
+  ground = new THREE.Group();
+  const grid = new THREE.GridHelper(R * 2, Math.max(8, Math.round(R * 2 / niceStep(R / 5))), 0x3a4a66, 0x1d2536); ground.add(grid);
+  const ring = new THREE.Mesh(new THREE.CircleGeometry(R, 64).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x0a0e18, transparent: true, opacity: 0.55 })); ring.position.y = -0.02; ground.add(ring);
+  stage.add(ground);
+  syncHuman(); applyExplode();
+  const freeW = Math.max(300, view.clientWidth - $('panel').offsetWidth - ($('info').offsetParent ? $('info').offsetWidth : 0) - 40), vf = camera.fov * Math.PI / 180, hf = 2 * Math.atan(Math.tan(vf / 2) * freeW / view.clientHeight);
+  const halfH = maxH * 0.62 + 2, halfW = totalW / 2 + 3, dist = Math.max(halfH / Math.tan(vf / 2), halfW / Math.tan(hf / 2)) * 1.2 + halfW * 0.3;
+  controls.target.set(0, maxH * 0.48, 0); camera.position.set(dist * 0.45, maxH * 0.55 + dist * 0.12, dist * 0.88);
+  camera.near = Math.max(0.02, dist / 4000); camera.far = dist * 40; camera.updateProjectionMatrix(); controls.update();
+}
+const niceStep = t => { const p = 10 ** Math.floor(Math.log10(t)), f = t / p; return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * p; };
+function syncHuman() { for (const it of items) it.person.visible = $('human').checked; }
+
+/* Exploded view: stage groups slide up the stack, strap-on boosters slide outward. */
+function applyExplode() {
+  const k = +$('explode').value;
+  for (const it of items) {
+    const inner = it.m.userData.inner, top = inner.userData.top, stages = inner.userData.stages; if (!stages) continue;
+    const step = k * (top || 10) * 0.07;
+    for (const [n, g] of stages) g.position.y = n * step;
+    for (const c of inner.children) if (c.userData.boosters) for (const b of c.children) { if (!b.userData.base) b.userData.base = b.position.clone(); const d = b.userData.dir || [0, 0]; b.position.set(b.userData.base.x + d[0] * k * (top || 10) * 0.12, b.userData.base.y, b.userData.base.z + d[1] * k * (top || 10) * 0.12); }
+  }
+}
+
+const tmp = new THREE.Vector3();
+function frame() {
+  requestAnimationFrame(frame); controls.update();
+  if ($('spin').checked) for (const it of items) it.m.rotation.y += 0.004;
+  const w = view.clientWidth, h = view.clientHeight;
+  for (const it of items) { tmp.set(it.m.position.x, it.h, it.m.position.z).project(camera); const on = tmp.z < 1; it.el.style.display = on ? '' : 'none'; it.el.style.left = ((tmp.x + 1) / 2 * w) + 'px'; it.el.style.top = ((1 - tmp.y) / 2 * h - 6) + 'px'; }
+  renderer.render(scene, camera);
+}
+
+// ---- list and filters ----
+function applyFilters() {
+  const q = $('q').value.trim().toLowerCase(), cat = $('cat').value, st = $('stat').value, tier = $('tier').value, sort = $('sort').value;
+  shown = all.filter(v => (!cat || v.category === cat) && (!st || v.status === st) && (!tier || v._tier === tier) &&
+    (!q || [v.name, ...(v.aliases || []), v.country, v.manufacturer, v.operator, v.first_flight, v.notes].flat().join(' ').toLowerCase().includes(q)));
+  const cmp = { cat: (a, b) => ORDER.indexOf(a.category) - ORDER.indexOf(b.category) || (yearOf(a) ?? 9999) - (yearOf(b) ?? 9999), year: (a, b) => (yearOf(a) ?? 9999) - (yearOf(b) ?? 9999), size: (a, b) => (b.height_m ?? b.length_m ?? 0) - (a.height_m ?? a.length_m ?? 0), name: (a, b) => a.name.localeCompare(b.name) }[sort];
+  shown.sort(cmp); renderList();
+}
+function renderList() {
+  const el = $('list'); let html = '', last = '';
+  for (const v of shown) {
+    if ($('sort').value === 'cat' && v.category !== last) { last = v.category; html += `<div class="grp">${KIND[v.category] || v.category}</div>`; }
+    html += `<button data-id="${v.id}" class="${v.id === cur ? 'sel' : ''}" title="${v._tier === 'placeholder' ? 'no model yet' : v._tier + ' model'}"><i class="dot t-${v._tier}"></i>${esc(v.name)}<span class="y">${yearOf(v) ?? ''}</span></button>`;
+  }
+  el.innerHTML = html || '<div class="dim" style="padding:10px">nothing matches</div>';
+  const n = { detailed: 0, generic: 0, placeholder: 0 }; for (const v of all) n[v._tier]++;
+  $('status').textContent = `${shown.length} of ${all.length} · models: ${n.detailed} detailed, ${n.generic} generic, ${n.placeholder} to do`;
+}
+$('list').addEventListener('click', e => { const b = e.target.closest('button[data-id]'); if (b) select(b.dataset.id); });
+
+function select(id, fromHash) {
+  const v = byId.get(id); if (!v) return;
+  cur = id; if (!fromHash) history.replaceState(null, '', '#' + id);
+  showVehicles(display()); info(v); syncPin();
+  for (const b of $('list').querySelectorAll('button')) b.classList.toggle('sel', b.dataset.id === id);
+  $('list').querySelector('button.sel')?.scrollIntoView({ block: 'nearest' });
+}
+function syncPin() { $('add').textContent = pinned.includes(cur) ? '− remove from lineup' : '+ add to lineup'; $('clear').disabled = !pinned.length; $('clear').textContent = pinned.length ? `clear lineup (${pinned.length})` : 'clear lineup'; }
+$('add').onclick = () => { if (!cur) return; pinned = pinned.includes(cur) ? pinned.filter(i => i !== cur) : [...pinned, cur]; showVehicles(display()); syncPin(); };
+$('clear').onclick = () => { pinned = []; if (cur) showVehicles(display()); syncPin(); };
+$('explode').oninput = applyExplode; $('human').onchange = syncHuman;
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input,select')) return;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { const i = shown.findIndex(v => v.id === cur), n = shown[Math.max(0, Math.min(shown.length - 1, i + (e.key === 'ArrowDown' ? 1 : -1)))]; if (n) { select(n.id); e.preventDefault(); } }
+});
+for (const id of ['q', 'cat', 'stat', 'tier', 'sort']) $(id).addEventListener(id === 'q' ? 'input' : 'change', applyFilters);
+
+// ---- info card ----
+const G0 = 9.80665;
+/* Ideal rocket-equation delta-v of the whole stack with no payload, only when every stage lists its masses and Isp. */
+function idealDv(v) {
+  const s = v.stages; if (!s || !s.length || !s.every(x => x.dry_mass_kg && x.prop_mass_kg && x.isp_s_vac)) return null;
+  let dv = 0;
+  for (let i = 0; i < s.length; i++) { const above = s.slice(i + 1).reduce((a, x) => a + x.dry_mass_kg + x.prop_mass_kg, 0), m0 = s[i].dry_mass_kg + s[i].prop_mass_kg + above; dv += s[i].isp_s_vac * G0 * Math.log(m0 / (m0 - s[i].prop_mass_kg)); }
+  return dv;
+}
+function info(v) {
+  const rows = [
+    ['Kind', KIND[v.category] || v.category], ['Status', STATUS[v.status] || v.status], ['Country', [].concat(v.country || '—').join(', ')],
+    ['Maker', v.manufacturer], ['Operator', v.operator], ['First flight', v.first_flight], ['Last flight', v.last_flight],
+    ['Flights', v.flights != null ? `${v.flights}${v.successes != null ? ` (${v.successes} succeeded)` : ''}` : null], ['Crew', v.crew_capacity],
+    ['Height', v.height_m != null ? fmt(v.height_m, ' m') : null], ['Length', v.length_m != null ? fmt(v.length_m, ' m') : null], ['Diameter', v.diameter_m != null ? fmt(v.diameter_m, ' m') : null], ['Wingspan', v.wingspan_m != null ? fmt(v.wingspan_m, ' m') : null],
+    ['Mass', v.mass_kg != null ? fmt(v.mass_kg, ' kg') : null], ['Dry mass', v.dry_mass_kg != null ? fmt(v.dry_mass_kg, ' kg') : null], ['Liftoff thrust', v.thrust_kN != null ? fmt(v.thrust_kN, ' kN') : null],
+    ['To LEO', v.payload_leo_kg != null ? fmt(v.payload_leo_kg, ' kg') : null], ['To GTO', v.payload_gto_kg != null ? fmt(v.payload_gto_kg, ' kg') : null], ['To the Moon (TLI)', v.payload_tli_kg != null ? fmt(v.payload_tli_kg, ' kg') : null], ['Other', v.payload_other],
+    ['Propellant', v.propellant], ['Reusable', v.reusable && v.reusable !== 'none' ? v.reusable : null],
+  ].filter(r => r[1] != null && r[1] !== '');
+  const dv = idealDv(v);
+  const stages = v.stages?.length ? `<h2>Stages</h2><table class="stg"><tr><th>stage</th><th>engine</th><th>vac thrust</th><th>Isp</th></tr>${v.stages.map(s => `<tr><td>${esc(s.name)}</td><td>${s.engines ?? ''}${s.engines ? '× ' : ''}${esc(s.engine || '')}</td><td>${s.thrust_kN_vac ? fmt(s.thrust_kN_vac) + ' kN' : '—'}</td><td>${s.isp_s_vac ? s.isp_s_vac + ' s' : '—'}</td></tr>`).join('')}</table>${dv ? `<div>Ideal Δv, empty stack: <b style="color:#fff">${(dv / 1000).toFixed(2)} km/s</b> <span class="dim">(rocket equation, no payload or losses)</span></div>` : ''}` : '';
+  const tierText = { detailed: 'Detailed model: hand-built from the vehicle’s actual layout.', generic: 'Generic model: drawn from the catalogue dimensions only. A detailed model is still to build.', placeholder: 'No model yet: the ghost shape is only sized to the catalogue height.' }[v._tier];
+  $('info').innerHTML = `<h3 class="serif">${esc(v.name)}</h3>${v.aliases?.length ? `<div class="dim">${esc(v.aliases.join(' · '))}</div>` : ''}
+    <span class="chip">${STATUS[v.status] || v.status}</span><span class="chip">${v.built ? 'built' : 'unbuilt design'}</span><span class="chip"><i class="dot t-${v._tier}" style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px"></i>${v._tier === 'placeholder' ? 'no model' : v._tier + ' model'}</span>
+    <p style="margin:8px 0">${esc(v.notes || '')}</p><table>${rows.map(r => `<tr><td>${r[0]}</td><td>${esc(r[1])}</td></tr>`).join('')}</table>${stages}
+    <p class="dim" style="font-size:13px">${tierText} Figures are drafts compiled from reference sources until marked checked${v.data_quality === 'checked' ? ' (this entry is checked)' : ''}.</p>
+    ${v.source ? `<a href="${esc(v.source)}" target="_blank" rel="noopener">source ↗</a>` : ''}`;
+}
+
+// ---- export ----
+$('glb').onclick = () => {
+  if (!items.length) return;
+  const g = new THREE.Group(); for (const it of items) g.add(it.m.clone(true));
+  g.traverse(o => { if (o.userData?.person) o.parent?.remove(o); });
+  new GLTFExporter().parse(g, res => { const url = URL.createObjectURL(new Blob([res], { type: 'model/gltf-binary' })), a = document.createElement('a'); a.href = url; a.download = (items.length === 1 ? cur : 'lineup') + '.glb'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 2000); }, e => { $('status').textContent = 'export failed: ' + e.message; }, { binary: true });
+};
+
+// ---- start ----
+(async () => {
+  try { await loadData(); } catch (e) { $('status').textContent = 'could not load the vehicle directory: ' + e.message; return; }
+  for (const c of ORDER) if (all.some(v => v.category === c)) $('cat').insertAdjacentHTML('beforeend', `<option value="${c}">${KIND[c]}</option>`);
+  for (const [k, l] of Object.entries(STATUS)) $('stat').insertAdjacentHTML('beforeend', `<option value="${k}">${l}</option>`);
+  applyFilters();
+  const want = location.hash.slice(1); select(byId.has(want) ? want : 'saturn-v', true);
+  addEventListener('hashchange', () => { const w = location.hash.slice(1); if (byId.has(w) && w !== cur) select(w, true); });
+  frame();
+})();
+</script>
+</body>
+</html>

@@ -10,6 +10,7 @@ export const NAV_GROUPS: NavGroup[] = [
     name: "Atlas",
     pages: [
       { href: "/kosmo", label: "Overview" },
+      { href: "/kosmo/timeline", label: "Timeline" },
       { href: "/kosmo/tools/timeline", label: "Kosmographica" },
       { href: "/kosmo/pedia", label: "Kosmopedia" },
     ],
@@ -32,6 +33,7 @@ export const NAV_GROUPS: NavGroup[] = [
     name: "Tools",
     pages: [
       { href: "/kosmo/tools/chemistry", label: "Chemistry" },
+      { href: "/kosmo/tools/spacecraft", label: "Spacecraft" },
       { href: "/kosmo/tools/contraption", label: "Simulator" },
       { href: "/kosmo/tools/flight", label: "Flight deck" },
     ],
