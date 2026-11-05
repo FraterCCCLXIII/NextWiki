@@ -25,6 +25,7 @@
     { name: "Domains", pages: [
       { href: "domain.html?d=math", label: "Math", id: "navMath" },
       { href: "domain.html?d=physics", label: "Physics", id: "navPhysics" },
+      { href: "biology.html", label: "Biology" },
       { href: "domain.html?d=philosophy", label: "Philosophy", id: "navPhil" },
       { href: "domain.html?d=models", label: "Models", id: "navModels" }
     ] },
