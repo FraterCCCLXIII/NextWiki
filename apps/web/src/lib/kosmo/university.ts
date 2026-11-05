@@ -155,6 +155,21 @@ export type LessonRow = {
   go: string | null;
   pedia: string | null;
 };
+/** An open or Creative Commons resource that fills (part of) a module. Set by the University seed. */
+export type OpenSource = {
+  sourceId: string;
+  title: string;
+  publisher: string;
+  url: string;
+  locator: string;
+  fit: "full" | "partial";
+  mode: "link" | "adapt" | "ingest";
+  license: string;
+  licenseName: string;
+  licenseUrl: string;
+  attribution: string;
+  note?: string;
+};
 export type ModuleLink = { kuId: string; name: string; stage: string };
 
 async function findByKuId(kind: "module" | "lesson", kuId: string) {
@@ -239,6 +254,7 @@ export async function getModule(kuId: string) {
     coverage,
     requires: requires.map((r) => linkOf(r.e)),
     requiredBy: requiredBy.map((r) => linkOf(r.e)),
+    openSources: (Array.isArray(d.openSources) ? d.openSources : []) as OpenSource[],
   };
 }
 

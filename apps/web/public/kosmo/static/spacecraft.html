@@ -63,6 +63,7 @@
 <body>
 <div id="view"></div>
 <div id="labels"></div>
+<div id="glbcredit" style="display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:88px;z-index:5;font:11px system-ui,sans-serif;color:rgba(230,236,244,.75);text-shadow:0 1px 2px #000;text-align:center;max-width:min(920px,calc(100vw - 32px));line-height:1.35"></div><style>#glbcredit a{color:#9fd0ff}</style>
 <div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
   <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="spacecraft.html" class="here">Spacecraft</a></nav><span></span></div>
 <div id="panel">
@@ -91,13 +92,16 @@
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
-import { buildModel, person, tierOf } from './vehicle-models.js';
+import { buildModel, useGlbModels, person, tierOf } from './vehicle-models.js';
+// optional real models (models/spacex/manifest.json): any file that is present replaces the procedural sketch of that vehicle; a missing file changes nothing
+let GLBM = null, GLB_MAP = {}; try { GLBM = await import('./vehicle-glb.js'); GLB_MAP = (await GLBM.loadManifest()).labs?.catalog || {}; const man = await GLBM.loadManifest(); await Promise.all([...new Set(Object.values(GLB_MAP))].map(id => man.engines?.[id] ? GLBM.preloadEngineModel(id) : GLBM.preloadVehicleModel(id))); useGlbModels(id => GLB_MAP[id] ? (man.engines?.[GLB_MAP[id]] ? GLBM.engineModel(GLB_MAP[id]) : GLBM.vehicleModel(GLB_MAP[id], { mode: 'full' })) : null); } catch { GLBM = null; }
 const $ = id => document.getElementById(id);
 
 // ---- data ----
-const FILES = ['launch-vehicles', 'crewed-spacecraft', 'uncrewed-spacecraft', 'stations', 'experimental', 'ships'];
-const KIND = { launch_vehicle: 'Launch vehicles', crewed_spacecraft: 'Crewed spacecraft', spaceplane: 'Spaceplanes', lander: 'Landers', uncrewed_spacecraft: 'Probes & observatories', space_station: 'Stations', experimental: 'Experimental', concept: 'Concepts', original: 'Our ships' };
+const FILES = ['launch-vehicles', 'crewed-spacecraft', 'uncrewed-spacecraft', 'stations', 'experimental', 'ships', 'engines'];
+const KIND = { launch_vehicle: 'Launch vehicles', crewed_spacecraft: 'Crewed spacecraft', spaceplane: 'Spaceplanes', lander: 'Landers', uncrewed_spacecraft: 'Probes & observatories', space_station: 'Stations', experimental: 'Experimental', concept: 'Concepts', original: 'Our ships', engine: 'Engines' };
 const ORDER = Object.keys(KIND);
 const STATUS = { operational: 'Operational', retired: 'Retired', in_development: 'In development', cancelled: 'Cancelled', lost: 'Lost', concept: 'Concept' };
 let all = [], shown = [], byId = new Map(), cur = null, pinned = [];
@@ -108,7 +112,7 @@ const esc = s => String(s ?? '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&
 
 async function loadData() {
   const parts = await Promise.all(FILES.map(f => fetch(`../data/vehicles/${f}.json`).then(r => { if (!r.ok) throw new Error(`${f}.json ${r.status}`); return r.json(); })));
-  all = parts.flat(); for (const v of all) { v._tier = tierOf(v); byId.set(v.id, v); }
+  all = parts.flat(); for (const v of all) { v._tier = GLB_MAP[v.id] && GLBM && (GLBM.hasEngineModel(GLB_MAP[v.id]) || GLBM.hasVehicleModel(GLB_MAP[v.id])) ? 'detailed' : tierOf(v); v._glb = !!(GLB_MAP[v.id] && GLBM && v._tier === 'detailed' && (GLBM.hasEngineModel(GLB_MAP[v.id]) || GLBM.hasVehicleModel(GLB_MAP[v.id]))); byId.set(v.id, v); }
 }
 
 // ---- scene ----
@@ -117,6 +121,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); view.appendChild(renderer
 const scene = new THREE.Scene(); scene.background = new THREE.Color(window.KOSMO_BG ? KOSMO_BG.pick(0x05070d) : 0x05070d);
 const camera = new THREE.PerspectiveCamera(40, 1, 0.05, 20000); camera.position.set(30, 20, 60);
 const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true;
+{ try { const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; pm.dispose(); } catch { /* no environment: the loader-side metalness cap keeps models lit */ } }   // image-based light so metallic GLB materials are not black
 scene.add(new THREE.AmbientLight(0xffffff, 0.7)); scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x20242c, 0.6));
 const key = new THREE.DirectionalLight(0xffffff, 2.0); key.position.set(40, 80, 60); scene.add(key); const fill = new THREE.DirectionalLight(0x9fd3ff, 0.7); fill.position.set(-50, 20, -40); scene.add(fill);
 const stage = new THREE.Group(); scene.add(stage);
@@ -146,6 +151,7 @@ function showVehicles(list) {
     const el = document.createElement('div'); el.className = 'lbl'; el.innerHTML = `<b>${esc(b.v.name)}</b><span>${b.h >= 10 ? b.h.toFixed(1) : b.h.toFixed(2)} m</span>`; $('labels').appendChild(el);
     items.push({ ...b, el, person: p });
   }
+  { const cr = $('glbcredit'); if (cr) { const h = GLBM ? GLBM.attributionHTML(built.map(b => b.m.userData.glb).filter(Boolean)) : ''; cr.innerHTML = h; cr.style.display = h ? '' : 'none'; } }
   const totalW = x - gap;
   for (const it of items) it.m.position.x -= totalW / 2, it.person.position.x -= totalW / 2;
   const R = Math.max(totalW / 2 + 4, maxH * 0.7, 6);
@@ -233,14 +239,14 @@ function info(v) {
     ['Kind', KIND[v.category] || v.category], ['Status', STATUS[v.status] || v.status], ['Country', [].concat(v.country || '—').join(', ')],
     ['Maker', v.manufacturer], ['Operator', v.operator], ['First flight', v.first_flight], ['Last flight', v.last_flight],
     ['Flights', v.flights != null ? `${v.flights}${v.successes != null ? ` (${v.successes} succeeded)` : ''}` : null], ['Crew', v.crew_capacity],
-    ['Height', v.height_m != null ? fmt(v.height_m, ' m') : null], ['Length', v.length_m != null ? fmt(v.length_m, ' m') : null], ['Diameter', v.diameter_m != null ? fmt(v.diameter_m, ' m') : null], ['Wingspan', v.wingspan_m != null ? fmt(v.wingspan_m, ' m') : null],
-    ['Mass', v.mass_kg != null ? fmt(v.mass_kg, ' kg') : null], ['Dry mass', v.dry_mass_kg != null ? fmt(v.dry_mass_kg, ' kg') : null], ['Liftoff thrust', v.thrust_kN != null ? fmt(v.thrust_kN, ' kN') : null],
+    ['Height', v.height_m != null ? fmt(v.height_m, ' m') : null], ['Length', v.length_m != null ? fmt(v.length_m, ' m') : null], [v.category === 'engine' ? 'Bell exit diameter' : 'Diameter', v.diameter_m != null ? fmt(v.diameter_m, ' m') : null], ['Wingspan', v.wingspan_m != null ? fmt(v.wingspan_m, ' m') : null],
+    ['Mass', v.mass_kg != null ? fmt(v.mass_kg, ' kg') : null], ['Dry mass', v.dry_mass_kg != null ? fmt(v.dry_mass_kg, ' kg') : null], ['Liftoff thrust', v.thrust_kN != null && v.category !== 'engine' ? fmt(v.thrust_kN, ' kN') : null], ['Thrust, sea level', v.category === 'engine' && v.thrust_kN != null ? fmt(v.thrust_kN, ' kN') : null], ['Thrust, vacuum', v.thrust_kN_vac != null ? fmt(v.thrust_kN_vac, ' kN') : null], ['Isp, sea level', v.isp_s_sl != null ? v.isp_s_sl + ' s' : null], ['Isp, vacuum', v.isp_s_vac != null ? v.isp_s_vac + ' s' : null], ['Used on', v.used_on],
     ['To LEO', v.payload_leo_kg != null ? fmt(v.payload_leo_kg, ' kg') : null], ['To GTO', v.payload_gto_kg != null ? fmt(v.payload_gto_kg, ' kg') : null], ['To the Moon (TLI)', v.payload_tli_kg != null ? fmt(v.payload_tli_kg, ' kg') : null], ['Other', v.payload_other],
     ['Propellant', v.propellant], ['Reusable', v.reusable && v.reusable !== 'none' ? v.reusable : null],
   ].filter(r => r[1] != null && r[1] !== '');
   const dv = idealDv(v);
   const stages = v.stages?.length ? `<h2>Stages</h2><table class="stg"><tr><th>stage</th><th>engine</th><th>vac thrust</th><th>Isp</th></tr>${v.stages.map(s => `<tr><td>${esc(s.name)}</td><td>${s.engines ?? ''}${s.engines ? '× ' : ''}${esc(s.engine || '')}</td><td>${s.thrust_kN_vac ? fmt(s.thrust_kN_vac) + ' kN' : '—'}</td><td>${s.isp_s_vac ? s.isp_s_vac + ' s' : '—'}</td></tr>`).join('')}</table>${dv ? `<div>Ideal Δv, empty stack: <b style="color:#fff">${(dv / 1000).toFixed(2)} km/s</b> <span class="dim">(rocket equation, no payload or losses)</span></div>` : ''}` : '';
-  const tierText = { detailed: 'Detailed model: hand-built from the vehicle’s actual layout.', generic: 'Generic model: drawn from the catalogue dimensions only. A detailed model is still to build.', placeholder: 'No model yet: the ghost shape is only sized to the catalogue height.' }[v._tier];
+  const tierText = v._glb && v.category !== 'engine' ? 'Detailed model: a real 3D model (credit at the bottom of the view), scaled to the figures above; the vehicle’s procedural sketch is used only if the file is missing.' : v.category === 'engine' ? (GLB_MAP[v.id] && GLBM?.hasEngineModel(GLB_MAP[v.id]) ? 'Real 3D engine model (credit at the bottom of the view), scaled so the bell exit matches the figure above.' : 'Procedural bell only (the engine model file is missing): sized to the catalogue height and exit diameter.') : { detailed: 'Detailed model: hand-built from the vehicle’s actual layout.', generic: 'Generic model: drawn from the catalogue dimensions only. A detailed model is still to build.', placeholder: 'No model yet: the ghost shape is only sized to the catalogue height.' }[v._tier];
   $('info').innerHTML = `<h3 class="serif">${esc(v.name)}</h3>${v.aliases?.length ? `<div class="dim">${esc(v.aliases.join(' · '))}</div>` : ''}
     <span class="chip">${STATUS[v.status] || v.status}</span><span class="chip">${v.built ? 'built' : 'unbuilt design'}</span><span class="chip"><i class="dot t-${v._tier}" style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px"></i>${v._tier === 'placeholder' ? 'no model' : v._tier + ' model'}</span>
     <p style="margin:8px 0">${esc(v.notes || '')}</p><table>${rows.map(r => `<tr><td>${r[0]}</td><td>${esc(r[1])}</td></tr>`).join('')}</table>${stages}

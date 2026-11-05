@@ -1,0 +1,9 @@
+Open Science Training Handbook
+Publisher: FOSTER Open Science / Open Science Training Handbook authors
+Source: https://open-science-training-handbook.github.io/Open-Science-Training-Handbook_EN/
+Licence: CC0 (https://open-science-training-handbook.github.io/Open-Science-Training-Handbook_EN/)
+Credit: Open Science Training Handbook (CC0 1.0), https://open-science-training-handbook.github.io/Open-Science-Training-Handbook_EN/
+Not covered by this licence: Some referenced materials are copyright-protected, as noted in the text.
+Retrieved: 2026-11-05
+Taken: Source repository of the handbook as a zip (Markdown chapters and figures), master branch, whole repository; nothing excluded
+Files fetched from: https://codeload.github.com/Open-Science-Training-Handbook/Open-Science-Training-Handbook_EN/zip/refs/heads/master

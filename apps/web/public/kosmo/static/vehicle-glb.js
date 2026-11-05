@@ -109,7 +109,7 @@ function matches(name, list) { return (list || []).some(r => nameRe(r).some(re =
  *  opts.mode: a key of entry.modes (e.g. 'firstStage' hides the second stage and fairing; the default is the whole model).
  *  opts.hide: gear groups to remove, named in entry.gear (e.g. ['legs', 'gridFins']); the lab draws and animates its own.
  *  opts.length: override the real length of the visible part in metres (otherwise the mode's lengthM / the entry's lengthM).
- *  opts.diameter: force the body width in metres (non-uniform horizontal scale).
+ *  opts.diameter: force the body width in metres (non-uniform horizontal scale). entry.widthScale (manifest) does the same by a fixed factor when opts.diameter is not given.
  *  opts.shadows: cast and receive shadows. */
 export function vehicleModel(id, opts = {}) {
   const rec = loaded.get(id); if (!rec) return null;
@@ -137,6 +137,8 @@ export function vehicleModel(id, opts = {}) {
   const y0 = ref ? new THREE.Box3().setFromObject(ref).min.y : box.min.y; root.position.set(-c.x, -y0, -c.z);
   // opts.diameter (m): squash / stretch x and z so the body is this wide (the Shipyard stacks the model on lab stages of a given diameter and tank length); y and the base stay put
   if (opts.diameter) { const w = ref ? new THREE.Box3().setFromObject(ref).getSize(new THREE.Vector3()) : new THREE.Box3().setFromObject(root).getSize(new THREE.Vector3()), sx = opts.diameter / (Math.max(w.x, w.z) || opts.diameter); wrap.scale.set(sx, 1, sx); }
+  // entry.widthScale: optional fixed horizontal squash / stretch about the vertical axis (x and z only; y and the base stay put). Boosters sit at a radial offset, so they scale with the core and stay attached.
+  if (!opts.diameter && entry.widthScale && entry.widthScale !== 1) wrap.scale.set(entry.widthScale, 1, entry.widthScale);
   wrap.userData = { glb: true, id, baseY: 0, length, scale: k, diameter: opts.diameter ?? entry.diameterM, attribution: attribution(entry), entry };
   if (entry.noFit) wrap.userData.fitAxis = null;   // the catalogue viewer must not stretch this model to the catalogue height (it is only part of the vehicle, or drawn to a different length)
   return wrap;

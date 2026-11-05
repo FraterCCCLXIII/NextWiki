@@ -66,6 +66,39 @@ export default async function UniversityModulePage({
         ))}
       </ol>
 
+      {mod.openSources.length > 0 && (
+        <section className="space-y-2">
+          <h2 className="text-lg font-semibold">Open resources for this module</h2>
+          <p className="text-sm text-kosmo-dim">
+            Free, openly licensed material from other publishers. Each link opens the source; licences and credits are
+            listed with it.
+          </p>
+          <ul className="divide-y divide-kosmo-line rounded-lg border border-kosmo-line bg-kosmo-panel">
+            {mod.openSources.map((s) => (
+              <li key={`${s.sourceId}-${s.locator}`} className="space-y-1 px-4 py-3">
+                <a
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-kosmo-blue hover:underline"
+                >
+                  {s.locator}
+                </a>
+                <p className="text-sm text-kosmo-dim">
+                  {s.title} · {s.publisher} · {s.fit === "full" ? "covers the module" : "covers part of it"}
+                </p>
+                <p className="text-xs text-kosmo-dim2">
+                  {s.attribution}{" "}
+                  <a href={s.licenseUrl} target="_blank" rel="noopener noreferrer" className="underline">
+                    {s.licenseName}
+                  </a>
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {mod.requiredBy.length > 0 && (
         <p className="text-sm text-kosmo-dim">
           Leads to:{" "}

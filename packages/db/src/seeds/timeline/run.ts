@@ -30,6 +30,31 @@ for (const f of files) {
   try {
     const t0 = Date.now();
     const bundle = await source.load({ root });
+    if (source.dedupe) {
+      const norm = (n: string) => n.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
+      const own = new Set(bundle.records.map((r) => r.dataset));
+      const existing = new Map<string, number[]>();
+      const res = (await db.execute(sql`select name, time_start, data->>'dataset' as ds from kosmo_entities where slug like 'tl-%'`)) as unknown as { name: string; time_start: number | null; ds: string }[] | { rows: { name: string; time_start: number | null; ds: string }[] };
+      for (const row of Array.isArray(res) ? res : res.rows) {
+        if (row.time_start == null || own.has(row.ds)) continue;
+        const k = norm(row.name);
+        if (k.length >= 4) existing.set(k, [...(existing.get(k) ?? []), Number(row.time_start)]);
+      }
+      const keep: typeof bundle.records = [];
+      const kept = new Map<string, number[]>();
+      let dropped = 0;
+      for (const r of bundle.records) {
+        const k = norm(r.name);
+        const tol = r.approx ? 250 : 100;
+        const near = (arr?: number[]) => arr?.some((y) => Math.abs(y - r.start) <= tol);
+        if (k.length >= 4 && (near(existing.get(k)) || near(kept.get(k)))) { dropped++; continue; }
+        kept.set(k, [...(kept.get(k) ?? []), r.start]);
+        keep.push(r);
+      }
+      bundle.records = keep;
+      if (bundle.relations) { const ids = new Set(keep.map((r) => `${r.dataset}:${r.key}`)); bundle.relations = bundle.relations.filter((x) => ids.has(x.from) && ids.has(x.to)); }
+      console.log(`\n  dedupe: dropped ${dropped} records already held by other datasets or repeated within this one`);
+    }
     const report = validate(bundle);
     const reasons = new Map<string, number>();
     for (const p of report.problems) reasons.set(p.reason.replace(/\d+/g, "N"), (reasons.get(p.reason.replace(/\d+/g, "N")) ?? 0) + 1);

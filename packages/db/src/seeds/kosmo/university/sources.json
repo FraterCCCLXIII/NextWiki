@@ -1,0 +1,1600 @@
+{
+  "version": 1,
+  "note": "Every outside work the University links to, cites or ingests. Add a source here before pointing a lesson (ref) or the gap map (source-map.json) at it. Check the licence on the source's own site and record the date. Do not edit by hand to add ingested copies: use the ingest script so size and date are recorded.",
+  "sources": {
+    "SRC-openstax-astronomy-2e": {
+      "title": "Astronomy 2e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/astronomy-2e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/astronomy-2e/pages/preface",
+      "attribution": "Access for free at https://openstax.org/books/astronomy-2e. Astronomy 2e by OpenStax, licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "public",
+        "primary",
+        "college",
+        "middle",
+        "high",
+        "masters"
+      ],
+      "exclusions": "OpenStax and Rice names/logos not covered; some third-party figures carry their own licence (check figure credits). OpenStax forbids ingesting the book into generative-AI offerings without written permission.",
+      "mode": "link",
+      "notes": "College level; use as factual backbone for public/primary astronomy modules. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "id": "SRC-openstax-astronomy-2e",
+      "licenseCheckedAt": "2026-11-05",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/astronomy-2e/pages/preface"
+    },
+    "SRC-nasa-science": {
+      "title": "NASA Science (Solar System, Earth, Universe)",
+      "publisher": "NASA",
+      "url": "https://science.nasa.gov/",
+      "kind": "site",
+      "license": "PD",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "attribution": "Credit: NASA (science.nasa.gov). NASA media are generally not subject to copyright in the United States; NASA does not endorse this adaptation.",
+      "stages": [
+        "public",
+        "preschool",
+        "kindergarten",
+        "primary",
+        "middle",
+        "high"
+      ],
+      "exclusions": "NASA insignia/logotype not public domain; some pages contain third-party copyrighted images marked with the holder's name; identifiable people may need permission for commercial use.",
+      "mode": "adapt",
+      "id": "SRC-nasa-science",
+      "licenseCheckedAt": "2026-11-05"
+    },
+    "SRC-illustrative-mathematics-k5": {
+      "title": "Illustrative Mathematics K-5 Math",
+      "publisher": "Illustrative Mathematics / Kendall Hunt",
+      "url": "https://im.kendallhunt.com/K5/families/kindergarten/units.html",
+      "kind": "course",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://im.kendallhunt.com/K5/families/kindergarten/units.html",
+      "attribution": "Based on IM K-5 Math by Illustrative Mathematics, licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).",
+      "stages": [
+        "kindergarten",
+        "primary"
+      ],
+      "exclusions": "IM name and logo excluded from the licence; some images are public domain or under their own licences. v.360 edition is CC BY-NC and is not what is referenced here.",
+      "mode": "adapt",
+      "id": "SRC-illustrative-mathematics-k5",
+      "licenseCheckedAt": "2026-11-05"
+    },
+    "SRC-creative-computing-harvard": {
+      "title": "Creative Computing Curriculum Guide (Scratch)",
+      "publisher": "Creative Computing Lab, Harvard Graduate School of Education",
+      "url": "https://creativecomputing.gse.harvard.edu/guide/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://creativecomputing.gse.harvard.edu/guide/",
+      "attribution": "Creative Computing Curriculum by the Creative Computing Lab, Harvard Graduate School of Education, licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "primary",
+        "middle"
+      ],
+      "mode": "adapt",
+      "notes": "Seven units (0-6) as Google Slides; small download.",
+      "id": "SRC-creative-computing-harvard",
+      "licenseCheckedAt": "2026-11-05"
+    },
+    "SRC-code-org-cs-fundamentals": {
+      "title": "CS Fundamentals (Courses A-F)",
+      "publisher": "Code.org (now CodeAI)",
+      "url": "https://code.org/curriculum/computer-science-fundamentals",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://code.org/commitment",
+      "attribution": "CS Fundamentals by Code.org, licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "kindergarten",
+        "primary"
+      ],
+      "exclusions": "Code.org/CodeAI names and logos are trademarks; the course page itself states no licence, the CC BY-NC-SA 4.0 grant is stated on the commitment page.",
+      "mode": "adapt",
+      "notes": "Unplugged lessons are the best fit for non-screen coding.",
+      "id": "SRC-code-org-cs-fundamentals",
+      "licenseCheckedAt": "2026-11-05"
+    },
+    "SRC-openstax-physics-hs": {
+      "id": "SRC-openstax-physics-hs",
+      "title": "Physics (high school)",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/physics",
+      "kind": "textbook",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://openstax.org/books/physics/pages/preface",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Physics (high school) by OpenStax, Rice University, is licensed under Creative Commons Attribution 4.0 International (CC BY 4.0). Access for free at https://openstax.org/books/physics/pages/1-introduction.",
+      "stages": [
+        "middle",
+        "high"
+      ],
+      "exclusions": "Third-party images, photos and figures credited in captions may carry their own licences; OpenStax logos and covers are trademarks and excluded.",
+      "mode": "link",
+      "notes": "Preface states 'This book uses the Creative Commons Attribution License'; the OpenStax site footer separately states CC BY-NC-SA 4.0 for textbooks generally. Both permit adaptation by a non-commercial portal. Section slugs from the publisher's archive TOC. OpenStax asks prior permission for LLM ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/physics/pages/preface"
+    },
+    "SRC-openstax-chemistry-2e": {
+      "id": "SRC-openstax-chemistry-2e",
+      "title": "Chemistry 2e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/chemistry-2e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/chemistry-2e/pages/preface",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Chemistry 2e by OpenStax, Rice University, is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). Access for free at https://openstax.org/books/chemistry-2e/pages/1-introduction.",
+      "stages": [
+        "middle",
+        "high",
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party images, photos and figures credited in captions may carry their own licences; OpenStax logos and covers are trademarks and excluded.",
+      "mode": "link",
+      "notes": "Section slugs read from the publisher's archive table of contents. OpenStax asks that LLM training/ingestion of text by third parties get prior written permission; check before bulk machine ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/chemistry-2e/pages/preface"
+    },
+    "SRC-openstax-concepts-biology": {
+      "id": "SRC-openstax-concepts-biology",
+      "title": "Concepts of Biology",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/concepts-biology",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/concepts-biology/pages/preface",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Concepts of Biology by OpenStax, Rice University, is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). Access for free at https://openstax.org/books/concepts-biology/pages/1-introduction.",
+      "stages": [
+        "middle",
+        "high",
+        "college"
+      ],
+      "exclusions": "Third-party images, photos and figures credited in captions may carry their own licences; OpenStax logos and covers are trademarks and excluded.",
+      "mode": "link",
+      "notes": "Section slugs read from the publisher's archive table of contents. OpenStax asks that LLM training/ingestion of text by third parties get prior written permission; check before bulk machine ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/concepts-biology/pages/preface"
+    },
+    "SRC-openstax-prealgebra-2e": {
+      "id": "SRC-openstax-prealgebra-2e",
+      "title": "Prealgebra 2e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/prealgebra-2e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/prealgebra-2e/pages/preface",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Prealgebra 2e by OpenStax, Rice University, is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). Access for free at https://openstax.org/books/prealgebra-2e/pages/1-introduction.",
+      "stages": [
+        "primary",
+        "middle"
+      ],
+      "exclusions": "Third-party images, photos and figures credited in captions may carry their own licences; OpenStax logos and covers are trademarks and excluded.",
+      "mode": "link",
+      "notes": "Section slugs read from the publisher's archive table of contents. OpenStax asks that LLM training/ingestion of text by third parties get prior written permission; check before bulk machine ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/prealgebra-2e/pages/preface"
+    },
+    "SRC-openstax-intro-statistics-2e": {
+      "id": "SRC-openstax-intro-statistics-2e",
+      "title": "Introductory Statistics 2e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/introductory-statistics-2e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/introductory-statistics-2e/pages/preface",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Introductory Statistics 2e by OpenStax, Rice University, is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). Access for free at https://openstax.org/books/introductory-statistics-2e/pages/1-introduction.",
+      "stages": [
+        "high",
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party images, photos and figures credited in captions may carry their own licences; OpenStax logos and covers are trademarks and excluded.",
+      "mode": "link",
+      "notes": "Section slugs read from the publisher's archive table of contents. OpenStax asks that LLM training/ingestion of text by third parties get prior written permission; check before bulk machine ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/introductory-statistics-2e/pages/preface"
+    },
+    "SRC-openstax-principles-economics-3e": {
+      "id": "SRC-openstax-principles-economics-3e",
+      "title": "Principles of Economics 3e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/principles-economics-3e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/principles-economics-3e/pages/preface",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Principles of Economics 3e by OpenStax, Rice University, is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). Access for free at https://openstax.org/books/principles-economics-3e/pages/1-introduction.",
+      "stages": [
+        "high",
+        "college"
+      ],
+      "exclusions": "Third-party images, photos and figures credited in captions may carry their own licences; OpenStax logos and covers are trademarks and excluded.",
+      "mode": "link",
+      "notes": "Section slugs read from the publisher's archive table of contents. OpenStax asks that LLM training/ingestion of text by third parties get prior written permission; check before bulk machine ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/principles-economics-3e/pages/preface"
+    },
+    "SRC-openstax-world-history-1": {
+      "id": "SRC-openstax-world-history-1",
+      "title": "World History, Volume 1: to 1500",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/world-history-volume-1",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/world-history-volume-1/pages/preface",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "World History, Volume 1: to 1500 by OpenStax, Rice University, is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). Access for free at https://openstax.org/books/world-history-volume-1/pages/1-introduction.",
+      "stages": [
+        "high",
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party images, photos and figures credited in captions may carry their own licences; OpenStax logos and covers are trademarks and excluded.",
+      "mode": "link",
+      "notes": "Section slugs read from the publisher's archive table of contents. OpenStax asks that LLM training/ingestion of text by third parties get prior written permission; check before bulk machine ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/world-history-volume-1/pages/preface"
+    },
+    "SRC-openstax-world-history-2": {
+      "id": "SRC-openstax-world-history-2",
+      "title": "World History, Volume 2: from 1400",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/world-history-volume-2",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/world-history-volume-2/pages/preface",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "World History, Volume 2: from 1400 by OpenStax, Rice University, is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). Access for free at https://openstax.org/books/world-history-volume-2/pages/1-introduction.",
+      "stages": [
+        "high",
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party images, photos and figures credited in captions may carry their own licences; OpenStax logos and covers are trademarks and excluded.",
+      "mode": "link",
+      "notes": "Section slugs read from the publisher's archive table of contents. OpenStax asks that LLM training/ingestion of text by third parties get prior written permission; check before bulk machine ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/world-history-volume-2/pages/preface"
+    },
+    "SRC-openstax-american-government-4e": {
+      "id": "SRC-openstax-american-government-4e",
+      "title": "American Government 4e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/american-government-4e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/american-government-4e/pages/preface",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "American Government 4e by OpenStax, Rice University, is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). Access for free at https://openstax.org/books/american-government-4e/pages/1-introduction.",
+      "stages": [
+        "high",
+        "college"
+      ],
+      "exclusions": "Third-party images, photos and figures credited in captions may carry their own licences; OpenStax logos and covers are trademarks and excluded.",
+      "mode": "link",
+      "notes": "Section slugs read from the publisher's archive table of contents. OpenStax asks that LLM training/ingestion of text by third parties get prior written permission; check before bulk machine ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/american-government-4e/pages/preface"
+    },
+    "SRC-openstax-intro-philosophy": {
+      "id": "SRC-openstax-intro-philosophy",
+      "title": "Introduction to Philosophy",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/introduction-philosophy",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/introduction-philosophy/pages/preface",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Introduction to Philosophy by OpenStax, Rice University, is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). Access for free at https://openstax.org/books/introduction-philosophy/pages/1-introduction.",
+      "stages": [
+        "high",
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party images, photos and figures credited in captions may carry their own licences; OpenStax logos and covers are trademarks and excluded.",
+      "mode": "link",
+      "notes": "Section slugs read from the publisher's archive table of contents. OpenStax asks that LLM training/ingestion of text by third parties get prior written permission; check before bulk machine ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/introduction-philosophy/pages/preface"
+    },
+    "SRC-openstax-writing-guide": {
+      "id": "SRC-openstax-writing-guide",
+      "title": "Writing Guide with Handbook",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/writing-guide",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/writing-guide/pages/preface",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Writing Guide with Handbook by OpenStax, Rice University, is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). Access for free at https://openstax.org/books/writing-guide/pages/1-introduction.",
+      "stages": [
+        "high",
+        "college"
+      ],
+      "exclusions": "Third-party images, photos and figures credited in captions may carry their own licences; OpenStax logos and covers are trademarks and excluded.",
+      "mode": "link",
+      "notes": "Section slugs read from the publisher's archive table of contents. OpenStax asks that LLM training/ingestion of text by third parties get prior written permission; check before bulk machine ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/writing-guide/pages/preface"
+    },
+    "SRC-openstax-intro-python": {
+      "id": "SRC-openstax-intro-python",
+      "title": "Introduction to Python Programming",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/introduction-python-programming",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/introduction-python-programming/pages/preface",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Introduction to Python Programming by OpenStax, Rice University, is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0). Access for free at https://openstax.org/books/introduction-python-programming/pages/1-introduction.",
+      "stages": [
+        "middle",
+        "high",
+        "college"
+      ],
+      "exclusions": "Third-party images, photos and figures credited in captions may carry their own licences; OpenStax logos and covers are trademarks and excluded.",
+      "mode": "link",
+      "notes": "Section slugs read from the publisher's archive table of contents. OpenStax asks that LLM training/ingestion of text by third parties get prior written permission; check before bulk machine ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/introduction-python-programming/pages/preface"
+    },
+    "SRC-im-6-8-math": {
+      "id": "SRC-im-6-8-math",
+      "title": "IM 6-8 Math (Open Up Resources 6-8 Math), grades 6, 7 and 8",
+      "publisher": "Illustrative Mathematics / Open Up Resources (hosted by Kendall Hunt)",
+      "url": "https://curriculum.illustrativemathematics.org/MS/index.html",
+      "kind": "course",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://curriculum.illustrativemathematics.org/MS/index.html",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Grade 6, 7 and 8 materials are copyright 2017-2019 by Open Up Resources (https://openupresources.org/math-curriculum/), authored by Illustrative Mathematics, and licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).",
+      "stages": [
+        "middle"
+      ],
+      "exclusions": "The Illustrative Mathematics name and logo are not covered by the licence. Some later Illustrative Mathematics/Kendall Hunt updates and derivative files may carry other terms; adapt only from the Open Up Resources 2017-2019 version.",
+      "mode": "adapt",
+      "notes": "The site's own page states the CC BY 4.0 licence. Unit pages were read from the grade indexes (grade 6 = /MS/students/1/, grade 7 = /2/, grade 8 = /3/)."
+    },
+    "SRC-phet-simulations": {
+      "id": "SRC-phet-simulations",
+      "title": "PhET Interactive Simulations",
+      "publisher": "University of Colorado Boulder",
+      "url": "https://phet.colorado.edu/",
+      "kind": "collection",
+      "license": "TOS",
+      "licenseUrl": "https://phet.colorado.edu/en/licensing",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "PhET Interactive Simulations, University of Colorado Boulder, https://phet.colorado.edu",
+      "stages": [
+        "primary",
+        "middle",
+        "high",
+        "college"
+      ],
+      "exclusions": "Do not copy or host simulation files.",
+      "mode": "link",
+      "notes": "The PhET page for pre-2026-03-29 HTML simulations says they were CC BY 4.0, but it states that simulations published after that date are covered by a different agreement, so these are recorded as link-only. Free for non-commercial classroom use per PhET."
+    },
+    "SRC-usgs-this-dynamic-earth": {
+      "id": "SRC-usgs-this-dynamic-earth",
+      "title": "This Dynamic Earth: The Story of Plate Tectonics",
+      "publisher": "U.S. Geological Survey (W. J. Kious and R. I. Tilling)",
+      "url": "https://pubs.usgs.gov/gip/dynamic/dynamic.html",
+      "kind": "textbook",
+      "license": "PD",
+      "licenseUrl": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Credit: U.S. Geological Survey, This Dynamic Earth: The Story of Plate Tectonics (Kious and Tilling, 1996).",
+      "stages": [
+        "middle",
+        "high",
+        "public"
+      ],
+      "exclusions": "USGS states that not every illustration or photograph on its site is public domain; third-party images used with permission must be cleared separately.",
+      "mode": "adapt",
+      "notes": "USGS copyrights page: USGS-authored or produced information is in the U.S. public domain, with credit requested. Publication originally printed 1996; plate-tectonic basics unchanged."
+    },
+    "SRC-usgs-geologic-time": {
+      "id": "SRC-usgs-geologic-time",
+      "title": "Geologic Time (USGS General Interest Publication)",
+      "publisher": "U.S. Geological Survey",
+      "url": "https://pubs.usgs.gov/gip/geotime/",
+      "kind": "site",
+      "license": "PD",
+      "licenseUrl": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Credit: U.S. Geological Survey, Geologic Time.",
+      "stages": [
+        "middle",
+        "high",
+        "public"
+      ],
+      "exclusions": "Third-party images used by permission are not public domain.",
+      "mode": "adapt",
+      "notes": "Landing page returned HTTP 200 to a plain fetch but its text could not be summarised; the age page was fetched. Licence from the USGS copyrights page."
+    },
+    "SRC-nps-grand-canyon-geology": {
+      "id": "SRC-nps-grand-canyon-geology",
+      "title": "Grand Canyon National Park: Geologic Formations",
+      "publisher": "U.S. National Park Service",
+      "url": "https://www.nps.gov/grca/learn/nature/geologicformations.htm",
+      "kind": "site",
+      "license": "PD",
+      "licenseUrl": "https://www.nps.gov/aboutus/disclaimer.htm",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Credit: National Park Service, Grand Canyon National Park.",
+      "stages": [
+        "primary",
+        "middle",
+        "high",
+        "public"
+      ],
+      "exclusions": "Some content is protected by third-party rights; NPS arrowhead is a trademark.",
+      "mode": "adapt",
+      "notes": "NPS disclaimer: material created by NPS is generally considered public domain unless otherwise indicated."
+    },
+    "SRC-cs-unplugged": {
+      "id": "SRC-cs-unplugged",
+      "title": "CS Unplugged",
+      "publisher": "Computer Science Education Research Group, University of Canterbury",
+      "url": "https://www.csunplugged.org/en/",
+      "kind": "collection",
+      "license": "CC-BY-SA-4.0",
+      "licenseUrl": "https://www.csunplugged.org/en/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "CS Unplugged, Computer Science Education Research Group, University of Canterbury, https://www.csunplugged.org, licensed CC BY-SA 4.0.",
+      "stages": [
+        "primary",
+        "middle"
+      ],
+      "exclusions": "Some icons are provided by third parties and credited on the site.",
+      "mode": "adapt",
+      "notes": "Site footer: website content is shared under CC BY-SA 4.0; source on GitHub."
+    },
+    "SRC-openstax-university-physics": {
+      "id": "SRC-openstax-university-physics",
+      "title": "University Physics Volumes 1-3",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/university-physics-volume-1",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/university-physics-volume-1/pages/preface",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "University Physics Volumes 1-3 by OpenStax, Rice University, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/university-physics-volume-1/pages/preface",
+      "stages": [
+        "high",
+        "college",
+        "masters"
+      ],
+      "exclusions": "OpenStax names, logos and book covers are excluded from the licence; third-party images/figures credited in the book may carry their own licences. OpenStax prohibits use of the text to train LLMs or ingest into generative AI without written permission.",
+      "mode": "link",
+      "notes": "Three volumes: slugs university-physics-volume-1/-2/-3. Licence statement verified on Vol 1 preface; Vol 2/3 pages carry the same OpenStax terms. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/university-physics-volume-1/pages/preface"
+    },
+    "SRC-openstax-biology-2e": {
+      "id": "SRC-openstax-biology-2e",
+      "title": "Biology 2e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/biology-2e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/biology-2e/pages/14-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Biology 2e by OpenStax, Rice University, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/biology-2e/pages/14-introduction",
+      "stages": [
+        "high",
+        "college",
+        "masters"
+      ],
+      "exclusions": "OpenStax names, logos and book covers are excluded from the licence; third-party images/figures credited in the book may carry their own licences. OpenStax prohibits use of the text to train LLMs or ingest into generative AI without written permission.",
+      "mode": "link",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/biology-2e/pages/preface",
+      "notes": "OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded."
+    },
+    "SRC-openstax-anatomy-physiology-2e": {
+      "id": "SRC-openstax-anatomy-physiology-2e",
+      "title": "Anatomy and Physiology 2e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/anatomy-and-physiology-2e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/anatomy-and-physiology-2e/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Anatomy and Physiology 2e by OpenStax, Rice University, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/anatomy-and-physiology-2e/pages/1-introduction",
+      "stages": [
+        "high",
+        "college",
+        "masters"
+      ],
+      "exclusions": "OpenStax names, logos and book covers are excluded from the licence; third-party images/figures credited in the book may carry their own licences. OpenStax prohibits use of the text to train LLMs or ingest into generative AI without written permission.",
+      "mode": "link",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/anatomy-and-physiology-2e/pages/preface",
+      "notes": "OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded."
+    },
+    "SRC-openstax-calculus-vol1": {
+      "id": "SRC-openstax-calculus-vol1",
+      "title": "Calculus Volume 1",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/calculus-volume-1",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/calculus-volume-1/pages/4-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Calculus Volume 1 by OpenStax, Rice University, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/calculus-volume-1/pages/4-introduction",
+      "stages": [
+        "high",
+        "college"
+      ],
+      "exclusions": "OpenStax names, logos and book covers are excluded from the licence; third-party images/figures credited in the book may carry their own licences. OpenStax prohibits use of the text to train LLMs or ingest into generative AI without written permission.",
+      "mode": "link",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/calculus-volume-1/pages/preface",
+      "notes": "OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded."
+    },
+    "SRC-openstax-precalculus-2e": {
+      "id": "SRC-openstax-precalculus-2e",
+      "title": "Precalculus 2e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/precalculus-2e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/precalculus-2e/pages/8-introduction-to-further-applications-of-trigonometry",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Precalculus 2e by OpenStax, Rice University, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/precalculus-2e/pages/8-introduction-to-further-applications-of-trigonometry",
+      "stages": [
+        "high",
+        "college"
+      ],
+      "exclusions": "OpenStax names, logos and book covers are excluded from the licence; third-party images/figures credited in the book may carry their own licences. OpenStax prohibits use of the text to train LLMs or ingest into generative AI without written permission.",
+      "mode": "link",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/precalculus-2e/pages/preface",
+      "notes": "OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded."
+    },
+    "SRC-openstax-elementary-algebra-2e": {
+      "id": "SRC-openstax-elementary-algebra-2e",
+      "title": "Elementary Algebra 2e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/elementary-algebra-2e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/elementary-algebra-2e/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Elementary Algebra 2e by OpenStax, Rice University, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/elementary-algebra-2e/pages/1-introduction",
+      "stages": [
+        "middle",
+        "high"
+      ],
+      "exclusions": "OpenStax names, logos and book covers are excluded from the licence; third-party images/figures credited in the book may carry their own licences. OpenStax prohibits use of the text to train LLMs or ingest into generative AI without written permission.",
+      "mode": "link",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/elementary-algebra-2e/pages/preface",
+      "notes": "OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded."
+    },
+    "SRC-openstax-intermediate-algebra-2e": {
+      "id": "SRC-openstax-intermediate-algebra-2e",
+      "title": "Intermediate Algebra 2e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/intermediate-algebra-2e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/intermediate-algebra-2e/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Intermediate Algebra 2e by OpenStax, Rice University, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/intermediate-algebra-2e/pages/1-introduction",
+      "stages": [
+        "high",
+        "college"
+      ],
+      "exclusions": "OpenStax names, logos and book covers are excluded from the licence; third-party images/figures credited in the book may carry their own licences. OpenStax prohibits use of the text to train LLMs or ingest into generative AI without written permission.",
+      "mode": "link",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/intermediate-algebra-2e/pages/preface",
+      "notes": "OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded."
+    },
+    "SRC-openstax-microeconomics-3e": {
+      "id": "SRC-openstax-microeconomics-3e",
+      "title": "Principles of Microeconomics 3e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/principles-microeconomics-3e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/principles-microeconomics-3e/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Principles of Microeconomics 3e by OpenStax, Rice University, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/principles-microeconomics-3e/pages/1-introduction",
+      "stages": [
+        "high",
+        "college",
+        "masters"
+      ],
+      "exclusions": "OpenStax names, logos and book covers are excluded from the licence; third-party images/figures credited in the book may carry their own licences. OpenStax prohibits use of the text to train LLMs or ingest into generative AI without written permission.",
+      "mode": "link",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/principles-microeconomics-3e/pages/preface",
+      "notes": "OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded."
+    },
+    "SRC-openstax-macroeconomics-3e": {
+      "id": "SRC-openstax-macroeconomics-3e",
+      "title": "Principles of Macroeconomics 3e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/principles-macroeconomics-3e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/principles-macroeconomics-3e/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Principles of Macroeconomics 3e by OpenStax, Rice University, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/principles-macroeconomics-3e/pages/1-introduction",
+      "stages": [
+        "high",
+        "college",
+        "masters"
+      ],
+      "exclusions": "OpenStax names, logos and book covers are excluded from the licence; third-party images/figures credited in the book may carry their own licences. OpenStax prohibits use of the text to train LLMs or ingest into generative AI without written permission.",
+      "mode": "link",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/principles-macroeconomics-3e/pages/preface",
+      "notes": "OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded."
+    },
+    "SRC-openstax-us-history": {
+      "id": "SRC-openstax-us-history",
+      "title": "U.S. History",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/us-history",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/us-history/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "U.S. History by OpenStax, Rice University, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/us-history/pages/1-introduction",
+      "stages": [
+        "high",
+        "college"
+      ],
+      "exclusions": "OpenStax names, logos and book covers are excluded from the licence; third-party images/figures credited in the book may carry their own licences. OpenStax prohibits use of the text to train LLMs or ingest into generative AI without written permission.",
+      "mode": "link",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/us-history/pages/preface",
+      "notes": "OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded."
+    },
+    "SRC-openstax-american-government-3e": {
+      "id": "SRC-openstax-american-government-3e",
+      "title": "American Government 3e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/american-government-3e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/american-government-3e/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "American Government 3e by OpenStax, Rice University, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/american-government-3e/pages/1-introduction",
+      "stages": [
+        "high",
+        "college"
+      ],
+      "exclusions": "OpenStax names, logos and book covers are excluded from the licence; third-party images/figures credited in the book may carry their own licences. OpenStax prohibits use of the text to train LLMs or ingest into generative AI without written permission.",
+      "mode": "link",
+      "notes": "Chapter page says CC BY while site footer says CC BY-NC-SA 4.0; recorded conservatively as NC-SA. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/american-government-3e/pages/preface"
+    },
+    "SRC-openstax-entrepreneurship": {
+      "id": "SRC-openstax-entrepreneurship",
+      "title": "Entrepreneurship",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/entrepreneurship",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/entrepreneurship/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Entrepreneurship by OpenStax, Rice University, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/entrepreneurship/pages/1-introduction",
+      "stages": [
+        "high",
+        "college"
+      ],
+      "exclusions": "OpenStax names, logos and book covers are excluded from the licence; third-party images/figures credited in the book may carry their own licences. OpenStax prohibits use of the text to train LLMs or ingest into generative AI without written permission.",
+      "mode": "link",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/entrepreneurship/pages/preface",
+      "notes": "OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded."
+    },
+    "SRC-openstax-intro-computer-science": {
+      "id": "SRC-openstax-intro-computer-science",
+      "title": "Introduction to Computer Science",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/introduction-computer-science",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/introduction-computer-science/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Introduction to Computer Science by OpenStax, Rice University, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/introduction-computer-science/pages/1-introduction",
+      "stages": [
+        "high",
+        "college"
+      ],
+      "exclusions": "OpenStax names, logos and book covers are excluded from the licence; third-party images/figures credited in the book may carry their own licences. OpenStax prohibits use of the text to train LLMs or ingest into generative AI without written permission.",
+      "mode": "link",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/introduction-computer-science/pages/preface",
+      "notes": "OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded."
+    },
+    "SRC-cs50x": {
+      "id": "SRC-cs50x",
+      "title": "CS50x: Introduction to Computer Science",
+      "publisher": "Harvard University (CS50)",
+      "url": "https://cs50.harvard.edu/x/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://cs50.harvard.edu/x/license/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "CS50x by Harvard University / David J. Malan, licensed under CC BY-NC-SA 4.0. https://cs50.harvard.edu/x/",
+      "stages": [
+        "high",
+        "college"
+      ],
+      "exclusions": "Third-party materials and CS50 trademarks/logos are not covered.",
+      "mode": "adapt",
+      "notes": "Weeks: Scratch, C, Arrays, Algorithms, Memory, Data Structures, Python, SQL, HTML/CSS/JS, Flask."
+    },
+    "SRC-py4e": {
+      "id": "SRC-py4e",
+      "title": "Python for Everybody (Python for Everybody book)",
+      "publisher": "Charles R. Severance",
+      "url": "https://www.py4e.com/book",
+      "kind": "textbook",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://www.py4e.com/book",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Python for Everybody by Charles R. Severance, licensed under CC BY 4.0. https://www.py4e.com/book",
+      "stages": [
+        "high",
+        "college"
+      ],
+      "exclusions": "Chapters 2-10 are adapted from Think Python (Downey and Elkner); check that book's licence if reusing those chapters separately.",
+      "mode": "adapt"
+    },
+    "SRC-openstax-business-ethics": {
+      "id": "SRC-openstax-business-ethics",
+      "title": "Business Ethics",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/business-ethics",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/business-ethics/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Business Ethics\", OpenStax, Rice University. Access for free at https://openstax.org/books/business-ethics/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/business-ethics/pages/preface"
+    },
+    "SRC-openstax-business-law-i-essentials-2e": {
+      "id": "SRC-openstax-business-law-i-essentials-2e",
+      "title": "Business Law I Essentials 2e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/business-law-i-essentials-2e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/business-law-i-essentials-2e/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Business Law I Essentials 2e\", OpenStax, Rice University. Access for free at https://openstax.org/books/business-law-i-essentials-2e/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/business-law-i-essentials-2e/pages/preface"
+    },
+    "SRC-openstax-calculus-volume-2": {
+      "id": "SRC-openstax-calculus-volume-2",
+      "title": "Calculus Volume 2",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/calculus-volume-2",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/calculus-volume-2/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Calculus Volume 2\", OpenStax, Rice University. Access for free at https://openstax.org/books/calculus-volume-2/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/calculus-volume-2/pages/preface"
+    },
+    "SRC-openstax-calculus-volume-3": {
+      "id": "SRC-openstax-calculus-volume-3",
+      "title": "Calculus Volume 3",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/calculus-volume-3",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/calculus-volume-3/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Calculus Volume 3\", OpenStax, Rice University. Access for free at https://openstax.org/books/calculus-volume-3/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/calculus-volume-3/pages/preface"
+    },
+    "SRC-openstax-fundamentals-nursing": {
+      "id": "SRC-openstax-fundamentals-nursing",
+      "title": "Fundamentals of Nursing",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/fundamentals-nursing",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/fundamentals-nursing/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Fundamentals of Nursing\", OpenStax, Rice University. Access for free at https://openstax.org/books/fundamentals-nursing/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/fundamentals-nursing/pages/preface"
+    },
+    "SRC-openstax-introduction-intellectual-property": {
+      "id": "SRC-openstax-introduction-intellectual-property",
+      "title": "Introduction to Intellectual Property",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/introduction-intellectual-property",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/introduction-intellectual-property/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Introduction to Intellectual Property\", OpenStax, Rice University. Access for free at https://openstax.org/books/introduction-intellectual-property/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. The OpenStax catalogue API lists this title as CC BY, but the book's own page states CC BY-NC-SA, so the stricter licence is recorded. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/introduction-intellectual-property/pages/preface"
+    },
+    "SRC-openstax-introduction-political-science": {
+      "id": "SRC-openstax-introduction-political-science",
+      "title": "Introduction to Political Science",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/introduction-political-science",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/introduction-political-science/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Introduction to Political Science\", OpenStax, Rice University. Access for free at https://openstax.org/books/introduction-political-science/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/introduction-political-science/pages/preface"
+    },
+    "SRC-openstax-introduction-sociology-3e": {
+      "id": "SRC-openstax-introduction-sociology-3e",
+      "title": "Introduction to Sociology 3e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/introduction-sociology-3e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/introduction-sociology-3e/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Introduction to Sociology 3e\", OpenStax, Rice University. Access for free at https://openstax.org/books/introduction-sociology-3e/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/introduction-sociology-3e/pages/preface"
+    },
+    "SRC-openstax-microbiology": {
+      "id": "SRC-openstax-microbiology",
+      "title": "Microbiology",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/microbiology",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/microbiology/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Microbiology\", OpenStax, Rice University. Access for free at https://openstax.org/books/microbiology/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/microbiology/pages/preface"
+    },
+    "SRC-openstax-organic-chemistry": {
+      "id": "SRC-openstax-organic-chemistry",
+      "title": "Organic Chemistry",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/organic-chemistry",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/organic-chemistry/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Organic Chemistry\", OpenStax, Rice University. Access for free at https://openstax.org/books/organic-chemistry/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/organic-chemistry/pages/preface"
+    },
+    "SRC-openstax-pharmacology": {
+      "id": "SRC-openstax-pharmacology",
+      "title": "Pharmacology for Nurses",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/pharmacology",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/pharmacology/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Pharmacology for Nurses\", OpenStax, Rice University. Access for free at https://openstax.org/books/pharmacology/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/pharmacology/pages/preface"
+    },
+    "SRC-openstax-population-health": {
+      "id": "SRC-openstax-population-health",
+      "title": "Population Health for Nurses",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/population-health",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/population-health/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Population Health for Nurses\", OpenStax, Rice University. Access for free at https://openstax.org/books/population-health/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/population-health/pages/preface"
+    },
+    "SRC-openstax-principles-data-science": {
+      "id": "SRC-openstax-principles-data-science",
+      "title": "Principles of Data Science",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/principles-data-science",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/principles-data-science/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Principles of Data Science\", OpenStax, Rice University. Access for free at https://openstax.org/books/principles-data-science/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/principles-data-science/pages/preface"
+    },
+    "SRC-openstax-principles-finance-2e": {
+      "id": "SRC-openstax-principles-finance-2e",
+      "title": "Principles of Finance 2e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/principles-finance-2e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/principles-finance-2e/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Principles of Finance 2e\", OpenStax, Rice University. Access for free at https://openstax.org/books/principles-finance-2e/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/principles-finance-2e/pages/preface"
+    },
+    "SRC-openstax-principles-financial-accounting": {
+      "id": "SRC-openstax-principles-financial-accounting",
+      "title": "Principles of Accounting, Volume 1: Financial Accounting",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/principles-financial-accounting",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/principles-financial-accounting/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Principles of Accounting, Volume 1: Financial Accounting\", OpenStax, Rice University. Access for free at https://openstax.org/books/principles-financial-accounting/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/principles-financial-accounting/pages/preface"
+    },
+    "SRC-openstax-principles-management": {
+      "id": "SRC-openstax-principles-management",
+      "title": "Principles of Management",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/principles-management",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/principles-management/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Principles of Management\", OpenStax, Rice University. Access for free at https://openstax.org/books/principles-management/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/principles-management/pages/preface"
+    },
+    "SRC-openstax-principles-marketing": {
+      "id": "SRC-openstax-principles-marketing",
+      "title": "Principles of Marketing",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/principles-marketing",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/principles-marketing/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Principles of Marketing\", OpenStax, Rice University. Access for free at https://openstax.org/books/principles-marketing/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/principles-marketing/pages/preface"
+    },
+    "SRC-openstax-psychology-2e": {
+      "id": "SRC-openstax-psychology-2e",
+      "title": "Psychology 2e",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/psychology-2e",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/psychology-2e/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "\"Psychology 2e\", OpenStax, Rice University. Access for free at https://openstax.org/books/psychology-2e/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/psychology-2e/pages/preface"
+    },
+    "SRC-openstax-university-physics-volume-2": {
+      "id": "SRC-openstax-university-physics-volume-2",
+      "title": "University Physics Volume 2",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/university-physics-volume-2",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/university-physics-volume-2/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Authors: Samuel J. Ling, Jeff Sanny, William Moebs. \"University Physics Volume 2\", OpenStax, Rice University. Access for free at https://openstax.org/books/university-physics-volume-2/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/university-physics-volume-2/pages/preface"
+    },
+    "SRC-openstax-university-physics-volume-3": {
+      "id": "SRC-openstax-university-physics-volume-3",
+      "title": "University Physics Volume 3",
+      "publisher": "OpenStax, Rice University",
+      "url": "https://openstax.org/details/books/university-physics-volume-3",
+      "kind": "textbook",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://openstax.org/books/university-physics-volume-3/pages/1-introduction",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Authors: Samuel J. Ling, Jeff Sanny, William Moebs. \"University Physics Volume 3\", OpenStax, Rice University. Access for free at https://openstax.org/books/university-physics-volume-3/pages/1-introduction. Licensed under CC BY-NC-SA 4.0 (https://creativecommons.org/licenses/by-nc-sa/4.0/).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party figures, photos and some embedded media may carry their own licences (see each figure credit). OpenStax and Rice University names, logos and covers are excluded from the licence.",
+      "mode": "link",
+      "notes": "Book page states CC BY-NC-SA 4.0 and forbids using the text to train LLMs or ingesting it into generative-AI products without OpenStax's written permission; serve as text/links only, no AI ingestion. OpenStax prohibits use in LLM training or ingestion into generative AI without its written permission; link-only until permission is recorded.",
+      "aiUse": "restricted",
+      "aiUseUrl": "https://openstax.org/books/university-physics-volume-3/pages/preface"
+    },
+    "SRC-ocw-18-02-multivariable-calculus-fall-2007": {
+      "id": "SRC-ocw-18-02-multivariable-calculus-fall-2007",
+      "title": "Multivariable Calculus (Fall 2007)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/18-02-multivariable-calculus-fall-2007/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Multivariable Calculus, Fall 2007. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/18-02-multivariable-calculus-fall-2007/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-ocw-18-03-differential-equations-spring-2010": {
+      "id": "SRC-ocw-18-03-differential-equations-spring-2010",
+      "title": "Differential Equations (Spring 2010)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/18-03-differential-equations-spring-2010/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Differential Equations, Spring 2010. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/18-03-differential-equations-spring-2010/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-ocw-18-06-linear-algebra-spring-2010": {
+      "id": "SRC-ocw-18-06-linear-algebra-spring-2010",
+      "title": "Linear Algebra (Spring 2010)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Linear Algebra, Spring 2010. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-ocw-18-100a-real-analysis-fall-2020": {
+      "id": "SRC-ocw-18-100a-real-analysis-fall-2020",
+      "title": "Real Analysis (Fall 2020)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/18-100a-real-analysis-fall-2020/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Real Analysis, Fall 2020. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/18-100a-real-analysis-fall-2020/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-ocw-18-600-probability-and-random-variables-fall-2019": {
+      "id": "SRC-ocw-18-600-probability-and-random-variables-fall-2019",
+      "title": "Probability and Random Variables (Fall 2019)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/18-600-probability-and-random-variables-fall-2019/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Probability and Random Variables, Fall 2019. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/18-600-probability-and-random-variables-fall-2019/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-ocw-18-701-algebra-i-fall-2010": {
+      "id": "SRC-ocw-18-701-algebra-i-fall-2010",
+      "title": "Algebra I (Fall 2010)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/18-701-algebra-i-fall-2010/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Algebra I, Fall 2010. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/18-701-algebra-i-fall-2010/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-ocw-6-002-circuits-and-electronics-spring-2007": {
+      "id": "SRC-ocw-6-002-circuits-and-electronics-spring-2007",
+      "title": "Circuits and Electronics (Spring 2007)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Circuits and Electronics, Spring 2007. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-ocw-6-003-signals-and-systems-fall-2011": {
+      "id": "SRC-ocw-6-003-signals-and-systems-fall-2011",
+      "title": "Signals and Systems (Fall 2011)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/6-003-signals-and-systems-fall-2011/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Signals and Systems, Fall 2011. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/6-003-signals-and-systems-fall-2011/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-ocw-6-006-introduction-to-algorithms-spring-2020": {
+      "id": "SRC-ocw-6-006-introduction-to-algorithms-spring-2020",
+      "title": "Introduction to Algorithms (Spring 2020)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Introduction to Algorithms, Spring 2020. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-ocw-6-036-introduction-to-machine-learning-fall-2020": {
+      "id": "SRC-ocw-6-036-introduction-to-machine-learning-fall-2020",
+      "title": "Introduction to Machine Learning (Fall 2020)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/6-036-introduction-to-machine-learning-fall-2020/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Introduction to Machine Learning, Fall 2020. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/6-036-introduction-to-machine-learning-fall-2020/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-ocw-6-042j-mathematics-for-computer-science-spring-2015": {
+      "id": "SRC-ocw-6-042j-mathematics-for-computer-science-spring-2015",
+      "title": "Mathematics for Computer Science (Spring 2015)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Mathematics for Computer Science, Spring 2015. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-ocw-8-04-quantum-physics-i-spring-2016": {
+      "id": "SRC-ocw-8-04-quantum-physics-i-spring-2016",
+      "title": "Quantum Physics I (Spring 2016)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/8-04-quantum-physics-i-spring-2016/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Quantum Physics I, Spring 2016. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/8-04-quantum-physics-i-spring-2016/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-ocw-8-044-statistical-physics-i-spring-2013": {
+      "id": "SRC-ocw-8-044-statistical-physics-i-spring-2013",
+      "title": "Statistical Physics I (Spring 2013)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/8-044-statistical-physics-i-spring-2013/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Statistical Physics I, Spring 2013. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/8-044-statistical-physics-i-spring-2013/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-ocw-8-07-electromagnetism-ii-fall-2012": {
+      "id": "SRC-ocw-8-07-electromagnetism-ii-fall-2012",
+      "title": "Electromagnetism II (Fall 2012)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/8-07-electromagnetism-ii-fall-2012/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Electromagnetism II, Fall 2012. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/8-07-electromagnetism-ii-fall-2012/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-ocw-8-223-classical-mechanics-ii-january-iap-2017": {
+      "id": "SRC-ocw-8-223-classical-mechanics-ii-january-iap-2017",
+      "title": "Classical Mechanics II (January IAP 2017)",
+      "publisher": "MIT OpenCourseWare",
+      "url": "https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/",
+      "kind": "course",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Classical Mechanics II, January IAP 2017. MIT OpenCourseWare, Massachusetts Institute of Technology, https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/. Licensed under CC BY-NC-SA 4.0.",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "exclusions": "Third-party materials included in some courses (marked as such on the course pages) are not under the CC licence; the licence does not cover public-domain elements.",
+      "mode": "adapt",
+      "notes": "Link/adapt course pages; video lectures are large. Check individual resources for third-party exclusions."
+    },
+    "SRC-mit-ocw-graduate": {
+      "id": "SRC-mit-ocw-graduate",
+      "title": "MIT OpenCourseWare graduate courses (selected)",
+      "publisher": "Massachusetts Institute of Technology",
+      "url": "https://ocw.mit.edu/",
+      "kind": "collection",
+      "license": "CC-BY-NC-SA-4.0",
+      "licenseUrl": "https://ocw.mit.edu/terms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Content from MIT OpenCourseWare (https://ocw.mit.edu), licensed CC BY-NC-SA 4.0. Individual course credit: course number, title, term, MIT OpenCourseWare.",
+      "stages": [
+        "college",
+        "masters",
+        "doctoral"
+      ],
+      "mode": "adapt",
+      "exclusions": "Third-party material inside individual courses may carry its own licence; check each course's page.",
+      "notes": "Curated set: 8.286, 22.611J, 18.102, 18.905, 6.262, 15.093J, 18.335J, 2.29, 14.381, HST.582J, 6.046J, 6.S191, 9.40, 2.12."
+    },
+    "SRC-turing-way": {
+      "id": "SRC-turing-way",
+      "title": "The Turing Way: Handbook for Reproducible, Ethical and Collaborative Research",
+      "publisher": "The Turing Way Community",
+      "url": "https://book.the-turing-way.org/",
+      "kind": "textbook",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://book.the-turing-way.org/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "The Turing Way Community. The Turing Way: A handbook for reproducible, ethical and collaborative research. CC BY 4.0. https://book.the-turing-way.org/",
+      "stages": [
+        "masters",
+        "doctoral",
+        "postgrad"
+      ],
+      "mode": "adapt",
+      "exclusions": "Some figures/embedded third-party material may have other licences; code is MIT."
+    },
+    "SRC-open-science-training-handbook": {
+      "id": "SRC-open-science-training-handbook",
+      "title": "Open Science Training Handbook",
+      "publisher": "FOSTER Open Science / Open Science Training Handbook authors",
+      "url": "https://open-science-training-handbook.github.io/Open-Science-Training-Handbook_EN/",
+      "kind": "textbook",
+      "license": "CC0",
+      "licenseUrl": "https://open-science-training-handbook.github.io/Open-Science-Training-Handbook_EN/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Open Science Training Handbook (CC0 1.0), https://open-science-training-handbook.github.io/Open-Science-Training-Handbook_EN/",
+      "stages": [
+        "college",
+        "masters",
+        "doctoral",
+        "postgrad"
+      ],
+      "mode": "ingest",
+      "exclusions": "Some referenced materials are copyright-protected, as noted in the text.",
+      "ingest": {
+        "path": "apps/web/public/kosmo/open-courses/open-science-training-handbook/",
+        "bytes": 20877314,
+        "retrievedAt": "2026-11-05",
+        "scope": "Source repository of the handbook as a zip (Markdown chapters and figures), master branch, whole repository; nothing excluded"
+      }
+    },
+    "SRC-d2l": {
+      "id": "SRC-d2l",
+      "title": "Dive into Deep Learning",
+      "publisher": "Zhang, Lipton, Li, Smola",
+      "url": "https://d2l.ai/",
+      "kind": "textbook",
+      "license": "CC-BY-SA-4.0",
+      "licenseUrl": "https://github.com/d2l-ai/d2l-en",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Zhang, Lipton, Li and Smola, Dive into Deep Learning (d2l.ai), text licensed CC BY-SA 4.0; sample code under modified MIT.",
+      "stages": [
+        "masters",
+        "doctoral"
+      ],
+      "mode": "adapt",
+      "exclusions": "Code uses a modified MIT licence, not CC."
+    },
+    "SRC-erickson-algorithms": {
+      "id": "SRC-erickson-algorithms",
+      "title": "Algorithms (Jeff Erickson) textbook and lecture notes",
+      "publisher": "Jeff Erickson, University of Illinois",
+      "url": "https://jeffe.cs.illinois.edu/teaching/algorithms/",
+      "kind": "textbook",
+      "license": "CC-BY-4.0",
+      "licenseUrl": "https://jeffe.cs.illinois.edu/teaching/algorithms/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Jeff Erickson, Algorithms (2019), CC BY 4.0, https://jeffe.cs.illinois.edu/teaching/algorithms/",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "mode": "adapt",
+      "exclusions": "Only the textbook is CC BY 4.0; the separate lecture notes are CC BY-NC-SA 4.0 (also adaptable here)."
+    },
+    "SRC-nasa-se-handbook": {
+      "id": "SRC-nasa-se-handbook",
+      "title": "NASA Systems Engineering Handbook",
+      "publisher": "NASA",
+      "url": "https://www.nasa.gov/reference/systems-engineering-handbook/",
+      "kind": "textbook",
+      "license": "PD",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Source: NASA Systems Engineering Handbook, https://www.nasa.gov/reference/systems-engineering-handbook/ (NASA content, generally not subject to US copyright).",
+      "stages": [
+        "college",
+        "masters",
+        "postgrad"
+      ],
+      "mode": "adapt",
+      "exclusions": "Third-party or contractor-credited figures may carry copyright.",
+      "notes": "Licence basis: NASA statement that its content is generally not subject to copyright; the handbook page itself does not restate it."
+    },
+    "SRC-nasa-small-spacecraft-soa": {
+      "id": "SRC-nasa-small-spacecraft-soa",
+      "title": "State-of-the-Art of Small Spacecraft Technology",
+      "publisher": "NASA Small Spacecraft Systems Virtual Institute",
+      "url": "https://www.nasa.gov/smallsat-institute/sst-soa/in-space_propulsion",
+      "kind": "collection",
+      "license": "PD",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Source: NASA, State-of-the-Art of Small Spacecraft Technology (NASA content, generally not subject to US copyright).",
+      "stages": [
+        "masters",
+        "doctoral"
+      ],
+      "mode": "adapt",
+      "exclusions": "Figures are credited to companies (Bradford ECAPS, Aerojet, etc.) and may be copyrighted.",
+      "notes": "Page itself has no copyright notice; relies on NASA general policy."
+    },
+    "SRC-cdc-principles-epidemiology": {
+      "id": "SRC-cdc-principles-epidemiology",
+      "title": "Principles of Epidemiology in Public Health Practice, 3rd ed. (SS1978)",
+      "publisher": "US Centers for Disease Control and Prevention",
+      "url": "https://archive.cdc.gov/www_cdc_gov/csels/dsepd/ss1978/index.html",
+      "kind": "course",
+      "license": "PD",
+      "licenseUrl": "https://www.cdc.gov/other/agencymaterials.html",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "Source: CDC, Principles of Epidemiology in Public Health Practice, 3rd Edition (public domain US government work).",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "mode": "adapt",
+      "exclusions": "CDC says 'most' material is public domain; exceptions include contractor/licensed content. Archived (CE credit no longer offered)."
+    },
+    "SRC-core-the-economy": {
+      "id": "SRC-core-the-economy",
+      "title": "The Economy (CORE Econ)",
+      "publisher": "CORE Econ",
+      "url": "https://books.core-econ.org/the-economy/",
+      "kind": "textbook",
+      "license": "CC-BY-NC-ND-4.0",
+      "licenseUrl": "https://books.core-econ.org/the-economy/",
+      "licenseCheckedAt": "2026-11-05",
+      "attribution": "The CORE Team, The Economy, CC BY-NC-ND 4.0, https://books.core-econ.org/the-economy/",
+      "stages": [
+        "college",
+        "masters"
+      ],
+      "mode": "link"
+    }
+  }
+}

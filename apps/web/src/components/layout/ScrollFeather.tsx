@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { cn } from "~/lib/utils";
 
 /** Event the embedded pages fire (see EmbedFrame) when something inside their iframe scrolls. */
@@ -12,6 +13,13 @@ export const KOSMO_SCROLL_EVENT = "kosmo:scrolled";
  */
 export function ScrollFeather() {
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+
+  // The layout stays mounted while you navigate, so without this the feather that a scrolled page switched on would stay on over the next
+  // page's own top bar (the second horizontal nav of an embedded lab). A new page starts unscrolled; the first real scroll turns it back on.
+  useEffect(() => {
+    setScrolled(false);
+  }, [pathname]);
 
   useEffect(() => {
     // scroll does not bubble, so listen in the capture phase to hear every scroll container on the page

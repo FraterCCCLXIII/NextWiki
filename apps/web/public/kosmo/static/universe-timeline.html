@@ -752,6 +752,20 @@ const EPOCHS = [
   ['Milky Way–Andromeda merger', ahead(4.5e9), 'future'], ['Sun leaves the main sequence', ahead(5.0e9), 'future'], ['Sun a red giant (Earth\'s orbit reached)', ahead(7.6e9), 'future'],
   ['Sun a white dwarf', ahead(8.0e9), 'future'], ['Local Group alone in its horizon', ahead(1.0e11), 'future'], ['Universe at 10× today\'s size', P.cosmoState(10, tab).t, 'cosmic'],
   ['Universe at 1000× today\'s size', P.cosmoState(1e3, tab).t, 'cosmic'],
+  // gap fill: cosmic
+  ['Reionization (midpoint z ~ 7.7)', ago(1.3e10), 'cosmic'],
+  // gap fill: mass extinctions and deep-time events (ICS chart, ages rounded)
+  ['Carboniferous coal forests', ago(3.3e8), 'life'], ['Late Devonian extinction (Kellwasser)', ago(3.72e8), 'life'],
+  ['Ordovician–Silurian extinction', ago(4.45e8), 'life'], ['End-Triassic extinction', ago(2.01e8), 'life'],
+  ['Paleocene–Eocene Thermal Maximum', ago(5.6e7), 'earth'],
+  // gap fill: ice ages
+  ['Quaternary glaciation begins', ago(2.58e6), 'earth'], ['Eemian: last interglacial', ago(1.29e5), 'earth'],
+  ['Younger Dryas cold snap', ago(1.29e4), 'earth'], ['Holocene begins', ago(1.17e4), 'earth'],
+  // gap fill: Neolithic to the Industrial Revolution
+  ['Dogs domesticated (debated)', ago(1.5e4), 'human'], ['Goats and sheep domesticated', ago(1.05e4), 'human'],
+  ['Farming spreads across Europe', ago(7.5e3), 'human'], ['Copper smelting', ago(7.0e3), 'human'], ['Wheel (earliest finds; origin debated)', ago(5.5e3), 'human'],
+  ['Bronze Age begins', ago(5.3e3), 'human'], ['Bronze Age collapse; Iron Age begins', ago(3.2e3), 'human'],
+  ['Gunpowder (Tang China)', ago(1.1e3), 'human'], ['Royal Society founded', ago(366), 'human'],
 ].map(([label, t, cat]) => ({ label, t, cat }));
 // places (lat, lon) for events that happened somewhere on Earth, plus more local history
 const PLACED = [
@@ -781,6 +795,19 @@ const PLACED = [
   ['World Wide Web (CERN)', ago(37), 'human', 46.23, 6.05], ['Hubble Space Telescope launch', ago(36), 'human', 28.57, -80.65],
   ['First exoplanet around a Sun-like star', ago(31), 'human', 43.93, 5.71], ['Higgs boson found', ago(14), 'human', 46.23, 6.05],
   ['Gravitational waves detected', ago(11), 'human', 46.45, -119.41], ['JWST launch (Kourou)', ago(5), 'human', 5.24, -52.77],
+  // gap fill (coordinates approximate, present-day positions of the sites)
+  ['Tiktaalik: fish with limbs (tetrapod transition)', ago(3.75e8), 'life', 78.0, -78.0],
+  ['Earliest known pottery (Xianrendong Cave)', ago(2.0e4), 'human', 28.7, 117.1],
+  ['Egypt unified under Narmer (Memphis)', ago(5.1e3), 'human', 29.85, 31.25],
+  ['Sumerian city-states (Ur)', ago(4.9e3), 'human', 30.96, 46.1],
+  ['Alexander dies in Babylon', ago(2.35e3), 'human', 32.54, 44.42],
+  ['Cai Lun and paper (Luoyang)', ago(1.92e3), 'human', 34.62, 112.45],
+  ['Odoacer deposes the last western emperor (Ravenna)', ago(1.55e3), 'human', 44.42, 12.2],
+  ['Magna Carta sealed (Runnymede)', ago(811), 'human', 51.44, -0.56],
+  ['Black Death: siege of Caffa', ago(679), 'human', 45.03, 35.38],
+  ['Fall of Constantinople', ago(573), 'human', 41.01, 28.98],
+  ['Vesalius publishes the Fabrica (Padua)', ago(483), 'human', 45.41, 11.88],
+  ['Lavoisier: chemical revolution (Paris)', ago(237), 'human', 48.86, 2.35],
 ].map(([label, t, cat, lat, lon]) => ({ label, t, cat, where: [lat, lon] }));
 for (const e of EPOCHS) {   // places for the epochs already listed
   const w = { 'Industrial revolution': [53.48, -2.24], 'Writing (Sumer)': [31.32, 45.64], 'Pyramids of Giza': [29.98, 31.13], 'Classical Greece': [37.98, 23.73], 'Printing press': [50.0, 8.27], 'First spaceflight (Sputnik)': [45.96, 63.31], 'Chicxulub impact; dinosaurs end': [21.4, -89.5], 'Out of Africa': [15.0, 40.0], 'Agriculture': [36.5, 38.0], 'Hominins split from chimpanzee line': [0.5, 30.0], 'Homo sapiens': [31.0, -8.0], 'Homo erectus; controlled fire': [2.0, 36.0] }[e.label];

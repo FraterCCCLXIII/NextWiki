@@ -52,6 +52,10 @@ const nextConfig: NextConfig = {
       fallback: [],
     };
   },
+  // The Kosmographica Overview is the site's homepage: the domain root lands there.
+  async redirects() {
+    return [{ source: "/", destination: "/kosmo", permanent: false }];
+  },
   async headers() {
     return [
       {

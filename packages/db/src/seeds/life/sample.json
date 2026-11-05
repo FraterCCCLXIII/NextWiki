@@ -1,0 +1,868 @@
+[
+ {
+  "l": "k:Animalia",
+  "c": "Animals",
+  "s": "Multicellular heterotrophs that ingest food and, in most cases, move; about 1.5 million described species.",
+  "k": 1
+ },
+ {
+  "l": "k:Plantae",
+  "c": "Plants",
+  "s": "Photosynthetic, mostly land-dwelling eukaryotes: mosses, ferns, conifers and flowering plants.",
+  "k": 6
+ },
+ {
+  "l": "k:Fungi",
+  "c": "Fungi",
+  "s": "Eukaryotes that digest food externally and absorb it: moulds, yeasts, mushrooms.",
+  "k": 5
+ },
+ {
+  "l": "k:Bacteria",
+  "c": "Bacteria",
+  "s": "Single-celled prokaryotes found in every habitat on Earth.",
+  "k": 3
+ },
+ {
+  "l": "k:Archaea",
+  "c": "Archaea",
+  "s": "Single-celled prokaryotes, distinct from bacteria, many living in extreme environments.",
+  "k": 2
+ },
+ {
+  "l": "k:Chromista",
+  "c": "Chromists",
+  "s": "Eukaryotes including brown algae, diatoms and oomycetes.",
+  "k": 4
+ },
+ {
+  "l": "k:Protozoa",
+  "c": "Protozoa",
+  "s": "Single-celled eukaryotes that are neither plants, animals nor fungi, such as amoebae and ciliates.",
+  "k": 7
+ },
+ {
+  "l": "k:Viruses",
+  "c": "Viruses",
+  "s": "Sub-microscopic infectious agents that replicate only inside living cells.",
+  "k": 8
+ },
+ {
+  "l": "k:Animalia/p:Chordata",
+  "c": "Chordates",
+  "s": "Animals with a notochord at some stage: vertebrates, tunicates and lancelets."
+ },
+ {
+  "l": "k:Animalia/p:Arthropoda",
+  "c": "Arthropods",
+  "s": "Jointed-legged animals with an exoskeleton: insects, spiders, crustaceans."
+ },
+ {
+  "l": "k:Animalia/p:Mollusca",
+  "c": "Molluscs",
+  "s": "Soft-bodied animals often with a shell: snails, clams, squid and octopuses."
+ },
+ {
+  "l": "k:Animalia/p:Cnidaria",
+  "c": "Cnidarians",
+  "s": "Stinging aquatic animals: jellyfish, corals and sea anemones."
+ },
+ {
+  "l": "k:Animalia/p:Echinodermata",
+  "c": "Echinoderms",
+  "s": "Radially symmetric marine animals: sea stars, urchins, sea cucumbers."
+ },
+ {
+  "l": "k:Animalia/p:Annelida",
+  "c": "Segmented worms",
+  "s": "Segmented worms including earthworms and leeches."
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia",
+  "c": "Mammals",
+  "s": "Warm-blooded vertebrates that nurse their young with milk."
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Aves",
+  "c": "Birds",
+  "s": "Feathered, winged, egg-laying vertebrates descended from theropod dinosaurs."
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Reptilia",
+  "c": "Reptiles",
+  "s": "Scaly, mostly egg-laying vertebrates: lizards, snakes, turtles, crocodilians."
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Amphibia",
+  "c": "Amphibians",
+  "s": "Vertebrates that typically begin life in water and breathe through gills."
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Chondrichthyes",
+  "c": "Cartilaginous fishes",
+  "s": "Sharks, rays and chimaeras, with skeletons of cartilage."
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Actinopterygii",
+  "c": "Ray-finned fishes",
+  "s": "The largest group of fishes, with fins supported by bony rays."
+ },
+ {
+  "l": "k:Animalia/p:Arthropoda/c:Insecta",
+  "c": "Insects",
+  "s": "Six-legged arthropods; the most species-rich class of animals."
+ },
+ {
+  "l": "k:Animalia/p:Arthropoda/c:Arachnida",
+  "c": "Arachnids",
+  "s": "Eight-legged arthropods: spiders, scorpions, mites and ticks."
+ },
+ {
+  "l": "k:Animalia/p:Arthropoda/c:Trilobita",
+  "c": "Trilobites",
+  "s": "Extinct marine arthropods of the Palaeozoic with a three-lobed body.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Mollusca/c:Cephalopoda",
+  "c": "Cephalopods",
+  "s": "Marine molluscs with tentacles and advanced nervous systems: squid, octopus, nautilus."
+ },
+ {
+  "l": "k:Animalia/p:Mollusca/c:Cephalopoda/o:Ammonitida",
+  "c": "Ammonites",
+  "s": "Extinct coiled-shell cephalopods that flourished in Mesozoic seas.",
+  "x": true
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta",
+  "c": "Vascular plants",
+  "s": "Plants with xylem and phloem: ferns, conifers and flowering plants."
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Magnoliopsida",
+  "c": "Dicots",
+  "s": "Flowering plants, mostly with two seed leaves."
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Liliopsida",
+  "c": "Monocots",
+  "s": "Flowering plants with one seed leaf: grasses, lilies, orchids, palms."
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Pinopsida",
+  "c": "Conifers",
+  "s": "Cone-bearing gymnosperms such as pines, spruces and redwoods."
+ },
+ {
+  "l": "k:Plantae/p:Bryophyta",
+  "c": "Mosses",
+  "s": "Small non-vascular plants that reproduce by spores."
+ },
+ {
+  "l": "k:Fungi/p:Basidiomycota",
+  "c": "Club fungi",
+  "s": "Fungi bearing spores on club-shaped basidia: most mushrooms, rusts and smuts."
+ },
+ {
+  "l": "k:Fungi/p:Ascomycota",
+  "c": "Sac fungi",
+  "s": "The largest fungal phylum: yeasts, morels, truffles and many moulds."
+ },
+ {
+  "l": "k:Bacteria/p:Proteobacteria",
+  "c": "Proteobacteria",
+  "s": "A major bacterial phylum including E. coli, Salmonella and Vibrio."
+ },
+ {
+  "l": "k:Archaea/p:Euryarchaeota",
+  "c": "Euryarchaeota",
+  "s": "Archaea including methanogens, halophiles and some thermophiles."
+ },
+ {
+  "l": "k:Protozoa/p:Amoebozoa",
+  "c": "Amoebozoans",
+  "s": "Amoeba-like protozoa that move with pseudopodia."
+ },
+ {
+  "l": "k:Chromista/p:Ochrophyta",
+  "c": "Ochrophytes",
+  "s": "Photosynthetic chromists including kelp, brown algae and diatoms."
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Primates",
+  "c": "Primates",
+  "s": "Order of mammals with grasping hands: monkeys, apes, lemurs and humans."
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Carnivora",
+  "c": "Carnivorans",
+  "s": "Mostly meat-eating mammals: cats, dogs, bears, seals."
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Primates/f:Hominidae/g:Homo/s:Homo sapiens",
+  "c": "Human",
+  "s": "The only living species of the genus Homo, with large brains, language and technology.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Primates/f:Hominidae/g:Homo/s:Homo neanderthalensis",
+  "c": "Neanderthal",
+  "s": "Extinct archaic human that lived across Europe and western Asia until about 40,000 years ago.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Primates/f:Hominidae/g:Pan/s:Pan troglodytes",
+  "c": "Chimpanzee",
+  "s": "Our closest living relative, sharing about 98.8% of our DNA.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Primates/f:Hominidae/g:Gorilla/s:Gorilla gorilla",
+  "c": "Western gorilla",
+  "s": "The largest living primate, native to the forests of central Africa.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Primates/f:Hominidae/g:Pongo/s:Pongo pygmaeus",
+  "c": "Bornean orangutan",
+  "s": "A tree-dwelling great ape from the island of Borneo.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Carnivora/f:Canidae/g:Canis/s:Canis lupus",
+  "c": "Gray wolf",
+  "s": "The largest wild canid and the ancestor of the domestic dog.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Carnivora/f:Canidae/g:Vulpes/s:Vulpes vulpes",
+  "c": "Red fox",
+  "s": "The most widespread wild carnivore, found across the northern hemisphere.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Carnivora/f:Felidae/g:Panthera/s:Panthera leo",
+  "c": "Lion",
+  "s": "A social big cat of Africa and India that lives in prides.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Carnivora/f:Felidae/g:Panthera/s:Panthera tigris",
+  "c": "Tiger",
+  "s": "The largest living cat, recognisable by its dark vertical stripes.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Carnivora/f:Felidae/g:Felis/s:Felis catus",
+  "c": "Domestic cat",
+  "s": "A small domesticated carnivore kept as a pet and for pest control.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Carnivora/f:Felidae/g:Smilodon/s:Smilodon fatalis",
+  "c": "Sabre-toothed cat",
+  "s": "Extinct Ice Age cat with huge canines, known from the La Brea tar pits.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Carnivora/f:Ursidae/g:Ursus/s:Ursus arctos",
+  "c": "Brown bear",
+  "s": "A large omnivorous bear found across North America and Eurasia.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Carnivora/f:Ursidae/g:Ailuropoda/s:Ailuropoda melanoleuca",
+  "c": "Giant panda",
+  "s": "A black-and-white bear of China that feeds almost entirely on bamboo.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Proboscidea/f:Elephantidae/g:Loxodonta/s:Loxodonta africana",
+  "c": "African bush elephant",
+  "s": "The largest living land animal.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Proboscidea/f:Elephantidae/g:Mammuthus/s:Mammuthus primigenius",
+  "c": "Woolly mammoth",
+  "s": "Extinct Ice Age elephant relative adapted to cold steppes.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Cetacea/f:Balaenopteridae/g:Balaenoptera/s:Balaenoptera musculus",
+  "c": "Blue whale",
+  "s": "The largest animal known to have ever lived.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Cetacea/f:Delphinidae/g:Orcinus/s:Orcinus orca",
+  "c": "Orca",
+  "s": "A highly social apex predator, the largest dolphin.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Cetacea/f:Delphinidae/g:Tursiops/s:Tursiops truncatus",
+  "c": "Common bottlenose dolphin",
+  "s": "A familiar, intelligent dolphin found in warm and temperate seas.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Chiroptera/f:Vespertilionidae/g:Myotis/s:Myotis lucifugus",
+  "c": "Little brown bat",
+  "s": "A small insect-eating bat of North America.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Rodentia/f:Muridae/g:Mus/s:Mus musculus",
+  "c": "House mouse",
+  "s": "A small rodent and a key model organism in biology.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Perissodactyla/f:Equidae/g:Equus/s:Equus ferus",
+  "c": "Horse",
+  "s": "The species that includes the domestic horse and the wild Przewalski's horse.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Artiodactyla/f:Giraffidae/g:Giraffa/s:Giraffa camelopardalis",
+  "c": "Giraffe",
+  "s": "The tallest living land animal.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Artiodactyla/f:Bovidae/g:Bos/s:Bos taurus",
+  "c": "Domestic cattle",
+  "s": "Domesticated bovine raised for milk, meat and labour.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Monotremata/f:Ornithorhynchidae/g:Ornithorhynchus/s:Ornithorhynchus anatinus",
+  "c": "Platypus",
+  "s": "An egg-laying, venomous, duck-billed mammal of eastern Australia.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Diprotodontia/f:Macropodidae/g:Macropus/s:Macropus rufus",
+  "c": "Red kangaroo",
+  "s": "The largest living marsupial.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Mammalia/o:Dasyuromorphia/f:Thylacinidae/g:Thylacinus/s:Thylacinus cynocephalus",
+  "c": "Thylacine",
+  "s": "The Tasmanian tiger, a marsupial carnivore that died out in 1936.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Aves/o:Passeriformes/f:Corvidae/g:Corvus/s:Corvus corax",
+  "c": "Common raven",
+  "s": "A large, intelligent black corvid found across the northern hemisphere.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Aves/o:Accipitriformes/f:Accipitridae/g:Haliaeetus/s:Haliaeetus leucocephalus",
+  "c": "Bald eagle",
+  "s": "The national bird of the United States.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Aves/o:Sphenisciformes/f:Spheniscidae/g:Aptenodytes/s:Aptenodytes forsteri",
+  "c": "Emperor penguin",
+  "s": "The tallest and heaviest penguin, breeding in the Antarctic winter.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Aves/o:Columbiformes/f:Columbidae/g:Raphus/s:Raphus cucullatus",
+  "c": "Dodo",
+  "s": "A flightless pigeon of Mauritius driven extinct in the 17th century.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Aves/o:Struthioniformes/f:Struthionidae/g:Struthio/s:Struthio camelus",
+  "c": "Common ostrich",
+  "s": "The largest and heaviest living bird.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Aves/o:Galliformes/f:Phasianidae/g:Gallus/s:Gallus gallus",
+  "c": "Red junglefowl",
+  "s": "The wild ancestor of the domestic chicken.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Aves/o:Strigiformes/f:Strigidae/g:Bubo/s:Bubo scandiacus",
+  "c": "Snowy owl",
+  "s": "A large white owl of the Arctic tundra.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Aves/o:Apodiformes/f:Trochilidae/g:Archilochus/s:Archilochus colubris",
+  "c": "Ruby-throated hummingbird",
+  "s": "A tiny migratory hummingbird of eastern North America.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Aves/o:Archaeopterygiformes/f:Archaeopterygidae/g:Archaeopteryx/s:Archaeopteryx lithographica",
+  "c": "Archaeopteryx",
+  "s": "A Jurassic feathered dinosaur showing the transition to birds.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Reptilia/o:Saurischia/f:Tyrannosauridae/g:Tyrannosaurus/s:Tyrannosaurus rex",
+  "c": "Tyrannosaurus",
+  "s": "A giant theropod dinosaur of the Late Cretaceous, one of the largest land predators.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Reptilia/o:Saurischia/f:Dromaeosauridae/g:Velociraptor/s:Velociraptor mongoliensis",
+  "c": "Velociraptor",
+  "s": "A small, feathered, sickle-clawed dromaeosaur from Late Cretaceous Mongolia.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Reptilia/o:Ornithischia/f:Ceratopsidae/g:Triceratops/s:Triceratops horridus",
+  "c": "Triceratops",
+  "s": "A three-horned, frilled herbivorous dinosaur of Late Cretaceous North America.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Reptilia/o:Ornithischia/f:Stegosauridae/g:Stegosaurus/s:Stegosaurus stenops",
+  "c": "Stegosaurus",
+  "s": "A plated, spiked-tail herbivore from the Late Jurassic.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Reptilia/o:Saurischia/f:Diplodocidae/g:Diplodocus/s:Diplodocus carnegii",
+  "c": "Diplodocus",
+  "s": "A very long-necked sauropod of the Late Jurassic.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Reptilia/o:Squamata/f:Pythonidae/g:Python/s:Python bivittatus",
+  "c": "Burmese python",
+  "s": "One of the largest snakes in the world.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Reptilia/o:Squamata/f:Varanidae/g:Varanus/s:Varanus komodoensis",
+  "c": "Komodo dragon",
+  "s": "The largest living lizard, native to a few Indonesian islands.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Reptilia/o:Testudines/f:Cheloniidae/g:Chelonia/s:Chelonia mydas",
+  "c": "Green sea turtle",
+  "s": "A large marine turtle found in tropical and subtropical seas.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Reptilia/o:Crocodylia/f:Crocodylidae/g:Crocodylus/s:Crocodylus niloticus",
+  "c": "Nile crocodile",
+  "s": "Africa's largest freshwater predator.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Amphibia/o:Anura/f:Dendrobatidae/g:Phyllobates/s:Phyllobates terribilis",
+  "c": "Golden poison frog",
+  "s": "One of the most poisonous animals on Earth, native to Colombia.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Amphibia/o:Anura/f:Ranidae/g:Lithobates/s:Lithobates catesbeianus",
+  "c": "American bullfrog",
+  "s": "A large North American frog, now invasive on other continents.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Amphibia/o:Caudata/f:Ambystomatidae/g:Ambystoma/s:Ambystoma mexicanum",
+  "c": "Axolotl",
+  "s": "A neotenic salamander from Mexico that regenerates lost limbs.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Chondrichthyes/o:Lamniformes/f:Lamnidae/g:Carcharodon/s:Carcharodon carcharias",
+  "c": "Great white shark",
+  "s": "A large predatory shark found in coastal waters worldwide.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Chondrichthyes/o:Lamniformes/f:Otodontidae/g:Otodus/s:Otodus megalodon",
+  "c": "Megalodon",
+  "s": "A giant extinct shark that lived about 23 to 3.6 million years ago.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Actinopterygii/o:Perciformes/f:Scombridae/g:Thunnus/s:Thunnus thynnus",
+  "c": "Atlantic bluefin tuna",
+  "s": "A large, fast, warm-blooded predatory fish.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Actinopterygii/o:Cypriniformes/f:Danionidae/g:Danio/s:Danio rerio",
+  "c": "Zebrafish",
+  "s": "A small freshwater fish widely used in developmental biology.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Chordata/c:Actinopterygii/o:Salmoniformes/f:Salmonidae/g:Salmo/s:Salmo salar",
+  "c": "Atlantic salmon",
+  "s": "An anadromous fish that migrates between rivers and the sea.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Arthropoda/c:Insecta/o:Hymenoptera/f:Apidae/g:Apis/s:Apis mellifera",
+  "c": "Western honey bee",
+  "s": "The main managed pollinator and honey producer worldwide.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Arthropoda/c:Insecta/o:Lepidoptera/f:Nymphalidae/g:Danaus/s:Danaus plexippus",
+  "c": "Monarch butterfly",
+  "s": "A butterfly famed for its multi-generational migration across North America.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Arthropoda/c:Insecta/o:Diptera/f:Drosophilidae/g:Drosophila/s:Drosophila melanogaster",
+  "c": "Common fruit fly",
+  "s": "A classic model organism in genetics.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Arthropoda/c:Insecta/o:Coleoptera/f:Coccinellidae/g:Coccinella/s:Coccinella septempunctata",
+  "c": "Seven-spot ladybird",
+  "s": "A red, black-spotted beetle that eats aphids.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Arthropoda/c:Insecta/o:Diptera/f:Culicidae/g:Anopheles/s:Anopheles gambiae",
+  "c": "African malaria mosquito",
+  "s": "The main vector of malaria in sub-Saharan Africa.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Arthropoda/c:Insecta/o:Odonata/f:Meganeuridae/g:Meganeura/s:Meganeura monyi",
+  "c": "Meganeura",
+  "s": "A giant Carboniferous griffinfly with a wingspan of about 70 cm.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Arthropoda/c:Arachnida/o:Araneae/f:Theraphosidae/g:Theraphosa/s:Theraphosa blondi",
+  "c": "Goliath birdeater",
+  "s": "The heaviest spider in the world.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Arthropoda/c:Malacostraca/o:Decapoda/f:Nephropidae/g:Homarus/s:Homarus americanus",
+  "c": "American lobster",
+  "s": "A large marine crustacean of the North Atlantic coast.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Arthropoda/c:Trilobita/o:Phacopida/f:Phacopidae/g:Phacops/s:Phacops rana",
+  "c": "Phacops",
+  "s": "A well-known Devonian trilobite with large compound eyes.",
+  "x": true
+ },
+ {
+  "l": "k:Animalia/p:Mollusca/c:Cephalopoda/o:Octopoda/f:Octopodidae/g:Octopus/s:Octopus vulgaris",
+  "c": "Common octopus",
+  "s": "A highly intelligent, camouflaging cephalopod.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Mollusca/c:Cephalopoda/o:Teuthida/f:Architeuthidae/g:Architeuthis/s:Architeuthis dux",
+  "c": "Giant squid",
+  "s": "A deep-sea squid that can exceed 12 metres in length.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Mollusca/c:Gastropoda/o:Stylommatophora/f:Helicidae/g:Cornu/s:Cornu aspersum",
+  "c": "Garden snail",
+  "s": "A common land snail found in gardens worldwide.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Cnidaria/c:Anthozoa/o:Scleractinia/f:Acroporidae/g:Acropora/s:Acropora millepora",
+  "c": "Staghorn coral",
+  "s": "A reef-building stony coral of the Indo-Pacific.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Cnidaria/c:Scyphozoa/o:Semaeostomeae/f:Ulmaridae/g:Aurelia/s:Aurelia aurita",
+  "c": "Moon jelly",
+  "s": "A translucent jellyfish with four horseshoe-shaped gonads.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Echinodermata/c:Asteroidea/o:Forcipulatida/f:Asteriidae/g:Pisaster/s:Pisaster ochraceus",
+  "c": "Ochre sea star",
+  "s": "A keystone predator of Pacific rocky shores.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Annelida/c:Clitellata/o:Crassiclitellata/f:Lumbricidae/g:Lumbricus/s:Lumbricus terrestris",
+  "c": "Common earthworm",
+  "s": "A burrowing worm that aerates and enriches soil.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Nematoda/c:Chromadorea/o:Rhabditida/f:Rhabditidae/g:Caenorhabditis/s:Caenorhabditis elegans",
+  "c": "C. elegans",
+  "s": "A transparent roundworm and a model organism in genetics and neuroscience.",
+  "x": false
+ },
+ {
+  "l": "k:Animalia/p:Porifera/c:Demospongiae/o:Haplosclerida/f:Callyspongiidae/g:Callyspongia/s:Callyspongia vaginalis",
+  "c": "Branching vase sponge",
+  "s": "A tubular sponge common on Caribbean reefs.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Magnoliopsida/o:Fagales/f:Fagaceae/g:Quercus/s:Quercus robur",
+  "c": "English oak",
+  "s": "A long-lived deciduous oak native to Europe.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Magnoliopsida/o:Rosales/f:Rosaceae/g:Malus/s:Malus domestica",
+  "c": "Apple",
+  "s": "The cultivated apple tree, grown for its fruit worldwide.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Magnoliopsida/o:Brassicales/f:Brassicaceae/g:Arabidopsis/s:Arabidopsis thaliana",
+  "c": "Thale cress",
+  "s": "A small mustard relative, the standard model plant.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Magnoliopsida/o:Solanales/f:Solanaceae/g:Solanum/s:Solanum lycopersicum",
+  "c": "Tomato",
+  "s": "A widely cultivated fruit-bearing plant native to western South America.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Magnoliopsida/o:Asterales/f:Asteraceae/g:Helianthus/s:Helianthus annuus",
+  "c": "Common sunflower",
+  "s": "A tall annual with a large flower head that tracks the sun when young.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Magnoliopsida/o:Nymphaeales/f:Nymphaeaceae/g:Victoria/s:Victoria amazonica",
+  "c": "Giant water lily",
+  "s": "An Amazonian water lily with floating leaves up to 3 m across.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Liliopsida/o:Poales/f:Poaceae/g:Zea/s:Zea mays",
+  "c": "Maize",
+  "s": "A cereal grass domesticated in Mexico and now a global staple crop.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Liliopsida/o:Poales/f:Poaceae/g:Oryza/s:Oryza sativa",
+  "c": "Asian rice",
+  "s": "The main rice crop, feeding more than half of the world.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Liliopsida/o:Asparagales/f:Orchidaceae/g:Vanilla/s:Vanilla planifolia",
+  "c": "Vanilla",
+  "s": "An orchid whose cured pods yield the flavouring vanilla.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Pinopsida/o:Pinales/f:Cupressaceae/g:Sequoia/s:Sequoia sempervirens",
+  "c": "Coast redwood",
+  "s": "The tallest tree on Earth, native to coastal California.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Pinopsida/o:Pinales/f:Pinaceae/g:Pinus/s:Pinus longaeva",
+  "c": "Great Basin bristlecone pine",
+  "s": "Among the longest-lived individual organisms, living for over 4,800 years.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Ginkgoopsida/o:Ginkgoales/f:Ginkgoaceae/g:Ginkgo/s:Ginkgo biloba",
+  "c": "Ginkgo",
+  "s": "A living fossil tree, the sole survivor of its order.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Polypodiopsida/o:Polypodiales/f:Dennstaedtiaceae/g:Pteridium/s:Pteridium aquilinum",
+  "c": "Bracken",
+  "s": "A widespread, coarse fern found on every continent but Antarctica.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Bryophyta/c:Bryopsida/o:Funariales/f:Funariaceae/g:Physcomitrium/s:Physcomitrium patens",
+  "c": "Spreading earthmoss",
+  "s": "A moss used as a model for plant evolution and genetics.",
+  "x": false
+ },
+ {
+  "l": "k:Plantae/p:Tracheophyta/c:Lycopsida/o:Lepidodendrales/f:Lepidodendraceae/g:Lepidodendron/s:Lepidodendron aculeatum",
+  "c": "Scale tree",
+  "s": "A giant extinct lycophyte tree of the Carboniferous coal forests.",
+  "x": true
+ },
+ {
+  "l": "k:Fungi/p:Basidiomycota/c:Agaricomycetes/o:Agaricales/f:Amanitaceae/g:Amanita/s:Amanita muscaria",
+  "c": "Fly agaric",
+  "s": "A red, white-spotted toadstool; poisonous and psychoactive.",
+  "x": false
+ },
+ {
+  "l": "k:Fungi/p:Basidiomycota/c:Agaricomycetes/o:Agaricales/f:Amanitaceae/g:Amanita/s:Amanita phalloides",
+  "c": "Death cap",
+  "s": "The deadliest mushroom, responsible for most fatal fungal poisonings.",
+  "x": false
+ },
+ {
+  "l": "k:Fungi/p:Basidiomycota/c:Agaricomycetes/o:Agaricales/f:Agaricaceae/g:Agaricus/s:Agaricus bisporus",
+  "c": "Button mushroom",
+  "s": "The most commonly cultivated edible mushroom.",
+  "x": false
+ },
+ {
+  "l": "k:Fungi/p:Basidiomycota/c:Agaricomycetes/o:Agaricales/f:Physalacriaceae/g:Armillaria/s:Armillaria ostoyae",
+  "c": "Dark honey fungus",
+  "s": "Forms the largest known organism by area, in Oregon's Blue Mountains.",
+  "x": false
+ },
+ {
+  "l": "k:Fungi/p:Ascomycota/c:Saccharomycetes/o:Saccharomycetales/f:Saccharomycetaceae/g:Saccharomyces/s:Saccharomyces cerevisiae",
+  "c": "Baker's yeast",
+  "s": "The yeast used for bread, beer and wine, and a key model organism.",
+  "x": false
+ },
+ {
+  "l": "k:Fungi/p:Ascomycota/c:Eurotiomycetes/o:Eurotiales/f:Aspergillaceae/g:Penicillium/s:Penicillium rubens",
+  "c": "Penicillium",
+  "s": "The mould from which Fleming discovered penicillin.",
+  "x": false
+ },
+ {
+  "l": "k:Fungi/p:Ascomycota/c:Pezizomycetes/o:Pezizales/f:Tuberaceae/g:Tuber/s:Tuber melanosporum",
+  "c": "Perigord black truffle",
+  "s": "A prized edible underground fungus.",
+  "x": false
+ },
+ {
+  "l": "k:Fungi/p:Ascomycota/c:Sordariomycetes/o:Hypocreales/f:Ophiocordycipitaceae/g:Ophiocordyceps/s:Ophiocordyceps unilateralis",
+  "c": "Zombie-ant fungus",
+  "s": "A parasitic fungus that manipulates the behaviour of carpenter ants.",
+  "x": false
+ },
+ {
+  "l": "k:Bacteria/p:Proteobacteria/c:Gammaproteobacteria/o:Enterobacterales/f:Enterobacteriaceae/g:Escherichia/s:Escherichia coli",
+  "c": "E. coli",
+  "s": "A gut bacterium, and the most studied organism in molecular biology.",
+  "x": false
+ },
+ {
+  "l": "k:Bacteria/p:Proteobacteria/c:Gammaproteobacteria/o:Enterobacterales/f:Yersiniaceae/g:Yersinia/s:Yersinia pestis",
+  "c": "Plague bacterium",
+  "s": "The bacterium that causes bubonic plague.",
+  "x": false
+ },
+ {
+  "l": "k:Bacteria/p:Proteobacteria/c:Gammaproteobacteria/o:Vibrionales/f:Vibrionaceae/g:Vibrio/s:Vibrio cholerae",
+  "c": "Cholera bacterium",
+  "s": "The bacterium that causes cholera.",
+  "x": false
+ },
+ {
+  "l": "k:Bacteria/p:Cyanobacteria/c:Cyanophyceae/o:Synechococcales/f:Synechococcaceae/g:Synechococcus/s:Synechococcus elongatus",
+  "c": "Synechococcus",
+  "s": "A photosynthetic cyanobacterium and a model for circadian rhythms.",
+  "x": false
+ },
+ {
+  "l": "k:Bacteria/p:Firmicutes/c:Bacilli/o:Lactobacillales/f:Lactobacillaceae/g:Lactobacillus/s:Lactobacillus acidophilus",
+  "c": "Lactobacillus",
+  "s": "A lactic-acid bacterium found in yoghurt and the human gut.",
+  "x": false
+ },
+ {
+  "l": "k:Bacteria/p:Firmicutes/c:Bacilli/o:Bacillales/f:Staphylococcaceae/g:Staphylococcus/s:Staphylococcus aureus",
+  "c": "Golden staph",
+  "s": "A common skin bacterium, some strains of which are antibiotic-resistant.",
+  "x": false
+ },
+ {
+  "l": "k:Bacteria/p:Deinococcota/c:Deinococci/o:Deinococcales/f:Deinococcaceae/g:Deinococcus/s:Deinococcus radiodurans",
+  "c": "Conan the Bacterium",
+  "s": "An extremophile bacterium remarkably resistant to radiation.",
+  "x": false
+ },
+ {
+  "l": "k:Archaea/p:Euryarchaeota/c:Methanobacteria/o:Methanobacteriales/f:Methanobacteriaceae/g:Methanobrevibacter/s:Methanobrevibacter smithii",
+  "c": "Methanobrevibacter smithii",
+  "s": "The dominant methane-producing archaeon of the human gut.",
+  "x": false
+ },
+ {
+  "l": "k:Archaea/p:Euryarchaeota/c:Halobacteria/o:Halobacteriales/f:Halobacteriaceae/g:Halobacterium/s:Halobacterium salinarum",
+  "c": "Halobacterium",
+  "s": "A salt-loving archaeon that turns salt lakes pink.",
+  "x": false
+ },
+ {
+  "l": "k:Archaea/p:Crenarchaeota/c:Thermoprotei/o:Sulfolobales/f:Sulfolobaceae/g:Sulfolobus/s:Sulfolobus acidocaldarius",
+  "c": "Sulfolobus",
+  "s": "A thermoacidophilic archaeon living in volcanic hot springs.",
+  "x": false
+ },
+ {
+  "l": "k:Protozoa/p:Amoebozoa/c:Tubulinea/o:Euamoebida/f:Amoebidae/g:Amoeba/s:Amoeba proteus",
+  "c": "Amoeba",
+  "s": "The classic textbook amoeba, moving with pseudopodia.",
+  "x": false
+ },
+ {
+  "l": "k:Protozoa/p:Euglenozoa/c:Kinetoplastea/o:Trypanosomatida/f:Trypanosomatidae/g:Trypanosoma/s:Trypanosoma brucei",
+  "c": "African trypanosome",
+  "s": "The parasite that causes African sleeping sickness.",
+  "x": false
+ },
+ {
+  "l": "k:Protozoa/p:Ciliophora/c:Oligohymenophorea/o:Peniculida/f:Parameciidae/g:Paramecium/s:Paramecium caudatum",
+  "c": "Slipper animalcule",
+  "s": "A familiar slipper-shaped ciliate.",
+  "x": false
+ },
+ {
+  "l": "k:Chromista/p:Ochrophyta/c:Phaeophyceae/o:Laminariales/f:Laminariaceae/g:Macrocystis/s:Macrocystis pyrifera",
+  "c": "Giant kelp",
+  "s": "The largest brown alga, forming underwater forests.",
+  "x": false
+ },
+ {
+  "l": "k:Chromista/p:Ochrophyta/c:Bacillariophyceae/o:Naviculales/f:Naviculaceae/g:Navicula/s:Navicula radiosa",
+  "c": "Navicula",
+  "s": "A boat-shaped diatom with a silica shell.",
+  "x": false
+ },
+ {
+  "l": "k:Chromista/p:Oomycota/c:Peronosporea/o:Peronosporales/f:Peronosporaceae/g:Phytophthora/s:Phytophthora infestans",
+  "c": "Potato blight",
+  "s": "The water mould behind the Irish potato famine.",
+  "x": false
+ },
+ {
+  "l": "k:Viruses/p:Pisuviricota/c:Pisoniviricetes/o:Nidovirales/f:Coronaviridae/g:Betacoronavirus/s:Severe acute respiratory syndrome-related coronavirus",
+  "c": "SARS-CoV-2 lineage",
+  "s": "A coronavirus species including the agents of SARS and COVID-19.",
+  "x": false
+ },
+ {
+  "l": "k:Viruses/p:Cressdnaviricota/c:Arfiviricetes/o:Petitvirales/f:Microviridae/g:Phix174microvirus/s:Escherichia virus phiX174",
+  "c": "phiX174",
+  "s": "A bacteriophage whose genome was the first to be sequenced.",
+  "x": false
+ }
+]

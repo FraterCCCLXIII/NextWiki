@@ -22,6 +22,8 @@ import {
 } from "./registry.js";
 import { universityDir } from "./paths.js";
 import { readRegistry } from "./sync-ids.js";
+import { readLedger, readSourceMap } from "./sources-io.js";
+import type { Ledger, SourceMap } from "./sources.js";
 
 const contentDir = () => join(universityDir(), "content");
 
@@ -67,6 +69,10 @@ export type Curriculum = {
   concepts: Record<string, Concept>;
   /** By stable lesson id. */
   lessons: Map<string, LoadedLesson>;
+  /** Every outside work we link to, cite or ingest (sources.json). */
+  ledger: Ledger;
+  /** Which sources fill which module (source-map.json). */
+  sourceMap: SourceMap;
   /** Problems in the tree, the ledger or the files that make the load unsafe. */
   fatal: string[];
 };
@@ -93,6 +99,9 @@ export async function loadCurriculum(): Promise<Curriculum> {
     for (const r of c.requires) if (!known.has(r)) fatal.push(`concept "${slug}" requires unknown "${r}"`);
   }
 
+  const ledger = await readLedger();
+  const ledgerLicenses = new Map(Object.values(ledger.sources).map((s) => [s.id, s.license]));
+
   const lessons = new Map<string, LoadedLesson>();
   for await (const file of walk(contentDir())) {
     const path = relative(contentDir(), file);
@@ -109,8 +118,8 @@ export async function loadCurriculum(): Promise<Curriculum> {
       fatal.push(`${path}: ${doc.id} is also defined in ${lessons.get(doc.id)!.path}`);
       continue;
     }
-    const all = [...issues, ...checkLesson(doc, { stageKey: stageOfLesson.get(doc.id), knownConcepts: known })];
+    const all = [...issues, ...checkLesson(doc, { stageKey: stageOfLesson.get(doc.id), knownConcepts: known, ledger: ledgerLicenses })];
     lessons.set(doc.id, { doc, path, issues: all });
   }
-  return { stages, registry, concepts, lessons, fatal };
+  return { stages, registry, concepts, lessons, ledger, sourceMap: await readSourceMap(), fatal };
 }

@@ -1,0 +1,5325 @@
+{
+ "version": 1,
+ "modules": {
+  "KU-M0001": [
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/moon/",
+    "locator": "Earth's Moon",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/4-1-earth-and-sky",
+    "locator": "4.1 Earth and Sky",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0002": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/4-2-the-seasons",
+    "locator": "4.2 The Seasons",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/4-5-phases-and-motions-of-the-moon",
+    "locator": "4.5 Phases and Motions of the Moon",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/4-7-eclipses-of-the-sun-and-moon",
+    "locator": "4.7 Eclipses of the Sun and Moon",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/earth/",
+    "locator": "Earth",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0004": [
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/solar-system/planets/",
+    "locator": "About Planets",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/mars/",
+    "locator": "Mars",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/jupiter/",
+    "locator": "Jupiter",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/saturn/",
+    "locator": "Saturn",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/solar-system/moons/",
+    "locator": "Moons of Our Solar System",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/7-1-overview-of-our-planetary-system",
+    "locator": "7.1 Overview of Our Planetary System",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0005": [
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/asteroids-comets-meteors/",
+    "locator": "Asteroids, Comets & Meteors",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/solar-system/asteroids/",
+    "locator": "Asteroids",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/solar-system/comets/",
+    "locator": "Comets",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/planetary-defense/",
+    "locator": "Planetary Defense",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/13-1-asteroids",
+    "locator": "13.1 Asteroids",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/13-2-asteroids-and-planetary-defense",
+    "locator": "13.2 Asteroids and Planetary Defense",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0006": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/30-1-the-cosmic-context-for-life",
+    "locator": "30.1 The Cosmic Context for Life",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/mars/",
+    "locator": "Mars",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0007": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/1-7-the-universe-on-the-large-scale",
+    "locator": "1.7 The Universe on the Large Scale",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/19-1-fundamental-units-of-distance",
+    "locator": "19.1 Fundamental Units of Distance",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/25-1-the-architecture-of-the-galaxy",
+    "locator": "25.1 The Architecture of the Galaxy",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/26-1-the-discovery-of-galaxies",
+    "locator": "26.1 The Discovery of Galaxies",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/universe/galaxies/",
+    "locator": "Galaxies",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0008": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/21-1-star-formation",
+    "locator": "21.1 Star Formation",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/23-1-the-death-of-low-mass-stars",
+    "locator": "23.1 The Death of Low-Mass Stars",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/universe/stars/",
+    "locator": "Stars",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/universe/black-holes/",
+    "locator": "Black Holes",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0009": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/29-1-the-age-of-the-universe",
+    "locator": "29.1 The Age of the Universe",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/universe/",
+    "locator": "Universe",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0011": [
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/moon/",
+    "locator": "Earth's Moon",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0014": [
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/solar-system/planets/",
+    "locator": "About Planets",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0016": [
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/earth/",
+    "locator": "Earth",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0020": [
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/kindergarten/unit-2/family-materials.html",
+    "locator": "Kindergarten Unit 2: Numbers 1-10",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0021": [
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/kindergarten/unit-3/family-materials.html",
+    "locator": "Kindergarten Unit 3: Flat Shapes All Around Us",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0044": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/1-7-the-universe-on-the-large-scale",
+    "locator": "1.7 The Universe on the Large Scale",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0045": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/4-2-the-seasons",
+    "locator": "4.2 The Seasons",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0046": [
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-2/unit-5/family-materials.html",
+    "locator": "Grade 2 Unit 5: Numbers to 1,000",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0047": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/4-7-eclipses-of-the-sun-and-moon",
+    "locator": "4.7 Eclipses of the Sun and Moon",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0051": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/3-1-the-laws-of-planetary-motion",
+    "locator": "3.1 The Laws of Planetary Motion",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0054": [
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/kindergarten/unit-2/family-materials.html",
+    "locator": "Kindergarten Unit 2: Numbers 1-10",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/kindergarten/unit-4/family-materials.html",
+    "locator": "Kindergarten Unit 4: Understanding Addition and Subtraction",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/kindergarten/unit-6/family-materials.html",
+    "locator": "Kindergarten Unit 6: Numbers 0-20",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0055": [
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/kindergarten/unit-3/family-materials.html",
+    "locator": "Kindergarten Unit 3: Flat Shapes All Around Us",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/kindergarten/unit-7/family-materials.html",
+    "locator": "Kindergarten Unit 7: Solid Shapes All Around Us",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0056": [
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-2/unit-3/family-materials.html",
+    "locator": "Grade 2 Unit 3: Measuring Length",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-2/unit-6/family-materials.html",
+    "locator": "Grade 2 Unit 6: Geometry, Time, and Money",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0076": [
+   {
+    "source": "SRC-code-org-cs-fundamentals",
+    "url": "https://code.org/curriculum/computer-science-fundamentals",
+    "locator": "CS Fundamentals Unplugged / Courses A-B",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0077": [
+   {
+    "source": "SRC-code-org-cs-fundamentals",
+    "url": "https://code.org/curriculum/computer-science-fundamentals",
+    "locator": "CS Fundamentals Courses A-C",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0078": [
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/solar-system/planets/",
+    "locator": "About Planets",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/solar-system/moons/",
+    "locator": "Moons of Our Solar System",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/7-1-overview-of-our-planetary-system",
+    "locator": "7.1 Overview of Our Planetary System",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/12-1-ring-and-moon-systems-introduced",
+    "locator": "12.1 Ring and Moon Systems Introduced",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0079": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/3-1-the-laws-of-planetary-motion",
+    "locator": "3.1 The Laws of Planetary Motion",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0080": [
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/solar-system/asteroids/",
+    "locator": "Asteroids",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/solar-system/comets/",
+    "locator": "Comets",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/solar-system/meteors-meteorites/",
+    "locator": "Meteors and Meteorites",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/13-1-asteroids",
+    "locator": "13.1 Asteroids",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0081": [
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/sun/",
+    "locator": "Sun",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/15-1-the-structure-and-composition-of-the-sun",
+    "locator": "15.1 The Structure and Composition of the Sun",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0082": [
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/mission/voyager/",
+    "locator": "Voyager",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0084": [
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/earth/",
+    "locator": "Earth",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0086": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/4-2-the-seasons",
+    "locator": "4.2 The Seasons",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/4-5-phases-and-motions-of-the-moon",
+    "locator": "4.5 Phases and Motions of the Moon",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0087": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/19-1-fundamental-units-of-distance",
+    "locator": "19.1 Fundamental Units of Distance",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/1-5-consequences-of-light-travel-time",
+    "locator": "1.5 Consequences of Light Travel Time",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0088": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/6-1-telescopes",
+    "locator": "6.1 Telescopes",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0089": [
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/universe/stars/",
+    "locator": "Stars",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0090": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/4-1-earth-and-sky",
+    "locator": "4.1 Earth and Sky",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0094": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/30-1-the-cosmic-context-for-life",
+    "locator": "30.1 The Cosmic Context for Life",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0095": [
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/exoplanets/",
+    "locator": "Exoplanets",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0096": [
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-2/unit-5/family-materials.html",
+    "locator": "Grade 2 Unit 5: Numbers to 1,000",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-5/unit-5/family-materials.html",
+    "locator": "Grade 5 Unit 5: Place Value Patterns and Decimal Operations",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0097": [
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-3/unit-1/family-materials.html",
+    "locator": "Grade 3 Unit 1: Introducing Multiplication",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-3/unit-4/family-materials.html",
+    "locator": "Grade 3 Unit 4: Relating Multiplication to Division",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-5/unit-4/family-materials.html",
+    "locator": "Grade 5 Unit 4: Multi-Digit Multiplication and Division",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0098": [
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-3/unit-5/family-materials.html",
+    "locator": "Grade 3 Unit 5: Fractions as Numbers",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-5/unit-2/family-materials.html",
+    "locator": "Grade 5 Unit 2: Fractions as Quotients",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-5/unit-5/family-materials.html",
+    "locator": "Grade 5 Unit 5: Place Value Patterns and Decimal Operations",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0099": [
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-3/unit-7/family-materials.html",
+    "locator": "Grade 3 Unit 7: Two-dimensional Shapes and Perimeter",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-5/unit-1/family-materials.html",
+    "locator": "Grade 5 Unit 1: Finding Volume",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0100": [
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-3/unit-6/family-materials.html",
+    "locator": "Grade 3 Unit 6: Measuring Length, Time, Liquid Volume, and Weight",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-2/unit-6/family-materials.html",
+    "locator": "Grade 2 Unit 6: Geometry, Time, and Money",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0101": [
+   {
+    "source": "SRC-illustrative-mathematics-k5",
+    "url": "https://im.kendallhunt.com/k5/families/grade-2/unit-1/family-materials.html",
+    "locator": "Grade 2 Unit 1: Adding, Subtracting, and Working with Data",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0127": [
+   {
+    "source": "SRC-creative-computing-harvard",
+    "url": "https://creativecomputing.gse.harvard.edu/guide/curriculum.html",
+    "locator": "Units 0-6: Getting Started to Hackathon",
+    "fit": "full",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0130": [
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/4-2-newtons-first-law-of-motion-inertia",
+    "locator": "Ch. 4.2 Newton's First Law",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/4-3-newtons-second-law-of-motion",
+    "locator": "Ch. 4.3 Newton's Second Law (F = ma)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/4-4-newtons-third-law-of-motion",
+    "locator": "Ch. 4.4 Newton's Third Law",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/forces-and-motion-basics",
+    "locator": "Forces and Motion: Basics simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0131": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/3-1-the-laws-of-planetary-motion",
+    "locator": "Ch. 3.1 The Laws of Planetary Motion",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/7-1-keplers-laws-of-planetary-motion",
+    "locator": "Ch. 7.1 Kepler's Laws of Planetary Motion",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/gravity-and-orbits",
+    "locator": "Gravity and Orbits simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0132": [
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/9-2-mechanical-energy-and-conservation-of-energy",
+    "locator": "Ch. 9.2 Mechanical Energy and Conservation of Energy",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/3-5-motions-of-satellites-and-spacecraft",
+    "locator": "Ch. 3.5 Motions of Satellites and Spacecraft (escape velocity, orbits)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/energy-skate-park-basics",
+    "locator": "Energy Skate Park: Basics simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0133": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/3-3-newtons-universal-law-of-gravitation",
+    "locator": "Ch. 3.3 Newton's Universal Law of Gravitation",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/7-2-newtons-law-of-universal-gravitation-and-einsteins-theory-of-general-relativity",
+    "locator": "Ch. 7.2 Newton's Law of Universal Gravitation",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/gravity-and-orbits",
+    "locator": "Gravity and Orbits simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0134": [
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/8-2-conservation-of-momentum",
+    "locator": "Ch. 8.2 Conservation of Momentum",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/8-3-elastic-and-inelastic-collisions",
+    "locator": "Ch. 8.3 Elastic and Inelastic Collisions",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/9-3-impact-craters",
+    "locator": "Ch. 9.3 Impact Craters",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0135": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/25-1-the-architecture-of-the-galaxy",
+    "locator": "Ch. 25.1 The Architecture of the Galaxy",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/25-2-spiral-structure",
+    "locator": "Ch. 25.2 Spiral Structure",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/25-4-the-center-of-the-galaxy",
+    "locator": "Ch. 25.4 The Center of the Galaxy",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/universe/galaxies/",
+    "locator": "NASA Science: Galaxies overview",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0136": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/21-1-star-formation",
+    "locator": "Ch. 21.1 Star Formation",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/18-4-the-h-r-diagram",
+    "locator": "Ch. 18.4 The H-R Diagram",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/22-1-evolution-from-the-main-sequence-to-red-giants",
+    "locator": "Ch. 22.1 Evolution from the Main Sequence to Red Giants",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/23-2-evolution-of-massive-stars-an-explosive-finish",
+    "locator": "Ch. 23.2 Massive Stars: An Explosive Finish",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/20-5-the-life-cycle-of-cosmic-material",
+    "locator": "Ch. 20.5 The Life Cycle of Cosmic Material",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0137": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/22-2-star-clusters",
+    "locator": "Ch. 22.2 Star Clusters",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/22-3-checking-out-the-theory",
+    "locator": "Ch. 22.3 Checking Out the Theory (turn-off and cluster ages)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0138": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/26-1-the-discovery-of-galaxies",
+    "locator": "Ch. 26.1 The Discovery of Galaxies",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/26-2-types-of-galaxies",
+    "locator": "Ch. 26.2 Types of Galaxies",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/28-2-galaxy-mergers-and-active-galactic-nuclei",
+    "locator": "Ch. 28.2 Galaxy Mergers",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/28-3-the-distribution-of-galaxies-in-space",
+    "locator": "Ch. 28.3 The Distribution of Galaxies in Space (groups and clusters)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0139": [
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/19-1-ohms-law",
+    "locator": "Ch. 19.1 Ohm's Law",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/19-2-series-circuits",
+    "locator": "Ch. 19.2 Series Circuits",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/19-3-parallel-circuits",
+    "locator": "Ch. 19.3 Parallel Circuits",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/19-4-electric-power",
+    "locator": "Ch. 19.4 Electric Power",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/circuit-construction-kit-dc",
+    "locator": "Circuit Construction Kit: DC simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0140": [
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/20-1-magnetic-fields-field-lines-and-force",
+    "locator": "Ch. 20.1 Magnetic Fields, Field Lines, and Force",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/magnets-and-electromagnets",
+    "locator": "Magnets and Electromagnets simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0141": [
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/20-2-motors-generators-and-transformers",
+    "locator": "Ch. 20.2 Motors, Generators, and Transformers",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/20-3-electromagnetic-induction",
+    "locator": "Ch. 20.3 Electromagnetic Induction",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/12-3-second-law-of-thermodynamics-entropy",
+    "locator": "Ch. 12.3 Second Law (why perpetual motion fails)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/generator",
+    "locator": "Generator simulation",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/faradays-law",
+    "locator": "Faraday's Law simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0142": [
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/18-1-electrical-charges-conservation-of-charge-and-transfer-of-charge",
+    "locator": "Ch. 18.1 Electrical Charges and Transfer of Charge",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/18-2-coulombs-law",
+    "locator": "Ch. 18.2 Coulomb's Law",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/balloons-and-static-electricity",
+    "locator": "Balloons and Static Electricity simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0143": [
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/13-2-wave-properties-speed-amplitude-frequency-and-period",
+    "locator": "Ch. 13.2 Wave Properties",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/14-1-speed-of-sound-frequency-and-wavelength",
+    "locator": "Ch. 14.1 Speed of Sound, Frequency, and Wavelength",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/14-3-doppler-effect-and-sonic-booms",
+    "locator": "Ch. 14.3 Doppler Effect",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/5-6-the-doppler-effect",
+    "locator": "Ch. 5.6 The Doppler Effect",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/16-2-refraction",
+    "locator": "Ch. 16.2 Refraction",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/wave-on-a-string",
+    "locator": "Wave on a String simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0144": [
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/15-1-the-electromagnetic-spectrum",
+    "locator": "Ch. 15.1 The Electromagnetic Spectrum",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/5-2-the-electromagnetic-spectrum",
+    "locator": "Ch. 5.2 The Electromagnetic Spectrum",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/5-3-spectroscopy-in-astronomy",
+    "locator": "Ch. 5.3 Spectroscopy in Astronomy",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/5-5-formation-of-spectral-lines",
+    "locator": "Ch. 5.5 Formation of Spectral Lines",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/bending-light",
+    "locator": "Bending Light simulation (prisms)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0145": [
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/16-3-lenses",
+    "locator": "Ch. 16.3 Lenses",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/6-1-telescopes",
+    "locator": "Ch. 6.1 Telescopes",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/6-2-telescopes-today",
+    "locator": "Ch. 6.2 Telescopes Today",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/geometric-optics",
+    "locator": "Geometric Optics simulation (focal length)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0146": [
+   {
+    "source": "SRC-usgs-this-dynamic-earth",
+    "url": "https://pubs.usgs.gov/gip/dynamic/historical.html",
+    "locator": "Historical perspective (continental drift, Pangaea)",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-usgs-this-dynamic-earth",
+    "url": "https://pubs.usgs.gov/gip/dynamic/developing.html",
+    "locator": "Developing the theory (seafloor spreading)",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-usgs-this-dynamic-earth",
+    "url": "https://pubs.usgs.gov/gip/dynamic/understanding.html",
+    "locator": "Understanding plate motions (ridges, trenches, faults)",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/plate-tectonics",
+    "locator": "Plate Tectonics simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0147": [
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://climate.nasa.gov/causes/",
+    "locator": "NASA Climate: Causes (greenhouse effect)",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://climate.nasa.gov/evidence/",
+    "locator": "NASA Climate: Evidence",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/venus/venus-facts/",
+    "locator": "NASA: Venus facts",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/mars/facts/",
+    "locator": "NASA: Mars facts",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nasa-science",
+    "url": "https://science.nasa.gov/earth/facts/",
+    "locator": "NASA: Earth facts",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/8-3-earths-atmosphere",
+    "locator": "Ch. 8.3 Earth's Atmosphere (layers)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/10-3-the-massive-atmosphere-of-venus",
+    "locator": "Ch. 10.3 The Massive Atmosphere of Venus",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/10-6-divergent-planetary-evolution",
+    "locator": "Ch. 10.6 Divergent Planetary Evolution (Venus, Earth, Mars)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/greenhouse-effect",
+    "locator": "Greenhouse Effect simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0148": [
+   {
+    "source": "SRC-usgs-geologic-time",
+    "url": "https://pubs.usgs.gov/gip/geotime/age.html",
+    "locator": "Geologic Time: Age of the Earth",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-nps-grand-canyon-geology",
+    "url": "https://www.nps.gov/grca/learn/nature/geologicformations.htm",
+    "locator": "Grand Canyon geologic formations",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0149": [
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/1-3-the-language-of-physics-physical-quantities-and-units",
+    "locator": "Ch. 1.3 Physical Quantities and Units",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/1-5-measurement-uncertainty-accuracy-and-precision",
+    "locator": "Ch. 1.5 Measurement Uncertainty, Accuracy, and Precision",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/1-4-measurements",
+    "locator": "Ch. 1.4 Measurements",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-prealgebra-2e",
+    "url": "https://openstax.org/books/prealgebra-2e/pages/10-5-integer-exponents-and-scientific-notation",
+    "locator": "Ch. 10.5 Integer Exponents and Scientific Notation",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/3/7/index.html",
+    "locator": "Grade 8, Unit 7: Exponents and Scientific Notation",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/1-4-numbers-in-astronomy",
+    "locator": "Ch. 1.4 Numbers in Astronomy (orders of magnitude)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0150": [
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/1-2-the-scientific-methods",
+    "locator": "Ch. 1.2 The Scientific Methods",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/1-2-the-process-of-science",
+    "locator": "Ch. 1.2 The Process of Science",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/1-2-the-nature-of-science",
+    "locator": "Ch. 1.2 The Nature of Science",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0151": [
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/1/2/index.html",
+    "locator": "Grade 6, Unit 2: Introducing Ratios",
+    "fit": "full",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/1/3/index.html",
+    "locator": "Grade 6, Unit 3: Unit Rates and Percentages",
+    "fit": "full",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/2/1/index.html",
+    "locator": "Grade 7, Unit 1: Scale Drawings",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/2/2/index.html",
+    "locator": "Grade 7, Unit 2: Introducing Proportional Relationships",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/2/4/index.html",
+    "locator": "Grade 7, Unit 4: Proportional Relationships and Percentages",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-prealgebra-2e",
+    "url": "https://openstax.org/books/prealgebra-2e/pages/5-6-ratios-and-rate",
+    "locator": "Ch. 5.6 Ratios and Rate",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/ratio-and-proportion",
+    "locator": "Ratio and Proportion simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0152": [
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/1/7/index.html",
+    "locator": "Grade 6, Unit 7: Rational Numbers",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/2/5/index.html",
+    "locator": "Grade 7, Unit 5: Rational Number Arithmetic",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/1/6/index.html",
+    "locator": "Grade 6, Unit 6: Expressions and Equations",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-prealgebra-2e",
+    "url": "https://openstax.org/books/prealgebra-2e/pages/3-2-add-integers",
+    "locator": "Ch. 3.2 Add Integers",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-prealgebra-2e",
+    "url": "https://openstax.org/books/prealgebra-2e/pages/3-4-multiply-and-divide-integers",
+    "locator": "Ch. 3.4 Multiply and Divide Integers",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-prealgebra-2e",
+    "url": "https://openstax.org/books/prealgebra-2e/pages/2-2-evaluate-simplify-and-translate-expressions",
+    "locator": "Ch. 2.2 Evaluate, Simplify, and Translate Expressions",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/equality-explorer",
+    "locator": "Equality Explorer simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0153": [
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/3/3/index.html",
+    "locator": "Grade 8, Unit 3: Linear Relationships",
+    "fit": "full",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/3/4/index.html",
+    "locator": "Grade 8, Unit 4: Linear Equations and Linear Systems",
+    "fit": "full",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-prealgebra-2e",
+    "url": "https://openstax.org/books/prealgebra-2e/pages/11-4-understand-slope-of-a-line",
+    "locator": "Ch. 11.4 Understand Slope of a Line",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/graphing-lines",
+    "locator": "Graphing Lines simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0154": [
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/2/7/index.html",
+    "locator": "Grade 7, Unit 7: Angles, Triangles, and Prisms",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/2/3/index.html",
+    "locator": "Grade 7, Unit 3: Measuring Circles",
+    "fit": "full",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/3/8/index.html",
+    "locator": "Grade 8, Unit 8: Pythagorean Theorem and Irrational Numbers",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/1/1/index.html",
+    "locator": "Grade 6, Unit 1: Area and Surface Area",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/3/5/index.html",
+    "locator": "Grade 8, Unit 5: Functions and Volume",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-prealgebra-2e",
+    "url": "https://openstax.org/books/prealgebra-2e/pages/9-3-use-properties-of-angles-triangles-and-the-pythagorean-theorem",
+    "locator": "Ch. 9.3 Angles, Triangles, and the Pythagorean Theorem",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-prealgebra-2e",
+    "url": "https://openstax.org/books/prealgebra-2e/pages/9-6-solve-geometry-applications-volume-and-surface-area",
+    "locator": "Ch. 9.6 Volume and Surface Area",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0155": [
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/2/8/index.html",
+    "locator": "Grade 7, Unit 8: Probability and Sampling",
+    "fit": "full",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/1/8/index.html",
+    "locator": "Grade 6, Unit 8: Data Sets and Distributions",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-im-6-8-math",
+    "url": "https://curriculum.illustrativemathematics.org/MS/students/3/6/index.html",
+    "locator": "Grade 8, Unit 6: Associations in Data",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-prealgebra-2e",
+    "url": "https://openstax.org/books/prealgebra-2e/pages/5-5-averages-and-probability",
+    "locator": "Ch. 5.5 Averages and Probability",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/plinko-probability",
+    "locator": "Plinko Probability simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0157": [
+   {
+    "source": "SRC-openstax-writing-guide",
+    "url": "https://openstax.org/books/writing-guide/pages/10-3-glance-at-genre-thesis-reasoning-and-evidence",
+    "locator": "Ch. 10.3 Thesis, Reasoning, and Evidence",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-writing-guide",
+    "url": "https://openstax.org/books/writing-guide/pages/10-5-writing-process-creating-a-position-argument",
+    "locator": "Ch. 10.5 Writing Process: Creating a Position Argument",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-writing-guide",
+    "url": "https://openstax.org/books/writing-guide/pages/10-7-evaluation-varied-appeals",
+    "locator": "Ch. 10.7 Evaluation: Varied Appeals (persuasion)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0158": [
+   {
+    "source": "SRC-openstax-writing-guide",
+    "url": "https://openstax.org/books/writing-guide/pages/3-6-editing-focus-sentence-structure",
+    "locator": "Ch. 3.6 Editing Focus: Sentence Structure",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-writing-guide",
+    "url": "https://openstax.org/books/writing-guide/pages/6-6-editing-focus-subject-verb-agreement",
+    "locator": "Ch. 6.6 Editing Focus: Subject-Verb Agreement",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-writing-guide",
+    "url": "https://openstax.org/books/writing-guide/pages/8-6-editing-focus-commas-with-nonessential-and-essential-information",
+    "locator": "Ch. 8.6 Editing Focus: Commas",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0159": [
+   {
+    "source": "SRC-openstax-writing-guide",
+    "url": "https://openstax.org/books/writing-guide/pages/13-1-the-research-process-where-to-look-for-existing-sources",
+    "locator": "Ch. 13.1 Where to Look for Existing Sources",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-writing-guide",
+    "url": "https://openstax.org/books/writing-guide/pages/13-3-glance-at-the-research-process-key-skills",
+    "locator": "Ch. 13.3 Research Process: Key Skills",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-writing-guide",
+    "url": "https://openstax.org/books/writing-guide/pages/13-6-spotlight-on-ethical-research",
+    "locator": "Ch. 13.6 Ethical Research (plagiarism)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-writing-guide",
+    "url": "https://openstax.org/books/writing-guide/pages/14-2-glance-at-form-citation-style-purpose-and-formatting",
+    "locator": "Ch. 14.2 Citation Style, Purpose, and Formatting",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-writing-guide",
+    "url": "https://openstax.org/books/writing-guide/pages/19-7-spotlight-on-delivery-public-speaking",
+    "locator": "Ch. 19.7 Delivery and Public Speaking",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/2-4-gathering-information-evaluating-sources-and-understanding-evidence",
+    "locator": "Ch. 2.4 Gathering Information, Evaluating Sources, and Understanding Evidence",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0163": [
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/3-1-how-cells-are-studied",
+    "locator": "Ch. 3.1 How Cells Are Studied (microscopes)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/3-2-comparing-prokaryotic-and-eukaryotic-cells",
+    "locator": "Ch. 3.2 Comparing Prokaryotic and Eukaryotic Cells",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/3-3-eukaryotic-cells",
+    "locator": "Ch. 3.3 Eukaryotic Cells",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/6-2-the-cell-cycle",
+    "locator": "Ch. 6.2 The Cell Cycle",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/16-1-homeostasis-and-osmoregulation",
+    "locator": "Ch. 16.1 Homeostasis (organs and systems)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0164": [
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/9-1-the-structure-of-dna",
+    "locator": "Ch. 9.1 The Structure of DNA",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/8-1-mendels-experiments",
+    "locator": "Ch. 8.1 Mendel's Experiments",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/8-2-laws-of-inheritance",
+    "locator": "Ch. 8.2 Laws of Inheritance (Punnett squares)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/11-2-mechanisms-of-evolution",
+    "locator": "Ch. 11.2 Mechanisms of Evolution (natural selection)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/11-4-speciation",
+    "locator": "Ch. 11.4 Speciation",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/natural-selection",
+    "locator": "Natural Selection simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0165": [
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/16-3-circulatory-and-respiratory-systems",
+    "locator": "Ch. 16.3 Circulatory and Respiratory Systems",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/17-2-innate-immunity",
+    "locator": "Ch. 17.2 Innate Immunity",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/17-3-adaptive-immunity",
+    "locator": "Ch. 17.3 Adaptive Immunity (vaccines)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/18-3-human-reproduction",
+    "locator": "Ch. 18.3 Human Reproduction",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0166": [
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/20-1-energy-flow-through-ecosystems",
+    "locator": "Ch. 20.1 Energy Flow through Ecosystems",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/20-2-biogeochemical-cycles",
+    "locator": "Ch. 20.2 Biogeochemical Cycles",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/19-2-population-growth-and-regulation",
+    "locator": "Ch. 19.2 Population Growth and Regulation",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/21-1-importance-of-biodiversity",
+    "locator": "Ch. 21.1 Importance of Biodiversity",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/21-2-threats-to-biodiversity",
+    "locator": "Ch. 21.2 Threats to Biodiversity",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/21-3-preserving-biodiversity",
+    "locator": "Ch. 21.3 Preserving Biodiversity",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0167": [
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/2-3-atomic-structure-and-symbolism",
+    "locator": "Ch. 2.3 Atomic Structure and Symbolism",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/2-5-the-periodic-table",
+    "locator": "Ch. 2.5 The Periodic Table",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-physics-hs",
+    "url": "https://openstax.org/books/physics/pages/22-1-the-structure-of-the-atom",
+    "locator": "Ch. 22.1 The Structure of the Atom",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/build-an-atom",
+    "locator": "Build an Atom simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0168": [
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/4-1-writing-and-balancing-chemical-equations",
+    "locator": "Ch. 4.1 Writing and Balancing Chemical Equations",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/4-2-classifying-chemical-reactions",
+    "locator": "Ch. 4.2 Classifying Chemical Reactions",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/5-1-energy-basics",
+    "locator": "Ch. 5.1 Energy Basics (exo- and endothermic)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/balancing-chemical-equations",
+    "locator": "Balancing Chemical Equations simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0169": [
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/14-2-ph-and-poh",
+    "locator": "Ch. 14.2 pH and pOH",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/3-3-molarity",
+    "locator": "Ch. 3.3 Molarity (concentration)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/14-7-acid-base-titrations",
+    "locator": "Ch. 14.7 Acid-Base Titrations (neutralisation)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/ph-scale-basics",
+    "locator": "pH Scale: Basics simulation",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-phet-simulations",
+    "url": "https://phet.colorado.edu/en/simulations/acid-base-solutions",
+    "locator": "Acid-Base Solutions simulation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0170": [
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/18-2-occurrence-and-preparation-of-the-representative-metals",
+    "locator": "Ch. 18.2 Occurrence and Preparation of the Representative Metals",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/20-1-hydrocarbons",
+    "locator": "Ch. 20.1 Hydrocarbons (fossil fuels)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/17-6-corrosion",
+    "locator": "Ch. 17.6 Corrosion",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0171": [
+   {
+    "source": "SRC-openstax-world-history-1",
+    "url": "https://openstax.org/books/world-history-volume-1/pages/14-2-chinggis-khan-and-the-early-mongol-empire",
+    "locator": "Ch. 14.2 Chinggis Khan and the Early Mongol Empire",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-1",
+    "url": "https://openstax.org/books/world-history-volume-1/pages/11-1-the-rise-and-message-of-islam",
+    "locator": "Ch. 11.1 The Rise and Message of Islam",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-1",
+    "url": "https://openstax.org/books/world-history-volume-1/pages/15-2-medieval-sub-saharan-africa",
+    "locator": "Ch. 15.2 Medieval Sub-Saharan Africa",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/4-1-a-connected-islamic-world",
+    "locator": "Vol. 2, Ch. 4.1 A Connected Islamic World",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/6-1-european-colonization-in-the-americas",
+    "locator": "Vol. 2, Ch. 6.1 European Colonization in the Americas",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/6-2-the-rise-of-a-global-economy",
+    "locator": "Vol. 2, Ch. 6.2 The Rise of a Global Economy",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0172": [
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/7-1-the-enlightenment",
+    "locator": "Vol. 2, Ch. 7.1 The Enlightenment",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/7-3-revolutions-america-france-and-haiti",
+    "locator": "Vol. 2, Ch. 7.3 Revolutions: America, France, and Haiti",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/10-1-inventions-innovations-and-mechanization",
+    "locator": "Vol. 2, Ch. 10.1 Inventions, Innovations, and Mechanization",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/10-2-life-in-the-industrial-city",
+    "locator": "Vol. 2, Ch. 10.2 Life in the Industrial City",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/10-5-regulation-reform-and-revolutionary-ideologies",
+    "locator": "Vol. 2, Ch. 10.5 Regulation, Reform, and Revolutionary Ideologies",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0173": [
+   {
+    "source": "SRC-openstax-world-history-1",
+    "url": "https://openstax.org/books/world-history-volume-1/pages/1-2-primary-sources",
+    "locator": "Vol. 1, Ch. 1.2 Primary Sources",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-1",
+    "url": "https://openstax.org/books/world-history-volume-1/pages/1-3-causation-and-interpretation-in-history",
+    "locator": "Vol. 1, Ch. 1.3 Causation and Interpretation in History",
+    "fit": "full",
+    "mode": "link"
+   }
+  ],
+  "KU-M0174": [
+   {
+    "source": "SRC-openstax-concepts-biology",
+    "url": "https://openstax.org/books/concepts-biology/pages/19-3-the-human-population",
+    "locator": "Ch. 19.3 The Human Population",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-economics-3e",
+    "url": "https://openstax.org/books/principles-economics-3e/pages/23-2-trade-balances-in-historical-and-international-context",
+    "locator": "Ch. 23.2 Trade in Historical and International Context",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/15-1-a-global-economy",
+    "locator": "Vol. 2, Ch. 15.1 A Global Economy",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0175": [
+   {
+    "source": "SRC-openstax-american-government-4e",
+    "url": "https://openstax.org/books/american-government-4e/pages/2-3-the-development-of-the-constitution",
+    "locator": "Ch. 2.3 The Development of the Constitution",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-american-government-4e",
+    "url": "https://openstax.org/books/american-government-4e/pages/4-1-what-are-civil-liberties",
+    "locator": "Ch. 4.1 What Are Civil Liberties?",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-american-government-4e",
+    "url": "https://openstax.org/books/american-government-4e/pages/7-3-elections",
+    "locator": "Ch. 7.3 Elections",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-american-government-4e",
+    "url": "https://openstax.org/books/american-government-4e/pages/11-1-the-institutional-design-of-congress",
+    "locator": "Ch. 11.1 Institutional Design of Congress",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-american-government-4e",
+    "url": "https://openstax.org/books/american-government-4e/pages/12-1-the-design-and-evolution-of-the-presidency",
+    "locator": "Ch. 12.1 The Presidency",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-american-government-4e",
+    "url": "https://openstax.org/books/american-government-4e/pages/13-1-guardians-of-the-constitution-and-individual-rights",
+    "locator": "Ch. 13.1 Courts: Guardians of the Constitution",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0176": [
+   {
+    "source": "SRC-openstax-principles-economics-3e",
+    "url": "https://openstax.org/books/principles-economics-3e/pages/2-1-how-individuals-make-choices-based-on-their-budget-constraint",
+    "locator": "Ch. 2.1 Budget Constraints and Choices (scarcity)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-economics-3e",
+    "url": "https://openstax.org/books/principles-economics-3e/pages/3-1-demand-supply-and-equilibrium-in-markets-for-goods-and-services",
+    "locator": "Ch. 3.1 Demand, Supply, and Equilibrium",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-economics-3e",
+    "url": "https://openstax.org/books/principles-economics-3e/pages/4-1-demand-and-supply-at-work-in-labor-markets",
+    "locator": "Ch. 4.1 Labor Markets (jobs and wages)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-economics-3e",
+    "url": "https://openstax.org/books/principles-economics-3e/pages/23-1-measuring-trade-balances",
+    "locator": "Ch. 23.1 Measuring Trade Balances",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0177": [
+   {
+    "source": "SRC-openstax-prealgebra-2e",
+    "url": "https://openstax.org/books/prealgebra-2e/pages/6-4-solve-simple-interest-applications",
+    "locator": "Ch. 6.4 Simple Interest",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-prealgebra-2e",
+    "url": "https://openstax.org/books/prealgebra-2e/pages/6-3-solve-sales-tax-commission-and-discount-applications",
+    "locator": "Ch. 6.3 Sales Tax, Commission, and Discounts",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-economics-3e",
+    "url": "https://openstax.org/books/principles-economics-3e/pages/27-1-defining-money-by-its-functions",
+    "locator": "Ch. 27.1 Defining Money by Its Functions",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-economics-3e",
+    "url": "https://openstax.org/books/principles-economics-3e/pages/4-2-demand-and-supply-in-financial-markets",
+    "locator": "Ch. 4.2 Financial Markets (saving and borrowing)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0184": [
+   {
+    "source": "SRC-openstax-intro-python",
+    "url": "https://openstax.org/books/introduction-python-programming/pages/1-2-input-output",
+    "locator": "Ch. 1.2 Input/output",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-python",
+    "url": "https://openstax.org/books/introduction-python-programming/pages/1-3-variables",
+    "locator": "Ch. 1.3 Variables",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-python",
+    "url": "https://openstax.org/books/introduction-python-programming/pages/4-2-if-else-statements",
+    "locator": "Ch. 4.2 If-else statements",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-python",
+    "url": "https://openstax.org/books/introduction-python-programming/pages/5-2-for-loop",
+    "locator": "Ch. 5.2 For loop",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-python",
+    "url": "https://openstax.org/books/introduction-python-programming/pages/6-1-defining-functions",
+    "locator": "Ch. 6.1 Defining functions",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-python",
+    "url": "https://openstax.org/books/introduction-python-programming/pages/9-1-modifying-and-iterating-lists",
+    "locator": "Ch. 9.1 Modifying and iterating lists",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0185": [
+   {
+    "source": "SRC-cs-unplugged",
+    "url": "https://www.csunplugged.org/en/topics/binary-numbers/",
+    "locator": "Binary numbers activities",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-cs-unplugged",
+    "url": "https://www.csunplugged.org/en/topics/error-detection-and-correction/",
+    "locator": "Error detection and correction (data transmission)",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0186": [
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/1-2-data-sampling-and-variation-in-data-and-sampling",
+    "locator": "Ch. 1.2 Data, Sampling, and Variation",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/2-1-stem-and-leaf-graphs-stemplots-line-graphs-and-bar-graphs",
+    "locator": "Ch. 2.1 Graphs (bar, line, stem-and-leaf)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/1-4-experimental-design-and-ethics",
+    "locator": "Ch. 1.4 Experimental Design and Ethics",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0187": [
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/5-3-arguments",
+    "locator": "Ch. 5.3 Arguments",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/5-5-informal-fallacies",
+    "locator": "Ch. 5.5 Informal Fallacies",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/9-2-consequentialism",
+    "locator": "Ch. 9.2 Consequentialism",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/9-3-deontology",
+    "locator": "Ch. 9.3 Deontology",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/9-4-virtue-ethics",
+    "locator": "Ch. 9.4 Virtue Ethics",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0188": [
+   {
+    "source": "SRC-openstax-world-history-1",
+    "url": "https://openstax.org/books/world-history-volume-1/pages/11-1-the-rise-and-message-of-islam",
+    "locator": "Vol. 1, Ch. 11.1 The Rise and Message of Islam",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-1",
+    "url": "https://openstax.org/books/world-history-volume-1/pages/7-4-religion-in-the-roman-empire",
+    "locator": "Vol. 1, Ch. 7.4 Religion in the Roman Empire",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-1",
+    "url": "https://openstax.org/books/world-history-volume-1/pages/4-4-the-hebrews",
+    "locator": "Vol. 1, Ch. 4.4 The Hebrews",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/3-2-classical-indian-philosophy",
+    "locator": "Ch. 3.2 Classical Indian Philosophy",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/3-3-classical-chinese-philosophy",
+    "locator": "Ch. 3.3 Classical Chinese Philosophy",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0189": [
+   {
+    "source": "SRC-openstax-american-government-4e",
+    "url": "https://openstax.org/books/american-government-4e/pages/8-1-what-is-the-media",
+    "locator": "Ch. 8.1 What Is the Media?",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-american-government-4e",
+    "url": "https://openstax.org/books/american-government-4e/pages/8-4-the-impact-of-the-media",
+    "locator": "Ch. 8.4 The Impact of the Media",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-writing-guide",
+    "url": "https://openstax.org/books/writing-guide/pages/17-1-reading-images",
+    "locator": "Ch. 17.1 \"Reading\" Images",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/2-4-gathering-information-evaluating-sources-and-understanding-evidence",
+    "locator": "Ch. 2.4 Evaluating Sources and Understanding Evidence",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0190": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/4-introduction",
+    "locator": "Vol 1 Ch. 4: Motion in Two and Three Dimensions",
+    "fit": "full",
+    "mode": "link"
+   }
+  ],
+  "KU-M0191": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/13-introduction",
+    "locator": "Vol 1 Ch. 13: Gravitation (satellite orbits, Kepler, tidal forces)",
+    "fit": "partial",
+    "mode": "link",
+    "note": "No Hohmann/Lagrange coverage in this chapter."
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/3-1-the-laws-of-planetary-motion",
+    "locator": "3.1 The Laws of Planetary Motion",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0192": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/11-introduction",
+    "locator": "Vol 1 Ch. 11: Angular Momentum (incl. gyroscope precession)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0193": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/15-introduction",
+    "locator": "Vol 1 Ch. 15: Oscillations (SHM, damped, forced)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0194": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/14-introduction",
+    "locator": "Vol 1 Ch. 14: Fluid Mechanics",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0195": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/5-introduction",
+    "locator": "Vol 2 Ch. 5: Electric Charges and Fields",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/8-introduction",
+    "locator": "Vol 2 Ch. 8: Capacitance (incl. dielectrics)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0196": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/13-introduction",
+    "locator": "Vol 2 Ch. 13: Electromagnetic Induction (Faraday, Lenz, eddy currents)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0197": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/11-introduction",
+    "locator": "Vol 2 Ch. 11: Magnetic Forces and Fields (charged particle motion)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0198": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/16-introduction",
+    "locator": "Vol 2 Ch. 16: Electromagnetic Waves",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/5-thinking-ahead",
+    "locator": "Astronomy 2e Ch. 5: Radiation and Spectra",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0200": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-3/pages/5-introduction",
+    "locator": "Vol 3 Ch. 5: Relativity",
+    "fit": "full",
+    "mode": "link"
+   }
+  ],
+  "KU-M0201": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-3/pages/6-introduction",
+    "locator": "Vol 3 Ch. 6: Photons and Matter Waves (blackbody, photoelectric, Bohr)",
+    "fit": "full",
+    "mode": "link"
+   }
+  ],
+  "KU-M0202": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-3/pages/10-introduction",
+    "locator": "Vol 3 Ch. 10: Nuclear Physics (decay, fission, fusion)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-3/pages/11-introduction",
+    "locator": "Vol 3 Ch. 11: Particle Physics and Cosmology (Standard Model)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0203": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/29-thinking-ahead",
+    "locator": "Astronomy 2e Ch. 29: Big Bang, CMB, dark matter/energy",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-3/pages/11-introduction",
+    "locator": "Vol 3 Ch. 11: The Big Bang; Evolution of the Early Universe",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0204": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/24-thinking-ahead",
+    "locator": "Astronomy 2e Ch. 24: Black Holes and Curved Spacetime",
+    "fit": "full",
+    "mode": "link"
+   }
+  ],
+  "KU-M0205": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-3/pages/10-introduction",
+    "locator": "Vol 3 Ch. 10.3: Radioactive Decay (basis for radiometric dating)",
+    "fit": "partial",
+    "mode": "link",
+    "note": "Physics of decay only; stratigraphy, extinctions, Anthropocene not covered."
+   }
+  ],
+  "KU-M0206": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/8-thinking-ahead",
+    "locator": "Astronomy 2e Ch. 8: Earth as a Planet (atmosphere, climate change)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/10-thinking-ahead",
+    "locator": "Astronomy 2e Ch. 10: Venus and Mars atmospheres",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0207": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/14-thinking-ahead",
+    "locator": "Astronomy 2e Ch. 14: Origin of the Solar System; 14.3 Formation of the Solar System",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/21-thinking-ahead",
+    "locator": "Astronomy 2e Ch. 21: Planet formation around other stars",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0208": [
+   {
+    "source": "SRC-py4e",
+    "url": "https://www.py4e.com/html3/",
+    "locator": "Python for Everybody (variables, loops, functions, files, visualisation)",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "Licence statement read on py4e.com/book."
+   }
+  ],
+  "KU-M0210": [
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/12-introduction",
+    "locator": "Ch. 12: Linear Regression and Correlation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0211": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/4-thinking-ahead",
+    "locator": "Astronomy 2e Ch. 4: Earth, Moon, and Sky",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0212": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/3-1-the-laws-of-planetary-motion",
+    "locator": "3.1 Laws of Planetary Motion (Kepler III)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0213": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/21-thinking-ahead",
+    "locator": "Astronomy 2e Ch. 21: Search and discovery of exoplanets",
+    "fit": "partial",
+    "mode": "link",
+    "note": "Background only; no photometry practical."
+   }
+  ],
+  "KU-M0214": [
+   {
+    "source": "SRC-openstax-elementary-algebra-2e",
+    "url": "https://openstax.org/books/elementary-algebra-2e/pages/1-introduction",
+    "locator": "Elementary Algebra 2e (book; start at Ch. 1)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-precalculus-2e",
+    "url": "https://openstax.org/books/precalculus-2e/pages/2-introduction-to-linear-functions",
+    "locator": "Precalculus 2e Ch. 2: Linear Functions",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0216": [
+   {
+    "source": "SRC-openstax-intermediate-algebra-2e",
+    "url": "https://openstax.org/books/intermediate-algebra-2e/pages/1-introduction",
+    "locator": "Intermediate Algebra 2e (book; start at Ch. 1)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-precalculus-2e",
+    "url": "https://openstax.org/books/precalculus-2e/pages/3-introduction-to-polynomial-and-rational-functions",
+    "locator": "Precalculus 2e Ch. 3: Polynomial and Rational Functions (complex numbers, quadratics)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-precalculus-2e",
+    "url": "https://openstax.org/books/precalculus-2e/pages/4-introduction-to-exponential-and-logarithmic-functions",
+    "locator": "Precalculus 2e Ch. 4: Exponential and Logarithmic Functions",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0217": [
+   {
+    "source": "SRC-openstax-precalculus-2e",
+    "url": "https://openstax.org/books/precalculus-2e/pages/5-introduction-to-trigonometric-functions",
+    "locator": "Precalculus 2e Ch. 5: Trigonometric Functions (angles, unit circle)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-precalculus-2e",
+    "url": "https://openstax.org/books/precalculus-2e/pages/8-introduction-to-further-applications-of-trigonometry",
+    "locator": "Precalculus 2e Ch. 8: polar coordinates, vectors",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0218": [
+   {
+    "source": "SRC-openstax-calculus-vol1",
+    "url": "https://openstax.org/books/calculus-volume-1/pages/3-introduction",
+    "locator": "Calculus Vol 1 Ch. 3: Derivatives",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-calculus-vol1",
+    "url": "https://openstax.org/books/calculus-volume-1/pages/4-introduction",
+    "locator": "Ch. 4: Applications of Derivatives (related rates, optimisation)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-calculus-vol1",
+    "url": "https://openstax.org/books/calculus-volume-1/pages/5-introduction",
+    "locator": "Ch. 5: Integration (incl. Fundamental Theorem)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0219": [
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/6-introduction",
+    "locator": "Ch. 6: The Normal Distribution",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/8-introduction",
+    "locator": "Ch. 8: Confidence Intervals",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/9-introduction",
+    "locator": "Ch. 9: Hypothesis Testing with One Sample",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/12-introduction",
+    "locator": "Ch. 12: Linear Regression and Correlation",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0221": [
+   {
+    "source": "SRC-openstax-writing-guide",
+    "url": "https://openstax.org/books/writing-guide/pages/1-introduction",
+    "locator": "Writing Guide with Handbook (rhetoric/argument chapters)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0222": [
+   {
+    "source": "SRC-openstax-writing-guide",
+    "url": "https://openstax.org/books/writing-guide/pages/1-introduction",
+    "locator": "Writing Guide with Handbook (research writing, citation chapters)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0227": [
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/5-introduction",
+    "locator": "Ch. 5: Structure and Function of Plasma Membranes",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/6-introduction",
+    "locator": "Ch. 6: Metabolism (enzymes)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/7-introduction",
+    "locator": "Ch. 7: Cellular Respiration",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/8-introduction",
+    "locator": "Ch. 8: Photosynthesis",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/10-introduction",
+    "locator": "Ch. 10: Cell Reproduction (mitosis)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/11-introduction",
+    "locator": "Ch. 11: Meiosis and Sexual Reproduction",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0228": [
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/14-introduction",
+    "locator": "Ch. 14: DNA Structure and Function (replication)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/15-introduction",
+    "locator": "Ch. 15: Genes and Proteins (transcription, translation)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/17-introduction",
+    "locator": "Ch. 17: Biotechnology and Genomics",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0229": [
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/18-introduction",
+    "locator": "Ch. 18: Evolution and the Origin of Species",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/20-introduction",
+    "locator": "Ch. 20: Phylogenies and the History of Life",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0230": [
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/12-introduction",
+    "locator": "Ch. 12: Nervous system and nervous tissue",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/17-introduction",
+    "locator": "Ch. 17: Endocrine system",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/19-introduction",
+    "locator": "Ch. 19: Cardiovascular system: the heart",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/22-introduction",
+    "locator": "Ch. 22: Respiratory system",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/25-introduction",
+    "locator": "Ch. 25: Urinary system",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/21-introduction",
+    "locator": "Ch. 21: Lymphatic and immune system",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0231": [
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/45-introduction",
+    "locator": "Ch. 45: Population and Community Ecology",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/47-introduction",
+    "locator": "Ch. 47: Conservation Biology and Biodiversity",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0232": [
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/6-introduction",
+    "locator": "Ch. 6: Electronic Structure and Periodic Properties",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/7-introduction",
+    "locator": "Ch. 7: Chemical Bonding and Molecular Geometry",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/8-introduction",
+    "locator": "Ch. 8: Advanced Theories of Covalent Bonding",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0233": [
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/3-introduction",
+    "locator": "Ch. 3: Composition of Substances and Solutions (mole)",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/4-introduction",
+    "locator": "Ch. 4: Stoichiometry of Chemical Reactions",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/9-introduction",
+    "locator": "Ch. 9: Gases",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0234": [
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/12-introduction",
+    "locator": "Ch. 12: Kinetics",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/13-introduction",
+    "locator": "Ch. 13: Fundamental Equilibrium Concepts",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/14-introduction",
+    "locator": "Ch. 14: Acid-Base Equilibria",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/15-introduction",
+    "locator": "Ch. 15: Equilibria of Other Reaction Classes (solubility)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0235": [
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/5-introduction",
+    "locator": "Ch. 5: Thermochemistry",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/16-introduction",
+    "locator": "Ch. 16: Thermodynamics",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/17-introduction",
+    "locator": "Ch. 17: Electrochemistry",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0236": [
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/20-introduction",
+    "locator": "Ch. 20: Organic Chemistry",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0237": [
+   {
+    "source": "SRC-openstax-world-history-1",
+    "url": "https://openstax.org/books/world-history-volume-1/pages/1-introduction",
+    "locator": "World History Vol 1 (to 1500), book start",
+    "fit": "partial",
+    "mode": "link",
+    "note": "Deep-link only to Ch. 1; later chapters share the same slug pattern but were not individually verified."
+   },
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/1-introduction",
+    "locator": "World History Vol 2 (from 1400), book start",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0238": [
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/1-introduction",
+    "locator": "World History Vol 2 (from 1400), book start",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0239": [
+   {
+    "source": "SRC-openstax-us-history",
+    "url": "https://openstax.org/books/us-history/pages/1-introduction",
+    "locator": "U.S. History, book start",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0241": [
+   {
+    "source": "SRC-openstax-american-government-3e",
+    "url": "https://openstax.org/books/american-government-3e/pages/1-introduction",
+    "locator": "American Government 3e, book start",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0242": [
+   {
+    "source": "SRC-openstax-microeconomics-3e",
+    "url": "https://openstax.org/books/principles-microeconomics-3e/pages/5-introduction-to-elasticity",
+    "locator": "Ch. 5: Elasticity",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-microeconomics-3e",
+    "url": "https://openstax.org/books/principles-microeconomics-3e/pages/7-introduction-to-production-costs-and-industry-structure",
+    "locator": "Ch. 7: Production, Costs, and Industry Structure",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-microeconomics-3e",
+    "url": "https://openstax.org/books/principles-microeconomics-3e/pages/12-introduction-to-environmental-protection-and-negative-externalities",
+    "locator": "Ch. 12: Environmental Protection and Negative Externalities",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-microeconomics-3e",
+    "url": "https://openstax.org/books/principles-microeconomics-3e/pages/14-introduction-to-labor-markets-and-income",
+    "locator": "Ch. 14: Labor Markets and Income",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0243": [
+   {
+    "source": "SRC-openstax-macroeconomics-3e",
+    "url": "https://openstax.org/books/principles-macroeconomics-3e/pages/7-introduction-to-economic-growth",
+    "locator": "Ch. 7: Economic Growth",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-macroeconomics-3e",
+    "url": "https://openstax.org/books/principles-macroeconomics-3e/pages/1-introduction",
+    "locator": "Principles of Macroeconomics 3e, book start",
+    "fit": "partial",
+    "mode": "link",
+    "note": "GDP, policy, trade chapters exist in the book; chapter URLs not individually verified."
+   }
+  ],
+  "KU-M0244": [
+   {
+    "source": "SRC-openstax-entrepreneurship",
+    "url": "https://openstax.org/books/entrepreneurship/pages/1-introduction",
+    "locator": "Entrepreneurship, book start (business plan, pitch)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0251": [
+   {
+    "source": "SRC-openstax-intro-computer-science",
+    "url": "https://openstax.org/books/introduction-computer-science/pages/1-introduction",
+    "locator": "Introduction to Computer Science, Ch. 1",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0253": [
+   {
+    "source": "SRC-cs50x",
+    "url": "https://cs50.harvard.edu/x/",
+    "locator": "CS50x Weeks 2-5: arrays, algorithms, memory, data structures",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0254": [
+   {
+    "source": "SRC-cs50x",
+    "url": "https://cs50.harvard.edu/x/",
+    "locator": "CS50x Weeks 7-9: SQL, HTML/CSS/JS, Flask",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0255": [
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/1-introduction",
+    "locator": "Introduction to Philosophy, book start",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0256": [
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/1-introduction",
+    "locator": "Introduction to Philosophy (ethics units), book start",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0259": [
+   {
+    "source": "SRC-openstax-calculus-volume-3",
+    "url": "https://openstax.org/books/calculus-volume-3/pages/6-1-vector-fields",
+    "locator": "Ch. 6: Vector Calculus",
+    "fit": "partial",
+    "mode": "link",
+    "note": "vector calculus"
+   },
+   {
+    "source": "SRC-ocw-18-03-differential-equations-spring-2010",
+    "url": "https://ocw.mit.edu/courses/18-03-differential-equations-spring-2010/",
+    "locator": "Whole course",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "ODEs"
+   },
+   {
+    "source": "SRC-ocw-18-06-linear-algebra-spring-2010",
+    "url": "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/",
+    "locator": "Whole course",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "linear algebra"
+   },
+   {
+    "source": "SRC-ocw-18-600-probability-and-random-variables-fall-2019",
+    "url": "https://ocw.mit.edu/courses/18-600-probability-and-random-variables-fall-2019/",
+    "locator": "Whole course",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "probability"
+   },
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/3-1-terminology",
+    "locator": "Ch. 3: Probability Topics",
+    "fit": "partial",
+    "mode": "link",
+    "note": "probability basics"
+   },
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/4-1-probability-distribution-function-pdf-for-a-discrete-random-variable",
+    "locator": "Ch. 4: Discrete Random Variables",
+    "fit": "partial",
+    "mode": "link",
+    "note": "probability basics"
+   },
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/5-1-continuous-probability-functions",
+    "locator": "Ch. 5: Continuous Random Variables",
+    "fit": "partial",
+    "mode": "link",
+    "note": "probability basics"
+   }
+  ],
+  "KU-M0260": [
+   {
+    "source": "SRC-ocw-8-223-classical-mechanics-ii-january-iap-2017",
+    "url": "https://ocw.mit.edu/courses/8-223-classical-mechanics-ii-january-iap-2017/",
+    "locator": "Whole course",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "Lagrangian/Hamiltonian-level mechanics"
+   },
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/13-1-newtons-law-of-universal-gravitation",
+    "locator": "Ch. 13: Gravitation",
+    "fit": "partial",
+    "mode": "link",
+    "note": "central-force gravitation; oscillations"
+   },
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/15-1-simple-harmonic-motion",
+    "locator": "Ch. 15: Oscillations",
+    "fit": "partial",
+    "mode": "link",
+    "note": "central-force gravitation; oscillations"
+   },
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/11-1-rolling-motion",
+    "locator": "Ch. 11: Angular Momentum",
+    "fit": "partial",
+    "mode": "link",
+    "note": "angular momentum and rotation"
+   }
+  ],
+  "KU-M0261": [
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/12-1-the-biot-savart-law",
+    "locator": "Ch. 12: Sources of Magnetic Fields",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/13-1-faradays-law",
+    "locator": "Ch. 13: Electromagnetic Induction",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/16-1-maxwells-equations-and-electromagnetic-waves",
+    "locator": "Ch. 16: Electromagnetic Waves",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics-volume-3",
+    "url": "https://openstax.org/books/university-physics-volume-3/pages/5-1-invariance-of-physical-laws",
+    "locator": "Ch. 5: Relativity",
+    "fit": "partial",
+    "mode": "link",
+    "note": "relativity"
+   },
+   {
+    "source": "SRC-ocw-8-07-electromagnetism-ii-fall-2012",
+    "url": "https://ocw.mit.edu/courses/8-07-electromagnetism-ii-fall-2012/",
+    "locator": "Whole course",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "radiation and relativistic formulation"
+   }
+  ],
+  "KU-M0262": [
+   {
+    "source": "SRC-openstax-university-physics-volume-3",
+    "url": "https://openstax.org/books/university-physics-volume-3/pages/7-1-wave-functions",
+    "locator": "Ch. 7: Quantum Mechanics",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics-volume-3",
+    "url": "https://openstax.org/books/university-physics-volume-3/pages/8-1-the-hydrogen-atom",
+    "locator": "Ch. 8: Atomic Structure",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-ocw-8-04-quantum-physics-i-spring-2016",
+    "url": "https://ocw.mit.edu/courses/8-04-quantum-physics-i-spring-2016/",
+    "locator": "Whole course",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0263": [
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/2-1-molecular-model-of-an-ideal-gas",
+    "locator": "Ch. 2: The Kinetic Theory of Gases",
+    "fit": "partial",
+    "mode": "link",
+    "note": "kinetic theory, entropy"
+   },
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/4-1-reversible-and-irreversible-processes",
+    "locator": "Ch. 4: The Second Law of Thermodynamics",
+    "fit": "partial",
+    "mode": "link",
+    "note": "kinetic theory, entropy"
+   },
+   {
+    "source": "SRC-openstax-university-physics-volume-3",
+    "url": "https://openstax.org/books/university-physics-volume-3/pages/6-1-blackbody-radiation",
+    "locator": "Ch. 6: Photons and Matter Waves",
+    "fit": "partial",
+    "mode": "link",
+    "note": "blackbody radiation"
+   },
+   {
+    "source": "SRC-ocw-8-044-statistical-physics-i-spring-2013",
+    "url": "https://ocw.mit.edu/courses/8-044-statistical-physics-i-spring-2013/",
+    "locator": "Whole course",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0266": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/5-1-the-behavior-of-light",
+    "locator": "Ch. 5: Radiation and Spectra",
+    "fit": "partial",
+    "mode": "link",
+    "note": "radiation, spectra and line formation"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/17-1-the-brightness-of-stars",
+    "locator": "Ch. 17: Analyzing Starlight",
+    "fit": "partial",
+    "mode": "link",
+    "note": "radiation, spectra and line formation"
+   }
+  ],
+  "KU-M0267": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/16-1-sources-of-sunshine-thermal-and-gravitational-energy",
+    "locator": "Ch. 16: The Sun: A Nuclear Powerhouse",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/18-1-a-stellar-census",
+    "locator": "Ch. 18: The Stars: A Celestial Census",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/22-1-evolution-from-the-main-sequence-to-red-giants",
+    "locator": "Ch. 22: Stars from Adolescence to Old Age",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0268": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/23-1-the-death-of-low-mass-stars",
+    "locator": "Ch. 23: The Death of Stars",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/24-1-introducing-general-relativity",
+    "locator": "Ch. 24: Black Holes and Curved Spacetime",
+    "fit": "full",
+    "mode": "link"
+   }
+  ],
+  "KU-M0269": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/26-1-the-discovery-of-galaxies",
+    "locator": "Ch. 26: Galaxies",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/27-1-quasars",
+    "locator": "Ch. 27: Active Galaxies, Quasars, and Supermassive Black Holes",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/28-1-observations-of-distant-galaxies",
+    "locator": "Ch. 28: The Evolution and Distribution of Galaxies",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0270": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/29-1-the-age-of-the-universe",
+    "locator": "Ch. 29: The Big Bang",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics-volume-3",
+    "url": "https://openstax.org/books/university-physics-volume-3/pages/11-1-introduction-to-particle-physics",
+    "locator": "Ch. 11: Particle Physics and Cosmology",
+    "fit": "partial",
+    "mode": "link",
+    "note": "cosmology section"
+   }
+  ],
+  "KU-M0271": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/6-1-telescopes",
+    "locator": "Ch. 6: Astronomical Instruments",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/17-1-the-brightness-of-stars",
+    "locator": "Ch. 17: Analyzing Starlight",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/19-1-fundamental-units-of-distance",
+    "locator": "Ch. 19: Celestial Distances",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0272": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/21-1-star-formation",
+    "locator": "Ch. 21: The Birth of Stars and the Discovery of Planets outside the Solar System",
+    "fit": "partial",
+    "mode": "link",
+    "note": "exoplanet discovery; habitability"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/30-1-the-cosmic-context-for-life",
+    "locator": "Ch. 30: Life in the Universe",
+    "fit": "partial",
+    "mode": "link",
+    "note": "exoplanet discovery; habitability"
+   }
+  ],
+  "KU-M0273": [
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/1-1-temperature-and-thermal-equilibrium",
+    "locator": "Ch. 1: Temperature and Heat",
+    "fit": "partial",
+    "mode": "link",
+    "note": "thermodynamics and heat; compressible flow not covered"
+   },
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/3-1-thermodynamic-systems",
+    "locator": "Ch. 3: The First Law of Thermodynamics",
+    "fit": "partial",
+    "mode": "link",
+    "note": "thermodynamics and heat; compressible flow not covered"
+   },
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/4-1-reversible-and-irreversible-processes",
+    "locator": "Ch. 4: The Second Law of Thermodynamics",
+    "fit": "partial",
+    "mode": "link",
+    "note": "thermodynamics and heat; compressible flow not covered"
+   }
+  ],
+  "KU-M0275": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/3-1-the-laws-of-planetary-motion",
+    "locator": "Ch. 3: Orbits and Gravity",
+    "fit": "partial",
+    "mode": "link",
+    "note": "orbits and gravity; Lagrange points not covered"
+   }
+  ],
+  "KU-M0276": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/12-1-conditions-for-static-equilibrium",
+    "locator": "Ch. 12: Static Equilibrium and Elasticity",
+    "fit": "partial",
+    "mode": "link",
+    "note": "stress, strain, elasticity"
+   }
+  ],
+  "KU-M0278": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/8-1-the-global-perspective",
+    "locator": "Ch. 8: Earth as a Planet",
+    "fit": "partial",
+    "mode": "link",
+    "note": "Earth as a planet: interior, magnetosphere"
+   }
+  ],
+  "KU-M0279": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/8-1-the-global-perspective",
+    "locator": "Ch. 8: Earth as a Planet",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/9-1-general-properties-of-the-moon",
+    "locator": "Ch. 9: Cratered Worlds",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/12-1-ring-and-moon-systems-introduced",
+    "locator": "Ch. 12: Rings, Moons, and Pluto",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0280": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/8-1-the-global-perspective",
+    "locator": "Ch. 8: Earth as a Planet",
+    "fit": "partial",
+    "mode": "link",
+    "note": "planetary atmospheres, comparative planetology"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/10-1-the-nearest-planets-an-overview",
+    "locator": "Ch. 10: Earthlike Planets: Venus and Mars",
+    "fit": "partial",
+    "mode": "link",
+    "note": "planetary atmospheres, comparative planetology"
+   }
+  ],
+  "KU-M0281": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/2-1-the-sky-above",
+    "locator": "Ch. 2: Observing the Sky: The Birth of Astronomy",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/3-1-the-laws-of-planetary-motion",
+    "locator": "Ch. 3: Orbits and Gravity",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0282": [
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/26-1-the-discovery-of-galaxies",
+    "locator": "Ch. 26: Galaxies",
+    "fit": "partial",
+    "mode": "link",
+    "note": "discovery of galaxies; big bang"
+   },
+   {
+    "source": "SRC-openstax-astronomy-2e",
+    "url": "https://openstax.org/books/astronomy-2e/pages/29-1-the-age-of-the-universe",
+    "locator": "Ch. 29: The Big Bang",
+    "fit": "partial",
+    "mode": "link",
+    "note": "discovery of galaxies; big bang"
+   }
+  ],
+  "KU-M0284": [
+   {
+    "source": "SRC-openstax-calculus-volume-2",
+    "url": "https://openstax.org/books/calculus-volume-2/pages/3-1-integration-by-parts",
+    "locator": "Ch. 3: Techniques of Integration",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-calculus-volume-2",
+    "url": "https://openstax.org/books/calculus-volume-2/pages/5-1-sequences",
+    "locator": "Ch. 5: Sequences and Series",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-calculus-volume-3",
+    "url": "https://openstax.org/books/calculus-volume-3/pages/4-1-functions-of-several-variables",
+    "locator": "Ch. 4: Differentiation of Functions of Several Variables",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-calculus-volume-3",
+    "url": "https://openstax.org/books/calculus-volume-3/pages/5-1-double-integrals-over-rectangular-regions",
+    "locator": "Ch. 5: Multiple Integration",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-calculus-volume-3",
+    "url": "https://openstax.org/books/calculus-volume-3/pages/6-1-vector-fields",
+    "locator": "Ch. 6: Vector Calculus",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-ocw-18-02-multivariable-calculus-fall-2007",
+    "url": "https://ocw.mit.edu/courses/18-02-multivariable-calculus-fall-2007/",
+    "locator": "Whole course",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0285": [
+   {
+    "source": "SRC-ocw-18-06-linear-algebra-spring-2010",
+    "url": "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/",
+    "locator": "Whole course",
+    "fit": "full",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0286": [
+   {
+    "source": "SRC-ocw-18-100a-real-analysis-fall-2020",
+    "url": "https://ocw.mit.edu/courses/18-100a-real-analysis-fall-2020/",
+    "locator": "Whole course",
+    "fit": "full",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0287": [
+   {
+    "source": "SRC-ocw-18-701-algebra-i-fall-2010",
+    "url": "https://ocw.mit.edu/courses/18-701-algebra-i-fall-2010/",
+    "locator": "Whole course",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "groups; rings/fields/Galois not the focus"
+   }
+  ],
+  "KU-M0288": [
+   {
+    "source": "SRC-ocw-18-03-differential-equations-spring-2010",
+    "url": "https://ocw.mit.edu/courses/18-03-differential-equations-spring-2010/",
+    "locator": "Whole course",
+    "fit": "full",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-calculus-volume-2",
+    "url": "https://openstax.org/books/calculus-volume-2/pages/4-1-basics-of-differential-equations",
+    "locator": "Ch. 4: Introduction to Differential Equations",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-calculus-volume-3",
+    "url": "https://openstax.org/books/calculus-volume-3/pages/7-1-second-order-linear-equations",
+    "locator": "Ch. 7: Second-Order Differential Equations",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0289": [
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/4-1-probability-distribution-function-pdf-for-a-discrete-random-variable",
+    "locator": "Ch. 4: Discrete Random Variables",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/5-1-continuous-probability-functions",
+    "locator": "Ch. 5: Continuous Random Variables",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/7-1-the-central-limit-theorem-for-sample-means-averages",
+    "locator": "Ch. 7: The Central Limit Theorem",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/8-1-a-single-population-mean-using-the-normal-distribution",
+    "locator": "Ch. 8: Confidence Intervals",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-ocw-18-600-probability-and-random-variables-fall-2019",
+    "url": "https://ocw.mit.edu/courses/18-600-probability-and-random-variables-fall-2019/",
+    "locator": "Whole course",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0290": [
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/3-1-synthesis-of-biological-macromolecules",
+    "locator": "Ch. 3: Biological Macromolecules",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/9-1-signaling-molecules-and-cellular-receptors",
+    "locator": "Ch. 9: Cell Communication",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/10-1-cell-division",
+    "locator": "Ch. 10: Cell Reproduction",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/16-1-regulation-of-gene-expression",
+    "locator": "Ch. 16: Gene Expression",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0291": [
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/12-1-mendels-experiments-and-the-laws-of-probability",
+    "locator": "Ch. 12: Mendel's Experiments and Heredity",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/13-1-chromosomal-theory-and-genetic-linkage",
+    "locator": "Ch. 13: Modern Understandings of Inheritance",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/17-1-biotechnology",
+    "locator": "Ch. 17: Biotechnology and Genomics",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0292": [
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/18-1-understanding-evolution",
+    "locator": "Ch. 18: Evolution and the Origin of Species",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/19-1-population-evolution",
+    "locator": "Ch. 19: The Evolution of Populations",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/20-1-organizing-life-on-earth",
+    "locator": "Ch. 20: Phylogenies and the History of Life",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0293": [
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/44-1-the-scope-of-ecology",
+    "locator": "Ch. 44: Ecology and the Biosphere",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/45-1-population-demography",
+    "locator": "Ch. 45: Population and Community Ecology",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/46-1-ecology-of-ecosystems",
+    "locator": "Ch. 46: Ecosystems",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/47-1-the-biodiversity-crisis",
+    "locator": "Ch. 47: Conservation Biology and Biodiversity",
+    "fit": "full",
+    "mode": "link"
+   }
+  ],
+  "KU-M0294": [
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/35-1-neurons-and-glial-cells",
+    "locator": "Ch. 35: The Nervous System",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/36-1-sensory-processes",
+    "locator": "Ch. 36: Sensory Systems",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/12-1-basic-structure-and-function-of-the-nervous-system",
+    "locator": "Ch. 12: The Nervous System and Nervous Tissue",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/14-1-sensory-perception",
+    "locator": "Ch. 14: The Somatic Nervous System",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0295": [
+   {
+    "source": "SRC-openstax-microbiology",
+    "url": "https://openstax.org/books/microbiology/pages/4-1-prokaryote-habitats-relationships-and-microbiomes",
+    "locator": "Ch. 4: Prokaryotic Diversity",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-microbiology",
+    "url": "https://openstax.org/books/microbiology/pages/6-1-viruses",
+    "locator": "Ch. 6: Acellular Pathogens",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-microbiology",
+    "url": "https://openstax.org/books/microbiology/pages/14-1-history-of-chemotherapy-and-antimicrobial-discovery",
+    "locator": "Ch. 14: Antimicrobial Drugs",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-microbiology",
+    "url": "https://openstax.org/books/microbiology/pages/18-1-overview-of-specific-adaptive-immunity",
+    "locator": "Ch. 18: Adaptive Specific Host Defenses",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0296": [
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/18-1-periodicity",
+    "locator": "Ch. 18: Representative Metals, Metalloids, and Nonmetals",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/19-1-occurrence-preparation-and-properties-of-transition-metals-and-their-compounds",
+    "locator": "Ch. 19: Transition Metals and Coordination Chemistry",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/10-1-intermolecular-forces",
+    "locator": "Ch. 10: Liquids and Solids",
+    "fit": "partial",
+    "mode": "link",
+    "note": "solid state"
+   }
+  ],
+  "KU-M0297": [
+   {
+    "source": "SRC-openstax-organic-chemistry",
+    "url": "https://openstax.org/books/organic-chemistry/pages/5-1-enantiomers-and-the-tetrahedral-carbon",
+    "locator": "Ch. 5: Stereochemistry at Tetrahedral Centers",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-organic-chemistry",
+    "url": "https://openstax.org/books/organic-chemistry/pages/6-1-kinds-of-organic-reactions",
+    "locator": "Ch. 6: An Overview of Organic Reactions",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-organic-chemistry",
+    "url": "https://openstax.org/books/organic-chemistry/pages/11-1-the-discovery-of-nucleophilic-substitution-reactions",
+    "locator": "Ch. 11: Reactions of Alkyl Halides: Nucleophilic Substitutions and Eliminations",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-organic-chemistry",
+    "url": "https://openstax.org/books/organic-chemistry/pages/19-1-naming-aldehydes-and-ketones",
+    "locator": "Ch. 19: Aldehydes and Ketones: Nucleophilic Addition Reactions",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0298": [
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/6-1-electromagnetic-energy",
+    "locator": "Ch. 6: Electronic Structure and Periodic Properties of Elements",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/12-1-chemical-reaction-rates",
+    "locator": "Ch. 12: Kinetics",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/16-1-spontaneity",
+    "locator": "Ch. 16: Thermodynamics",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-organic-chemistry",
+    "url": "https://openstax.org/books/organic-chemistry/pages/12-1-mass-spectrometry-of-small-molecules-magnetic-sector-instruments",
+    "locator": "Ch. 12: Structure Determination: Mass Spectrometry and Infrared Spectroscopy",
+    "fit": "partial",
+    "mode": "link",
+    "note": "spectroscopy"
+   }
+  ],
+  "KU-M0299": [
+   {
+    "source": "SRC-openstax-organic-chemistry",
+    "url": "https://openstax.org/books/organic-chemistry/pages/12-1-mass-spectrometry-of-small-molecules-magnetic-sector-instruments",
+    "locator": "Ch. 12: Structure Determination: Mass Spectrometry and Infrared Spectroscopy",
+    "fit": "partial",
+    "mode": "link",
+    "note": "MS, IR and NMR"
+   },
+   {
+    "source": "SRC-openstax-organic-chemistry",
+    "url": "https://openstax.org/books/organic-chemistry/pages/13-1-nuclear-magnetic-resonance-spectroscopy",
+    "locator": "Ch. 13: Structure Determination: Nuclear Magnetic Resonance Spectroscopy",
+    "fit": "partial",
+    "mode": "link",
+    "note": "MS, IR and NMR"
+   },
+   {
+    "source": "SRC-openstax-chemistry-2e",
+    "url": "https://openstax.org/books/chemistry-2e/pages/14-1-bronsted-lowry-acids-and-bases",
+    "locator": "Ch. 14: Acid-Base Equilibria",
+    "fit": "partial",
+    "mode": "link",
+    "note": "acid-base titration"
+   }
+  ],
+  "KU-M0300": [
+   {
+    "source": "SRC-openstax-organic-chemistry",
+    "url": "https://openstax.org/books/organic-chemistry/pages/26-1-structures-of-amino-acids",
+    "locator": "Ch. 26: Biomolecules: Amino Acids, Peptides, and Proteins",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-organic-chemistry",
+    "url": "https://openstax.org/books/organic-chemistry/pages/28-1-nucleotides-and-nucleic-acids",
+    "locator": "Ch. 28: Biomolecules: Nucleic Acids",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-organic-chemistry",
+    "url": "https://openstax.org/books/organic-chemistry/pages/29-1-an-overview-of-metabolism-and-biochemical-energy",
+    "locator": "Ch. 29: The Organic Chemistry of Metabolic Pathways",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/3-1-synthesis-of-biological-macromolecules",
+    "locator": "Ch. 3: Biological Macromolecules",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-biology-2e",
+    "url": "https://openstax.org/books/biology-2e/pages/6-1-energy-and-metabolism",
+    "locator": "Ch. 6: Metabolism",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0301": [
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/6-1-the-functions-of-the-skeletal-system",
+    "locator": "Ch. 6: Bone Tissue and the Skeletal System",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/9-1-classification-of-joints",
+    "locator": "Ch. 9: Joints",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/10-1-overview-of-muscle-tissues",
+    "locator": "Ch. 10: Muscle Tissue",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/11-1-interactions-of-skeletal-muscles-their-fascicle-arrangement-and-their-lever-systems",
+    "locator": "Ch. 11: The Muscular System",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/13-1-the-embryologic-perspective",
+    "locator": "Ch. 13: Anatomy of the Nervous System",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/19-1-heart-anatomy",
+    "locator": "Ch. 19: The Cardiovascular System: The Heart",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/22-1-organs-and-structures-of-the-respiratory-system",
+    "locator": "Ch. 22: The Respiratory System",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/23-1-overview-of-the-digestive-system",
+    "locator": "Ch. 23: The Digestive System",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0302": [
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/17-1-an-overview-of-the-endocrine-system",
+    "locator": "Ch. 17: The Endocrine System",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/19-1-heart-anatomy",
+    "locator": "Ch. 19: The Cardiovascular System: The Heart",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/20-1-structure-and-function-of-blood-vessels",
+    "locator": "Ch. 20: The Cardiovascular System: Blood Vessels and Circulation",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-anatomy-physiology-2e",
+    "url": "https://openstax.org/books/anatomy-and-physiology-2e/pages/22-1-organs-and-structures-of-the-respiratory-system",
+    "locator": "Ch. 22: The Respiratory System",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0303": [
+   {
+    "source": "SRC-openstax-pharmacology",
+    "url": "https://openstax.org/books/pharmacology/pages/1-1-pharmacology-interdisciplinary-teams-and-nursing-practice",
+    "locator": "Ch. 1: Introduction to Pharmacology",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-pharmacology",
+    "url": "https://openstax.org/books/pharmacology/pages/2-1-drug-administration-and-the-nursing-process",
+    "locator": "Ch. 2: Drug Administration",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-pharmacology",
+    "url": "https://openstax.org/books/pharmacology/pages/3-1-legal-considerations",
+    "locator": "Ch. 3: Ethics, Legal Considerations, and Safety",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-pharmacology",
+    "url": "https://openstax.org/books/pharmacology/pages/7-1-introduction-to-bacterial-viral-covid-19-and-fungal-infections",
+    "locator": "Ch. 7: Anti-infective Drugs",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-pharmacology",
+    "url": "https://openstax.org/books/pharmacology/pages/14-1-introduction-to-pain",
+    "locator": "Ch. 14: Pain Response Drugs",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0304": [
+   {
+    "source": "SRC-openstax-population-health",
+    "url": "https://openstax.org/books/population-health/pages/12-1-epidemiology-defined",
+    "locator": "Ch. 12: Epidemiology for Informing Population/Community Health Decisions",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-population-health",
+    "url": "https://openstax.org/books/population-health/pages/13-1-pandemics-throughout-history",
+    "locator": "Ch. 13: Pandemics and Infectious Disease Outbreaks",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-microbiology",
+    "url": "https://openstax.org/books/microbiology/pages/16-1-the-language-of-epidemiologists",
+    "locator": "Ch. 16: Disease and Epidemiology",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0305": [
+   {
+    "source": "SRC-openstax-fundamentals-nursing",
+    "url": "https://openstax.org/books/fundamentals-nursing/pages/2-1-types-of-communication",
+    "locator": "Ch. 2: Communication",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-fundamentals-nursing",
+    "url": "https://openstax.org/books/fundamentals-nursing/pages/7-1-indicators-of-physiologic-functioning",
+    "locator": "Ch. 7: Vital Signs",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-fundamentals-nursing",
+    "url": "https://openstax.org/books/fundamentals-nursing/pages/16-1-value-considerations-of-care",
+    "locator": "Ch. 16: Legal and Ethical Considerations",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0306": [
+   {
+    "source": "SRC-openstax-fundamentals-nursing",
+    "url": "https://openstax.org/books/fundamentals-nursing/pages/21-1-nutritional-concepts",
+    "locator": "Ch. 21: Nutrition",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-fundamentals-nursing",
+    "url": "https://openstax.org/books/fundamentals-nursing/pages/22-1-importance-of-activity-movement-and-alignment",
+    "locator": "Ch. 22: Activity",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0307": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/5-1-forces",
+    "locator": "Ch. 5: Newton's Laws of Motion",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/6-1-solving-problems-with-newtons-laws",
+    "locator": "Ch. 6: Applications of Newton's Laws",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/12-1-conditions-for-static-equilibrium",
+    "locator": "Ch. 12: Static Equilibrium and Elasticity",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0309": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/14-1-fluids-density-and-pressure",
+    "locator": "Ch. 14: Fluid Mechanics",
+    "fit": "partial",
+    "mode": "link",
+    "note": "fluid mechanics only"
+   }
+  ],
+  "KU-M0310": [
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/10-1-rotational-variables",
+    "locator": "Ch. 10: Fixed-Axis Rotation",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics",
+    "url": "https://openstax.org/books/university-physics-volume-1/pages/15-1-simple-harmonic-motion",
+    "locator": "Ch. 15: Oscillations",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0311": [
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/1-1-temperature-and-thermal-equilibrium",
+    "locator": "Ch. 1: Temperature and Heat",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/3-1-thermodynamic-systems",
+    "locator": "Ch. 3: The First Law of Thermodynamics",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/4-1-reversible-and-irreversible-processes",
+    "locator": "Ch. 4: The Second Law of Thermodynamics",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0312": [
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/10-1-electromotive-force",
+    "locator": "Ch. 10: Direct-Current Circuits",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/14-1-mutual-inductance",
+    "locator": "Ch. 14: Inductance",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/15-1-ac-sources",
+    "locator": "Ch. 15: Alternating-Current Circuits",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-ocw-6-002-circuits-and-electronics-spring-2007",
+    "url": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/",
+    "locator": "Whole course",
+    "fit": "full",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0313": [
+   {
+    "source": "SRC-ocw-6-003-signals-and-systems-fall-2011",
+    "url": "https://ocw.mit.edu/courses/6-003-signals-and-systems-fall-2011/",
+    "locator": "Whole course",
+    "fit": "full",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0315": [
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/13-1-faradays-law",
+    "locator": "Ch. 13: Electromagnetic Induction",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-university-physics-volume-2",
+    "url": "https://openstax.org/books/university-physics-volume-2/pages/15-1-ac-sources",
+    "locator": "Ch. 15: Alternating-Current Circuits",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0317": [
+   {
+    "source": "SRC-ocw-6-006-introduction-to-algorithms-spring-2020",
+    "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+    "locator": "Whole course",
+    "fit": "full",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0318": [
+   {
+    "source": "SRC-ocw-6-042j-mathematics-for-computer-science-spring-2015",
+    "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-spring-2015/",
+    "locator": "Whole course",
+    "fit": "full",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0322": [
+   {
+    "source": "SRC-ocw-6-036-introduction-to-machine-learning-fall-2020",
+    "url": "https://ocw.mit.edu/courses/6-036-introduction-to-machine-learning-fall-2020/",
+    "locator": "Whole course",
+    "fit": "full",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-openstax-principles-data-science",
+    "url": "https://openstax.org/books/principles-data-science/pages/6-1-what-is-machine-learning",
+    "locator": "Ch. 6: Decision-Making Using Machine Learning Basics",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-data-science",
+    "url": "https://openstax.org/books/principles-data-science/pages/7-1-introduction-to-neural-networks",
+    "locator": "Ch. 7: Deep Learning and AI Basics",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-data-science",
+    "url": "https://openstax.org/books/principles-data-science/pages/8-1-ethics-in-data-collection",
+    "locator": "Ch. 8: Ethics Throughout the Data Science Cycle",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0323": [
+   {
+    "source": "SRC-openstax-microeconomics-3e",
+    "url": "https://openstax.org/books/principles-microeconomics-3e/pages/6-1-consumption-choices",
+    "locator": "Ch. 6: Consumer Choices",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-microeconomics-3e",
+    "url": "https://openstax.org/books/principles-microeconomics-3e/pages/7-1-explicit-and-implicit-costs-and-accounting-and-economic-profit",
+    "locator": "Ch. 7: Production, Costs, and Industry Structure",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-microeconomics-3e",
+    "url": "https://openstax.org/books/principles-microeconomics-3e/pages/8-1-perfect-competition-and-why-it-matters",
+    "locator": "Ch. 8: Perfect Competition",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-microeconomics-3e",
+    "url": "https://openstax.org/books/principles-microeconomics-3e/pages/9-1-how-monopolies-form-barriers-to-entry",
+    "locator": "Ch. 9: Monopoly",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-microeconomics-3e",
+    "url": "https://openstax.org/books/principles-microeconomics-3e/pages/10-1-monopolistic-competition",
+    "locator": "Ch. 10: Monopolistic Competition and Oligopoly",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-microeconomics-3e",
+    "url": "https://openstax.org/books/principles-microeconomics-3e/pages/16-1-the-problem-of-imperfect-information-and-asymmetric-information",
+    "locator": "Ch. 16: Information, Risk, and Insurance",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0324": [
+   {
+    "source": "SRC-openstax-macroeconomics-3e",
+    "url": "https://openstax.org/books/principles-macroeconomics-3e/pages/7-1-the-relatively-recent-arrival-of-economic-growth",
+    "locator": "Ch. 7: Economic Growth",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-macroeconomics-3e",
+    "url": "https://openstax.org/books/principles-macroeconomics-3e/pages/11-1-macroeconomic-perspectives-on-demand-and-supply",
+    "locator": "Ch. 11: The Aggregate Demand/Aggregate Supply Model",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-macroeconomics-3e",
+    "url": "https://openstax.org/books/principles-macroeconomics-3e/pages/12-1-aggregate-demand-in-keynesian-analysis",
+    "locator": "Ch. 12: The Keynesian Perspective",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-macroeconomics-3e",
+    "url": "https://openstax.org/books/principles-macroeconomics-3e/pages/13-1-the-building-blocks-of-neoclassical-analysis",
+    "locator": "Ch. 13: The Neoclassical Perspective",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-macroeconomics-3e",
+    "url": "https://openstax.org/books/principles-macroeconomics-3e/pages/15-1-the-federal-reserve-banking-system-and-central-banks",
+    "locator": "Ch. 15: Monetary Policy and Bank Regulation",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-macroeconomics-3e",
+    "url": "https://openstax.org/books/principles-macroeconomics-3e/pages/16-1-how-the-foreign-exchange-market-works",
+    "locator": "Ch. 16: Exchange Rates and International Capital Flows",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0325": [
+   {
+    "source": "SRC-openstax-intro-statistics-2e",
+    "url": "https://openstax.org/books/introductory-statistics-2e/pages/12-1-linear-equations",
+    "locator": "Ch. 12: Linear Regression and Correlation",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-data-science",
+    "url": "https://openstax.org/books/principles-data-science/pages/4-1-statistical-inference-and-confidence-intervals",
+    "locator": "Ch. 4: Inferential Statistics and Regression Analysis",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-data-science",
+    "url": "https://openstax.org/books/principles-data-science/pages/5-1-introduction-to-time-series-analysis",
+    "locator": "Ch. 5: Time Series and Forecasting",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0326": [
+   {
+    "source": "SRC-openstax-principles-financial-accounting",
+    "url": "https://openstax.org/books/principles-financial-accounting/pages/2-1-describe-the-income-statement-statement-of-owners-equity-balance-sheet-and-statement-of-cash-flows-and-how-they-interrelate",
+    "locator": "Ch. 2: Introduction to Financial Statements",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-finance-2e",
+    "url": "https://openstax.org/books/principles-finance-2e/pages/7-1-now-versus-later-concepts",
+    "locator": "Ch. 7: Time Value of Money I: Single Payment Value",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-finance-2e",
+    "url": "https://openstax.org/books/principles-finance-2e/pages/10-1-characteristics-of-bonds",
+    "locator": "Ch. 10: Bonds and Bond Valuation",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-finance-2e",
+    "url": "https://openstax.org/books/principles-finance-2e/pages/15-1-risk-and-return-to-an-individual-asset",
+    "locator": "Ch. 15: How to Think about Investing",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-finance-2e",
+    "url": "https://openstax.org/books/principles-finance-2e/pages/16-1-payback-period-method",
+    "locator": "Ch. 16: How Companies Think about Investing",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0327": [
+   {
+    "source": "SRC-openstax-principles-management",
+    "url": "https://openstax.org/books/principles-management/pages/1-1-what-do-managers-do",
+    "locator": "Ch. 1: Managing and Performing",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-management",
+    "url": "https://openstax.org/books/principles-management/pages/13-1-the-nature-of-leadership",
+    "locator": "Ch. 13: Leadership",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-marketing",
+    "url": "https://openstax.org/books/principles-marketing/pages/3-1-understanding-consumer-markets-and-buying-behavior",
+    "locator": "Ch. 3: Consumer Markets and Purchasing Behavior",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-principles-marketing",
+    "url": "https://openstax.org/books/principles-marketing/pages/12-1-pricing-and-its-role-in-the-marketing-mix",
+    "locator": "Ch. 12: Pricing Products and Services",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-business-ethics",
+    "url": "https://openstax.org/books/business-ethics/pages/1-1-being-a-professional-of-integrity",
+    "locator": "Ch. 1: Why Ethics Matter",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0328": [
+   {
+    "source": "SRC-openstax-business-law-i-essentials-2e",
+    "url": "https://openstax.org/books/business-law-i-essentials-2e/pages/1-1-basic-american-legal-principles",
+    "locator": "Ch. 1: American Law, Legal Reasoning, and the Legal System",
+    "fit": "partial",
+    "mode": "link",
+    "note": "US-centric"
+   },
+   {
+    "source": "SRC-openstax-business-law-i-essentials-2e",
+    "url": "https://openstax.org/books/business-law-i-essentials-2e/pages/2-1-negotiation",
+    "locator": "Ch. 2: Disputes and Dispute Settlement",
+    "fit": "partial",
+    "mode": "link",
+    "note": "US-centric"
+   }
+  ],
+  "KU-M0329": [
+   {
+    "source": "SRC-openstax-business-law-i-essentials-2e",
+    "url": "https://openstax.org/books/business-law-i-essentials-2e/pages/6-1-intentional-torts-and-negligence",
+    "locator": "Ch. 6: The Tort System",
+    "fit": "partial",
+    "mode": "link",
+    "note": "US-centric"
+   },
+   {
+    "source": "SRC-openstax-business-law-i-essentials-2e",
+    "url": "https://openstax.org/books/business-law-i-essentials-2e/pages/7-1-agreement-consideration-and-promissory-estoppel",
+    "locator": "Ch. 7: Contract Law",
+    "fit": "partial",
+    "mode": "link",
+    "note": "US-centric"
+   }
+  ],
+  "KU-M0330": [
+   {
+    "source": "SRC-openstax-business-law-i-essentials-2e",
+    "url": "https://openstax.org/books/business-law-i-essentials-2e/pages/5-1-common-business-crimes",
+    "locator": "Ch. 5: Criminal Liability",
+    "fit": "partial",
+    "mode": "link",
+    "note": "US business crimes only"
+   }
+  ],
+  "KU-M0331": [
+   {
+    "source": "SRC-openstax-business-law-i-essentials-2e",
+    "url": "https://openstax.org/books/business-law-i-essentials-2e/pages/4-1-commerce-clause",
+    "locator": "Ch. 4: Business and the United States Constitution",
+    "fit": "partial",
+    "mode": "link",
+    "note": "US-centric"
+   },
+   {
+    "source": "SRC-openstax-business-law-i-essentials-2e",
+    "url": "https://openstax.org/books/business-law-i-essentials-2e/pages/10-1-administrative-law",
+    "locator": "Ch. 10: Government Regulation",
+    "fit": "partial",
+    "mode": "link",
+    "note": "US-centric"
+   },
+   {
+    "source": "SRC-openstax-introduction-political-science",
+    "url": "https://openstax.org/books/introduction-political-science/pages/11-1-what-is-the-judiciary",
+    "locator": "Ch. 11: Courts and Law",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0332": [
+   {
+    "source": "SRC-openstax-introduction-intellectual-property",
+    "url": "https://openstax.org/books/introduction-intellectual-property/pages/1-1-the-foundations-of-patent-protection",
+    "locator": "Ch. 1: Patent Basics",
+    "fit": "partial",
+    "mode": "link",
+    "note": "US-centric"
+   },
+   {
+    "source": "SRC-openstax-introduction-intellectual-property",
+    "url": "https://openstax.org/books/introduction-intellectual-property/pages/3-1-the-basics-of-copyright",
+    "locator": "Ch. 3: Copyright Basics",
+    "fit": "partial",
+    "mode": "link",
+    "note": "US-centric"
+   },
+   {
+    "source": "SRC-openstax-introduction-intellectual-property",
+    "url": "https://openstax.org/books/introduction-intellectual-property/pages/4-1-core-concepts",
+    "locator": "Ch. 4: Trademark Basics",
+    "fit": "partial",
+    "mode": "link",
+    "note": "US-centric"
+   },
+   {
+    "source": "SRC-openstax-introduction-intellectual-property",
+    "url": "https://openstax.org/books/introduction-intellectual-property/pages/5-1-trade-secret-protection",
+    "locator": "Ch. 5: Trade Secret Basics",
+    "fit": "partial",
+    "mode": "link",
+    "note": "US-centric"
+   }
+  ],
+  "KU-M0333": [
+   {
+    "source": "SRC-openstax-world-history-1",
+    "url": "https://openstax.org/books/world-history-volume-1/pages/6-1-early-mediterranean-peoples",
+    "locator": "Ch. 6: Mediterranean Peoples",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-1",
+    "url": "https://openstax.org/books/world-history-volume-1/pages/7-1-the-daily-life-of-a-roman-family",
+    "locator": "Ch. 7: Experiencing the Roman Empire",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-1",
+    "url": "https://openstax.org/books/world-history-volume-1/pages/10-1-the-eastward-shift",
+    "locator": "Ch. 10: Empires of Faith",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-1",
+    "url": "https://openstax.org/books/world-history-volume-1/pages/11-1-the-rise-and-message-of-islam",
+    "locator": "Ch. 11: The Rise of Islam and the Caliphates",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-1",
+    "url": "https://openstax.org/books/world-history-volume-1/pages/13-1-the-post-roman-west-in-the-early-middle-ages",
+    "locator": "Ch. 13: The Post-Roman West and the Crusading Movement",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0334": [
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/7-1-the-enlightenment",
+    "locator": "Ch. 7: Revolutions in Europe and North America",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/11-1-alliances-expansion-and-conflict",
+    "locator": "Ch. 11: The War to End All Wars",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/12-1-recovering-from-world-war-i",
+    "locator": "Ch. 12: The Interwar Period",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/13-1-an-unstable-peace",
+    "locator": "Ch. 13: The Causes and Consequences of World War II",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-world-history-2",
+    "url": "https://openstax.org/books/world-history-volume-2/pages/14-1-the-cold-war-begins",
+    "locator": "Ch. 14: Cold War Conflicts",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0336": [
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/5-1-philosophical-methods-for-discovering-truth",
+    "locator": "Ch. 5: Logic and Reasoning",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/6-1-substance",
+    "locator": "Ch. 6: Metaphysics",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/7-1-what-epistemology-studies",
+    "locator": "Ch. 7: Epistemology",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0337": [
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/9-1-requirements-of-a-normative-moral-theory",
+    "locator": "Ch. 9: Normative Moral Theory",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-intro-philosophy",
+    "url": "https://openstax.org/books/introduction-philosophy/pages/11-1-historical-perspectives-on-government",
+    "locator": "Ch. 11: Political Philosophy",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0339": [
+   {
+    "source": "SRC-openstax-psychology-2e",
+    "url": "https://openstax.org/books/psychology-2e/pages/2-1-why-is-research-important",
+    "locator": "Ch. 2: Psychological Research",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-psychology-2e",
+    "url": "https://openstax.org/books/psychology-2e/pages/5-1-sensation-versus-perception",
+    "locator": "Ch. 5: Sensation and Perception",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-psychology-2e",
+    "url": "https://openstax.org/books/psychology-2e/pages/6-1-what-is-learning",
+    "locator": "Ch. 6: Learning",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-psychology-2e",
+    "url": "https://openstax.org/books/psychology-2e/pages/7-1-what-is-cognition",
+    "locator": "Ch. 7: Thinking and Intelligence",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-psychology-2e",
+    "url": "https://openstax.org/books/psychology-2e/pages/8-1-how-memory-functions",
+    "locator": "Ch. 8: Memory",
+    "fit": "full",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-psychology-2e",
+    "url": "https://openstax.org/books/psychology-2e/pages/9-1-what-is-lifespan-development",
+    "locator": "Ch. 9: Lifespan Development",
+    "fit": "full",
+    "mode": "link"
+   }
+  ],
+  "KU-M0340": [
+   {
+    "source": "SRC-openstax-psychology-2e",
+    "url": "https://openstax.org/books/psychology-2e/pages/12-1-what-is-social-psychology",
+    "locator": "Ch. 12: Social Psychology",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-psychology-2e",
+    "url": "https://openstax.org/books/psychology-2e/pages/14-1-what-is-stress",
+    "locator": "Ch. 14: Stress, Lifestyle, and Health",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0341": [
+   {
+    "source": "SRC-openstax-introduction-sociology-3e",
+    "url": "https://openstax.org/books/introduction-sociology-3e/pages/2-1-approaches-to-sociological-research",
+    "locator": "Ch. 2: Sociological Research",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-introduction-sociology-3e",
+    "url": "https://openstax.org/books/introduction-sociology-3e/pages/6-1-types-of-groups",
+    "locator": "Ch. 6: Groups and Organization",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-introduction-sociology-3e",
+    "url": "https://openstax.org/books/introduction-sociology-3e/pages/9-1-what-is-social-stratification",
+    "locator": "Ch. 9: Social Stratification in the United States",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-introduction-sociology-3e",
+    "url": "https://openstax.org/books/introduction-sociology-3e/pages/11-1-racial-ethnic-and-minority-groups",
+    "locator": "Ch. 11: Race and Ethnicity",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-introduction-sociology-3e",
+    "url": "https://openstax.org/books/introduction-sociology-3e/pages/12-1-sex-gender-identity-and-expression",
+    "locator": "Ch. 12: Gender, Sex, and Sexuality",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0342": [
+   {
+    "source": "SRC-openstax-introduction-political-science",
+    "url": "https://openstax.org/books/introduction-political-science/pages/13-1-contemporary-government-regimes-power-legitimacy-and-authority",
+    "locator": "Ch. 13: Governing Regimes",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-introduction-political-science",
+    "url": "https://openstax.org/books/introduction-political-science/pages/14-1-what-is-power-and-how-do-we-measure-it",
+    "locator": "Ch. 14: International Relations",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-introduction-political-science",
+    "url": "https://openstax.org/books/introduction-political-science/pages/15-1-the-problem-of-global-governance",
+    "locator": "Ch. 15: International Law and International Organizations",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-introduction-political-science",
+    "url": "https://openstax.org/books/introduction-political-science/pages/16-1-the-origins-of-international-political-economy",
+    "locator": "Ch. 16: International Political Economy",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0343": [
+   {
+    "source": "SRC-openstax-introduction-sociology-3e",
+    "url": "https://openstax.org/books/introduction-sociology-3e/pages/2-1-approaches-to-sociological-research",
+    "locator": "Ch. 2: Sociological Research",
+    "fit": "partial",
+    "mode": "link"
+   },
+   {
+    "source": "SRC-openstax-psychology-2e",
+    "url": "https://openstax.org/books/psychology-2e/pages/2-1-why-is-research-important",
+    "locator": "Ch. 2: Psychological Research",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0344": [
+   {
+    "source": "SRC-openstax-psychology-2e",
+    "url": "https://openstax.org/books/psychology-2e/pages/9-1-what-is-lifespan-development",
+    "locator": "Ch. 9: Lifespan Development",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0358": [
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/2-29-numerical-fluid-mechanics-spring-2015/",
+    "locator": "2.29 Numerical Fluid Mechanics (finite volume/difference, turbulence)",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "Grid-code side only; SPH/MHD not covered."
+   }
+  ],
+  "KU-M0359": [
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/18-335j-introduction-to-numerical-methods-spring-2019/",
+    "locator": "18.335J: conditioning, stability, error analysis",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0360": [
+   {
+    "source": "SRC-turing-way",
+    "url": "https://book.the-turing-way.org/reproducible-research/reproducible-research.html",
+    "locator": "Guide for Reproducible Research",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0361": [
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/22-611j-introduction-to-plasma-physics-i-fall-2003/",
+    "locator": "22.611J: particle motion in magnetic fields",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0362": [
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/22-611j-introduction-to-plasma-physics-i-fall-2003/",
+    "locator": "22.611J: Vlasov, waves, instabilities",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "Reconnection not listed in course description."
+   }
+  ],
+  "KU-M0364": [
+   {
+    "source": "SRC-nasa-small-spacecraft-soa",
+    "url": "https://www.nasa.gov/smallsat-institute/sst-soa/in-space_propulsion",
+    "locator": "Ch. 4: In-Space Propulsion, 4.6.2 Electric Propulsion",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0365": [
+   {
+    "source": "SRC-nasa-se-handbook",
+    "url": "https://www.nasa.gov/reference/systems-engineering-handbook/",
+    "locator": "NASA Systems Engineering Handbook (life cycle, design processes)",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0368": [
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/8-286-the-early-universe-fall-2013/",
+    "locator": "8.286 The Early Universe",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "Undergraduate level; covers background cosmology."
+   }
+  ],
+  "KU-M0369": [
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/8-286-the-early-universe-fall-2013/",
+    "locator": "8.286 The Early Universe",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "Undergraduate level."
+   }
+  ],
+  "KU-M0372": [
+   {
+    "source": "SRC-open-science-training-handbook",
+    "url": "https://open-science-training-handbook.github.io/Open-Science-Training-Handbook_EN/",
+    "locator": "Open Science Basics: Open Educational Resources",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0373": [
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/18-102-introduction-to-functional-analysis-spring-2021/",
+    "locator": "18.102 Introduction to Functional Analysis (normed, Hilbert spaces)",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/2-29-numerical-fluid-mechanics-spring-2015/",
+    "locator": "2.29: numerical methods for PDEs",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0374": [
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/18-905-algebraic-topology-i-fall-2016/",
+    "locator": "18.905 Algebraic Topology I (singular homology, cohomology)",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "Homology/manifold-adjacent; curvature not covered."
+   }
+  ],
+  "KU-M0375": [
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/6-262-discrete-stochastic-processes-spring-2011/",
+    "locator": "6.262 Discrete Stochastic Processes (Markov chains)",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0376": [
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/15-093j-optimization-methods-fall-2009/",
+    "locator": "15.093J Optimization Methods (LP, convex/nonlinear)",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/18-335j-introduction-to-numerical-methods-spring-2019/",
+    "locator": "18.335J: numerical linear algebra, error analysis",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0380": [
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/9-40-introduction-to-neural-computation-spring-2018/",
+    "locator": "9.40 Introduction to Neural Computation",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "Undergraduate level."
+   }
+  ],
+  "KU-M0382": [
+   {
+    "source": "SRC-cdc-principles-epidemiology",
+    "url": "https://archive.cdc.gov/www_cdc_gov/csels/dsepd/ss1978/index.html",
+    "locator": "Lessons 1-6 (introductory only)",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "Introductory; survival analysis/causal inference not covered."
+   }
+  ],
+  "KU-M0385": [
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/hst-582j-biomedical-signal-and-image-processing-spring-2007/",
+    "locator": "HST.582J Biomedical Signal and Image Processing",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0388": [
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/2-29-numerical-fluid-mechanics-spring-2015/",
+    "locator": "2.29: CFD methods",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/2-12-introduction-to-robotics-fall-2005/",
+    "locator": "2.12 Introduction to Robotics",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "Undergraduate level."
+   }
+  ],
+  "KU-M0391": [
+   {
+    "source": "SRC-erickson-algorithms",
+    "url": "https://jeffe.cs.illinois.edu/teaching/algorithms/",
+    "locator": "Algorithms textbook and notes (NP-hardness, approximation, streaming topics)",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/",
+    "locator": "6.046J (randomization, complexity, cryptography)",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0392": [
+   {
+    "source": "SRC-d2l",
+    "url": "https://d2l.ai/chapter_attention-mechanisms-and-transformers/index.html",
+    "locator": "Ch. 11: Attention Mechanisms and Transformers",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-d2l",
+    "url": "https://d2l.ai/chapter_reinforcement-learning/index.html",
+    "locator": "Ch. 17: Reinforcement Learning",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/6-s191-introduction-to-deep-learning-january-iap-2020/",
+    "locator": "6.S191 Introduction to Deep Learning",
+    "fit": "partial",
+    "mode": "adapt",
+    "note": "Undergraduate level."
+   }
+  ],
+  "KU-M0396": [
+   {
+    "source": "SRC-core-the-economy",
+    "url": "https://books.core-econ.org/the-economy/",
+    "locator": "Microeconomics units (strategic interactions, markets, firms)",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0397": [
+   {
+    "source": "SRC-mit-ocw-graduate",
+    "url": "https://ocw.mit.edu/courses/14-381-statistical-method-in-economics-fall-2018/",
+    "locator": "14.381 Statistical Method in Economics",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0398": [
+   {
+    "source": "SRC-core-the-economy",
+    "url": "https://books.core-econ.org/the-economy/",
+    "locator": "Unit 1 Prosperity, inequality, and planetary limits; Unit 9 Uneven development",
+    "fit": "partial",
+    "mode": "link"
+   }
+  ],
+  "KU-M0412": [
+   {
+    "source": "SRC-turing-way",
+    "url": "https://book.the-turing-way.org/ethical-research/ethical-research.html",
+    "locator": "Guide for Ethical Research",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0423": [
+   {
+    "source": "SRC-turing-way",
+    "url": "https://book.the-turing-way.org/reproducible-research/reproducible-research.html",
+    "locator": "Guide for Reproducible Research",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0424": [
+   {
+    "source": "SRC-turing-way",
+    "url": "https://book.the-turing-way.org/reproducible-research/reproducible-research.html",
+    "locator": "Guide for Reproducible Research",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-turing-way",
+    "url": "https://book.the-turing-way.org/project-design/project-design.html",
+    "locator": "Guide for Project Design",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0425": [
+   {
+    "source": "SRC-turing-way",
+    "url": "https://book.the-turing-way.org/reproducible-research/reproducible-research.html",
+    "locator": "Guide for Reproducible Research",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0428": [
+   {
+    "source": "SRC-turing-way",
+    "url": "https://book.the-turing-way.org/reproducible-research/reproducible-research.html",
+    "locator": "Guide for Reproducible Research",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0429": [
+   {
+    "source": "SRC-turing-way",
+    "url": "https://book.the-turing-way.org/reproducible-research/reproducible-research.html",
+    "locator": "Guide for Reproducible Research",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0431": [
+   {
+    "source": "SRC-open-science-training-handbook",
+    "url": "https://open-science-training-handbook.github.io/Open-Science-Training-Handbook_EN/",
+    "locator": "Open Research Data and Materials",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0435": [
+   {
+    "source": "SRC-open-science-training-handbook",
+    "url": "https://open-science-training-handbook.github.io/Open-Science-Training-Handbook_EN/",
+    "locator": "Open Research Software and Open Source",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0437": [
+   {
+    "source": "SRC-turing-way",
+    "url": "https://book.the-turing-way.org/reproducible-research/reproducible-research.html",
+    "locator": "Guide for Reproducible Research",
+    "fit": "partial",
+    "mode": "adapt"
+   },
+   {
+    "source": "SRC-turing-way",
+    "url": "https://book.the-turing-way.org/project-design/project-design.html",
+    "locator": "Guide for Project Design",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0438": [
+   {
+    "source": "SRC-turing-way",
+    "url": "https://book.the-turing-way.org/reproducible-research/reproducible-research.html",
+    "locator": "Guide for Reproducible Research",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0442": [
+   {
+    "source": "SRC-open-science-training-handbook",
+    "url": "https://open-science-training-handbook.github.io/Open-Science-Training-Handbook_EN/",
+    "locator": "Open Science Basics: data, code, licensing, policies",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0443": [
+   {
+    "source": "SRC-turing-way",
+    "url": "https://book.the-turing-way.org/communication/communication.html",
+    "locator": "Guide for Communication",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0444": [
+   {
+    "source": "SRC-open-science-training-handbook",
+    "url": "https://open-science-training-handbook.github.io/Open-Science-Training-Handbook_EN/",
+    "locator": "Open Science Basics: Citizen Science",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0445": [
+   {
+    "source": "SRC-turing-way",
+    "url": "https://book.the-turing-way.org/reproducible-research/reproducible-research.html",
+    "locator": "Guide for Reproducible Research",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ],
+  "KU-M0447": [
+   {
+    "source": "SRC-turing-way",
+    "url": "https://book.the-turing-way.org/communication/communication.html",
+    "locator": "Guide for Communication: Peer Review, Making Research Objects Citable",
+    "fit": "partial",
+    "mode": "adapt"
+   }
+  ]
+ }
+}

@@ -64,6 +64,13 @@
       "when": 1801964200000,
       "tag": "0008_kosmo_lessons",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1801964300000,
+      "tag": "0009_life_taxa",
+      "breakpoints": true
     }
   ]
 }

@@ -182,6 +182,13 @@
   "file": "launch-vehicles.json"
  },
  {
+  "id": "super-heavy-booster",
+  "name": "Super Heavy booster",
+  "category": "launch_vehicle",
+  "status": "in_development",
+  "file": "launch-vehicles.json"
+ },
+ {
   "id": "new-glenn",
   "name": "New Glenn",
   "category": "launch_vehicle",
@@ -1531,5 +1538,40 @@
   "category": "concept",
   "status": "concept",
   "file": "experimental.json"
+ },
+ {
+  "id": "engine-merlin",
+  "name": "Merlin 1D (sea level)",
+  "category": "engine",
+  "status": "operational",
+  "file": "engines.json"
+ },
+ {
+  "id": "engine-merlin-1d-vacuum",
+  "name": "Merlin 1D Vacuum",
+  "category": "engine",
+  "status": "operational",
+  "file": "engines.json"
+ },
+ {
+  "id": "engine-raptor",
+  "name": "Raptor (Raptor 2 class)",
+  "category": "engine",
+  "status": "in_development",
+  "file": "engines.json"
+ },
+ {
+  "id": "engine-j-2s",
+  "name": "Rocketdyne J-2S",
+  "category": "engine",
+  "status": "cancelled",
+  "file": "engines.json"
+ },
+ {
+  "id": "engine-generic",
+  "name": "Generic bell engine",
+  "category": "engine",
+  "status": "concept",
+  "file": "engines.json"
  }
 ]

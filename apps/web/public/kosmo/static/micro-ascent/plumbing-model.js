@@ -1,0 +1,7 @@
+export const defaults={propellant:1146,reserve:20,ratio:2.5,burn:65,oxDensity:1141,fuelDensity:800,velocity:5,tankDiameter:1,ullage:5,dry:1000,isp:280,seats:1,personMass:90,seatMass:15,dv:2500};
+export function calculate(p){const effectiveDry=p.dry+(p.seats-1)*(p.personMass+p.seatMass);const loaded=p.propellant*(1+p.reserve/100),fuel=loaded/(1+p.ratio),ox=loaded-fuel;const flow=p.propellant/p.burn;const fuelFlow=flow/(1+p.ratio),oxFlow=flow-fuelFlow;const r=p.tankDiameter/2,area=Math.PI*r*r;function tank(m,rho){const liquid=m/rho,volume=liquid/(1-p.ullage/100);const cap=Math.min(r*.25,volume/(2*area));const barrel=(volume-4/3*area*cap)/area;return {mass:m,liquid,volume,cap,barrel,height:barrel+2*cap}}
+const fuelTank=tank(fuel,p.fuelDensity),oxTank=tank(ox,p.oxDensity);const fuelBottom=1.3,oxBottom=fuelBottom+fuelTank.height+.25,top=oxBottom+oxTank.height;
+const pipe=(mdot,rho)=>Math.sqrt(4*mdot/(Math.PI*rho*p.velocity));const fuelID=pipe(fuelFlow,p.fuelDensity),oxID=pipe(oxFlow,p.oxDensity);const launch=effectiveDry+loaded;
+return {p,effectiveDry,loaded,fuel,ox,flow,fuelFlow,oxFlow,fuelTank,oxTank,fuelBottom,oxBottom,top,fuelID,oxID,launch,thrust:flow*9.80665*p.isp,tw:flow*p.isp/launch,radialFit:r+.025<=.65,axialFit:top<=4.85};}
+export let current=calculate(defaults);
+export function update(p){current=calculate(p);dispatchEvent(new CustomEvent('plumbing-update',{detail:current}));return current}

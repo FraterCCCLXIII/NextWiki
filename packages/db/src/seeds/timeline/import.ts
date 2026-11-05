@@ -13,6 +13,7 @@ import {
 } from "../kosmo/util.js";
 import * as schema from "../../schema/index.js";
 import { slugifyKey } from "./dates.js";
+import { regionFor } from "./normalize.js";
 import type { TimelineBundle, TimelineRecord, TimelineSource } from "./types.js";
 
 export const entitySlug = (r: Pick<TimelineRecord, "dataset" | "key">) => `tl-${r.dataset}-${slugifyKey(r.key) || slugify(r.key)}`;
@@ -99,7 +100,7 @@ export async function importBundle(db: Db, source: TimelineSource, bundle: Timel
             dataset: r.dataset,
             datasetLabel: r.datasetLabel,
             lane: r.lane,
-            region: r.region,
+            region: regionFor(r.lane, r.region),
             confidence: r.confidence,
             approx: r.approx || undefined,
             lat: r.lat,

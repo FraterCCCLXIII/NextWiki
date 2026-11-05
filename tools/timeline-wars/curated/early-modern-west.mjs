@@ -1,0 +1,163 @@
+// Curated early modern rows (1500-1800): Europe, Ottoman and Atlantic wars.
+import { makeR, WE, EE, MED, ME, AN, CA, SA, EA, SEA, OC, SSA, NAF, NAM, MES, SAM, GL } from "./lib.mjs";
+export const rows = [];
+const R = makeR(rows);
+
+// ---------- Italian Wars and Habsburg-Valois ----------
+R("italian-wars","Italian Wars","war",1494,1559,MED,["France","Spain","Holy Roman Empire","Venice","Papal States"],"Sequence of wars over Italy between France and the Habsburgs and Italian states.",{sides:[["France","Venice (at times)"],["Spain","Holy Roman Empire","Papal States (at times)"]],out:"Spanish Habsburg hegemony in Italy"});
+R("fornovo-1495","Battle of Fornovo","battle",1495,null,MED,["France","League of Venice"],"Charles VIII fought his way back from Naples.",{ll:[44.7,10.1],parent:"italian-wars"});
+R("marignano-1515","Battle of Marignano","battle",1515,null,MED,["France","Swiss Confederacy"],"Francis I defeated the Swiss.",{ll:[45.35,9.3],parent:"italian-wars"});
+R("pavia-1525","Battle of Pavia","battle",1525,null,MED,["Holy Roman Empire","France"],"Charles V's army captured Francis I.",{ll:[45.19,9.16],parent:"italian-wars"});
+R("sack-rome-1527","Sack of Rome (1527)","siege",1527,null,MED,["Holy Roman Empire","Papal States"],"Imperial troops sacked Rome.",{ll:[41.9,12.5],parent:"italian-wars"});
+R("treaty-cateau-cambresis","Peace of Cateau-Cambresis","treaty",1559,null,MED,["France","Spain","England"],"Ended the Italian Wars.",{links:[["ended_by_of","italian-wars"]]});
+R("german-peasants-war","German Peasants' War","revolt",1524,1525,WE,["Holy Roman Empire","Peasant armies"],"Largest European popular uprising before the French Revolution.",{theme:"religious"});
+R("frankenhausen-1525","Battle of Frankenhausen","battle",1525,null,WE,["Holy Roman Empire","Peasant armies"],"Peasant army under Thomas Muntzer routed.",{ll:[51.36,11.1],parent:"german-peasants-war"});
+R("schmalkaldic-war","Schmalkaldic War","war",1546,1547,WE,["Holy Roman Empire","Schmalkaldic League"],"Charles V against the Protestant League.",{theme:"religious"});
+R("peace-augsburg","Peace of Augsburg","treaty",1555,null,WE,["Holy Roman Empire","Lutheran princes"],"Cuius regio eius religio.",{links:[["ended_by_of","schmalkaldic-war"]]});
+R("french-wars-religion","French Wars of Religion","civil-war",1562,1598,WE,["France","Huguenots","Catholic League"],"Wars between French Catholics and Protestants.",{theme:"religious"});
+R("st-bartholomew-1572","St. Bartholomew's Day massacre","revolt",1572,null,WE,["France","Huguenots"],"Mass killing of Huguenots in Paris and elsewhere.",{ll:[48.85,2.35],parent:"french-wars-religion",wp:"St. Bartholomew's Day massacre"});
+R("edict-nantes","Edict of Nantes","treaty",1598,null,WE,["France","Huguenots"],"Granted toleration, ending the wars.",{links:[["ended_by_of","french-wars-religion"]]});
+R("treaty-vervins","Peace of Vervins","treaty",1598,null,WE,["France","Spain"],"Ended Franco-Spanish war.",{parent:"french-wars-religion"});
+R("war-three-henrys","War of the Three Henrys","civil-war",1587,1589,WE,["France"],"Phase of the Wars of Religion.",{parent:"french-wars-religion"});
+
+// ---------- Netherlands and the Spanish Habsburgs ----------
+R("eighty-years-war","Eighty Years' War","war",1568,1648,WE,["Dutch Republic","Spain"],"Dutch revolt against Spanish Habsburg rule.",{theme:"independence",sides:[["Dutch Republic"],["Spanish Habsburgs"]],out:"Dutch independence recognised"});
+R("leiden-1574","Siege of Leiden","siege",1573,1574,WE,["Dutch Republic","Spain"],"Relieved by flooding.",{ll:[52.16,4.49],parent:"eighty-years-war"});
+R("twelve-years-truce","Twelve Years' Truce","treaty",1609,null,WE,["Dutch Republic","Spain"],"Truce in the Eighty Years' War.",{parent:"eighty-years-war"});
+R("treaty-munster","Peace of Munster","treaty",1648,null,WE,["Dutch Republic","Spain"],"Spain recognised the Dutch Republic.",{links:[["ended_by_of","eighty-years-war"]]});
+R("anglo-spanish-war-1585","Anglo-Spanish War (1585-1604)","war",1585,1604,WE,["England","Spain"],"Anglo-Spanish contest including the Armada.",{});
+R("spanish-armada-1588","Spanish Armada","naval-battle",1588,null,WE,["England","Spain"],"English defeat of Philip II's Armada.",{ll:[50.0,-4.0],parent:"anglo-spanish-war-1585"});
+R("treaty-london-1604","Treaty of London (1604)","treaty",1604,null,WE,["England","Spain"],"Ended the Anglo-Spanish War.",{links:[["ended_by_of","anglo-spanish-war-1585"]]});
+R("nine-years-war-ireland","Nine Years' War (Ireland)","war",1593,1603,WE,["England","Gaelic Irish"],"Tyrone's rebellion.",{});
+R("kinsale-1601","Battle of Kinsale","battle",1601,null,WE,["England","Gaelic Irish","Spain"],"English victory.",{ll:[51.7,-8.5],parent:"nine-years-war-ireland"});
+R("portuguese-restoration","Portuguese Restoration War","war",1640,1668,WE,["Portugal","Spain"],"Portuguese independence from Spain.",{theme:"independence"});
+R("reapers-war","Reapers' War (Catalan Revolt)","revolt",1640,1659,WE,["Catalonia","Spain","France"],"Catalan revolt, Treaty of the Pyrenees.",{});
+R("treaty-pyrenees","Treaty of the Pyrenees","treaty",1659,null,WE,["France","Spain"],"Ended the Franco-Spanish War.",{links:[["ended_by_of","franco-spanish-war-1635"]]});
+R("franco-spanish-war-1635","Franco-Spanish War (1635-1659)","war",1635,1659,WE,["France","Spain"],"Concurrent with the Thirty Years' War.",{});
+R("fronde","Fronde","civil-war",1648,1653,WE,["France"],"Noble and parliamentary uprisings.",{});
+
+// ---------- Thirty Years' War ----------
+R("thirty-years-war","Thirty Years' War","war",1618,1648,WE,["Holy Roman Empire","Sweden","France","Bohemia","Spain"],"Religious and dynastic war in Germany.",{theme:"religious",sides:[["Habsburgs","Catholic League","Spain"],["Protestant Union","Sweden","France","Denmark"]]});
+R("bohemian-revolt","Bohemian Revolt","revolt",1618,1620,EE,["Bohemia","Habsburgs"],"Defenestration of Prague and revolt.",{ll:[50.09,14.4],parent:"thirty-years-war"});
+R("white-mountain-1620","Battle of White Mountain","battle",1620,null,EE,["Habsburgs","Bohemia"],"Catholic victory.",{ll:[50.08,14.35],parent:"bohemian-revolt"});
+R("breitenfeld-1631","Battle of Breitenfeld (1631)","battle",1631,null,WE,["Sweden","Holy Roman Empire"],"Gustavus Adolphus's victory.",{ll:[51.4,12.4],parent:"thirty-years-war"});
+R("sack-magdeburg","Sack of Magdeburg","siege",1631,null,WE,["Holy Roman Empire","Magdeburg"],"Imperial sack.",{ll:[52.13,11.63],parent:"thirty-years-war"});
+R("lutzen-1632","Battle of Lutzen (1632)","battle",1632,null,WE,["Sweden","Holy Roman Empire"],"Gustavus Adolphus killed.",{ll:[51.26,12.14],parent:"thirty-years-war",alias:["Battle of Lützen (1632)"]});
+R("nordlingen-1634","Battle of Nordlingen (1634)","battle",1634,null,WE,["Holy Roman Empire","Sweden"],"Imperial-Spanish victory.",{ll:[48.85,10.49],parent:"thirty-years-war",alias:["Battle of Nördlingen (1634)"]});
+R("rocroi-1643","Battle of Rocroi","battle",1643,null,WE,["France","Spain"],"Conde defeated Spanish tercios.",{ll:[49.92,4.52],parent:"thirty-years-war"});
+R("peace-westphalia","Peace of Westphalia","treaty",1648,null,WE,["Holy Roman Empire","Sweden","France","Dutch Republic"],"Treaties of Munster and Osnabruck.",{links:[["ended_by_of","thirty-years-war"]]});
+
+// ---------- British Isles ----------
+R("english-civil-wars","English Civil Wars","civil-war",1642,1651,WE,["Royalists","Parliamentarians","Scotland"],"Wars between Charles I and Parliament.",{theme:"civil"});
+R("edgehill-1642","Battle of Edgehill","battle",1642,null,WE,["Royalists","Parliamentarians"],"First major battle.",{ll:[52.1,-1.5],parent:"english-civil-wars"});
+R("marston-moor-1644","Battle of Marston Moor","battle",1644,null,WE,["Parliamentarians","Royalists"],"Largest battle.",{ll:[53.98,-1.2],parent:"english-civil-wars"});
+R("naseby-1645","Battle of Naseby","battle",1645,null,WE,["New Model Army","Royalists"],"Decisive Parliamentarian victory.",{ll:[52.4,-0.98],parent:"english-civil-wars"});
+R("worcester-1651","Battle of Worcester","battle",1651,null,WE,["Parliamentarians","Royalists","Scots"],"End of the wars.",{ll:[52.19,-2.22],parent:"english-civil-wars"});
+R("irish-rebellion-1641","Irish Rebellion of 1641","revolt",1641,1642,WE,["Irish Catholics","England"],"Uprising in Ulster.",{});
+R("cromwellian-conquest-ireland","Cromwellian conquest of Ireland","conquest",1649,1653,WE,["England","Irish Confederacy"],"Cromwell's campaign.",{});
+R("glorious-revolution","Glorious Revolution","civil-war",1688,1689,WE,["England","Netherlands"],"William of Orange displaced James II.",{theme:"dynastic"});
+R("williamite-war","Williamite War in Ireland","war",1689,1691,WE,["Williamites","Jacobites"],"William III vs James II.",{theme:"dynastic"});
+R("boyne-1690","Battle of the Boyne","battle",1690,null,WE,["Williamites","Jacobites"],"William defeated James.",{ll:[53.72,-6.42],parent:"williamite-war"});
+R("jacobite-rising-1715","Jacobite rising of 1715","revolt",1715,1716,WE,["Jacobites","Great Britain"],"The Fifteen.",{theme:"dynastic"});
+R("jacobite-rising-1745","Jacobite rising of 1745","revolt",1745,1746,WE,["Jacobites","Great Britain"],"The Forty-Five.",{theme:"dynastic"});
+R("culloden-1746","Battle of Culloden","battle",1746,null,WE,["Great Britain","Jacobites"],"Final defeat of the Jacobites.",{ll:[57.48,-4.1],parent:"jacobite-rising-1745"});
+R("pilgrimage-grace","Pilgrimage of Grace","revolt",1536,1537,WE,["England"],"Northern rising against religious change.",{theme:"religious"});
+R("rebellion-1798-ireland","Irish Rebellion of 1798","revolt",1798,null,WE,["United Irishmen","Great Britain"],"Rebellion.",{theme:"independence"});
+R("anglo-dutch-wars","Anglo-Dutch Wars","war",1652,1784,WE,["England","Dutch Republic"],"Four wars for trade and naval supremacy.",{theme:"trade"});
+R("first-anglo-dutch-war","First Anglo-Dutch War","war",1652,1654,WE,["England","Dutch Republic"],"First naval trade war.",{parent:"anglo-dutch-wars",theme:"trade"});
+R("treaty-westminster-1654","Treaty of Westminster (1654)","treaty",1654,null,WE,["England","Dutch Republic"],"Ended first war.",{links:[["ended_by_of","first-anglo-dutch-war"]]});
+R("second-anglo-dutch-war","Second Anglo-Dutch War","war",1665,1667,WE,["England","Dutch Republic"],"Dutch raid on the Medway.",{parent:"anglo-dutch-wars",theme:"trade"});
+R("treaty-breda-1667","Treaty of Breda (1667)","treaty",1667,null,WE,["England","Dutch Republic"],"Ended second war; New Amsterdam to England.",{links:[["ended_by_of","second-anglo-dutch-war"]]});
+R("third-anglo-dutch-war","Third Anglo-Dutch War","war",1672,1674,WE,["England","Dutch Republic"],"Part of the Franco-Dutch War.",{parent:"anglo-dutch-wars",theme:"trade"});
+R("treaty-westminster-1674","Treaty of Westminster (1674)","treaty",1674,null,WE,["England","Dutch Republic"],"Ended third war.",{links:[["ended_by_of","third-anglo-dutch-war"]]});
+R("fourth-anglo-dutch-war","Fourth Anglo-Dutch War","war",1780,1784,WE,["Great Britain","Dutch Republic"],"Dutch entry on the American side.",{parent:"anglo-dutch-wars",theme:"trade"});
+
+// ---------- Louis XIV to Napoleon ----------
+R("franco-dutch-war","Franco-Dutch War","war",1672,1678,WE,["France","Dutch Republic"],"Louis XIV's invasion of the Dutch Republic.",{});
+R("treaties-nijmegen","Treaties of Nijmegen","treaty",1678,1679,WE,["France","Dutch Republic","Spain"],"Ended the Franco-Dutch War.",{links:[["ended_by_of","franco-dutch-war"]]});
+R("nine-years-war","Nine Years' War (War of the Grand Alliance)","war",1688,1697,WE,["France","Grand Alliance"],"Coalition against Louis XIV.",{});
+R("treaty-ryswick","Treaty of Ryswick","treaty",1697,null,WE,["France","Grand Alliance"],"Ended the Nine Years' War.",{links:[["ended_by_of","nine-years-war"]]});
+R("spanish-succession-war","War of the Spanish Succession","war",1701,1714,WE,["France","Spain","Great Britain","Austria","Dutch Republic"],"Succession to the Spanish throne.",{theme:"dynastic",out:"Bourbon Philip V keeps Spain; partition of Spanish possessions"});
+R("blenheim-1704","Battle of Blenheim","battle",1704,null,WE,["Great Britain","Austria","France","Bavaria"],"Marlborough and Eugene's victory.",{ll:[48.63,10.6],parent:"spanish-succession-war"});
+R("ramillies-1706","Battle of Ramillies","battle",1706,null,WE,["Great Britain","Dutch Republic","France"],"Marlborough's victory.",{ll:[50.65,4.9],parent:"spanish-succession-war"});
+R("malplaquet-1709","Battle of Malplaquet","battle",1709,null,WE,["Great Britain","France"],"Pyrrhic Allied victory.",{ll:[50.3,3.9],parent:"spanish-succession-war"});
+R("treaty-utrecht","Treaty of Utrecht","treaty",1713,null,WE,["Great Britain","France","Spain"],"Ended the War of the Spanish Succession.",{links:[["ended_by_of","spanish-succession-war"]]});
+R("treaty-rastatt","Treaty of Rastatt","treaty",1714,null,WE,["Austria","France"],"Completed the settlement.",{parent:"spanish-succession-war"});
+R("great-northern-war","Great Northern War","war",1700,1721,EE,["Sweden","Russia","Denmark-Norway","Saxony-Poland"],"Contest for Baltic supremacy.",{});
+R("narva-1700","Battle of Narva (1700)","battle",1700,null,EE,["Sweden","Russia"],"Charles XII's victory.",{ll:[59.38,28.2],parent:"great-northern-war"});
+R("poltava-1709","Battle of Poltava","battle",1709,null,EE,["Russia","Sweden"],"Peter the Great's decisive victory.",{ll:[49.6,34.55],parent:"great-northern-war"});
+R("treaty-nystad","Treaty of Nystad","treaty",1721,null,EE,["Russia","Sweden"],"Ended the Great Northern War.",{links:[["ended_by_of","great-northern-war"]]});
+R("polish-succession-war","War of the Polish Succession","war",1733,1738,WE,["France","Austria","Russia"],"Succession war.",{theme:"dynastic"});
+R("treaty-vienna-1738","Treaty of Vienna (1738)","treaty",1738,null,WE,["France","Austria"],"Ended the War of the Polish Succession.",{links:[["ended_by_of","polish-succession-war"]]});
+R("austrian-succession-war","War of the Austrian Succession","war",1740,1748,WE,["Austria","Prussia","France","Great Britain"],"Succession of Maria Theresa.",{theme:"dynastic"});
+R("treaty-aix-la-chapelle","Treaty of Aix-la-Chapelle (1748)","treaty",1748,null,WE,["Austria","France","Great Britain","Prussia"],"Ended the War of the Austrian Succession.",{links:[["ended_by_of","austrian-succession-war"]]});
+R("silesian-wars","Silesian Wars","war",1740,1763,WE,["Prussia","Austria"],"Prussia's seizure of Silesia.",{approx:false,wp:"Silesian Wars"});
+R("seven-years-war","Seven Years' War","war",1756,1763,GL,["Great Britain","Prussia","France","Austria","Russia"],"Global war of the great powers.",{theme:"world war",sides:[["Great Britain","Prussia","Hanover"],["France","Austria","Russia","Spain"]]});
+R("rossbach-1757","Battle of Rossbach","battle",1757,null,WE,["Prussia","France"],"Frederick the Great's victory.",{ll:[51.28,11.9],parent:"seven-years-war"});
+R("leuthen-1757","Battle of Leuthen","battle",1757,null,EE,["Prussia","Austria"],"Frederick's oblique order victory.",{ll:[51.1,16.9],parent:"seven-years-war"});
+R("kunersdorf-1759","Battle of Kunersdorf","battle",1759,null,EE,["Russia","Prussia"],"Prussian defeat.",{ll:[52.35,14.62],parent:"seven-years-war"});
+R("treaty-paris-1763","Treaty of Paris (1763)","treaty",1763,null,GL,["Great Britain","France","Spain"],"Ended the Seven Years' War.",{links:[["ended_by_of","seven-years-war"]]});
+R("treaty-hubertusburg","Treaty of Hubertusburg","treaty",1763,null,WE,["Prussia","Austria"],"Ended the war in Europe.",{parent:"seven-years-war"});
+R("russo-turkish-1768","Russo-Turkish War (1768-1774)","war",1768,1774,EE,["Russia","Ottoman Empire"],"Russian victory.",{});
+R("treaty-kucuk-kaynarca","Treaty of Kucuk Kaynarca","treaty",1774,null,EE,["Russia","Ottoman Empire"],"Ended the war.",{links:[["ended_by_of","russo-turkish-1768"]]});
+R("russo-turkish-1787","Russo-Turkish War (1787-1792)","war",1787,1792,EE,["Russia","Ottoman Empire"],"Russian victory.",{});
+R("treaty-jassy","Treaty of Jassy","treaty",1792,null,EE,["Russia","Ottoman Empire"],"Ended the war.",{links:[["ended_by_of","russo-turkish-1787"]]});
+R("pugachev","Pugachev's Rebellion","revolt",1773,1775,EE,["Russia","Cossacks"],"Cossack-peasant uprising.",{theme:"civil"});
+R("kosciuszko-uprising","Kosciuszko Uprising","revolt",1794,null,EE,["Poland","Russia","Prussia"],"Polish insurrection.",{theme:"independence",alias:["Kościuszko Uprising"]});
+R("swedish-russian-1788","Russo-Swedish War (1788-1790)","war",1788,1790,EE,["Sweden","Russia"],"Gustav III's war.",{});
+R("khmelnytsky","Khmelnytsky Uprising","revolt",1648,1657,EE,["Cossack Hetmanate","Poland-Lithuania"],"Cossack revolt.",{});
+R("deluge","The Deluge (Polish-Swedish)","war",1655,1660,EE,["Poland-Lithuania","Sweden","Russia"],"Invasions of Poland.",{});
+R("razin","Razin's Rebellion","revolt",1670,1671,EE,["Russia","Cossacks"],"Stenka Razin.",{theme:"civil"});
+
+// ---------- American Revolution, Revolutionary France ----------
+R("american-revolutionary-war","American Revolutionary War","war",1775,1783,NAM,["United States","Great Britain","France","Spain"],"Thirteen colonies' war of independence.",{theme:"independence",out:"American independence"});
+R("lexington-concord-1775","Battles of Lexington and Concord","battle",1775,null,NAM,["Massachusetts","Great Britain"],"First armed engagements.",{ll:[42.45,-71.23],parent:"american-revolutionary-war"});
+R("bunker-hill-1775","Battle of Bunker Hill","battle",1775,null,NAM,["Great Britain","Massachusetts"],"British victory at heavy cost.",{ll:[42.38,-71.06],parent:"american-revolutionary-war"});
+R("saratoga-1777","Battles of Saratoga","battle",1777,null,NAM,["United States","Great Britain"],"Turning point; led to the French alliance.",{ll:[43.0,-73.6],parent:"american-revolutionary-war"});
+R("yorktown-1781","Siege of Yorktown","siege",1781,null,NAM,["United States","France","Great Britain"],"Cornwallis surrendered.",{ll:[37.24,-76.51],parent:"american-revolutionary-war"});
+R("treaty-paris-1783","Treaty of Paris (1783)","treaty",1783,null,NAM,["United States","Great Britain"],"Recognised U.S. independence.",{links:[["ended_by_of","american-revolutionary-war"]]});
+R("french-revolution","French Revolution","revolt",1789,1799,WE,["France"],"Overthrow of the monarchy.",{theme:"independence"});
+R("vendee","War in the Vendee","civil-war",1793,1796,WE,["France","Vendeans"],"Royalist counter-revolution.",{});
+R("french-revolutionary-wars","French Revolutionary Wars","war",1792,1802,WE,["France","First Coalition","Second Coalition"],"Wars against revolutionary France.",{});
+R("valmy-1792","Battle of Valmy","battle",1792,null,WE,["France","Prussia"],"French stand.",{ll:[49.08,4.77],parent:"french-revolutionary-wars"});
+R("fleurus-1794","Battle of Fleurus (1794)","battle",1794,null,WE,["France","Austria"],"French victory.",{ll:[50.48,4.54],parent:"french-revolutionary-wars"});
+R("marengo-1800","Battle of Marengo","battle",1800,null,MED,["France","Austria"],"Napoleon's victory.",{ll:[44.88,8.67],parent:"french-revolutionary-wars"});
+R("treaty-luneville","Treaty of Luneville","treaty",1801,null,WE,["France","Austria"],"Ended the war with Austria.",{parent:"french-revolutionary-wars",alias:["Treaty of Lunéville"]});
+R("treaty-amiens","Treaty of Amiens","treaty",1802,null,WE,["France","Great Britain"],"Brief peace.",{links:[["ended_by_of","french-revolutionary-wars"]]});
+R("haitian-revolution","Haitian Revolution","revolt",1791,1804,NAM,["Saint-Domingue","France","Great Britain","Spain"],"Slave revolt becoming independence war.",{theme:"independence",ll:[19.0,-72.4]});
+R("vertieres-1803","Battle of Vertieres","battle",1803,null,NAM,["Haitian rebels","France"],"Decisive Haitian victory.",{ll:[19.7,-72.2],parent:"haitian-revolution",alias:["Battle of Vertières"]});
+R("whiskey-rebellion","Whiskey Rebellion","revolt",1791,1794,NAM,["United States"],"Tax protest in Pennsylvania.",{});
+R("shays-rebellion","Shays' Rebellion","revolt",1786,1787,NAM,["Massachusetts"],"Farmers' rebellion.",{});
+
+// ---------- Ottoman, Habsburg, Venice ----------
+R("mohacs-1526","Battle of Mohacs","battle",1526,null,EE,["Ottoman Empire","Hungary"],"Suleiman destroyed Hungarian army.",{ll:[45.99,18.68],parent:"ottoman-hungarian-wars",alias:["Battle of Mohács"]});
+R("ottoman-hungarian-wars","Ottoman-Hungarian Wars","war",1366,1568,EE,["Ottoman Empire","Hungary","Habsburgs"],"Long conflict.",{approx:true});
+R("vienna-1529","Siege of Vienna (1529)","siege",1529,null,EE,["Ottoman Empire","Habsburgs"],"First Ottoman siege.",{ll:[48.2,16.37],parent:"ottoman-habsburg-wars"});
+R("ottoman-habsburg-wars","Ottoman-Habsburg wars","war",1526,1791,EE,["Ottoman Empire","Habsburg Monarchy"],"Long conflict.",{approx:false});
+R("malta-1565","Great Siege of Malta","siege",1565,null,MED,["Knights Hospitaller","Ottoman Empire"],"Knights held Malta.",{ll:[35.9,14.5],parent:"ottoman-habsburg-wars"});
+R("lepanto-1571","Battle of Lepanto","naval-battle",1571,null,MED,["Holy League","Ottoman Empire"],"Holy League destroyed Ottoman fleet.",{ll:[38.3,21.2],parent:"cyprus-war"});
+R("cyprus-war","Ottoman-Venetian War (1570-1573)","war",1570,1573,MED,["Ottoman Empire","Venice","Holy League"],"Ottoman conquest of Cyprus.",{});
+R("long-turkish-war","Long Turkish War","war",1593,1606,EE,["Habsburgs","Ottoman Empire"],"Fifteen Years' War.",{parent:"ottoman-habsburg-wars"});
+R("treaty-zsitvatorok","Peace of Zsitvatorok","treaty",1606,null,EE,["Habsburgs","Ottoman Empire"],"Ended Long Turkish War.",{links:[["ended_by_of","long-turkish-war"]]});
+R("cretan-war","Cretan War (1645-1669)","war",1645,1669,MED,["Venice","Ottoman Empire"],"Siege of Candia.",{});
+R("vienna-1683","Battle of Vienna","battle",1683,null,EE,["Holy League","Ottoman Empire"],"Sobieski relieved Vienna.",{ll:[48.2,16.37],parent:"great-turkish-war"});
+R("great-turkish-war","Great Turkish War","war",1683,1699,EE,["Holy League","Ottoman Empire"],"Habsburg reconquest of Hungary.",{});
+R("karlowitz","Treaty of Karlowitz","treaty",1699,null,EE,["Habsburgs","Ottoman Empire","Venice","Poland"],"Ended Great Turkish War.",{links:[["ended_by_of","great-turkish-war"]]});
+R("ottoman-persian-1514","Ottoman-Safavid War (1514-1555)","war",1514,1555,ME,["Ottoman Empire","Safavids"],"Chaldiran and Amasya.",{});
+R("chaldiran-1514","Battle of Chaldiran","battle",1514,null,ME,["Ottoman Empire","Safavids"],"Selim I defeated Ismail I.",{ll:[39.1,44.4],parent:"ottoman-persian-1514"});
+R("amasya-1555","Peace of Amasya","treaty",1555,null,ME,["Ottoman Empire","Safavids"],"Ended the war.",{links:[["ended_by_of","ottoman-persian-1514"]]});
+R("ottoman-persian-1623","Ottoman-Safavid War (1623-1639)","war",1623,1639,ME,["Ottoman Empire","Safavids"],"Baghdad lost and retaken.",{});
+R("treaty-zuhab","Treaty of Zuhab","treaty",1639,null,ME,["Ottoman Empire","Safavids"],"Defined border.",{links:[["ended_by_of","ottoman-persian-1623"]]});
+R("ottoman-mamluk-1516","Ottoman-Mamluk War (1516-1517)","war",1516,1517,ME,["Ottoman Empire","Mamluk Sultanate"],"Conquest of Syria and Egypt.",{});
+R("marj-dabiq-1516","Battle of Marj Dabiq","battle",1516,null,ME,["Ottoman Empire","Mamluk Sultanate"],"Selim I victory.",{ll:[36.5,37.3],parent:"ottoman-mamluk-1516"});
+R("ridaniya-1517","Battle of Ridaniya","battle",1517,null,NAF,["Ottoman Empire","Mamluk Sultanate"],"Ottoman conquest of Egypt.",{ll:[30.1,31.3],parent:"ottoman-mamluk-1516"});
+R("nader-shah-india","Nader Shah's invasion of India","campaign",1738,1739,SA,["Afsharid Iran","Mughal Empire"],"Nader sacked Delhi.",{});
+R("karnal-1739","Battle of Karnal","battle",1739,null,SA,["Afsharid Iran","Mughal Empire"],"Nader's victory.",{ll:[29.69,76.98],parent:"nader-shah-india"});
+R("afghan-safavid-fall","Hotak conquest of Isfahan","siege",1722,null,ME,["Hotakis","Safavids"],"Mahmud Hotak took Isfahan.",{ll:[32.65,51.67]});
+R("spanish-armada-portugal","War of the Portuguese Succession","war",1580,1583,WE,["Spain","Portugal"],"Philip II took Portugal.",{theme:"dynastic"});
+R("alcacer-quibir-1578","Battle of Alcacer Quibir","battle",1578,null,NAF,["Morocco","Portugal"],"King Sebastian killed.",{ll:[35.0,-5.9],alias:["Battle of Alcácer Quibir"]});
+R("tondibi-1591","Battle of Tondibi","battle",1591,null,SSA,["Morocco","Songhai Empire"],"Moroccan guns broke Songhai.",{ll:[16.8,-0.2],parent:"moroccan-songhai-war"});
+R("moroccan-songhai-war","Moroccan invasion of the Songhai Empire","war",1590,1591,SSA,["Morocco","Songhai Empire"],"End of the Songhai Empire.",{});
+R("comuneros","Revolt of the Comuneros","revolt",1520,1521,WE,["Castile"],"Castilian revolt.",{});
+R("munster-rebellion","Munster Rebellion","revolt",1534,1535,WE,["Anabaptists","Holy Roman Empire"],"Anabaptist kingdom.",{theme:"religious"});
+R("kett","Kett's Rebellion","revolt",1549,null,WE,["England"],"Agrarian revolt.",{});

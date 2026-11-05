@@ -1,0 +1,182 @@
+// Curated modern rows (1800-present): Asia, Middle East, Africa, Oceania, decolonization and Cold War conflicts.
+import { makeR, WE, EE, MED, ME, AN, CA, SA, EA, SEA, OC, SSA, NAF, NAM, MES, SAM, GL } from "./lib.mjs";
+export const rows = [];
+const R = makeR(rows);
+
+// ---------- China ----------
+R("first-opium-war","First Opium War","war",1839,1842,EA,["Qing dynasty","Britain"],"Conflict over the opium trade and trade restrictions; Britain forced the Qing to open ports.",{theme:"trade",sides:[["Britain"],["Qing dynasty"]],out:"British victory; Treaty of Nanking"});
+R("treaty-nanking","Treaty of Nanking","treaty",1842,null,EA,["Qing dynasty","Britain"],"Ceded Hong Kong, opened five treaty ports.",{links:[["ended_by_of","first-opium-war"]]});
+R("second-opium-war","Second Opium War","war",1856,1860,EA,["Qing dynasty","Britain","France"],"Anglo-French war on the Qing; sack of the Summer Palace in 1860.",{theme:"trade"});
+R("treaty-tientsin","Treaties of Tientsin and Convention of Peking","treaty",1860,null,EA,["Qing dynasty","Britain","France"],"Ended the Second Opium War.",{links:[["ended_by_of","second-opium-war"]]});
+R("taiping-rebellion","Taiping Rebellion","civil-war",1850,1864,EA,["Qing dynasty","Taiping Heavenly Kingdom"],"Religious-inspired civil war, one of the deadliest in history.",{theme:"religious",out:"Qing victory"});
+R("nanjing-1864","Fall of Nanjing (1864)","siege",1864,null,EA,["Qing dynasty","Taiping Heavenly Kingdom"],"Qing recapture of the Taiping capital.",{ll:[32.06,118.8],parent:"taiping-rebellion"});
+R("nian-rebellion","Nian Rebellion","revolt",1851,1868,EA,["Qing dynasty","Nian"],"Rebellion in northern China.",{theme:"civil"});
+R("panthay-rebellion","Panthay Rebellion","revolt",1856,1873,EA,["Qing dynasty","Panthay"],"Muslim revolt in Yunnan.",{theme:"religious"});
+R("dungan-revolt","Dungan revolt","revolt",1862,1877,CA,["Qing dynasty","Hui","Yaqub Beg"],"Muslim revolts in northwestern China.",{theme:"religious"});
+R("sino-french-war","Sino-French War","war",1884,1885,SEA,["Qing dynasty","France"],"War over Tonkin.",{theme:"colonial"});
+R("first-sino-japanese","First Sino-Japanese War","war",1894,1895,EA,["Japan","Qing dynasty"],"Japan defeated Qing China in Korea.",{});
+R("treaty-shimonoseki","Treaty of Shimonoseki","treaty",1895,null,EA,["Japan","Qing dynasty"],"Ended the war; Taiwan ceded.",{links:[["ended_by_of","first-sino-japanese"]]});
+R("boxer-rebellion","Boxer Rebellion","revolt",1899,1901,EA,["Qing dynasty","Boxers","Eight-Nation Alliance"],"Anti-foreign uprising.",{});
+R("boxer-protocol","Boxer Protocol","treaty",1901,null,EA,["Qing dynasty","Eight-Nation Alliance"],"Ended the Boxer Rebellion.",{links:[["ended_by_of","boxer-rebellion"]]});
+R("xinhai-revolution","Xinhai Revolution","revolt",1911,1912,EA,["Qing dynasty","Republicans"],"Overthrow of the Qing.",{theme:"civil"});
+R("warlord-era","Warlord Era wars","civil-war",1916,1928,EA,["Chinese warlords"],"Fragmentation.",{approx:false});
+R("northern-expedition","Northern Expedition","campaign",1926,1928,EA,["Kuomintang","Beiyang warlords"],"Nationalist reunification campaign.",{});
+R("chinese-civil-war","Chinese Civil War","civil-war",1927,1949,EA,["Kuomintang","Communist Party of China"],"Civil war ending in Communist victory.",{theme:"civil"});
+R("huaihai-1948","Huaihai Campaign","campaign",1948,1949,EA,["Communist Party of China","Kuomintang"],"Decisive Communist victory.",{parent:"chinese-civil-war"});
+R("long-march","Long March","campaign",1934,1935,EA,["Communist Party of China","Kuomintang"],"Retreat of the Red Army.",{parent:"chinese-civil-war"});
+
+// ---------- Japan, Korea ----------
+R("boshin-war","Boshin War","civil-war",1868,1869,EA,["Imperial forces","Tokugawa shogunate"],"Meiji Restoration civil war.",{theme:"civil"});
+R("toba-fushimi-1868","Battle of Toba-Fushimi","battle",1868,null,EA,["Imperial forces","Tokugawa shogunate"],"First battle of the Boshin War.",{ll:[34.93,135.76],parent:"boshin-war"});
+R("hakodate-1869","Battle of Hakodate","battle",1869,null,EA,["Imperial forces","Republic of Ezo"],"End of the Boshin War.",{ll:[41.77,140.73],parent:"boshin-war"});
+R("satsuma-rebellion","Satsuma Rebellion","revolt",1877,null,EA,["Meiji government","Satsuma samurai"],"Saigo Takamori's last stand.",{});
+R("russo-japanese-war","Russo-Japanese War","war",1904,1905,EA,["Japan","Russia"],"War over Manchuria and Korea.",{});
+R("tsushima-1905","Battle of Tsushima","naval-battle",1905,null,EA,["Japan","Russia"],"Togo destroyed the Baltic Fleet.",{ll:[34.5,129.0],parent:"russo-japanese-war"});
+R("mukden-1905","Battle of Mukden","battle",1905,null,EA,["Japan","Russia"],"Largest land battle before WWI.",{ll:[41.8,123.4],parent:"russo-japanese-war"});
+R("port-arthur-1904","Siege of Port Arthur","siege",1904,1905,EA,["Japan","Russia"],"Siege.",{ll:[38.8,121.25],parent:"russo-japanese-war"});
+R("treaty-portsmouth","Treaty of Portsmouth","treaty",1905,null,EA,["Japan","Russia"],"Ended the war.",{links:[["ended_by_of","russo-japanese-war"]]});
+R("donghak","Donghak Peasant Revolution","revolt",1894,null,EA,["Joseon","Donghak"],"Peasant uprising.",{});
+R("korean-war","Korean War","war",1950,1953,EA,["North Korea","South Korea","United Nations","China"],"Cold War conflict.",{theme:"civil"});
+R("inchon-1950","Battle of Inchon","battle",1950,null,EA,["United Nations","North Korea"],"Amphibious landing.",{ll:[37.46,126.63],parent:"korean-war"});
+R("chosin-1950","Battle of Chosin Reservoir","battle",1950,null,EA,["China","United Nations"],"Chinese counteroffensive.",{ll:[40.4,127.2],parent:"korean-war"});
+R("korean-armistice","Korean Armistice Agreement","treaty",1953,null,EA,["North Korea","United Nations","China"],"Ceasefire.",{links:[["ended_by_of","korean-war"]]});
+
+// ---------- Southeast Asia ----------
+R("java-war","Java War","war",1825,1830,SEA,["Dutch East Indies","Diponegoro"],"War.",{theme:"colonial"});
+R("aceh-war","Aceh War","war",1873,1904,SEA,["Netherlands","Aceh Sultanate"],"War.",{theme:"colonial"});
+R("first-anglo-burmese","First Anglo-Burmese War","war",1824,1826,SEA,["Britain","Konbaung Burma"],"War.",{theme:"colonial"});
+R("second-anglo-burmese","Second Anglo-Burmese War","war",1852,1853,SEA,["Britain","Konbaung Burma"],"War.",{theme:"colonial"});
+R("third-anglo-burmese","Third Anglo-Burmese War","war",1885,null,SEA,["Britain","Konbaung Burma"],"Annexation.",{theme:"colonial"});
+R("siamese-vietnamese-1831","Siamese-Vietnamese war","war",1831,1834,SEA,["Siam","Vietnam"],"War.",{});
+R("french-conquest-vietnam","French conquest of Vietnam","conquest",1858,1885,SEA,["France","Vietnam"],"Colonial conquest.",{theme:"colonial"});
+R("first-indochina-war","First Indochina War","war",1946,1954,SEA,["France","Viet Minh"],"Colonial war.",{theme:"independence"});
+R("dien-bien-phu-1954","Battle of Dien Bien Phu","battle",1954,null,SEA,["Viet Minh","France"],"French defeat.",{ll:[21.39,103.02],parent:"first-indochina-war"});
+R("geneva-1954","Geneva Accords (1954)","treaty",1954,null,SEA,["France","Viet Minh"],"Ended the First Indochina War.",{links:[["ended_by_of","first-indochina-war"]]});
+R("vietnam-war","Vietnam War","war",1955,1975,SEA,["North Vietnam","South Vietnam","United States"],"Second Indochina War.",{theme:"civil"});
+R("tet-1968","Tet Offensive","campaign",1968,null,SEA,["North Vietnam","South Vietnam","United States"],"Offensive.",{parent:"vietnam-war"});
+R("khe-sanh-1968","Battle of Khe Sanh","battle",1968,null,SEA,["United States","North Vietnam"],"Siege.",{ll:[16.63,106.73],parent:"vietnam-war"});
+R("paris-accords-1973","Paris Peace Accords","treaty",1973,null,SEA,["United States","North Vietnam","South Vietnam"],"Ceasefire.",{parent:"vietnam-war"});
+R("fall-saigon","Fall of Saigon","siege",1975,null,SEA,["North Vietnam","South Vietnam"],"End.",{ll:[10.78,106.7],parent:"vietnam-war"});
+R("cambodian-civil-war","Cambodian Civil War","civil-war",1967,1975,SEA,["Khmer Republic","Khmer Rouge"],"War.",{theme:"civil"});
+R("cambodian-vietnamese-war","Cambodian-Vietnamese War","war",1978,1989,SEA,["Vietnam","Khmer Rouge"],"War.",{});
+R("sino-vietnamese-1979","Sino-Vietnamese War","war",1979,null,SEA,["China","Vietnam"],"Border war.",{});
+R("malayan-emergency","Malayan Emergency","war",1948,1960,SEA,["Britain","MNLA"],"Insurgency.",{theme:"colonial"});
+R("indonesian-revolution","Indonesian National Revolution","war",1945,1949,SEA,["Indonesia","Netherlands"],"Independence war.",{theme:"independence"});
+R("konfrontasi","Indonesia-Malaysia confrontation","war",1963,1966,SEA,["Indonesia","Malaysia","Britain"],"Undeclared war.",{});
+R("east-timor","Indonesian invasion of East Timor","conquest",1975,null,SEA,["Indonesia","East Timor"],"Invasion.",{});
+R("laotian-civil-war","Laotian Civil War","civil-war",1959,1975,SEA,["Royal Lao","Pathet Lao"],"War.",{theme:"civil"});
+
+// ---------- South Asia ----------
+R("second-anglo-maratha","Second Anglo-Maratha War","war",1803,1805,SA,["East India Company","Maratha Empire"],"War.",{theme:"colonial"});
+R("third-anglo-maratha","Third Anglo-Maratha War","war",1817,1818,SA,["East India Company","Maratha Empire"],"End of Maratha power.",{theme:"colonial"});
+R("first-anglo-afghan","First Anglo-Afghan War","war",1839,1842,CA,["Britain","Afghanistan"],"Disastrous retreat from Kabul.",{theme:"colonial"});
+R("first-anglo-sikh","First Anglo-Sikh War","war",1845,1846,SA,["East India Company","Sikh Empire"],"War.",{theme:"colonial"});
+R("second-anglo-sikh","Second Anglo-Sikh War","war",1848,1849,SA,["East India Company","Sikh Empire"],"Annexation of Punjab.",{theme:"colonial"});
+R("indian-rebellion-1857","Indian Rebellion of 1857","revolt",1857,1858,SA,["East India Company","Rebels"],"Great Rebellion.",{theme:"independence"});
+R("second-anglo-afghan","Second Anglo-Afghan War","war",1878,1880,CA,["Britain","Afghanistan"],"War.",{theme:"colonial"});
+R("third-anglo-afghan","Third Anglo-Afghan War","war",1919,null,CA,["Britain","Afghanistan"],"War.",{});
+R("indo-pakistani-1947","Indo-Pakistani War of 1947","war",1947,1948,SA,["India","Pakistan"],"First Kashmir war.",{});
+R("indo-pakistani-1965","Indo-Pakistani War of 1965","war",1965,null,SA,["India","Pakistan"],"War.",{});
+R("indo-pakistani-1971","Indo-Pakistani War of 1971","war",1971,null,SA,["India","Pakistan"],"War.",{});
+R("bangladesh-liberation","Bangladesh Liberation War","war",1971,null,SA,["Bangladesh","Pakistan","India"],"Independence war.",{theme:"independence"});
+R("sino-indian-war","Sino-Indian War","war",1962,null,SA,["China","India"],"Border war.",{});
+R("kargil-war","Kargil War","war",1999,null,SA,["India","Pakistan"],"War.",{});
+R("sri-lankan-civil-war","Sri Lankan Civil War","civil-war",1983,2009,SA,["Sri Lanka","LTTE"],"War.",{theme:"civil"});
+R("soviet-afghan-war","Soviet-Afghan War","war",1979,1989,CA,["Soviet Union","Afghan mujahideen"],"War.",{});
+R("afghan-civil-war-1989","Afghan civil war (1989-1992)","civil-war",1989,1992,CA,["Afghanistan"],"War.",{theme:"civil"});
+R("war-afghanistan","War in Afghanistan (2001-2021)","war",2001,2021,CA,["United States","NATO","Taliban"],"War.",{});
+
+// ---------- Middle East ----------
+R("russo-persian-1804","Russo-Persian War (1804-1813)","war",1804,1813,ME,["Russia","Qajar Iran"],"War.",{});
+R("treaty-gulistan","Treaty of Gulistan","treaty",1813,null,ME,["Russia","Qajar Iran"],"Ended war.",{links:[["ended_by_of","russo-persian-1804"]]});
+R("russo-persian-1826","Russo-Persian War (1826-1828)","war",1826,1828,ME,["Russia","Qajar Iran"],"War.",{});
+R("treaty-turkmenchay","Treaty of Turkmenchay","treaty",1828,null,ME,["Russia","Qajar Iran"],"Ended war.",{links:[["ended_by_of","russo-persian-1826"]]});
+R("egyptian-ottoman-1831","Egyptian-Ottoman War (1831-1833)","war",1831,1833,ME,["Egypt","Ottoman Empire"],"Muhammad Ali's war.",{});
+R("anglo-egyptian-1882","Anglo-Egyptian War","war",1882,null,NAF,["Britain","Egypt"],"Tel el-Kebir.",{theme:"colonial"});
+R("anglo-persian-1856","Anglo-Persian War","war",1856,1857,ME,["Britain","Qajar Iran"],"War.",{});
+R("arab-israeli-1948","1948 Arab-Israeli War","war",1948,1949,ME,["Israel","Arab League"],"War of independence for Israel.",{theme:"independence"});
+R("suez-crisis","Suez Crisis","war",1956,null,NAF,["Egypt","Britain","France","Israel"],"Tripartite aggression.",{});
+R("six-day-war","Six-Day War","war",1967,null,ME,["Israel","Egypt","Jordan","Syria"],"War.",{});
+R("yom-kippur-war","Yom Kippur War","war",1973,null,ME,["Israel","Egypt","Syria"],"War.",{});
+R("lebanese-civil-war","Lebanese Civil War","civil-war",1975,1990,ME,["Lebanon"],"War.",{theme:"civil"});
+R("iran-iraq-war","Iran-Iraq War","war",1980,1988,ME,["Iran","Iraq"],"War.",{});
+R("gulf-war","Gulf War","war",1990,1991,ME,["Iraq","Coalition"],"Liberation of Kuwait.",{});
+R("iraq-war","Iraq War","war",2003,2011,ME,["United States","Iraq","Coalition"],"War.",{});
+R("syrian-civil-war","Syrian civil war","civil-war",2011,null,ME,["Syria"],"Ongoing civil war.",{theme:"civil"});
+R("yemen-civil-war","Yemeni civil war (2014-present)","civil-war",2014,null,ME,["Yemen","Houthis","Saudi-led coalition"],"War.",{theme:"civil"});
+R("first-intifada","First Intifada","revolt",1987,1993,ME,["Palestinians","Israel"],"Uprising.",{});
+R("second-intifada","Second Intifada","revolt",2000,2005,ME,["Palestinians","Israel"],"Uprising.",{});
+R("gaza-war-2023","Gaza war","war",2023,null,ME,["Israel","Hamas"],"War.",{});
+R("greco-turkish-cyprus-1974","Turkish invasion of Cyprus","campaign",1974,null,MED,["Turkey","Cyprus"],"Invasion.",{});
+R("armenian-azerbaijani-1988","First Nagorno-Karabakh War","war",1988,1994,ME,["Armenia","Azerbaijan"],"War.",{});
+R("nagorno-karabakh-2020","Second Nagorno-Karabakh War","war",2020,null,ME,["Azerbaijan","Armenia"],"War.",{});
+
+// ---------- Africa ----------
+R("fulani-jihad","Fulani War (Sokoto jihad)","war",1804,1808,SSA,["Sokoto Caliphate","Hausa states"],"Jihad of Usman dan Fodio.",{theme:"religious"});
+R("mfecane","Zulu expansion and the Mfecane","war",1816,1828,SSA,["Zulu Kingdom","Ndwandwe"],"Shaka's wars.",{approx:true,conf:"medium"});
+R("blood-river-1838","Battle of Blood River","battle",1838,null,SSA,["Voortrekkers","Zulu Kingdom"],"Voortrekker victory.",{ll:[-28.1,30.4]});
+R("french-conquest-algeria","French conquest of Algeria","conquest",1830,1847,NAF,["France","Algeria"],"Colonial conquest.",{theme:"colonial"});
+R("anglo-zulu-war","Anglo-Zulu War","war",1879,null,SSA,["Britain","Zulu Kingdom"],"War.",{theme:"colonial"});
+R("isandlwana-1879","Battle of Isandlwana","battle",1879,null,SSA,["Zulu Kingdom","Britain"],"Zulu victory.",{ll:[-28.35,30.65],parent:"anglo-zulu-war"});
+R("rorkes-drift-1879","Battle of Rorke's Drift","battle",1879,null,SSA,["Britain","Zulu Kingdom"],"Defence.",{ll:[-28.35,30.53],parent:"anglo-zulu-war"});
+R("first-boer-war","First Boer War","war",1880,1881,SSA,["Transvaal","Britain"],"War.",{});
+R("majuba-1881","Battle of Majuba Hill","battle",1881,null,SSA,["Transvaal","Britain"],"Boer victory.",{ll:[-27.4,29.8],parent:"first-boer-war"});
+R("second-boer-war","Second Boer War","war",1899,1902,SSA,["Britain","Boer republics"],"War.",{theme:"colonial"});
+R("treaty-vereeniging","Treaty of Vereeniging","treaty",1902,null,SSA,["Britain","Boer republics"],"Ended war.",{links:[["ended_by_of","second-boer-war"]]});
+R("mahdist-war","Mahdist War","war",1881,1899,NAF,["Mahdist State","Egypt","Britain"],"War.",{theme:"religious"});
+R("khartoum-1885","Siege of Khartoum","siege",1884,1885,NAF,["Mahdist State","Egypt"],"Gordon killed.",{ll:[15.5,32.56],parent:"mahdist-war"});
+R("omdurman-1898","Battle of Omdurman","battle",1898,null,NAF,["Britain","Mahdist State"],"Maxim guns.",{ll:[15.65,32.48],parent:"mahdist-war"});
+R("first-italo-ethiopian","First Italo-Ethiopian War","war",1895,1896,SSA,["Ethiopia","Italy"],"Ethiopian victory.",{theme:"colonial"});
+R("adwa-1896","Battle of Adwa","battle",1896,null,SSA,["Ethiopia","Italy"],"Menelik II.",{ll:[14.17,38.9],parent:"first-italo-ethiopian"});
+R("treaty-addis-ababa-1896","Treaty of Addis Ababa (1896)","treaty",1896,null,SSA,["Ethiopia","Italy"],"Ended war.",{links:[["ended_by_of","first-italo-ethiopian"]]});
+R("second-italo-ethiopian","Second Italo-Ethiopian War","war",1935,1937,SSA,["Italy","Ethiopia"],"Fascist invasion.",{theme:"colonial"});
+R("herero-nama","Herero and Nama genocide war","war",1904,1908,SSA,["German Empire","Herero","Nama"],"War.",{theme:"colonial"});
+R("maji-maji","Maji Maji Rebellion","revolt",1905,1907,SSA,["German Empire","Maji Maji"],"Rebellion.",{theme:"colonial"});
+R("rif-war","Rif War","war",1921,1926,NAF,["Spain","France","Rif Republic"],"War.",{theme:"colonial"});
+R("algerian-war","Algerian War","war",1954,1962,NAF,["France","FLN"],"Independence war.",{theme:"independence"});
+R("evian-accords","Evian Accords","treaty",1962,null,NAF,["France","FLN"],"Ended the war.",{links:[["ended_by_of","algerian-war"]]});
+R("mau-mau","Mau Mau Uprising","revolt",1952,1960,SSA,["Britain","Mau Mau"],"Uprising.",{theme:"independence"});
+R("congo-crisis","Congo Crisis","civil-war",1960,1965,SSA,["Congo","Katanga"],"Crisis.",{theme:"civil"});
+R("biafran-war","Nigerian Civil War","civil-war",1967,1970,SSA,["Nigeria","Biafra"],"Biafra.",{theme:"civil"});
+R("angolan-independence-war","Angolan War of Independence","war",1961,1974,SSA,["Portugal","MPLA","FNLA","UNITA"],"War.",{theme:"independence"});
+R("angolan-civil-war","Angolan Civil War","civil-war",1975,2002,SSA,["MPLA","UNITA"],"War.",{theme:"civil"});
+R("mozambican-independence-war","Mozambican War of Independence","war",1964,1974,SSA,["Portugal","FRELIMO"],"War.",{theme:"independence"});
+R("rhodesian-bush-war","Rhodesian Bush War","civil-war",1964,1979,SSA,["Rhodesia","ZANU","ZAPU"],"War.",{theme:"civil"});
+R("eritrean-war","Eritrean War of Independence","war",1961,1991,SSA,["Eritrea","Ethiopia"],"War.",{theme:"independence"});
+R("ogaden-war","Ogaden War","war",1977,1978,SSA,["Somalia","Ethiopia"],"War.",{});
+R("ethiopian-civil-war","Ethiopian Civil War","civil-war",1974,1991,SSA,["Derg","TPLF"],"War.",{theme:"civil"});
+R("rwandan-genocide","Rwandan Civil War and genocide","civil-war",1990,1994,SSA,["Rwanda","RPF"],"War.",{theme:"civil"});
+R("first-congo-war","First Congo War","war",1996,1997,SSA,["Zaire","AFDL","Rwanda"],"War.",{});
+R("second-congo-war","Second Congo War","war",1998,2003,SSA,["DR Congo","Rwanda","Uganda"],"Africa's great war.",{});
+R("sudanese-civil-war-1","Second Sudanese Civil War","civil-war",1983,2005,SSA,["Sudan","SPLA"],"War.",{theme:"civil"});
+R("darfur-war","War in Darfur","war",2003,2020,SSA,["Sudan","JEM"],"War.",{});
+R("somali-civil-war","Somali Civil War","civil-war",1991,null,SSA,["Somalia"],"War.",{theme:"civil"});
+R("liberian-civil-wars","Liberian civil wars","civil-war",1989,2003,SSA,["Liberia"],"War.",{theme:"civil"});
+R("sierra-leone-civil-war","Sierra Leone Civil War","civil-war",1991,2002,SSA,["Sierra Leone","RUF"],"War.",{theme:"civil"});
+R("libyan-civil-war-2011","Libyan Civil War (2011)","civil-war",2011,null,NAF,["Libya","NATO"],"War.",{theme:"civil"});
+R("sudan-war-2023","Sudan conflict (2023-)","civil-war",2023,null,SSA,["Sudan Armed Forces","RSF"],"War.",{theme:"civil"});
+R("tigray-war","Tigray War","civil-war",2020,2022,SSA,["Ethiopia","TPLF"],"War.",{theme:"civil"});
+
+// ---------- Oceania ----------
+R("new-zealand-wars","New Zealand Wars","war",1845,1872,OC,["Britain","Maori iwi"],"Colonial wars.",{theme:"colonial"});
+R("musket-wars","Musket Wars","war",1807,1837,OC,["Maori iwi"],"Inter-tribal wars.",{});
+R("frontier-wars-australia","Australian frontier wars","war",1788,1934,OC,["Britain","Aboriginal peoples"],"Frontier conflict.",{approx:true,theme:"colonial"});
+R("bougainville-conflict","Bougainville conflict","civil-war",1988,1998,OC,["Papua New Guinea","Bougainville"],"War.",{theme:"civil"});
+
+// ---------- Cold War, Eurasia ----------
+R("cold-war","Cold War","war",1947,1991,GL,["United States","Soviet Union"],"Geopolitical rivalry.",{theme:"world war"});
+R("hungarian-uprising-1956","Hungarian Revolution of 1956","revolt",1956,null,EE,["Hungary","Soviet Union"],"Uprising.",{});
+R("prague-spring-invasion","Warsaw Pact invasion of Czechoslovakia","campaign",1968,null,EE,["Warsaw Pact","Czechoslovakia"],"Invasion.",{});
+R("yugoslav-wars","Yugoslav Wars","war",1991,2001,EE,["Serbia","Croatia","Bosnia","Kosovo"],"Wars.",{});
+R("siege-sarajevo","Siege of Sarajevo","siege",1992,1996,EE,["Bosnia","Republika Srpska"],"Siege.",{ll:[43.86,18.41],parent:"yugoslav-wars"});
+R("dayton","Dayton Agreement","treaty",1995,null,EE,["Bosnia","Serbia","Croatia"],"Ended the Bosnian War.",{parent:"yugoslav-wars"});
+R("kosovo-war","Kosovo War","war",1998,1999,EE,["Serbia","KLA","NATO"],"War.",{parent:"yugoslav-wars"});
+R("first-chechen-war","First Chechen War","war",1994,1996,EE,["Russia","Chechnya"],"War.",{});
+R("second-chechen-war","Second Chechen War","war",1999,2009,EE,["Russia","Chechnya"],"War.",{});
+R("russo-georgian-war","Russo-Georgian War","war",2008,null,EE,["Russia","Georgia"],"War.",{});
+R("war-donbas","War in Donbas","war",2014,2022,EE,["Ukraine","Russia","Separatists"],"War.",{});
+R("russo-ukrainian-war","Russian invasion of Ukraine","war",2022,null,EE,["Russia","Ukraine"],"Full-scale invasion.",{});
+R("northern-ireland-troubles","The Troubles","civil-war",1968,1998,WE,["Britain","IRA"],"Conflict.",{theme:"civil"});
+R("good-friday","Good Friday Agreement","treaty",1998,null,WE,["Britain","Ireland"],"Peace.",{links:[["ended_by_of","northern-ireland-troubles"]]});
+R("greek-civil-war","Greek Civil War","civil-war",1946,1949,MED,["Greece","Communists"],"War.",{theme:"civil"});
+R("war-on-terror","War on terror","war",2001,null,GL,["United States","al-Qaeda"],"Global campaign after 9/11.",{});

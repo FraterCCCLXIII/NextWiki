@@ -1,0 +1,579 @@
+{
+  "_doc": "Real 3D models for the flight labs, loaded by vehicle-glb.js. Every entry is optional: when its file is missing the labs use their procedural model. See README.md and ../rockets/README.md. Per-entry extras: assemble (move exploded parts back), centerBand, maxMetalness / envMapIntensity (loader-side material repair), noFit (catalogue must not stretch to the catalogue height), note (shown after the credit line).",
+  "version": 1,
+  "vehicles": {
+    "falcon9-block5": {
+      "title": "SpaceX Falcon 9 Block 5",
+      "author": "AllThingsSpace (sunnychen753)",
+      "authorUrl": "https://sketchfab.com/sunnychen753",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/spacex-falcon-9-block-5-61067a8b341c4b4b96053d5fa607f232",
+      "sketchfabUid": "61067a8b341c4b4b96053d5fa607f232",
+      "file": "spacex_falcon_9_block_5.web.glb",
+      "fallbackFiles": [
+        "spacex_falcon_9_block_5.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "engine-bells",
+      "lengthM": 70,
+      "diameterM": 3.66,
+      "modes": {
+        "full": {
+          "lengthM": 70,
+          "note": "whole Falcon 9: first stage, interstage, second stage, fairing"
+        },
+        "tank": {
+          "hideNodes": [
+            "^Second Stage$",
+            "^Fairing",
+            "^Interstage$",
+            "^Grid Fin Holders$",
+            "^Second Stage Detacher Interstage"
+          ],
+          "refNode": "^First Stage_F9 First Stage_0$",
+          "lengthM": 41.2,
+          "note": "first-stage tank only; y = 0 is the bottom of the tank (engines hang below), the length is overridden per vehicle by the Shipyard"
+        },
+        "firstStage": {
+          "hideNodes": [
+            "^Second Stage$",
+            "^Fairing"
+          ],
+          "lengthM": 47.7,
+          "note": "booster with interstage: what lands. Real first stage 41.2 m + interstage ~5 m + grid-fin skirt"
+        }
+      },
+      "gear": {
+        "legs": {
+          "count": 4,
+          "baked": "stowed",
+          "hideNodes": [
+            "^Landing Leg",
+            "^First Stage Bottom Things$"
+          ],
+          "note": "the model has the four legs stowed along the base; the lab hides them and animates its own legs (stowed -> deployed, 18 m span)"
+        },
+        "gridFins": {
+          "count": 4,
+          "baked": "stowed",
+          "hideNodes": [
+            "^Grid Fin Curve$",
+            "^Grid Fin Holders$"
+          ],
+          "note": "titanium grid fins, folded flat in the model; the lab hides them and draws its own steerable ones"
+        },
+        "engines": {
+          "count": 9,
+          "nodes": [
+            "^Merlin 1D Engine Outer",
+            "^Merlin 1D Engine Center$",
+            "^Octaweb"
+          ]
+        }
+      }
+    },
+    "falcon-heavy": {
+      "title": "SpaceX Falcon Heavy",
+      "author": "AllThingsSpace (sunnychen753)",
+      "authorUrl": "https://sketchfab.com/sunnychen753",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/spacex-falcon-heavy-2f11453207944cedba00e2c6c1aa1269",
+      "sketchfabUid": "2f11453207944cedba00e2c6c1aa1269",
+      "file": "spacex_falcon_heavy.web.glb",
+      "fallbackFiles": [
+        "spacex_falcon_heavy.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "engine-bells",
+      "lengthM": 70,
+      "diameterM": 12.2,
+      "modes": {
+        "full": {
+          "lengthM": 70
+        }
+      },
+      "gear": {
+        "legs": {
+          "count": 12,
+          "baked": "stowed",
+          "hideNodes": [],
+          "note": "one merged mesh: legs cannot be separated or animated, so this is a static display model (never used for a landing)"
+        }
+      }
+    },
+    "starship-legs": {
+      "title": "SpaceX Starship-With landing legs deployed",
+      "author": "AllThingsSpace (sunnychen753)",
+      "authorUrl": "https://sketchfab.com/sunnychen753",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/spacex-starship-with-landing-legs-deployed-168d98f7b4d747f88d301050ae645560",
+      "sketchfabUid": "168d98f7b4d747f88d301050ae645560",
+      "file": "spacex_starship-with_landing_legs_deployed.web.glb",
+      "fallbackFiles": [],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "engine-bells",
+      "lengthM": 52,
+      "diameterM": 9,
+      "modes": {
+        "full": {
+          "lengthM": 52
+        }
+      },
+      "gear": {
+        "legs": {
+          "baked": "deployed",
+          "hideNodes": [],
+          "note": "2017-2019 BFR/Starship design with deployed landing legs, baked into the mesh. Real Starship (flights since 2023) has no legs and lands on the tower arms; this is a historical/HLS-style display model only. Original 30 MB / 343k triangles, web copy 0.23 MB / 51k triangles (decimated with --soup)."
+        }
+      },
+      "maxMetalness": 0.5
+    },
+    "saturn-v": {
+      "title": "Apollo | Saturn V Launch Vehicle",
+      "author": "devPilot",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/7c61146069134981a84dc7ed951609a0",
+      "sketchfabUid": "7c61146069134981a84dc7ed951609a0",
+      "file": "../rockets/apollo__saturn_v_launch_vehicle.web.glb",
+      "fallbackFiles": [
+        "../rockets/apollo__saturn_v_launch_vehicle.glb"
+      ],
+      "modified": true,
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "lengthM": 91,
+      "diameterM": 10.1,
+      "note": "launch vehicle only, up to the Instrument Unit (91 m modelled; the real stages plus IU are ~85.6 m). No Apollo CSM, spacecraft/LM adapter or launch escape tower, which make up the rest of the 110.6 m",
+      "noFit": true,
+      "assemble": [
+        {
+          "node": "^Interstage$",
+          "move": [
+            0,
+            0,
+            20
+          ]
+        },
+        {
+          "node": "^S-II_Top$",
+          "move": [
+            0,
+            0,
+            20
+          ]
+        },
+        {
+          "node": "^Instrument_Unit$",
+          "move": [
+            0,
+            0,
+            20
+          ]
+        }
+      ],
+      "modes": {
+        "full": {
+          "lengthM": 91,
+          "note": "S-IC, S-II, S-IVB and the Instrument Unit at 1:1; the author laid the interstage, the S-II/S-IVB skirt and the Instrument Unit out beside the stack and they are moved back onto it by `assemble`"
+        }
+      }
+    },
+    "space-shuttle-stack": {
+      "title": "GeoFS Official Space Shuttle Atlantis (OV-104)",
+      "author": "AF267",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/729715b5365d468391b2fa5b98b63c5b",
+      "sketchfabUid": "729715b5365d468391b2fa5b98b63c5b",
+      "file": "../rockets/geofs_official_space_shuttle_atlantis_ov-104.web.glb",
+      "fallbackFiles": [
+        "../rockets/geofs_official_space_shuttle_atlantis_ov-104.glb"
+      ],
+      "modified": true,
+      "axis": "x",
+      "noseSign": 1,
+      "base": "nozzles",
+      "lengthM": 56.1,
+      "diameterM": 8.4,
+      "note": "Atlantis with its External Tank and SRBs (launch configuration)",
+      "modes": {
+        "full": {
+          "lengthM": 56.1,
+          "note": "full launch stack (orbiter, orange External Tank, two SRBs), not orbiter-only. Scaled so the whole stack is 56.1 m; the orbiter comes out ~12 % short of 37.2 m against the tank and boosters"
+        }
+      }
+    },
+    "sls-block-1": {
+      "title": "NASA SLS Block 1 Crew V4",
+      "author": "Clarence365",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/2d521014700b44dbbc7662f648974e98",
+      "sketchfabUid": "2d521014700b44dbbc7662f648974e98",
+      "file": "../rockets/nasa_sls_block_1_crew_v4.web.glb",
+      "fallbackFiles": [
+        "../rockets/nasa_sls_block_1_crew_v4.glb"
+      ],
+      "modified": true,
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "lengthM": 98,
+      "diameterM": 8.4,
+      "note": "Block 1 Crew with launch abort system; horizontal size squeezed 4 % (widthScale) because the original is ~3 % too wide in the core and ~8 % in the boosters",
+      "widthScale": 0.96,
+      "modes": {
+        "full": {
+          "lengthM": 98
+        }
+      }
+    },
+    "atlas-v": {
+      "title": "Atlas V",
+      "author": "SunnyChen754",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/cbf8f28c35134aff9839275374521dba",
+      "sketchfabUid": "cbf8f28c35134aff9839275374521dba",
+      "file": "../rockets/atlas_v.web.glb",
+      "fallbackFiles": [
+        "../rockets/atlas_v.glb"
+      ],
+      "modified": true,
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "lengthM": 58.3,
+      "diameterM": 3.81,
+      "note": "modelled as Atlas V 551 (5 solid boosters, 5.4 m fairing; the file itself is named AtlasV551)",
+      "modes": {
+        "full": {
+          "lengthM": 58.3
+        }
+      }
+    },
+    "ariane-6": {
+      "title": "ESA Ariane 6 (64)",
+      "author": "Clarence365",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/98a68de96a61406cb68b8f8ac89eb5ef",
+      "sketchfabUid": "98a68de96a61406cb68b8f8ac89eb5ef",
+      "file": "../rockets/esa_ariane_6_64.web.glb",
+      "fallbackFiles": [
+        "../rockets/esa_ariane_6_64.glb"
+      ],
+      "modified": true,
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "lengthM": 63,
+      "diameterM": 5.4,
+      "note": "Ariane 64 (four boosters)",
+      "maxMetalness": 0.5,
+      "modes": {
+        "full": {
+          "lengthM": 63
+        }
+      }
+    },
+    "vulcan-centaur": {
+      "title": "Vulcan Centaur Rocket",
+      "author": "Lucas Ko",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/bad44d1096324c3d9fe84d0f0ea7a64b",
+      "sketchfabUid": "bad44d1096324c3d9fe84d0f0ea7a64b",
+      "file": "../rockets/vulcan_centaur_rocket.web.glb",
+      "fallbackFiles": [
+        "../rockets/vulcan_centaur_rocket.glb"
+      ],
+      "modified": true,
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "lengthM": 61.6,
+      "diameterM": 5.4,
+      "note": "VC6 (six boosters)",
+      "maxMetalness": 0.5,
+      "modes": {
+        "full": {
+          "lengthM": 61.6
+        }
+      }
+    },
+    "new-glenn": {
+      "title": "New Glenn (Better Version)",
+      "author": "Wolfpack278",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/683e8141a0604393bd0659d09de69d62",
+      "sketchfabUid": "683e8141a0604393bd0659d09de69d62",
+      "file": "../rockets/new_glenn_better_version.web.glb",
+      "fallbackFiles": [
+        "../rockets/new_glenn_better_version.glb"
+      ],
+      "modified": true,
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "lengthM": 98,
+      "diameterM": 7,
+      "note": "stylised; booster and upper stage come as two objects and are stacked here",
+      "assemble": [
+        {
+          "node": "^Sphere_1$",
+          "move": [
+            6.0,
+            15.4,
+            0
+          ]
+        }
+      ],
+      "modes": {
+        "full": {
+          "lengthM": 98,
+          "note": "first stage + upper stage with fairing stacked (the author supplies them side by side)"
+        },
+        "firstStage": {
+          "hideNodes": [
+            "^Sphere_1$"
+          ],
+          "lengthM": 57,
+          "note": "booster only: what lands (lab length 57 m)"
+        }
+      },
+      "gear": {
+        "legs": {
+          "baked": "none",
+          "hideNodes": [],
+          "note": "no legs in the model (the real New Glenn legs fold inside the aft skirt); the Landing Lab draws its own 4 legs"
+        },
+        "controlSurfaces": {
+          "baked": true,
+          "hideNodes": [],
+          "note": "strakes and flaps are part of the single merged booster mesh and cannot be separated or animated: the Landing Lab skips its own for this model"
+        }
+      }
+    },
+    "n1": {
+      "title": "N1 Rocket",
+      "author": "Soviet Model Magic",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/1ca15f15e01e41ea9a9ff3252d942c81",
+      "sketchfabUid": "1ca15f15e01e41ea9a9ff3252d942c81",
+      "file": "../rockets/n1_rocket.web.glb",
+      "fallbackFiles": [
+        "../rockets/n1_rocket.glb"
+      ],
+      "modified": true,
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "lengthM": 105,
+      "diameterM": 17,
+      "note": "N1-L3 (Moon version) with launch escape tower: 30 NK-15 first-stage engines (24 outer + 6 inner), 17 m base; stage-by-stage details not verified",
+      "modes": {
+        "full": {
+          "lengthM": 105
+        }
+      }
+    },
+    "electron": {
+      "title": "Electron - Rocket Lab",
+      "author": "Stanley Creative",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/0376dfab27574a909cb8714841379894",
+      "sketchfabUid": "0376dfab27574a909cb8714841379894",
+      "file": "../rockets/electron_-_rocket_lab.web.glb",
+      "fallbackFiles": [
+        "../rockets/electron_-_rocket_lab.glb"
+      ],
+      "modified": true,
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "lengthM": 18,
+      "diameterM": 1.2,
+      "note": "black carbon-composite finish, lit by the viewer",
+      "maxMetalness": 0.35,
+      "envMapIntensity": 0.9,
+      "modes": {
+        "full": {
+          "lengthM": 18
+        },
+        "tank": {
+          "hideNodes": [
+            "^Electron Second Stage",
+            "^Electron Fairing"
+          ],
+          "refNode": "^Electron First Stage",
+          "lengthM": 14.3,
+          "note": "first stage only; y = 0 is its base, the Shipyard overrides the length and the diameter"
+        }
+      }
+    },
+    "super-heavy-b18": {
+      "title": "Booster 18 (B18)",
+      "author": "Wolfpack278",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/f3169091a0e84ce58452ab8efcdfc527",
+      "sketchfabUid": "f3169091a0e84ce58452ab8efcdfc527",
+      "file": "../rockets/booster_18_b18.web.glb",
+      "fallbackFiles": [
+        "../rockets/booster_18_b18.glb"
+      ],
+      "modified": true,
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "lengthM": 71,
+      "diameterM": 9,
+      "note": "Block 3 (V3) Super Heavy named Booster 18 by the author (the real B18 was scrapped after a November 2025 test; B19 flew first); real Block 3 is 72.3 m, shown at the lab length 71 m in the Landing Lab; grid fins baked in",
+      "centerBand": [
+        0.3,
+        0.7
+      ],
+      "modes": {
+        "full": {
+          "lengthM": 71
+        },
+        "firstStage": {
+          "lengthM": 71,
+          "note": "whole booster (lab length 71 m)"
+        }
+      },
+      "gear": {
+        "legs": {
+          "baked": "none",
+          "hideNodes": [],
+          "note": "Super Heavy has no landing legs (caught by the tower arms)"
+        },
+        "controlSurfaces": {
+          "baked": true,
+          "hideNodes": [],
+          "note": "single merged mesh: lattice grid fins are baked in, so the Landing Lab skips its own grid fins for this model"
+        }
+      },
+      "colorScale": 0.75,
+      "metalness": 0.7,
+      "roughness": 0.4
+    }
+  },
+  "labs": {
+    "landing": {
+      "falcon9": "falcon9-block5",
+      "falcon9lz": "falcon9-block5",
+      "newglenn": "new-glenn",
+      "superheavy": "super-heavy-b18"
+    },
+    "shipyard": {
+      "falcon9-booster": "falcon9-block5",
+      "electron-stage1": "electron"
+    },
+    "catalog": {
+      "falcon-9-block-5": "falcon9-block5",
+      "falcon-heavy": "falcon-heavy",
+      "starship-hls": "starship-legs",
+      "engine-merlin-1d-vacuum": "merlin-1d-vacuum",
+      "engine-raptor": "raptor",
+      "engine-merlin": "merlin-light",
+      "engine-j-2s": "j-2s",
+      "engine-generic": "generic-engine",
+      "saturn-v": "saturn-v",
+      "space-shuttle-stack": "space-shuttle-stack",
+      "sls-block-1": "sls-block-1",
+      "atlas-v": "atlas-v",
+      "ariane-6": "ariane-6",
+      "vulcan-centaur": "vulcan-centaur",
+      "new-glenn": "new-glenn",
+      "n1": "n1",
+      "electron": "electron",
+      "super-heavy-booster": "super-heavy-b18"
+    }
+  },
+  "engines": {
+    "_doc": "Standalone rocket-engine models, loaded by vehicle-glb.js (preloadEngineModel / engineModel). The file is oriented (axis/noseSign: nozzle exit at the -axis end when noseSign is omitted), the bell exit ring is measured from the geometry, and the clone is scaled so the exit is exitDiameterM wide. Placed on vehicles by shipyard.html and view3d.js, shown alone in spacecraft.html (labs.catalog). Original author credit is required (CC BY 4.0).",
+    "merlin-1d-vacuum": {
+      "title": "Merlin 1D Vacuum",
+      "author": "MartianDays",
+      "authorUrl": "https://sketchfab.com/MartianDays",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/merlin-1d-vacuum-f20ebb6e857b405cbdc66568d48d2fcb",
+      "sketchfabUid": "f20ebb6e857b405cbdc66568d48d2fcb",
+      "file": "engines/merlin_1d_vacuum.glb",
+      "faces": 13422,
+      "axis": "y",
+      "use": "Falcon 9 second stage",
+      "exitDiameterM": 2.4
+    },
+    "raptor": {
+      "title": "Raptor",
+      "author": "MartianDays",
+      "authorUrl": "https://sketchfab.com/MartianDays",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/raptor-0cca4f919c28418f86742f0c78526eef",
+      "sketchfabUid": "0cca4f919c28418f86742f0c78526eef",
+      "file": "engines/raptor.glb",
+      "faces": 16667,
+      "axis": "y",
+      "use": "Starship / Super Heavy",
+      "exitDiameterM": 1.3
+    },
+    "merlin-light": {
+      "title": "Merlin Engine",
+      "author": "hoahluke",
+      "authorUrl": "https://sketchfab.com/hoahluke",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/merlin-engine-b6725717165c4c0db0e4e2d744370a51",
+      "sketchfabUid": "b6725717165c4c0db0e4e2d744370a51",
+      "file": "engines/merlin_engine.glb",
+      "faces": 3987,
+      "axis": "y",
+      "use": "Falcon 9 first stage cluster (very light)",
+      "exitDiameterM": 0.92
+    },
+    "j-2s": {
+      "title": "J-2S",
+      "author": "MartianDays",
+      "authorUrl": "https://sketchfab.com/MartianDays",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/j-2s-b579558252c4459fa624c8350443fbc0",
+      "sketchfabUid": "b579558252c4459fa624c8350443fbc0",
+      "file": "engines/j-2s.glb",
+      "faces": 48710,
+      "axis": "y",
+      "use": "Saturn-era upper stage",
+      "exitDiameterM": 2.0
+    },
+    "generic-engine": {
+      "title": "Rocket Engine",
+      "author": "~Drift~ (QuickDriftVR)",
+      "authorUrl": "https://sketchfab.com/QuickDriftVR",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/rocket-engine-568bfa7ea4994541a65e63f8a6154838",
+      "sketchfabUid": "568bfa7ea4994541a65e63f8a6154838",
+      "file": "engines/rocket_engine.glb",
+      "faces": 11033,
+      "axis": "y",
+      "use": "generic bell engine (library / catalogue only: not placed on a vehicle)",
+      "exitDiameterM": 1.0
+    }
+  }
+}

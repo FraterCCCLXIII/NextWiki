@@ -230,7 +230,7 @@ function keyBaseOf(rel: string): string {
   return `${slugifyKey(stem).slice(0, 24).replace(/-$/, "") || "table"}-${shortHash(rel)}`;
 }
 
-function walk(dir: string, relDir: string, acc: string[]) {
+export function walk(dir: string, relDir: string, acc: string[]) {
   for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
     if (ent.name.startsWith(".")) continue;
     const rel = relDir ? `${relDir}/${ent.name}` : ent.name;
@@ -365,12 +365,13 @@ function loadConfigured(
   if (records.length === before) skipped.push({ ref: cfg.file, reason: "config: no valid rows" });
 }
 
-function loadAuto(
+export function loadAuto(
   rel: string,
   base: string,
   records: TimelineRecord[],
   skipped: { ref: string; reason: string }[],
   seenHash: Map<string, string>,
+  opts?: { dataset: string; label: string; lane: string; sourceRoot?: string },
 ) {
   const { rows, hash } = readTable(path.join(base, rel));
   if (seenHash.has(hash)) {
@@ -392,9 +393,9 @@ function loadAuto(
     {
       rel,
       keyBase: keyBaseOf(rel),
-      dataset: `csv-${folder}`,
-      datasetLabel: `Atlas CSV: ${folder}`,
-      laneFallback: folder,
+      dataset: opts?.dataset ?? `csv-${folder}`,
+      datasetLabel: opts?.label ?? `Atlas CSV: ${folder}`,
+      laneFallback: opts?.lane ?? folder,
       defaultEra: "auto",
       headers: det.headers,
       res: {

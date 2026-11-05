@@ -23,6 +23,8 @@ export function EmbedFrame({ src, title }: EmbedFrameProps) {
     const doc = frameRef.current?.contentDocument;
     if (!doc || attachedDoc.current === doc) return;
     attachedDoc.current = doc;
+    // a freshly loaded embedded page starts unscrolled: clear any feather left on by the page before it
+    window.dispatchEvent(new CustomEvent(KOSMO_SCROLL_EVENT, { detail: false }));
     doc.addEventListener(
       "scroll",
       (e) => {

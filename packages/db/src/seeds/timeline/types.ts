@@ -64,6 +64,8 @@ export interface TimelineSource {
   id: string;
   label: string;
   license?: string;
+  /** Drop records that another dataset already holds under the same name and a close date (see run.ts). */
+  dedupe?: boolean;
   trustTier?: "primary" | "structured" | "tertiary" | "generated";
   /** Reads the raw files and returns normalised records. Must be deterministic and must not write to the database. */
   load(ctx: { root: string }): Promise<TimelineBundle>;

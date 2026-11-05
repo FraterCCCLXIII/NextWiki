@@ -1,3 +1,4 @@
+import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { cleanText, fromHistorical, slugifyKey } from "../dates.js";
@@ -66,6 +67,8 @@ const source: TimelineSource = {
          join lineage_charts c on c.id = ml.lineage_id
          order by ml.is_root desc, ml.id`,
     );
+    const assignMod = (await import(pathToFileURL(fileURLToPath(new URL("../../../../../../tools/timeline-lineage-assignments.mjs", import.meta.url))).href)) as { ASSIGNMENTS: { masterId: number; lane: string; confidence: string }[] };
+    const assigned = new Map(assignMod.ASSIGNMENTS.filter((a) => a.confidence !== "low").map((a) => [a.masterId, a.lane]));
     const chartOf = new Map<number, string>();
     for (const c of charts) if (!chartOf.has(c.mid)) chartOf.set(c.mid, cleanText(c.chart));
 
@@ -109,7 +112,7 @@ const source: TimelineSource = {
         start,
         end,
         approx: /c\.|ca\.|~|\?/.test(f.date_born ?? "") || undefined,
-        lane: chartOf.get(f.id) ?? "Unassigned lineage",
+        lane: chartOf.get(f.id) ?? assigned.get(f.id) ?? "Unassigned lineage",
         region: cleanText(f.location) || undefined,
         sources: [DB, ...(f.source_catalog ? [cleanText(f.source_catalog)] : [])],
         data: { dateBorn: f.date_born ?? undefined },
