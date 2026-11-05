@@ -49,7 +49,8 @@
             '<h3>' + e.title + '</h3>' +
             '<p>' + e.text + '</p>' +
             '<div class="ev-foot">' +
-              '<span class="ev-metric">' + e.metric + '</span>' +
+              '<span class="ev-metric">' + (e.metric || "") + '</span>' +
+              (e.src ? '<a class="ev-src" href="' + e.src + '" target="_blank" rel="noopener">source</a>' : "") +
               '<span class="ev-conf conf-' + e.conf + '">' + e.conf + '</span>' +
             '</div>' +
           '</div></li>';

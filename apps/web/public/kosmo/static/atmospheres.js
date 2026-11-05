@@ -24,7 +24,7 @@ precision highp float;
 uniform vec3 uSun, uSigR, uSigM, uSigA, uG;
 uniform float uRa, uHn, uMh, uI;
 varying vec3 vView; varying vec3 vC; varying float vS;
-const int NV = 20; const int NL = 5;
+const int NH = 14; const int NL = 5;
 // density-weighted optical depth towards the Sun from p (normalised units, planet radius 1)
 vec3 lightTau(vec3 p, vec3 L, float H, float Hm){
   float b = dot(p, L), c = dot(p, p) - uRa * uRa;
@@ -50,15 +50,26 @@ void main(){
   if (discP > 0.0) { float tp = -b - sqrt(discP); if (tp > 0.0) t1 = min(t1, tp); }
   float len = t1 - t0;
   if (len <= 0.0) discard;
-  float ds = len / float(NV);
+  // Steps are packed around the point of closest approach to the planet (where the air is densest) and jittered per pixel: with a true-to-scale
+  // thin shell a grazing ray is ~1000 km long but its air is only a few km thick, so even steps skipped the dense layer and left a visible ring.
+  float tc = clamp(-b, t0, t1);
+  float jit = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
   vec3 L = normalize(uSun);
   float mu = dot(d, L);
   vec3 pR = vec3(0.75 * (1.0 + mu * mu));
   vec3 g = uG, pM = (1.0 - g * g) / pow(1.0 + g * g - 2.0 * g * mu, vec3(1.5));
   float Hm = uHn * uMh;
   vec3 tauV = vec3(0.0), sum = vec3(0.0);
-  for (int i = 0; i < NV; i++) {
-    vec3 p = o + d * (t0 + ds * (float(i) + 0.5));
+  for (int k = 0; k < 2 * NH; k++) {
+    // camera side first (from the shell entry down to the closest point), then the far side: front-to-back order for the transmittance
+    bool near = k < NH;
+    int i = near ? NH - 1 - k : k - NH;
+    float Ls = near ? tc - t0 : t1 - tc;
+    if (Ls <= 0.0) continue;
+    float u0 = float(i) / float(NH), u1 = float(i + 1) / float(NH);
+    float um = u0 + (u1 - u0) * jit;
+    float ds = Ls * (u1 * u1 - u0 * u0);
+    vec3 p = o + d * (tc + (near ? -1.0 : 1.0) * Ls * um * um);
     float r = length(p), h = max(r - 1.0, 0.0);
     float rhoR = exp(-h / uHn), rhoM = exp(-h / Hm);
     vec3 dtau = ((uSigR + uSigA) * rhoR + uSigM * rhoM) * ds;
@@ -88,7 +99,7 @@ const KIND = {
 };
 
 function atmParams(spec, atm) {
-  const k = KIND[atm.kind] || KIND.giant, T = k.T, hn = T * k.hn;
+  const k = KIND[atm.kind] || KIND.giant, T = spec.atmShell > 0 ? spec.atmShell : k.T, hn = T * k.hn;   // spec.atmShell: optional true-to-scale shell thickness (fraction of the radius) for scenes that fly through it; the atlas leaves it unset
   let R = k.R, M = k.M, A = k.A, g = k.g;
   if (atm.kind === 'earth' && atm.rayleigh) { R = atm.rayleigh.map(b => b * atm.H); M = [1, 1, 1].map(() => (atm.mie || 21e-6) * 1200); if (atm.mieG != null) g = [atm.mieG, atm.mieG, atm.mieG]; }
   if (!R) {                                                        // hydrogen giants: scatter in the tint colour; methane eats the red on the ice giants
@@ -208,6 +219,9 @@ export function addAtmosphere(THREE, group, spec, profile, ctx) {
     });
     const m = new THREE.Mesh(sphere(64), mat);
     m.scale.setScalar(Ra); m.renderOrder = 6; m.frustumCulled = false; m.name = 'atmosphere';
+    // spec.atmBeforeOpaque (flight scenes): paint the haze in the opaque pass, after the planet body (renderOrder < 0) but before the vehicles and
+    // everything else, so a rocket flying through the air is never veiled by the ray-marched haze (which integrates all the way to the ground).
+    if (spec.atmBeforeOpaque) { mat.transparent = false; m.renderOrder = -5; }
     const wp = new THREE.Vector3(), cp = new THREE.Vector3();
     m.onBeforeRender = (r, sc, cam) => {                            // camera inside the shell: draw the inner faces and ignore depth (the ray-march handles the planet)
       wp.setFromMatrixPosition(m.matrixWorld); cp.setFromMatrixPosition(cam.matrixWorld);
