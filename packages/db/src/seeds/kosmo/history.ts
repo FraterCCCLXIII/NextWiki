@@ -7,6 +7,7 @@ import {
   upsertSource,
 } from "./util.js";
 import { loadKosmoModule, type Db, type UserId } from "./domains.js";
+import { instant, interval, precisionForYear } from "./time.js";
 
 type Event = [label: string, year: number, lat: number, lon: number];
 type Folder = {
@@ -36,6 +37,17 @@ export async function importHistory(db: Db, userId: UserId): Promise<void> {
   }
 }
 
+/** Typed interval for a folder; precision follows the coarsest bound given. */
+function periodTime(from: number, to: number) {
+  const time = interval(from, to, Math.max(precisionForYear(from), precisionForYear(to)));
+  return {
+    timeStart: time.start,
+    timeEnd: time.end,
+    timePrecisionYears: time.precisionYears,
+    timeKind: time.kind,
+  };
+}
+
 async function walkPeriod(
   db: Db,
   userId: UserId,
@@ -62,6 +74,8 @@ async function walkPeriod(
       order,
     },
     sourceId,
+    // A period is a span on the shared time axis, not just a tree node.
+    ...periodTime(folder.from, folder.to),
   });
 
   const taxonId = await ensureTaxon(db, {
@@ -93,6 +107,11 @@ async function walkPeriod(
         order: eventIndex,
       },
       sourceId,
+      // One point on the same axis: a battle and a geological stage sort together.
+      timeStart: instant(year, precisionForYear(year)).start,
+      timeEnd: null,
+      timePrecisionYears: precisionForYear(year),
+      timeKind: "instant",
     });
     await addClaim(db, {
       subjectId: eventId,

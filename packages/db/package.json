@@ -33,7 +33,9 @@
     "db:seed": "tsx src/seeds/run.ts",
     "db:seed:kosmo": "tsx src/seeds/kosmo/run.ts",
     "_db:seed:permissions": "tsx src/seeds/permissions.ts",
-    "_db:seed:custom": "tsx src/seeds/custom-seeds.ts"
+    "_db:seed:custom": "tsx src/seeds/custom-seeds.ts",
+    "db:kosmo:report": "tsx src/seeds/kosmo/report.ts",
+    "test": "node --import tsx --test src/seeds/kosmo/plan.test.ts src/seeds/kosmo/time.test.ts"
   },
   "dependencies": {
     "@repo/types": "workspace:*",
