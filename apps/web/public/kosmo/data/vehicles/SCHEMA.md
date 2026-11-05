@@ -14,6 +14,7 @@ Files (each is a JSON array of entries):
 | `stations.json` | Space stations |
 | `experimental.json` | Rocket planes, test articles, propulsion tests, unbuilt/concept craft |
 | `ships.json` | **Our own ship designs** (empty for now; same schema, `category` any) |
+| `engines.json` | Rocket engines shown alone in the catalogue viewer (`category: engine`; real 3D models mapped in `static/models/spacex/manifest.json` under `labs.catalog`) |
 
 `node validate.mjs` checks every file against the rules below and rebuilds `index.json`
 (a flat id → file/name/category lookup for the simulator).
@@ -26,7 +27,7 @@ All numeric values are SI. Use `null` for unknown; never guess. Optional fields 
 | --- | --- |
 | `id` | kebab-case, unique across all files |
 | `name`, `aliases[]` | display name and other names |
-| `category` | `launch_vehicle`, `crewed_spacecraft`, `uncrewed_spacecraft`, `lander`, `space_station`, `spaceplane`, `experimental`, `concept`, `original` |
+| `category` | `launch_vehicle`, `crewed_spacecraft`, `uncrewed_spacecraft`, `lander`, `space_station`, `spaceplane`, `experimental`, `concept`, `original`, `engine` |
 | `status` | `operational`, `retired`, `in_development`, `cancelled`, `lost`, `concept` |
 | `built` | `true` if hardware ever existed (flown or ground-tested), `false` for paper designs |
 | `country`, `manufacturer`, `operator` | strings (country may be an array for joint programs) |
@@ -36,7 +37,8 @@ All numeric values are SI. Use `null` for unknown; never guess. Optional fields 
 | `height_m`, `length_m`, `diameter_m`, `wingspan_m` | principal dimensions |
 | `mass_kg` | liftoff / launch mass (fully fuelled) |
 | `dry_mass_kg` | empty mass |
-| `thrust_kN` | total liftoff thrust (sea level where applicable) |
+| `thrust_kN` | total liftoff thrust (sea level where applicable); for an `engine`, its sea-level thrust |
+| `thrust_kN_vac`, `isp_s_sl`, `isp_s_vac` | engine entries: vacuum thrust and specific impulse (`diameter_m` is then the bell exit diameter, `height_m` the engine length; `used_on` lists the vehicles) |
 | `payload_leo_kg`, `payload_gto_kg`, `payload_tli_kg`, `payload_other` | performance to named orbits |
 | `propellant` | main propellant combination |
 | `reusable` | `none`, `partial`, `full` |

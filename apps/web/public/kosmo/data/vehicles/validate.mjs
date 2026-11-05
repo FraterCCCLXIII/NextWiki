@@ -12,10 +12,11 @@ const FILES = [
   "stations.json",
   "experimental.json",
   "ships.json",
+  "engines.json",
 ];
 const CATEGORIES = new Set([
   "launch_vehicle", "crewed_spacecraft", "uncrewed_spacecraft", "lander",
-  "space_station", "spaceplane", "experimental", "concept", "original",
+  "space_station", "spaceplane", "experimental", "concept", "original", "engine",
 ]);
 const STATUSES = new Set([
   "operational", "retired", "in_development", "cancelled", "lost", "concept",
@@ -24,6 +25,7 @@ const NUMERIC = [
   "height_m", "length_m", "diameter_m", "wingspan_m", "mass_kg", "dry_mass_kg",
   "thrust_kN", "payload_leo_kg", "payload_gto_kg", "payload_tli_kg",
   "crew_capacity", "flights", "successes",
+  "thrust_kN_vac", "isp_s_sl", "isp_s_vac",
 ];
 
 const errors = [];

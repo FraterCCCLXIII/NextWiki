@@ -119,7 +119,7 @@ function capsule(o) {
 
 function lander(o) {
   const g = new THREE.Group(), r = o.r ?? 1.2, h = o.h ?? 1;
-  g.add(Object.assign(mesh(new THREE.CylinderGeometry(r * 0.9, r, h, o.sides ?? 8), o.c ?? C.gold, { metal: 0.5, rough: 0.35 }), { position: new THREE.Vector3(0, h * 0.5 + (o.legH ?? r), 0) }));
+  { const hull = mesh(new THREE.CylinderGeometry(r * 0.9, r, h, o.sides ?? 8), o.c ?? C.gold, { metal: 0.5, rough: 0.35 }); hull.position.set(0, h * 0.5 + (o.legH ?? r), 0); g.add(hull); }   // (was Object.assign(..., { position }), which throws: Object3D.position is read-only)
   if (o.top) { const t = mesh(new THREE.CylinderGeometry(o.top.r, o.top.r * 1.05, o.top.h, o.top.sides ?? 6), o.top.c ?? C.grey, { metal: 0.4, rough: 0.4 }); t.position.y = (o.legH ?? r) + h + o.top.h / 2; g.add(t); }
   const n = o.legs ?? 4, lh = o.legH ?? r;
   for (let i = 0; i < n; i++) { const a = i / n * Math.PI * 2 + Math.PI / n, leg = mesh(new THREE.CylinderGeometry(r * 0.03, r * 0.03, lh * 1.6, 6), C.dark); leg.position.set(Math.cos(a) * r * 1.35, lh * 0.5, Math.sin(a) * r * 1.35); leg.rotation.set(Math.sin(a) * 0.55, 0, -Math.cos(a) * 0.55); g.add(leg);
@@ -257,6 +257,7 @@ const PLANES = new Set(['spaceplane']);
 function genericFor(v) {
   if (v.category === 'launch_vehicle' && v.height_m) return () => genericRocket(v);
   if (v.category === 'crewed_spacecraft') return () => genericCapsule(v);
+  if (v.category === 'engine' && v.diameter_m) return () => { const g = new THREE.Group(), b = seg({ t: 'bell', l: v.height_m ?? v.diameter_m * 2.4, r: v.diameter_m * 0.12, r2: v.diameter_m / 2, c: C.dark }); g.add(b); g.userData.fitAxis = 'y'; return g; };   // procedural stand-in: a plain bell, nozzle down
   if (v.category === 'lander') return () => lander({ r: 1.3, h: 1.0 });
   if (v.category === 'uncrewed_spacecraft' && v.mass_kg) return () => genericProbe(v);
   if (v.category === 'space_station') return () => genericStation(v);
@@ -265,8 +266,13 @@ function genericFor(v) {
   return null;
 }
 export function tierOf(v) { return SPECS[v.id] ? 'detailed' : genericFor(v) ? 'generic' : 'placeholder'; }
+let glbFor = null;   // optional: (catalogueId) => normalised real model or null (see vehicle-glb.js / models/spacex/manifest.json); set by the page after it has preloaded the files
+export function useGlbModels(fn) { glbFor = fn; }
 export function buildModel(v) {
-  let tier = 'detailed', g = SPECS[v.id]?.() ?? null;
+  let tier = 'detailed', g = null, real = null;
+  try { real = glbFor?.(v.id) ?? null; } catch { real = null; }
+  if (real) { g = real; if (!('fitAxis' in g.userData)) g.userData.fitAxis = 'y'; }   // engines and `noFit` models set fitAxis = null: they are already scaled to their real size
+  else g = SPECS[v.id]?.() ?? null;
   if (!g) { const f = genericFor(v); if (f) { tier = 'generic'; g = f(); } }
   if (!g) { tier = 'placeholder'; g = placeholder(v); }
   /* Fit to the catalogue's headline dimension so the scale is true even where the sketch is loose. */
@@ -277,7 +283,7 @@ export function buildModel(v) {
   }
   g.updateMatrixWorld(true);
   const bb = new THREE.Box3().setFromObject(g); g.position.y -= bb.min.y;   // stand on the ground plane
-  const wrap = new THREE.Group(); wrap.add(g); wrap.userData = { tier, inner: g, box: new THREE.Box3().setFromObject(wrap) };
+  const wrap = new THREE.Group(); wrap.add(g); wrap.userData = { tier, inner: g, box: new THREE.Box3().setFromObject(wrap), glb: real ? real.userData.id : null };
   return wrap;
 }
 

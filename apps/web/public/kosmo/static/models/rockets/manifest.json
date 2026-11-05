@@ -1,0 +1,96 @@
+{
+  "_doc": "Source records (title, author, licence, link) of the ten rocket GLBs, CC BY 4.0, Sketchfab. The originals here are untouched. They are now wired through ../spacex/manifest.json (vehicles + labs maps) using the .web.glb copies; see README.md.",
+  "version": 1,
+  "models": {
+    "saturn-v": {
+      "title": "Apollo | Saturn V Launch Vehicle",
+      "author": "devPilot",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/7c61146069134981a84dc7ed951609a0",
+      "sketchfabUid": "7c61146069134981a84dc7ed951609a0",
+      "file": "rockets/apollo__saturn_v_launch_vehicle.glb"
+    },
+    "space-shuttle-stack": {
+      "title": "GeoFS Official Space Shuttle Atlantis (OV-104)",
+      "author": "AF267",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/729715b5365d468391b2fa5b98b63c5b",
+      "sketchfabUid": "729715b5365d468391b2fa5b98b63c5b",
+      "file": "rockets/geofs_official_space_shuttle_atlantis_ov-104.glb"
+    },
+    "sls-block-1": {
+      "title": "NASA SLS Block 1 Crew V4",
+      "author": "Clarence365",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/2d521014700b44dbbc7662f648974e98",
+      "sketchfabUid": "2d521014700b44dbbc7662f648974e98",
+      "file": "rockets/nasa_sls_block_1_crew_v4.glb"
+    },
+    "atlas-v": {
+      "title": "Atlas V",
+      "author": "SunnyChen754",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/cbf8f28c35134aff9839275374521dba",
+      "sketchfabUid": "cbf8f28c35134aff9839275374521dba",
+      "file": "rockets/atlas_v.glb"
+    },
+    "ariane-6": {
+      "title": "ESA Ariane 6 (64)",
+      "author": "Clarence365",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/98a68de96a61406cb68b8f8ac89eb5ef",
+      "sketchfabUid": "98a68de96a61406cb68b8f8ac89eb5ef",
+      "file": "rockets/esa_ariane_6_64.glb"
+    },
+    "vulcan-centaur": {
+      "title": "Vulcan Centaur Rocket",
+      "author": "Lucas Ko",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/bad44d1096324c3d9fe84d0f0ea7a64b",
+      "sketchfabUid": "bad44d1096324c3d9fe84d0f0ea7a64b",
+      "file": "rockets/vulcan_centaur_rocket.glb"
+    },
+    "new-glenn": {
+      "title": "New Glenn (Better Version)",
+      "author": "Wolfpack278",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/683e8141a0604393bd0659d09de69d62",
+      "sketchfabUid": "683e8141a0604393bd0659d09de69d62",
+      "file": "rockets/new_glenn_better_version.glb"
+    },
+    "n1": {
+      "title": "N1 Rocket",
+      "author": "Soviet Model Magic",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/1ca15f15e01e41ea9a9ff3252d942c81",
+      "sketchfabUid": "1ca15f15e01e41ea9a9ff3252d942c81",
+      "file": "rockets/n1_rocket.glb"
+    },
+    "electron": {
+      "title": "Electron - Rocket Lab",
+      "author": "Stanley Creative",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/0376dfab27574a909cb8714841379894",
+      "sketchfabUid": "0376dfab27574a909cb8714841379894",
+      "file": "rockets/electron_-_rocket_lab.glb"
+    },
+    "super-heavy-b18": {
+      "title": "Booster 18 (B18)",
+      "author": "Wolfpack278",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/f3169091a0e84ce58452ab8efcdfc527",
+      "sketchfabUid": "f3169091a0e84ce58452ab8efcdfc527",
+      "file": "rockets/booster_18_b18.glb"
+    }
+  }
+}
