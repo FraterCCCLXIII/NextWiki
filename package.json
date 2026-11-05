@@ -21,6 +21,7 @@
     "db:seed": "turbo run db:seed",
     "db:seed:kosmo": "pnpm run -F @repo/db db:seed:kosmo",
     "db:seed:timeline": "pnpm run -F @repo/db db:seed:timeline",
+    "db:seed:life": "pnpm run -F @repo/db db:seed:life",
     "db:setup": "turbo run db:setup",
     "db:create": "SKIP_DEVELOPER_SEEDS=true turbo run db:setup",
     "db:studio": "pnpm run -F @repo/db db:studio",

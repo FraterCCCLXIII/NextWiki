@@ -33,13 +33,15 @@
     "db:seed": "tsx src/seeds/run.ts",
     "db:seed:kosmo": "tsx src/seeds/kosmo/run.ts",
     "db:seed:timeline": "tsx src/seeds/timeline/run.ts",
+    "db:seed:life": "tsx src/seeds/life/run.ts",
     "_db:seed:permissions": "tsx src/seeds/permissions.ts",
     "_db:seed:custom": "tsx src/seeds/custom-seeds.ts",
     "db:kosmo:report": "tsx src/seeds/kosmo/report.ts",
     "db:seed:university": "tsx src/seeds/kosmo/university/run.ts",
     "db:university:ids": "tsx src/seeds/kosmo/university/sync-ids.ts",
     "db:university:lint": "tsx src/seeds/kosmo/university/lint.ts",
-    "test": "node --import tsx --test src/seeds/kosmo/plan.test.ts src/seeds/kosmo/time.test.ts src/seeds/kosmo/university/registry.test.ts src/seeds/kosmo/university/lesson.test.ts"
+    "db:university:sources": "tsx src/seeds/kosmo/university/source-report.ts",
+    "test": "node --import tsx --test src/seeds/kosmo/plan.test.ts src/seeds/kosmo/time.test.ts src/seeds/kosmo/university/registry.test.ts src/seeds/kosmo/university/lesson.test.ts src/seeds/kosmo/university/licenses.test.ts src/seeds/kosmo/university/sources.test.ts"
   },
   "dependencies": {
     "@repo/types": "workspace:*",

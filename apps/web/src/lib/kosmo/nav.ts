@@ -33,6 +33,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { href: "/kosmo/domain/physics", label: "Physics" },
       { href: "/kosmo/tools/biology", label: "Biology" },
       { href: "/kosmo/tools/dinosaurs", label: "Dinosaurs" },
+      { href: "/life", label: "Life", prefix: "/life" },
       { href: "/kosmo/domain/philosophy", label: "Philosophy" },
       { href: "/kosmo/domain/models", label: "Models" },
     ],

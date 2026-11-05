@@ -754,3 +754,4 @@ export const settingsHistoryRelations = relations(
 );
 
 export * from "./kosmo.js";
+export * from "./life.js";
