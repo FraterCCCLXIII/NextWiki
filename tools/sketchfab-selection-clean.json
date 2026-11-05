@@ -88,17 +88,6 @@
   "likes": 61
  },
  {
-  "uid": "4c1aad0b2d4648628d7922168d6414e3",
-  "name": "Styracosaurus albertensis",
-  "user": "AllThingsSaurus",
-  "userName": "AllThingsSaurus",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/styracosaurus-albertensis-4c1aad0b2d4648628d7922168d6414e3",
-  "faces": 44468,
-  "anim": 0,
-  "likes": 58
- },
- {
   "uid": "2dac5acc3c31434d98532289b4ac08a8",
   "name": "Accurate Ankylosaurus",
   "user": "hsejira",
@@ -154,17 +143,6 @@
   "likes": 49
  },
  {
-  "uid": "7acee613d8fa4a8fa2254acfeb0da3f9",
-  "name": "Argentinosaurus huinculensis",
-  "user": "AllThingsSaurus",
-  "userName": "AllThingsSaurus",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/argentinosaurus-huinculensis-7acee613d8fa4a8fa2254acfeb0da3f9",
-  "faces": 32778,
-  "anim": 0,
-  "likes": 47
- },
- {
   "uid": "36d5031b7d4a4f229dab5dcd68957a0c",
   "name": "Giraffatitan",
   "user": "ericksalinasr07",
@@ -174,17 +152,6 @@
   "faces": 18356,
   "anim": 0,
   "likes": 41
- },
- {
-  "uid": "8d144fa29a574d0c8236cf4f27164229",
-  "name": "Featherless Gallimimus bullatus",
-  "user": "AllThingsSaurus",
-  "userName": "AllThingsSaurus",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/featherless-gallimimus-bullatus-8d144fa29a574d0c8236cf4f27164229",
-  "faces": 8294,
-  "anim": 0,
-  "likes": 40
  },
  {
   "uid": "fecabec8e4ef42ef98b5480dbf50c57d",
@@ -275,17 +242,6 @@
   "likes": 35
  },
  {
-  "uid": "df16972f71bb44a4804981bd262a1dbf",
-  "name": "Brachiosaurus",
-  "user": "lessaB3D",
-  "userName": "LessaB3D \u2013 Game Models & Stylized Assets",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/brachiosaurus-df16972f71bb44a4804981bd262a1dbf",
-  "faces": 19972,
-  "anim": 0,
-  "likes": 35
- },
- {
   "uid": "7f0bf44ca76f4e86b56f0009a019209d",
   "name": "Titanosaurus A ALT",
   "user": "sharksly",
@@ -337,17 +293,6 @@
   "license": "CC Attribution",
   "url": "https://sketchfab.com/3d-models/accurate-pachyrhinosaurus-canadensis-93b11c5006dd4c00895525b23394009c",
   "faces": 32864,
-  "anim": 0,
-  "likes": 30
- },
- {
-  "uid": "9931586d99954fe58b568826d37fe10b",
-  "name": "Sauropelta edwardsorum",
-  "user": "AllThingsSaurus",
-  "userName": "AllThingsSaurus",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/sauropelta-edwardsorum-9931586d99954fe58b568826d37fe10b",
-  "faces": 17512,
   "anim": 0,
   "likes": 30
  },
@@ -495,28 +440,6 @@
   "likes": 24
  },
  {
-  "uid": "d4085bc97780424fbec28e57e78728cf",
-  "name": "Citipati",
-  "user": "CGreature",
-  "userName": "Modbuff",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/citipati-d4085bc97780424fbec28e57e78728cf",
-  "faces": 17392,
-  "anim": 0,
-  "likes": 24
- },
- {
-  "uid": "9afe0ef07b704ea283914b6307a7d703",
-  "name": "Parasaurolophus",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/parasaurolophus-9afe0ef07b704ea283914b6307a7d703",
-  "faces": 26494,
-  "anim": 0,
-  "likes": 24
- },
- {
   "uid": "8714385806d841f4aeba1ded94298899",
   "name": "Titanosaurus B ALT",
   "user": "sharksly",
@@ -535,17 +458,6 @@
   "license": "CC Attribution",
   "url": "https://sketchfab.com/3d-models/orodromeus-b0dc31357d4640be8ac129b44df96649",
   "faces": 6854,
-  "anim": 0,
-  "likes": 23
- },
- {
-  "uid": "e757f31c891d4fd4baab505dd345f740",
-  "name": "Pachyrhinosaurus",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/pachyrhinosaurus-e757f31c891d4fd4baab505dd345f740",
-  "faces": 51634,
   "anim": 0,
   "likes": 23
  },
@@ -583,17 +495,6 @@
   "likes": 22
  },
  {
-  "uid": "1f3173cb24224864af80871f59543c74",
-  "name": "Psittacosaurus",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/psittacosaurus-1f3173cb24224864af80871f59543c74",
-  "faces": 40450,
-  "anim": 0,
-  "likes": 22
- },
- {
   "uid": "598b45f018f743e7b75337f2528e7f88",
   "name": "Denversaurus",
   "user": "kenchoo",
@@ -612,17 +513,6 @@
   "license": "CC Attribution",
   "url": "https://sketchfab.com/3d-models/accurate-camarasaurus-supremus-97ffb18153ed4f2ebbe0b53dc0e04130",
   "faces": 36588,
-  "anim": 0,
-  "likes": 21
- },
- {
-  "uid": "3f29130a4a134184be71668c6edf27a2",
-  "name": "Lambeosaurus",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/lambeosaurus-3f29130a4a134184be71668c6edf27a2",
-  "faces": 26746,
   "anim": 0,
   "likes": 21
  },
@@ -649,28 +539,6 @@
   "likes": 20
  },
  {
-  "uid": "bcc483dad158428f9e7b940266aee7e7",
-  "name": "Dryosaurus",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/dryosaurus-bcc483dad158428f9e7b940266aee7e7",
-  "faces": 29612,
-  "anim": 0,
-  "likes": 20
- },
- {
-  "uid": "0505463d6520453b9ccc1946bc4316dd",
-  "name": "Iguanodon",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/iguanodon-0505463d6520453b9ccc1946bc4316dd",
-  "faces": 53268,
-  "anim": 0,
-  "likes": 18
- },
- {
   "uid": "284fffb08f7b40bf863ae20409b8a4fa",
   "name": "Titanosaurus A",
   "user": "sharksly",
@@ -693,39 +561,6 @@
   "likes": 17
  },
  {
-  "uid": "fa520d5a66e24a09bd5cecf49933b17c",
-  "name": "Nasutoceratops_ Baby",
-  "user": "AllThingsSaurus",
-  "userName": "AllThingsSaurus",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/nasutoceratops--baby-fa520d5a66e24a09bd5cecf49933b17c",
-  "faces": 47530,
-  "anim": 0,
-  "likes": 17
- },
- {
-  "uid": "e0c4dc11996a4e568d40f8d5c205776f",
-  "name": "Nasutoceratops_ Male",
-  "user": "AllThingsSaurus",
-  "userName": "AllThingsSaurus",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/nasutoceratops--male-e0c4dc11996a4e568d40f8d5c205776f",
-  "faces": 16521,
-  "anim": 0,
-  "likes": 17
- },
- {
-  "uid": "9450dd31d63244a188363d06786b150a",
-  "name": "Dreadnoughtus",
-  "user": "lazaronogueira832",
-  "userName": "Dodogamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/dreadnoughtus-9450dd31d63244a188363d06786b150a",
-  "faces": 16482,
-  "anim": 0,
-  "likes": 17
- },
- {
   "uid": "4301f25557dd4c4b80b072d9b194d18e",
   "name": "Running Triceratop",
   "user": "nobilishornet",
@@ -735,94 +570,6 @@
   "faces": 9846,
   "anim": 1,
   "likes": 16
- },
- {
-  "uid": "916f2794f1f547a7bcf9aa521e84120e",
-  "name": "PC Primal Carnage Parasaurolophus",
-  "user": "CGreature",
-  "userName": "Modbuff",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/pc-primal-carnage-parasaurolophus-916f2794f1f547a7bcf9aa521e84120e",
-  "faces": 5310,
-  "anim": 0,
-  "likes": 16
- },
- {
-  "uid": "7fd825ea2bce431cb7ef8b307f890bbc",
-  "name": "Protoceratops",
-  "user": "lazaronogueira832",
-  "userName": "Dodogamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/protoceratops-7fd825ea2bce431cb7ef8b307f890bbc",
-  "faces": 47856,
-  "anim": 0,
-  "likes": 15
- },
- {
-  "uid": "92d91b268b1f4bd9a1c7bd7865bae59d",
-  "name": "Nasutoceratops",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/nasutoceratops-92d91b268b1f4bd9a1c7bd7865bae59d",
-  "faces": 53204,
-  "anim": 0,
-  "likes": 15
- },
- {
-  "uid": "3bf0e74c69b04ba683eacc5588ed324b",
-  "name": "Shantugosauro",
-  "user": "lazaronogueira832",
-  "userName": "Dodogamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/shantugosauro-3bf0e74c69b04ba683eacc5588ed324b",
-  "faces": 12196,
-  "anim": 0,
-  "likes": 15
- },
- {
-  "uid": "9aec8fa6db1c4b65b45e86f12a1a494a",
-  "name": "WWD chasmosaurus (animated)",
-  "user": "slang107123456789",
-  "userName": "seth the yutyrannus",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/wwd-chasmosaurus-animated-9aec8fa6db1c4b65b45e86f12a1a494a",
-  "faces": 14746,
-  "anim": 1,
-  "likes": 14
- },
- {
-  "uid": "acc8abc7f6d94c66b64d3f87db58b055",
-  "name": "eurohippus",
-  "user": "slang107123456789",
-  "userName": "seth the yutyrannus",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/eurohippus-acc8abc7f6d94c66b64d3f87db58b055",
-  "faces": 29316,
-  "anim": 0,
-  "likes": 14
- },
- {
-  "uid": "56e99c6786fb4108a1b6d80287c0836b",
-  "name": "Lystrosaurus",
-  "user": "AllThingsSaurus",
-  "userName": "AllThingsSaurus",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/lystrosaurus-56e99c6786fb4108a1b6d80287c0836b",
-  "faces": 17686,
-  "anim": 0,
-  "likes": 13
- },
- {
-  "uid": "777e479c0b67458fae9d601ca128bd62",
-  "name": "Nasutoceratops_ Female",
-  "user": "AllThingsSaurus",
-  "userName": "AllThingsSaurus",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/nasutoceratops--female-777e479c0b67458fae9d601ca128bd62",
-  "faces": 16226,
-  "anim": 0,
-  "likes": 13
  },
  {
   "uid": "5c9921ab5cf742d38d54c8bcac6b9a7d",
@@ -847,39 +594,6 @@
   "likes": 13
  },
  {
-  "uid": "5ec2fb7eaaf94c38ab2852ddfd24b0cb",
-  "name": "Triceratops",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/triceratops-5ec2fb7eaaf94c38ab2852ddfd24b0cb",
-  "faces": 54936,
-  "anim": 0,
-  "likes": 13
- },
- {
-  "uid": "c1b02d187be747a09156cae47728aad6",
-  "name": "Styracosaurus 1",
-  "user": "CGreature",
-  "userName": "Modbuff",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/styracosaurus-1-c1b02d187be747a09156cae47728aad6",
-  "faces": 17462,
-  "anim": 0,
-  "likes": 13
- },
- {
-  "uid": "48b8e5af63184323b5a94077d933a0e9",
-  "name": "Edmontosaurus",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/edmontosaurus-48b8e5af63184323b5a94077d933a0e9",
-  "faces": 37126,
-  "anim": 0,
-  "likes": 12
- },
- {
   "uid": "a403a3d68b1a48598af9213e317fb9cc",
   "name": "Camarasaurus",
   "user": "toro_ardido_modelos_3d",
@@ -891,50 +605,6 @@
   "likes": 12
  },
  {
-  "uid": "e72b8eaa986b4e458c4569979e7d1069",
-  "name": "Elephantsaurus",
-  "user": "CGreature",
-  "userName": "Modbuff",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/elephantsaurus-e72b8eaa986b4e458c4569979e7d1069",
-  "faces": 4354,
-  "anim": 0,
-  "likes": 12
- },
- {
-  "uid": "838bf750775d44fa8db8223988bdaf57",
-  "name": "Brachiosaurus: ARK Additions Mod",
-  "user": "AllThingsSaurus",
-  "userName": "AllThingsSaurus",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/brachiosaurus-ark-additions-mod-838bf750775d44fa8db8223988bdaf57",
-  "faces": 47004,
-  "anim": 0,
-  "likes": 11
- },
- {
-  "uid": "e2aab2ee5eac4cc2b2aab72f0841f9cf",
-  "name": "Tenontosaurus",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/tenontosaurus-e2aab2ee5eac4cc2b2aab72f0841f9cf",
-  "faces": 16198,
-  "anim": 0,
-  "likes": 11
- },
- {
-  "uid": "23451aab94e84f9c8d7b5c5400088d24",
-  "name": "Iguanodon_JWD_ILM",
-  "user": "AllThingsSaurus",
-  "userName": "AllThingsSaurus",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/iguanodon-jwd-ilm-23451aab94e84f9c8d7b5c5400088d24",
-  "faces": 19418,
-  "anim": 0,
-  "likes": 11
- },
- {
   "uid": "2562a30577ea4ad28ac5817d53916434",
   "name": "leaellynasaura",
   "user": "slang107123456789",
@@ -942,39 +612,6 @@
   "license": "CC Attribution",
   "url": "https://sketchfab.com/3d-models/leaellynasaura-2562a30577ea4ad28ac5817d53916434",
   "faces": 15096,
-  "anim": 0,
-  "likes": 11
- },
- {
-  "uid": "ffd5d0fe1a2042b1ab33077a46afd0be",
-  "name": "Triceratops",
-  "user": "CGreature",
-  "userName": "Modbuff",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/triceratops-ffd5d0fe1a2042b1ab33077a46afd0be",
-  "faces": 22046,
-  "anim": 0,
-  "likes": 11
- },
- {
-  "uid": "a8e6f7b53c994f0081c8c78c19ef9ee7",
-  "name": "Styracosaurus",
-  "user": "CGreature",
-  "userName": "Modbuff",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/styracosaurus-a8e6f7b53c994f0081c8c78c19ef9ee7",
-  "faces": 23538,
-  "anim": 0,
-  "likes": 11
- },
- {
-  "uid": "01e88bcef1b94f14a80d7123243eb1a0",
-  "name": "Diplodocus 1",
-  "user": "CGreature",
-  "userName": "Modbuff",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/diplodocus-1-01e88bcef1b94f14a80d7123243eb1a0",
-  "faces": 16357,
   "anim": 0,
   "likes": 11
  },
@@ -990,105 +627,6 @@
   "likes": 10
  },
  {
-  "uid": "4b03e704b66a46bd8514f9da425d1b25",
-  "name": "PC primal carnage Brachiosaurus 1",
-  "user": "CGreature",
-  "userName": "Modbuff",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/pc-primal-carnage-brachiosaurus-1-4b03e704b66a46bd8514f9da425d1b25",
-  "faces": 13703,
-  "anim": 0,
-  "likes": 10
- },
- {
-  "uid": "414235fefbb64e0faa76596f57866863",
-  "name": "Dino",
-  "user": "AUau997",
-  "userName": "AUau997",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/dino-414235fefbb64e0faa76596f57866863",
-  "faces": 22298,
-  "anim": 0,
-  "likes": 10
- },
- {
-  "uid": "b278ec123e054751a7937f8937949e80",
-  "name": "Edmontosaurus",
-  "user": "CGreature",
-  "userName": "Modbuff",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/edmontosaurus-b278ec123e054751a7937f8937949e80",
-  "faces": 17982,
-  "anim": 0,
-  "likes": 8
- },
- {
-  "uid": "61ebb544b6af491d888604b6e084dd59",
-  "name": "Parasaurolophus-the-isle20230522-60-zk5t3e",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/parasaurolophus-the-isle20230522-60-zk5t3e-61ebb544b6af491d888604b6e084dd59",
-  "faces": 12756,
-  "anim": 0,
-  "likes": 8
- },
- {
-  "uid": "d175c2cf86ba4950866f087abb9443bc",
-  "name": "Tarchia",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/tarchia-d175c2cf86ba4950866f087abb9443bc",
-  "faces": 25254,
-  "anim": 0,
-  "likes": 7
- },
- {
-  "uid": "eaf5ad9ad25f4cc0a710e8d96ef1c5c4",
-  "name": "Camarasaurus",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/camarasaurus-eaf5ad9ad25f4cc0a710e8d96ef1c5c4",
-  "faces": 47408,
-  "anim": 0,
-  "likes": 7
- },
- {
-  "uid": "df0adde2f8534b19a1ba2548fe241b3f",
-  "name": "dinosaur pack",
-  "user": "cp4096",
-  "userName": "cp4096",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/dinosaur-pack-df0adde2f8534b19a1ba2548fe241b3f",
-  "faces": 15424,
-  "anim": 0,
-  "likes": 7
- },
- {
-  "uid": "47cd435a4f4a4eac9478fdf7df0aa3dc",
-  "name": "PK Scelidosaurus",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/pk-scelidosaurus-47cd435a4f4a4eac9478fdf7df0aa3dc",
-  "faces": 49140,
-  "anim": 0,
-  "likes": 6
- },
- {
-  "uid": "5c237dc3aab1499599017a376e57f9ab",
-  "name": "anatosaurus",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/anatosaurus-5c237dc3aab1499599017a376e57f9ab",
-  "faces": 8174,
-  "anim": 0,
-  "likes": 6
- },
- {
   "uid": "e5ae05eb3dc24fff846c6ab1f4fe1998",
   "name": "Lambeosaurus",
   "user": "budiastuti1271",
@@ -1100,50 +638,6 @@
   "likes": 6
  },
  {
-  "uid": "88842f341434445c85fce08896d06790",
-  "name": "PK Leaellynasaura",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/pk-leaellynasaura-88842f341434445c85fce08896d06790",
-  "faces": 23840,
-  "anim": 0,
-  "likes": 5
- },
- {
-  "uid": "62663728a844460ea6b57615bd9b9050",
-  "name": "Triceratops 2",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/triceratops-2-62663728a844460ea6b57615bd9b9050",
-  "faces": 25902,
-  "anim": 0,
-  "likes": 5
- },
- {
-  "uid": "705d2caef2b5470f8ba8b6223683ac59",
-  "name": "Brachiosaurus",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/brachiosaurus-705d2caef2b5470f8ba8b6223683ac59",
-  "faces": 41008,
-  "anim": 0,
-  "likes": 4
- },
- {
-  "uid": "7e72e4d8a21042428f88b060f0ac2f6c",
-  "name": "Triceratops",
-  "user": "Jurrassicgamer",
-  "userName": "Jurrassicgamer",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/triceratops-7e72e4d8a21042428f88b060f0ac2f6c",
-  "faces": 9846,
-  "anim": 0,
-  "likes": 4
- },
- {
   "uid": "bc5a6312a660480d9618c27e3b0ede14",
   "name": "Polacanthus (2)",
   "user": "budiastuti1271",
@@ -1153,27 +647,5 @@
   "faces": 19598,
   "anim": 0,
   "likes": 4
- },
- {
-  "uid": "7caa7dd4ebe345ce9b5cd570e828b1b1",
-  "name": "anatomically inaccurate parasaurolophus",
-  "user": "avesavi",
-  "userName": "AvesAvi",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/anatomically-inaccurate-parasaurolophus-7caa7dd4ebe345ce9b5cd570e828b1b1",
-  "faces": 6720,
-  "anim": 0,
-  "likes": 3
- },
- {
-  "uid": "1a8d880ebe934fd4b51940719fee6c63",
-  "name": "Fg",
-  "user": "xilanhuachaorou",
-  "userName": "xilanhuachaorou",
-  "license": "CC Attribution",
-  "url": "https://sketchfab.com/3d-models/fg-1a8d880ebe934fd4b51940719fee6c63",
-  "faces": 13368,
-  "anim": 0,
-  "likes": 1
  }
 ]
