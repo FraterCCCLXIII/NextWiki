@@ -21,13 +21,14 @@
 </head>
 <body>
 <div id="tabs"><span class="brand">Flight Lab</span>
-  <button data-tab="mission" class="on">Design &amp; mission</button><button data-tab="landing">Landing</button>
+  <button data-tab="mission" class="on">Design &amp; mission</button><button data-tab="landing">Landing</button><button data-tab="concepts">Concepts</button>
   <span class="hint" id="hint">Launch, stage, rendezvous, return -- and tune any booster's landing in detail.</span></div>
 <iframe id="f-mission" title="Design and mission" data-src="shipyard.html"></iframe>
 <iframe id="f-landing" title="Landing" data-src="landing-lab.html"></iframe>
+<iframe id="f-concepts" title="Concepts" data-src="micro-ascent/index.html"></iframe>
 <script>
-const tabs = { mission: document.getElementById('f-mission'), landing: document.getElementById('f-landing') };
-const HINT = { mission: 'Launch, stage, rendezvous, return -- and tune any booster\'s landing in detail.', landing: 'Terminal descent: guidance algorithms, noise, wind, Monte Carlo, neural policy.' };
+const tabs = { mission: document.getElementById('f-mission'), landing: document.getElementById('f-landing'), concepts: document.getElementById('f-concepts') };
+const HINT = { mission: 'Launch, stage, rendezvous, return -- and tune any booster\'s landing in detail.', landing: 'Terminal descent: guidance algorithms, noise, wind, Monte Carlo, neural policy.', concepts: 'Micro Ascent: boosters, engines, stations, balloons -- a 3D concept explorer (illustrative, not for flight).' };
 let pending = null;
 function show(name) {
   for (const [k, f] of Object.entries(tabs)) { if (k === name && !f.src) f.src = f.dataset.src; f.classList.toggle('on', k === name); }
@@ -43,7 +44,7 @@ addEventListener('message', e => {
   const fresh = !tabs.landing.src; show('landing'); pending = e.data;
   if (!fresh) { tabs.landing.contentWindow.postMessage(pending, location.origin); pending = null; }
 });
-show(location.hash === '#landing' ? 'landing' : 'mission');
+show(['landing', 'concepts'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'mission');
 </script>
 </body>
 </html>

@@ -32,3 +32,21 @@ input[type=checkbox]:checked { background: rgba(127, 195, 255, 0.7); } input[typ
 #bar .rail button.primary { background: rgba(127, 195, 255, 0.3); }
 #bar .rail label { display: inline-flex; align-items: center; gap: 7px; padding: 0 8px; color: #b9c6da; font-size: 13.5px; white-space: nowrap; }
 #bar .rail .sep { width: 1px; height: 18px; background: rgba(255, 255, 255, 0.12); margin: 0 4px; }
+
+/* icon rail (flight-rail.js): icon buttons, icon labels, an icon toggle, and tooltips */
+#bar .rail .ib { width: 34px; height: 30px; padding: 0 !important; display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; }
+#bar .rail .ib:disabled { opacity: .35; }
+#bar .rail .ric { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+#bar .rail .ib .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+#bar .rail label.il { gap: 5px; padding: 0 6px; border-radius: 999px; cursor: pointer; }
+#bar .rail label.il > .ric { color: #9fb2cc; }
+#bar .rail label.tg { padding: 0; width: 34px; height: 30px; justify-content: center; }
+#bar .rail label.tg input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+#bar .rail label.tg:hover { background: rgba(255, 255, 255, 0.12); }
+#bar .rail label.tg.on { background: rgba(127, 195, 255, 0.3); }
+#bar .rail label.tg.on > .ric { color: #e8f4ff; }
+#bar .rail [data-tip] { position: relative; }
+#bar .rail [data-tip]::after { content: attr(data-tip); position: absolute; left: 50%; bottom: calc(100% + 11px); transform: translate(-50%, 4px); padding: 4px 9px; border-radius: 7px;
+  background: rgba(10, 14, 22, 0.96); border: 1px solid rgba(255, 255, 255, 0.14); color: #e8eef7; font: 500 12px/1.3 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  text-shadow: none; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity .12s ease, transform .12s ease; z-index: 30; }
+#bar .rail [data-tip]:hover:not(:focus-within)::after, #bar .rail [data-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); transition-delay: .2s; }

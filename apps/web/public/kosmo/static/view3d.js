@@ -13,7 +13,12 @@
 // bloom on the exhaust, and a thin-lens camera (f-stop -> depth of field and exposure, focal length -> field of view).
 // Everything needs three.js through an import map ("three" and "three/addons/").
 
+import { boostTrackpadZoom } from './zoom-boost.js?v=1';
+import { landingPad } from './launch-pads.js?v=1';
+
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+// Landing-leg hinge height above the nozzle plane (m) where the real vehicle differs from the generic 16 % of length; see models/SPACEX_GEAR.md
+const LEG_HINGE = { falcon9: 4.8, falcon9lz: 4.8 };
 
 export function createView3D(opts) {
   let T3 = null;
@@ -28,7 +33,7 @@ async function init3() {
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.35; renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.localClippingEnabled = true; host.appendChild(renderer.domElement);
   const scene = new THREE.Scene(), cam3 = new THREE.PerspectiveCamera(40, 1, 0.5, 1e6), controls = new OrbitControls(cam3, renderer.domElement);
-  controls.enableDamping = true; controls.maxDistance = 30000; controls.minDistance = 1.5; controls.zoomSpeed = 3.5;
+  controls.enableDamping = true; controls.maxDistance = 30000; controls.minDistance = 1.5; controls.zoomSpeed = 3.5; boostTrackpadZoom(controls, renderer.domElement);
   const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(2, 2, { type: THREE.HalfFloatType, samples: 4 }));
   const renderPass = new RenderPass(scene, cam3), bloom = new UnrealBloomPass(new THREE.Vector2(2, 2), 0.3, 0.5, 2.2), bokeh = new BokehPass(scene, cam3, { focus: 100, aperture: 0, maxblur: 0.01 });
   composer.addPass(renderPass); composer.addPass(bloom); composer.addPass(bokeh); composer.addPass(new OutputPass());
@@ -41,6 +46,10 @@ async function init3() {
   })();
   const fill = new THREE.DirectionalLight(0xbcd0ff, 0), rim = new THREE.DirectionalLight(0xffe6c8, 0); scene.add(fill, fill.target, rim, rim.target);
   T3 = { RoomEnvironment, fill, rim, THREE, renderer, scene, cam3, controls, composer, bloom, bokeh, sun, Sky, Water, normals, built: null, prev: null, pmrem: new THREE.PMREMGenerator(renderer) };
+  // optional real models (models/spacex/manifest.json); every failure leaves the procedural vehicle in place
+  try { const G = await import('./vehicle-glb.js'), man = await G.loadManifest(); T3.glbMap = man.labs?.landing || {}; await Promise.all([...[...new Set(Object.values(T3.glbMap))].map(id => G.preloadVehicleModel(id)), ...[...new Set(Object.values(G.ENGINE_GLB))].map(id => G.preloadEngineModel(id))]); T3.glb = G; } catch { T3.glb = null; }
+  const cred = document.createElement('div'); cred.style.cssText = 'position:absolute;left:12px;bottom:118px;z-index:3;font:11px system-ui,sans-serif;color:rgba(230,236,244,.8);text-shadow:0 1px 2px #000;display:none;pointer-events:auto;max-width:60%'; cred.className = 'glbcredit'; host.appendChild(cred); T3.cred = cred;
+  const cs = document.createElement('style'); cs.textContent = '.glbcredit a{color:#9fd0ff}'; document.head.appendChild(cs);
   controls.addEventListener('start', () => { controls.userZoomed = true; }); addEventListener('resize', resize3); resize3(); return T3;
 }
 function resize3() { if (!T3) return; const w = opts.host.clientWidth || innerWidth, h = opts.host.clientHeight || innerHeight; T3.renderer.setSize(w, h); T3.size = [w, h]; T3.composer.setSize(w, h); T3.cam3.aspect = w / h; T3.cam3.updateProjectionMatrix(); }
@@ -92,10 +101,13 @@ function build3(sim) {
     const gtex = canvasTex(THREE, 512, 512, noisePaint(moon ? '#6b6b6b' : '#59634a', moon ? 120 : 70), [900, 900]);
     if (!dark) { const ground = new THREE.Mesh(new THREE.PlaneGeometry(200000, 200000), PM(0xffffff, { map: gtex, roughness: 1, metalness: 0 })); ground.rotation.x = -Math.PI / 2; ground.position.y = -0.2; ground.receiveShadow = true; W.add(ground); }
     if (kind === 'catch') {
-      const steel = PM(0x7c838d, { metalness: 0.7, roughness: 0.4 }); const tw = new THREE.Mesh(new THREE.BoxGeometry(8, 130, 8), steel); tw.position.set(-(R + 8), 65, 0); tw.castShadow = tw.receiveShadow = true; W.add(tw);
+      const steel = PM(0x7c838d, { metalness: 0.7, roughness: 0.4 }); W.add(landingPad(THREE, 'olm', { ground: -0.2, tableY: 20, towerX: -(R + 8) }));   // launch mount table on its truss legs, flame diverter, 146 m tower, tanks
       for (const z of [-1, 1]) { const arm = new THREE.Mesh(new THREE.BoxGeometry(R + 9, 2.2, 2.2), steel); arm.position.set(-(R + 8) / 2 - 2, v.target.deckY - 1, z * (R + 1)); arm.castShadow = true; W.add(arm); }
-      const base = new THREE.Mesh(new THREE.CylinderGeometry(30, 30, 1.2, 48), PM(0x9a9fa4, { roughness: 0.9 })); base.position.y = 0.4; base.receiveShadow = true; W.add(base);
-    } else { const pad = new THREE.Mesh(new THREE.CylinderGeometry(25, 25, 0.8, 64), PM(0xffffff, { map: canvasTex(THREE, 512, 512, noisePaint(moon ? '#8c8c8c' : '#a3a7aa', 40), [4, 4]), roughness: 0.85 })); pad.position.y = 0.2; pad.receiveShadow = true; W.add(pad); const h = new THREE.Mesh(new THREE.RingGeometry(6, 7, 48), new THREE.MeshBasicMaterial({ color: 0xf2f2f2, side: THREE.DoubleSide, toneMapped: false })); h.rotation.x = -Math.PI / 2; h.position.y = 0.62; W.add(h); }
+    } else {
+      // landing pad by vehicle: SpaceX landing zone, Blue Origin pad, or a prepared lunar pad (launch-pads.js); the lab's target ring stays on top
+      const style = moon ? 'lunar' : /shepard/i.test(v.name || '') ? 'bluepad' : 'lz';
+      W.add(landingPad(THREE, style, { ground: -0.2 }));
+      const h = new THREE.Mesh(new THREE.RingGeometry(6, 7, 48), new THREE.MeshBasicMaterial({ color: 0xf2f2f2, side: THREE.DoubleSide, toneMapped: false })); h.rotation.x = -Math.PI / 2; h.position.y = 0.2; W.add(h); }
   }
   const ring = new THREE.Mesh(new THREE.RingGeometry(v.target.radius - 0.5, v.target.radius, 64), new THREE.MeshBasicMaterial({ color: 0x7fe0a0, side: THREE.DoubleSide, transparent: true, opacity: 0.8, toneMapped: false })); ring.rotation.x = -Math.PI / 2; ring.position.y = kind === 'catch' ? v.target.deckY : (kind === 'ship' ? 0.15 : 0.7); W.add(ring); T3.ring = ring;
   // --- the stage: CoM at the group origin, body axis +y ---
@@ -104,15 +116,23 @@ function build3(sim) {
     g.fillStyle = 'rgba(0,0,0,0.5)'; g.fillRect(0, 0, w, h * 0.05); g.strokeStyle = 'rgba(0,0,0,0.10)'; g.lineWidth = 2; for (let y = 40; y < h; y += 86) { g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke(); } for (let i = 0; i < 1800; i++) { g.fillStyle = `rgba(30,25,20,${Math.random() * 0.05})`; g.fillRect(Math.random() * w, h * (0.55 + 0.45 * Math.random()), 3, 18); } });
   skin.wrapS = THREE.RepeatWrapping; skin.repeat.set(1, 1);
   const bodyMat = PM(0xffffff, { map: skin, metalness: 0.55, roughness: 0.38, clearcoat: 0.5, clearcoatRoughness: 0.3, envMapIntensity: 0.7 });
+  const nPre = rock.children.length, gid = T3.glb && T3.glbMap?.[v.id], gm = gid && T3.glb.hasVehicleModel(gid) ? T3.glb.vehicleModel(gid, { mode: 'firstStage', hide: ['legs', 'gridFins'], shadows: true }) : null;   // real model replaces body, skirt, bells and nose; the lab keeps drawing its own legs and fins
   const body = new THREE.Mesh(new THREE.CylinderGeometry(R, R, v.length, 48, 1), bodyMat); body.position.y = v.length / 2 - v.comHeight; body.castShadow = body.receiveShadow = true; rock.add(body);
   const skirt = new THREE.Mesh(new THREE.CylinderGeometry(R * 1.02, R * 1.02, R * 0.9, 48), PM(0x1f2226, { metalness: 0.7, roughness: 0.5 })); skirt.position.y = -v.comHeight + R * 0.45; skirt.castShadow = true; rock.add(skirt);
   const engBell = PM(0x2b2420, { metalness: 0.9, roughness: 0.35 });
   const nEng = Math.min(v.engines, 9), ring9 = nEng > 1 ? R * 0.55 : 0;
   for (let i = 0; i < nEng; i++) { const a = i * 6.283 / Math.max(nEng - (nEng > 7 ? 1 : 0), 1), r = (nEng > 7 && i === nEng - 1) ? 0 : ring9; const b = new THREE.Mesh(new THREE.CylinderGeometry(R * 0.12, R * (nEng > 1 ? 0.2 : 0.4), R * 0.45, 20), engBell); b.position.set(Math.cos(a) * r, -v.comHeight - R * 0.1, Math.sin(a) * r); b.castShadow = true; rock.add(b); }
+  // real engines (models/spacex/engines) replace the procedural bells of vehicles without a whole-vehicle model: the whole cluster (v.cluster, e.g. Super Heavy's 33), nozzle EXIT kept on the
+  // procedural exit plane (centre of the bell minus half its height), so plume, leg hinge and ground contact do not move. A missing file leaves the procedural bells.
+  const realEng = !gm && T3.glb ? T3.glb.engineCluster(v.engine, v.cluster || v.engines, R, -v.comHeight - R * 0.1 - R * 0.225) : null;
+  if (realEng) { for (let i = nPre; i < rock.children.length; i++) if (rock.children[i].geometry?.type === 'CylinderGeometry' && rock.children[i].material === engBell) rock.children[i].visible = false; rock.add(realEng); }
   const nose = new THREE.Mesh(new THREE.CylinderGeometry(R * 0.96, R, v.length * 0.012, 48), PM(0x24282d, { metalness: 0.5 })); nose.position.y = v.length - v.comHeight; rock.add(nose);
+  if (gm) { for (let i = nPre; i < rock.children.length; i++) rock.children[i].visible = false; gm.position.y = -v.comHeight; rock.add(gm); }
+  { const ids = [gm ? gid : null, realEng?.userData.glb].filter(Boolean), h = ids.length ? T3.glb.attributionHTML(ids) : ''; T3.cred.innerHTML = h; T3.cred.style.display = h ? '' : 'none'; }
   // --- control surfaces, by vehicle: lattice grid fins (Falcon, Super Heavy), fixed tail fins + drag-brake ring (New Shepard), strakes + flaps (New Glenn) ---
-  const style = { falcon9: 'grid', falcon9lz: 'grid', superheavy: 'grid', newshepard: 'tail', newglenn: 'strake' }[v.id] || (v.finArea > 0 ? 'grid' : 'none');
-  const top = v.length - v.comHeight, bot = -v.comHeight, finMat = PM(0x59616b, { metalness: 0.85, roughness: 0.38 }), darkMat = PM(0x23272c, { metalness: 0.6, roughness: 0.5 }), chrome = PM(0xd9dde2, { metalness: 1, roughness: 0.18 });
+  let style = { falcon9: 'grid', falcon9lz: 'grid', superheavy: 'grid', newshepard: 'tail', newglenn: 'strake' }[v.id] || (v.finArea > 0 ? 'grid' : 'none');
+  if (gm && gm.userData.entry?.gear?.controlSurfaces?.baked) style = 'none';   // the real model has its fins / strakes baked into one mesh (cannot be separated or animated): do not draw a second set
+  const top = gm ? gm.userData.length - v.comHeight : v.length - v.comHeight, bot = -v.comHeight, finMat = PM(0x59616b, { metalness: 0.85, roughness: 0.38 }), darkMat = PM(0x23272c, { metalness: 0.6, roughness: 0.5 }), chrome = PM(0xd9dde2, { metalness: 1, roughness: 0.18 });
   T3.fins = [];
   const plate = (pts, depth, mat) => { const sh = new THREE.Shape(); pts.forEach(([x, y], i) => i ? sh.lineTo(x, y) : sh.moveTo(x, y)); const g = new THREE.ExtrudeGeometry(sh, { depth, bevelEnabled: false }); g.translate(0, 0, -depth / 2); const m = new THREE.Mesh(g, mat); m.castShadow = true; return m; };
   if (style === 'grid') for (let a = 0; a < 4; a++) {
@@ -138,8 +158,8 @@ function build3(sim) {
   }
   if (v.target.kind === 'catch') for (const sgn of [-1, 1]) { const pin = new THREE.Mesh(new THREE.CylinderGeometry(R * 0.07, R * 0.09, R * 0.55, 16), chrome); pin.rotation.x = Math.PI / 2; pin.position.set(0, top - R * 2.4, sgn * (R + R * 0.2)); pin.castShadow = true; rock.add(pin); const cap = new THREE.Mesh(new THREE.CylinderGeometry(R * 0.15, R * 0.15, R * 0.06, 16), darkMat); cap.rotation.x = Math.PI / 2; cap.position.set(0, top - R * 2.4, sgn * (R + R * 0.5)); rock.add(cap); }
   // --- landing legs: hinge brackets, a telescoping main strut (outer sleeve + chrome piston), a brace and an actuator, an aero fairing, a ball-jointed foot pad ---
-  T3.legs = []; if (v.legRadius > 0) for (let a = 0; a < 4; a++) {
-    const L = { ang: a * Math.PI / 2 + Math.PI / 4 }, cyl = (mat, seg = 12) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, seg), mat); m.castShadow = true; rock.add(m); return m; };
+  T3.legs = []; const nLeg = v.legCount ?? 4; if (v.legRadius > 0) for (let a = 0; a < nLeg; a++) {
+    const L = { ang: a * 2 * Math.PI / nLeg + Math.PI / nLeg }, cyl = (mat, seg = 12) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, seg), mat); m.castShadow = true; rock.add(m); return m; };
     L.sleeve = cyl(PM(0x8f979f, { metalness: 0.8, roughness: 0.4 })); L.piston = cyl(chrome); L.brace = cyl(PM(0x7b838b, { metalness: 0.8, roughness: 0.45 })); L.actOut = cyl(PM(0x6c747c, { metalness: 0.8, roughness: 0.4 })); L.actIn = cyl(chrome);
     L.fair = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), PM(0xe9edf1, { metalness: 0.35, roughness: 0.4 })); L.fair.castShadow = true; rock.add(L.fair);
     L.hinge = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), darkMat); L.hinge.castShadow = true; rock.add(L.hinge); L.hinge2 = L.hinge.clone(); rock.add(L.hinge2);
@@ -161,7 +181,7 @@ function build3(sim) {
   const blast = new THREE.Mesh(new THREE.CircleGeometry(1, 48), new THREE.MeshBasicMaterial({ color: 0xff9a40, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending, depthWrite: false, fog: false })); blast.material.color.multiplyScalar(2); blast.rotation.x = -Math.PI / 2; blast.visible = false; W.add(blast); T3.blast = blast;
   const trailG = new THREE.BufferGeometry(); trailG.setAttribute('position', new THREE.BufferAttribute(new Float32Array(3 * 4000), 3)); trailG.setDrawRange(0, 0);
   const trail3 = new THREE.Line(trailG, new THREE.LineBasicMaterial({ color: 0xffd9a0, transparent: true, opacity: 0.55, fog: false })); trail3.frustumCulled = false; W.add(trail3); T3.trail = trail3;
-  T3.built = sim; T3.first = true;
+  T3.built = sim; T3.first = true; T3.dep = null; T3.lastT = null;
 }
 function draw3(sim, trail) {
   if (!T3) return;
@@ -186,11 +206,17 @@ function draw3(sim, trail) {
   T3.flameLight.intensity = fl > 0 ? 4e5 * fl * (v.diameter / 3.7) ** 2 : 0; T3.flameLight.position.set(base.x, Math.max(base.y - L * 0.3, gY0 + 1.5), 0);
   const hgt = base.y - gY0; T3.blast.visible = fl > 0 && hgt < L * 1.15 && !vac;
   if (T3.blast.visible) { const k = 1 - clamp(hgt / (L * 1.15), 0, 1); T3.blast.position.set(base.x, gY0 + 0.3, 0); T3.blast.scale.setScalar(v.diameter * (0.8 + 2.2 * k)); T3.blast.material.opacity = 0.15 + 0.4 * k * fl; }
-  const dep = sim.E.on || s.y - v.yf < 400 ? 1 : 0.06, hinge = Math.min(0.16 * v.length, 9), th3 = Math.max(0.28, R * 0.085), Y = new THREE.Vector3(0, 1, 0);
+  // Leg deployment: SpaceX legs are hinged low on the stage and stowed folded UP along the body (foot end high); on deploy they swing down and outward about the
+  // hinge, so the foot pad sweeps through an arc rather than sliding sideways. dep eases 0 -> 1 over ~3 s of sim time once the landing burn has started.
+  const depT = sim.E.on || s.y - v.yf < 400 ? 1 : 0, dtt = Math.abs(s.t - (T3.lastT ?? s.t)); T3.lastT = s.t;
+  T3.dep = T3.dep == null ? depT : T3.dep + clamp(depT - T3.dep, -dtt / 3, dtt / 3);
+  const dep = T3.dep, hinge = LEG_HINGE[v.id] ?? Math.min(0.16 * v.length, 9), th3 = Math.max(0.28, R * 0.085), Y = new THREE.Vector3(0, 1, 0);
   const link = (m, P, Q, rad) => { const d = Q.clone().sub(P), len = Math.max(d.length(), 1e-4); m.position.copy(P).addScaledVector(d, 0.5); m.scale.set(rad, len, rad); m.quaternion.setFromUnitVectors(Y, d.normalize()); };
   for (const L of T3.legs) {
-    const a = L.ang, ca = Math.cos(a), sa = Math.sin(a), rf = R + (v.legRadius - R) * dep, fy = -v.comHeight + 0.55;
-    const A = new THREE.Vector3(ca * R * 1.03, -v.comHeight + hinge, sa * R * 1.03), F = new THREE.Vector3(ca * rf, fy, sa * rf), B = new THREE.Vector3(ca * R * 1.03, -v.comHeight + hinge * 0.35, sa * R * 1.03);
+    const a = L.ang, ca = Math.cos(a), sa = Math.sin(a), fy = -v.comHeight + 0.55;
+    const A = new THREE.Vector3(ca * R * 1.03, -v.comHeight + hinge, sa * R * 1.03), B = new THREE.Vector3(ca * R * 1.03, -v.comHeight + hinge * 0.35, sa * R * 1.03);
+    const dx = v.legRadius - R * 1.03, dy = fy - A.y, len = Math.hypot(dx, dy), phi1 = Math.atan2(dx, dy), phi = 0.05 + (phi1 - 0.05) * dep;   // angle from straight up
+    const F = new THREE.Vector3(A.x + ca * Math.sin(phi) * len, A.y + Math.cos(phi) * len, A.z + sa * Math.sin(phi) * len);
     const M = A.clone().lerp(F, 0.5), P2 = A.clone().lerp(F, 0.62);
     link(L.sleeve, A, M, th3 * 1.35); link(L.piston, M.clone().lerp(A, 0.2), F, th3 * 0.8);
     link(L.brace, B, P2, th3 * 0.7);
@@ -201,7 +227,7 @@ function draw3(sim, trail) {
     L.hinge.position.copy(A); L.hinge.scale.set(th3 * 2.2, th3 * 2.6, th3 * 3.2); L.hinge.rotation.set(0, -a, 0);
     L.hinge2.position.copy(B); L.hinge2.scale.set(th3 * 1.8, th3 * 1.8, th3 * 2.6); L.hinge2.rotation.set(0, -a, 0);
     L.ball.position.copy(F); L.ball.scale.setScalar(th3 * 1.25);
-    L.pad.position.set(F.x, -v.comHeight + 0.14, F.z); L.pad.scale.set(th3 * 3.4, 1, th3 * 3.4);
+    L.pad.position.set(F.x, F.y - 0.41, F.z); L.pad.scale.set(th3 * 3.4, 1, th3 * 3.4); L.pad.quaternion.setFromUnitVectors(Y, new THREE.Vector3(-ca * Math.cos(phi), Math.sin(phi), -sa * Math.cos(phi)).normalize()).slerp(L.pad.userData.id ??= new THREE.Quaternion(), dep);   // stowed: pad faces the body; deployed: flat on the ground
     L.crush.position.copy(F).lerp(M, 0.18); L.crush.scale.set(th3 * 0.95, th3 * 1.4, th3 * 0.95); L.crush.quaternion.setFromUnitVectors(Y, dirS);
   }
   if (T3.brakes) T3.brakes.forEach(h => { h.rotation.z = -(sim.E.on || s.y - v.yf < 4000 ? 0.45 : 0.04); });

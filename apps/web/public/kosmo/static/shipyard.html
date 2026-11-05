@@ -24,6 +24,8 @@
   :root { --strip-h: 112px; }
   #view { position: absolute; inset: 0; } #view canvas { display: block; }
   #labels { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
+  .lbl .mk { position: absolute; left: 50%; top: calc(100% + 24px); width: 18px; height: 18px; margin: -9px 0 0 -9px; border: 1.5px solid rgba(255,255,255,.85); border-radius: 50%; display: none; box-shadow: 0 0 6px rgba(0,0,0,.6); }
+  .lbl.speck .mk { display: block; }
   .lbl { position: absolute; transform: translate(-50%, -100%); white-space: nowrap; font-size: 12px; color: #dbe5f3; text-shadow: 0 1px 5px #000, 0 0 2px #000; }
   #build { position: absolute; left: 14px; top: 66px; bottom: calc(var(--strip-h) + 10px); width: 360px; z-index: 4; overflow: auto; padding: 4px 8px 12px 4px; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
   h1 { font-weight: 500; font-size: 28px; margin: 2px 0 2px; }
@@ -56,13 +58,15 @@
 </style>
 <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
   <link rel="stylesheet" href="kosmographica.css?v=15">
-  <link rel="stylesheet" href="flight-ui.css">
+  <link rel="stylesheet" href="flight-ui.css?v=2">
+  <script type="module" src="flight-rail.js?v=1"></script>
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>
 <body>
 <div id="view"></div>
 <div id="labels"></div>
+<div id="glbcredit" style="display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:108px;z-index:5;font:11px system-ui,sans-serif;color:rgba(230,236,244,.75);text-shadow:0 1px 2px #000;white-space:nowrap"></div><style>#glbcredit a{color:#9fd0ff}</style>
 <div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
   <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="shipyard.html" class="here">Shipyard</a></nav><span></span></div>
 
@@ -101,7 +105,8 @@
 
 <div id="banner">drag · orbit &nbsp; wheel · zoom &nbsp; <kbd>space</kbd> play / pause</div>
 <div id="hud">
-  <div class="card f" style="margin:0 0 8px"><label>Aperture <b id="fstopV">f/2.8</b></label><input type="range" id="fstop" min="1.4" max="22" step="0.1" value="2.8"><label>Focal length <b id="focalV">35 mm</b></label><input type="range" id="focal" min="14" max="800" step="1" value="35"></div>
+  <div class="card f" style="margin:0 0 8px"><label>Scene <select id="sceneMode" aria-label="Scene background"><option value="space">Space &amp; planet</option><option value="black">Black studio</option></select></label></div>
+  <div class="card f" style="margin:0 0 8px"><label>Aperture <b id="fstopV">f/8.0</b></label><input type="range" id="fstop" min="1.4" max="22" step="0.1" value="8"><label>Focal length <b id="focalV">35 mm</b></label><input type="range" id="focal" min="14" max="800" step="1" value="35"></div>
   <p class="phase serif" id="phase">Ready</p>
   <div id="result" hidden></div>
   <table id="tele"></table>
@@ -123,6 +128,8 @@
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { boostTrackpadZoom } from './zoom-boost.js?v=1';
+import { launchPad } from './launch-pads.js?v=1';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
@@ -134,6 +141,8 @@ import { telemetryHTML, createEventLog } from './flight-hud.js';
 import { createFlightStrip } from './flight-strip.js';
 import { createSim, analyze, tuneAscent, planDock, ENGINES, WORLDS, elements, G0, completeStage, runAscent } from './ship-sim.js';
 // the engine table is shared with the Landing Lab; flight-data.json (served from the database) overrides the built-in rows
+// optional real vehicle models (models/spacex/manifest.json); without the files the procedural models below are used
+let GLBM = null; try { GLBM = await import('./vehicle-glb.js?v=1'); const man = await GLBM.loadManifest(); await Promise.all([...Object.values(man.labs?.shipyard || {}).map(id => GLBM.preloadVehicleModel(id)), ...[...new Set(Object.values(GLBM.ENGINE_GLB))].map(id => GLBM.preloadEngineModel(id))]); } catch { GLBM = null; }
 try { const r = await fetch('flight-data.json', { cache: 'no-cache' }); if (r.ok) loadEngines((await r.json()).engines); } catch {}
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -297,31 +306,71 @@ function renderAnalysis() {
 }
 
 // ---------------- 3D scene ----------------
+// The planet comes from the atlas itself (kosmo-models.js): the real colour map and relief, drifting clouds, night lights and the ray-marched Rayleigh/Mie
+// atmosphere, registered from textures/index.json exactly as the atlas does. If that cannot load, the procedural planet further down is used instead.
+let KM = null;
+try { KM = await import('./kosmo-models.js?v=1'); const idx = await fetch('textures/index.json').then(r => r.ok ? r.json() : null); if (idx) for (const [k, v] of Object.entries(idx)) KM.textures.register(k, v); }
+catch (e) { console.warn('atlas planet unavailable, using the procedural planet', e); KM = null; }
+// The atlas shaders are plain ShaderMaterials and do not write the logarithmic depth this renderer uses, so give them the same depth chunks as three's own materials.
+function logDepth(root) {
+  root.traverse(o => { for (const m of [].concat(o.material || [])) if (m.isShaderMaterial && !m.userData.logDepth) {
+    m.vertexShader = 'bool isPerspectiveMatrix( mat4 m ) { return m[ 2 ][ 3 ] == - 1.0; }\n#ifndef EPSILON\n#define EPSILON 1e-6\n#endif\n#include <logdepthbuf_pars_vertex>\n' + m.vertexShader.replace(/gl_Position\s*=\s*[^;]+;/, s => s + '\n#include <logdepthbuf_vertex>\n');
+    m.fragmentShader = '#include <logdepthbuf_pars_fragment>\n' + m.fragmentShader.replace(/void\s+main\s*\(\s*\)\s*\{/, s => s + '\n#include <logdepthbuf_fragment>\n');
+    m.userData.logDepth = true; m.needsUpdate = true; } });
+}
+const PAD_KIND = { f9: 'falcon9', f9dock: 'falcon9', f9exp: 'falcon9', electron: 'electron', saturn: 'saturn', blank: 'generic' };   // vehicles that start on a pad; the rest start in orbit
 const view = $('view'), renderer = new THREE.WebGLRenderer({ antialias: false, logarithmicDepthBuffer: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.8; renderer.outputColorSpace = THREE.SRGBColorSpace; view.appendChild(renderer.domElement);
 const scene = new THREE.Scene(); scene.background = new THREE.Color(0x03050a);
 const camera = new THREE.PerspectiveCamera(40, 1, 0.5, 5e7); camera.position.set(25, 15, 80);
-const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.target.set(0, 0, 0); controls.maxDistance = 2e7; controls.minDistance = 3;
+const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.target.set(0, 0, 0); controls.maxDistance = 2e7; controls.minDistance = 3; boostTrackpadZoom(controls, renderer.domElement);
 // lighting: one hard sun, soft studio-style reflections for the metal (image-based), and a faint blue fill from the planet
 scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
 scene.add(new THREE.HemisphereLight(0x7f9fd8, 0x10121a, 0.35));
 const sun = new THREE.DirectionalLight(0xfff4e4, 3.6); sun.position.set(-60, 40, 90); scene.add(sun);
 // post: bloom on the exhaust, thin-lens depth of field (aperture and focal length in the HUD), filmic tone mapping
 const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(2, 2, { type: THREE.HalfFloatType, samples: 4 }));
-const bloom = new UnrealBloomPass(new THREE.Vector2(2, 2), 0.35, 0.55, 1.6), bokeh = new BokehPass(scene, camera, { focus: 100, aperture: 0, maxblur: 0.01 });
+const bloom = new UnrealBloomPass(new THREE.Vector2(2, 2), 0.2, 0.4, 2.4), bokeh = new BokehPass(scene, camera, { focus: 100, aperture: 0, maxblur: 0.01 });
 composer.addPass(new RenderPass(scene, camera)); composer.addPass(bloom); composer.addPass(bokeh); composer.addPass(new OutputPass());
 const world = new THREE.Group(); scene.add(world);
 function resize() { const w = view.clientWidth, h = view.clientHeight; renderer.setSize(w, h); composer.setSize(w, h); camera.aspect = w / h; const l = $('build').offsetWidth + 14, r = $('hud').offsetParent ? $('hud').offsetWidth + 14 : 0; camera.setViewOffset(w, h, -(l - r) / 2, 0, w, h); camera.updateProjectionMatrix(); }
 addEventListener('resize', resize); resize();
+let starsPts = null;
 { // stars
   const g = new THREE.BufferGeometry(), p = []; for (let i = 0; i < 1500; i++) { const u = Math.random() * 2 - 1, t = Math.random() * 6.283, r = 3e7, s = Math.sqrt(1 - u * u); p.push(r * s * Math.cos(t), r * u, r * s * Math.sin(t)); }
-  g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3)); scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0xffffff, size: 2.2, sizeAttenuation: false })));
+  g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3)); starsPts = new THREE.Points(g, new THREE.PointsMaterial({ color: 0xffffff, size: 2.2, sizeAttenuation: false })); starsPts.renderOrder = -20; scene.add(starsPts);
 }
 const PLANET_COL = { earth: 0x1e3a5a, moon: 0x6c6c68, mars: 0x8a4a2c }, ATMO_COL = { earth: 0x5aa0ff, moon: 0x000000, mars: 0xd08a60 };
-let planetGroup = null, spinTicks = null;
+let planetGroup = null, spinTicks = null, planetModel = null, planetSpin = null;
+// Scene background: "space" (planet, atmosphere, pad, stars) or "black" (a black studio: only the vehicle, like the Landing lab's black studio background)
+let sceneMode = 'space'; try { sceneMode = localStorage.getItem('kosmo.shipyard.scene') === 'black' ? 'black' : 'space'; } catch {}
+function applyScene() {
+  const black = sceneMode === 'black';
+  if (starsPts) starsPts.visible = !black;
+  if (planetGroup) planetGroup.visible = !black;
+  scene.background.set(black ? 0x000000 : 0x03050a);   // while a mission flies the sky colour is recomputed per frame (it also honours this mode)
+}
+$('sceneMode').value = sceneMode;
+$('sceneMode').addEventListener('change', () => { sceneMode = $('sceneMode').value === 'black' ? 'black' : 'space'; try { localStorage.setItem('kosmo.shipyard.scene', sceneMode); } catch {} applyScene(); });
+applyScene();
 function buildPlanet(W) {
   if (planetGroup) { world.remove(planetGroup); planetGroup = null; }
   const g = new THREE.Group();
+  // the planet: the atlas' own body, with its poles along z so the equator is the flat flight plane (the model's pole is +y: tilt it a quarter turn)
+  const WN = { earth: 'Earth', moon: 'Moon', mars: 'Mars' }[W.id];
+  if (planetModel) { try { planetModel.dispose?.(); } catch {} planetModel = null; planetSpin = null; }
+  let atlas = null;
+  // the atmosphere at its real thickness: the atlas exaggerates it to read from afar, but here you fly through it
+  if (KM && WN) { try { atlas = KM.createModel(THREE, { name: WN, type: W.id === 'moon' ? 'moon' : 'planet', radius_m: W.R, segments: 128, atmShell: W.atmoTop ? W.atmoTop / W.R : undefined, atmBeforeOpaque: true }); } catch (e) { console.warn('atlas planet failed, using the procedural planet', e); } }
+  if (atlas) {
+    atlas.scale.setScalar(W.R - 3);                         // the surface sits 3 m below the pad reference
+    atlas.userData.lightDir?.copy(sun.position).normalize(); // same sun as the rest of the scene
+    logDepth(atlas);
+    const ea = atlas.userData.earth;                          // Earth's extra shells, at real heights: clouds ~10 km, city lights and sun glint on the surface
+    if (ea) { ea.clouds.scale.setScalar(1.0016); ea.lights.scale.setScalar(1.0002); ea.spec.scale.setScalar(1.0003); }
+    const spin = new THREE.Group(), tilt = new THREE.Group(); tilt.rotation.x = Math.PI / 2; tilt.add(atlas); spin.add(tilt); g.add(spin);
+    planetModel = atlas; planetSpin = spin;
+  } else {
   // the planet is a real sphere (poles along z, so the equator is the flat flight plane): a flat disk would cut through the scene from any angle but side-on
   // surface: lit sphere with a procedural albedo (ocean/land/cloud or regolith), and a Rayleigh-style glow shell: bright limb, fading inward
   const tex = (() => { const c = document.createElement('canvas'); c.width = 1024; c.height = 512; const gg = c.getContext('2d'); const base = { earth: '#1b4a78', moon: '#7d7d79', mars: '#a4552f' }[W.id] || '#555'; gg.fillStyle = base; gg.fillRect(0, 0, 1024, 512);
@@ -335,15 +384,18 @@ function buildPlanet(W) {
       fragmentShader: 'uniform vec3 col; varying vec3 vN; varying vec3 vV; void main(){ float f = pow(clamp(0.78 - dot(-vN, vV), 0.0, 1.0), 2.6); gl_FragColor = vec4(col * f * 2.2, f); }' });
     const shell = new THREE.Mesh(new THREE.SphereGeometry(W.R + W.atmoTop * 1.25, 192, 96), glow); g.add(shell);
   }
+  }
   // ground marks that turn with the planet: ticks every 1 km near the surface so motion is visible
-  const pts = []; for (let k = 0; k < 360 * 4; k++) { const a = k / 4 * Math.PI / 180, big = k % 4 === 0, h = big ? 400 : 120; pts.push(Math.cos(a) * W.R, Math.sin(a) * W.R, 0, Math.cos(a) * (W.R + h), Math.sin(a) * (W.R + h), 0); }
-  const fine = []; const step = 2000 / W.R; for (let a = 0; a < Math.PI / 3; a += step) for (const sg of [1, -1]) { const aa = a * sg + 0; fine.push(Math.cos(aa) * W.R, Math.sin(aa) * W.R, 0, Math.cos(aa) * (W.R + 14), Math.sin(aa) * (W.R + 14), 0); }
+  const pts = []; for (let k = 0; k < 360 * 4; k++) { const a = (k / 4 + 0.125) * Math.PI / 180, big = k % 4 === 0, h = big ? 400 : 120; pts.push(Math.cos(a) * W.R, Math.sin(a) * W.R, 0, Math.cos(a) * (W.R + h), Math.sin(a) * (W.R + h), 0); }
+  const fine = []; const step = 2000 / W.R; for (let a = step / 2; a < Math.PI / 3; a += step) for (const sg of [1, -1]) { const aa = a * sg + 0; fine.push(Math.cos(aa) * W.R, Math.sin(aa) * W.R, 0, Math.cos(aa) * (W.R + 14), Math.sin(aa) * (W.R + 14), 0); }
   spinTicks = new THREE.Group();
   const l1 = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35 }));
   const l2 = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(fine, 3)), new THREE.LineBasicMaterial({ color: 0xcfe2ff, transparent: true, opacity: 0.55 }));
   spinTicks.add(l1); spinTicks.add(l2); g.add(spinTicks);
-  const pad = new THREE.Mesh(new THREE.BoxGeometry(14, 6, 14), new THREE.MeshStandardMaterial({ color: 0x777b82 })); pad.position.set(W.R - 3, 0, 0); spinTicks.add(pad);
-  planetGroup = g; world.add(g);
+  // the launch pad for this vehicle type (launch-pads.js): the mount deck is at the pad reference (R), the ground 3 m below; local +y is up, i.e. world +x here
+  const padKind = PAD_KIND[$('preset').value];
+  if (padKind) { const padG = launchPad(THREE, padKind, { ground: -3 }); padG.rotation.z = -Math.PI / 2; padG.position.set(W.R, 0, 0); spinTicks.add(padG); }
+  planetGroup = g; g.visible = sceneMode !== 'black'; world.add(g);
 }
 
 function stationModel() {
@@ -360,6 +412,10 @@ const MAT = (c, o = {}) => new THREE.MeshPhysicalMaterial({ color: c, metalness:
 const SKIN = (() => { const c = document.createElement('canvas'); c.width = 64; c.height = 512; const g = c.getContext('2d'), gr = g.createLinearGradient(0, 0, 0, 512);   // soot toward the engine end, panel lines
   gr.addColorStop(0, '#f2f4f6'); gr.addColorStop(0.8, '#e4e7ea'); gr.addColorStop(1, '#3c3936'); g.fillStyle = gr; g.fillRect(0, 0, 64, 512); g.strokeStyle = 'rgba(0,0,0,0.12)'; g.lineWidth = 2; for (let y = 36; y < 512; y += 84) { g.beginPath(); g.moveTo(0, y); g.lineTo(64, y); g.stroke(); }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; t.rotation = Math.PI; t.center.set(0.5, 0.5); return t; })();
+// engine layouts: a centre engine and a ring (the procedural layout), Super Heavy's 3 / 10 / 20 Raptors, one engine
+const creditIds = new Set();
+function updateCredit() { const h = GLBM && creditIds.size ? GLBM.attributionHTML([...creditIds]) : ''; $('glbcredit').innerHTML = h; $('glbcredit').style.display = h ? '' : 'none'; }
+function placeEngines(p, R0) { return GLBM?.engineCluster(p.engineId, p.count, R0, -R0 * 0.5) ?? null; }
 function stackModel(parts, opts = {}) {
   // parts: [{ length, diameter, color, kind }], bottom to top; nose points +y
   const g = new THREE.Group(); let y = 0;
@@ -383,24 +439,47 @@ function craftModel(c, sim) {
   }
   const g = stackModel(parts), grp = new THREE.Group(); grp.add(g);
   const D0 = c.parts[0].diameter, R0 = D0 / 2, L0 = c.parts[0].length, dark = MAT(0x23272c, { m: 0.6, r: 0.5 }), chrome = MAT(0xd9dde2, { m: 1, r: 0.18, cc: 0 }), steel = MAT(0x8f979f, { m: 0.8, r: 0.4 });
+  const nPre = grp.children.length, gid = !GLBM ? null : c.parts[0].engineId === 'merlin-1d' && c.parts[0].count === 9 && Math.abs(D0 - 3.7) < 0.5 ? 'falcon9-block5' : c.parts[0].engineId === 'rutherford' && c.parts[0].count === 9 && Math.abs(D0 - 1.2) < 0.3 ? 'electron' : null,
+    gm = gid && GLBM.hasVehicleModel(gid) ? GLBM.vehicleModel(gid, { mode: 'tank', length: L0, diameter: gid === 'electron' ? D0 : undefined, hide: ['legs', 'gridFins'] }) : null;   // Falcon 9 first stage: real tank, engines and octaweb; legs and grid fins stay procedural so they animate
   // engine bells: a centre engine and a ring, like the real engine bay
-  const nE = Math.min(c.parts[0].count || 1, 9), bell = MAT(0x2b2420, { m: 0.9, r: 0.35, cc: 0 });
-  for (let i = 0; i < nE; i++) { const a = (i - 1) * 2 * Math.PI / Math.max(nE - 1, 1), rr = nE > 1 && i > 0 ? R0 * 0.58 : 0, b = new THREE.Mesh(new THREE.CylinderGeometry(R0 * (nE > 1 ? 0.1 : 0.14), R0 * (nE > 1 ? 0.19 : 0.4), R0 * 0.5, 20, 1, true).translate(0, -R0 * 0.25, 0), bell); b.position.set(Math.cos(a) * rr, 0, Math.sin(a) * rr); grp.add(b); }
-  const skirt = new THREE.Mesh(new THREE.CylinderGeometry(R0 * 1.02, R0 * 1.02, R0 * 0.5, 48).translate(0, R0 * 0.25, 0), dark); grp.add(skirt);
+  const nE = Math.min(c.parts[0].count || 1, 9), bell = MAT(0x2b2420, { m: 0.9, r: 0.35, cc: 0 }), bellMeshes = [];
+  for (let i = 0; i < nE; i++) { const a = (i - 1) * 2 * Math.PI / Math.max(nE - 1, 1), rr = nE > 1 && i > 0 ? R0 * 0.58 : 0, b = new THREE.Mesh(new THREE.CylinderGeometry(R0 * (nE > 1 ? 0.1 : 0.14), R0 * (nE > 1 ? 0.19 : 0.4), R0 * 0.5, 20, 1, true).translate(0, -R0 * 0.25, 0), bell); b.position.set(Math.cos(a) * rr, 0, Math.sin(a) * rr); grp.add(b); bellMeshes.push(b); }
+  // aft skirt: the side wall only (open ended), plus a separate base disc a hair below the stage's own bottom face. A closed skirt put a second disc exactly on top
+  // of the stage's bottom cap, and the two coplanar discs (one dark, one white) z-fought into the black-and-white wedges seen from behind.
+  const skirt = new THREE.Mesh(new THREE.CylinderGeometry(R0 * 1.02, R0 * 1.02, R0 * 0.5, 48, 1, true).translate(0, R0 * 0.25, 0), dark); grp.add(skirt);
+  const baseDisc = new THREE.Mesh(new THREE.CircleGeometry(R0 * 1.02, 48), dark); baseDisc.rotation.x = Math.PI / 2; baseDisc.position.y = -R0 * 0.01; grp.add(baseDisc);
+  // real engine models (models/spacex/engines): replace the procedural bells; the nozzle EXIT stays on the procedural exit plane (y = -R0/2), so the plume and everything else are unchanged.
+  // The Falcon 9 booster GLB already has its own engines. A missing engine file leaves the bells above.
+  const realEng = gm ? null : placeEngines(c.parts[0], R0);
+  if (realEng) { for (const b of bellMeshes) b.visible = false; grp.add(realEng); creditIds.add(realEng.userData.glb); updateCredit(); }
+  if (gm) { g.children[0].visible = false; for (let i = nPre; i < grp.children.length; i++) grp.children[i].visible = false; grp.add(gm); creditIds.add(gid); updateCredit(); }
   // landing legs and grid fins for stages that will land with engines
   const link = (m, P, Q, rad) => { const d = Q.clone().sub(P), len = Math.max(d.length(), 1e-4); m.position.copy(P).addScaledVector(d, 0.5); m.scale.set(rad, len, rad); m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.normalize()); };
   if (c.parts[0].landing.mode === 'propulsive') {
-    const legs = new THREE.Group(), th = Math.max(0.2, R0 * 0.07), cyl = (mat, seg = 12) => new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, seg), mat);
+    // Four legs, hinged low on the stage and stowed folded UP along the body; deploying swings them down and out about the hinge to a span of ~2.45 body diameters
+    // (Falcon 9: 18 m across 3.66 m). legs.userData.update(k) poses them, k = 0 stowed .. 1 deployed. See models/SPACEX_GEAR.md.
+    const legs = new THREE.Group(), th = Math.max(0.2, R0 * 0.07), cyl = (mat, seg = 12) => new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, seg), mat), Yax = new THREE.Vector3(0, 1, 0), LR = 2.45 * D0, hingeH = Math.min(0.117 * L0, 9), footY = -R0 * 0.45 + 0.4, parts4 = [];
+    const link2 = (m, P, Q, rad) => { const d = Q.clone().sub(P), len = Math.max(d.length(), 1e-4); m.position.copy(P).addScaledVector(d, 0.5); m.scale.set(rad, len, rad); m.quaternion.setFromUnitVectors(Yax, d.normalize()); };
     for (let i = 0; i < 4; i++) {
-      const a = i * Math.PI / 2 + Math.PI / 4, ca = Math.cos(a), sa = Math.sin(a), A = new THREE.Vector3(ca * R0 * 1.03, Math.min(0.14 * L0, 8), sa * R0 * 1.03), B = new THREE.Vector3(ca * R0 * 1.03, Math.min(0.14 * L0, 8) * 0.35, sa * R0 * 1.03), F = new THREE.Vector3(ca * R0 * 2.2, 0.4, sa * R0 * 2.2);
-      const M = A.clone().lerp(F, 0.5), P2 = A.clone().lerp(F, 0.62), act = B.clone().lerp(P2, 0.5);
-      const sleeve = cyl(steel), piston = cyl(chrome), brace = cyl(steel), aOut = cyl(steel), aIn = cyl(chrome); link(sleeve, A, M, th * 1.35); link(piston, M.clone().lerp(A, 0.2), F, th * 0.8); link(brace, B, P2, th * 0.7); link(aOut, B, act, th * 0.6); link(aIn, act.clone().lerp(B, 0.15), P2, th * 0.4);
-      const fair = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), MAT(0xe9edf1, { m: 0.3, r: 0.4 })), dir = F.clone().sub(A), fl = dir.length() * 0.55; fair.position.copy(A).addScaledVector(dir.clone().normalize(), fl / 2).add(new THREE.Vector3(ca, 0, sa).multiplyScalar(th * 1.1)); fair.scale.set(th * 0.4, fl, th * 3.4); fair.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize()); fair.rotateY(-a);
-      const pad = new THREE.Mesh(new THREE.CylinderGeometry(1, 1.15, 0.28, 24), dark); pad.position.set(F.x, 0.14, F.z); pad.scale.set(th * 3.4, 1, th * 3.4); const ball = new THREE.Mesh(new THREE.SphereGeometry(1, 14, 10), chrome); ball.position.copy(F); ball.scale.setScalar(th * 1.25);
-      const hinge = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), dark); hinge.position.copy(A); hinge.scale.set(th * 2.2, th * 2.6, th * 3.2); hinge.rotation.y = -a;
-      legs.add(sleeve, piston, brace, aOut, aIn, fair, pad, ball, hinge);
+      const a = i * Math.PI / 2 + Math.PI / 4, ca = Math.cos(a), sa = Math.sin(a), L = { a, ca, sa };
+      L.sleeve = cyl(steel); L.piston = cyl(chrome); L.brace = cyl(steel); L.aOut = cyl(steel); L.aIn = cyl(chrome);
+      L.fair = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), MAT(0xe9edf1, { m: 0.3, r: 0.4 })); L.hinge = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), dark);
+      L.pad = new THREE.Mesh(new THREE.CylinderGeometry(1, 1.15, 0.28, 24), dark); L.ball = new THREE.Mesh(new THREE.SphereGeometry(1, 14, 10), chrome);
+      legs.add(L.sleeve, L.piston, L.brace, L.aOut, L.aIn, L.fair, L.pad, L.ball, L.hinge); parts4.push(L);
     }
-    legs.visible = false; legs.name = 'legs'; grp.add(legs);
+    legs.userData.update = k => {
+      for (const L of parts4) {
+        const { a, ca, sa } = L, A = new THREE.Vector3(ca * R0 * 1.03, hingeH, sa * R0 * 1.03), B = new THREE.Vector3(ca * R0 * 1.03, hingeH * 0.35, sa * R0 * 1.03);
+        const dx = LR - R0 * 1.03, dy = footY - hingeH, len = Math.hypot(dx, dy), phi1 = Math.atan2(dx, dy), phi = 0.05 + (phi1 - 0.05) * k;
+        const F = new THREE.Vector3(A.x + ca * Math.sin(phi) * len, A.y + Math.cos(phi) * len, A.z + sa * Math.sin(phi) * len), M = A.clone().lerp(F, 0.5), P2 = A.clone().lerp(F, 0.62), act = B.clone().lerp(P2, 0.5);
+        link2(L.sleeve, A, M, th * 1.35); link2(L.piston, M.clone().lerp(A, 0.2), F, th * 0.8); link2(L.brace, B, P2, th * 0.7); link2(L.aOut, B, act, th * 0.6); link2(L.aIn, act.clone().lerp(B, 0.15), P2, th * 0.4);
+        const dir = F.clone().sub(A), fl = dir.length() * 0.55, dn = dir.clone().normalize();
+        L.fair.position.copy(A).addScaledVector(dn, fl / 2).add(new THREE.Vector3(ca, 0, sa).multiplyScalar(th * 1.1)); L.fair.scale.set(th * 0.4, fl, th * 3.4); L.fair.quaternion.setFromUnitVectors(Yax, dn); L.fair.rotateY(-a);
+        L.pad.position.set(F.x, F.y - 0.14, F.z); L.pad.scale.set(th * 3.4, 1, th * 3.4); L.pad.quaternion.setFromUnitVectors(Yax, new THREE.Vector3(-ca * Math.cos(phi), Math.sin(phi), -sa * Math.cos(phi)).normalize()).slerp(new THREE.Quaternion(), k);
+        L.ball.position.copy(F); L.ball.scale.setScalar(th * 1.25); L.hinge.position.copy(A); L.hinge.scale.set(th * 2.2, th * 2.6, th * 3.2); L.hinge.rotation.y = -a;
+      }
+    };
+    legs.userData.update(0); legs.name = 'legs'; grp.add(legs);
     for (let i = 0; i < 4; i++) {   // lattice grid fins near the top of the stage
       const ang = i * Math.PI / 2, fin = new THREE.Group(), fw = R0 * 0.78, fh = R0 * 0.62, fd = R0 * 0.12, t = R0 * 0.045, add = (sx, sy, sz, px, py, pz) => { const m = new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), steel); m.position.set(px, py, pz); fin.add(m); };
       add(fd, t * 2, fw, 0, fh / 2, 0); add(fd, t * 2, fw, 0, -fh / 2, 0); add(fd, fh, t * 2, 0, 0, fw / 2); add(fd, fh, t * 2, 0, 0, -fw / 2); for (let k = 1; k < 6; k++) { add(fd * 0.9, t, fw, 0, -fh / 2 + fh * k / 6, 0); add(fd * 0.9, fh, t, 0, 0, -fw / 2 + fw * k / 6); }
@@ -417,7 +496,7 @@ function craftModel(c, sim) {
   grp.userData.D0 = D0; grp.userData.length = g.userData.length; return grp;
 }
 let sim = null, sceneCrafts = new Map(), stationObj = null, running = false, wallLast = 0, mission = null;
-function clearScene() { for (const o of sceneCrafts.values()) world.remove(o.obj); sceneCrafts.clear(); if (stationObj) { world.remove(stationObj.obj); stationObj = null; } if (planetGroup) { world.remove(planetGroup); planetGroup = null; } for (const l of [...$('labels').children]) l.remove(); trailLines.forEach(t => world.remove(t.line)); trailLines.clear(); }
+function clearScene() { creditIds.clear(); updateCredit(); for (const o of sceneCrafts.values()) world.remove(o.obj); sceneCrafts.clear(); if (stationObj) { world.remove(stationObj.obj); stationObj = null; } if (planetGroup) { world.remove(planetGroup); planetGroup = null; } for (const l of [...$('labels').children]) l.remove(); trailLines.forEach(t => world.remove(t.line)); trailLines.clear(); }
 const trailLines = new Map();
 function drawPreview() { if (sim) return; clearScene(); const W = WORLDS[state.world]; buildPlanet(W); const c = previewCraft(); sceneCrafts.set('preview', { obj: c.obj, craft: c.craft }); world.add(c.obj); placePreview(W); resetCamera(c.obj.userData.length); }
 function previewCraft() {
@@ -482,7 +561,7 @@ function autoCamera() {
   let d = Math.max(L * 2.4, 40);
   if (c.role === 'main' && sim.station && c.ap.phase === 'approach') d = clamp(c.ap.range * 1.6 + 20, 30, 6000);
   else if (sel === 'station' && sim.station) { const c0 = sim.crafts[0]; const D = Math.hypot(c0.pos[0] - sim.stationState().pos[0], c0.pos[1] - sim.stationState().pos[1]); d = clamp(D * 1.6 + 30, 60, 8000); }
-  else if (c.ap.phase === 'landing' || (e.h < 4000 && c.vel[0] * e.up[0] + c.vel[1] * e.up[1] < 0 && c.role !== 'main')) d = Math.max(L * 2.6, Math.min((e.h + 40) * 2.4, 700));
+  else if (c.ap.phase === 'landing' || (e.h < 4000 && c.vel[0] * e.up[0] + c.vel[1] * e.up[1] < 0 && c.role !== 'main')) d = Math.max(L * 2.8, Math.min((e.h + 40) * 0.9, L * 9));
   else if (c.ap.phase === 'orbit' || c.ap.phase === 'phasing' || c.ap.phase === 'transfer') d = Math.max(L * 3, 120);
   const dir = camera.position.clone().sub(controls.target); const cur = dir.length(); dir.normalize();
   const nd = cur + (d - cur) * 0.06; camera.position.copy(controls.target).addScaledVector(dir, nd);
@@ -507,13 +586,27 @@ function drawMap() {
   const pad = P([Math.cos(sim.M.padAngle * Math.PI / 180) * W.R * Math.cos(W.w * sim.t) - Math.sin(sim.M.padAngle * Math.PI / 180) * W.R * Math.sin(W.w * sim.t), Math.sin(sim.M.padAngle * Math.PI / 180) * W.R * Math.cos(W.w * sim.t) + Math.cos(sim.M.padAngle * Math.PI / 180) * W.R * Math.sin(W.w * sim.t)]); g.fillStyle = '#ffe28a'; g.fillRect(pad[0] - 3, pad[1] - 3, 6, 6);
   g.fillStyle = '#8a9bb8'; g.font = '20px sans-serif'; g.fillText(local ? 'local map · launch site in yellow' : 'orbit map · station in white', 10, 24);
 }
+// a ring marks a craft that is too small to see at the current distance (long-range rendezvous, high orbit)
+const _sp = new THREE.Vector3();
+function speck(label, pos, length) {
+  if (!label.querySelector('.mk')) label.insertAdjacentHTML('beforeend', '<i class="mk"></i>');
+  _sp.set(pos[0], pos[1], 0).applyMatrix4(world.matrixWorld); const d = camera.position.distanceTo(_sp), px = length / (2 * Math.max(d, 1e-3) * Math.tan(camera.fov * Math.PI / 360)) * view.clientHeight;
+  label.classList.toggle('speck', px < 26);
+}
 function updateScene() {
   const f = followPos(), a = Math.PI / 2 - Math.atan2(f[1], f[0]);
   world.rotation.z = a; const c = Math.cos(a), s = Math.sin(a); world.position.set(-(f[0] * c - f[1] * s), -(f[0] * s + f[1] * c), 0);
+  world.updateMatrixWorld(true);        // labels and markers project through this frame's transform, not the previous one
   if (spinTicks) spinTicks.rotation.z = sim.W.w * sim.t;
-  { // sky: daylight blue near the ground, fading to black with altitude (the planet's own atmosphere colour)
-    const W = sim.W, mc = sim.crafts[0], h = Math.max(sim.env(mc).h, 0), t = W.atmoTop ? Math.pow(Math.max(0, 1 - h / (W.atmoTop * 0.7)), 1.6) : 0;
-    scene.background.set(0x03050a).lerp(new THREE.Color({ earth: 0x5b8fd0, mars: 0xc98e66 }[W.id] || 0x03050a), t); }
+  if (planetSpin) planetSpin.rotation.z = sim.W.w * sim.t;
+  if (planetModel) { planetModel.tick?.(performance.now() / 1000); logDepth(planetModel);
+    planetModel.traverse(o => { if (o.isMesh && !o.userData.ro) { o.userData.ro = 1; if (o.name !== 'atmosphere' && !o.material?.transparent) o.renderOrder = -10; } }); }   // planet body first, then the haze, then the vehicles   // layers such as the atmosphere are built lazily on the first tick
+  { // sky: daylight blue near the ground, fading to black with altitude (the planet's own atmosphere colour), by the altitude of the followed target
+    const W = sim.W, h = Math.max(Math.hypot(f[0], f[1]) - W.R, 0) /* altitude of what the camera follows, not of the first vehicle (which may have landed) */, t = W.atmoTop ? Math.pow(Math.max(0, 1 - h / (W.atmoTop * 0.7)), 1.6) : 0;
+    if (sceneMode === 'black') scene.background.set(0x000000); else scene.background.set(0x03050a).lerp(new THREE.Color({ earth: 0x5b8fd0, mars: 0xc98e66 }[W.id] || 0x03050a), t); }
+  // The labels are projected below with the world and camera matrices, which three.js only refreshes inside render(): without this they use last
+  // frame's, so at high time-warp (the vehicle moves far per frame) each label trails its vehicle and jitters with the frame time.
+  world.updateMatrixWorld(true); camera.updateMatrixWorld(); camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
   const tmp = new THREE.Vector3();
   for (const [k, o] of sceneCrafts) {
     const cr = o.craft, obj = o.obj, off = 0.35 * obj.userData.length; obj.position.set(cr.pos[0] - Math.cos(cr.th) * off, cr.pos[1] - Math.sin(cr.th) * off, 0); obj.rotation.z = cr.th - Math.PI / 2;
@@ -522,10 +615,10 @@ function updateScene() {
       const e = sim.env(cr), vac = e.rho <= 1e-3, k = 0.85 + 0.15 * Math.sin(sim.t * 70 + cr.id) + 0.07 * Math.sin(sim.t * 173), len = thrust ? Math.min(obj.userData.D0 * 4.2 * (0.7 + 0.5 * cr.throttleCmd) * k * (vac ? 0.7 : 1), 400) : 0;
       pl.visible = thrust; pl.children.forEach((m, i) => { m.scale.set((1 + (vac ? 1.6 + 0.4 * i : 0.12 * i)) * (1 + 0.05 * Math.sin(sim.t * 90 + i)), len * (1 - 0.18 * i), 1 + (vac ? 1.6 : 0)); m.rotation.y = sim.t * 3 + i; });
     }
-    if (legs) legs.visible = cr.ap.phase === 'landing' || cr.ap.phase === 'coast' && sim.env(cr).h < 20e3;
-    if (o.label) { tmp.set(cr.pos[0], cr.pos[1], 0).applyMatrix4(world.matrixWorld).project(camera); const w = view.clientWidth, h = view.clientHeight; o.label.style.display = tmp.z < 1 && tmp.z > -1 && cr.alive !== false ? '' : 'none'; o.label.style.left = ((tmp.x + 1) / 2 * w) + 'px'; o.label.style.top = ((1 - tmp.y) / 2 * h - 24) + 'px'; }
+    if (legs) { const want = cr.ap.phase === 'landing' || cr.ap.phase === 'coast' && sim.env(cr).h < 3e3 ? 1 : 0, ud = obj.userData, dtl = Math.abs(sim.t - (ud.legT ?? sim.t)); ud.legT = sim.t; const k0 = ud.legK ?? want, k1 = k0 + Math.max(-dtl / 3, Math.min(dtl / 3, want - k0)); if (k1 !== ud.legK) { ud.legK = k1; legs.userData.update(k1); } }   // stowed (visible, folded up the body) until the landing burn, then swing out over ~3 s
+    if (o.label) { speck(o.label, cr.pos, obj.userData.length || 30); tmp.set(cr.pos[0], cr.pos[1], 0).applyMatrix4(world.matrixWorld).project(camera); const w = view.clientWidth, h = view.clientHeight; o.label.style.display = tmp.z < 1 && tmp.z > -1 && cr.alive !== false ? '' : 'none'; o.label.style.left = ((tmp.x + 1) / 2 * w) + 'px'; o.label.style.top = ((1 - tmp.y) / 2 * h - 24) + 'px'; }
   }
-  if (stationObj) { const st = sim.stationState(); stationObj.obj.position.set(st.pos[0], st.pos[1], 0); stationObj.obj.rotation.set(0, 0, st.angle); tmp.set(st.pos[0], st.pos[1], 0).applyMatrix4(world.matrixWorld).project(camera); const w = view.clientWidth, h = view.clientHeight; stationObj.label.style.display = tmp.z < 1 ? '' : 'none'; stationObj.label.style.left = ((tmp.x + 1) / 2 * w) + 'px'; stationObj.label.style.top = ((1 - tmp.y) / 2 * h - 40) + 'px'; }
+  if (stationObj) { const st = sim.stationState(); speck(stationObj.label, st.pos, 34); stationObj.obj.position.set(st.pos[0], st.pos[1], 0); stationObj.obj.rotation.set(0, 0, st.angle); tmp.set(st.pos[0], st.pos[1], 0).applyMatrix4(world.matrixWorld).project(camera); const w = view.clientWidth, h = view.clientHeight; stationObj.label.style.display = tmp.z < 1 ? '' : 'none'; stationObj.label.style.left = ((tmp.x + 1) / 2 * w) + 'px'; stationObj.label.style.top = ((1 - tmp.y) / 2 * h - 40) + 'px'; }
   // trails
   for (const cr of sim.crafts) { const key = 'c' + cr.id; let t = trailLines.get(key); if (!t) { const g = new THREE.BufferGeometry(); t = { line: new THREE.Line(g, new THREE.LineBasicMaterial({ color: cr.role === 'main' ? 0x7fc3ff : 0xffb86b, transparent: true, opacity: 0.7 })), n: 0 }; world.add(t.line); trailLines.set(key, t); }
     if (cr.trail.length !== t.n) { t.n = cr.trail.length; const arr = new Float32Array(cr.trail.length * 3); cr.trail.forEach((p, i) => { arr[i * 3] = p[0]; arr[i * 3 + 1] = p[1]; arr[i * 3 + 2] = 0; }); t.line.geometry.setAttribute('position', new THREE.BufferAttribute(arr, 3)); t.line.geometry.computeBoundingSphere(); t.line.frustumCulled = false; } }
@@ -547,7 +640,7 @@ function seekTo(t) {
 }
 function updateStrip(c, e) {
   if (sim.t >= headT - 1e-9) {
-    headT = sim.t; if (e.q > maxQ.q) maxQ = { q: e.q, t: sim.t };
+    headT = sim.t; { const eq = sim.env(sim.crafts[0]).q; if (eq > maxQ.q) maxQ = { q: eq, t: sim.t }; }
     const ms = [], seen = new Set(); if (sim.events.some(ev => /Liftoff/.test(ev.text)) && maxQ.q > 4000) ms.push({ t: maxQ.t, label: 'Max Q' }), seen.add('Max Q');
     for (const ev of sim.events) for (const [re, label] of MILES) if (re.test(ev.text) && !seen.has(label)) { seen.add(label); ms.push({ t: ev.t, label }); break; }
     mileKeep = ms;
@@ -591,10 +684,10 @@ function plots() {
 
 // ---------------- frame loop ----------------
 function renderFrame() {
-  const N = +($('fstop')?.value || 2.8), mm = +($('focal')?.value || 35), focus = Math.max(camera.position.distanceTo(controls.target), 2);
+  const N = +($('fstop')?.value || 8), mm = +($('focal')?.value || 35), focus = Math.max(camera.position.distanceTo(controls.target), 2);
   camera.fov = 2 * Math.atan(12 / mm) * 180 / Math.PI; camera.updateProjectionMatrix();
   bokeh.uniforms['focus'].value = focus; bokeh.uniforms['aperture'].value = Math.min(6e-4, 8e-5 * (2.8 / N) * (mm / 35) ** 2 * (100 / Math.max(focus, 5)) ** 2); bokeh.uniforms['maxblur'].value = 0.012;
-  renderer.toneMappingExposure = 0.8 * Math.pow(5.6 / N, 0.5); bloom.strength = 0.3 + (sim && sim.crafts.some(c => c.thrust > 0) ? 0.25 : 0);
+  renderer.toneMappingExposure = 0.8 * Math.pow(5.6 / N, 0.5); bloom.strength = 0.12 + (sim && sim.crafts.some(c => c.thrust > 0) ? 0.14 : 0);
   composer.render();
 }
 const BUSY = new Set(['pad', 'ascent', 'meco', 'ullage', 'circularize', 'hoh1', 'hoh2', 'approach', 'deorbit-burn', 'landing', 'boostback', 'flip', 'undock', 'deorbit-orient']);
@@ -616,7 +709,7 @@ function frame(now) {
   renderFrame();
 }
 function renderNow() { if (!sim) return; syncCrafts(); fillFollow(); autoCamera(); updateScene(); hud(); plots(); drawMap(); controls.update(); renderFrame(); }
-window.__shipyard = { get sim() { return sim; }, step(sec) { if (sim) { running = false; sim.advance(sec, 800000); renderNow(); } }, renderNow, state: () => state };
+window.__shipyard = { get three() { return { camera, controls, world, scene }; }, get sim() { return sim; }, step(sec) { if (sim) { running = false; sim.advance(sec, 800000); renderNow(); } }, renderNow, state: () => state };
 loadPreset('f9dock');
 requestAnimationFrame(frame);
 
