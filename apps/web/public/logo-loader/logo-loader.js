@@ -149,6 +149,80 @@ Star:['Night Rainbow','Radial sweep · stars fade · word rise',(r,C)=>{const [D
 };
 const DEFAULT_REVEAL=['Traced logo','Colour wipe · word wipe',(r,C)=>{wipes(byX(C.col),'l',0,70,800);wordWipe(C.ink,500,900)}];
 
+/* Jingle playback shared by the loader and the logo sheet.
+   Rule: the music may be faded or dropped, but the spoken "Kosmographica" is never cut or faded.
+   `word` is the protected stretch of each file in seconds, including a small margin. */
+const JINGLES = {
+  1: { file: "jingle-1.mp3", word: [2.15, 3.6] }, // music builds, then the word
+  2: { file: "jingle-2.mp3", word: [0, 1.25] }, // the word first, then a synth swell
+};
+const JINGLE_FADE = 0.3;
+
+function createJinglePlayer(base) {
+  let ctx = null, cur = null;
+  const buffers = {};
+  const getCtx = () => {
+    if (!ctx) {
+      const C = window.AudioContext || window.webkitAudioContext;
+      if (C) ctx = new C();
+    }
+    return ctx;
+  };
+  const load = (n) => {
+    if (!buffers[n]) {
+      const c = getCtx();
+      buffers[n] = c
+        ? fetch(base + JINGLES[n].file).then((r) => r.arrayBuffer()).then((a) => c.decodeAudioData(a))
+        : Promise.reject(new Error("no Web Audio"));
+    }
+    return buffers[n];
+  };
+  /* Ends the current jingle without touching the word. Returns the seconds until it's out of the way. */
+  const release = (owner) => {
+    if (!cur || (owner && cur.owner !== owner)) return 0;
+    const now = ctx.currentTime, pos = now - cur.at, [a, b] = JINGLES[cur.n].word, playing = cur;
+    cur = null;
+    if (pos < 0) { playing.src.stop(); return 0; }
+    if (pos >= playing.len) return 0;
+    // before the word, with room for a whole fade: fade now. Otherwise the word finishes first.
+    const fadeAt = pos + JINGLE_FADE + 0.02 <= a || pos >= b ? now : playing.at + b;
+    const g = playing.gain.gain;
+    g.setValueAtTime(1, fadeAt);
+    g.linearRampToValueAtTime(0, fadeAt + JINGLE_FADE);
+    playing.src.stop(fadeAt + JINGLE_FADE + 0.02);
+    return fadeAt - now;
+  };
+  /* Browsers block sound until the visitor has interacted with the page. If blocked, this stays silent rather than playing late. */
+  const play = async (n, owner) => {
+    const c = getCtx();
+    if (!c) return false;
+    if (c.state !== "running") {
+      await Promise.race([c.resume().catch(() => {}), new Promise((r) => setTimeout(r, 120))]);
+      if (c.state !== "running") return false;
+    }
+    const buffer = await load(n);
+    const wait = release();
+    const src = c.createBufferSource(), gain = c.createGain();
+    src.buffer = buffer;
+    src.connect(gain).connect(c.destination);
+    const at = c.currentTime + wait + 0.01;
+    src.start(at);
+    const me = { n, src, gain, at, len: buffer.duration, owner };
+    cur = me;
+    src.onended = () => { if (cur === me) cur = null; };
+    return true;
+  };
+  /* Only for the visitor switching sound off: that is their call, so it stops right away. */
+  const mute = () => {
+    if (!cur) return;
+    const now = ctx.currentTime;
+    cur.gain.gain.setTargetAtTime(0, now, 0.02);
+    cur.src.stop(now + 0.1);
+    cur = null;
+  };
+  return { load, play, release, mute, unlock: () => { const c = getCtx(); if (c) c.resume().catch(() => {}); }, info: () => (cur && ctx ? { n: cur.n, pos: ctx.currentTime - cur.at } : null) };
+}
+
 /* ---------- Logo loader runtime (appended after the reveal code by tools/build-logo-loader.mjs) ----------
    Plays ONE randomly chosen logo reveal per loading screen and holds on its final frame.
    Usage anywhere:
@@ -156,7 +230,7 @@ const DEFAULT_REVEAL=['Traced logo','Colour wipe · word wipe',(r,C)=>{wipes(byX
      Static: <script src="/logo-loader/logo-loader.js"></script> + <div data-kosmo-logo-loader style="width:400px;height:260px"></div>
    ------------------------------------------------------------------------------------------------------- */
 const BASE = (document.currentScript && document.currentScript.src || "/logo-loader/logo-loader.js").replace(/[^/]*$/, "");
-const KEYS = { crt: "kosmo-logo-crt", bag: "kosmo-logo-bag" };
+const KEYS = { crt: "kosmo-logo-crt", bag: "kosmo-logo-bag", sound: "kosmo-logo-sound" };
 const get = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
 const set = (k, v) => { try { localStorage.setItem(k, v); } catch { /* private window: fine without it */ } };
 
@@ -182,6 +256,10 @@ function nextId(ids) {
 }
 
 const crtDefault = () => get(KEYS.crt) !== "0";
+const soundDefault = () => get(KEYS.sound) !== "0";
+const player = createJinglePlayer(BASE + "audio/");
+const ICON_ON = '<path d="M3 9v6h4l5 4V5L7 9H3z"/><path d="M15 8.5a5 5 0 0 1 0 7M17.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>';
+const ICON_OFF = '<path d="M3 9v6h4l5 4V5L7 9H3z"/><path d="M16 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>';
 
 /* The colour actually behind the element, used for the tone and for knockouts such as letters cut out of a black box. */
 function backdrop(el) {
@@ -209,7 +287,10 @@ function injectStyle() {
   if (document.getElementById("kosmo-logo-loader-css")) return;
   const s = document.createElement("style");
   s.id = "kosmo-logo-loader-css";
-  s.textContent = `.kl-root{display:flex;align-items:center;justify-content:center;width:100%;height:100%;pointer-events:none}
+  s.textContent = `.kl-root{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:100%;pointer-events:none}
+.kl-sound{position:absolute;right:0;bottom:0;z-index:1;width:32px;height:32px;padding:6px;border:0;border-radius:8px;background:transparent;color:var(--kl-ink,currentColor);opacity:.65;cursor:pointer;pointer-events:auto}
+.kl-sound:hover,.kl-sound:focus-visible{opacity:1}
+.kl-sound svg{width:100%;height:100%;fill:currentColor}
 .kl-root .logo{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
 .kl-root svg{display:block;overflow:visible;width:100%;height:100%}
 .kl-root svg *{transform-box:fill-box;transform-origin:50% 50%}`;
@@ -248,24 +329,50 @@ function mount(el, opts) {
     if (on) g.setAttribute("filter", `url(#${fid})`);
     else g.removeAttribute("filter");
   };
+  const soundOn = () => (inst.sound === undefined ? soundDefault() : inst.sound);
+  const startJingle = () => { if (inst.jingle) player.play(inst.jingle, inst).catch((e) => console.warn("logo jingle:", e)); };
   inst = {
     id: null,
+    jingle: 0,
+    sound: o.sound,
     crt: o.crt,
+    soundChanged(on) { if (!on) player.mute(); else if (inst.id) startJingle(); paintButton(); },
     setCrt(on) { inst.crt = on; applyCrt(on === undefined ? crtDefault() : on); },
     destroy() {
       dead = true;
       clearTimeout(timer);
       mine.forEach((a) => a.cancel());
+      player.release(inst); // the jingle outlives the loader if it is mid-word
       root.remove();
       live.delete(inst);
     },
   };
   live.add(inst);
 
+  const button = o.soundButton === false ? null : document.createElement("button");
+  function paintButton() {
+    if (!button) return;
+    const on = soundOn();
+    button.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${on ? ICON_ON : ICON_OFF}</svg>`;
+    button.setAttribute("aria-label", on ? "Turn loader sound off" : "Turn loader sound on");
+    button.setAttribute("aria-pressed", String(on));
+  }
+  if (button) {
+    button.type = "button";
+    button.className = "kl-sound";
+    button.addEventListener("click", () => { player.unlock(); setSound(!soundOn()); });
+    paintButton();
+    root.appendChild(button);
+  }
+
   const start = async () => {
-    const ids = (await loadManifest()).ids;
+    const m = await loadManifest(), ids = m.ids;
     const id = o.id && ids.includes(String(o.id)) ? String(o.id) : nextId(ids);
     const L = await loadLogo(id);
+    if (dead) return;
+    inst.jingle = (m.jingles && m.jingles[id]) || 1;
+    // give the jingle a moment to arrive so it starts with the reveal, but never hold the logo back for it
+    if (soundOn()) await Promise.race([player.load(inst.jingle).catch(() => {}), new Promise((r) => setTimeout(r, 400))]);
     if (dead) return;
     const { tone, paper } = resolveTone(el, o.tone);
     root.style.setProperty("--kl-ink", tone === "dark" ? "#ffffff" : "#0d0d10");
@@ -290,6 +397,7 @@ function mount(el, opts) {
     mine = anims;
     anims = [];
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) mine.forEach((a) => a.finish());
+    if (soundOn()) startJingle();
     if (o.onReady) o.onReady(id);
   };
   timer = setTimeout(() => start().catch((e) => console.warn("logo loader:", e)), o.delay || 0);
@@ -301,12 +409,17 @@ function setCrt(on) {
   live.forEach((i) => { if (i.crt === undefined) i.setCrt(undefined); });
 }
 
-window.KosmoLogoLoader = { mount, setCrt, getCrt: crtDefault, ids: () => loadManifest().then((m) => m.ids) };
+function setSound(on) {
+  set(KEYS.sound, on ? "1" : "0");
+  live.forEach((i) => { if (i.sound === undefined || i.sound !== on) { i.sound = undefined; i.soundChanged(on); } });
+}
+
+window.KosmoLogoLoader = { mount, setCrt, getCrt: crtDefault, setSound, getSound: soundDefault, player, ids: () => loadManifest().then((m) => m.ids) };
 
 const auto = () => document.querySelectorAll("[data-kosmo-logo-loader]").forEach((el) => {
   if (el.dataset.klMounted) return;
   el.dataset.klMounted = "1";
-  mount(el, { id: el.dataset.logo, tone: el.dataset.tone, crt: el.dataset.crt === undefined ? undefined : el.dataset.crt !== "off" });
+  mount(el, { id: el.dataset.logo, tone: el.dataset.tone, crt: el.dataset.crt === undefined ? undefined : el.dataset.crt !== "off", sound: el.dataset.sound === undefined ? undefined : el.dataset.sound !== "off" });
 });
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", auto);
 else auto();

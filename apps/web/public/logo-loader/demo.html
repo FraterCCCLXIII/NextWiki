@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Logo Loader Demo</title>
 <style>
-  :root { --bg: #0b0b0f; --fg: #e9e9ee; }
+  :root { --bg: #0a1a40; --fg: #e9e9ee; }
   * { box-sizing: border-box; margin: 0; }
   html, body { height: 100%; }
   body { background: var(--bg); color: var(--fg); font: 14px/1.4 system-ui, sans-serif; display: flex; flex-direction: column; }
@@ -23,9 +23,10 @@
   <div class="bar">
     <button id="next">Next loading screen</button>
     <label><input type="checkbox" id="crt"> CRT glow</label>
+    <label><input type="checkbox" id="sound"> Sound</label>
     <select id="bg" aria-label="Background">
-      <option value="#0b0b0f,#e9e9ee">Dark</option>
-      <option value="#1b2a4a,#e9e9ee">Navy</option>
+      <option value="#0a1a40,#e9e9ee">Navy</option>
+      <option value="#0b0b0f,#e9e9ee">Black</option>
       <option value="#fdf7ee,#17171b">Paper</option>
       <option value="#ffffff,#17171b">White</option>
     </select>
@@ -41,6 +42,10 @@
   }
   crt.checked = KosmoLogoLoader.getCrt();
   crt.onchange = () => KosmoLogoLoader.setCrt(crt.checked);
+  const sound = document.getElementById("sound");
+  sound.checked = KosmoLogoLoader.getSound();
+  sound.onchange = () => { KosmoLogoLoader.player.unlock(); KosmoLogoLoader.setSound(sound.checked); };
+  document.addEventListener("click", () => { sound.checked = KosmoLogoLoader.getSound(); KosmoLogoLoader.player.unlock(); }, true);
   document.getElementById("next").onclick = run;
   pick.onchange = run;
   bg.onchange = () => {
