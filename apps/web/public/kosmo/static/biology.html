@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
+<script src="kosmo-scrollfade.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biology — cells and life</title>
+<style>
+  :root { --bg: #05070d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --line: rgba(140,170,220,0.14); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font: 13.5px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(127,195,255,0.55), rgba(255,184,107,0.45)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+  * { scrollbar-width: thin; scrollbar-color: rgba(127,195,255,0.6) transparent; }
+  .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+  #navbar { position: sticky; top: 0; z-index: 6; height: 58px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(5,7,13,0.98), rgba(5,7,13,0.85)); border-bottom: 1px solid var(--line); }
+  #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 17px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 11px; color: #fff; opacity: 0.8; margin-top: 2px; }
+  #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.18em; font-size: 12px; text-transform: uppercase; }
+  @media (max-width: 1320px) { #menu { overflow-x: auto; min-width: 0; scrollbar-width: none; } #menu::-webkit-scrollbar { display: none; } }
+  #menu a { color: rgba(255,255,255,0.72); text-decoration: none; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+
+  main { display: grid; grid-template-columns: 270px 1fr; gap: 24px; padding: 22px; max-width: 1620px; margin: 0 auto; }
+  body.has-detail main { grid-template-columns: 250px 1fr 480px; }
+  #detailCol { display: none; position: sticky; top: 80px; align-self: start; max-height: calc(100vh - 100px); overflow: auto; }
+  body.has-detail #detailCol { display: block; }
+  @media (max-width: 1240px) { body.has-detail main { grid-template-columns: 250px 1fr; } #detailCol { grid-column: 1 / -1; position: static; max-height: none; } }
+  aside { position: sticky; top: 80px; align-self: start; max-height: calc(100vh - 100px); overflow: auto; }
+  h1 { font-weight: 500; font-size: 26px; margin: 0 0 4px; letter-spacing: 0.04em; }
+  h2 { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 18px 0 8px; }
+  input[type=text], button { background: rgba(22,32,50,0.8); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 9px; padding: 7px 10px; font: inherit; }
+  input[type=text] { width: 100%; }
+  button { cursor: pointer; } button:hover { border-color: var(--accent); }
+  .types button { display: flex; justify-content: space-between; width: 100%; margin: 3px 0; text-align: left; }
+  .types button.on { border-color: var(--accent); color: var(--accent); }
+  .types small { color: var(--muted); }
+  .dim { color: var(--muted); }
+  .lead { color: #c3d0e2; max-width: 76ch; margin: 0 0 14px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 12px; }
+  .card { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px 10px 10px; cursor: pointer; transition: border-color .15s, background .15s; background: rgba(10,14,24,0.5); }
+  .card:hover { border-color: var(--accent); background: rgba(14,22,36,0.7); }
+  .card.on { border-color: var(--accent); background: rgba(14,22,36,0.85); box-shadow: inset 0 0 0 1px rgba(127,195,255,0.35); }
+  .card canvas { width: 96px; height: 96px; border-radius: 50%; background: radial-gradient(circle, rgba(127,195,255,0.07), transparent 70%); }
+  .card .name { font-size: 16.5px; color: #fff; display: block; margin-bottom: 2px; }
+  .card .meta { color: var(--muted); font-size: 12px; margin-top: 3px; }
+  .card .blurb { color: #aab8cd; font-size: 12.5px; margin-top: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .pill { display: inline-block; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent2); border: 1px solid rgba(255,184,107,0.35); border-radius: 999px; padding: 1px 8px; margin-right: 6px; }
+  .empty { color: var(--muted); padding: 30px 0; }
+
+  #detail { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: rgba(10,14,24,0.6); }
+  #detail .top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  #detail .top .serif { font-size: 23px; color: #fff; }
+  #detail table { border-collapse: collapse; margin: 6px 0 2px; }
+  #detail td { padding: 3px 14px 3px 0; vertical-align: top; } #detail td:first-child { color: var(--muted); white-space: nowrap; }
+  #detail a { color: var(--accent); }
+  .switch { display: flex; gap: 6px; align-items: center; margin: 12px 0 8px; }
+  .switch button { padding: 5px 12px; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .switch button.on { border-color: var(--accent); color: var(--accent); }
+  .switch .dim { font-size: 11px; margin-left: auto; text-align: right; }
+  #hero { width: 100%; height: 330px; border-radius: 12px; background: radial-gradient(ellipse at center, rgba(20,34,52,0.65), rgba(5,7,13,0.2)); display: block; cursor: grab; }
+  .heroNote { color: var(--muted); font-size: 11.5px; margin: 7px 0 10px; }
+  #detail p.desc { color: #c3d0e2; margin: 10px 0 0; }
+  #detail h3 { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 16px 0 6px; font-weight: 500; }
+  ul.parts { list-style: none; padding: 0; margin: 0; }
+  ul.parts li { display: grid; grid-template-columns: 12px 1fr; gap: 9px; padding: 5px 0; border-top: 1px solid rgba(140,170,220,0.08); font-size: 12.5px; color: #aab8cd; }
+  ul.parts li:first-child { border-top: 0; }
+  ul.parts b { color: #eef4fb; font-weight: 600; display: block; }
+  .sw { width: 11px; height: 11px; border-radius: 3px; margin-top: 4px; box-shadow: 0 0 8px currentColor; }
+  .src { color: var(--muted); font-size: 11px; margin-top: 14px; }
+  @media (max-width: 900px) {
+    main, body.has-detail main { grid-template-columns: 1fr; padding: 14px; gap: 16px; }
+    aside { position: static; max-height: none; }
+    #detailCol { grid-column: auto; }
+  }
+  @media (max-width: 1240px) { #detail #close { margin-left: auto; } }
+  @media (max-width: 430px) {
+    .grid { grid-template-columns: 1fr; }
+    .card { grid-template-columns: 72px 1fr; }
+    .card canvas { width: 72px; height: 72px; }
+  }
+</style>
+<script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }</script>
+  <link rel="stylesheet" href="kosmographica.css?v=15">
+  <script src="atlas-nav.js" defer></script>
+</head>
+<body>
+<div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
+  <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="biology.html" class="here">Biology</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span></span></div>
+<main>
+  <aside>
+    <h1 class="serif">Biology</h1>
+    <div class="dim" id="status">loading…</div>
+    <h2>Search</h2>
+    <input type="text" id="q" placeholder="cell, organelle, tissue, size…" autocomplete="off">
+    <h2>Group</h2>
+    <div class="types" id="groups"></div>
+    <h2>How these are drawn</h2>
+    <p class="dim" style="margin:0">Every model is procedural, built in <a href="kosmo-models.js" style="color:var(--accent)">kosmo-models.js</a> — the same renderer and shader toolkit that draws the Kosmopedia nebulae. The cytoplasm is the nebula's layered fbm cloud; the membrane is a fresnel shell.</p>
+    <p class="dim">Sizes are typical ranges, not measurements of these drawings, and the cells are <em>not</em> to scale with each other (a virus is a hundred times smaller than an egg).</p>
+    <h2>Credits</h2>
+    <p class="dim" style="margin:0">Reference links go to Wikipedia (CC BY-SA 4.0), by its contributors; the drawings are changed, generated illustrations. Every cell is labelled with the article its figures come from.</p>
+  </aside>
+  <section>
+    <p class="lead">Cells are the unit of life, and they are not one thing: a bacterium has no nucleus, a plant cell builds a wall and a vacuole, a neuron is a metre of wiring, an egg is a single cell you can see. Open any entry to take the membrane off and look inside.</p>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" style="display:none">No cell matches that search.</div>
+  </section>
+  <aside id="detailCol"><div id="detail"></div></aside>
+</main>
+<script type="module">
+import * as THREE from 'three';
+import { KosmoViewer, CELL_COLORS } from './kosmo-models.js';
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+// One catalogue: shape kind, group, typical size, where it lives, and the parts the model draws.
+const CELLS = [
+  { id: 'bacterium', name: 'Bacterium', group: 'Prokaryotes', cell: 'bacterium', size: '0.5–5 µm (rod ≈ 2 µm)', domain: 'Bacteria', found: 'Soil, water, gut, skin — nearly everywhere.',
+    blurb: 'A prokaryote: no nucleus, one circular chromosome, ribosomes loose in the cytosol, a peptidoglycan wall and often a flagellum.',
+    parts: ['capsule', 'wall', 'membrane', 'cytoplasm', 'dna', 'ribosome', 'flagellum'],
+    source: 'https://en.wikipedia.org/wiki/Bacteria' },
+  { id: 'animal', name: 'Animal cell', group: 'Eukaryotes', cell: 'animal', size: '10–30 µm', domain: 'Eukaryota · Animalia', found: 'The tissues of animals.',
+    blurb: 'The familiar eukaryotic cell: a membrane-bound nucleus and organelles, no wall, shape held by the cytoskeleton.',
+    parts: ['membrane', 'cytoplasm', 'nucleus', 'nucleolus', 'mitochondrion', 'er', 'golgi', 'lysosome', 'ribosome', 'cytoskeleton'],
+    source: 'https://en.wikipedia.org/wiki/Cell_(biology)' },
+  { id: 'plant', name: 'Plant cell', group: 'Eukaryotes', cell: 'plant', size: '10–100 µm', domain: 'Eukaryota · Plantae', found: 'Leaves, stems and roots.',
+    blurb: 'A cellulose wall, one large central vacuole and chloroplasts: this cell builds its own food from light.',
+    parts: ['wall', 'membrane', 'vacuole', 'nucleus', 'chloroplast', 'mitochondrion', 'cytoplasm', 'ribosome'],
+    source: 'https://en.wikipedia.org/wiki/Plant_cell' },
+  { id: 'yeast', name: 'Yeast cell', group: 'Eukaryotes', cell: 'yeast', size: '3–4 µm', domain: 'Eukaryota · Fungi', found: 'Fermenting sugar, fruit skins, the human microbiome.',
+    blurb: 'A single-celled fungus with a chitin wall, a large vacuole and a bud: it divides by growing a daughter cell out of itself.',
+    parts: ['bud', 'membrane', 'vacuole', 'nucleus', 'mitochondrion', 'ribosome'],
+    source: 'https://en.wikipedia.org/wiki/Yeast' },
+  { id: 'diatom', name: 'Diatom', group: 'Eukaryotes', cell: 'diatom', size: '2–200 µm', domain: 'Eukaryota · Chromista', found: 'Marine and fresh water; a large share of phytoplankton.',
+    blurb: 'A single-celled alga living inside a two-part silica frustule, with golden-brown chloroplasts.',
+    parts: ['silica', 'membrane', 'chloroplast', 'nucleus', 'vacuole'],
+    source: 'https://en.wikipedia.org/wiki/Diatom' },
+  { id: 'neuron', name: 'Neuron', group: 'Specialised', cell: 'neuron', size: 'Soma 4–100 µm; axon up to ~1 m', domain: 'Eukaryota · Animalia', found: 'Brain, spinal cord and peripheral nerves.',
+    blurb: 'A cell built for signalling: dendrites collect input, an axon carries the impulse, myelin speeds it along.',
+    interiorNote: 'Interior shows the soma only — the dendrites and axon are this cell’s exterior wiring.',
+    parts: ['membrane', 'nucleus', 'cytoskeleton', 'myelin', 'mitochondrion', 'ribosome'],
+    source: 'https://en.wikipedia.org/wiki/Neuron' },
+  { id: 'muscle', name: 'Skeletal muscle fibre', group: 'Specialised', cell: 'muscle', size: '10–100 µm wide; up to ~30 cm long', domain: 'Eukaryota · Animalia', found: 'Muscles attached to the skeleton.',
+    blurb: 'A syncytium: one long fibre formed from many fused cells, with many nuclei and packed myofibrils that slide to contract.',
+    parts: ['membrane', 'cytoskeleton', 'nucleus', 'mitochondrion'],
+    source: 'https://en.wikipedia.org/wiki/Skeletal_muscle' },
+  { id: 'rbc', name: 'Red blood cell', group: 'Specialised', cell: 'rbc', size: '6–8 µm disc', domain: 'Eukaryota · Animalia', found: 'Blood.',
+    blurb: 'No nucleus and no mitochondria: a biconcave disc packed with haemoglobin, shaped for gas exchange.',
+    parts: ['membrane', 'cytoskeleton', 'cytoplasm'],
+    source: 'https://en.wikipedia.org/wiki/Red_blood_cell' },
+  { id: 'whiteblood', name: 'Neutrophil', group: 'Specialised', cell: 'whiteblood', size: '10–15 µm', domain: 'Eukaryota · Animalia', found: 'Blood and inflamed tissue.',
+    blurb: 'A white blood cell with a lobed nucleus and granules; it crawls out of vessels and engulfs bacteria.',
+    parts: ['membrane', 'nucleus', 'granule', 'mitochondrion', 'cytoplasm'],
+    source: 'https://en.wikipedia.org/wiki/Neutrophil' },
+  { id: 'sperm', name: 'Sperm cell', group: 'Gametes', cell: 'sperm', size: 'Head 4–5 µm; tail ~50 µm', domain: 'Eukaryota · Animalia', found: 'Testis, then the female reproductive tract.',
+    blurb: 'The male gamete: a haploid nucleus in a streamlined head with an enzyme cap, a mitochondrial midpiece and a motile tail.',
+    parts: ['membrane', 'nucleus', 'acrosome', 'mitochondrion', 'flagellum'],
+    source: 'https://en.wikipedia.org/wiki/Sperm' },
+  { id: 'egg', name: 'Egg cell', group: 'Gametes', cell: 'egg', size: '≈100–120 µm in humans', domain: 'Eukaryota · Animalia', found: 'Ovary; released at ovulation.',
+    blurb: 'The female gamete and the largest human cell: stocked with cytoplasm and granules, wrapped in a glycoprotein coat and follicle cells.',
+    parts: ['membrane', 'zona', 'corona', 'nucleus', 'granule', 'mitochondrion', 'cytoplasm'],
+    source: 'https://en.wikipedia.org/wiki/Egg_cell' },
+  { id: 'virus', name: 'Virus (not a cell)', group: 'Acellular', cell: 'virus', size: '20–400 nm (influenza ≈ 100 nm)', domain: 'Not a cell — a virion', found: 'Wherever its host is.',
+    blurb: 'Not alive on its own: a protein capsid around a genome, with spikes for docking onto a host cell. Shown here at cell scale, not true scale.',
+    parts: ['capsid', 'spike', 'dna'],
+    source: 'https://en.wikipedia.org/wiki/Virus' },
+];
+
+const PART = {
+  membrane: ['Plasma membrane', 'Phospholipid bilayer with embedded proteins; decides what crosses.'],
+  wall: ['Cell wall', 'Rigid outer layer: cellulose in plants, peptidoglycan in bacteria.'],
+  capsule: ['Capsule', 'Polysaccharide coat outside the wall; sticky and protective.'],
+  cytoplasm: ['Cytosol', 'The aqueous interior where most metabolism happens.'],
+  nucleus: ['Nucleus', 'Bound by a double membrane; holds the chromosomes.'],
+  nucleolus: ['Nucleolus', 'Builds ribosomal subunits inside the nucleus.'],
+  mitochondrion: ['Mitochondria', 'Inner-membrane folds run oxidative phosphorylation, the ATP supply.'],
+  chloroplast: ['Chloroplasts', 'Thylakoid stacks carry out photosynthesis.'],
+  er: ['Endoplasmic reticulum', 'Folded membrane network where proteins and lipids are made.'],
+  golgi: ['Golgi apparatus', 'Stacks of flattened cisternae that sort and ship proteins.'],
+  lysosome: ['Lysosomes', 'Acid-filled vesicles that digest waste and invaders.'],
+  vacuole: ['Vacuole', 'A membrane-bound compartment; in plant cells it holds most of the volume.'],
+  ribosome: ['Ribosomes', 'RNA-and-protein machines that translate mRNA into protein.'],
+  cytoskeleton: ['Cytoskeleton', 'Actin, microtubules and intermediate filaments: shape, transport, motion.'],
+  flagellum: ['Flagellum', 'A rotary or whipping filament that drives movement.'],
+  dna: ['DNA', 'The chromosome or genome, drawn as a coiled filament.'],
+  acrosome: ['Acrosome', 'Enzyme cap that lets the sperm through the egg’s coat.'],
+  granule: ['Granules', 'Stored enzymes and antimicrobial compounds, released on demand.'],
+  myelin: ['Myelin sheath', 'Glial membrane wrapped around the axon; speeds the impulse.'],
+  capsid: ['Capsid', 'Protein shell around the viral genome.'],
+  spike: ['Spikes', 'Surface proteins that bind a host receptor.'],
+  silica: ['Silica frustule', 'Two glassy valves of hydrated silica.'],
+  bud: ['Wall and bud', 'Chitin-and-glucan wall; the daughter cell grows out through it.'],
+  zona: ['Zona pellucida', 'Glycoprotein coat around the egg.'],
+  corona: ['Corona radiata', 'Follicle cells surrounding the egg at ovulation.'],
+};
+const GROUPS = ['All', 'Prokaryotes', 'Eukaryotes', 'Specialised', 'Gametes', 'Acellular'];
+const VIEW_NOTE = {
+  exterior: 'The membrane and wall are drawn; the organelles show through them. Drag to turn, wheel to zoom.',
+  interior: 'Membrane and wall removed. The wireframe marks where the boundary was; organelles keep their places. Drag to turn, wheel to zoom.',
+};
+
+const viewer = new KosmoViewer(THREE, { maxPerFrame: 6 });
+let q = '', group = 'All', view = 'exterior', active = null, heroCanvas = null, activeCard = null;
+
+const specOf = (row, v) => ({ type: row.cell === 'virus' ? 'virus' : 'cell', cell: row.cell, view: v, name: row.name });
+
+function refresh() {
+  const ql = q.trim().toLowerCase();
+  const rows = CELLS.filter(r => (group === 'All' || r.group === group) && (!ql
+    || [r.name, r.group, r.size, r.domain, r.found, r.blurb, ...r.parts.map(p => PART[p][0])].join(' ').toLowerCase().includes(ql)));
+  for (const c of $('grid').querySelectorAll('canvas')) viewer.detach(c);
+  $('grid').innerHTML = '';
+  activeCard = null;
+  if (active && !rows.includes(active)) closeDetail();
+  const frag = document.createDocumentFragment();
+  for (const r of rows) {
+    const card = document.createElement('div'); card.className = 'card';
+    card.innerHTML = `<canvas></canvas><div><span class="pill">${esc(r.group)}</span><span class="name">${esc(r.name)}</span>
+      <div class="meta">${esc(r.size)}</div><div class="blurb">${esc(r.blurb)}</div></div>`;
+    viewer.attach(card.querySelector('canvas'), specOf(r, 'exterior'), { autoRotate: true });
+    card.addEventListener('click', () => showDetail(r, card));
+    frag.appendChild(card);
+  }
+  $('grid').appendChild(frag);
+  $('empty').style.display = rows.length ? 'none' : '';
+  $('status').textContent = `${rows.length} of ${CELLS.length} entries`;
+}
+
+function showDetail(row, card) {
+  active = row;
+  if (activeCard) activeCard.classList.remove('on');
+  activeCard = card || null;
+  if (activeCard) activeCard.classList.add('on');
+  document.body.classList.add('has-detail');
+  $('detail').innerHTML = `<div class="top"><div><span class="pill">${esc(row.group)}</span><span class="serif">${esc(row.name)}</span></div>
+      <button id="close">close</button></div>
+    <table>
+      <tr><td>Typical size</td><td>${esc(row.size)}</td></tr>
+      <tr><td>Domain</td><td>${esc(row.domain)}</td></tr>
+      <tr><td>Found in</td><td>${esc(row.found)}</td></tr>
+    </table>
+    <div class="switch" id="switch">
+      <button data-v="exterior" class="${view === 'exterior' ? 'on' : ''}">Exterior</button>
+      <button data-v="interior" class="${view === 'interior' ? 'on' : ''}">Interior</button>
+      <span class="dim" id="viewnote"></span>
+    </div>
+    <canvas id="hero"></canvas>
+    <div class="heroNote" id="heroNote"></div>
+    <p class="desc">${esc(row.blurb)}</p>
+    <h3>What the model draws</h3>
+    <ul class="parts">${row.parts.map(p => `<li><span class="sw" style="background:${CELL_COLORS[p]};color:${CELL_COLORS[p]}"></span>
+      <div><b>${esc(PART[p][0])}</b>${esc(PART[p][1])}</div></li>`).join('')}</ul>
+    <p class="src">Reference: <a href="${esc(row.source)}" target="_blank" rel="noopener">${esc(row.source.replace(/^https?:\/\//, ''))}</a> · figures are typical ranges from the article; the model is an illustration, not a measurement.</p>`;
+
+  heroCanvas = $('hero');
+  attachHero();
+  $('close').addEventListener('click', closeDetail);
+  $('switch').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    if (b.dataset.v === view) return;
+    view = b.dataset.v;
+    $('switch').querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.v === view));
+    attachHero();
+  }));
+  $('detailCol').scrollTop = 0;
+  // Below 1240px the panel stacks under the grid, so a click would otherwise look like nothing happened.
+  const col = $('detailCol');
+  if (getComputedStyle(col).position === 'static') {
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const top = col.getBoundingClientRect().top + window.scrollY - $('navbar').offsetHeight - 14;
+    window.scrollTo({ top: Math.max(0, top), behavior: still ? 'auto' : 'smooth' });
+  }
+}
+
+function attachHero() {
+  if (!active || !heroCanvas) return;
+  viewer.detach(heroCanvas);
+  viewer.attach(heroCanvas, specOf(active, view), { interactive: true, autoRotate: true });
+  $('viewnote').textContent = view === 'interior' ? 'inside' : 'whole cell';
+  $('heroNote').textContent = VIEW_NOTE[view] + (view === 'interior' && active.interiorNote ? ' ' + active.interiorNote : '');
+}
+
+function closeDetail() {
+  if (heroCanvas) viewer.detach(heroCanvas);
+  heroCanvas = null; active = null;
+  if (activeCard) activeCard.classList.remove('on');
+  activeCard = null;
+  document.body.classList.remove('has-detail');
+  $('detail').innerHTML = '';
+}
+
+$('groups').innerHTML = GROUPS.map(g => `<button data-g="${g}" class="${g === group ? 'on' : ''}">${g}<small>${g === 'All' ? CELLS.length : CELLS.filter(r => r.group === g).length}</small></button>`).join('');
+$('groups').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+  group = b.dataset.g;
+  $('groups').querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.g === group));
+  refresh();
+}));
+$('q').addEventListener('input', e => { q = e.target.value; refresh(); });
+window.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+refresh();
+</script>
+</body>
+</html>

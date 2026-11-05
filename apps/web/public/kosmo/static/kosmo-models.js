@@ -190,6 +190,433 @@ const POINT_VERT = /* glsl */`attribute float aSize; attribute vec3 aColor; vary
 const POINT_FRAG = /* glsl */`varying vec3 vC; void main(){ float r = length(gl_PointCoord - 0.5) * 2.0; float a = pow(max(1.0 - r, 0.0), 1.8); gl_FragColor = vec4(vC * a, a); }`;
 
 // ---------------------------------------------------------------------------------------------------
+// Cells. A cell is drawn with the nebula toolkit: a fresnel shell for the membrane, layered fbm sprites
+// for the cytoplasm, and a shaded-grain shader for the organelles. spec.cell picks the kind of cell;
+// spec.view = 'exterior' (membrane on) or 'interior' (membrane off, faint boundary wireframe on).
+// ---------------------------------------------------------------------------------------------------
+const CELL_VERT = /* glsl */`
+varying vec3 vN; varying vec3 vP; varying vec3 vW;
+void main(){ vN = normalize(normalMatrix * normal); vP = position; vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`;
+const CELL_SHELL_FRAG = NOISE + /* glsl */`
+uniform vec3 uColor, uColor2; uniform float uAlpha, uTime, uSeed, uMode, uPower;
+varying vec3 vN; varying vec3 vP; varying vec3 vW;
+void main(){
+  vec3 n = normalize(vN);
+  vec3 eye = normalize(cameraPosition - vW);
+  float fres = pow(1.0 - abs(dot(n, eye)), uPower);
+  float flow = fbm(normalize(vP) * 2.6 + vec3(uTime * 0.05, uSeed, -uTime * 0.03)) * 0.5 + 0.5;
+  float a;
+  if (uMode > 0.5 && uMode < 1.5) {            // wall: cellulose or peptidoglycan bands, denser at the rim
+    float band = smoothstep(0.55, 1.0, abs(sin(vP.y * 46.0 + flow * 3.0)));
+    a = uAlpha * (0.16 + 0.55 * fres + 0.22 * band);
+  } else if (uMode > 1.5) {                     // organelle envelope or vacuole: soft edge only
+    a = uAlpha * (0.05 + 0.95 * fres) * (0.7 + 0.5 * flow);
+  } else {                                      // plasma membrane: lipid flow and a bright rim
+    a = uAlpha * (0.06 + 0.94 * fres) * (0.75 + 0.4 * flow);
+  }
+  vec3 col = mix(uColor2, uColor, clamp(fres + 0.25 * flow, 0.0, 1.0));
+  gl_FragColor = vec4(col * (0.85 + 0.6 * flow), a);
+}`;
+const CELL_BODY_FRAG = NOISE + /* glsl */`
+uniform vec3 uColor, uColor2; uniform float uSeed, uTime, uRim;
+varying vec3 vN; varying vec3 vP;
+void main(){
+  vec3 p = normalize(vP) * 3.4 + uSeed;
+  float grain = fbm(p + vec3(0.0, 0.0, uTime * 0.02)) * 0.5 + 0.5;
+  vec3 col = mix(uColor2, uColor, grain);
+  vec3 n = normalize(vN);
+  float diff = 0.42 + 0.8 * max(dot(n, normalize(vec3(0.45, 0.65, 0.85))), 0.0);
+  float rim = pow(1.0 - max(dot(n, vec3(0.0, 0.0, 1.0)), 0.0), 2.6);
+  gl_FragColor = vec4(col * diff + uColor * rim * uRim, 1.0);
+}`;
+
+// Legend and model share one colour per part, so a swatch in the UI always matches the mesh.
+export const CELL_COLORS = {
+  membrane: '#6fd6ff', wall: '#c3d98f', capsule: '#b8a6f0', cytoplasm: '#2f8fb8',
+  nucleus: '#9b7bff', nucleolus: '#d6bcff', mitochondrion: '#ff9a4d', chloroplast: '#59d97a',
+  er: '#69a8ff', golgi: '#ffd166', lysosome: '#ff6f9c', vacuole: '#7fbfff',
+  ribosome: '#e8f1ff', cytoskeleton: '#9fb6d9', flagellum: '#8fd4ff', dna: '#c9a0ff',
+  acrosome: '#ffcf7a', granule: '#ff9ec7', myelin: '#cfd8ea', capsid: '#ffb46b', spike: '#ff8f6b',
+  silica: '#e6d9a8', bud: '#f2e6c8', zona: '#a9d4ff', corona: '#ffe2b0',
+};
+
+// Rounded box (superellipsoid): a sphere of revolution is wrong for a plant cell, this is a squircle.
+// e = 1 is an ellipsoid, e → 0 approaches a box with rounded corners.
+function superellipsoid(THREE, ax, ay, az, e = 0.4, seg = 28) {
+  const cols = seg, rows = Math.max(8, Math.round(seg * 0.7));
+  const cp = (w, m) => Math.sign(Math.cos(w)) * Math.pow(Math.abs(Math.cos(w)), m);
+  const sp = (w, m) => Math.sign(Math.sin(w)) * Math.pow(Math.abs(Math.sin(w)), m);
+  const pos = [], idx = [];
+  for (let j = 0; j <= rows; j++) {
+    const v = -Math.PI / 2 + Math.PI * j / rows, cv = cp(v, e), sv = sp(v, e);
+    for (let i = 0; i <= cols; i++) {
+      const u = -Math.PI + 2 * Math.PI * i / cols;
+      pos.push(ax * cv * cp(u, e), ay * sv, az * cv * sp(u, e));
+    }
+  }
+  for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+    const a = j * (cols + 1) + i, b = a + 1, c = a + cols + 1, d = c + 1;
+    idx.push(a, c, b, b, c, d);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx); g.computeVertexNormals();
+  // the two poles are degenerate rings; give their zero normals the direction of the radius
+  const nrm = g.attributes.normal, v3 = new THREE.Vector3();
+  for (let i = 0; i < nrm.count; i++) {
+    if (nrm.getX(i) ** 2 + nrm.getY(i) ** 2 + nrm.getZ(i) ** 2 > 1e-12) continue;
+    v3.fromBufferAttribute(g.attributes.position, i); if (v3.lengthSq() === 0) v3.set(0, 1, 0);
+    v3.normalize(); nrm.setXYZ(i, v3.x, v3.y, v3.z);
+  }
+  return g;
+}
+
+// Returns a unit-ish Group with .tick(t), .dispose() and userData { viewRadius, points }.
+function buildCell(THREE, spec, seed) {
+  const kind = String(spec.cell || 'animal');
+  const interior = spec.view === 'interior';
+  const root = new THREE.Group();
+  const inner = new THREE.Group(), outer = new THREE.Group(), ghost = new THREE.Group();
+  root.add(inner, outer, ghost);
+  outer.visible = !interior; ghost.visible = interior;
+  const R = rng(seed * 3.7 + 11);
+  const C = h => new THREE.Color(h);
+  const bin = [], tickers = [], matCache = new Map(), geoCache = new Map();
+  let pointMat = null, view = [1.3, 1.05];
+  const keep = x => { bin.push(x); return x; };
+
+  const bodyMat = (c1, c2, rim = 0.45) => {
+    const key = `b|${c1}|${c2}|${rim}`;
+    if (matCache.has(key)) return matCache.get(key);
+    const m = keep(new THREE.ShaderMaterial({ vertexShader: CELL_VERT, fragmentShader: CELL_BODY_FRAG, uniforms: {
+      uColor: { value: C(c1) }, uColor2: { value: C(c2) }, uSeed: { value: seed }, uTime: { value: 0 }, uRim: { value: rim } } }));
+    tickers.push(t => { m.uniforms.uTime.value = t; }); matCache.set(key, m); return m;
+  };
+  const shellMat = (c1, c2, alpha = 0.45, mode = 0, power = 2.4, additive = true) => {
+    const key = `s|${c1}|${c2}|${alpha}|${mode}|${power}|${additive}`;
+    if (matCache.has(key)) return matCache.get(key);
+    const m = keep(new THREE.ShaderMaterial({ vertexShader: CELL_VERT, fragmentShader: CELL_SHELL_FRAG, transparent: true, depthWrite: false,
+      side: THREE.DoubleSide, blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending, uniforms: {
+        uColor: { value: C(c1) }, uColor2: { value: C(c2) }, uAlpha: { value: alpha }, uTime: { value: 0 }, uSeed: { value: seed }, uMode: { value: mode }, uPower: { value: power } } }));
+    tickers.push(t => { m.uniforms.uTime.value = t; }); matCache.set(key, m); return m;
+  };
+  const sphereGeo = (seg = 20) => {
+    const k = `p|${seg}`;
+    if (!geoCache.has(k)) geoCache.set(k, keep(new THREE.SphereGeometry(1, seg, Math.max(8, Math.round(seg * 0.6)))));
+    return geoCache.get(k);
+  };
+  const superGeo = (...a) => keep(superellipsoid(THREE, ...a));
+  const put = (parent, g, m, pos = [0, 0, 0], scale = [1, 1, 1], rot = [0, 0, 0]) => {
+    const mesh = new THREE.Mesh(g, m);
+    mesh.position.set(pos[0], pos[1], pos[2]); mesh.scale.set(scale[0], scale[1], scale[2]); mesh.rotation.set(rot[0], rot[1], rot[2]);
+    parent.add(mesh); return mesh;
+  };
+  const blob = (parent, m, pos, s, rot) => put(parent, sphereGeo(20), m, pos, [s, s, s], rot);
+  const onSphere = (r = 1) => { const th = R() * Math.PI * 2, ph = Math.acos(2 * R() - 1); return [r * Math.sin(ph) * Math.cos(th), r * Math.cos(ph), r * Math.sin(ph) * Math.sin(th)]; };
+  const tube = (parent, pts, radius, c1, c2) => {
+    const curve = new THREE.CatmullRomCurve3(pts.map(p => new THREE.Vector3(p[0], p[1], p[2])));
+    return put(parent, keep(new THREE.TubeGeometry(curve, 48, radius, 6, false)), bodyMat(c1, c2, 0.5));
+  };
+  // cytoplasm: the nebula's layered fbm cloud sprite, at cell scale
+  const cloud = (parent, size, c1, alpha, pos = [0, 0, 0]) => {
+    const g = keep(new THREE.PlaneGeometry(size, size)), m = keep(new THREE.ShaderMaterial({
+      vertexShader: SPRITE_VERT, fragmentShader: SPRITE_FRAG, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      uniforms: { uColor: { value: C(c1) }, uColor2: { value: C('#000000') }, uShape: { value: 2 }, uTime: { value: 0 }, uSeed: { value: seed + R() * 40 }, uSoft: { value: 1 }, uAlpha: { value: alpha } } }));
+    tickers.push(t => { m.uniforms.uTime.value = t; });
+    const s = new THREE.Mesh(g, m); s.position.set(pos[0], pos[1], pos[2]);
+    s.onBeforeRender = (r, sc, cam) => { s.quaternion.copy(cam.quaternion); };
+    parent.add(s); return s;
+  };
+  const specks = (parent, n, radius, c1, { flatten = 1, size = 0.028 } = {}) => {
+    const pos = new Float32Array(n * 3), col = new Float32Array(n * 3), sizes = new Float32Array(n), c = C(c1);
+    for (let i = 0; i < n; i++) {
+      const r = radius * Math.cbrt(R()), th = R() * Math.PI * 2, ph = Math.acos(2 * R() - 1);
+      pos[3 * i] = r * Math.sin(ph) * Math.cos(th); pos[3 * i + 1] = r * Math.cos(ph) * flatten; pos[3 * i + 2] = r * Math.sin(ph) * Math.sin(th);
+      col[3 * i] = c.r; col[3 * i + 1] = c.g; col[3 * i + 2] = c.b;
+      sizes[i] = size * (0.6 + 0.8 * R());
+    }
+    const g = keep(new THREE.BufferGeometry());
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('aColor', new THREE.BufferAttribute(col, 3)); g.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1));
+    const m = keep(new THREE.ShaderMaterial({ vertexShader: POINT_VERT, fragmentShader: POINT_FRAG, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, uniforms: { uScale: { value: 260 } } }));
+    pointMat = m; parent.add(new THREE.Points(g, m));
+  };
+  const filaments = (parent, n, radius, c1, opacity = 0.15) => {
+    const pts = [];
+    for (let i = 0; i < n; i++) {
+      const d = onSphere(radius), s = onSphere(0.1 + 0.3 * R());
+      pts.push(s[0], s[1], s[2], d[0], d[1], d[2]);
+    }
+    const g = keep(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)));
+    parent.add(new THREE.LineSegments(g, keep(new THREE.LineBasicMaterial({ color: C(c1), transparent: true, opacity }))));
+  };
+  const ghostShell = (g, c1 = CELL_COLORS.membrane, opacity = 0.13, scale = [1, 1, 1]) => {
+    return put(ghost, g, keep(new THREE.MeshBasicMaterial({ color: C(c1), wireframe: true, transparent: true, opacity })), [0, 0, 0], scale);
+  };
+
+  const mitoGeo = keep(new THREE.CapsuleGeometry(0.06, 0.16, 6, 12));
+  const addMito = (parent, pos, rot = [0, 0, 0], s = 1) => put(parent, mitoGeo, bodyMat(CELL_COLORS.mitochondrion, '#7a2c0c', 0.7), pos, [s, s, s], rot);
+  const addNucleus = (parent, pos = [0, 0, 0], radius = 0.28, lobes = 1) => {
+    if (lobes > 1) {                                  // neutrophil nucleus: lobes joined by thin bridges
+      for (let i = 0; i < lobes; i++) {
+        const a = -0.8 + i * 0.72, p = [pos[0] + Math.cos(a) * radius * 0.7, pos[1] + Math.sin(a) * radius * 0.55, pos[2]];
+        put(parent, sphereGeo(20), shellMat(CELL_COLORS.nucleus, '#3b2170', 0.4, 2, 2.0), p, [radius * 0.6, radius * 0.6, radius * 0.6]);
+        put(parent, sphereGeo(20), bodyMat(CELL_COLORS.nucleus, '#2c1a52', 0.5), p, [radius * 0.54, radius * 0.54, radius * 0.54]);
+        if (i) { const q = [pos[0] + Math.cos(a - 0.36) * radius * 0.5, pos[1] + Math.sin(a - 0.36) * radius * 0.4, pos[2]]; blob(parent, bodyMat(CELL_COLORS.nucleus, '#2c1a52', 0.4), q, radius * 0.26); }
+      }
+      return;
+    }
+    put(parent, sphereGeo(24), shellMat(CELL_COLORS.nucleus, '#3b2170', 0.45, 2, 2.0), pos, [radius * 1.1, radius * 1.1, radius * 1.1]);
+    put(parent, sphereGeo(24), bodyMat(CELL_COLORS.nucleus, '#2c1a52', 0.5), pos, [radius, radius, radius]);
+    put(parent, sphereGeo(14), bodyMat(CELL_COLORS.nucleolus, '#6a3fb0', 0.3), [pos[0] + radius * 0.3, pos[1] + radius * 0.22, pos[2] + radius * 0.08], [radius * 0.32, radius * 0.32, radius * 0.32]);
+  };
+  const addChloroplast = (parent, pos, rot = [0, 0, 0], s = 1) => {
+    const g = new THREE.Group(); g.position.set(pos[0], pos[1], pos[2]); g.rotation.set(rot[0], rot[1], rot[2]); parent.add(g);
+    put(g, sphereGeo(18), bodyMat(CELL_COLORS.chloroplast, '#14521f', 0.6), [0, 0, 0], [0.2 * s, 0.11 * s, 0.15 * s]);
+    for (let k = 0; k < 4; k++) put(g, sphereGeo(10), bodyMat('#2f8f3d', '#0d3a16', 0.2), [(k - 1.5) * 0.075 * s, 0, 0], [0.045 * s, 0.045 * s, 0.045 * s]);
+  };
+
+  switch (kind) {
+    case 'bacterium': {
+      put(outer, keep(new THREE.CapsuleGeometry(0.34, 0.74, 10, 26)), shellMat(CELL_COLORS.membrane, '#0d2f4a', 0.5, 0, 2.2), [0, 0, 0], [1, 1, 1], [0, 0, Math.PI / 2]);
+      put(outer, keep(new THREE.CapsuleGeometry(0.39, 0.74, 10, 26)), shellMat(CELL_COLORS.wall, '#33441f', 0.45, 1, 1.8, false), [0, 0, 0], [1, 1, 1], [0, 0, Math.PI / 2]);
+      put(outer, keep(new THREE.CapsuleGeometry(0.45, 0.74, 10, 26)), shellMat(CELL_COLORS.capsule, '#241a4a', 0.16, 2, 3.4), [0, 0, 0], [1, 1, 1], [0, 0, Math.PI / 2]);
+      cloud(inner, 1.5, '#3f8fbf', 0.14, [0, 0, 0]);
+      for (let k = 0; k < 3; k++) {                    // nucleoid: a tangled loop of DNA
+        const pts = [];
+        for (let i = 0; i < 10; i++) { const t = i / 9; pts.push([-0.24 + 0.48 * t, 0.13 * Math.sin(t * 9 + k * 2), 0.13 * Math.cos(t * 7 + k * 3)]); }
+        tube(inner, pts, 0.011, CELL_COLORS.dna, '#4a2a7a');
+      }
+      specks(inner, 340, 0.42, CELL_COLORS.ribosome, { size: 0.022, flatten: 0.8 });
+      for (let i = 0; i < 8; i++) {                    // pili around the rod
+        const a = i / 8 * Math.PI * 2;
+        const p = put(outer, keep(new THREE.CylinderGeometry(0.006, 0.006, 0.16, 4)), bodyMat(CELL_COLORS.wall, '#33441f', 0.2), [0.08, 0.34 * Math.cos(a), 0.34 * Math.sin(a)]);
+        p.rotation.x = a;
+      }
+      const flag = new THREE.Group(); flag.position.set(-0.66, 0, 0); outer.add(flag);
+      const tail = [];
+      for (let i = 0; i <= 24; i++) { const t = i / 24; tail.push([-t * 1.2, 0.16 * Math.sin(t * 7 + seed) * t, 0.16 * Math.cos(t * 8 + seed) * t]); }
+      tube(flag, tail, 0.016, CELL_COLORS.flagellum, '#1d4a66');
+      tickers.push(t => { flag.rotation.x = t * 1.5; });
+      ghostShell(keep(new THREE.CapsuleGeometry(0.34, 0.74, 8, 20)), CELL_COLORS.wall, 0.14, [1, 1, 1]);
+      ghost.children[0].rotation.z = Math.PI / 2;
+      view = [1.5, 0.95];
+      break;
+    }
+    case 'plant': {
+      put(outer, superGeo(1.16, 0.86, 0.96, 0.36, 30), shellMat(CELL_COLORS.wall, '#2c4420', 0.5, 1, 1.7, false));
+      put(outer, superGeo(1.09, 0.8, 0.9, 0.42, 26), shellMat(CELL_COLORS.membrane, '#0d2f4a', 0.3, 0, 2.8));
+      put(inner, superGeo(0.62, 0.5, 0.5, 0.55, 24), shellMat(CELL_COLORS.vacuole, '#0d2f4a', 0.3, 2, 2.0), [0.14, 0.02, 0]);
+      cloud(inner, 1.5, '#4f9ad0', 0.12, [0.2, 0.1, 0]);
+      addNucleus(inner, [-0.6, 0.26, 0.1], 0.2);
+      for (const [x, y, z, a] of [[-0.62, -0.3, 0.18, 0.4], [-0.35, -0.36, -0.22, 1.2], [-0.8, 0.02, -0.12, 2.1], [-0.4, 0.34, -0.3, 0.9], [-0.7, -0.12, 0.3, 2.8], [-0.25, 0.0, 0.42, 1.6]]) addChloroplast(inner, [x, y, z], [a, a * 0.6, a * 0.3]);
+      for (let i = 0; i < 4; i++) addMito(inner, [0.5 + R() * 0.2, -0.35 + R() * 0.7, -0.3 + R() * 0.6], [R() * 3, R() * 3, R() * 3], 0.85);
+      specks(inner, 160, 0.75, CELL_COLORS.ribosome, { size: 0.022, flatten: 0.7 });
+      ghostShell(superGeo(1.12, 0.82, 0.92, 0.36, 18), CELL_COLORS.wall, 0.12);
+      view = [1.95, 1.55];
+      break;
+    }
+    case 'yeast': {
+      put(outer, sphereGeo(36), shellMat(CELL_COLORS.bud, '#4a3a18', 0.42, 1, 1.7, false), [0, 0, 0], [0.82, 0.96, 0.82]);
+      put(outer, sphereGeo(28), shellMat(CELL_COLORS.membrane, '#0d2f4a', 0.28, 0, 2.8), [0, 0, 0], [0.77, 0.91, 0.77]);
+      put(outer, sphereGeo(20), shellMat(CELL_COLORS.bud, '#4a3a18', 0.45, 1, 1.7, false), [0.72, 0.36, 0.1], [0.27, 0.27, 0.27]);
+      put(outer, keep(new THREE.TorusGeometry(0.13, 0.026, 6, 20)), shellMat(CELL_COLORS.bud, '#5a4a24', 0.5, 1, 2.0, false), [0.57, 0.27, 0.08], [1, 1, 1], [0.6, 0.2, -0.7]);
+      put(inner, sphereGeo(24), shellMat(CELL_COLORS.vacuole, '#0d2f4a', 0.32, 2, 2.0), [-0.12, 0.06, 0], [0.38, 0.42, 0.38]);
+      addNucleus(inner, [0.22, -0.34, 0.12], 0.16);
+      for (let i = 0; i < 4; i++) addMito(inner, [(-0.4 + R() * 0.5), (-0.2 + R() * 0.6), (-0.35 + R() * 0.7)], [R() * 3, R() * 3, R() * 3], 0.7);
+      cloud(inner, 1.1, '#d8c58a', 0.1, [0.1, 0, 0.1]);
+      specks(inner, 120, 0.62, CELL_COLORS.ribosome, { size: 0.02, flatten: 0.9 });
+      ghostShell(sphereGeo(18), CELL_COLORS.bud, 0.12, [0.82, 0.96, 0.82]);
+      view = [1.55, 1.15];
+      break;
+    }
+    case 'animal': {
+      put(outer, sphereGeo(44), shellMat(CELL_COLORS.membrane, '#0d2f4a', 0.42, 0, 2.6));
+      put(outer, sphereGeo(28), shellMat('#7fe3ff', '#04121f', 0.12, 2, 4.0), [0, 0, 0], [1.05, 1.05, 1.05]);
+      cloud(inner, 1.9, '#2f8fb8', 0.16, [-0.1, 0.15, 0.1]);
+      cloud(inner, 1.5, '#3a7fd0', 0.14, [0.25, -0.2, -0.15]);
+      cloud(inner, 1.2, '#7fd6c0', 0.1, [-0.3, -0.1, 0.2]);
+      specks(inner, 260, 0.86, CELL_COLORS.ribosome, { size: 0.026 });
+      filaments(inner, 30, 0.92, CELL_COLORS.cytoskeleton);
+      addNucleus(inner, [-0.14, 0.12, 0.02], 0.3);
+      for (let i = 0; i < 4; i++) {                     // ER cisternae
+        const g = keep(new THREE.TorusGeometry(0.42 + i * 0.05, 0.014, 6, 44, Math.PI * (1.0 + 0.4 * R())));
+        put(inner, g, bodyMat(CELL_COLORS.er, '#1d3f7a', 0.6), [0, 0, 0], [1, 0.8, 1], [R() * 0.9, R() * 1.6, R() * 1.2]);
+      }
+      for (const p of [[0.45, 0.3, 0.2], [-0.42, -0.34, 0.24], [0.18, -0.5, -0.28], [0.52, -0.14, -0.3], [-0.2, 0.52, -0.26], [-0.55, 0.05, -0.2], [0.05, 0.28, 0.55]]) addMito(inner, p, [R() * 3, R() * 3, R() * 3], 0.9 + 0.35 * R());
+      const golgi = new THREE.Group(); golgi.position.set(0.36, -0.3, 0.16); golgi.rotation.set(0.7, 0.4, 0.2); inner.add(golgi);
+      for (let i = 0; i < 5; i++) put(golgi, keep(new THREE.TorusGeometry(0.18 - i * 0.02, 0.013, 6, 30, Math.PI * 1.4)), bodyMat(CELL_COLORS.golgi, '#8a5a0a', 0.6), [0, i * 0.034, 0], [1, 1, 1], [Math.PI / 2, 0, 0]);
+      for (let i = 0; i < 6; i++) blob(inner, bodyMat(CELL_COLORS.lysosome, '#7d1740', 0.5), onSphere(0.62), 0.045 + 0.02 * R());
+      for (let i = 0; i < 8; i++) blob(inner, shellMat('#bfefff', '#0a2a3a', 0.4, 2, 3.0), onSphere(0.72), 0.03 + 0.02 * R());
+      ghostShell(sphereGeo(20));
+      view = [1.3, 1.02];
+      break;
+    }
+    case 'whiteblood': {
+      const skin = keep(new THREE.SphereGeometry(1, 36, 24)), v = new THREE.Vector3(), pa = skin.attributes.position;
+      for (let i = 0; i < pa.count; i++) {
+        v.fromBufferAttribute(pa, i);
+        const n = 1 + 0.11 * Math.sin(v.x * 4 + seed) * Math.cos(v.y * 5) + 0.07 * Math.sin(v.z * 6 + v.x * 3);
+        v.multiplyScalar(n); pa.setXYZ(i, v.x, v.y, v.z);
+      }
+      skin.computeVertexNormals();
+      put(outer, skin, shellMat(CELL_COLORS.membrane, '#0d2f4a', 0.44, 0, 2.5));
+      for (const d of [[1, 0.2, 0.1], [-0.6, 0.75, -0.2], [0.1, -0.8, 0.6]]) blob(outer, shellMat(CELL_COLORS.membrane, '#0d2f4a', 0.4, 0, 2.6), [d[0] * 0.92, d[1] * 0.92, d[2] * 0.92], 0.34);
+      cloud(inner, 1.8, '#7f6fd0', 0.14, [0, 0, 0]);
+      addNucleus(inner, [0, 0, 0], 0.26, 3);
+      specks(inner, 420, 0.8, CELL_COLORS.granule, { size: 0.03 });
+      for (let i = 0; i < 5; i++) addMito(inner, onSphere(0.55), [R() * 3, R() * 3, R() * 3], 0.8);
+      ghostShell(sphereGeo(18), CELL_COLORS.membrane, 0.12, [1.02, 1.02, 1.02]);
+      view = [1.42, 1.05];
+      break;
+    }
+    case 'neuron': {
+      put(outer, sphereGeo(32), shellMat(CELL_COLORS.membrane, '#0d2f4a', 0.45, 0, 2.5), [0, 0, 0], [0.33, 0.33, 0.33]);
+      const branch = (start, dir, len, depth, rad) => {
+        const end = [start[0] + dir[0] * len, start[1] + dir[1] * len, start[2] + dir[2] * len];
+        const mid = [(start[0] + end[0]) / 2 + (R() - 0.5) * len * 0.35, (start[1] + end[1]) / 2 + (R() - 0.5) * len * 0.35, (start[2] + end[2]) / 2 + (R() - 0.5) * len * 0.35];
+        tube(outer, [start, mid, end], rad, CELL_COLORS.cytoskeleton, '#4a5f80');
+        if (depth <= 0) return;
+        for (let k = 0; k < 2; k++) {
+          const nd = [dir[0] + (R() - 0.5) * 1.1, dir[1] + (R() - 0.5) * 1.1, dir[2] + (R() - 0.5) * 1.1];
+          const n = Math.hypot(...nd) || 1;
+          branch(end, [nd[0] / n, nd[1] / n, nd[2] / n], len * 0.62, depth - 1, rad * 0.62);
+        }
+      };
+      for (let i = 0; i < 6; i++) {
+        const d = onSphere(1);
+        branch([d[0] * 0.26, d[1] * 0.26, d[2] * 0.26], [d[0] - 0.55, d[1], d[2]].map(x => x / Math.hypot(d[0] - 0.55, d[1], d[2])), 0.42, 2, 0.045);
+      }
+      const axon = []; for (let i = 0; i <= 10; i++) { const t = i / 10; axon.push([0.25 + t * 1.1, 0.1 * Math.sin(t * 3), 0.06 * t]); }
+      tube(outer, axon, 0.052, CELL_COLORS.cytoskeleton, '#4a5f80');
+      for (let i = 0; i < 5; i++) {                     // myelin segments
+        const x = 0.45 + i * 0.19; const m = put(outer, keep(new THREE.CapsuleGeometry(0.095, 0.1, 5, 12)), bodyMat(CELL_COLORS.myelin, '#4d5a74', 0.35), [x, 0.035 * Math.sin(x * 3), 0.04], [1, 1, 1], [0, 0, Math.PI / 2]);
+        void m;
+      }
+      for (const d of [[0.35, 0.3, 0], [-0.2, 0.4, 0.1], [0.1, -0.35, 0.2]]) { const t = tube(outer, [[1.36, 0, 0], [1.36 + d[0] * 0.2, d[1] * 0.25, d[2] * 0.25], [1.36 + d[0] * 0.32, d[1] * 0.45, d[2] * 0.45]], 0.022, CELL_COLORS.cytoskeleton, '#4a5f80'); void t; blob(outer, bodyMat(CELL_COLORS.golgi, '#8a5a0a', 0.4), [1.36 + d[0] * 0.34, d[1] * 0.48, d[2] * 0.48], 0.045); }
+      addNucleus(inner, [0, 0, 0], 0.17);
+      specks(inner, 90, 0.24, CELL_COLORS.ribosome, { size: 0.02 });
+      for (let i = 0; i < 4; i++) addMito(inner, onSphere(0.2), [R() * 3, R() * 3, R() * 3], 0.55);
+      ghostShell(sphereGeo(18), CELL_COLORS.membrane, 0.16, [0.33, 0.33, 0.33]);
+      view = [1.62, 0.6];
+      break;
+    }
+    case 'muscle': {
+      put(outer, keep(new THREE.CylinderGeometry(0.3, 0.3, 2.1, 36, 1, true)), shellMat(CELL_COLORS.membrane, '#0d2f4a', 0.4, 0, 2.4), [0, 0, 0], [1, 1, 1], [0, 0, Math.PI / 2]);
+      for (const s of [1, -1]) blob(outer, shellMat(CELL_COLORS.membrane, '#0d2f4a', 0.35, 0, 2.6), [s * 1.05, 0, 0], 0.3);
+      for (let i = 0; i < 11; i++) {                    // striations
+        const x = -0.95 + i * 0.19;
+        put(outer, keep(new THREE.TorusGeometry(0.3, 0.009, 5, 32)), bodyMat(CELL_COLORS.cytoskeleton, '#3d4c66', 0.3), [x, 0, 0], [1, 1, 1], [0, Math.PI / 2, 0]);
+      }
+      for (let i = 0; i < 10; i++) {                    // myofibrils
+        const a = i / 10 * Math.PI * 2, r = 0.15;
+        put(inner, keep(new THREE.CylinderGeometry(0.028, 0.028, 2.0, 8)), bodyMat('#d98f6a', '#5a2a16', 0.5), [0, r * Math.cos(a), r * Math.sin(a)], [1, 1, 1], [0, 0, Math.PI / 2]);
+      }
+      for (let i = 0; i < 3; i++) {                     // peripheral nuclei
+        const a = i / 3 * Math.PI * 2;
+        put(inner, sphereGeo(18), bodyMat(CELL_COLORS.nucleus, '#2c1a52', 0.5), [-0.55 + i * 0.55, 0.2 * Math.cos(a), 0.2 * Math.sin(a)], [0.15, 0.085, 0.085], [0, 0, Math.PI / 2]);
+      }
+      for (let i = 0; i < 6; i++) addMito(inner, [-0.8 + R() * 1.6, 0.12 * Math.cos(R() * 6), 0.12 * Math.sin(R() * 6)], [0, R() * 3, R() * 3], 0.7);
+      cloud(inner, 1.4, '#d98f6a', 0.1, [0, 0, 0]);
+      ghostShell(keep(new THREE.CylinderGeometry(0.3, 0.3, 2.1, 16, 1, true)), CELL_COLORS.membrane, 0.14, [1, 1, 1]);
+      ghost.children[0].rotation.z = Math.PI / 2;
+      view = [1.2, 1.05];
+      break;
+    }
+    case 'rbc': {
+      const h = x => 0.3 * Math.sqrt(Math.max(0, 1 - x * x)) * (1 - 0.62 * Math.exp(-Math.pow(x / 0.34, 2))) + 0.012;
+      const pts = [new THREE.Vector2(0, h(0))];
+      for (let i = 1; i <= 22; i++) pts.push(new THREE.Vector2(i / 22, h(i / 22)));
+      for (let i = 22; i >= 0; i--) pts.push(new THREE.Vector2(i / 22, -h(i / 22)));
+      const disc = keep(new THREE.LatheGeometry(pts, 48));
+      put(outer, disc, shellMat('#ff7f8f', '#4a0a18', 0.5, 0, 2.2));
+      cloud(inner, 1.6, '#c0405a', 0.12, [0, 0, 0]);
+      filaments(inner, 22, 0.94, '#ffb3bf', 0.12);
+      specks(inner, 300, 0.9, '#ffc2cc', { size: 0.02, flatten: 0.22 });
+      ghostShell(keep(new THREE.LatheGeometry(pts, 18)), '#ff9aa8', 0.18);
+      view = [1.28, 1.18];
+      break;
+    }
+    case 'sperm': {
+      const head = new THREE.Group(); head.position.set(0.5, 0, 0); outer.add(head);
+      put(head, sphereGeo(28), shellMat(CELL_COLORS.membrane, '#0d2f4a', 0.45, 0, 2.4), [0, 0, 0], [0.3, 0.4, 0.25]);
+      put(head, sphereGeo(18), bodyMat(CELL_COLORS.acrosome, '#8a5a12', 0.5), [0.21, 0.06, 0], [0.14, 0.19, 0.16]);
+      put(inner, sphereGeo(20), bodyMat(CELL_COLORS.nucleus, '#2c1a52', 0.5), [0.46, 0, 0], [0.22, 0.31, 0.18]);
+      put(outer, keep(new THREE.CapsuleGeometry(0.055, 0.2, 6, 12)), shellMat(CELL_COLORS.membrane, '#0d2f4a', 0.4, 0, 2.4), [0.2, 0, 0], [1, 1, 1], [0, 0, Math.PI / 2]);
+      for (let i = 0; i < 5; i++) put(outer, keep(new THREE.TorusGeometry(0.06, 0.012, 5, 16)), bodyMat(CELL_COLORS.mitochondrion, '#7a2c0c', 0.6), [0.12 + i * 0.045, 0, 0], [1, 1, 1], [0, Math.PI / 2, 0]);
+      const tail = []; for (let i = 0; i <= 30; i++) { const t = i / 30; tail.push([0.08 - t * 1.55, 0.09 * Math.sin(t * 14) * t, 0.09 * Math.cos(t * 12) * t]); }
+      tube(outer, tail, 0.012, CELL_COLORS.flagellum, '#1d4a66');
+      blob(inner, bodyMat(CELL_COLORS.mitochondrion, '#7a2c0c', 0.6), [0.28, 0, 0], 0.05);
+      ghostShell(sphereGeo(16), CELL_COLORS.membrane, 0.15, [0.3, 0.4, 0.25]);
+      ghost.children[0].position.set(0.5, 0, 0);
+      view = [1.3, 0.55];
+      break;
+    }
+    case 'egg': {
+      put(outer, sphereGeo(44), shellMat(CELL_COLORS.membrane, '#0d2f4a', 0.42, 0, 2.5));
+      put(outer, sphereGeo(28), shellMat(CELL_COLORS.zona, '#10243a', 0.28, 2, 3.0), [0, 0, 0], [1.09, 1.09, 1.09]);
+      for (let i = 0; i < 42; i++) { const d = onSphere(1.2); blob(outer, bodyMat(CELL_COLORS.corona, '#6a4a1a', 0.4), d, 0.05 + 0.02 * R()); }
+      cloud(inner, 1.9, '#c8a05a', 0.12, [0, 0, 0]);
+      cloud(inner, 1.4, '#4f9ad0', 0.1, [0.1, -0.15, 0.05]);
+      addNucleus(inner, [0.12, 0.06, 0.05], 0.28);
+      for (let i = 0; i < 54; i++) { const d = onSphere(0.82); blob(inner, bodyMat(CELL_COLORS.granule, '#7d1740', 0.4), d, 0.022 + 0.012 * R()); }
+      for (let i = 0; i < 7; i++) addMito(inner, onSphere(0.55), [R() * 3, R() * 3, R() * 3], 0.9);
+      ghostShell(sphereGeo(20));
+      view = [1.45, 1.2];
+      break;
+    }
+    case 'diatom': {
+      put(outer, keep(new THREE.CylinderGeometry(0.6, 0.6, 0.36, 40, 1, true)), shellMat(CELL_COLORS.silica, '#4a4020', 0.4, 1, 1.8, false));
+      for (const s of [1, -1]) {
+        put(outer, sphereGeo(30), shellMat(CELL_COLORS.silica, '#4a4020', 0.35, 1, 2.0, false), [0, s * 0.19, 0], [0.62, 0.1, 0.62]);
+        put(outer, keep(new THREE.TorusGeometry(0.6, 0.018, 5, 48)), shellMat('#fff3cf', '#5a4a20', 0.4, 1, 1.6, false), [0, s * 0.22, 0]);
+        for (let i = 0; i < 12; i++) {                   // radial ribs on the valve
+          const a = i / 12 * Math.PI * 2;
+          const m = put(outer, keep(new THREE.CylinderGeometry(0.006, 0.006, 0.52, 4)), bodyMat('#f5e8b8', '#6a5a24', 0.2), [0.28 * Math.cos(a), s * 0.285, 0.28 * Math.sin(a)]);
+          m.rotation.z = -a; m.rotation.x = Math.PI / 2;
+        }
+      }
+      cloud(inner, 1.2, '#c9a05a', 0.12, [0, 0, 0]);
+      addNucleus(inner, [0, 0, 0], 0.16);
+      for (let i = 0; i < 5; i++) { const a = i / 5 * Math.PI * 2; addChloroplast(inner, [0.34 * Math.cos(a), -0.04, 0.34 * Math.sin(a)], [0, -a, 0], 0.85); }
+      put(inner, sphereGeo(20), shellMat(CELL_COLORS.vacuole, '#0d2f4a', 0.28, 2, 2.0), [0, 0.02, 0], [0.22, 0.15, 0.22]);
+      ghostShell(keep(new THREE.CylinderGeometry(0.6, 0.6, 0.4, 18, 1, true)), CELL_COLORS.silica, 0.14);
+      view = [1.05, 0.95];
+      break;
+    }
+    case 'virus': {
+      put(outer, keep(new THREE.IcosahedronGeometry(0.55, 0)), bodyMat(CELL_COLORS.capsid, '#7a3a10', 0.55));
+      const ic = keep(new THREE.IcosahedronGeometry(0.55, 0)), ip = ic.attributes.position, seen = new Set();
+      for (let i = 0; i < ip.count; i++) {
+        const d = [ip.getX(i), ip.getY(i), ip.getZ(i)], n = Math.hypot(...d), key = d.map(x => (x / n).toFixed(3)).join(',');
+        if (seen.has(key)) continue; seen.add(key);
+        const u = [d[0] / n, d[1] / n, d[2] / n];
+        put(outer, keep(new THREE.CylinderGeometry(0.018, 0.018, 0.16, 5)), bodyMat(CELL_COLORS.spike, '#7a2a10', 0.3), [u[0] * 0.62, u[1] * 0.62, u[2] * 0.62], [1, 1, 1]);
+        outer.children[outer.children.length - 1].quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(u[0], u[1], u[2]));
+        blob(outer, bodyMat(CELL_COLORS.spike, '#7a2a10', 0.4), [u[0] * 0.72, u[1] * 0.72, u[2] * 0.72], 0.055);
+      }
+      const helix = []; for (let i = 0; i <= 40; i++) { const t = i / 40, a = t * Math.PI * 5; helix.push([0.15 * Math.cos(a) * (1 - 0.3 * t), -0.3 + 0.6 * t, 0.15 * Math.sin(a) * (1 - 0.3 * t)]); }
+      tube(inner, helix, 0.018, CELL_COLORS.dna, '#4a2a7a');
+      cloud(inner, 0.8, '#ffb46b', 0.08, [0, 0, 0]);
+      ghostShell(keep(new THREE.IcosahedronGeometry(0.57, 0)), CELL_COLORS.capsid, 0.16);
+      view = [1.05, 0.85];
+      break;
+    }
+    default: {
+      put(outer, sphereGeo(36), shellMat(CELL_COLORS.membrane, '#0d2f4a', 0.42, 0, 2.6));
+      cloud(inner, 1.6, '#2f8fb8', 0.14, [0, 0, 0]);
+      addNucleus(inner, [0, 0, 0], 0.26);
+      specks(inner, 180, 0.8, CELL_COLORS.ribosome, { size: 0.024 });
+      ghostShell(sphereGeo(18));
+    }
+  }
+
+  root.tick = t => { for (const f of tickers) f(t); };
+  root.dispose = () => { for (const d of bin) d.dispose?.(); };
+  root.userData = { cell: kind, view: interior ? 'interior' : 'exterior', viewRadius: interior ? view[1] : view[0], points: pointMat };
+  return root;
+}
+
+// ---------------------------------------------------------------------------------------------------
 // helpers
 // ---------------------------------------------------------------------------------------------------
 export function seedOf(name) { let h = 2166136261; for (const c of String(name || 'x')) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return ((h >>> 0) % 10000) / 100; }
@@ -235,6 +662,8 @@ export function classify(spec) {
   if (t === 'galaxy') return 'galaxy';
   if (t === 'galaxy_cluster' || t === 'star_cluster') return t === 'galaxy_cluster' ? 'gcluster' : 'scluster';
   if (t === 'nebula') return /planetary/i.test(spec.notes || '') ? 'pnebula' : 'nebula';
+  if (t === 'cell') return 'cell';
+  if (t === 'virus') return 'virus';
   if (t === 'supernova_remnant') return 'snr';
   if (t === 'asteroid') return 'asteroid';
   if (t === 'comet') return 'comet';
@@ -276,6 +705,15 @@ export function createModel(THREE, spec = {}) {
   const pick = arr => arr[Math.floor(R() * arr.length)];
 
   switch (kind) {
+    case 'cell': case 'virus': {
+      const cell = buildCell(THREE, spec, seed);
+      group.add(cell);
+      tickers.push(t => cell.tick(t));
+      disposables.push({ dispose: () => cell.dispose() });
+      group.userData.points = cell.userData.points;
+      group.userData.viewRadius = cell.userData.viewRadius;
+      break;
+    }
     case 'ocean': { group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 4, c1: C(0.08, 0.25, 0.55), c2: C(0.2, 0.42, 0.18), c3: C(0.55, 0.5, 0.35), atmo: 0.6 }))); addSprite(2.5, C(0.45, 0.65, 1.0), C(0.1, 0.2, 0.5), 3, 11, 0.85); break; }   // Earth-like: blue limb glow
     case 'lava': { group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 3, c1: C(0.12, 0.08, 0.07), c2: C(1.0, 0.45, 0.1), c3: C(1.0, 0.8, 0.3), atmo: 0 }))); break; }
     case 'icy': { group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 2, c1: C(0.7, 0.74, 0.8), c2: C(0.88, 0.9, 0.95), c3: C(0.5, 0.55, 0.6), atmo: 0 }))); break; }
@@ -383,7 +821,7 @@ export function createModel(THREE, spec = {}) {
   }
   group.tick = t => { for (const f of tickers) f(t); };
   group.dispose = () => { for (const d of disposables) d.dispose?.(); };
-  group.viewRadius = { galaxy: 1.1, gcluster: 1.2, scluster: 1.1, nebula: 1.3, pnebula: 1.3, snr: 1.4, blackhole: 2.2, quasar: 3, pulsar: 2.4, comet: 2.5, star: 1.6, browndwarf: 1.3, whitedwarf: 1.4 }[kind] || 1.15;
+  group.viewRadius = group.userData.viewRadius || { galaxy: 1.1, gcluster: 1.2, scluster: 1.1, nebula: 1.3, pnebula: 1.3, snr: 1.4, blackhole: 2.2, quasar: 3, pulsar: 2.4, comet: 2.5, star: 1.6, browndwarf: 1.3, whitedwarf: 1.4 }[kind] || 1.15;
   return group;
 }
 

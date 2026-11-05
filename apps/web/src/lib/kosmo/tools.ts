@@ -13,6 +13,7 @@ export const KOSMO_TOOLS: Record<
   university: { file: "university.html", title: "University", group: "atlas" },
   timeline: { file: "universe-timeline.html", title: "Universe timeline", group: "atlas" },
   chemistry: { file: "chemistry.html", title: "Chemistry", group: "atlas" },
+  biology: { file: "biology.html", title: "Biology", group: "atlas" },
   contraption: { file: "contraption-sim.html", title: "Contraption simulator", group: "atlas" },
 
   oracle: { file: "oracle/index.html", title: "Dark Factory", group: "oracle" },
