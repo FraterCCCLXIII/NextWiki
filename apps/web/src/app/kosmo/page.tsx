@@ -28,6 +28,7 @@ const ROWS: { title: string; items: Section[] }[] = [
       { href: "/kosmo/tools/spacecraft", label: "Spacecraft", blurb: "Every rocket and spacecraft, in 3D at true scale.", img: `${TEX}/2k_pluto.jpg`, tag: "Tool" },
       { href: "/kosmo/tools/shipyard", label: "Shipyard", blurb: "Design a ship, then fly it: stage, land, dock.", img: `${TEX}/2k_sun.jpg`, tag: "Lab" },
       { href: "/kosmo/tools/contraption", label: "Simulator", blurb: "Build and run small physical contraptions.", img: `${TEX}/2k_uranus.jpg`, tag: "Tool" },
+      { href: "/kosmo/tools/landing", label: "Landing Lab", blurb: "Land a rocket with ZEM/ZEV, a fuel-optimal solver or a neural net.", img: `${TEX}/2k_mars.jpg`, tag: "Lab" },
     ],
   },
 ];

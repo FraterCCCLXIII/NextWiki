@@ -50,6 +50,7 @@ export const NAV_GROUPS: NavGroup[] = [
 
 export function isNavActive(pathname: string, page: NavPage) {
   const { href, prefix } = page;
+      { href: "/kosmo/tools/landing", label: "Landing Lab" },
   if (href === "/kosmo") return pathname === "/kosmo";
   if (prefix) return pathname.startsWith(prefix);
   return pathname === href || pathname.startsWith(`${href}/`);

@@ -37,6 +37,7 @@
     ] },
     { name: "Lab", pages: [
       { href: "shipyard.html", label: "Shipyard" },
+      { href: "landing-lab.html", label: "Landing Lab" },
       { href: "oracle/index.html", label: "Oracle" }
     ] }
   ];

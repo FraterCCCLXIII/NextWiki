@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
+<script src="kosmo-scrollfade.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Landing Lab</title>
+<style>
+  :root { --bg: #0d0d0d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --good: #7fe0a0; --bad: #ff8a8a; --line: rgba(140,170,220,0.14); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 15px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(127,195,255,0.55), rgba(255,184,107,0.45)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+  * { scrollbar-width: thin; scrollbar-color: rgba(127,195,255,0.6) transparent; }
+  .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+  #navbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(13,13,13,0.95), rgba(13,13,13,0.6)); }
+  #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 20px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 13px; color: #fff; opacity: 0.8; margin-top: 2px; }
+  #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.16em; font-size: 14px; text-transform: uppercase; }
+  @media (max-width: 1320px) { #menu { overflow-x: auto; min-width: 0; scrollbar-width: none; } #menu::-webkit-scrollbar { display: none; } }
+  #menu a { color: rgba(255,255,255,0.72); text-decoration: none; white-space: nowrap; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+  #view { position: absolute; inset: 0; } #scene { display: block; width: 100%; height: 100%; }
+  #side { position: absolute; left: 14px; top: 66px; bottom: 14px; width: 350px; z-index: 4; overflow: auto; padding: 4px 8px 12px 4px; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
+  h1 { font-weight: 500; font-size: 28px; margin: 2px 0 2px; }
+  h2 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
+  input[type=text], input[type=number], button, select { background: rgba(26,26,26,0.85); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 8px; padding: 4px 8px; font: inherit; }
+  input[type=number] { width: 100%; } select { width: 100%; } input[type=range] { width: 100%; accent-color: #7fc3ff; }
+  button { cursor: pointer; margin: 2px 3px 2px 0; } button:hover:not(:disabled) { border-color: var(--accent); } button:disabled { opacity: .45; cursor: default; }
+  button.primary { border-color: var(--accent); color: #fff; background: rgba(40,80,130,0.55); }
+  .dim { color: var(--muted); } .small { font-size: 13px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 8px; }
+  .f label { display: block; font-size: 12px; color: var(--muted); margin: 0 0 1px; }
+  .f label b { color: var(--text); font-weight: 400; float: right; }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 8px 9px; margin: 8px 0; background: rgba(18,22,30,0.55); }
+  .chk { display: flex; align-items: center; gap: 6px; margin: 4px 0; color: #c3d0e2; } .chk input { margin: 0; }
+  .okc { color: var(--good); } .badc { color: var(--bad); } .warn { color: var(--accent2); font-size: 13px; margin: 2px 0; }
+  table.an { border-collapse: collapse; width: 100%; font-size: 13px; } table.an td, table.an th { padding: 2px 4px 2px 0; text-align: right; } table.an th { color: var(--muted); font-weight: 400; } table.an td:first-child, table.an th:first-child { text-align: left; }
+  #hud { position: absolute; right: 14px; top: 66px; bottom: 62px; width: 330px; z-index: 4; overflow: auto; text-shadow: 0 1px 6px #000; padding-right: 4px; }
+  #hud .phase { font-size: 20px; color: #fff; margin: 0; }
+  #hud table.tele { border-collapse: collapse; width: 100%; } #hud table.tele td { padding: 1px 0; font-variant-numeric: tabular-nums; } #hud table.tele td:first-child { color: var(--muted); width: 50%; } #hud table.tele td:last-child { text-align: right; color: #fff; }
+  #plots { display: block; width: 100%; height: 190px; margin-top: 8px; border: 1px solid var(--line); border-radius: 8px; background: rgba(10,12,18,0.6); }
+  #log { font-size: 13px; max-height: 200px; overflow: auto; margin-top: 6px; border-top: 1px solid var(--line); }
+  #log div { padding: 1px 0; } #log .good { color: var(--good); } #log .bad { color: var(--bad); } #log .stage { color: var(--accent); } #log .t { color: var(--muted); display: inline-block; width: 52px; font-variant-numeric: tabular-nums; }
+  #result { margin: 8px 0; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: rgba(18,22,30,0.7); font-size: 14px; }
+  #bar { position: absolute; left: 372px; right: 358px; bottom: 12px; z-index: 4; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; text-shadow: 0 1px 6px #000; font-size: 14px; color: #c3d0e2; }
+  #bar button, #bar select { margin: 0; padding: 4px 10px; width: auto; } #bar label { display: flex; align-items: center; gap: 5px; }
+  #banner { position: absolute; left: 372px; top: 66px; z-index: 4; font-size: 13px; color: var(--muted); text-shadow: 0 1px 6px #000; max-width: 560px; pointer-events: none; }
+  #mc canvas { display: block; width: 100%; height: 90px; margin-top: 4px; border: 1px solid var(--line); border-radius: 8px; background: rgba(10,12,18,0.6); }
+  kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); }
+  html.embedded #side, html.embedded #hud, html.embedded #banner { top: 12px; }
+  @media (max-width: 1100px) { #hud { display: none; } #bar { right: 14px; } }
+</style>
+  <link rel="stylesheet" href="kosmographica.css?v=15">
+  <script src="atlas-nav.js" defer></script>
+  <script src="accordion.js" defer></script>
+</head>
+<body>
+<div id="view"><canvas id="scene"></canvas></div>
+<div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
+  <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="shipyard.html">Shipyard</a><a href="landing-lab.html" class="here">Landing Lab</a></nav><span></span></div>
+
+<div id="side">
+  <h1 class="serif">Landing Lab</h1>
+  <div class="dim small">Land a rocket on engines that cannot throttle down to hover. The stage lights its engine at the last moment its landing is still possible, steers onto a few metres of deck and arrives almost at rest -- flown on noisy sensors, in wind.</div>
+
+  <h2>Vehicle</h2>
+  <select id="vehicle"></select>
+  <div id="vnote" class="small dim" style="margin-top:4px"></div>
+  <table class="an" id="van"></table>
+
+  <h2>Guidance</h2>
+  <select id="guidance"></select>
+  <div id="gnote" class="small dim" style="margin-top:4px"></div>
+  <div style="margin-top:4px"><button id="train">Train the neural policy</button><span id="trainOut" class="small dim"></span></div>
+
+  <h2>Conditions</h2>
+  <div class="f">
+    <label>Wind at 10 m <b id="windV"></b></label><input type="range" id="wind" min="0" max="20" step="0.5">
+    <label>Gusts <b id="gustV"></b></label><input type="range" id="gust" min="0" max="8" step="0.5">
+    <label id="seaL">Sea state, deck heave <b id="seaV"></b></label><input type="range" id="sea" min="0" max="3" step="0.1">
+    <label>Landing propellant <b id="propV"></b></label><input type="range" id="prop" min="0.4" max="1.6" step="0.05">
+  </div>
+  <label class="chk"><input type="checkbox" id="noise" checked> noisy sensors (radar altimeter, GNSS, IMU bias) with a Kalman filter</label>
+  <label class="chk"><input type="checkbox" id="disp" checked> dispersed start (entry error, thrust error)</label>
+  <div class="grid2 f"><div><label>Seed</label><input type="number" id="seed" min="1" step="1" value="7"></div><div><label>&nbsp;</label><button id="reseed">Random seed</button></div></div>
+
+  <h2>Statistics</h2>
+  <div class="small dim">Fly many dispersed landings (random wind, start error, sensor noise, thrust error) and count how many land.</div>
+  <div style="margin-top:4px"><button id="mc">Monte Carlo × 40</button><button id="cmp">Compare algorithms</button></div>
+  <div id="mcOut" class="small"></div>
+  <canvas id="mcPlot" width="640" height="180" style="display:none;width:100%;height:90px;border:1px solid var(--line);border-radius:8px;background:rgba(10,12,18,0.6);margin-top:4px"></canvas>
+</div>
+
+<div id="banner">Land the stage inside the circle, upright, below the speed limits.&nbsp; <kbd>space</kbd> play / pause &nbsp; <kbd>R</kbd> reset</div>
+<div id="hud">
+  <p class="phase serif" id="phase">Ready</p>
+  <div id="result" hidden></div>
+  <table class="tele" id="tele"></table>
+  <canvas id="plots" width="660" height="380"></canvas>
+  <div id="log"></div>
+</div>
+<div id="bar">
+  <button id="run" class="primary">▶ Launch</button><button id="pause" disabled>Pause</button><button id="ff" disabled>Skip to end</button><button id="reset" disabled>Reset</button>
+  <label>speed <select id="warp"><option value="0.25">¼×</option><option value="0.5">½×</option><option value="1">1×</option><option value="2">2×</option><option value="5" selected>5×</option><option value="10">10×</option></select></label>
+  <label class="chk" style="margin:0"><input type="checkbox" id="autoSlow" checked> slow down for the last 150 m</label>
+</div>
+
+<script type="module">
+import { createLanding, VEHICLES, GUIDANCE, analyzeVehicle, resolveVehicle, mcRun, summarizeMC, trainPolicy, Policy } from './landing-sim.js';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const DEG = Math.PI / 180, clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const yieldTick = () => new Promise(r => setTimeout(r, 0));
+
+/* ---------------- controls ---------------- */
+$('vehicle').innerHTML = Object.entries(VEHICLES).map(([id, v]) => `<option value="${id}">${esc(v.name)}</option>`).join('');
+$('guidance').innerHTML = Object.entries(GUIDANCE).map(([id, n]) => `<option value="${id}">${esc(n)}</option>`).join('');
+const GNOTE = {
+  hoverslam: 'Light the engine when the stopping distance equals the altitude, then hold a constant deceleration. Simple, famous, and unforgiving: any error in timing leaves the stage stopped in the air or hitting the deck.',
+  zemzev: 'Zero-effort-miss / zero-effort-velocity guidance (E-guidance): the energy-optimal closed form. It is smooth but knows nothing about the engine\'s throttle floor, so on a stage that cannot hover it tends to stop high.',
+  optimal: 'Every 0.1 s: solve the landing for a whole grid of times-to-go and fly the cheapest plan whose thrust stays inside the throttle window and above the deck (the idea of G-FOLD / lossless convexification). The engine lights at the last moment such a plan still exists.',
+  neural: 'A small neural network that has learned to copy the fuel-optimal solver (DAgger imitation learning). It runs with no solver at all. Train it first for the selected vehicle -- it takes about 15 s.',
+};
+const policyKey = id => 'kosmo.landing.policy.' + id;
+const loadPolicy = id => { try { const j = localStorage.getItem(policyKey(id)); return j ? JSON.parse(j) : null; } catch { return null; } };
+const savePolicy = (id, p) => { try { localStorage.setItem(policyKey(id), JSON.stringify(p.toJSON())); } catch {} };
+
+function syncLabels() {
+  const v = VEHICLES[$('vehicle').value];
+  $('windV').textContent = (+$('wind').value).toFixed(1) + ' m/s'; $('gustV').textContent = '±' + (+$('gust').value).toFixed(1) + ' m/s';
+  $('seaV').textContent = (+$('sea').value).toFixed(1) + ' m'; $('propV').textContent = Math.round(v.prop * $('prop').value).toLocaleString() + ' kg';
+}
+function onVehicle() {
+  const id = $('vehicle').value, v = VEHICLES[id], rv = resolveVehicle({ vehicle: id }), a = analyzeVehicle(rv);
+  $('vnote').textContent = v.note;
+  $('wind').value = v.wind; $('gust').value = +(0.35 * v.wind).toFixed(1); $('sea').value = v.target.heave; $('prop').value = 1;
+  $('wind').disabled = $('gust').disabled = v.world !== 'earth'; $('sea').disabled = v.target.kind !== 'ship'; $('seaL').style.opacity = v.target.kind === 'ship' ? 1 : 0.4;
+  $('van').innerHTML = `<tr><td>Engines</td><td>${v.engines} × ${esc(rv.eng.name)}</td></tr>
+    <tr><td>Mass at the burn</td><td>${((v.dry + v.prop) / 1000).toFixed(1)} t (dry ${(v.dry / 1000).toFixed(1)} t)</td></tr>
+    <tr><td>Thrust / weight, full · minimum</td><td>${a.twrMax.toFixed(2)} · ${a.twrMinWet.toFixed(2)}</td></tr>
+    <tr><td>Can it hover?</td><td class="${a.canHover ? 'okc' : 'badc'}">${a.canHover ? 'yes, once light' : 'no: must arrive moving'}</td></tr>
+    <tr><td>Landing target</td><td>${v.target.kind === 'ship' ? 'drone ship' : v.target.kind === 'catch' ? 'tower catch' : 'pad'}, ±${v.target.radius} m</td></tr>
+    <tr><td>Touchdown limits</td><td>${(v.vMaxV ?? 3)} m/s down · ${(v.vMaxH ?? 3)} m/s sideways</td></tr>`;
+  syncLabels(); reset();
+}
+function onGuidance() {
+  const g = $('guidance').value; $('gnote').textContent = GNOTE[g];
+  const has = !!loadPolicy($('vehicle').value);
+  $('train').style.display = g === 'neural' || true ? '' : 'none';
+  $('trainOut').textContent = has ? ' trained policy saved for this vehicle' : (g === 'neural' ? ' not trained yet (the solver will fly instead)' : '');
+}
+for (const id of ['wind', 'gust', 'sea', 'prop']) $(id).addEventListener('input', () => { syncLabels(); });
+$('vehicle').addEventListener('change', () => { onVehicle(); onGuidance(); });
+$('guidance').addEventListener('change', () => { onGuidance(); reset(); });
+for (const id of ['wind', 'gust', 'sea', 'prop', 'noise', 'disp', 'seed']) $(id).addEventListener('change', reset);
+$('reseed').addEventListener('click', () => { $('seed').value = 1 + Math.floor(Math.random() * 9999); reset(); });
+
+function config() {
+  const id = $('vehicle').value, v = VEHICLES[id], g = $('guidance').value;
+  const c = { vehicle: id, guidance: g, wind: +$('wind').value, gust: +$('gust').value, sea: +$('sea').value, prop: v.prop * $('prop').value, noise: $('noise').checked, dispersed: $('disp').checked, seed: +$('seed').value || 1 };
+  if (g === 'neural') c.policy = loadPolicy(id);
+  return c;
+}
+
+/* ---------------- simulation state ---------------- */
+let sim = null, running = false, hist = [], trail = [], last = 0, hudT = 0, logN = 0, cam = null, seaT = 0;
+function reset() {
+  running = false; sim = createLanding(config()); hist = []; trail = []; logN = 0; cam = null;
+  $('run').textContent = '▶ Launch'; $('run').disabled = false; $('pause').disabled = true; $('ff').disabled = true; $('reset').disabled = true;
+  $('result').hidden = true; $('log').innerHTML = ''; draw(); hud();
+}
+$('run').onclick = () => { if (!sim || sim.done) reset(); running = true; last = performance.now(); $('run').disabled = true; $('pause').disabled = false; $('ff').disabled = false; $('reset').disabled = false; };
+$('pause').onclick = () => { running = !running; $('pause').textContent = running ? 'Pause' : 'Resume'; last = performance.now(); };
+$('ff').onclick = () => { if (!sim) return; while (!sim.done && sim.s.t < 300) { sim.advance(0.5); record(); } finish(); };
+$('reset').onclick = reset;
+addEventListener('keydown', e => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return; if (e.code === 'Space') { e.preventDefault(); if (running) $('pause').click(); else if (!$('run').disabled) $('run').click(); } if (e.key === 'r' || e.key === 'R') reset(); });
+
+function record() {
+  const s = sim.s; if (!hist.length || s.t - hist[hist.length - 1].t >= 0.2 || sim.done) hist.push({ t: s.t, y: s.y - sim.veh.yf, vy: s.vy, vx: s.vx, u: s.lvl, th: s.th });
+  if (!trail.length || s.t - trail[trail.length - 1].t >= 0.25) trail.push({ t: s.t, x: s.x, y: s.y, u: s.lvl });
+}
+function finish() {
+  running = false; $('run').textContent = '↻ Fly again'; $('run').disabled = false; $('pause').disabled = true; $('ff').disabled = true; $('reset').disabled = false;
+  record(); hud(); draw();
+}
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (sim && running) {
+    const dtReal = Math.min(0.05, (now - last) / 1000); last = now;
+    let w = +$('warp').value; if ($('autoSlow').checked && sim.s.y - sim.veh.yf < 150 && sim.E.on) w = Math.min(w, 1);
+    const T = dtReal * w; let done = 0;
+    while (done < T && !sim.done) { const d = Math.min(0.1, T - done); sim.advance(d); done += d; record(); }
+    if (sim.done) finish();
+  }
+  if (sim) { draw(); if (now - hudT > 100) { hudT = now; hud(); } }
+}
+
+/* ---------------- HUD ---------------- */
+function hud() {
+  if (!sim) return;
+  const s = sim.s, v = sim.veh, e = sim.est, o = sim.out, h = s.y - v.yf, fuel = s.prop;
+  const ph = { descent: 'Descent: grid-fin steering', ignition: 'Engine starting', burn: 'Landing burn', landed: 'Landed', crashed: 'Crashed' }[sim.phase] || sim.phase;
+  $('phase').textContent = sim.done ? (o.ok ? (v.target.kind === 'catch' ? 'Caught' : 'Landed') : 'Failed') : ph;
+  const row = (k, val) => `<tr><td>${k}</td><td>${val}</td></tr>`;
+  $('tele').innerHTML = row('time', s.t.toFixed(1) + ' s') + row('height above deck', Math.max(h, 0).toFixed(h < 100 ? 1 : 0) + ' m') + row('descent speed', (-s.vy).toFixed(1) + ' m/s') + row('lateral speed', s.vx.toFixed(1) + ' m/s')
+    + row('offset from target', (s.x - 0).toFixed(1) + ' m') + row('tilt', (s.th / DEG).toFixed(1) + '°') + row('throttle', (s.lvl * 100).toFixed(0) + ' %' + (sim.E.on ? '' : ' (off)'))
+    + row('thrust', (s.thrust / 1e3).toFixed(0) + ' kN') + row('propellant left', Math.round(fuel) + ' kg') + row('dynamic pressure', ((s.q || 0) / 1e3).toFixed(1) + ' kPa') + row('load', (s.gload || 0).toFixed(1) + ' g')
+    + row('navigation error', Math.hypot(e.x - s.x, e.y - s.y).toFixed(1) + ' m');
+  const L = $('log'); while (logN < sim.events.length) { const ev = sim.events[logN++]; L.insertAdjacentHTML('beforeend', `<div class="${ev.kind}"><span class="t">${ev.t.toFixed(1)} s</span>${esc(ev.txt)}</div>`); L.scrollTop = L.scrollHeight; }
+  if (sim.done) {
+    const lim = `limits: ${v.vMaxV ?? 3} m/s down, ${v.vMaxH ?? 3} m/s sideways, ${v.target.kind === 'catch' ? 4 : 8}° tilt, within ${v.target.radius} m`;
+    $('result').hidden = false;
+    $('result').innerHTML = o.ok ? `<b class="okc">${v.target.kind === 'catch' ? 'Caught.' : 'Touchdown.'}</b> ${o.vv.toFixed(2)} m/s down, ${o.vh.toFixed(2)} m/s sideways, ${o.tilt.toFixed(1)}° tilt, ${o.miss.toFixed(1)} m from the centre; ${Math.round(o.fuel)} kg of propellant left (${Math.round(o.fuelUsed)} kg burned). <span class="dim small">${lim}</span>`
+      : `<b class="badc">Failed.</b> ${esc(o.reason)}. <span class="dim small">${lim}</span>`;
+  }
+  plots();
+}
+function plots() {
+  const c = $('plots'), g = c.getContext('2d'), W = c.width, H = c.height; g.clearRect(0, 0, W, H);
+  if (!hist.length) return;
+  const T = Math.max(hist[hist.length - 1].t, 10), panes = [
+    { name: 'height above deck (m)', f: p => p.y, col: '#7fc3ff', lo: 0 }, { name: 'descent speed (m/s)', f: p => -p.vy, col: '#ffb86b', lo: 0 }, { name: 'throttle (%)', f: p => p.u * 100, col: '#7fe0a0', lo: 0, hi: 100 }];
+  const ph = H / panes.length;
+  panes.forEach((pn, i) => {
+    const y0 = i * ph + 16, y1 = (i + 1) * ph - 6, vals = hist.map(pn.f), hi = pn.hi ?? Math.max(1, ...vals) * 1.05, lo = pn.lo;
+    g.fillStyle = '#8a9bb8'; g.font = '20px sans-serif'; g.fillText(pn.name + '  ' + vals[vals.length - 1].toFixed(0), 8, y0 - 2);
+    g.strokeStyle = 'rgba(140,170,220,0.14)'; g.beginPath(); g.moveTo(0, y1); g.lineTo(W, y1); g.stroke();
+    g.strokeStyle = pn.col; g.lineWidth = 2; g.beginPath(); hist.forEach((p, k) => { const x = p.t / T * (W - 8) + 4, y = y1 - (pn.f(p) - lo) / (hi - lo) * (y1 - y0); k ? g.lineTo(x, y) : g.moveTo(x, y); }); g.stroke();
+  });
+}
+
+/* ---------------- scene ---------------- */
+const cv = $('scene'), ctx = cv.getContext('2d');
+function resize() { const r = devicePixelRatio || 1; cv.width = cv.clientWidth * r; cv.height = cv.clientHeight * r; ctx.setTransform(r, 0, 0, r, 0, 0); }
+addEventListener('resize', () => { resize(); draw(); }); resize();
+const stars = Array.from({ length: 140 }, (_, i) => ({ x: (Math.sin(i * 12.9898) * 43758.5453) % 1, y: (Math.sin(i * 78.233) * 12543.123) % 1, r: 0.4 + Math.abs((Math.sin(i * 5.31) * 999) % 1) * 1.1 }));
+function draw() {
+  if (!sim) return;
+  const W = cv.clientWidth, H = cv.clientHeight, s = sim.s, v = sim.veh, moon = v.world === 'moon';
+  const leftPad = innerWidth > 1100 ? 372 : 14, rightPad = innerWidth > 1100 ? 350 : 14, vw = W - leftPad - rightPad, cx0 = leftPad + vw / 2;
+  // camera: keep the stage and the target in view, never smaller than the stage itself
+  const deckY = sim.deck(s.t), hAbove = s.y - deckY;
+  const spanY = Math.max(hAbove + 40, 70), spanX = Math.max(Math.abs(s.x) * 2 + 80, 80);
+  let k = Math.min(vw * 0.8 / spanX, H * 0.62 / spanY, 0.5 * H / v.length);
+  k = clamp(k, 0.02, 14);
+  if (!cam) cam = { k }; cam.k += (Math.log(k) > Math.log(cam.k) ? 0.08 : 0.2) * (k - cam.k); const K = cam.k;
+  const gY = H * 0.82, cxw = Math.abs(s.x) * 2 + 80 > vw / K * 0.8 ? s.x / 2 : 0;
+  const X = x => cx0 + (x - cxw) * K, Y = y => gY - (y - deckY * 0) * K + 0;
+  // sky
+  const alt = clamp(s.y / 12000, 0, 1);
+  const sky = ctx.createLinearGradient(0, 0, 0, gY);
+  if (moon) { sky.addColorStop(0, '#000'); sky.addColorStop(1, '#05060a'); } else { sky.addColorStop(0, `rgb(${Math.round(8 + 20 * (1 - alt))},${Math.round(14 + 50 * (1 - alt))},${Math.round(30 + 110 * (1 - alt))})`); sky.addColorStop(1, `rgb(${Math.round(70 + 60 * (1 - alt))},${Math.round(110 + 60 * (1 - alt))},${Math.round(160 + 50 * (1 - alt))})`); }
+  ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+  if (moon || alt > 0.55) { ctx.fillStyle = 'rgba(255,255,255,0.7)'; for (const st of stars) { ctx.globalAlpha = moon ? 1 : clamp((alt - 0.55) * 2, 0, 1); ctx.fillRect(Math.abs(st.x) * W, Math.abs(st.y) * gY * 0.9, st.r, st.r); } ctx.globalAlpha = 1; }
+  // ground / sea
+  const kind = v.target.kind, groundY = Y(0);
+  const heave = deckY - v.target.deckY;
+  if (kind === 'ship') {
+    ctx.fillStyle = '#10304a'; ctx.fillRect(0, groundY, W, H - groundY + 5);
+    ctx.strokeStyle = 'rgba(200,230,255,0.25)'; ctx.lineWidth = 1.5; ctx.beginPath();
+    for (let x = 0; x <= W; x += 6) { const wx = (x - cx0) / K + cxw, yy = groundY + 4 + Math.sin(wx * 0.05 + s.t * 1.3) * Math.min(6, 2 + 2 * K) * 0.5; x ? ctx.lineTo(x, yy) : ctx.moveTo(x, yy); } ctx.stroke();
+    const hw = 45 * K, hy = Y(heave) ;
+    ctx.fillStyle = '#2b3138'; ctx.fillRect(X(0) - hw, hy, hw * 2, Math.max(4, 6 * K)); ctx.fillStyle = '#394148'; ctx.fillRect(X(0) - hw, hy, hw * 2, Math.max(2, 1.2 * K));
+  } else if (kind === 'catch') {
+    ctx.fillStyle = '#35393f'; ctx.fillRect(0, groundY, W, H - groundY + 5);
+    ctx.fillStyle = '#6b7380'; const tx = X(-(v.diameter / 2 + 6)); ctx.fillRect(tx - 3 * K, Y(v.target.deckY + 20), 6 * K, 20 * K + (groundY - Y(v.target.deckY + 20)) - 20 * K);
+    ctx.fillRect(tx - 3 * K, groundY - 120 * K, 6 * K, 120 * K);
+    ctx.fillStyle = '#9aa3b0'; ctx.fillRect(tx, Y(v.target.deckY + 2), (v.diameter / 2 + 6 + v.diameter / 2) * K, 2 * K); ctx.fillRect(tx, Y(v.target.deckY + 2), 2 * K, 5 * K);
+  } else {
+    ctx.fillStyle = moon ? '#585858' : '#4a5a3a'; ctx.fillRect(0, groundY, W, H - groundY + 5);
+    ctx.fillStyle = moon ? '#7a7a7a' : '#8a8f94'; ctx.fillRect(X(0) - 25 * K, groundY, 50 * K, Math.max(2, 0.6 * K));
+  }
+  // target circle
+  if (kind !== 'catch') { ctx.strokeStyle = 'rgba(127,224,160,0.85)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(-v.target.radius), Y(heave) + 1); ctx.lineTo(X(v.target.radius), Y(heave) + 1); ctx.stroke(); ctx.fillStyle = 'rgba(127,224,160,0.9)'; ctx.fillRect(X(-v.target.radius) - 1, Y(heave) - 5, 2, 6); ctx.fillRect(X(v.target.radius) - 1, Y(heave) - 5, 2, 6); }
+  // wind arrows
+  if (!moon && sim.windAt) { const w = sim.windAt(20); ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.font = '12px sans-serif'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(leftPad + 40, 100); ctx.lineTo(leftPad + 40 + w * 5, 100); ctx.stroke(); ctx.fillText(`wind ${w.toFixed(1)} m/s ${w >= 0 ? '→' : '←'}`, leftPad + 40, 118); }
+  // trail
+  if (trail.length > 1) { ctx.lineWidth = 2; for (let i = 1; i < trail.length; i++) { const a = trail[i - 1], b = trail[i]; ctx.strokeStyle = b.u > 0 ? `rgba(255,${Math.round(190 - 100 * b.u)},90,0.9)` : 'rgba(200,220,255,0.5)'; ctx.beginPath(); ctx.moveTo(X(a.x), Y(a.y)); ctx.lineTo(X(b.x), Y(b.y)); ctx.stroke(); } }
+  // stage
+  drawStage(X(s.x), Y(s.y), K, v, s);
+  // markers when the stage is a speck
+  if (v.length * K < 14) { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(X(s.x), Y(s.y), 4, 0, 7); ctx.fill(); ctx.font = '13px sans-serif'; ctx.fillText(`${Math.round(s.y - v.yf)} m · ${(-s.vy).toFixed(0)} m/s`, X(s.x) + 10, Y(s.y) + 4); }
+}
+function drawStage(px, py, K, v, s) {
+  const Lh = v.length * K, Dw = v.diameter * K, ch = v.comHeight * K;
+  ctx.save(); ctx.translate(px, py); ctx.rotate(s.th);
+  const top = -(v.length - v.comHeight) * K, base = ch;
+  const flame = s.thrust > 1 ? clamp(s.thrust / (v.engines * v.eng.thrustVac), 0, 1.2) : 0;
+  if (flame) { const fl = (v.length * 0.5 + v.length * 0.7 * flame) * K * (0.85 + 0.15 * Math.sin(s.t * 60)); const g = ctx.createLinearGradient(0, base, 0, base + fl); g.addColorStop(0, 'rgba(255,255,230,0.95)'); g.addColorStop(0.3, 'rgba(255,190,90,0.8)'); g.addColorStop(1, 'rgba(255,90,30,0)');
+    ctx.save(); ctx.rotate(s.gimbal); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(-Dw * 0.3, base); ctx.lineTo(Dw * 0.3, base); ctx.lineTo(0, base + fl); ctx.fill(); ctx.restore(); }
+  // legs
+  if (v.legRadius > 0) { ctx.strokeStyle = '#c9d2dc'; ctx.lineWidth = Math.max(1, 0.5 * K); const deployed = sim.E.on || s.y - v.yf < 400 ? 1 : 0.15, lr = v.legRadius * K * deployed; ctx.beginPath(); ctx.moveTo(-Dw / 2, base - 4 * K); ctx.lineTo(-lr, base + 0.4 * K); ctx.moveTo(Dw / 2, base - 4 * K); ctx.lineTo(lr, base + 0.4 * K); ctx.stroke(); }
+  // body
+  const body = ctx.createLinearGradient(-Dw / 2, 0, Dw / 2, 0); body.addColorStop(0, '#9aa3ad'); body.addColorStop(0.5, '#f1f4f8'); body.addColorStop(1, '#8a939d');
+  ctx.fillStyle = body; ctx.fillRect(-Dw / 2, top, Dw, base - top);
+  ctx.fillStyle = '#2a2f36'; ctx.fillRect(-Dw / 2, top, Dw, Math.max(1, Dw * 0.25)); ctx.fillRect(-Dw * 0.35, base - 1, Dw * 0.7, Math.max(2, Dw * 0.12));
+  // grid fins near the top
+  if (v.finArea > 0) { ctx.fillStyle = '#4b535c'; const fw = Math.max(2, Dw * 0.45); ctx.save(); ctx.translate(0, top + Dw * 0.5); ctx.fillRect(-Dw / 2 - fw * (0.2 + Math.abs(s.fin) * 0.6), -Dw * 0.12, fw, Dw * 0.25); ctx.fillRect(Dw / 2 - fw * (0.8 - Math.abs(s.fin) * 0.6), -Dw * 0.12, fw, Dw * 0.25); ctx.restore(); }
+  ctx.restore();
+}
+
+/* ---------------- Monte Carlo and comparison ---------------- */
+let busy = false;
+async function runMC(cfgBase, n, label, quiet) {
+  const rows = [];
+  for (let i = 0; i < n; i++) {
+    rows.push(mcRun(cfgBase, i, 100 + (+$('seed').value || 0) * 1000));
+    if (!quiet && i % 2 === 1) { $('mcOut').textContent = `${label}: ${i + 1} / ${n} flown…`; await yieldTick(); }
+  }
+  return summarizeMC(rows);
+}
+$('mc').onclick = async () => {
+  if (busy) return; busy = true; const c = config(); c.dispersed = true;
+  const r = await runMC(c, 40, GUIDANCE[c.guidance]);
+  busy = false;
+  const reasons = Object.entries(r.reasons).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${n}× ${esc(k)}`).join('<br>');
+  $('mcOut').innerHTML = `<div class="card"><b class="${r.rate >= 0.8 ? 'okc' : r.rate >= 0.5 ? '' : 'badc'}">${(r.rate * 100).toFixed(0)} % landed</b> (${r.ok} of ${r.n})<br><span class="dim">mean touchdown ${r.meanSpeed.toFixed(1)} m/s · propellant left ${Math.round(r.meanFuel)} kg · miss ${r.meanMiss.toFixed(1)} m</span><br><span class="dim small">${reasons || 'no failures'}</span></div>`;
+  const p = $('mcPlot'), g = p.getContext('2d'); p.style.display = 'block'; g.clearRect(0, 0, p.width, p.height);
+  const R = resolveVehicle({ vehicle: c.vehicle }).target.radius, span = Math.max(R * 3, ...r.rows.map(q => Math.abs(q.x || 0))) * 1.1;
+  g.fillStyle = 'rgba(127,224,160,0.12)'; g.fillRect(p.width / 2 - R / span * p.width / 2, 0, R / span * p.width, p.height);
+  r.rows.forEach((q, i) => { const x = p.width / 2 + (q.x || 0) / span * p.width / 2, y = 20 + (i % 8) * 18; g.fillStyle = q.ok ? '#7fe0a0' : '#ff8a8a'; g.beginPath(); g.arc(x, y, 6, 0, 7); g.fill(); });
+  g.fillStyle = '#8a9bb8'; g.font = '18px sans-serif'; g.fillText('touchdown position relative to the target (m)', 8, p.height - 8);
+};
+$('cmp').onclick = async () => {
+  if (busy) return; busy = true; const base = config(); base.dispersed = true; const out = [];
+  const modes = ['hoverslam', 'zemzev', 'optimal'].concat(loadPolicy(base.vehicle) ? ['neural'] : []);
+  for (const m of modes) { const c = { ...base, guidance: m }; if (m === 'neural') c.policy = loadPolicy(base.vehicle); out.push([m, await runMC(c, 30, GUIDANCE[m])]); }
+  busy = false;
+  $('mcOut').innerHTML = `<div class="card"><table class="an"><tr><th>algorithm</th><th>landed</th><th>speed</th><th>fuel left</th></tr>${out.map(([m, r]) => `<tr><td>${esc(GUIDANCE[m].replace(/ \(.*/, ''))}</td><td class="${r.rate >= 0.6 ? 'okc' : r.rate < 0.3 ? 'badc' : ''}">${(r.rate * 100).toFixed(0)} %</td><td>${r.ok ? r.meanSpeed.toFixed(1) : '–'}</td><td>${r.ok ? Math.round(r.meanFuel) : '–'}</td></tr>`).join('')}</table><div class="dim small">30 dispersed flights each, same seeds. ${loadPolicy(base.vehicle) ? '' : 'Train the neural policy to add it here.'}</div></div>`;
+};
+
+/* ---------------- training ---------------- */
+$('train').onclick = async () => {
+  if (busy) return; busy = true; const id = $('vehicle').value; $('train').disabled = true;
+  const t0 = performance.now();
+  try {
+    const p = await trainPolicy(id, { episodes: 30, rounds: 3, epochs: 16, seed: 11, yieldFn: yieldTick,
+      onProgress: r => { $('trainOut').textContent = ` round ${r.round}/${r.rounds}: ${r.samples} labelled states, loss ${r.mse.toFixed(3)}`; } });
+    savePolicy(id, p); $('trainOut').textContent = ` trained in ${((performance.now() - t0) / 1000).toFixed(0)} s -- select "Neural policy" to fly it`;
+    $('guidance').value = 'neural'; onGuidance(); reset();
+  } catch (e) { $('trainOut').textContent = ' training failed: ' + e.message; }
+  $('train').disabled = false; busy = false;
+};
+
+$('guidance').value = 'optimal';
+onVehicle(); onGuidance(); requestAnimationFrame(frame);
+</script>
+</body>
+</html>
