@@ -1,0 +1,80 @@
+{
+  "id": "desi_dr1_cone",
+  "kind": "measured",
+  "what": "DESI DR1 galaxies and quasars: one point per spectroscopic redshift",
+  "source": {
+    "name": "DESI Data Release 1, LSS clustering catalogues (iron, LSScats v1.5)",
+    "url": "https://data.desi.lbl.gov/public/dr1/survey/catalogs/dr1/LSS/iron/LSScats/v1.5",
+    "release": "DR1 (public 2025-03-19)",
+    "retrieved": "2026-11-04",
+    "licence": "CC BY 4.0",
+    "licence_url": "https://data.desi.lbl.gov/doc/acknowledgments/",
+    "credit": "DESI Collaboration and DESI Member Institutions/DOE/KPNO/NOIRLab/NSF/AURA. Data: DESI DR1, DESI Collaboration et al. 2026, AJ 171, 285.",
+    "citation": "DESI Collaboration et al. 2026, AJ 171, 285 (arXiv:2503.14745)"
+  },
+  "files": [
+    {
+      "tracer": "lrg",
+      "file": "LRG_NGC_clustering.dat.fits",
+      "url": "https://data.desi.lbl.gov/public/dr1/survey/catalogs/dr1/LSS/iron/LSScats/v1.5/LRG_NGC_clustering.dat.fits",
+      "rows": 1476135
+    },
+    {
+      "tracer": "lrg",
+      "file": "LRG_SGC_clustering.dat.fits",
+      "url": "https://data.desi.lbl.gov/public/dr1/survey/catalogs/dr1/LSS/iron/LSScats/v1.5/LRG_SGC_clustering.dat.fits",
+      "rows": 662492
+    },
+    {
+      "tracer": "qso",
+      "file": "QSO_NGC_clustering.dat.fits",
+      "url": "https://data.desi.lbl.gov/public/dr1/survey/catalogs/dr1/LSS/iron/LSScats/v1.5/QSO_NGC_clustering.dat.fits",
+      "rows": 793219
+    },
+    {
+      "tracer": "qso",
+      "file": "QSO_SGC_clustering.dat.fits",
+      "url": "https://data.desi.lbl.gov/public/dr1/survey/catalogs/dr1/LSS/iron/LSScats/v1.5/QSO_SGC_clustering.dat.fits",
+      "rows": 430172
+    }
+  ],
+  "columns": {
+    "RA": "deg, J2000",
+    "DEC": "deg, J2000",
+    "Z": "observed redshift",
+    "WEIGHT": "clustering weight (read, not stored)"
+  },
+  "record": "little-endian float32 x4: x, y, z (comoving Mpc, galactic cartesian) then redshift",
+  "frame": "galactic cartesian: x toward l=0, y toward l=90, z toward the north galactic pole",
+  "units": "Mpc (comoving)",
+  "cosmology": {
+    "H0": 67.4,
+    "OmegaM": 0.315,
+    "OmegaL": 0.685,
+    "note": "flat, radiation neglected; same parameters as sim-physics.js"
+  },
+  "rows_read": 3362018,
+  "points": 3362018,
+  "stride": 1,
+  "nodes": "desi_dr1_cone.nodes.json",
+  "octree": {
+    "q_bits": 12,
+    "max_depth": 11,
+    "leaf_max": 2048,
+    "nodes": 6713,
+    "order": "depth-first octree order over the unit cube; every node is a contiguous range [first, first+count)",
+    "centre": "cx, cy, cz in unit cube coordinates (divide the file's Mpc by comoving_radius_max_mpc)"
+  },
+  "redshift_range": [
+    0.4,
+    3.5
+  ],
+  "comoving_radius_max_mpc": 6952.95,
+  "bytes": 53792288,
+  "not_in_source": [
+    "Year-five survey (47M galaxies and quasars, the NOIRLab noirlab2610b image) is not public; first cosmology results expected 2027.",
+    "DR2 redshifts are not public either (only its cosmology chains are).",
+    "Image noirlab2610b is a 2D wedge: distance and angle only, no recoverable third coordinate, and additive bloom in the composite means pixel brightness is not a galaxy count.",
+    "Stars targeted by DESI (4.06M in DR1) are excluded; this file is galaxies and quasars only."
+  ]
+}

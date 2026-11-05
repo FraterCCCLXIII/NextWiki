@@ -1277,8 +1277,132 @@ function updateEarth(g) {   // the same shown positions and radii as the Solar l
   g.userData.moon.rotation.y = spinAngle('Moon', t);
 }
 
+// DESI DR1: every galaxy and quasar with a measured redshift, at its comoving place — the largest PUBLIC 3D map.
+// The NOIRLab noirlab2610b image is a 2D wedge rendering of these positions (distance as radius, angle as position),
+// so it cannot supply the third coordinate; the survey's redshift catalogue can. Built by catalog/ingest/desi_dr1.py
+// into the gitignored data/desi/ (CC BY 4.0, DESI Collaboration et al. 2026, AJ 171, 285).
+// Level of detail: the ingest ships an adaptive octree whose nodes are contiguous ranges of the file. Each frame we
+// walk it front to back and frustum-cull it, splitting any cell still large on screen (PX_MAX) so culling and the
+// budget stay local. Accepted cells claim points in proportion to the pixels they cover, up to a budget of
+// TARGET_DENSITY points per pixel, and drawing is one buffer upload of the selected ranges. Cost therefore tracks the
+// screen, not the catalogue: 3.4M rows and 40M rows draw the same number of points. Density inside a cell is
+// scale-free, so zooming in raises points per pixel instead of the point count, and a quality governor moves the
+// density itself to whatever the GPU in front of us can hold at ~60 fps.
+const TARGET_DENSITY = 0.35;   // starting draw budget: points per pixel of the cone's screen area
+const DENSITY_MIN = 0.08, DENSITY_MAX = 0.5;   // governor range: never so sparse it lies, never so dense it crawls
+const PX_MAX = 220;            // a cell bigger than this on screen is split, so off-screen and near parts are culled
+const REFILL_MIN_MS = 110;     // at most one buffer refill per interval while the camera is moving (0 = every frame)
+const FRAME_GOOD = 16.7, FRAME_BAD = 24;       // ms: refill the budget upward under this, downward over that
+const DESI = {
+  R: 0, count: 0, drawn: 0, meta: null, src: null, pts: null, group: new THREE.Group(), err: '',
+  nodes: null, leafMax: 8192, maxDepth: 9, cap: 800_000, pos: null, col: null, sig: 0, ranges: null,
+  density: TARGET_DENSITY, refillMinMs: REFILL_MIN_MS, refills: 0, deferred: 0, refillAt: 0, refilled: false, lastCallAt: 0,
+  frameMs: 0, samples: 0, ms: 0, msWalk: 0, nr: 0,
+};
+// The pixel budget is a guess about the GPU, so measure the frame interval and correct the guess. Samples come only
+// from a focused, visible tab: browsers throttle background windows to a fixed cadence, and a throttled tab is not a
+// slow scene — adapting to it would throw the points away for no reason.
+function desiQuality(dt) {
+  if (!(document.hasFocus() && !document.hidden)) { DESI.samples = 0; return; }
+  DESI.frameMs = DESI.frameMs ? DESI.frameMs * 0.88 + dt * 0.12 : dt;
+  if (++DESI.samples < 45) return;                 // ~0.75 s at 60 fps: a real load, not a one-frame hitch
+  DESI.samples = 0;
+  const d = DESI.density;
+  if (DESI.frameMs > FRAME_BAD && d > DENSITY_MIN) DESI.density = Math.max(DENSITY_MIN, d * 0.8);
+  else if (DESI.frameMs < FRAME_GOOD && d < DENSITY_MAX) DESI.density = Math.min(DENSITY_MAX, d * 1.15);
+  if (DESI.density !== d) DESI.sig = 0;             // price the selection again at the new budget
+}
+const _dfrustum = new THREE.Frustum(), _dmat = new THREE.Matrix4(), _dsphere = new THREE.Sphere();
+function desiDetail(force) {
+  const t0 = performance.now(), now = t0;
+  if (!DESI.pts || !DESI.count) return;
+  const dt = DESI.lastCallAt ? now - DESI.lastCallAt : 0; DESI.lastCallAt = now;
+  if (!force && dt > 0 && dt < 500 && !DESI.refilled) desiQuality(dt);   // a refill frame is our own stutter, not the GPU's
+  DESI.refilled = false;
+  const g = DESI.group, sc = g.scale.x, nd = DESI.nodes;
+  if (!(sc > 0) || !nd) return;
+  _dmat.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+  _dfrustum.setFromProjectionMatrix(_dmat);
+  const h = view.clientHeight || 1, fovK = (h / 2) / Math.tan(camera.fov * Math.PI / 360), screenA = Math.PI * (h / 2) ** 2;
+  const camPos = camera.position, N = nd.depth.length;   // node coords are unit-cube, so scene = centre + c * sc (the level's own scale)
+  let covered = 0, sig = 0, nr = 0;
+  if (!DESI.ranges) DESI.ranges = new Int32Array(4096 * 3);
+  for (let i = 0; i < N; i++) {
+    const first = nd.first[i], count = nd.count[i];
+    if (first < covered) continue;                                   // inside a cell we already took whole
+    _dsphere.center.set(g.position.x + nd.cx[i] * sc, g.position.y + nd.cy[i] * sc, g.position.z + nd.cz[i] * sc);
+    _dsphere.radius = nd.half[i] * sc * 1.7321;                       // cube -> bounding sphere
+    if (!_dfrustum.intersectsSphere(_dsphere)) continue;
+    const dist = Math.max(1e-9, camPos.distanceTo(_dsphere.center));
+    const px = _dsphere.radius / dist * fovK;                         // cell radius on screen, pixels
+    const leaf = count <= DESI.leafMax || nd.depth[i] === DESI.maxDepth;
+    if (!leaf && px > PX_MAX) continue;                               // big on screen: split so culling and budget are local
+    let area = Math.PI * px * px; if (area > screenA) area = screenA;
+    covered = first + count; sig = (sig * 31 + i) | 0;
+    if (nr * 3 + 3 > DESI.ranges.length) { const r = new Int32Array(DESI.ranges.length * 2); r.set(DESI.ranges); DESI.ranges = r; }
+    DESI.ranges[nr * 3] = first; DESI.ranges[nr * 3 + 1] = count; DESI.ranges[nr * 3 + 2] = area; nr++;
+  }
+  sig = (sig * 31 + nr) | 0;
+  if (!force && sig === DESI.sig) { DESI.msWalk = performance.now() - t0; return; }   // same selection: nothing to upload
+  // panning and zooming change the selection every frame, and a refill is milliseconds of copy plus an upload:
+  // coalesce them, so motion refines the picture a few times a second instead of stuttering the whole way
+  if (!force && now - DESI.refillAt < DESI.refillMinMs) { DESI.deferred++; DESI.msWalk = performance.now() - t0; return; }
+  DESI.sig = sig; DESI.refillAt = now; DESI.refills++; DESI.refilled = true;
+  const density = DESI.density;
+  // cells overlap in projection, so their pixel areas overcount the screen: scale the whole selection to one budget
+  const budget = Math.min(DESI.cap, density * screenA);
+  let want = 0;
+  for (let r = 0; r < nr; r++) want += Math.min(DESI.ranges[r * 3 + 1], density * DESI.ranges[r * 3 + 2]);
+  const f = want > budget ? budget / want : 1;
+  const src = DESI.src, pos = DESI.pos, col = DESI.col;
+  const inv = 1 / DESI.meta.comoving_radius_max_mpc, [z0, z1] = DESI.meta.redshift_range, dz = Math.max(1e-6, z1 - z0);
+  let k = 0;
+  for (let r = 0; r < nr; r++) {
+    const first = DESI.ranges[r * 3], c = DESI.ranges[r * 3 + 1], area = DESI.ranges[r * 3 + 2];
+    const take = Math.max(1, Math.round(Math.min(c, density * area) * f));   // even stride inside the cell
+    for (let i = 0; i < take && k < DESI.cap; i++) {
+      const j = first + ((i * c / take) | 0);                         // samples every octant inside the cell
+      const x = src[4 * j], y = src[4 * j + 1], z = src[4 * j + 2], t = clamp((src[4 * j + 3] - z0) / dz, 0, 1), o = k * 3;
+      pos[o] = x * inv; pos[o + 1] = z * inv; pos[o + 2] = -y * inv;   // galactic -> scene axes
+      col[o] = 0.5 + 0.45 * t; col[o + 1] = 0.68 + 0.2 * t; col[o + 2] = 1.0 - 0.35 * t;   // blue near, warm far
+      k++;
+    }
+  }
+  const geo = DESI.pts.geometry, pa = geo.attributes.position, ca = geo.attributes.color;
+  const up = Math.min(k * 3, pa.array.length);
+  for (const a of [pa, ca]) {   // upload only what we draw, never past the allocation
+    if (a.clearUpdateRanges) { a.clearUpdateRanges(); a.addUpdateRange(0, up); } else { a.updateRange.offset = 0; a.updateRange.count = up; }
+    a.needsUpdate = true;
+  }
+  geo.setDrawRange(0, k); DESI.drawn = k; DESI.nr = nr; DESI.ms = performance.now() - t0;
+}
+
+async function loadDesi() {
+  try {
+    const [meta, nodes, buf] = await Promise.all([
+      fetch('../data/desi/desi_dr1_cone.meta.json', { cache: 'no-store' }).then(r => r.json()),
+      fetch('../data/desi/desi_dr1_cone.nodes.json', { cache: 'no-store' }).then(r => r.json()),
+      fetch('../data/desi/desi_dr1_cone.f32', { cache: 'no-store' }).then(r => r.arrayBuffer()),
+    ]);
+    const n = Math.floor(buf.byteLength / 16); if (!n) throw 0;
+    DESI.meta = meta; DESI.nodes = nodes; DESI.src = new Float32Array(buf); DESI.count = n;
+    DESI.R = meta.comoving_radius_max_mpc * Mpc; DESI.leafMax = nodes.leaf_max || 8192;
+    DESI.cap = Math.min(n, 800_000);
+    DESI.pos = new Float32Array(DESI.cap * 3); DESI.col = new Float32Array(DESI.cap * 3);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(DESI.pos, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(DESI.col, 3));
+    geo.setDrawRange(0, 0);
+    DESI.pts = new THREE.Points(geo, new THREE.PointsMaterial({ size: 0.0015, vertexColors: true, transparent: true, opacity: 0.55, depthWrite: false }));
+    DESI.pts.frustumCulled = false;   // the octree walk culls, cell by cell
+    DESI.group.add(DESI.pts); desiDetail(true);
+    const btn = levelBtns.querySelector('[data-key="desi"]'); if (btn) btn.disabled = false;
+  } catch { DESI.err = 'not built'; }
+}
+
 const LEVELS = [
   { key: 'universe', cosmic: true, name: 'Observable universe', unit: CHI0, width: 2 * CHI0, centre: SUN, build: () => buildUniverse(state.resU * 1000), count: () => COUNTS.galaxies, what: 'galaxies', comoving: true },
+  { key: 'desi', cosmic: true, name: 'DESI DR1 galaxies (light cone)', unit: () => DESI.R || 1, width: () => 2 * DESI.R, centre: SUN, build: () => DESI.group, count: () => DESI.count, what: 'galaxies + quasars (measured redshift)', update: () => desiDetail() },
   { key: 'web', cosmic: true, name: 'Cosmic web (local universe, 300 Mpc)', unit: 300 * Mpc, width: 600 * Mpc, centre: SUN, build: () => buildWebLevel(state.resU * 1700), count: () => 4e6, what: 'galaxies (statistical web, not the real positions)', update: o => updateWebLevel(o) },
   { key: 'cluster', cosmic: true, name: 'Virgo cluster', unit: CL.R, width: 2 * CL.R, centre: CL.pos, build: () => buildCluster(state.resC * 1000), count: () => CL.nGal, what: 'galaxies (+ hot gas)' },
   { key: 'galaxy', name: 'Milky Way', unit: GAL.R, width: 2 * GAL.R, centre: [0, 0, 0], build: () => buildGalaxy(state.resG * 1000), count: () => GAL.stars, what: 'stars' },
@@ -1289,9 +1413,9 @@ const LEVELS = [
 ];
 for (const L of LEVELS) { L.obj = L.build(); scene.add(L.obj); }
 const levelBtns = $('levelBtns');
-for (const L of LEVELS) { const b = document.createElement('button'); b.textContent = L.name; b.dataset.key = L.key; b.addEventListener('click', () => travelTo(L.centre, Math.log10(at(L.width) * 1.3), L.name)); levelBtns.appendChild(b); }
+for (const L of LEVELS) { const b = document.createElement('button'); b.textContent = L.name; b.dataset.key = L.key; b.disabled = L.key === 'desi' && !DESI.count; b.addEventListener('click', () => travelTo(L.centre, Math.log10(Math.max(at(L.width), 1) * 1.3), L.name)); levelBtns.appendChild(b); }
 function rebuild(L) { scene.remove(L.obj); L.obj.traverse(o => { o.geometry?.dispose(); o.material?.dispose(); }); L.obj = L.build(); scene.add(L.obj); }
-function pointsOf(L) { let n = 0; L.obj.traverse(o => { if (o.isPoints) n += o.geometry.attributes.position.count; }); return n; }
+function pointsOf(L) { let n = 0; L.obj.traverse(o => { if (o.isPoints) n += Math.min(o.geometry.attributes.position.count, o.geometry.drawRange.count); }); return n; }
 function bytesOf(L) { let b = 0; L.obj.traverse(o => { if (o.geometry) for (const a of Object.values(o.geometry.attributes)) b += a.array.byteLength; }); return b; }
 
 // ---- megastructures (numbers from P.*; drawn at true size and place) ----
@@ -1465,7 +1589,8 @@ async function loadCatalog() {
     goHash();
   } catch { $('catStatus').textContent = `${DEST.length} built-in destinations (catalog/objects.json not found yet)`; }
 }
-loadCatalog(); Object.assign(window.kosmoTimeline, { goDest, DEST, CENSUS, camera, controls });   // debug hook
+loadCatalog();
+loadDesi(); Object.assign(window.kosmoTimeline, { goDest, DEST, CENSUS, camera, controls });   // debug hook
 function goHash() {
   const m = /go=([^&]+)/.exec(location.hash); if (!m) return;
   const q = decodeURIComponent(m[1]).toLowerCase(), d = DEST.find(d => d.name.toLowerCase() === q) || DEST.find(d => d.name.toLowerCase().includes(q));
@@ -2741,6 +2866,9 @@ function readout() {
     + `<br><b>View:</b> ${P.fmtLength(10 ** state.zoom)} across, nearest level ${activeL.name}`
     + (skyPack().on ? `<br><b>Compressed sky:</b> ${Math.min(state.skyN, SKY_HOSTS.length)} nearest planetary systems packed within ${P.fmtLength(skyPack().width / 2.3)} of the Sun (truly out to ${P.fmtLength(skyPack().truest)}), each magnified ×${skyPack().mags[0].toFixed(0)}–×${skyPack().mags[1].toFixed(0)}; ${SYSTEMS.size} systems built` : '')
     + (state.distK < 1 || state.sizeK < 1 ? `<br><b>Scale balance:</b> γ = ${state.distK.toFixed(2)}, β = ${state.sizeK.toFixed(2)}: Sun ${SB.fmtExag(shownExag('Sun')) || '×1'}, Earth ${SB.fmtExag(shownExag('Earth')) || '×1'}, Jupiter ${SB.fmtExag(shownExag('Jupiter')) || '×1'}, Pluto ${SB.fmtExag(shownExag('Pluto')) || '×1'}; Neptune drawn at ${P.fmtLength(dist3(layout().pos.Neptune, SUN))} (true ${P.fmtLength(dist3(bodyPos('Neptune'), SUN))})` : '')
+    + (DESI.count
+      ? `<br><b>DESI DR1</b> light cone: ${DESI.count.toLocaleString()} galaxies and quasars with measured redshifts, z = ${DESI.meta.redshift_range[0]}–${DESI.meta.redshift_range[1]}, out to ${(DESI.meta.comoving_radius_max_mpc / 1e3).toFixed(2)} Gpc comoving; drawing ${DESI.drawn.toLocaleString()} points at ${DESI.density.toFixed(2)} per pixel, chosen per octree cell for the pixels it covers (${DESI.meta.octree.nodes} cells, budget ${DESI.cap.toLocaleString()}). Positions are RA, Dec and z, not an image: <a href="https://data.desi.lbl.gov/doc/acknowledgments/" target="_blank" rel="noopener">DESI Collaboration et al. 2026, AJ 171, 285 · CC BY 4.0</a>. This is a light cone, so it does not move with the time slider.`
+      : `<br><b>DESI DR1</b> not loaded (${DESI.err || 'loading'}); run <code>python3 -I catalog/ingest/desi_dr1.py</code> to build it.`)
     + `<br><b>Contents (from the same parameters):</b> comoving radius ${(CHI0 / ly / 1e9).toFixed(1)} Gly; ordinary matter ${M_BARYON.toExponential(2)} kg (Ω_b = ${OMEGA_B.toFixed(3)}) ≈ ${N_BARYON.toExponential(1)} nucleons; dark matter ${M_DARK.toExponential(2)} kg; galaxies ~${COUNTS.galaxies.toExponential(0)}, stars ~${COUNTS.stars.toExponential(0)} (survey extrapolations)`
     + (state.mega !== 'none' ? `<br>${megaReadout()}` : '')
     + `<br><b>Memory budget</b> (GPU buffers, ${(total / 1e6).toFixed(1)} MB):<br>${mem}`
@@ -3170,7 +3298,7 @@ function animate(now) {
 // craft layer (craft.js): the Orbital Flight Deck dock, the shared craft state, its marker and the follow camera
 window.KosmoCraft?.init({ THREE, scene, P, SUN, layout, focus, toScene, toast, setFollow: f => { follow = f; }, setZoom: z => { state.zoom = clamp(z, 2.6, 27); sync('zoom', 2); } });
 requestAnimationFrame(animate);
-window.kosmo = { VIS, CONST, DM, autoFrame, frameStats, trail, renderFrame, quality, drawCube, drawTimeline, drawMinimap, updateHover, updateDrawer, stepDial, get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
+window.kosmo = { get desi() { return DESI; }, desiQuality, VIS, CONST, DM, autoFrame, frameStats, trail, renderFrame, quality, drawCube, drawTimeline, drawMinimap, updateHover, updateDrawer, stepDial, get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
 </script>
 </body>
 </html>
