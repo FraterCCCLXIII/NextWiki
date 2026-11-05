@@ -455,9 +455,9 @@ def slanted_stack(L):
         left.append((m, l)); right.append((m, r))
     sl, il = np.polyfit(*zip(*left), 1)
     sr, ir = np.polyfit(*zip(*right), 1)
-    if abs(sl - sr) < 0.12:
-        sl = sr = (sl + sr) / 2
-        il = float(np.mean([x - sl * y for y, x in left])); ir = float(np.mean([x - sr * y for y, x in right]))
+    # both ends take the same angle, so every band is a true parallelogram
+    sl = sr = (sl + sr) / 2
+    il = float(np.mean([x - sl * y for y, x in left])); ir = float(np.mean([x - sr * y for y, x in right]))
     return [(c, pts((sl * a + il, a), (sr * a + ir, a), (sr * e + ir, e), (sl * e + il, e))) for c, (a, e) in zip(bars, ys)]
 
 def chevrons(L):
