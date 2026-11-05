@@ -29,6 +29,7 @@
  * Pure: no database, no filesystem. lint.ts walks the folder; import.ts writes the rows.
  */
 import matter from "gray-matter";
+import { adaptableLicenses, isKnownLicense, resolveLicense } from "./licenses.js";
 
 export type LessonStatus = "stub" | "drafted" | "reviewed";
 export const LESSON_KINDS = ["overview", "reading", "practice", "video"] as const;
@@ -41,6 +42,8 @@ export type LessonSource = {
   license: string;
   /** True when text or media from this source was copied or closely adapted. */
   adapted: boolean;
+  /** Id of the source in the ledger (sources.json). Required before a lesson is reviewed. */
+  ref?: string;
 };
 export type LessonCheck = { q: string; a: string; options?: string[] };
 
@@ -70,16 +73,11 @@ export type LessonDoc = {
 
 export type Issue = { level: "error" | "warning"; message: string };
 
-/** Licences whose text we may adapt on a possibly commercial site (research doc, Part 1c). */
-export const ADAPTABLE_LICENSES = new Set([
-  "CC0",
-  "PD",
-  "CC-BY-3.0",
-  "CC-BY-4.0",
-  "CC-BY-SA-3.0",
-  "CC-BY-SA-4.0",
-]);
-const SHARE_ALIKE = /^CC-BY-SA/;
+/**
+ * Licences whose text we may adapt, under the portal's non-commercial policy (see licenses.ts).
+ * ND and unidentified licences are never in it.
+ */
+export const ADAPTABLE_LICENSES = adaptableLicenses();
 
 /** The licence our own lessons carry unless they adapt ShareAlike text. */
 export const DEFAULT_LESSON_LICENSE = "CC-BY-4.0";
@@ -133,7 +131,13 @@ export function parseLesson(raw: string): { doc: LessonDoc | null; issues: Issue
       err("each source needs name, license and adapted (true/false)");
       continue;
     }
-    sources.push({ name: s.name, url: s.url, license: s.license, adapted: s.adapted });
+    sources.push({
+      name: s.name,
+      url: s.url,
+      license: s.license,
+      adapted: s.adapted,
+      ...(typeof s.ref === "string" ? { ref: s.ref } : {}),
+    });
   }
 
   const checks: LessonCheck[] = [];
@@ -167,7 +171,9 @@ export function parseLesson(raw: string): { doc: LessonDoc | null; issues: Issue
     sections,
     license: DEFAULT_LESSON_LICENSE,
   };
-  if (sources.some((s) => s.adapted && SHARE_ALIKE.test(s.license))) doc.license = "CC-BY-SA-4.0";
+  // The licence this lesson must carry follows from what it adapts (see resolveLicense).
+  const resolved = resolveLicense(sources.filter((x) => x.adapted).map((x) => x.license));
+  if (resolved.license) doc.license = resolved.license;
   return { doc: issues.some((i) => i.level === "error") ? null : doc, issues };
 }
 
@@ -229,6 +235,8 @@ export type GateContext = {
   stageKey?: string;
   /** Concept slugs that exist in concepts.json. */
   knownConcepts?: Set<string>;
+  /** The source ledger: id -> licence. When given, `ref`s are checked against it. */
+  ledger?: Map<string, string>;
 };
 
 /**
@@ -269,10 +277,18 @@ export function checkLesson(doc: LessonDoc, ctx: GateContext = {}): Issue[] {
     err("not marked original and no sources listed: say where the content came from");
   }
   for (const src of doc.sources) {
-    if (src.adapted && !ADAPTABLE_LICENSES.has(src.license)) {
-      err(`"${src.name}" is ${src.license}, which we may not adapt (link it instead of copying)`);
+    if (!isKnownLicense(src.license)) err(`"${src.name}": unknown licence "${src.license}"`);
+    if (src.ref && ctx.ledger) {
+      const led = ctx.ledger.get(src.ref);
+      if (led === undefined) err(`"${src.name}": ref ${src.ref} is not in the source ledger (sources.json)`);
+      else if (led !== src.license) err(`"${src.name}": says ${src.license} but the ledger has ${led} for ${src.ref}`);
+    } else if (!src.ref && ctx.ledger) {
+      (doc.status === "reviewed" ? err : warn)(`"${src.name}" has no ref: add it to sources.json and point at it`);
     }
   }
+  const resolved = resolveLicense(doc.sources.filter((x) => x.adapted).map((x) => x.license));
+  for (const m of resolved.errors) err(`licences: ${m}`);
+  for (const m of resolved.warnings) warn(`licences: ${m}`);
   if (doc.original && doc.sources.some((x) => x.adapted)) {
     warn("marked original but lists an adapted source; pick one");
   }

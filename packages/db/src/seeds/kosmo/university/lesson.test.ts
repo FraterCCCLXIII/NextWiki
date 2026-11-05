@@ -44,17 +44,30 @@ test("missing sections, too few checks and no provenance are errors", () => {
   assert.match(errors, /no sources listed/);
 });
 
-test("non-adaptable licences are rejected, ShareAlike flips the lesson licence", () => {
-  const nc = parseLesson(
-    doc(`${good.replace("original: true", "original: false")}\nsources:\n  - { name: OpenStax, license: CC-BY-NC-SA-4.0, adapted: true }`),
-  );
-  assert.match(checkLesson(nc.doc!).map((i) => i.message).join(), /may not adapt/);
+test("licences: ND and unknown are rejected, NC and ShareAlike set the lesson licence", () => {
+  const withSrc = (lic: string) =>
+    parseLesson(doc(`${good.replace("original: true", "original: false")}\nsources:\n  - { name: X, license: ${lic}, adapted: true }`));
+  const errs = (lic: string) =>
+    checkLesson(withSrc(lic).doc!).filter((i) => i.level === "error").map((i) => i.message).join("|");
 
-  const sa = parseLesson(
-    doc(`${good.replace("original: true", "original: false")}\nsources:\n  - { name: Wikiversity, license: CC-BY-SA-4.0, adapted: true }`),
-  );
+  assert.match(errs("CC-BY-ND-4.0"), /forbids adaptation/);
+  assert.match(errs("MIT-ish"), /unknown licence/);
+
+  const nc = withSrc("CC-BY-NC-SA-4.0");
+  assert.equal(nc.doc!.license, "CC-BY-NC-SA-4.0");
+  assert.deepEqual(checkLesson(nc.doc!).filter((i) => i.level === "error"), []);
+
+  const sa = withSrc("CC-BY-SA-4.0");
   assert.equal(sa.doc!.license, "CC-BY-SA-4.0");
   assert.deepEqual(checkLesson(sa.doc!).filter((i) => i.level === "error"), []);
+});
+
+test("a cited-only source does not change the lesson licence", () => {
+  const d = parseLesson(
+    doc(`${good.replace("original: true", "original: false")}\nsources:\n  - { name: Khan, license: CC-BY-ND-4.0, adapted: false }\n  - { name: OpenStax, license: CC-BY-4.0, adapted: true }`),
+  );
+  assert.equal(d.doc!.license, "CC-BY-4.0");
+  assert.deepEqual(checkLesson(d.doc!).filter((i) => i.level === "error"), []);
 });
 
 test("review needs a different reviewer and a date", () => {

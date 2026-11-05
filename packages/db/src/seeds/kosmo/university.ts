@@ -12,6 +12,32 @@ import {
 import type { KosmoLessonStatus } from "../../schema/kosmo.js";
 import type { Db, UserId } from "./domains.js";
 import { loadCurriculum } from "./university/content.js";
+import { LICENSES } from "./university/licenses.js";
+import type { Ledger, SourceMap } from "./university/sources.js";
+
+/** The open resources for a module, resolved against the ledger so the page needs no other file. */
+function openSourcesFor(kuId: string, ledger: Ledger, map: SourceMap) {
+  return (map.modules[kuId] ?? []).flatMap((e) => {
+    const s = ledger.sources[e.source];
+    if (!s) return [];
+    return [
+      {
+        sourceId: s.id,
+        title: s.title,
+        publisher: s.publisher,
+        url: e.url ?? s.url,
+        locator: e.locator,
+        fit: e.fit,
+        mode: e.mode,
+        license: s.license,
+        licenseName: LICENSES[s.license]?.name ?? s.license,
+        licenseUrl: s.licenseUrl,
+        attribution: s.attribution,
+        ...(e.note ? { note: e.note } : {}),
+      },
+    ];
+  });
+}
 
 /** Finds a Kosmopedia object entity: by slug object:<pedia>, then by slugified id, then by name. */
 async function findObjectId(db: Db, pedia: string): Promise<number | undefined> {
@@ -185,6 +211,7 @@ export async function importUniversity(db: Db, userId: UserId): Promise<void> {
             programmeKuId: prog.id,
             programmeName: prog.name,
             order: mod.order,
+            openSources: openSourcesFor(mod.id, cur.ledger, cur.sourceMap),
           },
           sourceId,
         });
