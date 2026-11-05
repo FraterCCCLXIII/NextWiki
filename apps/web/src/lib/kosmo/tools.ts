@@ -25,6 +25,12 @@ export const KOSMO_TOOLS: Record<
   contraption: { file: "contraption-sim.html", title: "Contraption simulator", group: "atlas" },
   graph: { file: "graph.html", title: "Graph & calculator", group: "atlas" },
   flight: { file: "flight/index.html", title: "Orbital Flight Deck", group: "atlas" },
+  "flight-deck": { file: "flight/deck.html", title: "Flight deck console", group: "atlas" },
+  "flight-dynamics": { file: "flight/dynamics.html", title: "Flight dynamics", group: "atlas" },
+  effects: { file: "effects.html", title: "Effects lab", group: "atlas" },
+  "nebula-lab": { file: "nebula-lab.html", title: "Nebula lab", group: "atlas" },
+  "ring-lab": { file: "ring-lab.html", title: "Ring lab", group: "atlas" },
+  "telescope-fx": { file: "telescope-fx.html", title: "Telescope effects", group: "atlas" },
 
   oracle: { file: "oracle/index.html", title: "Dark Factory", group: "oracle" },
   "oracle-abundance": { file: "oracle/abundance.html", title: "Abundance", group: "oracle" },
@@ -52,4 +58,34 @@ export function kosmoToolSrc(slug: string): string | null {
     ? KOSMO_TOOLS[slug]
     : undefined;
   return tool ? `/kosmo/static/${tool.file}` : null;
+}
+
+const DOMAIN_SLUGS = ["math", "physics", "philosophy", "models"];
+
+/**
+ * Where a link found inside an embedded static page really lives in the Next.js app, or null if it is not one of ours.
+ * Embedded pages link to each other by file name (chemistry.html, domain.html?d=math, kosmopedia.html); those would only
+ * navigate the iframe and leave the address bar, header and back button behind. `href` must already be absolute
+ * (an anchor's .href, or location.href), which also resolves relative links such as lineage.html inside /oracle/.
+ */
+export function kosmoRouteForUrl(href: string, origin: string): string | null {
+  let url: URL;
+  try {
+    url = new URL(href);
+  } catch {
+    return null;
+  }
+  if (url.origin !== origin) return null;
+  const m = url.pathname.match(/^\/kosmo\/static\/(.+)$/);
+  if (!m) return null;
+  const file = m[1]!;
+  const tail = `${url.search}${url.hash}`;
+  const slug = Object.keys(KOSMO_TOOLS).find((k) => KOSMO_TOOLS[k]!.file === file);
+  if (slug) return `/kosmo/tools/${slug}${tail}`;
+  if (file === "domain.html") {
+    const d = url.searchParams.get("d") ?? "";
+    return DOMAIN_SLUGS.includes(d) ? `/kosmo/domain/${d}${url.hash}` : null;
+  }
+  if (file === "kosmopedia.html") return `/kosmo/pedia${url.hash}`;
+  return null;
 }
