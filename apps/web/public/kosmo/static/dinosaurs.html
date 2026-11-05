@@ -41,7 +41,7 @@
   .row { position: absolute; left: 0; right: 0; height: 54px; padding: 9px 24px 0; border-bottom: 1px solid var(--line); cursor: pointer; overflow: hidden; }
   .row:hover .nm { color: var(--mint); }
   .row.on { background: rgba(169,192,180,.07); box-shadow: inset 2px 0 0 var(--mint); }
-  .row .nm { font-size: 16px; line-height: 1.3; font-weight: 600; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row .nm { font-size: 16px; line-height: 1.3; font-weight: 600; font-style: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .row .nm i { font-style: normal; font-weight: 400; color: var(--dim); font-size: 13px; margin-left: 8px; }
   .row .sub { font-size: 12.5px; line-height: 1.4; color: var(--dim); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .row .m3 { float: right; font-style: normal; font-size: 11px; font-weight: 600; letter-spacing: .14em; color: var(--mint); }
@@ -81,7 +81,7 @@
 
   /* right: description */
   #desc { overflow-x: hidden; overflow-wrap: anywhere; overflow-y: auto; padding: 24px 28px 56px; flex: 1; }
-  #desc h1 { font-size: clamp(24px, 2.2vw, 30px); overflow-wrap: anywhere; line-height: 1.2; letter-spacing: .02em; text-transform: none; font-style: italic; margin: 0 0 6px; }
+  #desc h1 { font-size: clamp(24px, 2.2vw, 30px); overflow-wrap: anywhere; line-height: 1.2; letter-spacing: .02em; text-transform: none; font-style: normal; margin: 0 0 6px; }
   #desc .au { color: var(--dim); font-size: 15px; }
   #desc p { line-height: 1.6; margin: 0 0 10px; }
   #desc .gen { font-size: 12.5px; color: var(--dim2); }
@@ -451,7 +451,7 @@ function showModel(t, idx = 0) {
   const my = ++loadTok; mIdx = idx;
   if (mdl) { S.remove(mdl); mdl = null; } mixer = null;
   const nm = $('nomodel'), cr = $('credit'); cr.style.display = 'none';
-  $('cap-h').innerHTML = `<span class="sci">${esc(t.n)}</span>`;
+  $('cap-h').textContent = t.n;
   if (t.form) {
     nm.style.display = 'flex'; nm.textContent = 'This is a name for traces or eggs, so there is no body to model.';
     $('cap-t').textContent = 'No body model'; return;
