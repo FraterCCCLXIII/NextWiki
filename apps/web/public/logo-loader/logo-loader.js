@@ -76,9 +76,9 @@ const ringsDraw=(l,t0,rf=.3)=>groupFill(l).sort((a,e)=>(e.x1-e.x0)-(a.x1-a.x0)).
 const armsWipe=(l,cy,t0,gap=60)=>byX(l).forEach((c,i)=>wipe(c,c.cy<cy?'b':'t',t0+i*gap,700,E.out));
 
 const TR={
-10:['Rainbow K','Stem bands draw down · arms run out · word wipe',(r,C)=>{const [Arm,Stem]=big(C.col,c=>!!c.cl);
+10:['Rainbow K','Stem bands draw down · arms wipe out with flat edges · word wipe',(r,C)=>{const [Arm,Stem]=big(C.col,c=>!!c.cl);
   byX(Stem).forEach((c,i)=>wipe(c,'t',i*90,800,E.io));
-  Arm.forEach((c,i)=>pathWipe(c,`M${c.cl[0]} ${c.cl[1]}L${c.cl[2]} ${c.cl[3]}`,c.t*3,650+i*50,750,E.out));
+  const ab=box(Arm);armsWipe(Arm,(ab.y0+ab.y1)/2,650,50);
   wordWipe(C.ink,1050,800)}],
 11:['Speed Caps','Lines sweep · word wipe',(r,C)=>{wipes(byY(C.col),'l',0,60,800);wordWipe(C.ink,300,1000)}],
 12:['Badge','Frame draw · K wipe · mask rise · bars run',(r,C)=>{const [F,rest]=big(C.ink,c=>c.w>300),[K,W_]=big(rest,c=>c.h>100),[Dv,Kk]=big(K,c=>c.w<12);
@@ -298,12 +298,12 @@ function injectStyle() {
 }
 
 /* Slight CRT look: a touch of softness plus a coloured bloom, sized to the logo. */
-function addCrtFilter(svg, fid, tone) {
+function addCrtFilter(svg, fid, tone, strength = 1) {
   const vb = svg.viewBox.baseVal, m = vb.width * 0.08;
   const f = svgEl("filter", { id: fid, filterUnits: "userSpaceOnUse", x: vb.x - m, y: vb.y - m, width: vb.width + 2 * m, height: vb.height + 2 * m, "color-interpolation-filters": "sRGB" });
   const a = tone === "dark" ? 0.5 : 0.3;
-  f.appendChild(svgEl("feGaussianBlur", { in: "SourceGraphic", stdDeviation: vb.width * 0.0012, result: "soft" }));
-  f.appendChild(svgEl("feGaussianBlur", { in: "SourceGraphic", stdDeviation: vb.width * 0.012, result: "wide" }));
+  f.appendChild(svgEl("feGaussianBlur", { in: "SourceGraphic", stdDeviation: vb.width * 0.0012 * strength, result: "soft" }));
+  f.appendChild(svgEl("feGaussianBlur", { in: "SourceGraphic", stdDeviation: vb.width * 0.012 * Math.sqrt(strength), result: "wide" }));
   f.appendChild(svgEl("feColorMatrix", { in: "wide", values: `1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 ${a} 0`, result: "bloom" }));
   const merge = svgEl("feMerge");
   merge.appendChild(svgEl("feMergeNode", { in: "bloom" }));
@@ -388,7 +388,7 @@ function mount(el, opts) {
     const fx = svgEl("g", { class: "kl-fx" });
     [...svg.children].forEach((ch) => { if (ch.tagName !== "defs") fx.appendChild(ch); });
     svg.appendChild(fx);
-    addCrtFilter(svg, fid, tone);
+    addCrtFilter(svg, fid, tone, L.crt);
     applyCrt(inst.crt === undefined ? crtDefault() : inst.crt);
     inst.id = id;
     const fn = (TR[id] || DEFAULT_REVEAL)[2];

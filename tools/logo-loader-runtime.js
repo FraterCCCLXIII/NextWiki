@@ -73,12 +73,12 @@ function injectStyle() {
 }
 
 /* Slight CRT look: a touch of softness plus a coloured bloom, sized to the logo. */
-function addCrtFilter(svg, fid, tone) {
+function addCrtFilter(svg, fid, tone, strength = 1) {
   const vb = svg.viewBox.baseVal, m = vb.width * 0.08;
   const f = svgEl("filter", { id: fid, filterUnits: "userSpaceOnUse", x: vb.x - m, y: vb.y - m, width: vb.width + 2 * m, height: vb.height + 2 * m, "color-interpolation-filters": "sRGB" });
   const a = tone === "dark" ? 0.5 : 0.3;
-  f.appendChild(svgEl("feGaussianBlur", { in: "SourceGraphic", stdDeviation: vb.width * 0.0012, result: "soft" }));
-  f.appendChild(svgEl("feGaussianBlur", { in: "SourceGraphic", stdDeviation: vb.width * 0.012, result: "wide" }));
+  f.appendChild(svgEl("feGaussianBlur", { in: "SourceGraphic", stdDeviation: vb.width * 0.0012 * strength, result: "soft" }));
+  f.appendChild(svgEl("feGaussianBlur", { in: "SourceGraphic", stdDeviation: vb.width * 0.012 * Math.sqrt(strength), result: "wide" }));
   f.appendChild(svgEl("feColorMatrix", { in: "wide", values: `1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 ${a} 0`, result: "bloom" }));
   const merge = svgEl("feMerge");
   merge.appendChild(svgEl("feMergeNode", { in: "bloom" }));
@@ -163,7 +163,7 @@ function mount(el, opts) {
     const fx = svgEl("g", { class: "kl-fx" });
     [...svg.children].forEach((ch) => { if (ch.tagName !== "defs") fx.appendChild(ch); });
     svg.appendChild(fx);
-    addCrtFilter(svg, fid, tone);
+    addCrtFilter(svg, fid, tone, L.crt);
     applyCrt(inst.crt === undefined ? crtDefault() : inst.crt);
     inst.id = id;
     const fn = (TR[id] || DEFAULT_REVEAL)[2];

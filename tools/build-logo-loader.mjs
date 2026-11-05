@@ -112,7 +112,16 @@ function fixed38(L) {
   return { ...L, comps: L.comps.map((c) => (c.k === "col" ? { ...c, f: COLOURS_38[order.indexOf(c)] } : c)) };
 }
 
+/* Second cleanup pass (kosmographica-logos/refine-shapes.py): cleaner coloured shapes, same lettering. */
+const refined = JSON.parse(readFileSync(join(srcDir, "refs/.refined.json"), "utf8"));
+/* Logo 10 kept two stray specks at the K's join. They read as white flecks on dark. */
+const withoutSpecks10 = (L) => ({ ...L, comps: L.comps.filter((c) => !(c.k === "ink" && c.b[0] < 150 && c.b[2] - c.b[0] < 15)) });
+/* Logos that need a stronger CRT glow than the default. */
+const CRT_STRENGTH = { 38: 2.5 };
+
 function logoFor(id, version) {
+  if (refined[id]) return refined[id];
+  if (id === "10") return withoutSpecks10(v2[id]);
   if (version === "clean") return JSON.parse(readFileSync(join(srcDir, "refs/.star-clean.json"), "utf8"));
   if (version === "B") return id === "49" ? redrawn49() : redrawn57();
   if (version === "C") return v1[id];
@@ -132,8 +141,8 @@ mkdirSync(join(out, "logos"), { recursive: true });
 
 let total = 0;
 for (const [id, version] of PICKS) {
-  const L = logoFor(id, version);
-  if (!L) throw new Error(`no data for ${id} ${version}`);
+  const L = { ...logoFor(id, version), ...(CRT_STRENGTH[id] ? { crt: CRT_STRENGTH[id] } : {}) };
+  if (!L.comps) throw new Error(`no data for ${id} ${version}`);
   const json = JSON.stringify(L);
   total += json.length;
   writeFileSync(join(out, "logos", `${id}.json`), json);

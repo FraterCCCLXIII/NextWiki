@@ -73,9 +73,9 @@ const ringsDraw=(l,t0,rf=.3)=>groupFill(l).sort((a,e)=>(e.x1-e.x0)-(a.x1-a.x0)).
 const armsWipe=(l,cy,t0,gap=60)=>byX(l).forEach((c,i)=>wipe(c,c.cy<cy?'b':'t',t0+i*gap,700,E.out));
 
 const TR={
-10:['Rainbow K','Stem bands draw down · arms run out · word wipe',(r,C)=>{const [Arm,Stem]=big(C.col,c=>!!c.cl);
+10:['Rainbow K','Stem bands draw down · arms wipe out with flat edges · word wipe',(r,C)=>{const [Arm,Stem]=big(C.col,c=>!!c.cl);
   byX(Stem).forEach((c,i)=>wipe(c,'t',i*90,800,E.io));
-  Arm.forEach((c,i)=>pathWipe(c,`M${c.cl[0]} ${c.cl[1]}L${c.cl[2]} ${c.cl[3]}`,c.t*3,650+i*50,750,E.out));
+  const ab=box(Arm);armsWipe(Arm,(ab.y0+ab.y1)/2,650,50);
   wordWipe(C.ink,1050,800)}],
 11:['Speed Caps','Lines sweep · word wipe',(r,C)=>{wipes(byY(C.col),'l',0,60,800);wordWipe(C.ink,300,1000)}],
 12:['Badge','Frame draw · K wipe · mask rise · bars run',(r,C)=>{const [F,rest]=big(C.ink,c=>c.w>300),[K,W_]=big(rest,c=>c.h>100),[Dv,Kk]=big(K,c=>c.w<12);
