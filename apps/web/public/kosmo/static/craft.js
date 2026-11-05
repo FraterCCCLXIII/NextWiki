@@ -94,7 +94,7 @@
 
   function buildDock() {
     const css = el('style'); css.textContent = `
-      #kcBtn { position: absolute; right: 16px; bottom: 16px; z-index: 7; padding: 6px 12px; font: 12px ui-monospace, Menlo, monospace; letter-spacing: .12em; text-transform: uppercase; color: #c9d6e6; background: rgba(10,14,22,.72); border: 1px solid rgba(140,190,255,.35); border-radius: 4px; cursor: pointer; }
+      #kcBtn { position: absolute; right: 16px; bottom: 16px; z-index: 7; padding: 6px 12px; font: 12px ui-monospace, Menlo, monospace; letter-spacing: .12em; text-transform: uppercase; color: #c9d6e6; background: #0d0d0d; border: 1px solid rgba(140,190,255,.35); border-radius: 4px; cursor: pointer; }
       #kcBtn:hover, #kcBtn.on { color: #fff; border-color: rgba(140,190,255,.9); }
       #kcDock { position: absolute; right: 16px; bottom: 56px; z-index: 7; width: min(760px, calc(100vw - 32px)); height: min(560px, calc(100vh - 160px)); display: none; flex-direction: column; background: rgba(8,12,18,.92); border: 1px solid rgba(140,190,255,.3); border-radius: 6px; overflow: hidden; backdrop-filter: blur(6px); }
       #kcDock.open { display: flex; }

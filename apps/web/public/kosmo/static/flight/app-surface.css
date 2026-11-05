@@ -1,0 +1,23 @@
+/* Buttons and tokens take the app's own ground instead of the deck's teal fills.
+ * Only background fills are overridden here: borders, text colours, sizes and fonts stay as the deck defines them,
+ * so these controls can be migrated to the app's components later without losing the styles we like.
+ * --app-bg is the app's --bg (kosmographica.css, #0d0d0d). Loaded after style.css and deck.css. */
+:root { --app-bg: #0d0d0d; }
+
+/* buttons */
+button,
+nav button.active,
+.phasebar button.active,
+.rightRail button,
+.switches button,
+.switches button.armed,
+.timeTransport button,
+.mapControls button,
+.deckPrimary { background: var(--app-bg) !important; }
+nav button:not(.active), .phasebar button:not(.active) { background: transparent !important; }   /* inactive tabs: already see-through */
+
+/* the filled lime button would lose its label on the app ground, so it keeps the lime as an outline instead */
+.primary { background: var(--app-bg) !important; color: var(--lime); border: 1px solid var(--lime); }
+
+/* tokens: tags, status chips and callouts */
+.tag, .simStatus, .warn, .callout, .info { background: var(--app-bg) !important; }
