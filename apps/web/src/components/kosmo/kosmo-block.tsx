@@ -1,5 +1,6 @@
 "use client";
 
+import { TimelineStrip } from "~/components/timeline/TimelineStrip";
 import Link from "next/link";
 import { Fragment, useEffect, useState, type ReactNode } from "react";
 
@@ -284,6 +285,7 @@ export function KosmoBlock({ kind, slug }: { kind: KosmoBlockKind; slug: string 
  * properties (`kind`, `slug`) through as untyped props, so validate here.
  */
 export function KosmoBlockMarkdown(props: { kind?: unknown; slug?: unknown }) {
+  if (props.kind === "timeline" && typeof props.slug === "string" && props.slug) return <TimelineStrip slug={props.slug} />;
   const kind = KINDS.find((k) => k === props.kind);
   const slug = typeof props.slug === "string" ? props.slug : "";
   if (!kind || !slug) return null;

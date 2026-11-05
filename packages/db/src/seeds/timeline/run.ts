@@ -2,6 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { sql } from "drizzle-orm";
 import { db } from "../../index.js";
 import { importBundle, purgeDataset, validate } from "./import.js";
 import type { TimelineSource } from "./types.js";
@@ -18,7 +19,7 @@ const only = args.includes("--only") ? args[args.indexOf("--only") + 1]!.split("
 const root = args.includes("--root") ? args[args.indexOf("--root") + 1]! : path.join(os.homedir(), "Documents/github");
 
 const dir = path.join(path.dirname(new URL(import.meta.url).pathname), "sources");
-const files = fs.readdirSync(dir).filter((f) => /\.(ts|js)$/.test(f) && !f.endsWith(".d.ts") && !f.startsWith("_")).sort();
+const files = fs.readdirSync(dir).filter((f) => /\.(ts|js)$/.test(f) && !f.endsWith(".d.ts") && !f.startsWith("_") && !/-config\./.test(f)).sort();
 
 let failed = 0;
 for (const f of files) {
@@ -45,5 +46,16 @@ for (const f of files) {
     failed++;
     console.error(`! ${source.id} failed:`, e instanceof Error ? e.message : e);
   }
+}
+
+if (!check) {
+  // tie timeline entities to wiki articles with the same title (exact, case-insensitive); never overwrites an existing link
+  const linked = await db.execute(sql`
+    update kosmo_entities e set page_id = p.id
+    from (select distinct on (lower(title)) id, lower(title) as t from wiki_pages order by lower(title), id) p
+    where e.page_id is null and e.slug like 'tl-%' and lower(e.name) = p.t
+    returning e.id`);
+  const n = Array.isArray(linked) ? linked.length : ((linked as { rowCount?: number }).rowCount ?? 0);
+  console.log(`\nLinked ${n} timeline entities to wiki pages by title.`);
 }
 process.exit(failed ? 1 : 0);

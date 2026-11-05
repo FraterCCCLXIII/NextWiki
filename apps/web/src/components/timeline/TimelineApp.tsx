@@ -18,6 +18,10 @@ const fitWindow = (from: number, to: number, plotW: number): ViewWindow => clamp
 
 export function TimelineApp() {
   const [data, setData] = useState<TLData | null>(null);
+  const [meta, setMeta] = useState<{ id: string; label: string; count: number }[] | null>(null);
+  const [counts, setCounts] = useState({ matched: 0, total: 0 });
+  const fetched = useRef<{ from: number; to: number; key: string } | null>(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<ViewId>("lanes");
   const [off, setOff] = useState<Set<string>>(new Set());
@@ -28,13 +32,32 @@ export function TimelineApp() {
   const [showLinks, setShowLinks] = useState(false);
   const [compIdx, setCompIdx] = useState(0);
   const initialised = useRef(false);
+  const [showAllSets, setShowAllSets] = useState(false);
+  const toggleGroup = (g: string) => setOff((s) => { const next = new Set(s); if (next.has(g)) next.delete(g); else next.add(g); return next; });
   const fromUrl = useRef<{ x0?: number; k?: number }>({});
 
+  // dataset list; falls back to the static JSON when the database has no timeline rows yet
+  const staticData = useRef<TLData | null>(null);
   useEffect(() => {
-    fetch("/timeline/timeline.json")
-      .then((r) => (r.ok ? (r.json() as Promise<TLData>) : Promise.reject(new Error(`HTTP ${r.status}`))))
-      .then(setData)
-      .catch((e: Error) => setError(e.message));
+    fetch("/api/kosmo/timeline?meta=1")
+      .then((r) => (r.ok ? (r.json() as Promise<{ datasets: { id: string; label: string; count: number }[] }>) : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then((m) => {
+        if (!m.datasets.length) throw new Error("empty");
+        setMeta(m.datasets);
+      })
+      .catch(() => {
+        fetch("/timeline/timeline.json")
+          .then((r) => (r.ok ? (r.json() as Promise<TLData>) : Promise.reject(new Error(`HTTP ${r.status}`))))
+          .then((d) => {
+            staticData.current = d;
+            const c = new Map<string, number>();
+            for (const i of d.items) c.set(i.grp, (c.get(i.grp) ?? 0) + 1);
+            setMeta([...c.entries()].map(([label, count]) => ({ id: label, label, count })));
+            setData(d);
+            setCounts({ matched: d.items.length, total: d.items.length });
+          })
+          .catch((e: Error) => setError(e.message));
+      });
   }, []);
 
   // ---- URL state ----
@@ -69,11 +92,7 @@ export function TimelineApp() {
 
   const items = data?.items;
   const byId = useMemo(() => new Map((items ?? []).map((i) => [i.id, i])), [items]);
-  const groups = useMemo(() => {
-    const c = new Map<string, number>();
-    for (const i of items ?? []) c.set(i.grp, (c.get(i.grp) ?? 0) + 1);
-    return [...c.entries()].sort((a, b) => GROUP_ORDER.indexOf(a[0]) - GROUP_ORDER.indexOf(b[0]));
-  }, [items]);
+  const groups = useMemo(() => (meta ?? []).map((m) => [m.label, m.count] as [string, number]).sort((a, b) => b[1] - a[1]), [meta]);
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -114,6 +133,42 @@ export function TimelineApp() {
     setWin(fitWindow(lo - pad, hi + pad * 3, plot.w));
   }, [fitKey, plot.w, comp, filtered]);
 
+  // windowed loading: ask the API for what overlaps the view (plus a margin), thinned by significance
+  const reqId = useRef(0);
+  useEffect(() => {
+    if (!meta || staticData.current || !initialised.current || plot.w < 50) return;
+    const tl = view === "lanes" || view === "branches";
+    const span = plot.w / win.k;
+    const from = tl ? win.x0 - span * 0.3 : -320000;
+    const to = tl ? win.x0 + span * 1.3 : 2200;
+    const on = meta.filter((m) => !off.has(m.label)).map((m) => m.id);
+    const key = `${tl}|${on.join(",")}|${q}`;
+    const f = fetched.current;
+    if (f && f.key === key) {
+      if (!tl) return;
+      const ratio = (f.to - f.from) / (span * 1.6);
+      if (win.x0 >= f.from && win.x0 + span <= f.to && ratio > 0.6 && ratio < 1.7) return;
+    }
+    const id = ++reqId.current;
+    const t = setTimeout(() => {
+      setLoading(true);
+      const params = new URLSearchParams({ from: String(Math.round(from)), to: String(Math.round(to)), limit: tl ? "2500" : "3000" });
+      if (off.size) params.set("datasets", on.join(","));
+      if (q.trim()) params.set("q", q.trim());
+      fetch(`/api/kosmo/timeline?${params}`)
+        .then((r) => (r.ok ? (r.json() as Promise<{ items: TLItem[]; edges: TLData["edges"]; matched: number; total: number }>) : Promise.reject(new Error(`HTTP ${r.status}`))))
+        .then((w) => {
+          if (id !== reqId.current) return;
+          fetched.current = { from, to, key };
+          setData({ version: 2, built: "", items: w.items, edges: w.edges });
+          setCounts({ matched: w.matched, total: w.total });
+        })
+        .catch((e: Error) => id === reqId.current && setError(e.message))
+        .finally(() => id === reqId.current && setLoading(false));
+    }, 220);
+    return () => clearTimeout(t);
+  }, [meta, win, plot.w, view, off, q]);
+
   const zoomBy = (f: number) => {
     const cx = win.x0 + plot.w / win.k / 2;
     const k = Math.min(600, Math.max(plot.w / (MAX_YEAR - MIN_YEAR), win.k * f));
@@ -127,7 +182,22 @@ export function TimelineApp() {
     setWin(clampView({ k, x0: it.s + span / 2 - plot.w / k / 2 }, plot.w));
   };
   const select = (id: string | null) => setSelectedId(id);
-  const selected = selectedId ? byId.get(selectedId) ?? null : null;
+  const selCache = useRef<TLItem | null>(null);
+  const selectedNow = selectedId ? byId.get(selectedId) ?? null : null;
+  if (selectedNow) selCache.current = selectedNow;
+  const selectedBase = selectedNow ?? (selectedId && selCache.current?.id === selectedId ? selCache.current : null);
+  // window payloads carry a 220-character summary; fetch the full text for the open item
+  const [fullText, setFullText] = useState<{ id: string; d: string } | null>(null);
+  useEffect(() => {
+    if (!selectedBase || staticData.current || (selectedBase.d?.length ?? 0) < 215 || fullText?.id === selectedBase.id) return;
+    const ctl = new AbortController();
+    fetch(`/api/kosmo/entity/${encodeURIComponent(selectedBase.id)}?kind=infobox`, { signal: ctl.signal })
+      .then((r) => (r.ok ? (r.json() as Promise<{ entity?: { summary?: string | null } }>) : null))
+      .then((j) => j?.entity?.summary && setFullText({ id: selectedBase.id, d: j.entity.summary }))
+      .catch(() => undefined);
+    return () => ctl.abort();
+  }, [selectedBase, fullText]);
+  const selected = selectedBase && fullText?.id === selectedBase.id ? { ...selectedBase, d: fullText.d } : selectedBase;
   const isTimeline = view === "lanes" || view === "branches";
 
   const related = useMemo(() => {
@@ -179,37 +249,40 @@ export function TimelineApp() {
             {comps.slice(0, 120).map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
           </select>
         )}
-        <span className="ml-auto text-[12px] text-kosmo-dim2">{filtered.length.toLocaleString()} of {(items?.length ?? 0).toLocaleString()}</span>
+        <span className="ml-auto text-[12px] text-kosmo-dim2">{loading ? "loading… " : ""}{filtered.length.toLocaleString()} shown{counts.matched > (items?.length ?? 0) ? ` of ${counts.matched.toLocaleString()} in view — zoom in for more` : ""} · {counts.total.toLocaleString()} total</span>
       </div>
-      {/* dataset filter */}
-      <div className="flex flex-wrap items-center gap-1.5 border-b border-kosmo-line px-3 py-1.5">
-        {groups.map(([g, n]) => {
-          const on = !off.has(g);
-          return (
-            <button
-              key={g}
-              onClick={() => setOff((s) => { const next = new Set(s); if (next.has(g)) next.delete(g); else next.add(g); return next; })}
-              aria-pressed={on}
-              className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[12px] transition-opacity ${on ? "text-kosmo-text" : "opacity-45 text-kosmo-dim"}`}
-              style={{ borderColor: groupColor(g, on ? 0.7 : 0.3) }}
-            >
-              <span className="h-2 w-2 rounded-full" style={{ background: groupColor(g) }} />{g}<span className="text-kosmo-dim2">{n}</span>
+      {/* dataset filter: the biggest few as chips, everything else in a scrolling panel */}
+      <div className="border-b border-kosmo-line px-3 py-1.5">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {groups.slice(0, 6).map(([g, n]) => <DatasetChip key={g} g={g} n={n} on={!off.has(g)} toggle={toggleGroup} />)}
+          {groups.length > 6 && (
+            <button onClick={() => setShowAllSets((v) => !v)} aria-expanded={showAllSets} className="rounded-full border border-kosmo-line2 px-2.5 py-0.5 text-[12px] text-kosmo-dim hover:text-kosmo-text">
+              {showAllSets ? "Hide" : `All ${groups.length} datasets`} {showAllSets ? "▴" : "▾"}{off.size ? ` · ${off.size} off` : ""}
             </button>
-          );
-        })}
-        {showLinks || view === "branches" ? (
-          <span className="ml-auto hidden items-center gap-3 text-[11px] text-kosmo-dim2 md:flex">
-            {(["transmission", "genealogical", "linguistic", "parallel", "influence", "theological"] as const).map((c) => (
-              <span key={c} className="flex items-center gap-1"><span className="h-0.5 w-3" style={{ background: EDGE_COLOR[c] }} />{c}</span>
-            ))}
-          </span>
-        ) : null}
+          )}
+          {showLinks || view === "branches" ? (
+            <span className="ml-auto hidden items-center gap-3 text-[11px] text-kosmo-dim2 md:flex">
+              {(["transmission", "genealogical", "linguistic", "parallel", "influence", "theological"] as const).map((c) => (
+                <span key={c} className="flex items-center gap-1"><span className="h-0.5 w-3" style={{ background: EDGE_COLOR[c] }} />{c}</span>
+              ))}
+            </span>
+          ) : null}
+        </div>
+        {showAllSets && (
+          <div className="mt-1.5 max-h-40 overflow-y-auto rounded-md border border-kosmo-line bg-kosmo-bg p-2">
+            <div className="mb-1.5 flex gap-2 text-[12px]">
+              <button onClick={() => setOff(new Set())} className="text-kosmo-mint hover:underline">Select all</button>
+              <button onClick={() => setOff(new Set(groups.map(([g]) => g)))} className="text-kosmo-mint hover:underline">Select none</button>
+            </div>
+            <div className="flex flex-wrap gap-1.5">{groups.map(([g, n]) => <DatasetChip key={g} g={g} n={n} on={!off.has(g)} toggle={toggleGroup} />)}</div>
+          </div>
+        )}
       </div>
 
       {/* body */}
       <div className="relative flex min-h-0 flex-1 flex-col">
         <div className="relative min-h-0 flex-1">
-          {!data ? (
+          {!meta ? (
             <div className="grid h-full place-items-center text-kosmo-dim">Loading the timeline…</div>
           ) : (
             <>
@@ -243,6 +316,7 @@ export function TimelineApp() {
                 </div>
                 {selected.d && <p className="whitespace-pre-wrap leading-relaxed text-kosmo-text/90">{selected.d}</p>}
                 {selected.src?.length ? <div><h3 className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-kosmo-dim">Sources</h3><ul className="list-disc space-y-0.5 pl-4 text-kosmo-dim">{selected.src.map((s) => <li key={s}>{s}</li>)}</ul></div> : null}
+                {selected.page && <a href={selected.page} className="inline-block rounded-md border border-kosmo-mint/60 px-3 py-1.5 text-[13px] text-kosmo-mint hover:bg-kosmo-bg">Open wiki page →</a>}
                 {isTimeline && <button onClick={() => focusItem(selected)} className="rounded-md border border-kosmo-line2 px-3 py-1.5 text-[13px] text-kosmo-mint hover:bg-kosmo-bg">Centre on timeline</button>}
                 {related.length > 0 && (
                   <div>
@@ -264,7 +338,7 @@ export function TimelineApp() {
             </aside>
           )}
         </div>
-        {isTimeline && data && <Minimap items={filtered} view={win} plotW={plot.w} onView={(x0) => setWin(clampView({ k: win.k, x0 }, plot.w))} />}
+        {isTimeline && meta && <Minimap items={filtered} view={win} plotW={plot.w} onView={(x0) => setWin(clampView({ k: win.k, x0 }, plot.w))} />}
       </div>
     </div>
   );
@@ -272,4 +346,12 @@ export function TimelineApp() {
 
 function Chip({ children, color }: { children: React.ReactNode; color?: string }) {
   return <span className="rounded-full border border-kosmo-line2 px-2 py-0.5 text-[11px] text-kosmo-dim" style={color ? { borderColor: color } : undefined}>{children}</span>;
+}
+
+function DatasetChip({ g, n, on, toggle }: { g: string; n: number; on: boolean; toggle: (g: string) => void }) {
+  return (
+    <button onClick={() => toggle(g)} aria-pressed={on} className={`flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[12px] transition-opacity ${on ? "text-kosmo-text" : "text-kosmo-dim opacity-45"}`} style={{ borderColor: groupColor(g, on ? 0.7 : 0.3) }}>
+      <span className="h-2 w-2 rounded-full" style={{ background: groupColor(g) }} />{g}<span className="text-kosmo-dim2">{n.toLocaleString()}</span>
+    </button>
+  );
 }

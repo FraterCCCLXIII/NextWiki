@@ -57,9 +57,11 @@ export function layoutLanes(items: TLItem[], k: number, groupOrder: string[]): L
       if (row < 0) { row = rowEnds.length; rowEnds.push(right); } else rowEnds[row] = right;
       place.push({ it, row });
     }
-    const rows = Math.max(1, Math.min(rowEnds.length, 14));
+    const MAX_ROWS = 16;
+    const rows = Math.max(1, Math.min(rowEnds.length, MAX_ROWS));
     const h = rows * ROW_H + LANE_PAD * 2;
-    for (const p of place) nodes.push({ item: p.it, y: y + LANE_PAD + Math.min(p.row, rows - 1) * ROW_H + ROW_H / 2 });
+    // items that do not fit are left out at this zoom (they appear as you zoom in) rather than drawn on top of each other
+    for (const p of place) if (p.row < rows) nodes.push({ item: p.it, y: y + LANE_PAD + p.row * ROW_H + ROW_H / 2 });
     bands.push({ key, label: list[0]!.lane, grp: list[0]!.grp, y, h, count: list.length });
     y += h;
   }

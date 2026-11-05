@@ -17,6 +17,8 @@ export interface TLItem {
   reg?: string;
   type?: string;
   src?: string[];
+  /** wiki page path (with leading slash) when the entity is tied to an article */
+  page?: string;
 }
 
 export type EdgeCat = "transmission" | "genealogical" | "linguistic" | "parallel" | "influence" | "theological" | "other";

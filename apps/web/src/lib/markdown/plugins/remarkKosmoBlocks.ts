@@ -1,5 +1,5 @@
 /**
- * Turns a paragraph containing only `{{kosmo:<infobox|children|links>:<slug>}}`
+ * Turns a paragraph containing only `{{kosmo:<infobox|children|links|timeline>:<slug>}}`
  * into a `kosmo-block` element. The React component map renders that element
  * as a live block that fetches the entity from the DB at view time.
  *
@@ -19,7 +19,7 @@ interface BlockNode extends Node {
   };
 }
 
-const BLOCK_PATTERN = /^\{\{kosmo:(infobox|children|links):([^\s{}]+)\}\}$/;
+const BLOCK_PATTERN = /^\{\{kosmo:(infobox|children|links|timeline):([^\s{}]+)\}\}$/;
 
 function plainText(node: BlockNode): string {
   if (typeof node.value === "string") return node.value;
