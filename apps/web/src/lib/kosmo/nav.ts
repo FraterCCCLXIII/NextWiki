@@ -41,7 +41,10 @@ export const NAV_GROUPS: NavGroup[] = [
   },
   {
     name: "Lab",
-    pages: [{ href: "/kosmo/tools/oracle", label: "Oracle", prefix: "/kosmo/tools/oracle" }],
+    pages: [
+      { href: "/kosmo/tools/shipyard", label: "Shipyard" },
+      { href: "/kosmo/tools/oracle", label: "Oracle", prefix: "/kosmo/tools/oracle" },
+    ],
   },
 ];
 

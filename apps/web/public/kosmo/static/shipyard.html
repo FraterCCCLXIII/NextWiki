@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
+<script src="kosmo-scrollfade.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shipyard</title>
+<style>
+  :root { --bg: #0d0d0d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --good: #7fe0a0; --bad: #ff8a8a; --line: rgba(140,170,220,0.14); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 15px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(127,195,255,0.55), rgba(255,184,107,0.45)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+  * { scrollbar-width: thin; scrollbar-color: rgba(127,195,255,0.6) transparent; }
+  .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+  #navbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(13,13,13,0.95), rgba(13,13,13,0.6)); }
+  #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 20px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 13px; color: #fff; opacity: 0.8; margin-top: 2px; }
+  #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.16em; font-size: 14px; text-transform: uppercase; }
+  @media (max-width: 1320px) { #menu { overflow-x: auto; min-width: 0; scrollbar-width: none; } #menu::-webkit-scrollbar { display: none; } }
+  #menu a { color: rgba(255,255,255,0.72); text-decoration: none; white-space: nowrap; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+  #view { position: absolute; inset: 0; } #view canvas { display: block; }
+  #labels { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
+  .lbl { position: absolute; transform: translate(-50%, -100%); white-space: nowrap; font-size: 12px; color: #dbe5f3; text-shadow: 0 1px 5px #000, 0 0 2px #000; }
+  #build { position: absolute; left: 14px; top: 66px; bottom: 14px; width: 360px; z-index: 4; overflow: auto; padding: 4px 8px 12px 4px; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
+  h1 { font-weight: 500; font-size: 28px; margin: 2px 0 2px; }
+  h2 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
+  input[type=text], input[type=number], button, select { background: rgba(26,26,26,0.85); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 8px; padding: 4px 8px; font: inherit; }
+  input[type=number] { width: 100%; } select { width: 100%; } button { cursor: pointer; margin: 2px 3px 2px 0; } button:hover:not(:disabled) { border-color: var(--accent); } button:disabled { opacity: .45; cursor: default; } button.on { border-color: var(--accent); color: var(--accent); }
+  button.primary { border-color: var(--accent); color: #fff; background: rgba(40,80,130,0.55); }
+  .dim { color: var(--muted); } .small { font-size: 13px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 8px; } .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px 8px; }
+  .f label { display: block; font-size: 12px; color: var(--muted); margin: 0 0 1px; }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 8px 9px; margin: 8px 0; background: rgba(18,22,30,0.55); }
+  .card .hd { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; } .card .hd input { flex: 1; font-weight: 500; }
+  .card .hd button { margin: 0; padding: 2px 8px; }
+  .chk { display: flex; align-items: center; gap: 6px; margin: 4px 0; color: #c3d0e2; } .chk input { margin: 0; }
+  table.an { border-collapse: collapse; width: 100%; font-size: 13px; } table.an td, table.an th { padding: 2px 4px 2px 0; text-align: right; } table.an th { color: var(--muted); font-weight: 400; } table.an td:first-child, table.an th:first-child { text-align: left; }
+  .warn { color: var(--accent2); font-size: 13px; margin: 2px 0; } .okc { color: var(--good); } .badc { color: var(--bad); }
+  #hud { position: absolute; right: 14px; top: 66px; bottom: 62px; width: 330px; z-index: 4; overflow: auto; text-shadow: 0 1px 6px #000; padding-right: 4px; }
+  #hud .phase { font-size: 20px; color: #fff; margin: 0; }
+  #hud table { border-collapse: collapse; width: 100%; } #hud td { padding: 1px 0; font-variant-numeric: tabular-nums; } #hud td:first-child { color: var(--muted); width: 48%; } #hud td:last-child { text-align: right; color: #fff; }
+  #log { font-size: 13px; max-height: 240px; overflow: auto; margin-top: 4px; border-top: 1px solid var(--line); }
+  #log div { padding: 1px 0; } #log .good { color: var(--good); } #log .bad { color: var(--bad); } #log .stage { color: var(--accent); } #log .t { color: var(--muted); display: inline-block; width: 52px; font-variant-numeric: tabular-nums; }
+  #plots { display: block; width: 100%; height: 150px; margin-top: 8px; border: 1px solid var(--line); border-radius: 8px; background: rgba(10,12,18,0.6); }
+  #result { margin: 8px 0; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: rgba(18,22,30,0.7); font-size: 14px; }
+  #bar { position: absolute; left: 388px; right: 358px; bottom: 12px; z-index: 4; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; text-shadow: 0 1px 6px #000; font-size: 14px; color: #c3d0e2; }
+  #bar button, #bar select { margin: 0; padding: 4px 10px; width: auto; } #bar .sp { flex: 1; }
+  #banner { position: absolute; left: 388px; top: 66px; z-index: 4; font-size: 13px; color: var(--muted); text-shadow: 0 1px 6px #000; max-width: 520px; }
+  kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); }
+  html.embedded #build, html.embedded #hud, html.embedded #banner { top: 12px; }
+  @media (max-width: 1100px) { #hud { display: none; } #bar { right: 14px; } }
+</style>
+<script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
+  <link rel="stylesheet" href="kosmographica.css?v=15">
+  <script src="atlas-nav.js" defer></script>
+  <script src="accordion.js" defer></script>
+</head>
+<body>
+<div id="view"></div>
+<div id="labels"></div>
+<div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
+  <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="shipyard.html" class="here">Shipyard</a></nav><span></span></div>
+
+<div id="build">
+  <h1 class="serif">Shipyard</h1>
+  <div class="dim small">Design a vehicle, then fly it: launch, stage, recover the boosters, rendezvous and dock, return and land. Planar physics with real engine data.</div>
+  <h2>Start from</h2>
+  <select id="preset"></select>
+  <h2>Mission</h2>
+  <div class="grid2 f">
+    <div><label>World</label><select id="world"><option value="earth">Earth</option><option value="moon">Moon</option><option value="mars">Mars</option></select></div>
+    <div><label>Start</label><select id="start"><option value="pad">on the launch pad</option><option value="orbit">already in orbit</option></select></div>
+    <div><label>Orbit altitude (km)</label><input type="number" id="orbitAlt" min="80" step="10"></div>
+    <div><label>Max acceleration (g)</label><input type="number" id="gLimit" min="1.5" max="9" step="0.5"></div>
+  </div>
+  <label class="chk"><input type="checkbox" id="dock"> rendezvous and dock with a station</label>
+  <div class="grid2 f" id="dockOpts"><div><label>Station altitude (km)</label><input type="number" id="stationAlt" min="100" step="10"></div><div></div></div>
+  <label class="chk"><input type="checkbox" id="land"> then deorbit and land the spacecraft</label>
+  <label class="chk"><input type="checkbox" id="autoKick"> tune the ascent automatically before each run</label>
+
+  <h2>Vehicle <span class="dim small" style="text-transform:none;letter-spacing:0">(first stage at the bottom)</span></h2>
+  <div id="stages"></div>
+  <button id="addStage">+ add stage on top</button>
+  <div class="grid2 f" style="margin-top:6px">
+    <div><label>Payload (kg)</label><input type="number" id="payload" min="0" step="100"></div>
+    <div><label>Fairing (kg)</label><input type="number" id="fairing" min="0" step="100"></div>
+  </div>
+
+  <h2>Analysis</h2>
+  <div id="analysis"></div>
+  <div style="margin-top:8px"><button id="tune">Tune ascent</button><button id="findReserve">Find landing reserve</button></div>
+  <div id="tuneOut" class="small dim"></div>
+</div>
+
+<div id="banner">drag · orbit &nbsp; wheel · zoom &nbsp; <kbd>space</kbd> play / pause</div>
+<div id="hud">
+  <p class="phase serif" id="phase">Ready</p>
+  <div id="result" hidden></div>
+  <table id="tele"></table>
+  <canvas id="mapc" width="660" height="440" style="display:block;width:100%;height:220px;border:1px solid var(--line);border-radius:8px;background:rgba(10,12,18,0.6);margin-top:8px"></canvas>
+  <canvas id="plots" width="660" height="300"></canvas>
+  <div id="log"></div>
+</div>
+<div id="bar">
+  <button id="run" class="primary">▶ Launch</button><button id="pause" disabled>Pause</button><button id="ff" disabled>Skip to end</button><button id="reset" disabled>Reset</button>
+  <label>speed <select id="warp"><option value="1">1×</option><option value="2">2×</option><option value="5" selected>5×</option><option value="10">10×</option><option value="25">25×</option><option value="50">50×</option><option value="150">150×</option><option value="500">500×</option></select></label>
+  <label>follow <select id="follow"></select></label>
+  <label class="chk" style="margin:0"><input type="checkbox" id="autoWarp" checked> auto-slow for events</label><label class="chk" style="margin:0"><input type="checkbox" id="autoCam" checked> auto camera</label>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { createSim, analyze, tuneAscent, planDock, ENGINES, WORLDS, elements, G0, completeStage, runAscent } from './ship-sim.js';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+// ---------------- presets ----------------
+const CAPSULE = { rcsThrust: 4000, rcsProp: 400, rcsIsp: 280, noseOffset: 2.5, cargo: 3000, chuteArea: 1500 };
+const PRESETS = {
+  f9: { label: 'Falcon 9-class + Dragon-class capsule (reusable booster)', world: 'earth',
+    stages: [
+      { name: 'Booster', engine: 'merlin-1d', count: 9, prop: 395700, diameter: 3.7, landing: { mode: 'propulsive', reserve: 55000, site: 'rtls', engines: 3 } },
+      { name: 'Second stage', engine: 'merlin-vac', count: 1, prop: 92670, diameter: 3.7, landing: { mode: 'none' } },
+      { name: 'Capsule', engine: 'aj10-oms', count: 1, prop: 1500, diameter: 3.7, length: 7, landing: { mode: 'chute' }, craft: { ...CAPSULE } }],
+    payload: { mass: 0, fairing: 0 }, mission: { start: 'pad', orbitAlt: 250e3, dock: false, land: false, stationAlt: 420e3, gLimit: 4.5 } },
+  f9dock: { label: 'Same, flying the whole mission: dock, then return and land', world: 'earth',
+    stages: [
+      { name: 'Booster', engine: 'merlin-1d', count: 9, prop: 395700, diameter: 3.7, landing: { mode: 'propulsive', reserve: 55000, site: 'downrange', engines: 3 } },
+      { name: 'Second stage', engine: 'merlin-vac', count: 1, prop: 92670, diameter: 3.7, landing: { mode: 'none' } },
+      { name: 'Capsule', engine: 'aj10-oms', count: 1, prop: 1500, diameter: 3.7, length: 7, landing: { mode: 'chute' }, craft: { ...CAPSULE } }],
+    payload: { mass: 0, fairing: 0 }, mission: { start: 'pad', orbitAlt: 250e3, dock: true, land: true, stationAlt: 420e3, gLimit: 4.5 } },
+  f9exp: { label: 'Two-stage expendable rocket (satellite to orbit)', world: 'earth',
+    stages: [
+      { name: 'Stage 1', engine: 'merlin-1d', count: 9, prop: 395700, diameter: 3.7, landing: { mode: 'none' } },
+      { name: 'Stage 2', engine: 'merlin-vac', count: 1, prop: 92670, diameter: 3.7, landing: { mode: 'none' } }],
+    payload: { mass: 15000, fairing: 1900 }, mission: { start: 'pad', orbitAlt: 400e3, dock: false, land: false, stationAlt: 420e3, gLimit: 4.5 } },
+  electron: { label: 'Small launcher (Electron-class)', world: 'earth',
+    stages: [
+      { name: 'Stage 1', engine: 'rutherford', count: 9, prop: 9250, diameter: 1.2, landing: { mode: 'none' } },
+      { name: 'Stage 2', engine: 'rutherford-vac', count: 1, prop: 2050, diameter: 1.2, landing: { mode: 'none' } }],
+    payload: { mass: 250, fairing: 44 }, mission: { start: 'pad', orbitAlt: 500e3, dock: false, land: false, stationAlt: 420e3, gLimit: 6 } },
+  capsule: { label: 'Capsule already in orbit, returning on parachutes', world: 'earth',
+    stages: [{ name: 'Capsule', engine: 'aj10-oms', count: 1, prop: 1800, diameter: 4, length: 6, landing: { mode: 'chute' }, craft: { ...CAPSULE, cargo: 3000, chuteArea: 1900 } }],
+    payload: { mass: 0, fairing: 0 }, mission: { start: 'orbit', orbitAlt: 300e3, dock: false, land: true, stationAlt: 420e3, gLimit: 4.5 } },
+  dockship: { label: 'Spacecraft in orbit that rendezvous and dock with the station', world: 'earth',
+    stages: [{ name: 'Spacecraft', engine: 'aj10-oms', count: 1, prop: 2500, diameter: 3, length: 6, landing: { mode: 'none' }, craft: { ...CAPSULE, cargo: 2500, chuteArea: 0 } }],
+    payload: { mass: 0, fairing: 0 }, mission: { start: 'orbit', orbitAlt: 250e3, dock: true, land: false, stationAlt: 420e3, gLimit: 4.5 } },
+  moon: { label: 'Lunar lander, from a 100 km orbit to the surface', world: 'moon',
+    stages: [{ name: 'Lander', engine: 'rl10', count: 1, prop: 8000, diameter: 4, length: 6, landing: { mode: 'propulsive', engines: 1 }, craft: { ...CAPSULE, cargo: 1500, chuteArea: 0 } }],
+    payload: { mass: 0, fairing: 0 }, mission: { start: 'orbit', orbitAlt: 100e3, dock: false, land: true, stationAlt: 150e3, gLimit: 4.5 } },
+  mars: { label: 'Mars lander, from a 200 km orbit', world: 'mars',
+    stages: [{ name: 'Lander', engine: 'rl10', count: 1, prop: 9000, diameter: 4.5, length: 7, landing: { mode: 'propulsive', engines: 1 }, craft: { ...CAPSULE, cargo: 2000, chuteArea: 0 } }],
+    payload: { mass: 0, fairing: 0 }, mission: { start: 'orbit', orbitAlt: 200e3, dock: false, land: true, stationAlt: 250e3, gLimit: 4.5 } },
+  saturn: { label: 'Saturn V-class heavy lifter (expendable)', world: 'earth',
+    stages: [
+      { name: 'S-IC', engine: 'f-1', count: 5, prop: 2169000, diameter: 10.1, landing: { mode: 'none' }, dry: 131000 },
+      { name: 'S-II', engine: 'j-2', count: 5, prop: 451000, diameter: 10.1, landing: { mode: 'none' }, dry: 36000 },
+      { name: 'S-IVB', engine: 'j-2', count: 1, prop: 107000, diameter: 6.6, landing: { mode: 'none' }, dry: 10500 }],
+    payload: { mass: 45000, fairing: 0 }, mission: { start: 'pad', orbitAlt: 185e3, dock: false, land: false, stationAlt: 420e3, gLimit: 4.5 } },
+  blank: { label: 'Blank: one stage and a payload', world: 'earth',
+    stages: [{ name: 'Stage 1', engine: 'merlin-1d', count: 9, prop: 150000, diameter: 3.7, landing: { mode: 'none' } }],
+    payload: { mass: 1000, fairing: 0 }, mission: { start: 'pad', orbitAlt: 200e3, dock: false, land: false, stationAlt: 420e3, gLimit: 4.5 } },
+};
+let state = null;
+const clone = o => JSON.parse(JSON.stringify(o));
+function loadPreset(key) {
+  const p = PRESETS[key]; state = { world: p.world, stages: clone(p.stages), payload: clone(p.payload), mission: { kickDeg: 4, kickSpeed: 45, ...clone(p.mission) }, autoKick: true };
+  for (const s of state.stages) s.landing = { mode: 'none', reserve: 0, site: 'downrange', engines: 1, ...s.landing };
+  renderBuilder();
+}
+
+// ---------------- builder UI ----------------
+const ENG_OPTS = Object.entries(ENGINES).map(([k, e]) => `<option value="${k}">${esc(e.name)}</option>`).join('');
+$('preset').innerHTML = Object.entries(PRESETS).map(([k, p]) => `<option value="${k}">${esc(p.label)}</option>`).join('');
+$('preset').onchange = () => { stop(); loadPreset($('preset').value); };
+
+function stageCard(s, i) {
+  const n = state.stages.length, top = i === n - 1, L = s.landing, hasCraft = !!s.craft;
+  const eng = ENGINES[s.engine];
+  return `<div class="card" data-i="${i}">
+    <div class="hd"><input type="text" data-k="name" value="${esc(s.name)}"><button data-act="up" title="move up" ${top ? 'disabled' : ''}>↑</button><button data-act="down" title="move down" ${i === 0 ? 'disabled' : ''}>↓</button><button data-act="del" title="remove" ${n < 2 ? 'disabled' : ''}>✕</button></div>
+    <div class="grid3 f">
+      <div style="grid-column: span 2"><label>Engine</label><select data-k="engine">${ENG_OPTS.replace(`value="${s.engine}"`, `value="${s.engine}" selected`)}</select></div>
+      <div><label>Count</label><input type="number" data-k="count" min="1" max="40" step="1" value="${s.count}"></div>
+      <div><label>Propellant (t)</label><input type="number" data-k="prop" min="0" step="1" value="${+(s.prop / 1000).toFixed(2)}"></div>
+      <div><label>Diameter (m)</label><input type="number" data-k="diameter" min="0.5" step="0.1" value="${s.diameter}"></div>
+      <div><label>Dry mass (t, 0 = auto)</label><input type="number" data-k="dry" min="0" step="0.5" value="${s.dry ? +(s.dry / 1000).toFixed(2) : 0}"></div>
+    </div>
+    <div class="grid2 f" style="margin-top:6px">
+      <div><label>After use</label><select data-k="landing.mode"><option value="none">discard</option><option value="propulsive">land with engines</option><option value="chute">land on parachutes</option></select></div>
+      ${L.mode === 'propulsive' ? `<div><label>Keep for landing (t)</label><input type="number" data-k="landing.reserve" min="0" step="1" value="${+(L.reserve / 1000).toFixed(1)}"></div>
+      <div><label>Landing engines (max)</label><input type="number" data-k="landing.engines" min="1" max="${s.count}" step="1" value="${L.engines}"></div>
+      ${i < n - 1 ? `<div><label>Return to</label><select data-k="landing.site"><option value="downrange">downrange (droneship)</option><option value="rtls">launch site</option></select></div>` : ''}` : ''}
+    </div>
+    <label class="chk"><input type="checkbox" data-k="isCraft" ${hasCraft ? 'checked' : ''}> spacecraft systems (RCS, docking port)</label>
+    ${hasCraft ? `<div class="grid3 f">
+      <div><label>RCS thrust (N)</label><input type="number" data-k="craft.rcsThrust" min="100" step="100" value="${s.craft.rcsThrust}"></div>
+      <div><label>RCS propellant (kg)</label><input type="number" data-k="craft.rcsProp" min="0" step="10" value="${s.craft.rcsProp}"></div>
+      <div><label>Cargo / crew (kg)</label><input type="number" data-k="craft.cargo" min="0" step="100" value="${s.craft.cargo}"></div>
+      ${L.mode === 'chute' ? `<div><label>Parachute area (m²)</label><input type="number" data-k="craft.chuteArea" min="0" step="50" value="${s.craft.chuteArea}"></div>` : ''}
+    </div>` : ''}
+    <div class="dim small">${esc(eng.name)}: ${(eng.thrustSL / 1e3).toFixed(0)} kN sea level, ${(eng.thrustVac / 1e3).toFixed(0)} kN vacuum, Isp ${eng.ispSL || '—'} / ${eng.ispVac} s, min throttle ${Math.round(eng.minThrottle * 100)}%, ${eng.ignitions >= 100 ? 'unlimited' : eng.ignitions} start${eng.ignitions === 1 ? '' : 's'}${eng.vacOnly ? ', vacuum only' : ''}</div>
+  </div>`;
+}
+function renderBuilder() {
+  $('world').value = state.world; $('start').value = state.mission.start; $('orbitAlt').value = +(state.mission.orbitAlt / 1e3).toFixed(0);
+  $('gLimit').value = state.mission.gLimit; $('dock').checked = !!state.mission.dock; $('land').checked = !!state.mission.land; $('autoKick').checked = state.autoKick;
+  $('stationAlt').value = +((state.mission.stationAlt ?? 420e3) / 1e3).toFixed(0); $('dockOpts').style.display = state.mission.dock ? '' : 'none';
+  $('payload').value = state.payload.mass; $('fairing').value = state.payload.fairing;
+  $('stages').innerHTML = [...state.stages.keys()].reverse().map(i => stageCard(state.stages[i], i)).join('');
+  for (const card of $('stages').children) { const s = state.stages[+card.dataset.i]; card.querySelector('[data-k="landing.mode"]').value = s.landing.mode; const site = card.querySelector('[data-k="landing.site"]'); if (site) site.value = s.landing.site; }
+  renderAnalysis(); drawPreview();
+}
+function setPath(o, path, v) { const p = path.split('.'); let t = o; for (let i = 0; i < p.length - 1; i++) t = t[p[i]]; t[p[p.length - 1]] = v; }
+$('stages').addEventListener('input', e => {
+  const el = e.target, card = el.closest('.card'); if (!card) return; const i = +card.dataset.i, s = state.stages[i], k = el.dataset.k; if (!k) return;
+  stop();
+  if (k === 'isCraft') { s.craft = el.checked ? { ...CAPSULE } : null; renderBuilder(); return; }
+  let v = el.type === 'number' ? parseFloat(el.value) : el.value; if (el.type === 'number' && !isFinite(v)) return;
+  if (k === 'prop') v *= 1000; if (k === 'dry') { v = v > 0 ? v * 1000 : null; } if (k === 'landing.reserve') v *= 1000; if (k === 'count') v = Math.max(1, Math.round(v));
+  setPath(s, k, v);
+  if (k === 'landing.mode') { if (v === 'propulsive' && !s.landing.reserve) s.landing.reserve = Math.round(s.prop * 0.12 / 1000) * 1000; renderBuilder(); return; }
+  if (k === 'engine') { renderBuilder(); return; }
+  renderAnalysis(); drawPreview();
+});
+$('stages').addEventListener('click', e => {
+  const b = e.target.closest('button[data-act]'); if (!b) return; const i = +b.closest('.card').dataset.i, act = b.dataset.act; stop();
+  if (act === 'del') state.stages.splice(i, 1); if (act === 'up' && i < state.stages.length - 1) [state.stages[i], state.stages[i + 1]] = [state.stages[i + 1], state.stages[i]]; if (act === 'down' && i > 0) [state.stages[i], state.stages[i - 1]] = [state.stages[i - 1], state.stages[i]];
+  renderBuilder();
+});
+$('addStage').onclick = () => { stop(); state.stages.push({ name: `Stage ${state.stages.length + 1}`, engine: 'merlin-vac', count: 1, prop: 20000, diameter: state.stages.at(-1)?.diameter ?? 3.7, landing: { mode: 'none', reserve: 0, site: 'downrange', engines: 1 } }); renderBuilder(); };
+for (const [id, fn] of Object.entries({
+  world: v => { state.world = v; if (v !== 'earth') { state.mission.orbitAlt = Math.min(state.mission.orbitAlt, 300e3); } },
+  start: v => state.mission.start = v, orbitAlt: v => state.mission.orbitAlt = (+v || 100) * 1e3, gLimit: v => state.mission.gLimit = +v || 4.5,
+  stationAlt: v => state.mission.stationAlt = (+v || 420) * 1e3, payload: v => state.payload.mass = Math.max(0, +v || 0), fairing: v => state.payload.fairing = Math.max(0, +v || 0),
+})) $(id).addEventListener('input', () => { stop(); fn($(id).value); renderAnalysis(); });
+$('world').addEventListener('change', () => { if (state.world !== 'earth') { for (const s of state.stages) if (s.landing.mode === 'chute') s.landing.mode = 'propulsive'; } renderBuilder(); });
+for (const id of ['dock', 'land', 'autoKick']) $(id).addEventListener('change', () => { stop(); if (id === 'autoKick') state.autoKick = $(id).checked; else state.mission[id] = $(id).checked; $('dockOpts').style.display = state.mission.dock ? '' : 'none'; renderAnalysis(); });
+
+function buildCfg() { const c = { world: state.world, stages: clone(state.stages), payload: clone(state.payload), mission: { ...clone(state.mission), goal: state.mission.dock ? 'dock' : 'orbit' } }; return c; }
+
+// ---------------- analysis ----------------
+const NEED = { earth: 9400, moon: 1900, mars: 4100 };
+function renderAnalysis() {
+  let a; try { a = analyze(buildCfg()); } catch (e) { $('analysis').innerHTML = `<div class="warn">${esc(e.message)}</div>`; return; }
+  const W = WORLDS[state.world], g = W.mu / (W.R * W.R), warns = [];
+  const rows = a.stages.map((s, i) => `<tr><td>${esc(s.name)}</td><td>${(s.dry / 1e3).toFixed(1)}</td><td>${(s.prop / 1e3).toFixed(1)}</td><td>${(s.dv / 1e3).toFixed(2)}</td><td>${s.twrSL.toFixed(2)}</td><td>${s.burn.toFixed(0)} s</td></tr>`).join('');
+  const launches = state.mission.start === 'pad', need = launches ? (NEED[state.world] + (state.mission.orbitAlt - 200e3) * 0.0008) : 0;
+  if (launches && a.twr0 < 1.15) warns.push(`Liftoff thrust-to-weight is ${a.twr0.toFixed(2)}; it needs to be above 1 (ideally 1.3+) to leave the pad.`);
+  if (launches && a.dvTotal < need) warns.push(`Total Δv ${(a.dvTotal / 1e3).toFixed(1)} km/s is short of the roughly ${(need / 1e3).toFixed(1)} km/s that reaching this orbit costs (including gravity and drag losses).`);
+  if (state.mission.dock && !state.stages.at(-1).craft) warns.push('Docking needs the top stage to have spacecraft systems (RCS and a docking port).');
+  if (state.mission.dock && state.stages.at(-1).craft && state.mission.start === 'pad' && state.mission.orbitAlt >= state.mission.stationAlt) warns.push('Insert into an orbit below the station so the transfer burn can raise you to it.');
+  if (state.mission.land && !state.stages.at(-1).craft) warns.push('Landing the spacecraft needs the top stage to be a spacecraft stage.');
+  state.stages.forEach((s0, i) => { const s = a.stages[i];
+    if (s0.landing.mode === 'propulsive') { const eng = s.engine, nL = Math.min(s0.count, s0.landing.engines || 1), landMass = s.dry + (s0.landing.reserve || 0) * 0.3, minT = nL * eng.thrustSL * eng.minThrottle; if (!(i === state.stages.length - 1) && !(s0.landing.reserve > 0)) warns.push(`${s0.name}: set how much propellant to keep for landing.`); if (minT > landMass * g * 1.6) warns.push(`${s0.name}: one engine at minimum throttle gives ${(minT / (landMass * g)).toFixed(1)}× the weight of the nearly empty stage, so it must time the landing exactly. Fewer or smaller engines make it easier.`); }
+    if (s0.landing.mode === 'chute' && !(s0.craft?.chuteArea > 0)) warns.push(`${s0.name}: set a parachute area.`);
+    if (s0.landing.mode === 'chute' && state.world !== 'earth') warns.push('Parachute descents are only modelled on Earth.');
+    if (s.engine.vacOnly && i === 0 && launches) warns.push(`${s0.name}: the ${s.engine.name} cannot start in the atmosphere, so it can't be the first stage.`);
+  });
+  $('analysis').innerHTML = `<table class="an"><tr><th>stage</th><th>dry t</th><th>prop t</th><th>Δv km/s</th><th>TWR</th><th>burn</th></tr>${rows}</table>
+    <div style="margin-top:4px">Liftoff mass <b>${(a.liftoffMass / 1e3).toFixed(1)} t</b> · total Δv <b>${(a.dvTotal / 1e3).toFixed(2)} km/s</b>${launches ? ` · needed ≈ ${(need / 1e3).toFixed(1)}` : ''}</div>
+    ${warns.map(w => `<div class="warn">⚠ ${esc(w)}</div>`).join('')}`;
+}
+
+// ---------------- 3D scene ----------------
+const view = $('view'), renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); view.appendChild(renderer.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x03050a);
+const camera = new THREE.PerspectiveCamera(40, 1, 0.5, 5e7); camera.position.set(25, 15, 80);
+const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.target.set(0, 0, 0); controls.maxDistance = 2e7; controls.minDistance = 3;
+scene.add(new THREE.AmbientLight(0xffffff, 0.75)); scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x303642, 0.5));
+const sun = new THREE.DirectionalLight(0xffffff, 2.2); sun.position.set(-60, 40, 90); scene.add(sun);
+const world = new THREE.Group(); scene.add(world);
+function resize() { const w = view.clientWidth, h = view.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; const l = $('build').offsetWidth + 14, r = $('hud').offsetParent ? $('hud').offsetWidth + 14 : 0; camera.setViewOffset(w, h, -(l - r) / 2, 0, w, h); camera.updateProjectionMatrix(); }
+addEventListener('resize', resize); resize();
+{ // stars
+  const g = new THREE.BufferGeometry(), p = []; for (let i = 0; i < 1500; i++) { const u = Math.random() * 2 - 1, t = Math.random() * 6.283, r = 3e7, s = Math.sqrt(1 - u * u); p.push(r * s * Math.cos(t), r * u, r * s * Math.sin(t)); }
+  g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3)); scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0xffffff, size: 2.2, sizeAttenuation: false })));
+}
+const PLANET_COL = { earth: 0x1e3a5a, moon: 0x6c6c68, mars: 0x8a4a2c }, ATMO_COL = { earth: 0x5aa0ff, moon: 0x000000, mars: 0xd08a60 };
+let planetGroup = null, spinTicks = null;
+function buildPlanet(W) {
+  if (planetGroup) { world.remove(planetGroup); planetGroup = null; }
+  const g = new THREE.Group();
+  const disk = new THREE.Mesh(new THREE.CircleGeometry(W.R, 256), new THREE.MeshBasicMaterial({ color: PLANET_COL[W.id] })); disk.position.z = -8; g.add(disk);
+  if (W.atmoTop) { const ring = new THREE.Mesh(new THREE.RingGeometry(W.R, W.R + W.atmoTop * 1.1, 256, 1), new THREE.MeshBasicMaterial({ color: ATMO_COL[W.id], transparent: true, opacity: 0.22, side: THREE.DoubleSide })); ring.position.z = -7; g.add(ring);
+    const ring2 = new THREE.Mesh(new THREE.RingGeometry(W.R, W.R + 12e3, 256, 1), new THREE.MeshBasicMaterial({ color: ATMO_COL[W.id], transparent: true, opacity: 0.35, side: THREE.DoubleSide })); ring2.position.z = -6; g.add(ring2); }
+  // ground marks that turn with the planet: ticks every 1 km near the surface so motion is visible
+  const pts = []; for (let k = 0; k < 360 * 4; k++) { const a = k / 4 * Math.PI / 180, big = k % 4 === 0, h = big ? 400 : 120; pts.push(Math.cos(a) * W.R, Math.sin(a) * W.R, 0, Math.cos(a) * (W.R + h), Math.sin(a) * (W.R + h), 0); }
+  const fine = []; const step = 2000 / W.R; for (let a = 0; a < Math.PI / 3; a += step) for (const sg of [1, -1]) { const aa = a * sg + 0; fine.push(Math.cos(aa) * W.R, Math.sin(aa) * W.R, 0, Math.cos(aa) * (W.R + 14), Math.sin(aa) * (W.R + 14), 0); }
+  spinTicks = new THREE.Group();
+  const l1 = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35 }));
+  const l2 = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(fine, 3)), new THREE.LineBasicMaterial({ color: 0xcfe2ff, transparent: true, opacity: 0.55 }));
+  spinTicks.add(l1); spinTicks.add(l2); g.add(spinTicks);
+  const pad = new THREE.Mesh(new THREE.BoxGeometry(14, 6, 14), new THREE.MeshStandardMaterial({ color: 0x777b82 })); pad.position.set(W.R - 3, 0, 0); spinTicks.add(pad);
+  planetGroup = g; world.add(g);
+}
+
+function stationModel() {
+  const g = new THREE.Group(), white = MAT(0xe6e9ee), dark = MAT(0x30343b), panel = MAT(0x1d2c55, { m: 0.4, r: 0.35 });
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, 18, 28), white); g.add(core);
+  for (const sy of [-9.4, 9.4]) { const ring = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.8, 20), dark); ring.position.y = sy; g.add(ring); }
+  const mid = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 16, 20), white); mid.rotation.z = Math.PI / 2; g.add(mid);
+  for (const sx of [-1, 1]) for (const dy of [-3, 3]) { const p = new THREE.Mesh(new THREE.BoxGeometry(14, 0.15, 4.5), panel); p.position.set(sx * 15, dy, 0); g.add(p); }
+  const truss = new THREE.Mesh(new THREE.BoxGeometry(34, 0.5, 0.5), dark); g.add(truss);
+  return g;
+}
+// vehicle models for the simulation
+const MAT = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, metalness: o.m ?? 0.2, roughness: o.r ?? 0.55, side: THREE.DoubleSide, emissive: o.e ?? 0 });
+function stackModel(parts, opts = {}) {
+  // parts: [{ length, diameter, color, kind }], bottom to top; nose points +y
+  const g = new THREE.Group(); let y = 0;
+  for (const p of parts) {
+    const r = p.diameter / 2; let m;
+    if (p.kind === 'nose') { const pts = []; for (let i = 0; i <= 12; i++) { const t = i / 12; pts.push(new THREE.Vector2(Math.max(0.02, r * Math.sqrt(1 - t * t * 0.96)), t * p.length)); } m = new THREE.Mesh(new THREE.LatheGeometry(pts, 28), MAT(p.color)); }
+    else if (p.kind === 'cap') { m = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.45, r, p.length, 28).translate(0, p.length / 2, 0), MAT(p.color, { m: 0.1 })); }
+    else m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, p.length, 28).translate(0, p.length / 2, 0), MAT(p.color));
+    m.position.y = y; g.add(m); y += p.length;
+  }
+  g.userData.length = y; return g;
+}
+const COLORS = [0xe9edf2, 0xd2d7de, 0xc9ced6, 0xdde2e8];
+function craftModel(c, sim) {
+  const parts = [], W = sim.W; let any = false;
+  for (let i = 0; i < c.parts.length; i++) { const s = c.parts[i], top = i === c.parts.length - 1;
+    if (s.craft) { parts.push({ length: s.length * 0.7, diameter: s.diameter, color: 0xcfd4db }); parts.push({ length: s.length * 0.3, diameter: s.diameter, color: 0xe9edf2, kind: 'cap' }); any = true; }
+    else parts.push({ length: s.length, diameter: s.diameter, color: COLORS[(c.parts.length - 1 - i + (c.role === 'booster' ? 0 : 1)) % COLORS.length] });
+    if (top && c.payload > 0 && !s.craft) parts.push({ length: Math.max(3, s.diameter * 1.6), diameter: s.diameter, color: 0xf2f4f7, kind: 'nose' });
+    else if (top && !s.craft) parts.push({ length: s.diameter * 0.9, diameter: s.diameter, color: 0xf2f4f7, kind: 'nose' });
+  }
+  const g = stackModel(parts), grp = new THREE.Group(); grp.add(g);
+  const D0 = c.parts[0].diameter, eng = new THREE.Mesh(new THREE.CylinderGeometry(D0 * 0.12, D0 * 0.3, D0 * 0.5, 16, 1, true).translate(0, -D0 * 0.25, 0), MAT(0x2a2d33)); grp.add(eng);
+  // landing legs for stages that will land with engines
+  if (c.parts[0].landing.mode === 'propulsive') { const legs = new THREE.Group(); for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2 + Math.PI / 4, leg = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, D0 * 1.4, 6), MAT(0x30343b)); leg.position.set(Math.cos(a) * D0 * 0.9, D0 * 0.3, Math.sin(a) * D0 * 0.9); leg.rotation.set(Math.sin(a) * 0.6, 0, -Math.cos(a) * 0.6); legs.add(leg); } legs.visible = false; legs.name = 'legs'; grp.add(legs); }
+  // flame
+  const flame = new THREE.Mesh(new THREE.ConeGeometry(D0 * 0.34, 1, 20, 1, true).translate(0, -0.5, 0), new THREE.MeshBasicMaterial({ color: 0xffb060, transparent: true, opacity: 0.85, depthWrite: false, side: THREE.DoubleSide })); flame.name = 'flame'; flame.visible = false; flame.position.y = -D0 * 0.45; grp.add(flame);
+  const core = new THREE.Mesh(new THREE.ConeGeometry(D0 * 0.16, 1, 16, 1, true).translate(0, -0.5, 0), new THREE.MeshBasicMaterial({ color: 0xfff2d0, transparent: true, opacity: 0.95, depthWrite: false, side: THREE.DoubleSide })); core.name = 'core'; core.visible = false; core.position.y = -D0 * 0.45; grp.add(core);
+  // rotate the whole model so +y is the nose in the sim plane
+  grp.userData.D0 = D0; grp.userData.length = g.userData.length; return grp;
+}
+let sim = null, sceneCrafts = new Map(), stationObj = null, running = false, wallLast = 0, mission = null;
+function clearScene() { for (const o of sceneCrafts.values()) world.remove(o.obj); sceneCrafts.clear(); if (stationObj) { world.remove(stationObj.obj); stationObj = null; } if (planetGroup) { world.remove(planetGroup); planetGroup = null; } for (const l of [...$('labels').children]) l.remove(); trailLines.forEach(t => world.remove(t.line)); trailLines.clear(); }
+const trailLines = new Map();
+function drawPreview() { if (sim) return; clearScene(); const W = WORLDS[state.world]; buildPlanet(W); const c = previewCraft(); sceneCrafts.set('preview', { obj: c.obj, craft: c.craft }); world.add(c.obj); placePreview(W); resetCamera(c.obj.userData.length); }
+function previewCraft() {
+  const parts = state.stages.map(completeStage); const c = { role: 'main', parts, payload: state.payload.mass, fairing: state.payload.fairing };
+  const obj = craftModel(c, { W: WORLDS[state.world] }); return { obj, craft: c };
+}
+function placePreview(W) { const o = sceneCrafts.get('preview').obj; o.position.set(W.R + 0, 0, 0); o.rotation.z = -Math.PI / 2; world.position.set(0, 0, 0); world.rotation.z = Math.PI / 2; const p = new THREE.Vector3(W.R, 0, 0).applyAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI / 2); world.position.set(-p.x, -p.y, 0); const L = o.userData.length; o.position.set(W.R + 0.5, 0, 0); o.rotation.z = -Math.PI / 2; o.translateY(0); }
+function resetCamera(L) { const d = Math.max(L * 2.3, 30); controls.target.set(0, L * 0.45, 0); camera.position.set(d * 0.35, L * 0.5 + d * 0.15, d); camera.near = 0.3; camera.far = 5e7; camera.updateProjectionMatrix(); controls.update(); }
+
+// ---------------- running a mission ----------------
+function setStatus(t) { $('tuneOut').textContent = t; }
+function stop(redraw = true) { running = false; if (sim) { sim = null; $('run').textContent = '▶ Launch'; $('pause').disabled = $('ff').disabled = $('reset').disabled = true; $('result').hidden = true; $('phase').textContent = 'Ready'; $('tele').innerHTML = ''; $('log').innerHTML = ''; clearScene(); } if (redraw) drawPreview(); }
+function fillFollow() { const cur = $('follow').value || 'main'; const opts = [['main', 'Vehicle']]; for (const c of sim?.crafts ?? []) if (c.role === 'booster') opts.push([`c${c.id}`, c.name]); if (sim?.station) opts.push(['station', 'Station']); $('follow').innerHTML = opts.map(o => `<option value="${o[0]}">${esc(o[1])}</option>`).join(''); $('follow').value = opts.some(o => o[0] === cur) ? cur : 'main'; }
+$('follow').onchange = () => { followUserSet = true; };
+let followUserSet = false;
+async function start() {
+  if (sim) { if (sim.done) { stop(); } else { running = !running; $('run').textContent = running ? '▶ Resume' : '▶ Resume'; return; } }
+  const cfg = buildCfg(); let note = '';
+  $('run').disabled = true; setStatus('preparing…'); await new Promise(r => setTimeout(r, 30));
+  try {
+    if (cfg.mission.start === 'pad') {
+      if (state.autoKick) { const t = tuneAscent(cfg, { lo: 1, hi: 12 }); cfg.mission.kickDeg = t.kickDeg; state.mission.kickDeg = t.kickDeg; note = t.ok ? `Ascent tuned: ${t.kickDeg.toFixed(2)}° pitch kick.` : `Ascent could not reach orbit with any pitch kick (best ${t.kickDeg.toFixed(1)}°).`; }
+      if (cfg.mission.dock) { const p = planDock(cfg); cfg.mission.stationPhase = p.mission.stationPhase; }
+    } else if (cfg.mission.dock) { cfg.mission.stationPhase = planDock(cfg).mission.stationPhase; }
+    cfg.mission.start = state.mission.start;
+    clearScene(); sim = createSim(cfg); mission = cfg;
+  } catch (e) { setStatus('error: ' + e.message); console.error(e); $('run').disabled = false; return; }
+  setStatus(note); buildPlanet(sim.W); sceneCrafts.clear(); trailLines.clear(); followUserSet = false;
+  $('run').disabled = false; $('pause').disabled = $('ff').disabled = $('reset').disabled = false; $('run').textContent = '▶ Resume';
+  $('log').innerHTML = ''; logCount = 0; plotData.length = 0; syncCrafts(); fillFollow(); snapCamera(true); running = true; wallLast = performance.now();
+}
+$('run').onclick = start;
+$('pause').onclick = () => { running = !running; $('pause').textContent = running ? 'Pause' : 'Play'; };
+$('reset').onclick = () => { stop(); fillFollow(); };
+$('ff').onclick = () => { if (!sim) return; running = false; $('ff').disabled = true; const t0 = performance.now(); const tick = () => { if (!sim) return; sim.advance(120, 400000); if (!sim.done && sim.t < 60000 && performance.now() - t0 < 60000) setTimeout(tick, 0); else { if (!sim.done) sim.outcome.failure = sim.outcome.failure || 'Timed out.'; running = false; $('ff').disabled = false; } }; tick(); };
+document.addEventListener('keydown', e => { if (e.code === 'Space' && !e.target.matches('input,select,textarea,button')) { e.preventDefault(); if (sim) { running = !running; } else start(); } });
+function fmtT(t) { const s = Math.floor(t), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), ss = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(ss).padStart(2, '0'); }
+
+function syncCrafts() {
+  const seen = new Set();
+  for (const c of sim.crafts) {
+    const key = 'c' + c.id; seen.add(key);
+    let o = sceneCrafts.get(key);
+    if (!o || o.nParts !== c.parts.length) { if (o) world.remove(o.obj); const obj = craftModel(c, sim); world.add(obj); o = { obj, craft: c, nParts: c.parts.length, label: o?.label }; sceneCrafts.set(key, o); if (!o.label) { const el = document.createElement('div'); el.className = 'lbl'; el.textContent = c.role === 'main' ? 'Vehicle' : c.name; $('labels').appendChild(el); o.label = el; } }
+  }
+  for (const [k, o] of sceneCrafts) if (!seen.has(k)) { world.remove(o.obj); o.label?.remove(); sceneCrafts.delete(k); }
+  if (sim.station && !stationObj) { const obj = stationModel(); world.add(obj); const el = document.createElement('div'); el.className = 'lbl'; el.textContent = sim.station.name; $('labels').appendChild(el); stationObj = { obj, label: el }; }
+}
+function followPos() { const v = $('follow').value; if (v === 'station' && sim.station) return sim.stationState().pos; if (v === 'main' && sim.station && $('autoCam').checked && sim.crafts[0].ap.phase === 'approach') { const m = sim.crafts[0].pos, st = sim.stationState().pos; return [(m[0] + st[0]) / 2, (m[1] + st[1]) / 2]; } const c = v.startsWith('c') ? sim.crafts.find(x => 'c' + x.id === v) : sim.crafts[0]; return (c ?? sim.crafts[0]).pos; }
+function snapCamera(first) { const main = sim.crafts[0], L = sceneCrafts.get('c' + main.id)?.obj.userData.length || 30, d = Math.max(L * 2.4, 40); controls.target.set(0, 0, 0); camera.position.set(d * 0.3, d * 0.12, d); camera.near = 0.3; camera.updateProjectionMatrix(); controls.update(); }
+let lastFocus = null;
+controls.addEventListener('start', () => { $('autoCam').checked = false; });
+function autoCamera() {
+  if (!$('autoCam').checked) return;
+  const sel = $('follow').value, c = (sel.startsWith('c') ? sim.crafts.find(x => 'c' + x.id === sel) : null) || sim.crafts[0], o = sceneCrafts.get('c' + c.id), L = o?.obj.userData.length || 30, e = sim.env(c);
+  let d = Math.max(L * 2.4, 40);
+  if (c.role === 'main' && sim.station && c.ap.phase === 'approach') d = clamp(c.ap.range * 1.6 + 20, 30, 6000);
+  else if (sel === 'station' && sim.station) { const c0 = sim.crafts[0]; const D = Math.hypot(c0.pos[0] - sim.stationState().pos[0], c0.pos[1] - sim.stationState().pos[1]); d = clamp(D * 1.6 + 30, 60, 8000); }
+  else if (c.ap.phase === 'landing' || (e.h < 4000 && c.vel[0] * e.up[0] + c.vel[1] * e.up[1] < 0 && c.role !== 'main')) d = Math.max(L * 2.6, Math.min((e.h + 40) * 2.4, 700));
+  else if (c.ap.phase === 'orbit' || c.ap.phase === 'phasing' || c.ap.phase === 'transfer') d = Math.max(L * 3, 120);
+  const dir = camera.position.clone().sub(controls.target); const cur = dir.length(); dir.normalize();
+  const nd = cur + (d - cur) * 0.06; camera.position.copy(controls.target).addScaledVector(dir, nd);
+}
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+function drawMap() {
+  const cv = $('mapc'), g = cv.getContext('2d'), w = cv.width, h = cv.height, W = sim.W; g.clearRect(0, 0, w, h);
+  const pts = sim.crafts.filter(c => c.alive || c.onPad); const main = sim.crafts[0], mr = Math.hypot(...main.pos);
+  const local = pts.every(c => Math.hypot(...c.pos) < W.R * 1.04) && !(sim.station && sim.station.r < W.R * 1.04);
+  const sel = $('follow').value, fc = (sel.startsWith('c') ? sim.crafts.find(x => 'c' + x.id === sel) : null) || main;
+  let rmax = Math.max(...pts.map(c => Math.hypot(...c.pos)), sim.station ? sim.station.r : 0, W.R * 1.1) * 1.12, cx, cy, sc, rot = 0;
+  if (local) { const alt = Math.max(...pts.map(c => Math.hypot(...c.pos) - W.R), 20e3), span = Math.max(alt * 3, 90e3) ; sc = Math.min(w, h) / (span * 1.6); const a = Math.atan2(fc.pos[1], fc.pos[0]); rot = Math.PI / 2 - a; cx = w / 2; cy = h / 2 + (W.R * sc) - span * sc * 0.45 - (Math.hypot(...fc.pos) - W.R) * sc * 0.0; }
+  else { sc = (Math.min(w, h) / 2 - 12) / rmax; cx = w / 2; cy = h / 2; }
+  const P = p => { const x = p[0] * Math.cos(rot) - p[1] * Math.sin(rot), y = p[0] * Math.sin(rot) + p[1] * Math.cos(rot); return [cx + x * sc, cy - y * sc]; };
+  const c0 = P([0, 0]);
+  if (W.atmoTop) { g.fillStyle = 'rgba(90,160,255,0.22)'; g.beginPath(); g.arc(c0[0], c0[1], (W.R + W.atmoTop) * sc, 0, 6.2832); g.fill(); }
+  g.fillStyle = '#2a4668'; if (W.id === 'moon') g.fillStyle = '#77776f'; if (W.id === 'mars') g.fillStyle = '#8a4a2c'; g.beginPath(); g.arc(c0[0], c0[1], W.R * sc, 0, 6.2832); g.fill();
+  if (sim.station) { g.strokeStyle = 'rgba(255,255,255,0.25)'; g.setLineDash([6, 6]); g.beginPath(); g.arc(c0[0], c0[1], sim.station.r * sc, 0, 6.2832); g.stroke(); g.setLineDash([]); }
+  for (const cr of sim.crafts) { if (cr.trail.length < 2) continue; g.strokeStyle = cr.role === 'main' ? '#7fc3ff' : '#ffb86b'; g.lineWidth = 2; g.beginPath(); cr.trail.forEach((p, i) => { const q = P(p); i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); }); g.stroke(); }
+  if (sim.station) { const q = P(sim.stationState().pos); g.fillStyle = '#fff'; g.fillRect(q[0] - 5, q[1] - 5, 10, 10); }
+  for (const cr of pts) { const q = P(cr.pos); g.fillStyle = cr.role === 'main' ? '#7fc3ff' : '#ffb86b'; g.beginPath(); g.arc(q[0], q[1], cr === fc ? 6 : 4, 0, 6.2832); g.fill(); }
+  const pad = P([Math.cos(sim.M.padAngle * Math.PI / 180) * W.R * Math.cos(W.w * sim.t) - Math.sin(sim.M.padAngle * Math.PI / 180) * W.R * Math.sin(W.w * sim.t), Math.sin(sim.M.padAngle * Math.PI / 180) * W.R * Math.cos(W.w * sim.t) + Math.cos(sim.M.padAngle * Math.PI / 180) * W.R * Math.sin(W.w * sim.t)]); g.fillStyle = '#ffe28a'; g.fillRect(pad[0] - 3, pad[1] - 3, 6, 6);
+  g.fillStyle = '#8a9bb8'; g.font = '20px sans-serif'; g.fillText(local ? 'local map · launch site in yellow' : 'orbit map · station in white', 10, 24);
+}
+function updateScene() {
+  const f = followPos(), a = Math.PI / 2 - Math.atan2(f[1], f[0]);
+  world.rotation.z = a; const c = Math.cos(a), s = Math.sin(a); world.position.set(-(f[0] * c - f[1] * s), -(f[0] * s + f[1] * c), 0);
+  if (spinTicks) spinTicks.rotation.z = sim.W.w * sim.t;
+  const tmp = new THREE.Vector3();
+  for (const [k, o] of sceneCrafts) {
+    const cr = o.craft, obj = o.obj, off = 0.35 * obj.userData.length; obj.position.set(cr.pos[0] - Math.cos(cr.th) * off, cr.pos[1] - Math.sin(cr.th) * off, 0); obj.rotation.z = cr.th - Math.PI / 2;
+    const thrust = cr.thrust > 0 && cr.alive !== false, fl = obj.getObjectByName('flame'), co = obj.getObjectByName('core'), legs = obj.getObjectByName('legs');
+    if (fl) { const e = sim.env(cr), len = thrust ? Math.min(obj.userData.D0 * 4 * (0.7 + 0.5 * cr.throttleCmd) * (0.9 + 0.2 * Math.random()), 400) * (e.rho > 1e-3 ? 0.8 : 1.4) : 0; fl.visible = co.visible = thrust; fl.scale.y = len; co.scale.y = len * 0.55; }
+    if (legs) legs.visible = cr.ap.phase === 'landing' || cr.ap.phase === 'coast' && sim.env(cr).h < 20e3;
+    if (o.label) { tmp.set(cr.pos[0], cr.pos[1], 0).applyMatrix4(world.matrixWorld).project(camera); const w = view.clientWidth, h = view.clientHeight; o.label.style.display = tmp.z < 1 && tmp.z > -1 && cr.alive !== false ? '' : 'none'; o.label.style.left = ((tmp.x + 1) / 2 * w) + 'px'; o.label.style.top = ((1 - tmp.y) / 2 * h - 24) + 'px'; }
+  }
+  if (stationObj) { const st = sim.stationState(); stationObj.obj.position.set(st.pos[0], st.pos[1], 0); stationObj.obj.rotation.set(0, 0, st.angle); tmp.set(st.pos[0], st.pos[1], 0).applyMatrix4(world.matrixWorld).project(camera); const w = view.clientWidth, h = view.clientHeight; stationObj.label.style.display = tmp.z < 1 ? '' : 'none'; stationObj.label.style.left = ((tmp.x + 1) / 2 * w) + 'px'; stationObj.label.style.top = ((1 - tmp.y) / 2 * h - 40) + 'px'; }
+  // trails
+  for (const cr of sim.crafts) { const key = 'c' + cr.id; let t = trailLines.get(key); if (!t) { const g = new THREE.BufferGeometry(); t = { line: new THREE.Line(g, new THREE.LineBasicMaterial({ color: cr.role === 'main' ? 0x7fc3ff : 0xffb86b, transparent: true, opacity: 0.7 })), n: 0 }; world.add(t.line); trailLines.set(key, t); }
+    if (cr.trail.length !== t.n) { t.n = cr.trail.length; const arr = new Float32Array(cr.trail.length * 3); cr.trail.forEach((p, i) => { arr[i * 3] = p[0]; arr[i * 3 + 1] = p[1]; arr[i * 3 + 2] = 0; }); t.line.geometry.setAttribute('position', new THREE.BufferAttribute(arr, 3)); t.line.geometry.computeBoundingSphere(); t.line.frustumCulled = false; } }
+}
+
+// ---------------- HUD ----------------
+let logCount = 0; const plotData = [];
+const PH = { pad: 'On the pad', ascent: 'Ascent', meco: 'Main engine cutoff', ullage: 'Stage separation', 'coast-apo': 'Coasting to apoapsis', circularize: 'Circularisation burn', 'orbit-done': 'In orbit', orbit: 'In orbit', phasing: 'Phasing for rendezvous', hoh1: 'Transfer burn', transfer: 'Transfer orbit', hoh2: 'Arrival burn', approach: 'Proximity operations', docked: 'Docked', undock: 'Undocking', 'deorbit-orient': 'Turning for deorbit', 'deorbit-burn': 'Deorbit burn', 'coast-entry': 'Entry', descent: 'Descent', landing: 'Landing burn', ballistic: 'Ballistic', sep: 'Stage separated', flip: 'Flip', boostback: 'Boostback burn', coast: 'Coasting' };
+function fmtD(m) { const a = Math.abs(m); return a >= 1e6 ? (m / 1e3).toFixed(0) + ' km' : a >= 1e4 ? (m / 1e3).toFixed(1) + ' km' : a >= 1e3 ? (m / 1e3).toFixed(2) + ' km' : m.toFixed(a < 10 ? 2 : 1) + ' m'; }
+function hud() {
+  const sel = $('follow').value, c = (sel.startsWith('c') ? sim.crafts.find(x => 'c' + x.id === sel) : null) || sim.crafts[0], e = sim.env(c), el = sim.elementsOf(c), main = sim.crafts[0];
+  $('phase').textContent = (c.role === 'main' ? 'Vehicle: ' : c.name + ': ') + (PH[c.ap.phase] || c.ap.phase) + (sim.done ? ' — finished' : '');
+  const rows = [['Mission time', 'T+' + fmtT(sim.t)], ['Altitude', fmtD(e.h)], ['Speed over ground', e.speed.toFixed(0) + ' m/s'], ['Orbital speed', Math.hypot(...c.vel).toFixed(0) + ' m/s'],
+    ['Periapsis × apoapsis', el.eps < 0 ? `${(el.perigeeAlt / 1e3).toFixed(0)} × ${(el.apogeeAlt / 1e3).toFixed(0)} km` : 'escape'],
+    ['Mass', (sim.craftMass(c) / 1e3).toFixed(1) + ' t'], ['Propellant', (c.parts.reduce((a, s) => a + s.prop, 0) / 1e3).toFixed(1) + ' t'], ['Thrust', c.thrust > 0 ? (c.thrust / 1e3).toFixed(0) + ' kN · ' + Math.round(c.throttleCmd * 100) + '%' : 'off'],
+    ['Acceleration', c.gNow.toFixed(2) + ' g'], ['Dynamic pressure', e.q > 1 ? (e.q / 1e3).toFixed(1) + ' kPa · Mach ' + e.mach.toFixed(1) : '—']];
+  if (c.heat > 1e4) rows.push(['Stagnation heating', (c.heat / 1e3).toFixed(0) + ' kW/m²']);
+  if (sim.station && c.role === 'main') { const st = sim.stationState(), D = [c.pos[0] - st.pos[0], c.pos[1] - st.pos[1]]; rows.push(['Range to station', fmtD(Math.hypot(...D))]); if (c.ap.phase === 'approach') { rows.push(['Gap to port', fmtD(c.ap.gapY)], ['Lateral offset', c.ap.lat.toFixed(2) + ' m'], ['Closing speed', c.ap.closing.toFixed(3) + ' m/s'], ['RCS propellant', c.parts.at(-1).craft.rcsProp.toFixed(0) + ' kg']); } }
+  $('tele').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+  while (logCount < sim.events.length) { const ev = sim.events[logCount++]; const d = document.createElement('div'); d.className = ev.kind; d.innerHTML = `<span class="t">${fmtT(ev.t)}</span>${esc(ev.text)}`; $('log').appendChild(d); $('log').scrollTop = 1e9; }
+  if (sim.done && $('result').hidden) showResult();
+}
+function showResult() {
+  const o = sim.outcome, M = sim.M, items = [];
+  if (M.start === 'pad') items.push(o.orbit ? (o.orbit.ok ? `<span class="okc">✓ Reached orbit</span> ${(o.orbit.perigee / 1e3).toFixed(0)} × ${(o.orbit.apogee / 1e3).toFixed(0)} km at T+${fmtT(o.orbit.t)}` : `<span class="badc">✗ Did not reach orbit</span> (${(o.orbit.perigee / 1e3).toFixed(0)} × ${isFinite(o.orbit.apogee) ? (o.orbit.apogee / 1e3).toFixed(0) : '∞'} km)`) : '<span class="badc">✗ No orbit reached</span>');
+  if (M.dock) items.push(o.docked ? (o.docked.ok ? `<span class="okc">✓ Docked</span> at ${o.docked.closing.toFixed(2)} m/s, ${o.docked.lateral.toFixed(2)} m off axis` : `<span class="badc">✗ Docking failed</span>`) : '<span class="badc">✗ Never reached the station</span>');
+  for (const l of o.landings) items.push(l.expended ? `<span class="dim">· ${esc(l.name)} discarded</span>` : l.ok ? `<span class="okc">✓ ${esc(l.name)} landed</span> at ${l.speed.toFixed(1)} m/s${l.chute ? ' on parachutes' : ''}${l.chute ? '' : Math.abs(l.downrange) < 5e3 ? ', at the launch site' : `, ${(Math.abs(l.downrange) / 1e3).toFixed(0)} km downrange`}` : `<span class="badc">✗ ${esc(l.name)} crashed</span> at ${l.speed.toFixed(0)} m/s`);
+  if (o.failure && !items.some(i => i.includes('✗'))) items.push(`<span class="badc">✗ ${esc(o.failure)}</span>`);
+  const c = sim.crafts[0]; items.push(`<span class="dim">Flight time ${fmtT(sim.t)} · peak ${c.peakG.toFixed(1)} g${c.peakHeat > 1e5 ? ` · peak heating ${(c.peakHeat / 1e3).toFixed(0)} kW/m²` : ''}</span>`);
+  $('result').innerHTML = items.join('<br>'); $('result').hidden = false;
+}
+function plots() {
+  const cv = $('plots'), g = cv.getContext('2d'), w = cv.width, h = cv.height; g.clearRect(0, 0, w, h);
+  const d = sim.samples; if (d.length < 2) return;
+  const t0 = d[0].t, t1 = d[d.length - 1].t, series = [{ k: 'alt', c: '#7fc3ff', u: 'km', s: 1e-3 }, { k: 'speed', c: '#ffb86b', u: 'km/s', s: 1e-3 }];
+  series.forEach((S, si) => { let mx = 1e-9; for (const p of d) mx = Math.max(mx, p[S.k] * S.s); g.strokeStyle = S.c; g.lineWidth = 2; g.beginPath(); d.forEach((p, i) => { const x = 8 + (p.t - t0) / Math.max(1, t1 - t0) * (w - 16), y = h - 14 - (p[S.k] * S.s / mx) * (h - 34); i ? g.lineTo(x, y) : g.moveTo(x, y); }); g.stroke(); g.fillStyle = S.c; g.font = '22px sans-serif'; g.fillText(`${S.k === 'alt' ? 'altitude' : 'speed'} max ${mx.toFixed(mx < 10 ? 1 : 0)} ${S.u}`, 10 + si * 330, 22); });
+}
+
+// ---------------- frame loop ----------------
+const BUSY = new Set(['pad', 'ascent', 'meco', 'ullage', 'circularize', 'hoh1', 'hoh2', 'approach', 'deorbit-burn', 'landing', 'boostback', 'flip', 'undock', 'deorbit-orient']);
+let plotAt = 0;
+function frame(now) {
+  requestAnimationFrame(frame); controls.update();
+  if (sim) {
+    if (running && !sim.done) {
+      let warp = +$('warp').value; const dtw = Math.min(0.1, (now - wallLast) / 1000);
+      if ($('autoWarp').checked) { for (const c of sim.crafts) { if (!c.alive && !c.onPad) continue; const ph = c.ap.phase, e = sim.env(c); if (BUSY.has(ph) || c.throttleCmd > 0) warp = Math.min(warp, ph === 'approach' ? 25 : ph === 'landing' ? 3 : ph === 'pad' ? 3 : 8); if (c.ap.phase === 'approach' && c.ap.gapY < 60) warp = Math.min(warp, 4); if (c.role === 'booster' && c.alive && e.h < 30e3 && c.ap.phase !== 'ballistic') warp = Math.min(warp, 4); if (c.ap.phase === 'landing' || (c.ap.phase === 'approach' && c.ap.gapY < 12)) warp = Math.min(warp, 1.5); } }
+      sim.advance(dtw * warp, 6000);
+      if (!followUserSet && $('follow').value === 'main') { /* stay on the vehicle */ }
+    }
+    wallLast = now; syncCrafts(); if (sceneCrafts.size !== $('follow').options.length - (sim.station ? 1 : 0) || false) fillFollow();
+    autoCamera(); updateScene(); hud(); if (now - plotAt > 400) { plotAt = now; plots(); } drawMap();
+  } else {
+    const o = sceneCrafts.get('preview'); if (o) o.obj.rotation.z = -Math.PI / 2;
+  }
+  renderer.render(scene, camera);
+}
+function renderNow() { if (!sim) return; syncCrafts(); fillFollow(); autoCamera(); updateScene(); hud(); plots(); drawMap(); controls.update(); renderer.render(scene, camera); }
+window.__shipyard = { get sim() { return sim; }, step(sec) { if (sim) { running = false; sim.advance(sec, 800000); renderNow(); } }, renderNow, state: () => state };
+loadPreset('f9dock');
+requestAnimationFrame(frame);
+
+// ---------------- tuning tools ----------------
+$('tune').onclick = async () => {
+  stop(); const cfg = buildCfg(); if (cfg.mission.start !== 'pad') { setStatus('Ascent tuning applies to launches from the pad.'); return; }
+  setStatus('tuning the pitch-over…'); await new Promise(r => setTimeout(r, 30));
+  const t = tuneAscent(cfg, { lo: 1, hi: 12 }); state.mission.kickDeg = t.kickDeg;
+  setStatus(t.ok ? `Pitch kick ${t.kickDeg.toFixed(2)}° reaches orbit with ${(t.propLeft / 1e3).toFixed(1)} t of propellant left.` : `No pitch kick reaches orbit with this vehicle. Best try ${t.kickDeg.toFixed(1)}°. Add propellant or thrust.`);
+};
+$('findReserve').onclick = async () => {
+  stop(); const base = buildCfg(), idx = base.stages.findIndex((s, i) => s.landing.mode === 'propulsive' && i < base.stages.length - 1);
+  if (idx < 0) { setStatus('Set a stage to “land with engines” first.'); return; }
+  if (base.mission.start !== 'pad') { setStatus('The reserve search flies a launch from the pad.'); return; }
+  const st = base.stages[idx]; let found = null;
+  for (let f = 0.06; f <= 0.42; f += 0.04) {
+    setStatus(`trying ${(st.prop * f / 1e3).toFixed(0)} t of landing propellant…`); await new Promise(r => setTimeout(r, 20));
+    const cfg = clone(base); cfg.stages[idx].landing.reserve = Math.round(st.prop * f / 1000) * 1000; cfg.mission.dock = false; cfg.mission.land = false;
+    const t = tuneAscent(cfg, { lo: 1, hi: 12 }); if (!t.ok) continue;
+    cfg.mission.kickDeg = t.kickDeg; const s = createSim(cfg); while (!s.done && s.t < 4000) s.advance(30);
+    const r = s.outcome.landings.find(l => l.name === cfg.stages[idx].name || l.name === base.stages[idx].name);
+    if (r && r.ok) { found = { reserve: cfg.stages[idx].landing.reserve, kick: t.kickDeg, left: t.propLeft }; break; }
+  }
+  if (found) { state.stages[idx].landing.reserve = found.reserve; state.mission.kickDeg = found.kick; renderBuilder(); setStatus(`Set ${st.name} to keep ${(found.reserve / 1e3).toFixed(0)} t for landing; it still reaches orbit.`); }
+  else setStatus('No landing reserve both lands the stage and still reaches orbit. Add propellant or engines.');
+};
+</script>
+</body>
+</html>

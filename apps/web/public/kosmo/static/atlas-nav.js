@@ -36,6 +36,7 @@
       { href: "graph.html", label: "Graph" }
     ] },
     { name: "Lab", pages: [
+      { href: "shipyard.html", label: "Shipyard" },
       { href: "oracle/index.html", label: "Oracle" }
     ] }
   ];
