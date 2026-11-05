@@ -9,6 +9,7 @@ import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { authOptions } from "~/lib/auth";
 import { Suspense } from "react";
+import { LogoLoader } from "~/components/ui/LogoLoader";
 import { renderWikiMarkdownToHtml } from "~/lib/services/markdown";
 import { authorizationService } from "~/lib/services/authorization";
 import { MovePageWrapper } from "~/components/wiki/MovePageWrapper";
@@ -296,7 +297,7 @@ export default async function WikiPageView({
         id={page.id}
         title={page.title}
         content={
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<LogoLoader />}>
             <HighlightedContent
               content={page.content || ""}
               renderedHtml={page.renderedHtml}

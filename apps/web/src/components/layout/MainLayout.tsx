@@ -5,6 +5,7 @@ import { SiteFooter } from "./SiteFooter";
 import { ScrollFeather } from "./ScrollFeather";
 import { getSetting } from "~/lib/services/settings";
 import { KamijiSprite } from "~/components/kamiji/KamijiSprite";
+import { LogoLoader } from "~/components/ui/LogoLoader";
 
 export interface PageMetadata {
   title?: string;
@@ -36,7 +37,7 @@ export async function MainLayout({ children, pageMetadata }: MainLayoutProps) {
       <div className="relative flex flex-1 flex-col overflow-hidden">
         <Header pageMetadata={pageMetadata} />
         <ScrollFeather />
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LogoLoader />}>
           <main className="flex-1 overflow-auto">{children}</main>
         </Suspense>
         <Suspense fallback={null}>

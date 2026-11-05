@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { KOSMO_SCROLL_EVENT } from "~/components/layout/ScrollFeather";
 import { kosmoRouteForUrl } from "~/lib/kosmo/tools";
+import { LogoLoader } from "~/components/ui/LogoLoader";
 
 interface EmbedFrameProps {
   src: string;
@@ -119,10 +120,9 @@ export function EmbedFrame({ src, title }: EmbedFrameProps) {
   return (
     <div className="relative h-full w-full">
       {!loaded && (
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 animate-pulse bg-kosmo-bg"
-        />
+        <div className="absolute inset-0 z-10 bg-kosmo-bg">
+          <LogoLoader fill />
+        </div>
       )}
       <iframe
         src={frameSrc}

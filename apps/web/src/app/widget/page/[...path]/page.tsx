@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { LogoLoader } from "~/components/ui/LogoLoader";
 import { getServerSession } from "next-auth";
 import { authOptions } from "~/lib/auth";
 import { authorizationService } from "~/lib/services/authorization";
@@ -62,7 +63,7 @@ export default async function WidgetPageView({
         id={page.id}
         title={page.title}
         content={
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<LogoLoader />}>
             <HighlightedContent
               content={page.content || ""}
               renderedHtml={page.renderedHtml}

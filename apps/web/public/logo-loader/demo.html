@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logo Loader Demo</title>
+<style>
+  :root { --bg: #0b0b0f; --fg: #e9e9ee; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body { background: var(--bg); color: var(--fg); font: 14px/1.4 system-ui, sans-serif; display: flex; flex-direction: column; }
+  #stage { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 16px; background: var(--bg); }
+  #box { width: min(80vw, 560px); height: min(60vh, 400px); }
+  .bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 12px 16px; border-top: 1px solid #8884; }
+  button, select { font: inherit; padding: 6px 12px; border-radius: 8px; border: 1px solid #8886; background: transparent; color: inherit; cursor: pointer; }
+  label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+  #id { margin-left: auto; font-family: ui-monospace, Menlo, monospace; opacity: .7; }
+</style>
+<script src="logo-loader.js"></script>
+</head>
+<body>
+  <div id="stage"><div id="box"></div></div>
+  <div class="bar">
+    <button id="next">Next loading screen</button>
+    <label><input type="checkbox" id="crt"> CRT glow</label>
+    <select id="bg" aria-label="Background">
+      <option value="#0b0b0f,#e9e9ee">Dark</option>
+      <option value="#1b2a4a,#e9e9ee">Navy</option>
+      <option value="#fdf7ee,#17171b">Paper</option>
+      <option value="#ffffff,#17171b">White</option>
+    </select>
+    <select id="pick" aria-label="Logo"><option value="">Random</option></select>
+    <span id="id"></span>
+  </div>
+<script>
+  const box = document.getElementById("box"), crt = document.getElementById("crt"), bg = document.getElementById("bg"), pick = document.getElementById("pick"), label = document.getElementById("id");
+  let inst;
+  function run() {
+    if (inst) inst.destroy();
+    inst = KosmoLogoLoader.mount(box, { id: pick.value || undefined, onReady: (id) => { label.textContent = "logo " + id; } });
+  }
+  crt.checked = KosmoLogoLoader.getCrt();
+  crt.onchange = () => KosmoLogoLoader.setCrt(crt.checked);
+  document.getElementById("next").onclick = run;
+  pick.onchange = run;
+  bg.onchange = () => {
+    const [b, f] = bg.value.split(",");
+    document.documentElement.style.setProperty("--bg", b);
+    document.documentElement.style.setProperty("--fg", f);
+    run();
+  };
+  KosmoLogoLoader.ids().then((ids) => ids.forEach((i) => pick.add(new Option(i, i))));
+  run();
+</script>
+</body>
+</html>
