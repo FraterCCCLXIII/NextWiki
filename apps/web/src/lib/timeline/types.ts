@@ -17,6 +17,10 @@ export interface TLItem {
   reg?: string;
   type?: string;
   src?: string[];
+  lat?: number;
+  lon?: number;
+  /** direct image URL (Wikimedia Commons) */
+  img?: string;
   /** wiki page path (with leading slash) when the entity is tied to an article */
   page?: string;
 }

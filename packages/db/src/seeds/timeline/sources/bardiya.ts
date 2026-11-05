@@ -1,6 +1,7 @@
 import path from "node:path";
 import { readCsv } from "./_csv.js";
 import { cleanText, parseDateText } from "../dates.js";
+import { bardiyaLane } from "../normalize.js";
 import type { TimelineBundle, TimelineRecord, TimelineSource } from "../types.js";
 
 /**
@@ -52,7 +53,8 @@ const source: TimelineSource = {
         start: parsed.start,
         end: parsed.end,
         approx: parsed.approx || undefined,
-        lane: region,
+        lane: bardiyaLane(region),
+        region,
         sources: [FILE],
         rank: kind === "period" ? Math.min(1, 0.5 + 0.3 * Math.min(1, span / 2000)) : 0.3,
         data: { dateText: when },

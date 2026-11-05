@@ -6,6 +6,14 @@ import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 import { execFileSync } from "node:child_process";
+import { GROUP as GAP_GROUP, ROWS as GAP_ROWS, EDGES as GAP_EDGES } from "./timeline-gapfill.mjs";
+import { GROUP as EOG_GROUP, ROWS as EOG_ROWS, LINKS as EOG_LINKS } from "./timeline-eog-extra.mjs";
+import { ASSIGNMENTS as LINEAGE_ASSIGNMENTS } from "./timeline-lineage-assignments.mjs";
+import { CITATIONS } from "./timeline-citations.mjs";
+import { LINKS as SRC_LINKS } from "./timeline-links.mjs";
+import { bardiyaLane, regionFor } from "./timeline-normalize.mjs";
+import { GROUP as ST_GROUP, ROWS as ST_ROWS } from "./timeline-stupas.mjs";
+import { GROUP as GC_GROUP, FILE as GC_FILE, parseGoldenChain } from "./timeline-goldenchain.mjs";
 
 const args = process.argv.slice(2);
 const root = args.includes("--root") ? args[args.indexOf("--root") + 1] : path.join(os.homedir(), "Documents/github");
@@ -217,11 +225,104 @@ function mythographica() {
   }
 }
 
+// ---- 6a. Golden Chain philosophers (panentheon/docs/lineage.md) ----------------------------------------------------
+function goldenChain() {
+  const file = path.join(root, GC_FILE);
+  if (!fs.existsSync(file)) return warn("panentheon lineage.md not found");
+  const { rows, skipped } = parseGoldenChain(fs.readFileSync(file, "utf8"));
+  for (const r of rows) {
+    add({ id: `gc-${slug(r.name)}-${r.start}`, k: "figure", n: r.name, s: r.start, e: r.end, lane: r.section, grp: GC_GROUP, d: trunc(r.desc, 900), approx: r.approx, type: r.mythological ? "mythological" : "philosopher", g: r.mythological ? "speculative" : undefined, src: [GC_FILE] });
+  }
+  for (const k of skipped) bump("skipped:golden-chain");
+}
+
+// ---- 6b. Buddhist and Jain stupas (tools/timeline-stupas.mjs) -------------------------------------------------
+function stupas() {
+  const have = new Set(items.filter((i) => i.grp !== ST_GROUP).map((i) => clean(i.n).toLowerCase()));
+  for (const r of ST_ROWS) {
+    if (have.has(clean(r.name).toLowerCase())) { bump("stupas:duplicate-skipped"); continue; }
+    add({ id: `stupa-${slug(r.country ?? "")}-${slug(r.name)}`, k: r.end != null ? "period" : "event", n: r.name, s: astro(r.start), e: r.end != null ? astro(r.end) : undefined, lane: `${r.tradition} stupas: ${r.country ?? "Unknown"}`, grp: ST_GROUP, d: r.desc, reg: r.region ?? r.country, type: "stupa", g: r.confidence, approx: r.approx || undefined, lat: r.lat, lon: r.lon, img: r.image?.url, src: r.sources?.slice(0, 3) });
+  }
+}
+
+// ---- 6. curated gap-fill (tools/timeline-gapfill.mjs) ----------------------------------------------------------
+function gapFill() {
+  const have = new Set(items.filter((i) => i.grp !== GAP_GROUP).map((i) => clean(i.n).toLowerCase()));
+  for (const [n, s0, e0, lane, d0, approx] of GAP_ROWS) {
+    if (have.has(clean(n).toLowerCase())) { bump("gapfill:duplicate-skipped"); continue; }
+    const cit = CITATIONS[`${lane}|${n}`];
+    const fix = cit?.checked === "corrected" ? cit.fix ?? {} : {};
+    const s = fix.start ?? s0, e = "end" in fix ? fix.end : e0, d = fix.description ?? d0;
+    add({ id: `gap-${slug(lane)}-${slug(n)}`, k: e != null ? "period" : "event", n, s: astro(s), e: e != null ? astro(e) : undefined, lane, grp: GAP_GROUP, d, approx: approx || undefined, g: cit?.checked === "unverified" ? "low" : undefined, src: cit?.sources?.length ? cit.sources : ["tools/timeline-gapfill.mjs"] });
+  }
+  const idOf = (n, lane) => `gap-${slug(lane)}-${slug(n)}`;
+  for (const [na, la, nb, lb, t, cat] of GAP_EDGES) {
+    if (seen.has(idOf(na, la)) && seen.has(idOf(nb, lb))) { edges.push({ a: idOf(na, la), b: idOf(nb, lb), t, cat }); bump("edges:gapfill"); }
+  }
+}
+
+const EOG_IDS = new Set(EOG_ROWS.map((r) => r.id));
+/** Finer-grained Evolution of God rows (tools/timeline-eog-extra.mjs), each tied to its era row. */
+function eogExtra() {
+  for (const r of EOG_ROWS) {
+    add({ id: r.id, k: r.end != null ? "period" : "event", n: r.name, s: astro(r.start), e: r.end != null ? astro(r.end) : undefined, lane: r.lane, grp: EOG_GROUP, d: trunc(clean(r.description), 900), grade: r.grade, approx: r.approx || undefined, src: [r.source] });
+  }
+  const have = new Set(items.map((i) => i.id));
+  for (const l of EOG_LINKS) if (have.has(l.from) && have.has(l.to)) { edges.push({ a: l.from, b: l.to, t: l.type, cat: "other" }); bump("edges:eog"); }
+}
+
+/** Sourced links for Civilisations, Bardiya and Evolution of God (tools/timeline-links.mjs); each needs both ends present. */
+function sourcedLinks() {
+  const have = new Set(items.map((i) => i.id));
+  const dup = new Set(edges.map((e) => `${e.a}>${e.b}:${e.t}`));
+  for (const l of SRC_LINKS) {
+    const k = `${l.from}>${l.to}:${l.type}`;
+    if (!have.has(l.from) || !have.has(l.to) || dup.has(k)) continue;
+    dup.add(k);
+    edges.push({ a: l.from, b: l.to, t: l.type, cat: l.cat });
+    bump("edges:sourced-links");
+  }
+}
+
+/** Fold Bardiya place/tribe lanes into a few lanes and give every item a region where one can be inferred. */
+const LINEAGE_LANE = new Map(LINEAGE_ASSIGNMENTS.filter((a) => a.confidence !== "low").map((a) => [`sl-m${a.masterId}`, a.lane]));
+function normalize() {
+  for (const it of items) if (it.lane === "Unassigned lineage" && LINEAGE_LANE.has(it.id)) it.lane = LINEAGE_LANE.get(it.id);
+  for (const it of items) {
+    if (it.grp === "Bardiya & Achaemenid") {
+      it.reg ??= it.lane;
+      it.lane = bardiyaLane(it.lane);
+    }
+    const reg = regionFor(it.lane, it.reg);
+    if (reg) it.reg = reg; else delete it.reg;
+  }
+}
+
+// `--gapfill-only` re-applies just the curated rows to the existing timeline.json without touching the sibling repos.
+if (args.includes("--gapfill-only")) {
+  const cur = JSON.parse(fs.readFileSync(out, "utf8"));
+  items.push(...cur.items.filter((i) => i.grp !== GAP_GROUP && i.grp !== GC_GROUP && i.grp !== ST_GROUP && !EOG_IDS.has(i.id)));
+  edges.push(...cur.edges);
+  for (const i of items) seen.add(i.id);
+  goldenChain();
+  gapFill();
+  stupas();
+  eogExtra();
+  normalize();
+  sourcedLinks();
+  items.sort((a, b) => a.s - b.s);
+  fs.writeFileSync(out, JSON.stringify({ ...cur, built: new Date().toISOString().slice(0, 10), items, edges }));
+  console.log(`Gap-fill applied: ${items.length} items total -> ${path.relative(process.cwd(), out)}`);
+  process.exit(0);
+}
+
 console.log("Building timeline data from", root);
-for (const [name, fn] of [["time-thread-web", timeThread], ["master timeline", masterTimeline], ["Bardiya", bardiya], ["Sacred-Lineage", sacredLineage], ["Interpretatio-Universalis", mythographica]]) {
+for (const [name, fn] of [["time-thread-web", timeThread], ["master timeline", masterTimeline], ["Bardiya", bardiya], ["Sacred-Lineage", sacredLineage], ["Interpretatio-Universalis", mythographica], ["Golden Chain", goldenChain], ["gap-fill", gapFill], ["stupas", stupas], ["Evolution of God extra", eogExtra]]) {
   try { fn(); } catch (e) { warn(`${name} failed: ${e.message}`); }
 }
 
+normalize();
+sourcedLinks();
 items.sort((a, b) => a.s - b.s);
 const data = { version: 1, built: new Date().toISOString().slice(0, 10), epoch: "astronomical", items, edges };
 fs.mkdirSync(path.dirname(out), { recursive: true });
