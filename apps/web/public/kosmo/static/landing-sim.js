@@ -105,6 +105,14 @@ export const VEHICLES = {
   },
 };
 
+/** Replace the built-in engines and vehicles with rows from landing-data.json (served from the database).  Anything missing keeps its built-in value. */
+export function loadLandingData(d) {
+  if (!d || typeof d !== 'object') return false;
+  for (const [k, e] of Object.entries(d.engines || {})) ENGINES[k] = mk({ ...ENGINES[k], ...e });
+  for (const [k, v] of Object.entries(d.vehicles || {})) VEHICLES[k] = { ...VEHICLES[k], ...v, target: { ...VEHICLES[k]?.target, ...v.target }, start: { ...VEHICLES[k]?.start, ...v.start }, spread: { ...VEHICLES[k]?.spread, ...v.spread } };
+  return true;
+}
+
 /* ---------------- small helpers ---------------- */
 export function rng(seed) { let a = (seed | 0) || 1; return () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 const gauss = r => Math.sqrt(-2 * Math.log(r() || 1e-12)) * Math.cos(2 * Math.PI * r());

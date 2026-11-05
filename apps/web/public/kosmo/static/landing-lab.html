@@ -71,6 +71,7 @@
   <h2>Vehicle</h2>
   <select id="vehicle"></select>
   <div id="vnote" class="small dim" style="margin-top:4px"></div>
+  <div id="dsrc" class="small dim" style="margin-top:2px"></div>
   <table class="an" id="van"></table>
 
   <h2>Guidance</h2>
@@ -118,11 +119,15 @@
 </div>
 
 <script type="module">
-import { createLanding, VEHICLES, GUIDANCE, analyzeVehicle, resolveVehicle, mcRun, summarizeMC, trainPolicy, Policy } from './landing-sim.js';
+import { loadLandingData, createLanding, VEHICLES, GUIDANCE, analyzeVehicle, resolveVehicle, mcRun, summarizeMC, trainPolicy, Policy } from './landing-sim.js';
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const DEG = Math.PI / 180, clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const yieldTick = () => new Promise(r => setTimeout(r, 0));
+
+/* ---------------- data: engines and vehicles come from the database (landing-data.json is served from kosmo_datasets, with the file as fallback) ---------------- */
+let dataSource = 'built-in defaults';
+try { const r = await fetch('landing-data.json', { cache: 'no-cache' }); if (r.ok && loadLandingData(await r.json())) dataSource = r.headers.get('x-kosmo-source') || 'landing-data.json'; } catch {}
 
 /* ---------------- controls ---------------- */
 $('vehicle').innerHTML = Object.entries(VEHICLES).map(([id, v]) => `<option value="${id}">${esc(v.name)}</option>`).join('');
@@ -144,7 +149,7 @@ function syncLabels() {
 }
 function onVehicle() {
   const id = $('vehicle').value, v = VEHICLES[id], rv = resolveVehicle({ vehicle: id }), a = analyzeVehicle(rv);
-  $('vnote').textContent = v.note;
+  $('vnote').textContent = v.note; $('dsrc').textContent = 'vehicle data: ' + dataSource;
   $('wind').value = v.wind; $('gust').value = +(0.35 * v.wind).toFixed(1); $('sea').value = v.target.heave; $('prop').value = 1;
   $('wind').disabled = $('gust').disabled = v.world !== 'earth'; $('sea').disabled = v.target.kind !== 'ship'; $('seaL').style.opacity = v.target.kind === 'ship' ? 1 : 0.4;
   $('van').innerHTML = `<tr><td>Engines</td><td>${v.engines} × ${esc(rv.eng.name)}</td></tr>

@@ -1,0 +1,298 @@
+{
+  "_comment": "Engines and vehicles for the Landing Lab. Approximate public figures; served from the database (kosmo_datasets key landing-data.json), edit the row to change them.",
+  "engines": {
+    "merlin-1d": {
+      "name": "Merlin 1D",
+      "thrustSL": 845000,
+      "thrustVac": 914000,
+      "ispSL": 282,
+      "ispVac": 311,
+      "mass": 470,
+      "minThrottle": 0.39,
+      "ignitions": 5,
+      "prop": "kerolox"
+    },
+    "raptor-2": {
+      "name": "Raptor 2",
+      "thrustSL": 2260000,
+      "thrustVac": 2500000,
+      "ispSL": 327,
+      "ispVac": 350,
+      "mass": 1600,
+      "minThrottle": 0.4,
+      "ignitions": 6,
+      "prop": "methalox"
+    },
+    "be-4": {
+      "name": "BE-4",
+      "thrustSL": 2400000,
+      "thrustVac": 2600000,
+      "ispSL": 310,
+      "ispVac": 335,
+      "mass": 2000,
+      "minThrottle": 0.5,
+      "ignitions": 3,
+      "prop": "methalox"
+    },
+    "be-3pm": {
+      "name": "BE-3PM (deep throttle)",
+      "thrustSL": 490000,
+      "thrustVac": 520000,
+      "ispSL": 320,
+      "ispVac": 350,
+      "minThrottle": 0.2,
+      "prop": "hydrolox"
+    },
+    "be-7": {
+      "name": "BE-7",
+      "thrustSL": 0,
+      "thrustVac": 44500,
+      "ispSL": 0,
+      "ispVac": 453,
+      "minThrottle": 0.2,
+      "prop": "hydrolox",
+      "vacOnly": true
+    }
+  },
+  "vehicles": {
+    "falcon9": {
+      "name": "Falcon 9 booster -- drone ship",
+      "world": "earth",
+      "engine": "merlin-1d",
+      "engines": 1,
+      "dry": 25600,
+      "prop": 4300,
+      "diameter": 3.7,
+      "length": 41.2,
+      "comHeight": 12,
+      "legRadius": 9,
+      "gimbal": 5,
+      "gimbalRate": 12,
+      "finArea": 6,
+      "finLever": 24,
+      "tiltMax": 28,
+      "latTilt": 26,
+      "vMaxV": 5.5,
+      "target": {
+        "kind": "ship",
+        "radius": 14,
+        "deckY": 0,
+        "heave": 0.8,
+        "period": 9
+      },
+      "wind": 6,
+      "start": {
+        "y": 7000,
+        "vx": -90,
+        "vy": -310,
+        "th": 0
+      },
+      "spread": {
+        "x": 90,
+        "y": 40,
+        "vx": 2,
+        "vy": 4
+      },
+      "note": "One Merlin, throttle 39-100 %: thrust-to-weight never drops below ~1.3 so it cannot hover."
+    },
+    "falcon9lz": {
+      "name": "Falcon 9 booster -- landing zone",
+      "world": "earth",
+      "engine": "merlin-1d",
+      "engines": 1,
+      "dry": 25600,
+      "prop": 3600,
+      "diameter": 3.7,
+      "length": 41.2,
+      "comHeight": 12,
+      "legRadius": 9,
+      "gimbal": 5,
+      "gimbalRate": 12,
+      "finArea": 6,
+      "finLever": 24,
+      "tiltMax": 28,
+      "latTilt": 26,
+      "vMaxV": 5.5,
+      "target": {
+        "kind": "pad",
+        "radius": 20,
+        "deckY": 0,
+        "heave": 0,
+        "period": 9
+      },
+      "wind": 6,
+      "start": {
+        "y": 5500,
+        "vx": -60,
+        "vy": -280,
+        "th": 0
+      },
+      "spread": {
+        "x": 80,
+        "y": 40,
+        "vx": 2,
+        "vy": 4
+      },
+      "note": "Return-to-launch-site: a fixed concrete pad, tighter geometry, no sea state."
+    },
+    "newshepard": {
+      "name": "New Shepard booster",
+      "world": "earth",
+      "engine": "be-3pm",
+      "engines": 1,
+      "dry": 19000,
+      "prop": 2600,
+      "diameter": 3.7,
+      "length": 15,
+      "comHeight": 5.5,
+      "legRadius": 4.5,
+      "gimbal": 6,
+      "gimbalRate": 10,
+      "finArea": 3,
+      "finLever": 8,
+      "tiltMax": 20,
+      "vMaxV": 4,
+      "target": {
+        "kind": "pad",
+        "radius": 25,
+        "deckY": 0,
+        "heave": 0,
+        "period": 9
+      },
+      "wind": 5,
+      "start": {
+        "y": 3500,
+        "vx": -25,
+        "vy": -190,
+        "th": 0
+      },
+      "spread": {
+        "x": 50,
+        "y": 30,
+        "vx": 1.5,
+        "vy": 3
+      },
+      "note": "Deep-throttle BE-3PM (down to ~20 %): thrust-to-weight can drop below 1, so it can hover and ease down."
+    },
+    "newglenn": {
+      "name": "New Glenn booster (3 engines)",
+      "world": "earth",
+      "engine": "be-4",
+      "engines": 3,
+      "dry": 250000,
+      "prop": 55000,
+      "diameter": 7,
+      "length": 57,
+      "comHeight": 20,
+      "legRadius": 14,
+      "gimbal": 5,
+      "gimbalRate": 20,
+      "finArea": 80,
+      "finLever": 32,
+      "tiltMax": 20,
+      "vMaxV": 5.5,
+      "target": {
+        "kind": "ship",
+        "radius": 22,
+        "deckY": 0,
+        "heave": 0.7,
+        "period": 10
+      },
+      "wind": 6,
+      "start": {
+        "y": 5000,
+        "vx": -50,
+        "vy": -190,
+        "th": 0
+      },
+      "spread": {
+        "x": 60,
+        "y": 40,
+        "vx": 1.5,
+        "vy": 4
+      },
+      "note": "Seven-engine stage landing on three BE-4s with strakes and flaps (modelled here as grid-fin-class control)."
+    },
+    "superheavy": {
+      "name": "Super Heavy -- tower catch",
+      "world": "earth",
+      "engine": "raptor-2",
+      "engines": 3,
+      "dry": 275000,
+      "prop": 60000,
+      "diameter": 9,
+      "length": 71,
+      "comHeight": 22,
+      "legRadius": 0,
+      "gimbal": 12,
+      "gimbalRate": 25,
+      "finArea": 80,
+      "finLever": 40,
+      "tiltMax": 18,
+      "vMaxV": 2.5,
+      "vMaxH": 2,
+      "target": {
+        "kind": "catch",
+        "radius": 6,
+        "deckY": 70,
+        "heave": 0,
+        "period": 9
+      },
+      "wind": 5,
+      "start": {
+        "y": 3600,
+        "vx": -30,
+        "vy": -130,
+        "th": 0
+      },
+      "spread": {
+        "x": 40,
+        "y": 30,
+        "vx": 1.5,
+        "vy": 3
+      },
+      "note": "Three Raptors can nearly hover; instead of legs it is caught by the tower arms at ~70 m, so the box is a few metres wide. Experimental: the catch is still unreliable (about one flight in five)."
+    },
+    "moonlander": {
+      "name": "Lunar lander (BE-7 class)",
+      "world": "moon",
+      "engine": "be-7",
+      "engines": 1,
+      "dry": 3600,
+      "prop": 1900,
+      "diameter": 3.1,
+      "length": 8,
+      "comHeight": 3.2,
+      "legRadius": 4,
+      "gimbal": 6,
+      "gimbalRate": 8,
+      "finArea": 0,
+      "finLever": 0,
+      "tiltMax": 30,
+      "latTilt": 28,
+      "vMaxV": 3,
+      "vMaxH": 1.5,
+      "target": {
+        "kind": "pad",
+        "radius": 15,
+        "deckY": 0,
+        "heave": 0,
+        "period": 9
+      },
+      "wind": 0,
+      "start": {
+        "y": 2500,
+        "vx": -35,
+        "vy": -45,
+        "th": 0
+      },
+      "spread": {
+        "x": 50,
+        "y": 25,
+        "vx": 1,
+        "vy": 2
+      },
+      "note": "No atmosphere: no drag, no fins, no wind -- pure thrust control, as on the Moon."
+    }
+  }
+}
