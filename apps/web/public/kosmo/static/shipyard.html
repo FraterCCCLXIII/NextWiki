@@ -21,10 +21,11 @@
   #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.16em; font-size: 14px; text-transform: uppercase; }
   @media (max-width: 1320px) { #menu { overflow-x: auto; min-width: 0; scrollbar-width: none; } #menu::-webkit-scrollbar { display: none; } }
   #menu a { color: rgba(255,255,255,0.72); text-decoration: none; white-space: nowrap; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+  :root { --strip-h: 112px; }
   #view { position: absolute; inset: 0; } #view canvas { display: block; }
   #labels { position: absolute; inset: 0; pointer-events: none; z-index: 3; overflow: hidden; }
   .lbl { position: absolute; transform: translate(-50%, -100%); white-space: nowrap; font-size: 12px; color: #dbe5f3; text-shadow: 0 1px 5px #000, 0 0 2px #000; }
-  #build { position: absolute; left: 14px; top: 66px; bottom: 14px; width: 360px; z-index: 4; overflow: auto; padding: 4px 8px 12px 4px; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
+  #build { position: absolute; left: 14px; top: 66px; bottom: calc(var(--strip-h) + 10px); width: 360px; z-index: 4; overflow: auto; padding: 4px 8px 12px 4px; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
   h1 { font-weight: 500; font-size: 28px; margin: 2px 0 2px; }
   h2 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
   input[type=text], input[type=number], button, select { background: rgba(26,26,26,0.85); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 8px; padding: 4px 8px; font: inherit; }
@@ -39,14 +40,14 @@
   .chk { display: flex; align-items: center; gap: 6px; margin: 4px 0; color: #c3d0e2; } .chk input { margin: 0; }
   table.an { border-collapse: collapse; width: 100%; font-size: 13px; } table.an td, table.an th { padding: 2px 4px 2px 0; text-align: right; } table.an th { color: var(--muted); font-weight: 400; } table.an td:first-child, table.an th:first-child { text-align: left; }
   .warn { color: var(--accent2); font-size: 13px; margin: 2px 0; } .okc { color: var(--good); } .badc { color: var(--bad); }
-  #hud { position: absolute; right: 14px; top: 66px; bottom: 62px; width: 330px; z-index: 4; overflow: auto; text-shadow: 0 1px 6px #000; padding-right: 4px; }
+  #hud { position: absolute; right: 14px; top: 66px; bottom: calc(var(--strip-h) + 56px); width: 330px; z-index: 4; overflow: auto; text-shadow: 0 1px 6px #000; padding-right: 4px; }
   #hud .phase { font-size: 20px; color: #fff; margin: 0; }
   #hud table { border-collapse: collapse; width: 100%; } #hud td { padding: 1px 0; font-variant-numeric: tabular-nums; } #hud td:first-child { color: var(--muted); width: 48%; } #hud td:last-child { text-align: right; color: #fff; }
   #log { font-size: 13px; max-height: 240px; overflow: auto; margin-top: 4px; border-top: 1px solid var(--line); }
   #log div { padding: 1px 0; } #log .good { color: var(--good); } #log .bad { color: var(--bad); } #log .stage { color: var(--accent); } #log .t { color: var(--muted); display: inline-block; width: 52px; font-variant-numeric: tabular-nums; }
   #plots { display: block; width: 100%; height: 150px; margin-top: 8px; border: 1px solid var(--line); border-radius: 8px; background: rgba(10,12,18,0.6); }
   #result { margin: 8px 0; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: rgba(18,22,30,0.7); font-size: 14px; }
-  #bar { position: absolute; left: 388px; right: 358px; bottom: 12px; z-index: 4; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; text-shadow: 0 1px 6px #000; font-size: 14px; color: #c3d0e2; }
+  #bar { position: absolute; left: 388px; right: 358px; bottom: calc(var(--strip-h) + 8px); z-index: 4; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; text-shadow: 0 1px 6px #000; font-size: 14px; color: #c3d0e2; }
   #bar button, #bar select { margin: 0; padding: 4px 10px; width: auto; } #bar .sp { flex: 1; }
   #banner { position: absolute; left: 388px; top: 66px; z-index: 4; font-size: 13px; color: var(--muted); text-shadow: 0 1px 6px #000; max-width: 520px; }
   kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); }
@@ -55,6 +56,7 @@
 </style>
 <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
   <link rel="stylesheet" href="kosmographica.css?v=15">
+  <link rel="stylesheet" href="flight-ui.css">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>
@@ -99,6 +101,7 @@
 
 <div id="banner">drag · orbit &nbsp; wheel · zoom &nbsp; <kbd>space</kbd> play / pause</div>
 <div id="hud">
+  <div class="card f" style="margin:0 0 8px"><label>Aperture <b id="fstopV">f/2.8</b></label><input type="range" id="fstop" min="1.4" max="22" step="0.1" value="2.8"><label>Focal length <b id="focalV">35 mm</b></label><input type="range" id="focal" min="14" max="800" step="1" value="35"></div>
   <p class="phase serif" id="phase">Ready</p>
   <div id="result" hidden></div>
   <table id="tele"></table>
@@ -106,18 +109,29 @@
   <canvas id="plots" width="660" height="300"></canvas>
   <div id="log"></div>
 </div>
-<div id="bar">
+<div id="strip"></div>
+<div id="bar"><div class="rail">
   <button id="run" class="primary">▶ Launch</button><button id="pause" disabled>Pause</button><button id="ff" disabled>Skip to end</button><button id="reset" disabled>Reset</button>
   <label>speed <select id="warp"><option value="1">1×</option><option value="2">2×</option><option value="5" selected>5×</option><option value="10">10×</option><option value="25">25×</option><option value="50">50×</option><option value="150">150×</option><option value="500">500×</option></select></label>
   <label>follow <select id="follow"></select></label>
-  <label class="chk" style="margin:0"><input type="checkbox" id="autoWarp" checked> auto-slow for events</label><label class="chk" style="margin:0"><input type="checkbox" id="autoCam" checked> auto camera</label>
-</div>
+  <label>camera <select id="camAngle"><option value="chase">Chase</option><option value="side">Side</option><option value="behind">Head-on</option><option value="high">High</option><option value="low">Low</option></select></label>
+  <label>track <select id="camTrack"><option value="auto">Auto</option><option value="lock">Locked</option></select></label>
+  <span class="sep"></span>
+  <label class="chk" style="margin:0"><input type="checkbox" id="autoWarp" checked> auto-slow for events</label><input type="checkbox" id="autoCam" checked hidden>
+</div></div>
 
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadEngines } from './engines.js';
 import { telemetryHTML, createEventLog } from './flight-hud.js';
+import { createFlightStrip } from './flight-strip.js';
 import { createSim, analyze, tuneAscent, planDock, ENGINES, WORLDS, elements, G0, completeStage, runAscent } from './ship-sim.js';
 // the engine table is shared with the Landing Lab; flight-data.json (served from the database) overrides the built-in rows
 try { const r = await fetch('flight-data.json', { cache: 'no-cache' }); if (r.ok) loadEngines((await r.json()).engines); } catch {}
@@ -283,15 +297,21 @@ function renderAnalysis() {
 }
 
 // ---------------- 3D scene ----------------
-const view = $('view'), renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); view.appendChild(renderer.domElement);
+const view = $('view'), renderer = new THREE.WebGLRenderer({ antialias: false, logarithmicDepthBuffer: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.8; renderer.outputColorSpace = THREE.SRGBColorSpace; view.appendChild(renderer.domElement);
 const scene = new THREE.Scene(); scene.background = new THREE.Color(0x03050a);
 const camera = new THREE.PerspectiveCamera(40, 1, 0.5, 5e7); camera.position.set(25, 15, 80);
 const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.target.set(0, 0, 0); controls.maxDistance = 2e7; controls.minDistance = 3;
-scene.add(new THREE.AmbientLight(0xffffff, 0.75)); scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x303642, 0.5));
-const sun = new THREE.DirectionalLight(0xffffff, 2.2); sun.position.set(-60, 40, 90); scene.add(sun);
+// lighting: one hard sun, soft studio-style reflections for the metal (image-based), and a faint blue fill from the planet
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+scene.add(new THREE.HemisphereLight(0x7f9fd8, 0x10121a, 0.35));
+const sun = new THREE.DirectionalLight(0xfff4e4, 3.6); sun.position.set(-60, 40, 90); scene.add(sun);
+// post: bloom on the exhaust, thin-lens depth of field (aperture and focal length in the HUD), filmic tone mapping
+const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(2, 2, { type: THREE.HalfFloatType, samples: 4 }));
+const bloom = new UnrealBloomPass(new THREE.Vector2(2, 2), 0.35, 0.55, 1.6), bokeh = new BokehPass(scene, camera, { focus: 100, aperture: 0, maxblur: 0.01 });
+composer.addPass(new RenderPass(scene, camera)); composer.addPass(bloom); composer.addPass(bokeh); composer.addPass(new OutputPass());
 const world = new THREE.Group(); scene.add(world);
-function resize() { const w = view.clientWidth, h = view.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; const l = $('build').offsetWidth + 14, r = $('hud').offsetParent ? $('hud').offsetWidth + 14 : 0; camera.setViewOffset(w, h, -(l - r) / 2, 0, w, h); camera.updateProjectionMatrix(); }
+function resize() { const w = view.clientWidth, h = view.clientHeight; renderer.setSize(w, h); composer.setSize(w, h); camera.aspect = w / h; const l = $('build').offsetWidth + 14, r = $('hud').offsetParent ? $('hud').offsetWidth + 14 : 0; camera.setViewOffset(w, h, -(l - r) / 2, 0, w, h); camera.updateProjectionMatrix(); }
 addEventListener('resize', resize); resize();
 { // stars
   const g = new THREE.BufferGeometry(), p = []; for (let i = 0; i < 1500; i++) { const u = Math.random() * 2 - 1, t = Math.random() * 6.283, r = 3e7, s = Math.sqrt(1 - u * u); p.push(r * s * Math.cos(t), r * u, r * s * Math.sin(t)); }
@@ -302,9 +322,19 @@ let planetGroup = null, spinTicks = null;
 function buildPlanet(W) {
   if (planetGroup) { world.remove(planetGroup); planetGroup = null; }
   const g = new THREE.Group();
-  const disk = new THREE.Mesh(new THREE.CircleGeometry(W.R, 256), new THREE.MeshBasicMaterial({ color: PLANET_COL[W.id] })); disk.position.z = -8; g.add(disk);
-  if (W.atmoTop) { const ring = new THREE.Mesh(new THREE.RingGeometry(W.R, W.R + W.atmoTop * 1.1, 256, 1), new THREE.MeshBasicMaterial({ color: ATMO_COL[W.id], transparent: true, opacity: 0.22, side: THREE.DoubleSide })); ring.position.z = -7; g.add(ring);
-    const ring2 = new THREE.Mesh(new THREE.RingGeometry(W.R, W.R + 12e3, 256, 1), new THREE.MeshBasicMaterial({ color: ATMO_COL[W.id], transparent: true, opacity: 0.35, side: THREE.DoubleSide })); ring2.position.z = -6; g.add(ring2); }
+  // the planet is a real sphere (poles along z, so the equator is the flat flight plane): a flat disk would cut through the scene from any angle but side-on
+  // surface: lit sphere with a procedural albedo (ocean/land/cloud or regolith), and a Rayleigh-style glow shell: bright limb, fading inward
+  const tex = (() => { const c = document.createElement('canvas'); c.width = 1024; c.height = 512; const gg = c.getContext('2d'); const base = { earth: '#1b4a78', moon: '#7d7d79', mars: '#a4552f' }[W.id] || '#555'; gg.fillStyle = base; gg.fillRect(0, 0, 1024, 512);
+    let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < 2600; i++) { const x = rnd() * 1024, y = rnd() * 512, r = 4 + rnd() * 40, v = rnd(); gg.fillStyle = W.id === 'earth' ? (v < 0.45 ? `rgba(60,110,60,${0.25 + rnd() * 0.3})` : v < 0.8 ? `rgba(24,64,110,0.25)` : `rgba(255,255,255,${0.1 + rnd() * 0.25})`) : `rgba(${v < 0.5 ? 30 : 220},${v < 0.5 ? 30 : 220},${v < 0.5 ? 30 : 220},${0.06 + rnd() * 0.12})`; gg.beginPath(); gg.ellipse(x, y, r * 2, r, rnd() * 3, 0, 7); gg.fill(); }
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = THREE.RepeatWrapping; return t; })();
+  const body = new THREE.Mesh(new THREE.SphereGeometry(W.R - 3, 256, 128), new THREE.MeshStandardMaterial({ map: tex, color: 0x9a9a9a, roughness: 0.95, metalness: 0 })); body.rotation.x = Math.PI / 2; g.add(body);
+  if (W.atmoTop) {
+    const glow = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, side: THREE.BackSide, blending: THREE.AdditiveBlending, uniforms: { col: { value: new THREE.Color(ATMO_COL[W.id]) } },
+      vertexShader: 'varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix * vec4(position,1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }',
+      fragmentShader: 'uniform vec3 col; varying vec3 vN; varying vec3 vV; void main(){ float f = pow(clamp(0.78 - dot(-vN, vV), 0.0, 1.0), 2.6); gl_FragColor = vec4(col * f * 2.2, f); }' });
+    const shell = new THREE.Mesh(new THREE.SphereGeometry(W.R + W.atmoTop * 1.25, 192, 96), glow); g.add(shell);
+  }
   // ground marks that turn with the planet: ticks every 1 km near the surface so motion is visible
   const pts = []; for (let k = 0; k < 360 * 4; k++) { const a = k / 4 * Math.PI / 180, big = k % 4 === 0, h = big ? 400 : 120; pts.push(Math.cos(a) * W.R, Math.sin(a) * W.R, 0, Math.cos(a) * (W.R + h), Math.sin(a) * (W.R + h), 0); }
   const fine = []; const step = 2000 / W.R; for (let a = 0; a < Math.PI / 3; a += step) for (const sg of [1, -1]) { const aa = a * sg + 0; fine.push(Math.cos(aa) * W.R, Math.sin(aa) * W.R, 0, Math.cos(aa) * (W.R + 14), Math.sin(aa) * (W.R + 14), 0); }
@@ -326,7 +356,10 @@ function stationModel() {
   return g;
 }
 // vehicle models for the simulation
-const MAT = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, metalness: o.m ?? 0.2, roughness: o.r ?? 0.55, side: THREE.DoubleSide, emissive: o.e ?? 0 });
+const MAT = (c, o = {}) => new THREE.MeshPhysicalMaterial({ color: c, metalness: o.m ?? 0.5, roughness: o.r ?? 0.4, clearcoat: o.cc ?? 0.35, clearcoatRoughness: 0.3, side: THREE.DoubleSide, emissive: o.e ?? 0, map: o.map ?? null, envMapIntensity: 0.9 });
+const SKIN = (() => { const c = document.createElement('canvas'); c.width = 64; c.height = 512; const g = c.getContext('2d'), gr = g.createLinearGradient(0, 0, 0, 512);   // soot toward the engine end, panel lines
+  gr.addColorStop(0, '#f2f4f6'); gr.addColorStop(0.8, '#e4e7ea'); gr.addColorStop(1, '#3c3936'); g.fillStyle = gr; g.fillRect(0, 0, 64, 512); g.strokeStyle = 'rgba(0,0,0,0.12)'; g.lineWidth = 2; for (let y = 36; y < 512; y += 84) { g.beginPath(); g.moveTo(0, y); g.lineTo(64, y); g.stroke(); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; t.rotation = Math.PI; t.center.set(0.5, 0.5); return t; })();
 function stackModel(parts, opts = {}) {
   // parts: [{ length, diameter, color, kind }], bottom to top; nose points +y
   const g = new THREE.Group(); let y = 0;
@@ -334,7 +367,7 @@ function stackModel(parts, opts = {}) {
     const r = p.diameter / 2; let m;
     if (p.kind === 'nose') { const pts = []; for (let i = 0; i <= 12; i++) { const t = i / 12; pts.push(new THREE.Vector2(Math.max(0.02, r * Math.sqrt(1 - t * t * 0.96)), t * p.length)); } m = new THREE.Mesh(new THREE.LatheGeometry(pts, 28), MAT(p.color)); }
     else if (p.kind === 'cap') { m = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.45, r, p.length, 28).translate(0, p.length / 2, 0), MAT(p.color, { m: 0.1 })); }
-    else m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, p.length, 28).translate(0, p.length / 2, 0), MAT(p.color));
+    else m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, p.length, 48).translate(0, p.length / 2, 0), MAT(p.sooty ? 0xffffff : p.color, p.sooty ? { map: SKIN, cc: 0.5 } : {}));
     m.position.y = y; g.add(m); y += p.length;
   }
   g.userData.length = y; return g;
@@ -344,17 +377,42 @@ function craftModel(c, sim) {
   const parts = [], W = sim.W; let any = false;
   for (let i = 0; i < c.parts.length; i++) { const s = c.parts[i], top = i === c.parts.length - 1;
     if (s.craft) { parts.push({ length: s.length * 0.7, diameter: s.diameter, color: 0xcfd4db }); parts.push({ length: s.length * 0.3, diameter: s.diameter, color: 0xe9edf2, kind: 'cap' }); any = true; }
-    else parts.push({ length: s.length, diameter: s.diameter, color: COLORS[(c.parts.length - 1 - i + (c.role === 'booster' ? 0 : 1)) % COLORS.length] });
+    else parts.push({ length: s.length, diameter: s.diameter, color: COLORS[(c.parts.length - 1 - i + (c.role === 'booster' ? 0 : 1)) % COLORS.length], sooty: i === 0 });
     if (top && c.payload > 0 && !s.craft) parts.push({ length: Math.max(3, s.diameter * 1.6), diameter: s.diameter, color: 0xf2f4f7, kind: 'nose' });
     else if (top && !s.craft) parts.push({ length: s.diameter * 0.9, diameter: s.diameter, color: 0xf2f4f7, kind: 'nose' });
   }
   const g = stackModel(parts), grp = new THREE.Group(); grp.add(g);
-  const D0 = c.parts[0].diameter, eng = new THREE.Mesh(new THREE.CylinderGeometry(D0 * 0.12, D0 * 0.3, D0 * 0.5, 16, 1, true).translate(0, -D0 * 0.25, 0), MAT(0x2a2d33)); grp.add(eng);
-  // landing legs for stages that will land with engines
-  if (c.parts[0].landing.mode === 'propulsive') { const legs = new THREE.Group(); for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2 + Math.PI / 4, leg = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, D0 * 1.4, 6), MAT(0x30343b)); leg.position.set(Math.cos(a) * D0 * 0.9, D0 * 0.3, Math.sin(a) * D0 * 0.9); leg.rotation.set(Math.sin(a) * 0.6, 0, -Math.cos(a) * 0.6); legs.add(leg); } legs.visible = false; legs.name = 'legs'; grp.add(legs); }
-  // flame
-  const flame = new THREE.Mesh(new THREE.ConeGeometry(D0 * 0.34, 1, 20, 1, true).translate(0, -0.5, 0), new THREE.MeshBasicMaterial({ color: 0xffb060, transparent: true, opacity: 0.85, depthWrite: false, side: THREE.DoubleSide })); flame.name = 'flame'; flame.visible = false; flame.position.y = -D0 * 0.45; grp.add(flame);
-  const core = new THREE.Mesh(new THREE.ConeGeometry(D0 * 0.16, 1, 16, 1, true).translate(0, -0.5, 0), new THREE.MeshBasicMaterial({ color: 0xfff2d0, transparent: true, opacity: 0.95, depthWrite: false, side: THREE.DoubleSide })); core.name = 'core'; core.visible = false; core.position.y = -D0 * 0.45; grp.add(core);
+  const D0 = c.parts[0].diameter, R0 = D0 / 2, L0 = c.parts[0].length, dark = MAT(0x23272c, { m: 0.6, r: 0.5 }), chrome = MAT(0xd9dde2, { m: 1, r: 0.18, cc: 0 }), steel = MAT(0x8f979f, { m: 0.8, r: 0.4 });
+  // engine bells: a centre engine and a ring, like the real engine bay
+  const nE = Math.min(c.parts[0].count || 1, 9), bell = MAT(0x2b2420, { m: 0.9, r: 0.35, cc: 0 });
+  for (let i = 0; i < nE; i++) { const a = (i - 1) * 2 * Math.PI / Math.max(nE - 1, 1), rr = nE > 1 && i > 0 ? R0 * 0.58 : 0, b = new THREE.Mesh(new THREE.CylinderGeometry(R0 * (nE > 1 ? 0.1 : 0.14), R0 * (nE > 1 ? 0.19 : 0.4), R0 * 0.5, 20, 1, true).translate(0, -R0 * 0.25, 0), bell); b.position.set(Math.cos(a) * rr, 0, Math.sin(a) * rr); grp.add(b); }
+  const skirt = new THREE.Mesh(new THREE.CylinderGeometry(R0 * 1.02, R0 * 1.02, R0 * 0.5, 48).translate(0, R0 * 0.25, 0), dark); grp.add(skirt);
+  // landing legs and grid fins for stages that will land with engines
+  const link = (m, P, Q, rad) => { const d = Q.clone().sub(P), len = Math.max(d.length(), 1e-4); m.position.copy(P).addScaledVector(d, 0.5); m.scale.set(rad, len, rad); m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.normalize()); };
+  if (c.parts[0].landing.mode === 'propulsive') {
+    const legs = new THREE.Group(), th = Math.max(0.2, R0 * 0.07), cyl = (mat, seg = 12) => new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 1, seg), mat);
+    for (let i = 0; i < 4; i++) {
+      const a = i * Math.PI / 2 + Math.PI / 4, ca = Math.cos(a), sa = Math.sin(a), A = new THREE.Vector3(ca * R0 * 1.03, Math.min(0.14 * L0, 8), sa * R0 * 1.03), B = new THREE.Vector3(ca * R0 * 1.03, Math.min(0.14 * L0, 8) * 0.35, sa * R0 * 1.03), F = new THREE.Vector3(ca * R0 * 2.2, 0.4, sa * R0 * 2.2);
+      const M = A.clone().lerp(F, 0.5), P2 = A.clone().lerp(F, 0.62), act = B.clone().lerp(P2, 0.5);
+      const sleeve = cyl(steel), piston = cyl(chrome), brace = cyl(steel), aOut = cyl(steel), aIn = cyl(chrome); link(sleeve, A, M, th * 1.35); link(piston, M.clone().lerp(A, 0.2), F, th * 0.8); link(brace, B, P2, th * 0.7); link(aOut, B, act, th * 0.6); link(aIn, act.clone().lerp(B, 0.15), P2, th * 0.4);
+      const fair = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), MAT(0xe9edf1, { m: 0.3, r: 0.4 })), dir = F.clone().sub(A), fl = dir.length() * 0.55; fair.position.copy(A).addScaledVector(dir.clone().normalize(), fl / 2).add(new THREE.Vector3(ca, 0, sa).multiplyScalar(th * 1.1)); fair.scale.set(th * 0.4, fl, th * 3.4); fair.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize()); fair.rotateY(-a);
+      const pad = new THREE.Mesh(new THREE.CylinderGeometry(1, 1.15, 0.28, 24), dark); pad.position.set(F.x, 0.14, F.z); pad.scale.set(th * 3.4, 1, th * 3.4); const ball = new THREE.Mesh(new THREE.SphereGeometry(1, 14, 10), chrome); ball.position.copy(F); ball.scale.setScalar(th * 1.25);
+      const hinge = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), dark); hinge.position.copy(A); hinge.scale.set(th * 2.2, th * 2.6, th * 3.2); hinge.rotation.y = -a;
+      legs.add(sleeve, piston, brace, aOut, aIn, fair, pad, ball, hinge);
+    }
+    legs.visible = false; legs.name = 'legs'; grp.add(legs);
+    for (let i = 0; i < 4; i++) {   // lattice grid fins near the top of the stage
+      const ang = i * Math.PI / 2, fin = new THREE.Group(), fw = R0 * 0.78, fh = R0 * 0.62, fd = R0 * 0.12, t = R0 * 0.045, add = (sx, sy, sz, px, py, pz) => { const m = new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), steel); m.position.set(px, py, pz); fin.add(m); };
+      add(fd, t * 2, fw, 0, fh / 2, 0); add(fd, t * 2, fw, 0, -fh / 2, 0); add(fd, fh, t * 2, 0, 0, fw / 2); add(fd, fh, t * 2, 0, 0, -fw / 2); for (let k = 1; k < 6; k++) { add(fd * 0.9, t, fw, 0, -fh / 2 + fh * k / 6, 0); add(fd * 0.9, fh, t, 0, 0, -fw / 2 + fw * k / 6); }
+      const pivot = new THREE.Group(); fin.position.x = R0 * 0.5; pivot.add(fin); const shaft = new THREE.Mesh(new THREE.CylinderGeometry(R0 * 0.07, R0 * 0.07, R0 * 0.5, 12), chrome); shaft.rotation.z = Math.PI / 2; shaft.position.x = R0 * 0.2; pivot.add(shaft);
+      pivot.position.set(Math.cos(ang) * R0, L0 - R0 * 1.5, Math.sin(ang) * R0); pivot.rotation.y = -ang; grp.add(pivot);
+    }
+  }
+  // exhaust plume: three nested additive lathe shells (glow, flame, core) starting at the nozzle exit; length and width are set each frame
+  const prof = (r0, bulge) => { const pts = []; for (let i = 0; i <= 14; i++) { const t = i / 14; pts.push(new THREE.Vector2(r0 * (0.55 + bulge * Math.sin(Math.PI * Math.min(1, t * 1.15)) * (1 - t * 0.2)) * (1 - t) + 0.001, -t)); } return pts; };
+  const plume = new THREE.Group(); plume.name = 'plume'; plume.visible = false; plume.position.y = -R0 * 0.5;
+  for (const [r, bulge, col, op] of [[R0 * 0.62, 0.55, 0xff5a1a, 0.28], [R0 * 0.5, 0.35, 0xffaa40, 0.5], [R0 * 0.3, 0.2, 0xfff4d0, 0.9]]) { const m = new THREE.Mesh(new THREE.LatheGeometry(prof(r, bulge), 24), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false })); m.material.color.multiplyScalar(3); plume.add(m); }
+  grp.add(plume);
   // rotate the whole model so +y is the nose in the sim plane
   grp.userData.D0 = D0; grp.userData.length = g.userData.length; return grp;
 }
@@ -389,7 +447,7 @@ async function start() {
   } catch (e) { setStatus('error: ' + e.message); console.error(e); $('run').disabled = false; return; }
   setStatus(note); buildPlanet(sim.W); sceneCrafts.clear(); trailLines.clear(); followUserSet = false;
   $('run').disabled = false; $('pause').disabled = $('ff').disabled = $('reset').disabled = false; $('run').textContent = '▶ Resume';
-  elog.clear(); plotData.length = 0; syncCrafts(); fillFollow(); snapCamera(true); running = true; wallLast = performance.now();
+  elog.clear(); plotData.length = 0; headT = 0; mileKeep = []; maxQ = { q: 0, t: 0 }; syncCrafts(); fillFollow(); snapCamera(true); running = true; wallLast = performance.now();
 }
 $('run').onclick = start;
 $('pause').onclick = () => { running = !running; $('pause').textContent = running ? 'Pause' : 'Play'; };
@@ -411,7 +469,13 @@ function syncCrafts() {
 function followPos() { const v = $('follow').value; if (v === 'station' && sim.station) return sim.stationState().pos; if (v === 'main' && sim.station && $('autoCam').checked && sim.crafts[0].ap.phase === 'approach') { const m = sim.crafts[0].pos, st = sim.stationState().pos; return [(m[0] + st[0]) / 2, (m[1] + st[1]) / 2]; } const c = v.startsWith('c') ? sim.crafts.find(x => 'c' + x.id === v) : sim.crafts[0]; return (c ?? sim.crafts[0]).pos; }
 function snapCamera(first) { const main = sim.crafts[0], L = sceneCrafts.get('c' + main.id)?.obj.userData.length || 30, d = Math.max(L * 2.4, 40); controls.target.set(0, 0, 0); camera.position.set(d * 0.3, d * 0.12, d); camera.near = 0.3; camera.updateProjectionMatrix(); controls.update(); }
 let lastFocus = null;
-controls.addEventListener('start', () => { $('autoCam').checked = false; });
+controls.addEventListener('start', () => { $('autoCam').checked = false; $('camTrack').value = 'lock'; });
+// camera angle presets (the simulation is planar: x-y is the flight plane, z points at the viewer) and tracking mode
+const ANGLES = { chase: [0.3, 0.12, 1], side: [0, 0, 1], behind: [1, 0.05, 0.001], high: [0.4, 0.7, 0.8], low: [0.4, -0.3, 1] };
+function applyAngle() { const d = new THREE.Vector3(...ANGLES[$('camAngle').value]).normalize(), cur = Math.max(camera.position.distanceTo(controls.target), 5); camera.position.copy(controls.target).addScaledVector(d, cur); controls.update(); }
+$('camAngle').addEventListener('change', applyAngle);
+for (const id of ['fstop', 'focal']) $(id).addEventListener('input', () => { $('fstopV').textContent = 'f/' + (+$('fstop').value).toFixed(1); $('focalV').textContent = $('focal').value + ' mm'; });
+$('camTrack').addEventListener('change', () => { $('autoCam').checked = $('camTrack').value === 'auto'; });
 function autoCamera() {
   if (!$('autoCam').checked) return;
   const sel = $('follow').value, c = (sel.startsWith('c') ? sim.crafts.find(x => 'c' + x.id === sel) : null) || sim.crafts[0], o = sceneCrafts.get('c' + c.id), L = o?.obj.userData.length || 30, e = sim.env(c);
@@ -447,11 +511,17 @@ function updateScene() {
   const f = followPos(), a = Math.PI / 2 - Math.atan2(f[1], f[0]);
   world.rotation.z = a; const c = Math.cos(a), s = Math.sin(a); world.position.set(-(f[0] * c - f[1] * s), -(f[0] * s + f[1] * c), 0);
   if (spinTicks) spinTicks.rotation.z = sim.W.w * sim.t;
+  { // sky: daylight blue near the ground, fading to black with altitude (the planet's own atmosphere colour)
+    const W = sim.W, mc = sim.crafts[0], h = Math.max(sim.env(mc).h, 0), t = W.atmoTop ? Math.pow(Math.max(0, 1 - h / (W.atmoTop * 0.7)), 1.6) : 0;
+    scene.background.set(0x03050a).lerp(new THREE.Color({ earth: 0x5b8fd0, mars: 0xc98e66 }[W.id] || 0x03050a), t); }
   const tmp = new THREE.Vector3();
   for (const [k, o] of sceneCrafts) {
     const cr = o.craft, obj = o.obj, off = 0.35 * obj.userData.length; obj.position.set(cr.pos[0] - Math.cos(cr.th) * off, cr.pos[1] - Math.sin(cr.th) * off, 0); obj.rotation.z = cr.th - Math.PI / 2;
-    const thrust = cr.thrust > 0 && cr.alive !== false, fl = obj.getObjectByName('flame'), co = obj.getObjectByName('core'), legs = obj.getObjectByName('legs');
-    if (fl) { const e = sim.env(cr), len = thrust ? Math.min(obj.userData.D0 * 4 * (0.7 + 0.5 * cr.throttleCmd) * (0.9 + 0.2 * Math.random()), 400) * (e.rho > 1e-3 ? 0.8 : 1.4) : 0; fl.visible = co.visible = thrust; fl.scale.y = len; co.scale.y = len * 0.55; }
+    const thrust = cr.thrust > 0 && cr.alive !== false, pl = obj.getObjectByName('plume'), legs = obj.getObjectByName('legs');
+    if (pl) {
+      const e = sim.env(cr), vac = e.rho <= 1e-3, k = 0.85 + 0.15 * Math.sin(sim.t * 70 + cr.id) + 0.07 * Math.sin(sim.t * 173), len = thrust ? Math.min(obj.userData.D0 * 4.2 * (0.7 + 0.5 * cr.throttleCmd) * k * (vac ? 0.7 : 1), 400) : 0;
+      pl.visible = thrust; pl.children.forEach((m, i) => { m.scale.set((1 + (vac ? 1.6 + 0.4 * i : 0.12 * i)) * (1 + 0.05 * Math.sin(sim.t * 90 + i)), len * (1 - 0.18 * i), 1 + (vac ? 1.6 : 0)); m.rotation.y = sim.t * 3 + i; });
+    }
     if (legs) legs.visible = cr.ap.phase === 'landing' || cr.ap.phase === 'coast' && sim.env(cr).h < 20e3;
     if (o.label) { tmp.set(cr.pos[0], cr.pos[1], 0).applyMatrix4(world.matrixWorld).project(camera); const w = view.clientWidth, h = view.clientHeight; o.label.style.display = tmp.z < 1 && tmp.z > -1 && cr.alive !== false ? '' : 'none'; o.label.style.left = ((tmp.x + 1) / 2 * w) + 'px'; o.label.style.top = ((1 - tmp.y) / 2 * h - 24) + 'px'; }
   }
@@ -463,6 +533,30 @@ function updateScene() {
 
 // ---------------- HUD ----------------
 const elog = createEventLog($('log'), fmtT); const plotData = [];
+// ---- bottom strip: gauges, scrubbable mission timeline, g-force and engines (shared with the Landing Lab) ----
+let headT = 0, mileKeep = [], maxQ = { q: 0, t: 0 }, scrubRaf = 0, scrubWant = 0;
+const strip = createFlightStrip($('strip'), { title: '', onScrub: (t, o) => { scrubWant = t; if (!scrubRaf) scrubRaf = requestAnimationFrame(() => { scrubRaf = 0; seekTo(scrubWant); }); }, onLive: () => seekTo(headT) });
+const MILES = [[/Liftoff/, 'Liftoff'], [/burnout \(MECO\)/, 'MECO'], [/separated at/, 'Stage sep'], [/Apoapsis .* reached/, 'Apoapsis'], [/Circularisation burn/, 'Circularise'], [/Orbit achieved/, 'Orbit'],
+  [/Landing burn ignition/, 'Landing burn'], [/LANDED|Landed/, 'Landed'], [/Transfer burn/, 'Transfer'], [/Arrival burn/, 'Arrival'], [/DOCKED/, 'Docked'], [/Deorbit burn:/, 'Deorbit'], [/Parachutes/, 'Chutes'], [/Boostback/i, 'Boostback'], [/Fairing/i, 'Fairing']];
+// the simulation is deterministic: the state at time t is rebuilt by flying a fresh copy to t
+function seekTo(t) {
+  if (!sim || !mission) return; running = false; $('pause').textContent = 'Play'; t = Math.min(Math.max(t, 0), headT);
+  if (t < sim.t - 1e-6) { clearScene(); sim = createSim(clone(mission)); buildPlanet(sim.W); sceneCrafts.clear(); trailLines.clear(); elog.clear(); plotData.length = 0; syncCrafts(); fillFollow(); snapCamera(true); }
+  let n = 0; while (!sim.done && sim.t < t - 1e-9 && n++ < 4000) sim.advance(Math.min(60, t - sim.t), 400000);
+  renderNow();
+}
+function updateStrip(c, e) {
+  if (sim.t >= headT - 1e-9) {
+    headT = sim.t; if (e.q > maxQ.q) maxQ = { q: e.q, t: sim.t };
+    const ms = [], seen = new Set(); if (sim.events.some(ev => /Liftoff/.test(ev.text)) && maxQ.q > 4000) ms.push({ t: maxQ.t, label: 'Max Q' }), seen.add('Max Q');
+    for (const ev of sim.events) for (const [re, label] of MILES) if (re.test(ev.text) && !seen.has(label)) { seen.add(label); ms.push({ t: ev.t, label }); break; }
+    mileKeep = ms;
+  }
+  const part = c.parts.find(p => p.firing) || c.parts[0], total = part?.count || 1, thr = c.throttleCmd ?? part?.throttle ?? 0;
+  const dur = sim.done ? sim.t : Math.max(headT * 1.3, 600);
+  strip.update({ warp: 'sqrt', t: sim.t, head: headT, duration: dur, speed: e.speed * 3.6, speedMax: 30000, alt: Math.max(e.h, 0), altMax: 450000, g: c.gNow || 0, gMax: 6, title: (state.stages?.[0]?.name ? '' : '') + ($('preset').selectedOptions[0]?.textContent || ''),
+    milestones: mileKeep, engines: { total, lit: c.thrust > 0 ? (part?.active ?? total) : 0, throttle: thr } });
+}
 const PH = { pad: 'On the pad', ascent: 'Ascent', meco: 'Main engine cutoff', ullage: 'Stage separation', 'coast-apo': 'Coasting to apoapsis', circularize: 'Circularisation burn', 'orbit-done': 'In orbit', orbit: 'In orbit', phasing: 'Phasing for rendezvous', hoh1: 'Transfer burn', transfer: 'Transfer orbit', hoh2: 'Arrival burn', approach: 'Proximity operations', docked: 'Docked', undock: 'Undocking', 'deorbit-orient': 'Turning for deorbit', 'deorbit-burn': 'Deorbit burn', 'coast-entry': 'Entry', descent: 'Descent', landing: 'Landing burn', ballistic: 'Ballistic', sep: 'Stage separated', flip: 'Flip', boostback: 'Boostback burn', coast: 'Coasting' };
 function fmtD(m) { const a = Math.abs(m); return a >= 1e6 ? (m / 1e3).toFixed(0) + ' km' : a >= 1e4 ? (m / 1e3).toFixed(1) + ' km' : a >= 1e3 ? (m / 1e3).toFixed(2) + ' km' : m.toFixed(a < 10 ? 2 : 1) + ' m'; }
 function hud() {
@@ -475,6 +569,7 @@ function hud() {
   if (c.heat > 1e4) rows.push(['Stagnation heating', (c.heat / 1e3).toFixed(0) + ' kW/m²']);
   if (sim.station && c.role === 'main') { const st = sim.stationState(), D = [c.pos[0] - st.pos[0], c.pos[1] - st.pos[1]]; rows.push(['Range to station', fmtD(Math.hypot(...D))]); if (c.ap.phase === 'approach') { rows.push(['Gap to port', fmtD(c.ap.gapY)], ['Lateral offset', c.ap.lat.toFixed(2) + ' m'], ['Closing speed', c.ap.closing.toFixed(3) + ' m/s'], ['RCS propellant', c.parts.at(-1).craft.rcsProp.toFixed(0) + ' kg']); } }
   $('tele').innerHTML = telemetryHTML(rows);
+  updateStrip(c, e);
   elog.sync(sim.events);
   if (sim.done && $('result').hidden) showResult();
 }
@@ -495,6 +590,13 @@ function plots() {
 }
 
 // ---------------- frame loop ----------------
+function renderFrame() {
+  const N = +($('fstop')?.value || 2.8), mm = +($('focal')?.value || 35), focus = Math.max(camera.position.distanceTo(controls.target), 2);
+  camera.fov = 2 * Math.atan(12 / mm) * 180 / Math.PI; camera.updateProjectionMatrix();
+  bokeh.uniforms['focus'].value = focus; bokeh.uniforms['aperture'].value = Math.min(6e-4, 8e-5 * (2.8 / N) * (mm / 35) ** 2 * (100 / Math.max(focus, 5)) ** 2); bokeh.uniforms['maxblur'].value = 0.012;
+  renderer.toneMappingExposure = 0.8 * Math.pow(5.6 / N, 0.5); bloom.strength = 0.3 + (sim && sim.crafts.some(c => c.thrust > 0) ? 0.25 : 0);
+  composer.render();
+}
 const BUSY = new Set(['pad', 'ascent', 'meco', 'ullage', 'circularize', 'hoh1', 'hoh2', 'approach', 'deorbit-burn', 'landing', 'boostback', 'flip', 'undock', 'deorbit-orient']);
 let plotAt = 0;
 function frame(now) {
@@ -511,9 +613,9 @@ function frame(now) {
   } else {
     const o = sceneCrafts.get('preview'); if (o) o.obj.rotation.z = -Math.PI / 2;
   }
-  renderer.render(scene, camera);
+  renderFrame();
 }
-function renderNow() { if (!sim) return; syncCrafts(); fillFollow(); autoCamera(); updateScene(); hud(); plots(); drawMap(); controls.update(); renderer.render(scene, camera); }
+function renderNow() { if (!sim) return; syncCrafts(); fillFollow(); autoCamera(); updateScene(); hud(); plots(); drawMap(); controls.update(); renderFrame(); }
 window.__shipyard = { get sim() { return sim; }, step(sec) { if (sim) { running = false; sim.advance(sec, 800000); renderNow(); } }, renderNow, state: () => state };
 loadPreset('f9dock');
 requestAnimationFrame(frame);

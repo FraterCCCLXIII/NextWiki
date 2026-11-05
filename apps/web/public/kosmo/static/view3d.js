@@ -1,6 +1,6 @@
 // view3d.js -- the shared photoreal 3D view for the Landing Lab and the Shipyard.
 //
-//   createView3D({ host, cam: () => ({ N, mm, auto }), dark: () => boolean })
+//   createView3D({ host, camMode: () => ({ angle, track }) (optional), bottomInset: () => px (optional: height of a HUD strip overlaying the bottom), cam: () => ({ N, mm, auto }), dark: () => boolean })
 //     .init()           load three.js and build the renderer (call once, before the first draw)
 //     .draw(sim, trail) render one frame for a simulation object; `sim` needs { veh, s, E, deck(t), done } as landing-sim.js provides,
 //                       `trail` is an array of { x, y } points
@@ -39,10 +39,11 @@ async function init3() {
     for (let y = 0; y < 256; y++) for (let x = 0; x < 256; x++) { const u = x / 256 * 6.283, w = y / 256 * 6.283, i = (y * 256 + x) * 4; im.data[i] = 128 + 50 * Math.sin(3 * u + 2 * Math.sin(w)) + 30 * Math.sin(7 * w + u); im.data[i + 1] = 128 + 50 * Math.sin(4 * w + 2 * Math.sin(u)) + 30 * Math.sin(6 * u - w); im.data[i + 2] = 255; im.data[i + 3] = 255; }
     g.putImageData(im, 0, 0); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
   })();
+  const fill = new THREE.DirectionalLight(0xbcd0ff, 0), rim = new THREE.DirectionalLight(0xffe6c8, 0); scene.add(fill, fill.target, rim, rim.target);
   T3 = { RoomEnvironment, fill, rim, THREE, renderer, scene, cam3, controls, composer, bloom, bokeh, sun, Sky, Water, normals, built: null, prev: null, pmrem: new THREE.PMREMGenerator(renderer) };
   controls.addEventListener('start', () => { controls.userZoomed = true; }); addEventListener('resize', resize3); resize3(); return T3;
 }
-function resize3() { if (!T3) return; const w = innerWidth, h = innerHeight; T3.renderer.setSize(w, h); T3.composer.setSize(w, h); T3.cam3.aspect = w / h; T3.cam3.updateProjectionMatrix(); }
+function resize3() { if (!T3) return; const w = opts.host.clientWidth || innerWidth, h = opts.host.clientHeight || innerHeight; T3.renderer.setSize(w, h); T3.size = [w, h]; T3.composer.setSize(w, h); T3.cam3.aspect = w / h; T3.cam3.updateProjectionMatrix(); }
 // small procedural textures: soot / panel lines on the stage, regolith or asphalt noise on the ground
 function canvasTex(THREE, w, h, paint, repeat) { const c = document.createElement('canvas'); c.width = w; c.height = h; paint(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 8; if (repeat) t.repeat.set(repeat[0], repeat[1]); return t; }
 const noisePaint = (base, amp) => (g, w, h) => { g.fillStyle = base; g.fillRect(0, 0, w, h); for (let i = 0; i < 9000; i++) { const v = Math.floor(128 + (Math.random() - 0.5) * amp); g.fillStyle = `rgba(${v},${v},${v},0.18)`; g.fillRect(Math.random() * w, Math.random() * h, 2 + Math.random() * 6, 2 + Math.random() * 6); } };
@@ -213,13 +214,30 @@ function draw3(sim, trail) {
   if (T3.dark) { const c = cam3.position, t = rock.position, dir = new THREE.Vector3().subVectors(c, t).setY(0).normalize(); T3.fill.intensity = 2.2; T3.rim.intensity = 3.5; T3.fill.target.position.copy(t); T3.rim.target.position.copy(t);
     T3.fill.position.copy(t).addScaledVector(dir, 400).add(new THREE.Vector3(-dir.z, 150, dir.x).multiplyScalar(250)); T3.rim.position.copy(t).addScaledVector(dir, -400).add(new THREE.Vector3(0, 250, 0)); }
   // --- thin-lens camera: focal length -> field of view (24 mm sensor height), chase distance scales with it ---
+  { const inset = opts.bottomInset?.() || 0, [W, H] = T3.size || [1, 1]; if (inset > 0) cam3.setViewOffset(W, H, 0, inset / 2, W, H); else cam3.clearViewOffset(); }   // the strip overlays the bottom of the view: frame the subject in what is left
   cam3.fov = 2 * Math.atan(12 / cs.mm) * 180 / Math.PI; cam3.updateProjectionMatrix();
   // frame the whole stage by default: aim at the middle of the body and back off until its full length fits (with room for the header and panels)
   const tgt = new THREE.Vector3(s.x, s.y + (v.length / 2 - v.comHeight) * Math.cos(s.th), 0), tanHalf = Math.tan(cam3.fov * Math.PI / 360);
   const fitDist = (v.length * 0.5 * 1.55) / tanHalf, dist = Math.max(fitDist, clamp((s.y - v.yf) * 0.25, 0, 3000) * (cs.mm / 35));
-  if (T3.first) { cam3.position.set(s.x + dist * 0.9, s.y + dist * 0.25, dist * 1.1); controls.target.copy(tgt); T3.first = false; T3.prev = tgt.clone(); }
-  const d = tgt.clone().sub(T3.prev || tgt); cam3.position.add(d); controls.target.add(d); T3.prev = tgt.clone();
-  const off = cam3.position.clone().sub(controls.target), cur = off.length(); if (!controls.userZoomed) { off.setLength(sim.done ? dist : cur + (dist - cur) * 0.2); cam3.position.copy(controls.target).add(off); }
+  // camera angle and tracking (from the host's dropdowns)
+  //   angle: chase (3/4 view) | side | downrange | top | low (ground level, looking up) | pad (on the deck, looking up at the stage)
+  //   track: follow (auto distance) | lock (follow, you control distance) | pad (fixed on the target, stage moves through frame) | free (nothing moves by itself)
+  const cm = opts.camMode?.() || { angle: 'chase', track: 'follow' };
+  const DIR = { chase: [0.9, 0.25, 1.1], side: [0, 0.12, 1], downrange: [1, 0.12, 0.001], top: [0.001, 1, 0.001], low: [0.55, -0.12, 1], pad: [0.35, -0.3, 1] }, dirv = new THREE.Vector3(...(DIR[cm.angle] || DIR.chase)).normalize();
+  const gY0c = v.target.kind === 'catch' ? 0 : sim.deck(s.t), padTgt = new THREE.Vector3(0, Math.max(v.length * 0.5, (s.y - v.yf) * 0.5 + v.length * 0.3), 0);
+  const aim = cm.track === 'pad' ? padTgt : tgt;
+  const padDist = Math.max(fitDist, tgt.distanceTo(padTgt) * 1.5);
+  const wantDist = cm.track === 'pad' ? padDist : dist;
+  if (T3.first || T3.angleKey !== cm.angle || T3.trackKey !== cm.track) {         // (re)place the camera along the chosen direction
+    T3.angleKey = cm.angle; T3.trackKey = cm.track; T3.first = false; controls.userZoomed = cm.track === 'lock' || cm.track === 'free';
+    controls.target.copy(aim); cam3.position.copy(aim).addScaledVector(dirv, Math.max(wantDist, 5)); T3.prev = aim.clone();
+  }
+  if (cm.track !== 'free') {
+    const d = aim.clone().sub(T3.prev || aim); cam3.position.add(d); controls.target.add(d); T3.prev = aim.clone();
+    const off = cam3.position.clone().sub(controls.target), cur0 = off.length(); if (!controls.userZoomed && cm.track !== 'lock') { off.setLength(sim.done ? wantDist : cur0 + (wantDist - cur0) * 0.2); cam3.position.copy(controls.target).add(off); }
+  }
+  if (cam3.position.y < gY0c + 1.5) cam3.position.y = gY0c + 1.5;                  // never below the deck
+  const cur = cam3.position.distanceTo(controls.target);
   cam3.near = Math.max(0.3, cur * 0.01); cam3.far = 1e6; controls.update();
   // focus on the stage; aperture N -> depth of field (blur ~ 1/N) and exposure (~ 1/N^2, softened by auto-ISO)
   const focus = cam3.position.distanceTo(rock.position), camOffsetFocus = cs.auto ? focus : T3.manualFocus ?? focus; T3.manualFocus = camOffsetFocus;

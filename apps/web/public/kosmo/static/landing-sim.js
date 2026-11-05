@@ -49,6 +49,7 @@ const hyp = Math.hypot;
    stopping distance?), not a certified model of any one stage.                              */
 export const VEHICLES = {
   falcon9: {
+    cluster: 9,
     name: 'Falcon 9 booster -- drone ship', world: 'earth', engine: 'merlin-1d', engines: 1,
     dry: 25600, prop: 4300, diameter: 3.7, length: 41.2, comHeight: 12, legRadius: 9, gimbal: 5, gimbalRate: 12,
     finArea: 6, finLever: 24, tiltMax: 28, latTilt: 26, vMaxV: 5.5,
@@ -57,6 +58,7 @@ export const VEHICLES = {
     note: 'One Merlin, throttle 39-100 %: thrust-to-weight never drops below ~1.3 so it cannot hover.',
   },
   falcon9lz: {
+    cluster: 9,
     name: 'Falcon 9 booster -- landing zone', world: 'earth', engine: 'merlin-1d', engines: 1,
     dry: 25600, prop: 3600, diameter: 3.7, length: 41.2, comHeight: 12, legRadius: 9, gimbal: 5, gimbalRate: 12,
     finArea: 6, finLever: 24, tiltMax: 28, latTilt: 26, vMaxV: 5.5,
@@ -65,6 +67,7 @@ export const VEHICLES = {
     note: 'Return-to-launch-site: a fixed concrete pad, tighter geometry, no sea state.',
   },
   newshepard: {
+    cluster: 1,
     name: 'New Shepard booster', world: 'earth', engine: 'be-3pm', engines: 1,
     dry: 19000, prop: 2600, diameter: 3.7, length: 15, comHeight: 5.5, legRadius: 4.5, gimbal: 6, gimbalRate: 10,
     finArea: 3, finLever: 8, tiltMax: 20, vMaxV: 4.0,
@@ -73,6 +76,7 @@ export const VEHICLES = {
     note: 'Deep-throttle BE-3PM (down to ~20 %): thrust-to-weight can drop below 1, so it can hover and ease down.',
   },
   newglenn: {
+    cluster: 7,
     name: 'New Glenn booster (3 engines)', world: 'earth', engine: 'be-4', engines: 3,
     dry: 250000, prop: 55000, diameter: 7, length: 57, comHeight: 20, legRadius: 14, gimbal: 5, gimbalRate: 20,
     finArea: 80, finLever: 32, tiltMax: 20, vMaxV: 5.5,
@@ -81,6 +85,7 @@ export const VEHICLES = {
     note: 'Seven-engine stage landing on three BE-4s with strakes and flaps (modelled here as grid-fin-class control).',
   },
   superheavy: {
+    cluster: 33,
     name: 'Super Heavy -- tower catch', world: 'earth', engine: 'raptor-2', engines: 3,
     dry: 275000, prop: 60000, diameter: 9, length: 71, comHeight: 22, legRadius: 0, gimbal: 12, gimbalRate: 25,
     finArea: 80, finLever: 40, tiltMax: 18, vMaxV: 2.5, vMaxH: 2.0,
@@ -89,6 +94,7 @@ export const VEHICLES = {
     note: 'Three Raptors can nearly hover; instead of legs it is caught by the tower arms at ~70 m, so the box is a few metres wide. Experimental: the catch is still unreliable (about one flight in five).',
   },
   moonlander: {
+    cluster: 1,
     name: 'Lunar lander (BE-7 class)', world: 'moon', engine: 'be-7', engines: 1,
     dry: 3600, prop: 1900, diameter: 3.1, length: 8, comHeight: 3.2, legRadius: 4, gimbal: 6, gimbalRate: 8,
     finArea: 0, finLever: 0, tiltMax: 30, latTilt: 28, vMaxV: 3.0, vMaxH: 1.5,
@@ -120,7 +126,7 @@ export function vehicleFromStage(stage, worldId = 'earth') {
     legRadius: 2.2 * D, gimbal: 6, gimbalRate: 15, finArea: earth ? 0.45 * D * D : 0, finLever: 0.55 * L, tiltMax: 28, latTilt: 22, vMaxV: 5.5, vMaxH: 3,
     target: { kind: earth ? 'ship' : 'pad', radius: Math.max(14, 4 * D), deckY: 0, heave: earth ? 0.8 : 0, period: 9 }, wind: earth ? 6 : 0,
     start: { y: Math.max(1500, 2.4 * stop + 400), vx: -0.25 * v0, vy: -v0 - (earth ? 60 : 0), th: 0 }, spread: { x: 6 * D, y: 40, vx: 2, vy: 4 },
-    note: `Built from the Shipyard stage "${s.name}": ${n} × ${eng.name}, ${(dry / 1e3).toFixed(1)} t dry, ${(prop / 1e3).toFixed(1)} t of landing propellant.` };
+    cluster: s.count, note: `Built from the Shipyard stage "${s.name}": ${n} × ${eng.name}, ${(dry / 1e3).toFixed(1)} t dry, ${(prop / 1e3).toFixed(1)} t of landing propellant.` };
 }
 
 /* ---------------- small helpers ---------------- */

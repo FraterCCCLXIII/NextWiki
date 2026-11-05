@@ -21,8 +21,9 @@
   #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.16em; font-size: 14px; text-transform: uppercase; }
   @media (max-width: 1320px) { #menu { overflow-x: auto; min-width: 0; scrollbar-width: none; } #menu::-webkit-scrollbar { display: none; } }
   #menu a { color: rgba(255,255,255,0.72); text-decoration: none; white-space: nowrap; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+  :root { --strip-h: 112px; }
   #view { position: absolute; inset: 0; } #scene { display: block; width: 100%; height: 100%; }
-  #side { position: absolute; left: 14px; top: 66px; bottom: 14px; width: 350px; z-index: 4; overflow: auto; padding: 4px 8px 12px 4px; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
+  #side { position: absolute; left: 14px; top: 66px; bottom: calc(var(--strip-h) + 10px); width: 350px; z-index: 4; overflow: auto; padding: 4px 8px 12px 4px; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
   h1 { font-weight: 500; font-size: 28px; margin: 2px 0 2px; }
   h2 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
   input[type=text], input[type=number], button, select { background: rgba(26,26,26,0.85); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 8px; padding: 4px 8px; font: inherit; }
@@ -39,14 +40,14 @@
   .chk { display: flex; align-items: center; gap: 6px; margin: 4px 0; color: #c3d0e2; } .chk input { margin: 0; }
   .okc { color: var(--good); } .badc { color: var(--bad); } .warn { color: var(--accent2); font-size: 13px; margin: 2px 0; }
   table.an { border-collapse: collapse; width: 100%; font-size: 13px; } table.an td, table.an th { padding: 2px 4px 2px 0; text-align: right; } table.an th { color: var(--muted); font-weight: 400; } table.an td:first-child, table.an th:first-child { text-align: left; }
-  #hud { position: absolute; right: 14px; top: 66px; bottom: 62px; width: 330px; z-index: 4; overflow: auto; text-shadow: 0 1px 6px #000; padding-right: 4px; }
+  #hud { position: absolute; right: 14px; top: 66px; bottom: calc(var(--strip-h) + 56px); width: 330px; z-index: 4; overflow: auto; text-shadow: 0 1px 6px #000; padding-right: 4px; }
   #hud .phase { font-size: 20px; color: #fff; margin: 0; }
   #hud table.tele { border-collapse: collapse; width: 100%; } #hud table.tele td { padding: 1px 0; font-variant-numeric: tabular-nums; } #hud table.tele td:first-child { color: var(--muted); width: 50%; } #hud table.tele td:last-child { text-align: right; color: #fff; }
   #plots { display: block; width: 100%; height: 190px; margin-top: 8px; border: 1px solid var(--line); border-radius: 8px; background: rgba(10,12,18,0.6); }
   #log { font-size: 13px; max-height: 200px; overflow: auto; margin-top: 6px; border-top: 1px solid var(--line); }
   #log div { padding: 1px 0; } #log .good { color: var(--good); } #log .bad { color: var(--bad); } #log .stage { color: var(--accent); } #log .t { color: var(--muted); display: inline-block; width: 52px; font-variant-numeric: tabular-nums; }
   #result { margin: 8px 0; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: rgba(18,22,30,0.7); font-size: 14px; }
-  #bar { position: absolute; left: 372px; right: 358px; bottom: 12px; z-index: 4; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; text-shadow: 0 1px 6px #000; font-size: 14px; color: #c3d0e2; }
+  #bar { position: absolute; left: 372px; right: 358px; bottom: calc(var(--strip-h) + 8px); z-index: 4; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; text-shadow: 0 1px 6px #000; font-size: 14px; color: #c3d0e2; }
   #bar button, #bar select { margin: 0; padding: 4px 10px; width: auto; } #bar label { display: flex; align-items: center; gap: 5px; }
   #banner { position: absolute; left: 372px; top: 66px; z-index: 4; font-size: 13px; color: var(--muted); text-shadow: 0 1px 6px #000; max-width: 560px; pointer-events: none; }
   #mc canvas { display: block; width: 100%; height: 90px; margin-top: 4px; border: 1px solid var(--line); border-radius: 8px; background: rgba(10,12,18,0.6); }
@@ -56,6 +57,7 @@
 </style>
 <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
   <link rel="stylesheet" href="kosmographica.css?v=15">
+  <link rel="stylesheet" href="flight-ui.css">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>
@@ -106,15 +108,21 @@
   <canvas id="plots" width="660" height="380"></canvas>
   <div id="log"></div>
 </div>
-<div id="bar">
+<div id="strip"></div>
+<div id="bar"><div class="rail">
   <button id="run" class="primary">▶ Launch</button><button id="pause" disabled>Pause</button><button id="ff" disabled>Skip to end</button><button id="reset" disabled>Reset</button>
   <label>speed <select id="warp"><option value="0.25">¼×</option><option value="0.5">½×</option><option value="1">1×</option><option value="2">2×</option><option value="5" selected>5×</option><option value="10">10×</option></select></label>
+  <span class="sep"></span>
+  <label>camera <select id="camAngle"><option value="chase">Chase</option><option value="side">Side</option><option value="downrange">Downrange</option><option value="top">Top</option><option value="low">Low</option><option value="pad">From the deck</option></select></label>
+  <label>track <select id="camTrack"><option value="follow">Follow stage</option><option value="lock">Follow, manual</option><option value="pad">Fixed on the pad</option><option value="free">Free</option></select></label>
+  <span class="sep"></span>
   <label class="chk" style="margin:0"><input type="checkbox" id="autoSlow" checked> slow down for the last 150 m</label>
-</div>
+</div></div>
 
 <script type="module">
 import { createView3D, mountViewControls } from './view3d.js';
 import { telemetryHTML, drawPlots, createEventLog } from './flight-hud.js';
+import { createFlightStrip } from './flight-strip.js';
 import { vehicleFromStage, loadFlightData, createLanding, VEHICLES, GUIDANCE, analyzeVehicle, resolveVehicle, mcRun, summarizeMC, trainPolicy, Policy } from './landing-sim.js';
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -166,6 +174,7 @@ for (const id of ['wind', 'gust', 'sea', 'prop']) $(id).addEventListener('input'
 $('vehicle').addEventListener('change', () => { onVehicle(); onGuidance(); });
 $('guidance').addEventListener('change', () => { onGuidance(); reset(); });
 for (const id of ['wind', 'gust', 'sea', 'prop', 'noise', 'disp', 'seed']) $(id).addEventListener('change', reset);
+for (const id of ['camAngle', 'camTrack']) $(id).addEventListener('change', () => { if (id === 'camTrack') cam = null; draw(); });
 $('reseed').addEventListener('click', () => { $('seed').value = 1 + Math.floor(Math.random() * 9999); reset(); });
 
 function config() {
@@ -178,8 +187,23 @@ function config() {
 /* ---------------- simulation state ---------------- */
 const elog = createEventLog($('log'));
 let sim = null, running = false, hist = [], trail = [], last = 0, hudT = 0, logN = 0, cam = null, seaT = 0;
+let headT = 0, maxQ = { q: 0, t: 0 }, endT = 0, seekPending = null, mileKeep = [];       // headT: furthest time flown (the live edge); the timeline can be scrubbed anywhere before it
+const strip = createFlightStrip($('strip'), { title: '', onScrub: (t, o) => scrubTo(t, o.final), onLive: () => scrubTo(headT, true) });
+// Scrubbing: the simulation is deterministic, so the state at time t is rebuilt by flying a fresh copy to t.
+function scrubTo(t, final) {
+  seekPending = t; if (scrubTo.raf) return;
+  scrubTo.raf = requestAnimationFrame(() => { scrubTo.raf = 0; const tt = seekPending; seek(tt); });
+  if (final && running) { running = false; }
+}
+function seek(t) {
+  if (!sim) return; running = false; t = clamp(t, 0, Math.max(headT, 0));
+  if (t < sim.s.t - 1e-6) { sim = createLanding(config()); hist = []; trail = []; elog.clear(); $('result').hidden = true; }
+  while (!sim.done && sim.s.t < t - 1e-9) { sim.advance(Math.min(0.5, t - sim.s.t)); record(); }
+  $('run').textContent = sim.done ? '↻ Fly again' : '▶ Resume'; $('run').disabled = false; $('pause').disabled = true; $('ff').disabled = sim.done; $('reset').disabled = false; $('pause').textContent = 'Pause';
+  hud(); draw();
+}
 function reset() {
-  running = false; sim = createLanding(config()); hist = []; trail = []; elog.clear(); cam = null;
+  running = false; sim = createLanding(config()); hist = []; trail = []; elog.clear(); cam = null; headT = 0; maxQ = { q: 0, t: 0 }; endT = 0; mileKeep = [];
   $('run').textContent = '▶ Launch'; $('run').disabled = false; $('pause').disabled = true; $('ff').disabled = true; $('reset').disabled = true;
   $('result').hidden = true; draw(); hud();
 }
@@ -212,6 +236,8 @@ function frame(now) {
 /* ---------------- HUD ---------------- */
 function hud() {
   if (!sim) return;
+  if (sim.s.t >= headT - 1e-9) { headT = sim.s.t; if ((sim.s.q || 0) > maxQ.q) maxQ = { q: sim.s.q, t: sim.s.t }; if (sim.done) endT = sim.s.t; }
+  updateStrip();
   const s = sim.s, v = sim.veh, e = sim.est, o = sim.out, h = s.y - v.yf, fuel = s.prop;
   const ph = { descent: 'Descent: grid-fin steering', ignition: 'Engine starting', burn: 'Landing burn', landed: 'Landed', crashed: 'Crashed' }[sim.phase] || sim.phase;
   $('phase').textContent = sim.done ? (o.ok ? (v.target.kind === 'catch' ? 'Caught' : 'Landed') : 'Failed') : ph;
@@ -227,6 +253,20 @@ function hud() {
       : `<b class="badc">Failed.</b> ${esc(o.reason)}. <span class="dim small">${lim}</span>`;
   }
   plots();
+}
+function updateStrip() {
+  const v = sim.veh, s = sim.s;
+  if (s.t >= headT - 1e-9) {            // milestones are only learned at the live edge and then kept, so they stay put while scrubbing
+    const ign = sim.events.find(e => /engine start/.test(e.txt)), ms = [{ t: 0, label: 'Entry' }];
+    if (maxQ.q > 3000 && maxQ.t > 1) ms.push({ t: maxQ.t, label: 'Max Q' });
+    if (ign) { ms.push({ t: ign.t, label: 'Ignition' }); const fa = hist.find(p => p.t > ign.t + 1 && -p.vy < 25); if (fa) ms.push({ t: fa.t, label: 'Final approach' }); }
+    if (endT) ms.push({ t: endT, label: sim.out.ok ? (v.target.kind === 'catch' ? 'Caught' : 'Touchdown') : 'Impact' });
+    mileKeep = ms;
+  }
+  const ms = mileKeep;
+  const dur = endT || Math.max(headT * 1.25, 45), v2 = Math.hypot(s.vx, s.vy);
+  strip.update({ t: s.t, head: headT, duration: dur, speed: v2 * 3.6, speedMax: 1400, alt: Math.max(s.y - v.yf, 0), altMax: 12000, g: s.gload || 0, gMax: 6, title: v.name, milestones: ms,
+    engines: { total: v.cluster || v.engines, lit: s.thrust > 1 ? v.engines : 0, throttle: s.lvl } });
 }
 const PLOT_PANES = [{ name: 'height above deck (m)', f: p => p.y, col: '#7fc3ff', lo: 0 }, { name: 'descent speed (m/s)', f: p => -p.vy, col: '#ffb86b', lo: 0 }, { name: 'throttle (%)', f: p => p.u * 100, col: '#7fe0a0', lo: 0, hi: 100 }];
 function plots() { drawPlots($('plots'), hist, PLOT_PANES); }
@@ -246,11 +286,13 @@ function draw() {
   const leftPad = innerWidth > 1100 ? 372 : 14, rightPad = innerWidth > 1100 ? 350 : 14, vw = W - leftPad - rightPad, cx0 = leftPad + vw / 2;
   // camera: keep the stage and the target in view, never smaller than the stage itself
   const deckY = sim.deck(s.t), hAbove = s.y - deckY;
-  const spanY = Math.max(hAbove + 40, 70), spanX = Math.max(Math.abs(s.x) * 2 + 80, 80);
+  const trk = $('camTrack').value, spanY = Math.max(hAbove + 40, 70), spanX = trk === 'pad' ? Math.max(Math.abs(s.x) * 2 + 80, 80) : 80;
   let k = Math.min(vw * 0.8 / spanX, H * 0.62 / spanY, 0.5 * H / v.length);
   k = clamp(k * zoom2, 0.02, 60);
-  if (!cam) cam = { k }; cam.k += (Math.log(k) > Math.log(cam.k) ? 0.08 : 0.2) * (k - cam.k); const K = cam.k;
-  const gY = H * 0.82, cxw = Math.abs(s.x) * 2 + 80 > vw / K * 0.8 ? s.x / 2 : 0;
+  if (!cam) cam = { k, cx: 0 }; if (trk !== 'free') cam.k += (Math.log(k) > Math.log(cam.k) ? 0.08 : 0.2) * (k - cam.k); const K = cam.k;
+  // tracking: follow = centred on the stage; pad = the pad stays put and the view widens to keep the stage in frame; free = frozen (zoom with the wheel)
+  if (trk === 'follow' || trk === 'lock') cam.cx = s.x; else if (trk === 'pad') cam.cx = Math.abs(s.x) * 2 + 80 > vw / K * 0.8 ? s.x / 2 : 0;
+  const gY = (H - 112) * 0.84, cxw = cam.cx;
   const X = x => cx0 + (x - cxw) * K, Y = y => gY - (y - deckY * 0) * K + 0;
   // sky
   const alt = clamp(s.y / 12000, 0, 1);
@@ -309,7 +351,7 @@ function drawStage(px, py, K, v, s) {
 
 
 /* ---------------- 3D view and camera controls (shared module view3d.js) ---------------- */
-const v3 = createView3D({ host: $('scene3'), cam: () => vc.cam(), dark: () => vc.dark() });
+const v3 = createView3D({ camMode: () => ({ angle: $('camAngle').value, track: $('camTrack').value }), bottomInset: () => 112, host: $('scene3'), cam: () => vc.cam(), dark: () => vc.dark() });
 const vc = mountViewControls($('viewctl'), {
   async onMode(m3) {
     if (m3) { vc.note('loading…'); try { await v3.init(); } catch (e) { vc.note('3D needs three.js from the network: ' + e.message); return false; } vc.note('drag to orbit · wheel to zoom'); v3.invalidate(); }

@@ -188,6 +188,7 @@
   },
   "landingVehicles": {
     "falcon9": {
+      "cluster": 9,
       "name": "Falcon 9 booster -- drone ship",
       "world": "earth",
       "engine": "merlin-1d",
@@ -228,6 +229,7 @@
       "note": "One Merlin, throttle 39-100 %: thrust-to-weight never drops below ~1.3 so it cannot hover."
     },
     "falcon9lz": {
+      "cluster": 9,
       "name": "Falcon 9 booster -- landing zone",
       "world": "earth",
       "engine": "merlin-1d",
@@ -268,6 +270,7 @@
       "note": "Return-to-launch-site: a fixed concrete pad, tighter geometry, no sea state."
     },
     "newshepard": {
+      "cluster": 1,
       "name": "New Shepard booster",
       "world": "earth",
       "engine": "be-3pm",
@@ -307,6 +310,7 @@
       "note": "Deep-throttle BE-3PM (down to ~20 %): thrust-to-weight can drop below 1, so it can hover and ease down."
     },
     "newglenn": {
+      "cluster": 7,
       "name": "New Glenn booster (3 engines)",
       "world": "earth",
       "engine": "be-4",
@@ -346,6 +350,7 @@
       "note": "Seven-engine stage landing on three BE-4s with strakes and flaps (modelled here as grid-fin-class control)."
     },
     "superheavy": {
+      "cluster": 33,
       "name": "Super Heavy -- tower catch",
       "world": "earth",
       "engine": "raptor-2",
@@ -386,6 +391,7 @@
       "note": "Three Raptors can nearly hover; instead of legs it is caught by the tower arms at ~70 m, so the box is a few metres wide. Experimental: the catch is still unreliable (about one flight in five)."
     },
     "moonlander": {
+      "cluster": 1,
       "name": "Lunar lander (BE-7 class)",
       "world": "moon",
       "engine": "be-7",
