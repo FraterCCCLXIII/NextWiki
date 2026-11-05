@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
+<script src="kosmo-scrollfade.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Space Access</title>
+<style>
+  :root { --bg: #0d0d0d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --good: #7fe0a0; --bad: #ff8a8a; --line: rgba(140,170,220,0.14); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+  #navbar { position: sticky; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: rgba(13,13,13,0.94); }
+  #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 20px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 13px; color: #fff; opacity: 0.8; margin-top: 2px; }
+  #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.16em; font-size: 14px; text-transform: uppercase; }
+  #menu a { color: rgba(255,255,255,0.72); text-decoration: none; white-space: nowrap; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+  main { max-width: 1040px; margin: 0 auto; padding: 8px 20px 80px; }
+  h1 { font-weight: 500; font-size: 32px; margin: 18px 0 4px; }
+  h2 { font-weight: 500; font-size: 22px; margin: 38px 0 4px; border-top: 1px solid var(--line); padding-top: 22px; }
+  h3 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 18px 0 6px; font-weight: 500; }
+  p, li { color: #c3d0e2; max-width: 74ch; } .dim { color: var(--muted); } .small { font-size: 13px; }
+  .verdict { border: 1px solid var(--line); border-left: 3px solid var(--accent2); border-radius: 8px; padding: 10px 14px; background: rgba(18,22,30,0.55); margin: 14px 0; }
+  .verdict b { color: #fff; }
+  input, select { background: rgba(26,26,26,0.85); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 8px; padding: 4px 8px; font: inherit; max-width: 100%; }
+  input[type=number] { width: 7.5em; } label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 1px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px 16px; margin: 10px 0; align-items: flex-end; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; margin: 8px 0; font-variant-numeric: tabular-nums; }
+  th, td { padding: 4px 10px 4px 0; text-align: right; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 400; } th:first-child, td:first-child { text-align: left; }
+  .tw { overflow-x: auto; }
+  .ok { color: var(--good); } .no { color: var(--bad); } .warn { color: var(--accent2); }
+  .bar { display: inline-block; height: 8px; border-radius: 4px; background: var(--accent); vertical-align: middle; margin-left: 6px; }
+  code { background: rgba(255,255,255,0.07); border-radius: 4px; padding: 0 5px; font-size: 13px; }
+  a { color: var(--accent); }
+  @media (max-width: 700px) { #menu { display: none; } main { padding: 8px 14px 60px; } }
+</style>
+  <link rel="stylesheet" href="kosmographica.css?v=15">
+  <script src="atlas-nav.js" defer></script>
+</head>
+<body>
+<div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
+  <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="space-access.html" class="here">Space Access</a></nav><span></span></div>
+<main>
+  <h1 class="serif">Space Access</h1>
+  <div class="dim">The lightest, cheapest way to orbit, the Moon and Mars &mdash; and what to fly there. First-order math; every constant is tagged in <code>space-access.js</code>. To fly a design, open the <a href="shipyard.html">Shipyard</a>.</div>
+
+  <div class="verdict" id="verdict"></div>
+
+  <h2 class="serif">1 &middot; The cost of getting up</h2>
+  <p>Orbit is mostly <i>sideways</i>: ~7.8 km/s along the ground, versus a few hundred m/s of altitude. The budget is
+  <code>&Delta;v = v<sub>circ</sub> &minus; rotation + gravity + drag + steering</code>. Gravity loss grows as thrust-to-weight falls (long burns), which is the price of cheap vacuum-only engines.</p>
+  <div class="row">
+    <div><label>World</label><select id="world"><option value="earth">Earth</option><option value="moon">Moon</option><option value="mars">Mars</option></select></div>
+    <div><label>Orbit altitude (km)</label><input type="number" id="alt" value="200" step="10"></div>
+    <div><label>Latitude (&deg;)</label><input type="number" id="lat" value="28.5" step="1"></div>
+    <div><label>Liftoff T/W (local g)</label><input type="number" id="twr" value="1.3" step="0.1" min="1.02"></div>
+    <div><label>Average Isp (s)</label><input type="number" id="isp" value="330" step="5"></div>
+  </div>
+  <div class="tw"><table id="budget"></table></div>
+
+  <h3>Architectures to Earth orbit</h3>
+  <div class="row">
+    <div><label>Payload (kg)</label><input type="number" id="payload" value="1000" step="500" min="100"></div>
+    <div><label>Reuse refurb (% of dry cost per flight)</label><input type="number" id="refurb" value="5" step="1"></div>
+  </div>
+  <div class="tw"><table id="arch"></table></div>
+  <p class="small dim">&ldquo;Gross / payload&rdquo; is the lightness measure: kilograms on the pad per kilogram in orbit. Cost uses order-of-magnitude hardware, propellant and ops figures; reused hardware is amortised over its flight count. A dash means the rocket equation has no solution.</p>
+
+  <h2 class="serif">2 &middot; Lifting the rocket first</h2>
+  <p>A zero-pressure balloon floats where buoyancy equals load plus its own skin: lift = &rho;(h)(1 &minus; M<sub>gas</sub>/M<sub>air</sub>) per m&sup3;. Air thins by ~10&times; every 16 km, so the volume needed explodes with altitude while a thin film's weight only grows with area.</p>
+  <div class="row">
+    <div><label>Load to float (kg)</label><input type="number" id="bload" value="24000" step="1000"></div>
+    <div><label>Gas</label><select id="gas"><option>hydrogen</option><option>helium</option></select></div>
+    <div><label>Skin (kg/m&sup2;)</label><input type="number" id="sigma" value="0.05" step="0.01"></div>
+  </div>
+  <div class="tw"><table id="balloon"></table></div>
+  <p class="small dim">The biggest balloons ever flown are ~1.7 million m&sup3; and lift a few tonnes at 40 km. The default 24 t load is a ~1 t-to-orbit rocket. Heavier vehicles need a stage that already works at low T/W.</p>
+
+  <h2 class="serif">3 &middot; Moon and Mars</h2>
+  <p>Past LEO the delta-v is small and the winner is whatever avoids carrying propellant: aerocapture, depots, and propellant made on arrival.</p>
+  <div class="row">
+    <label class="small" style="display:flex;gap:6px;align-items:center;margin:0"><input type="checkbox" id="aero"> aerocapture at Mars (a ~100 m/s clean-up instead of a 2.1 km/s burn)</label>
+    <div><label>Return vehicle dry mass (t)</label><input type="number" id="retdry" value="20" step="5"></div>
+  </div>
+  <div class="tw"><table id="ladder"></table></div>
+  <div id="isru" class="verdict"></div>
+
+  <h2 class="serif">4 &middot; What to fly</h2>
+  <p>Each vessel is sized from its mission: pressurised volume, consumables (with a closed-loop fraction), shielding, power, then propulsion by the rocket equation.</p>
+  <div class="tw"><table id="vessels"></table></div>
+
+  <h3>High-altitude liner (balloon / airship)</h3>
+  <div class="row">
+    <div><label>Passengers</label><input type="number" id="pax" value="8" min="1"></div>
+    <div><label>Float altitude (km)</label><input type="number" id="liveralt" value="30" step="1"></div>
+  </div>
+  <div id="liner" class="small"></div>
+
+  <h3>Spin gravity</h3>
+  <div class="row">
+    <div><label>Radius (m)</label><input type="number" id="srad" value="100" step="10"></div>
+    <div><label>Gravity (g)</label><input type="number" id="sg" value="0.38" step="0.05"></div>
+  </div>
+  <div id="spin" class="small"></div>
+
+  <h3>Rotating torus (Stanford torus)</h3>
+  <div class="row">
+    <div><label>Ring radius (m)</label><input type="number" id="trad" value="900" step="100"></div>
+    <div><label>Tube radius (m)</label><input type="number" id="ttube" value="65" step="5"></div>
+    <div><label>Shield (t/m&sup2;)</label><input type="number" id="tshield" value="4.5" step="0.5"></div>
+  </div>
+  <div id="torus" class="small"></div>
+
+  <h2 class="serif">5 &middot; Roadmap</h2>
+  <ul class="small">
+    <li>Balloon and aircraft launches fly in the <a href="shipyard.html">Shipyard</a> (set a release altitude and speed). Next: model the carrier, ascent drift and the balloon&rsquo;s own mass in the sim, and use flown results to recalibrate the formula here.</li>
+    <li>Not yet modelled: kinetic launchers, skyhooks and tethers, nuclear-thermal and electric stages, bi-elliptic and low-energy transfers, radiation dose, launch windows, a real cost curve.</li>
+    <li>Colony and habitat economics need an in-situ construction model (regolith shielding, lunar and asteroid mass) &mdash; the torus mass is dominated by shielding.</li>
+  </ul>
+</main>
+<script type="module">
+import * as S from './space-access.js';
+const $ = id => document.getElementById(id), num = id => parseFloat($(id).value) || 0;
+const km = x => (x / 1000).toFixed(2), t = x => x >= 1e6 ? (x / 1e6).toFixed(1) + ' kt' : x >= 1000 ? (x / 1000).toFixed(1) + ' t' : x.toFixed(0) + ' kg';
+const usd = x => !isFinite(x) ? '&mdash;' : x >= 1e6 ? '$' + (x / 1e6).toFixed(1) + 'M' : '$' + Math.round(x).toLocaleString();
+const rows = (head, body) => `<tr>${head.map(h => `<th>${h}</th>`).join('')}</tr>` + body.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('');
+
+function ascent() {
+  const world = $('world').value;
+  const a = S.ascentBudget({ world, alt: num('alt') * 1000, latDeg: num('lat'), twr0: num('twr'), isp: num('isp') });
+  const parts = [['Orbital speed', a.vc], ['Rotation credit', -a.rotation], ['Gravity loss', a.gravity], ['Drag loss', a.drag], ['Steering loss', a.steering]];
+  $('budget').innerHTML = rows(['Term', 'km/s'], [...parts.map(([n, v]) => [n, km(v)]), ['<b>Total &Delta;v</b>', `<b>${km(a.dv)}</b>`]]);
+  const P = num('payload'), refurb = num('refurb') / 100;
+  const ev = S.ARCHITECTURES.map(x => S.evaluateArchitecture(x, { payload: P, latDeg: num('lat'), orbitAlt: num('alt') * 1000, refurb }));
+  const best = Math.min(...ev.map(e => e.ratio).filter(isFinite));
+  $('arch').innerHTML = rows(['Architecture', '&Delta;v km/s', 'Gross / payload', 'Gross mass', '$ / kg', 'Platform needed'], ev.map(e => [
+    e.name, km(e.dv), isFinite(e.ratio) ? `${e.ratio.toFixed(1)}<span class="bar" style="width:${Math.round(110 * best / e.ratio)}px"></span>` : '<span class="no">&mdash;</span>',
+    e.feasible ? t(e.gross) : '&mdash;', usd(e.perKg),
+    e.balloon ? (e.balloon.feasible ? `<span class="${e.balloon.flown ? 'ok' : 'warn'}">${(e.balloon.volume / 1e6).toFixed(2)}M m&sup3;, r ${e.balloon.radius.toFixed(0)} m${e.balloon.flown ? '' : ' (bigger than any flown)'}</span>` : '<span class="no">not buildable</span>') : (e.alt ? 'carrier aircraft' : '')]));
+  const g = ev.find(e => e.id === 'ground-exp'), b = ev.find(e => e.id === 'balloon-30km'), r = ev.find(e => e.id === 'ground-reuse');
+  $('verdict').innerHTML = `<b>Short answer.</b> Lighter-than-air can&rsquo;t reach orbit speed; a 30 km balloon trims ${km(g.ascent.dv - b.ascent.dv)} km/s of ${km(g.ascent.dv)}, cutting pad mass per kg of payload from ${g.ratio.toFixed(0)} to ${b.ratio.toFixed(0)} &mdash; real, but only for ~1 t payloads (a ${(b.balloon.volume / 1e6).toFixed(1)}M m&sup3; balloon). For anything larger the cheap path is a <b>reusable booster</b> (${usd(r.perKg)}/kg here), then <b>refuelling in orbit</b>, <b>aerocapture</b>, and <b>propellant made at the destination</b> (section 3), where the real multipliers are.`;
+}
+
+function beyond() {
+  const aero = $('aero').checked;
+  const dests = [['Moon', 'moon'], ['Mars', 'mars']];
+  const body = [];
+  for (const [n, d] of dests) {
+    const c = S.chainRatio(S.missionLegs(d, { aerocapture: aero }));
+    c.legs.forEach((l, i) => body.push([i ? '' : `<b>${n}</b>`, l.name, km(l.dv), l.isp + ' s', l.ratio.toFixed(2), l.cumulative.toFixed(2)]));
+    body.push(['', `<b>LEO mass per kg landed on ${n}</b>`, km(c.legs.reduce((a, l) => a + l.dv, 0)), '', '', `<b>${c.imleo.toFixed(1)}</b>`]);
+  }
+  $('ladder').innerHTML = rows(['', 'Burn', '&Delta;v km/s', 'Isp', 'Stage ratio', 'Cumulative'], body);
+  const m = S.marsTransfer(), q = S.isruLeverage({ dest: 'mars', returnVehicleDry: num('retdry') * 1000, aerocapture: true });
+  $('isru').innerHTML = `<b>Mars propellant plant.</b> Mars surface &rarr; Earth needs ${km(q.dv)} km/s: ${t(q.returnProp)} of methalox for a ${num('retdry')} t vehicle. Carrying it from LEO costs ${q.outboundRatio.toFixed(1)} kg of LEO mass per kg landed &mdash; <b>${t(q.imleoSavedIfMadeThere)}</b> in LEO, dozens of launches. Hohmann trip ${m.tofDays.toFixed(0)} days; TMI ${km(m.tmi)} km/s from a 300 km orbit.`;
+}
+
+function vessels() {
+  const rowsV = S.VESSELS.map(v => ({ v, s: S.sizeVessel(v) }));
+  $('vessels').innerHTML = rows(['Vessel', 'Class', 'Crew', 'Days', 'Dv km/s', 'Habitat + life + power', 'Gross', 'Spin'], rowsV.map(({ v, s }) => [
+    `<b>${v.name}</b><br><span class="dim">${v.note}</span>`, v.kind, v.crew || '', v.days ?? '', km(v.dv), t(s.payload), s.feasible ? t(s.gross) : '<span class="no">&mdash;</span>',
+    s.spin ? `${s.spin.rpm.toFixed(1)} rpm` : '']));
+  const lin = S.highAltitudeLiner({ pax: num('pax'), alt: num('liveralt') * 1000 });
+  $('liner').innerHTML = lin.feasible ? `${lin.pax} passengers, ${t(lin.load)} cabin and gear: envelope radius <b>${lin.radius.toFixed(0)} m</b>, ${(lin.volume / 1e3).toFixed(0)}k m&sup3; at float (${lin.groundFillVolume.toFixed(0)} m&sup3; of gas at the pad), skin ${t(lin.envelope)}. ${lin.flown ? '<span class="ok">within flown balloon size.</span>' : '<span class="warn">larger than any balloon flown.</span>'}` : '<span class="no">Too high to float at this size.</span>';
+  const sp = S.spin(num('srad'), num('sg'));
+  $('spin').innerHTML = `Spin <b>${sp.rpm.toFixed(2)} rpm</b>, rim speed ${sp.rimSpeed.toFixed(0)} m/s. ${sp.comfortable ? '<span class="ok">comfortable (&le; 2 rpm).</span>' : '<span class="warn">above ~2 rpm: expect nausea and Coriolis effects while adapting.</span>'}`;
+  const tr = S.torusHabitat({ majorRadius: num('trad'), tubeRadius: num('ttube'), shield: num('tshield') * 1000 });
+  $('torus').innerHTML = `Spin ${tr.spin.rpm.toFixed(2)} rpm at 1 g; population ~<b>${Math.round(tr.population).toLocaleString()}</b>; pressure shell ${(tr.shellThickness * 1000).toFixed(0)} mm steel = ${t(tr.shellMass)}; shielding ${t(tr.shieldMass)}; total <b>${t(tr.totalMass)}</b>. Shielding dominates, which is why such a habitat has to be built from lunar or asteroid material rather than launched.`;
+}
+
+const all = () => { ascent(); beyond(); balloon(); vessels(); };
+function balloon() {
+  const load = num('bload'), gas = $('gas').value, sigma = num('sigma');
+  const hs = [15, 20, 25, 30, 35, 40, 50, 60].map(h => ({ h, b: S.balloonFor({ load, alt: h * 1000, gas, sigma }) }));
+  $('balloon').innerHTML = rows(['Float altitude', 'Lift / m&sup3;', 'Radius', 'Volume', 'Skin mass', 'Pad gas fill', 'Status'], hs.map(({ h, b }) => [
+    h + ' km', (S.liftPerM3(h * 1000, gas) * 1000).toFixed(1) + ' g', b.feasible ? b.radius.toFixed(0) + ' m' : '&mdash;', b.feasible ? (b.volume / 1e6).toFixed(2) + 'M m&sup3;' : '&mdash;',
+    b.feasible ? t(b.envelope) : '', b.feasible ? Math.round(b.groundFillVolume).toLocaleString() + ' m&sup3;' : '', !b.feasible ? '<span class="no">no</span>' : b.flown ? '<span class="ok">flown class</span>' : '<span class="warn">unprecedented</span>']));
+}
+document.querySelectorAll('input,select').forEach(el => el.addEventListener('input', all));
+all();
+</script>
+</body>
+</html>

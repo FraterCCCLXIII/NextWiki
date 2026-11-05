@@ -1,0 +1,709 @@
+{
+ "id": "arabic",
+ "name": "Arabic",
+ "region": "Arabian Peninsula and Middle East",
+ "era": "pre-Islamic - present",
+ "color": "#2ec4a6",
+ "description": "The 28 manazil al-qamar (lunar mansions) of Arabic astronomy, identified with their stars.",
+ "source": [
+  "Wikipedia, \"Lunar station\", Arabic manzil table (https://en.wikipedia.org/wiki/Lunar_station), citing D. Adams, \"Arabic Star Catalog\", Two Deserts One Sky, Univ. of Arizona",
+  "Stars not in constellations.json taken from HYG v4.1 (github.com/astronexus/HYG-Database)"
+ ],
+ "license": "Wikipedia text: CC BY-SA 4.0; HYG v4.1 data CC BY-SA 4.0. Stellarium arabic_lunar_stations, arabic_ancient and arabic_al-sufi (Khalid al-Ajaji) are CC BY-ND 4.0 (special permission only to Stellarium Labs) and were deliberately NOT used or adapted. al-Balda (the \"Wasteland\", an empty region near pi Sgr) has no stars and is omitted.",
+ "figures": [
+  {
+   "id": "arabic-manzil-01",
+   "name": "ash-Sharatan",
+   "native": "الشرطان",
+   "romanized": "ash-Sharatan",
+   "meaning": "The Two Signs",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP9884",
+     "HIP8903"
+    ]
+   ],
+   "iau": [
+    "Ari"
+   ],
+   "story": "Manzil 1 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-02",
+   "name": "al-Butayn",
+   "native": "البطين",
+   "romanized": "al-Butayn",
+   "meaning": "The Little Belly of the Lamb",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP13209",
+     "HIP13061",
+     "HIP12719"
+    ]
+   ],
+   "iau": [
+    "Ari"
+   ],
+   "story": "Manzil 2 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-03",
+   "name": "ath-Thuraya",
+   "native": "الثريا",
+   "romanized": "ath-Thuraya",
+   "meaning": "The Little Abundant One",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP17702",
+     "HIP17847",
+     "HIP17851",
+     "HIP17608",
+     "HIP17499",
+     "HIP17531",
+     "HIP17573",
+     "HIP17579"
+    ]
+   ],
+   "iau": [
+    "Tau"
+   ],
+   "story": "Manzil 3 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure.",
+   "extraStars": {
+    "HIP17579": [
+     56.47698,
+     24.55451,
+     114.03,
+     5.76,
+     "Asterope",
+     "B8V"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.11334,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17851": [
+     57.29673,
+     24.13671,
+     117.1,
+     5.05,
+     "Pleione",
+     "B7p"
+    ],
+    "HIP17608": [
+     56.58156,
+     23.94836,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ],
+    "HIP17573": [
+     56.45669,
+     24.36775,
+     117.51,
+     3.87,
+     "Maia",
+     "B8III"
+    ],
+    "HIP17531": [
+     56.30205,
+     24.46728,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ]
+   }
+  },
+  {
+   "id": "arabic-manzil-04",
+   "name": "ad-Dabaran",
+   "native": "الدبران",
+   "romanized": "ad-Dabaran",
+   "meaning": "The Follower of Thuraya",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP21421"
+    ]
+   ],
+   "iau": [
+    "Tau"
+   ],
+   "story": "Manzil 4 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-05",
+   "name": "al-Haq’a",
+   "native": "الهقعة",
+   "romanized": "al-Haq’a",
+   "meaning": "The Hair Whorl",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP26207",
+     "HIP26176",
+     "HIP26366"
+    ]
+   ],
+   "iau": [
+    "Ori"
+   ],
+   "story": "Manzil 5 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure.",
+   "extraStars": {
+    "HIP26366": [
+     84.22662,
+     9.29067,
+     36.02,
+     4.09,
+     "",
+     "G8III-IV"
+    ],
+    "HIP26176": [
+     83.70516,
+     9.48958,
+     333.33,
+     4.39,
+     "",
+     "B0IV..."
+    ]
+   }
+  },
+  {
+   "id": "arabic-manzil-06",
+   "name": "al-Han’a",
+   "native": "الهنعة",
+   "romanized": "al-Han’a",
+   "meaning": "The Neck Mark",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP31681",
+     "HIP32362"
+    ]
+   ],
+   "iau": [
+    "Gem"
+   ],
+   "story": "Manzil 6 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-07",
+   "name": "adh-Dhira’a al-Mabsuta",
+   "native": "الذراعة المبسوطة",
+   "romanized": "adh-Dhira’a al-Mabsuta",
+   "meaning": "The Extended Forearm",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP36850",
+     "HIP37826"
+    ]
+   ],
+   "iau": [
+    "Gem"
+   ],
+   "story": "Manzil 7 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-08",
+   "name": "an-Nathra",
+   "native": "النثرة",
+   "romanized": "an-Nathra",
+   "meaning": "The Tip of the Nose",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP42806",
+     "HIP42911"
+    ]
+   ],
+   "iau": [
+    "Cnc"
+   ],
+   "story": "Manzil 8 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-09",
+   "name": "at-Tarf",
+   "native": "الطرف",
+   "romanized": "at-Tarf",
+   "meaning": "The Eyes",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP46750",
+     "HIP44798"
+    ]
+   ],
+   "iau": [
+    "Leo",
+    "Cnc"
+   ],
+   "story": "Manzil 9 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure.",
+   "extraStars": {
+    "HIP46750": [
+     142.93013,
+     22.96797,
+     100.91,
+     4.32,
+     "Alterf",
+     "K5IIIvar"
+    ],
+    "HIP44798": [
+     136.93672,
+     10.66819,
+     162.87,
+     5.23,
+     "",
+     "B8IIIMNp"
+    ]
+   }
+  },
+  {
+   "id": "arabic-manzil-10",
+   "name": "al-Jabha",
+   "native": "الجبهة",
+   "romanized": "al-Jabha",
+   "meaning": "The Forehead",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP49669",
+     "HIP49583",
+     "HIP50583",
+     "HIP50335"
+    ]
+   ],
+   "iau": [
+    "Leo"
+   ],
+   "story": "Manzil 10 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-11",
+   "name": "az-Zubra",
+   "native": "الزبرة",
+   "romanized": "az-Zubra",
+   "meaning": "The Mane",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP54872",
+     "HIP54879"
+    ]
+   ],
+   "iau": [
+    "Leo"
+   ],
+   "story": "Manzil 11 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-12",
+   "name": "as-Sarfa",
+   "native": "الصرفة",
+   "romanized": "as-Sarfa",
+   "meaning": "The Weather Change",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP57632",
+     "HIP57632"
+    ]
+   ],
+   "iau": [
+    "Leo"
+   ],
+   "story": "Manzil 12 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-13",
+   "name": "al-‘Awa’",
+   "native": "العواء",
+   "romanized": "al-‘Awa’",
+   "meaning": "The Howling Dogs",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP57757",
+     "HIP60129",
+     "HIP61941",
+     "HIP63090",
+     "HIP63608"
+    ]
+   ],
+   "iau": [
+    "Vir"
+   ],
+   "story": "Manzil 13 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-14",
+   "name": "as-Simak al-A’zal",
+   "native": "السماك الأعزل",
+   "romanized": "as-Simak al-A’zal",
+   "meaning": "The Unarmed Sky-Raiser",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP65474",
+     "HIP65474"
+    ]
+   ],
+   "iau": [
+    "Vir"
+   ],
+   "story": "Manzil 14 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-15",
+   "name": "al-Ghafr",
+   "native": "الغفر",
+   "romanized": "al-Ghafr",
+   "meaning": "The Concealment",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP69701",
+     "HIP69427",
+     "HIP69974"
+    ]
+   ],
+   "iau": [
+    "Vir"
+   ],
+   "story": "Manzil 15 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure.",
+   "extraStars": {
+    "HIP69974": [
+     214.77747,
+     -13.3711,
+     57.18,
+     4.52,
+     "Khambalia",
+     "A1V"
+    ],
+    "HIP69427": [
+     213.22393,
+     -10.2737,
+     78.12,
+     4.18,
+     "Kang",
+     "K3III"
+    ]
+   }
+  },
+  {
+   "id": "arabic-manzil-16",
+   "name": "az-Zubana",
+   "native": "الزبانى",
+   "romanized": "az-Zubana",
+   "meaning": "The Two Claws of the Scorpion",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP74785",
+     "HIP72603"
+    ]
+   ],
+   "iau": [
+    "Lib"
+   ],
+   "story": "Manzil 16 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure.",
+   "extraStars": {
+    "HIP72603": [
+     222.67159,
+     -15.99724,
+     22.98,
+     5.15,
+     "",
+     "F3V"
+    ]
+   }
+  },
+  {
+   "id": "arabic-manzil-17",
+   "name": "al-Iklil",
+   "native": "الإكليل",
+   "romanized": "al-Iklil",
+   "meaning": "The Crown of the Scorpion",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP78820",
+     "HIP78401",
+     "HIP78265"
+    ]
+   ],
+   "iau": [
+    "Sco"
+   ],
+   "story": "Manzil 17 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-18",
+   "name": "al-Qalb",
+   "native": "القلب",
+   "romanized": "al-Qalb",
+   "meaning": "The Heart of the Scorpion",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP80763",
+     "HIP80763"
+    ]
+   ],
+   "iau": [
+    "Sco"
+   ],
+   "story": "Manzil 18 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-19",
+   "name": "ash-Shawla",
+   "native": "الشولة",
+   "romanized": "ash-Shawla",
+   "meaning": "The Raised Tail",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP85927",
+     "HIP85696"
+    ]
+   ],
+   "iau": [
+    "Sco"
+   ],
+   "story": "Manzil 19 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-20",
+   "name": "an-Na’a’im",
+   "native": "النعائم",
+   "romanized": "an-Na’a’im",
+   "meaning": "The Ostriches",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP88567",
+     "HIP89642",
+     "HIP90185",
+     "HIP89931",
+     "HIP90496",
+     "HIP92041",
+     "HIP93506",
+     "HIP93864",
+     "HIP92855"
+    ]
+   ],
+   "iau": [
+    "Sgr"
+   ],
+   "story": "Manzil 20 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure.",
+   "extraStars": {
+    "HIP88567": [
+     271.25511,
+     -29.58009,
+     266.67,
+     4.66,
+     "",
+     "G0Ib/II"
+    ]
+   }
+  },
+  {
+   "id": "arabic-manzil-22",
+   "name": "Sa’d adh-Dhabih",
+   "native": "سعد الذابح",
+   "romanized": "Sa’d adh-Dhabih",
+   "meaning": "The Auspice of the Slaughterer",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP100027",
+     "HIP100345"
+    ]
+   ],
+   "iau": [
+    "Cap"
+   ],
+   "story": "Manzil 22 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-23",
+   "name": "Sa’d Bul’",
+   "native": "سعد بلع",
+   "romanized": "Sa’d Bul’",
+   "meaning": "The Voracious Auspice",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP102618",
+     "HIP103045"
+    ]
+   ],
+   "iau": [
+    "Aqr"
+   ],
+   "story": "Manzil 23 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-24",
+   "name": "Sa’d as-Su’ud",
+   "native": "سعد السعود",
+   "romanized": "Sa’d as-Su’ud",
+   "meaning": "The Auspice of Auspices",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP106278",
+     "HIP106786"
+    ]
+   ],
+   "iau": [
+    "Aqr"
+   ],
+   "story": "Manzil 24 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure.",
+   "extraStars": {
+    "HIP106786": [
+     324.43796,
+     -7.8542,
+     54.76,
+     4.68,
+     "Bunda",
+     "A7V"
+    ]
+   }
+  },
+  {
+   "id": "arabic-manzil-25",
+   "name": "Sa’d al-Akhbiya",
+   "native": "سعد الأخبية",
+   "romanized": "Sa’d al-Akhbiya",
+   "meaning": "The Auspice of Woolen Tents",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP110395",
+     "HIP110672",
+     "HIP110960",
+     "HIP111497"
+    ]
+   ],
+   "iau": [
+    "Aqr"
+   ],
+   "story": "Manzil 25 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-26",
+   "name": "al-Fargh al-Awal",
+   "native": "الفرغ الأول",
+   "romanized": "al-Fargh al-Awal",
+   "meaning": "The First Spout",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP113963",
+     "HIP113881"
+    ]
+   ],
+   "iau": [
+    "Peg"
+   ],
+   "story": "Manzil 26 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-27",
+   "name": "al-Fargh ath-Thani",
+   "native": "الفرغ الثاني",
+   "romanized": "al-Fargh ath-Thani",
+   "meaning": "The Second Spout",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP677",
+     "HIP1067"
+    ]
+   ],
+   "iau": [
+    "And",
+    "Peg"
+   ],
+   "story": "Manzil 27 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure."
+  },
+  {
+   "id": "arabic-manzil-28",
+   "name": "al-Hut",
+   "native": "الحوت",
+   "romanized": "al-Hut",
+   "meaning": "The Great Fish",
+   "kind": "mansion",
+   "group": "Manazil al-qamar (lunar mansions)",
+   "lines": [
+    [
+     "HIP5447",
+     "HIP3881",
+     "HIP4436",
+     "HIP6193",
+     "HIP5742",
+     "HIP5571",
+     "HIP5131",
+     "HIP4463",
+     "HIP3693",
+     "HIP3031",
+     "HIP3092",
+     "HIP2912"
+    ]
+   ],
+   "iau": [
+    "And",
+    "Psc"
+   ],
+   "story": "Manzil 28 of the 28 Arabic lunar mansions; star identification follows the table in Wikipedia \"Lunar station\" (an alternative identification is noted there for some mansions). Stars are joined in the order listed; these are marker lines, not a historical stick figure.",
+   "extraStars": {
+    "HIP5131": [
+     16.42063,
+     21.47318,
+     84.32,
+     5.33,
+     "",
+     "A1Vn"
+    ]
+   }
+  }
+ ]
+}

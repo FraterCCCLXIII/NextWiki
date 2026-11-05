@@ -74,6 +74,8 @@
     <div><label>World</label><select id="world"><option value="earth">Earth</option><option value="moon">Moon</option><option value="mars">Mars</option></select></div>
     <div><label>Start</label><select id="start"><option value="pad">on the launch pad</option><option value="orbit">already in orbit</option></select></div>
     <div><label>Orbit altitude (km)</label><input type="number" id="orbitAlt" min="80" step="10"></div>
+    <div><label>Release altitude (km, 0 = pad)</label><input type="number" id="relAlt" min="0" step="5" value="0"></div>
+    <div><label>Release speed (m/s)</label><input type="number" id="relSpeed" min="0" step="10" value="0"></div>
     <div><label>Max acceleration (g)</label><input type="number" id="gLimit" min="1.5" max="9" step="0.5"></div>
   </div>
   <label class="chk"><input type="checkbox" id="dock"> rendezvous and dock with a station</label>
@@ -211,7 +213,7 @@ function stageCard(s, i) {
 }
 function renderBuilder() {
   $('world').value = state.world; $('start').value = state.mission.start; $('orbitAlt').value = +(state.mission.orbitAlt / 1e3).toFixed(0);
-  $('gLimit').value = state.mission.gLimit; $('dock').checked = !!state.mission.dock; $('land').checked = !!state.mission.land; $('autoKick').checked = state.autoKick;
+  $('relAlt').value = +((state.mission.release?.alt || 0) / 1e3).toFixed(0); $('relSpeed').value = state.mission.release?.speed || 0; $('gLimit').value = state.mission.gLimit; $('dock').checked = !!state.mission.dock; $('land').checked = !!state.mission.land; $('autoKick').checked = state.autoKick;
   $('stationAlt').value = +((state.mission.stationAlt ?? 420e3) / 1e3).toFixed(0); $('dockOpts').style.display = state.mission.dock ? '' : 'none';
   $('payload').value = state.payload.mass; $('fairing').value = state.payload.fairing;
   $('stages').innerHTML = [...state.stages.keys()].reverse().map(i => stageCard(state.stages[i], i)).join('');
@@ -239,11 +241,13 @@ $('addStage').onclick = () => { stop(); state.stages.push({ name: `Stage ${state
 for (const [id, fn] of Object.entries({
   world: v => { state.world = v; if (v !== 'earth') { state.mission.orbitAlt = Math.min(state.mission.orbitAlt, 300e3); } },
   start: v => state.mission.start = v, orbitAlt: v => state.mission.orbitAlt = (+v || 100) * 1e3, gLimit: v => state.mission.gLimit = +v || 4.5,
+  relAlt: v => setRelease({ alt: (+v || 0) * 1e3 }), relSpeed: v => setRelease({ speed: +v || 0 }),
   stationAlt: v => state.mission.stationAlt = (+v || 420) * 1e3, payload: v => state.payload.mass = Math.max(0, +v || 0), fairing: v => state.payload.fairing = Math.max(0, +v || 0),
 })) $(id).addEventListener('input', () => { stop(); fn($(id).value); renderAnalysis(); });
 $('world').addEventListener('change', () => { if (state.world !== 'earth') { for (const s of state.stages) if (s.landing.mode === 'chute') s.landing.mode = 'propulsive'; } renderBuilder(); });
 for (const id of ['dock', 'land', 'autoKick']) $(id).addEventListener('change', () => { stop(); if (id === 'autoKick') state.autoKick = $(id).checked; else state.mission[id] = $(id).checked; $('dockOpts').style.display = state.mission.dock ? '' : 'none'; renderAnalysis(); });
 
+function setRelease(p) { const r = { alt: 0, speed: 0, ...(state.mission.release || {}), ...p }; if (r.alt > 0) { state.mission.release = r; state.mission.kickSpeed = 15; } else { delete state.mission.release; delete state.mission.kickSpeed; } }
 function buildCfg() { const c = { world: state.world, stages: clone(state.stages), payload: clone(state.payload), mission: { ...clone(state.mission), goal: state.mission.dock ? 'dock' : 'orbit' } }; return c; }
 
 // ---------------- analysis ----------------

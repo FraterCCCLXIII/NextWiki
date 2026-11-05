@@ -38,6 +38,8 @@
     { name: "Lab", pages: [
       { href: "shipyard.html", label: "Shipyard" },
       { href: "landing-lab.html", label: "Landing Lab" },
+      { href: "warp-lab.html", label: "Warp Drive" },
+      { href: "space-access.html", label: "Space Access" },
       { href: "oracle/index.html", label: "Oracle" }
     ] }
   ];

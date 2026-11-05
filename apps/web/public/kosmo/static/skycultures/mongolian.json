@@ -1,0 +1,106 @@
+{
+ "id": "mongolian",
+ "name": "Mongolian",
+ "region": "Mongolia",
+ "era": "Traditional",
+ "color": "#4e9f9f",
+ "description": "Mongolian star groups compiled for Stellarium.",
+ "source": [
+  "Stellarium sky culture 'mongolian' (https://github.com/Stellarium/stellarium/tree/master/skycultures/mongolian); contributed by: This skyculture is a contribution from two users of Stellarium, **Anthony Lagain** (anthony.lagaingmail.com) and **Batiste Rousseau** (batiste.rousseaugmail.com) mainly based on oral tales of numerous Mongolians met during a two months stay in Mongolia. To learn more about them: www.souslecieldemong",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: mongolian: CC BY-SA 4.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "mongolian-mongolian-num-sum",
+   "name": "Num Sum",
+   "kind": "constellation",
+   "group": "Mongolian",
+   "lines": [
+    [
+     "HIP94779",
+     "HIP95853",
+     "HIP97165",
+     "HIP100453",
+     "HIP102098"
+    ],
+    [
+     "HIP100453",
+     "HIP102488",
+     "HIP104732",
+     "HIP107310"
+    ],
+    [
+     "HIP100453",
+     "HIP98110",
+     "HIP95947"
+    ]
+   ],
+   "meaning": "The Bow and the Arrow",
+   "extraStars": {
+    "HIP107310": [
+     326.0357,
+     28.7426,
+     22.24,
+     4.49,
+     "78Mu 1Cyg",
+     "F6V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'mongolian' sky culture; see source for documentation."
+  },
+  {
+   "id": "mongolian-mongolian-hun-tavan-od",
+   "name": "Hun Tavan Od",
+   "kind": "constellation",
+   "group": "Mongolian",
+   "lines": [
+    [
+     "HIP8886",
+     "HIP6686",
+     "HIP4427",
+     "HIP3179",
+     "HIP746"
+    ]
+   ],
+   "meaning": "The Five Stars Woman",
+   "story": "Line pattern from the Stellarium 'mongolian' sky culture; see source for documentation."
+  },
+  {
+   "id": "mongolian-mongolian-doloon-burkhan",
+   "name": "Doloon Burkhan",
+   "kind": "constellation",
+   "group": "Mongolian",
+   "lines": [
+    [
+     "HIP67301",
+     "HIP65378",
+     "HIP62956",
+     "HIP59774",
+     "HIP58001",
+     "HIP53910",
+     "HIP54061",
+     "HIP59774"
+    ]
+   ],
+   "meaning": "The Seven Buddhas",
+   "story": "Line pattern from the Stellarium 'mongolian' sky culture; see source for documentation."
+  },
+  {
+   "id": "mongolian-mongolian-gurvan-maral-od",
+   "name": "Gurvan Maral Od",
+   "kind": "constellation",
+   "group": "Mongolian",
+   "lines": [
+    [
+     "HIP102098",
+     "HIP91262",
+     "HIP97649",
+     "HIP102098"
+    ]
+   ],
+   "meaning": "The Three Stags",
+   "story": "Line pattern from the Stellarium 'mongolian' sky culture; see source for documentation."
+  }
+ ]
+}

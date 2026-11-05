@@ -1,0 +1,258 @@
+{
+ "id": "inuit",
+ "name": "Inuit",
+ "region": "Arctic North America",
+ "era": "Traditional",
+ "color": "#6fb7e8",
+ "description": "Inuit star groups and star names compiled for Stellarium.",
+ "source": [
+  "Stellarium sky culture 'inuit' (https://github.com/Stellarium/stellarium/tree/master/skycultures/inuit); contributed by: This sky culture was contributed by *Karrie Berglund* of Digitalis Education Solutions, Inc. based primarily on the book [#1]. Illustrations are done by Johan Meuris.",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: inuit: Text and data: GNU GPL v2.0 Illustrations: Free Art License. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "inuit-inuit-aagjuuk",
+   "name": "Aagjuuk",
+   "kind": "constellation",
+   "group": "Inuit",
+   "lines": [
+    [
+     "HIP97649",
+     "HIP97278"
+    ]
+   ],
+   "meaning": "Two Sunbeams",
+   "story": "Line pattern from the Stellarium 'inuit' sky culture; see source for documentation."
+  },
+  {
+   "id": "inuit-inuit-akkuttujuuk",
+   "name": "Akkuttujuuk",
+   "kind": "constellation",
+   "group": "Inuit",
+   "lines": [
+    [
+     "HIP27989",
+     "HIP25336"
+    ]
+   ],
+   "meaning": "Two Placed Far Apart",
+   "story": "Line pattern from the Stellarium 'inuit' sky culture; see source for documentation."
+  },
+  {
+   "id": "inuit-inuit-qimmiitt",
+   "name": "Qimmiitt",
+   "kind": "constellation",
+   "group": "Inuit",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP20894",
+     "HIP20205",
+     "HIP20455",
+     "HIP20889"
+    ]
+   ],
+   "meaning": "Dogs",
+   "story": "Line pattern from the Stellarium 'inuit' sky culture; see source for documentation."
+  },
+  {
+   "id": "inuit-inuit-quturjuuk",
+   "name": "Quturjuuk",
+   "kind": "constellation",
+   "group": "Inuit",
+   "lines": [
+    [
+     "HIP24608",
+     "HIP28360",
+     "HIP36850",
+     "HIP37826"
+    ]
+   ],
+   "meaning": "Collarbones",
+   "story": "Line pattern from the Stellarium 'inuit' sky culture; see source for documentation."
+  },
+  {
+   "id": "inuit-inuit-pituaq",
+   "name": "Pituaq",
+   "kind": "constellation",
+   "group": "Inuit",
+   "lines": [
+    [
+     "HIP4427",
+     "HIP3179",
+     "HIP746",
+     "HIP4427"
+    ]
+   ],
+   "meaning": "Lamp Stand",
+   "story": "Line pattern from the Stellarium 'inuit' sky culture; see source for documentation."
+  },
+  {
+   "id": "inuit-inuit-tukturjuit",
+   "name": "Tukturjuit",
+   "kind": "constellation",
+   "group": "Inuit",
+   "lines": [
+    [
+     "HIP67301",
+     "HIP65378",
+     "HIP62956",
+     "HIP59774",
+     "HIP58001",
+     "HIP53910",
+     "HIP54061",
+     "HIP59774"
+    ]
+   ],
+   "meaning": "Caribou",
+   "story": "Line pattern from the Stellarium 'inuit' sky culture; see source for documentation."
+  },
+  {
+   "id": "inuit-inuit-sivulliik",
+   "name": "Sivulliik",
+   "kind": "constellation",
+   "group": "Inuit",
+   "lines": [
+    [
+     "HIP67927",
+     "HIP69673"
+    ]
+   ],
+   "meaning": "Two in Front",
+   "story": "Line pattern from the Stellarium 'inuit' sky culture; see source for documentation."
+  },
+  {
+   "id": "inuit-inuit-sakiattiak",
+   "name": "Sakiattiak",
+   "kind": "constellation",
+   "group": "Inuit",
+   "lines": [
+    [
+     "HIP17851",
+     "HIP17847",
+     "HIP17702",
+     "HIP17851"
+    ],
+    [
+     "HIP17702",
+     "HIP17608",
+     "HIP17499",
+     "HIP17531",
+     "HIP17702"
+    ]
+   ],
+   "meaning": "Breastbone",
+   "extraStars": {
+    "HIP17851": [
+     57.2967,
+     24.1367,
+     117.1,
+     5.05,
+     "Pleione",
+     "B7p"
+    ],
+    "HIP17608": [
+     56.5816,
+     23.9484,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17531": [
+     56.3021,
+     24.4673,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'inuit' sky culture; see source for documentation."
+  },
+  {
+   "id": "inuit-inuit-ullaktut",
+   "name": "Ullaktut",
+   "kind": "constellation",
+   "group": "Inuit",
+   "lines": [
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ]
+   ],
+   "meaning": "Runners",
+   "story": "Line pattern from the Stellarium 'inuit' sky culture; see source for documentation."
+  },
+  {
+   "id": "inuit-inuit-uqsuutaattiaq",
+   "name": "Uqsuutaattiaq",
+   "kind": "constellation",
+   "group": "Inuit",
+   "lines": [
+    [
+     "HIP8886",
+     "HIP6686",
+     "HIP4427",
+     "HIP3821",
+     "HIP3179",
+     "HIP746"
+    ]
+   ],
+   "meaning": "Blubber Container",
+   "story": "Line pattern from the Stellarium 'inuit' sky culture; see source for documentation."
+  },
+  {
+   "id": "inuit-inuit-kingulliq",
+   "name": "Kingulliq",
+   "kind": "constellation",
+   "group": "Inuit",
+   "lines": [
+    [
+     "HIP91262",
+     "HIP91262"
+    ]
+   ],
+   "meaning": "The Old Woman Behind",
+   "story": "Line pattern from the Stellarium 'inuit' sky culture; see source for documentation."
+  },
+  {
+   "id": "inuit-inuit-nuuttuittuq",
+   "name": "Nuuttuittuq",
+   "kind": "constellation",
+   "group": "Inuit",
+   "lines": [
+    [
+     "HIP11767",
+     "HIP11767"
+    ]
+   ],
+   "meaning": "Never Moves",
+   "story": "Line pattern from the Stellarium 'inuit' sky culture; see source for documentation."
+  },
+  {
+   "id": "inuit-inuit-sikuliaqsiujuittuq",
+   "name": "Sikuliaqsiujuittuq",
+   "kind": "constellation",
+   "group": "Inuit",
+   "lines": [
+    [
+     "HIP37279",
+     "HIP37279"
+    ]
+   ],
+   "meaning": "Name of a Murdered Man",
+   "story": "Line pattern from the Stellarium 'inuit' sky culture; see source for documentation."
+  }
+ ]
+}

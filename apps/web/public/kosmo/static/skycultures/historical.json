@@ -1,0 +1,1766 @@
+{
+ "id": "historical",
+ "name": "Historical & obsolete",
+ "region": "Europe (Greek, Roman, Renaissance and Enlightenment atlases)",
+ "era": "c. 150 CE - 1922",
+ "color": "#c9a66b",
+ "description": "Constellations that appeared in star atlases and globes from Ptolemy to the 19th century but were dropped or renamed when the IAU fixed the 88 modern constellations in 1922. Each is drawn as a schematic stick figure on real Hipparcos/HYG stars.",
+ "source": [
+  "Ian Ridpath, Star Tales - obsolete constellations (http://www.ianridpath.com/startales/startales4.html): used as a factual reference for authors, dates and the stars each figure covered; no text copied.",
+  "Wikipedia 'Former constellations' and the articles for each figure (https://en.wikipedia.org/wiki/Former_constellations): CC BY-SA 4.0, facts only.",
+  "Stellarium skycultures, western (https://github.com/Stellarium/stellarium-skycultures/tree/master/western): outlines of Taurus Poniatovii and Frederici Honores used as cross-check/outline; data CC BY-SA 4.0.",
+  "HYG Star Database v4.1 (https://github.com/astronexus/HYG-Database), David Nash: star positions and parallax distances for extraStars; CC BY-SA 4.0.",
+  "constellations.json in this repo (IAU figure lines reused for the name-variant figures)."
+ ],
+ "license": "CC BY-SA 4.0 (share-alike: derived from HYG v4.1 and Stellarium skycultures data)",
+ "figures": [
+  {
+   "id": "historical-argo-navis",
+   "name": "Argo Navis",
+   "meaning": "the ship Argo of Jason and the Argonauts",
+   "kind": "constellation",
+   "group": "Ptolemaic",
+   "lines": [
+    [
+     "HIP35264",
+     "HIP39429",
+     "HIP39953",
+     "HIP42913",
+     "HIP45941",
+     "HIP48774",
+     "HIP52727"
+    ],
+    [
+     "HIP31685",
+     "HIP32768",
+     "HIP41037",
+     "HIP45556",
+     "HIP48002",
+     "HIP52419"
+    ],
+    [
+     "HIP35264",
+     "HIP31685"
+    ],
+    [
+     "HIP52727",
+     "HIP52419"
+    ],
+    [
+     "HIP32768",
+     "HIP30438"
+    ],
+    [
+     "HIP43409",
+     "HIP42828",
+     "HIP42515"
+    ],
+    [
+     "HIP44816",
+     "HIP46651"
+    ]
+   ],
+   "iau": [
+    "Car",
+    "Pup",
+    "Vel",
+    "Pyx"
+   ],
+   "story": "Argo Navis was one of Ptolemy's 48 constellations and by far the largest. Nicolas Louis de Lacaille divided it into Carina (keel), Puppis (stern) and Vela (sails) in 1756, and the IAU kept those three in 1922; Pyxis, the compass, was carved from the mast area by Lacaille. Canopus marked the steering oar. Schematic ship outline.",
+   "era": "Antiquity (Ptolemy, 2nd c. CE) - 1756 (Lacaille); abolished by the IAU 1922",
+   "status": "superseded"
+  },
+  {
+   "id": "historical-antinous",
+   "name": "Antinous",
+   "meaning": "the favourite of Emperor Hadrian",
+   "kind": "constellation",
+   "group": "Roman / early modern",
+   "lines": [
+    [
+     "HIP93805",
+     "HIP96468",
+     "HIP95501",
+     "HIP97804",
+     "HIP99473"
+    ],
+    [
+     "HIP96468",
+     "HIP96483"
+    ]
+   ],
+   "extraStars": {
+    "HIP96468": [
+     294.1803,
+     -1.2866,
+     119.9,
+     4.36,
+     "Iot Aql",
+     "B5III"
+    ],
+    "HIP96483": [
+     294.2227,
+     -7.0275,
+     515.46,
+     4.93,
+     "Kap Aql",
+     "B0.5III"
+    ]
+   },
+   "iau": [
+    "Aql"
+   ],
+   "story": "Hadrian is said to have named stars south of Aquila for Antinous after his death in AD 130. Ptolemy's Almagest lists Antinous as a subdivision of Aquila with six stars, now Eta, Theta, Delta, Iota, Kappa and Lambda Aquilae; Tycho Brahe listed it as a separate constellation in 1602. It was merged back into Aquila in the 19th century and the IAU did not retain it.",
+   "era": "AD 132 (tradition) - 19th century",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-quadrans-muralis",
+   "name": "Quadrans Muralis",
+   "meaning": "the mural quadrant",
+   "kind": "constellation",
+   "group": "Lalande / Bode",
+   "lines": [
+    [
+     "HIP73695",
+     "HIP72524"
+    ],
+    [
+     "HIP72524",
+     "HIP70497"
+    ],
+    [
+     "HIP70497",
+     "HIP69713"
+    ],
+    [
+     "HIP69713",
+     "HIP69483"
+    ],
+    [
+     "HIP69713",
+     "HIP69068"
+    ]
+   ],
+   "extraStars": {
+    "HIP73695": [
+     225.9476,
+     47.6541,
+     12.51,
+     4.83,
+     "44 Boo",
+     "G2V + G2V"
+    ],
+    "HIP72524": [
+     222.4221,
+     48.7208,
+     68.59,
+     5.68,
+     "39 Boo",
+     "F6V+..."
+    ],
+    "HIP69713": [
+     214.0416,
+     51.3672,
+     29.07,
+     4.75,
+     "Iot Boo",
+     "A9V"
+    ],
+    "HIP69483": [
+     213.3708,
+     51.79,
+     50.1,
+     4.53,
+     "Kap2 Boo",
+     "A8IV"
+    ],
+    "HIP69068": [
+     212.0722,
+     49.4582,
+     168.35,
+     5.26,
+     "13 Boo",
+     "M2III"
+    ]
+   },
+   "iau": [
+    "Boo",
+    "Dra"
+   ],
+   "story": "Created by Jerome Lalande in 1795 to commemorate the wall quadrant used by himself and his nephew to catalogue stars, it lay between Bootes and Draco, with 44 Bootis its brightest star. Bode shrank it in 1801. The Quadrantid meteor shower is still named after it. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1795 (Lalande); Latinised by Bode 1801",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-felis",
+   "name": "Felis",
+   "meaning": "the cat",
+   "kind": "constellation",
+   "group": "Lalande / Bode",
+   "lines": [
+    [
+     "HIP46371",
+     "HIP47522"
+    ],
+    [
+     "HIP47522",
+     "HIP47592"
+    ],
+    [
+     "HIP47592",
+     "HIP48559"
+    ],
+    [
+     "HIP48559",
+     "HIP47758"
+    ],
+    [
+     "HIP47758",
+     "HIP46578"
+    ]
+   ],
+   "extraStars": {
+    "HIP46371": [
+     141.8267,
+     -22.3438,
+     48.01,
+     4.72,
+     "HR 3749",
+     "K1III"
+    ],
+    "HIP47522": [
+     145.3209,
+     -23.5915,
+     155.28,
+     4.76,
+     "HR 3858",
+     "B5V"
+    ],
+    "HIP47592": [
+     145.5602,
+     -23.9156,
+     15.01,
+     4.93,
+     "HR 3862",
+     "G0V"
+    ],
+    "HIP48559": [
+     148.5514,
+     -25.9323,
+     104.82,
+     4.87,
+     "HR 3919",
+     "K2III"
+    ]
+   },
+   "iau": [
+    "Hya",
+    "Ant"
+   ],
+   "story": "Suggested by Lalande in 1799 and first drawn by Bode in 1801, Felis was a scattering of faint stars between Hydra and Antlia, the brightest only 5th magnitude, now all in Hydra and Antlia. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1799 (Lalande); first charted by Bode 1801",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-gallus",
+   "name": "Gallus",
+   "meaning": "the cockerel (also Alector)",
+   "kind": "constellation",
+   "group": "Plancius",
+   "lines": [
+    [
+     "HIP36773",
+     "HIP37379"
+    ],
+    [
+     "HIP37379",
+     "HIP37891"
+    ],
+    [
+     "HIP37379",
+     "HIP36795"
+    ],
+    [
+     "HIP36795",
+     "HIP36817"
+    ],
+    [
+     "HIP36817",
+     "HIP36431"
+    ]
+   ],
+   "extraStars": {
+    "HIP36773": [
+     113.4498,
+     -14.5239,
+     471.7,
+     4.82,
+     "HR 2902",
+     "A4Ia"
+    ],
+    "HIP37379": [
+     115.0967,
+     -15.2639,
+     213.22,
+     4.98,
+     "HR 2959",
+     "K3III"
+    ],
+    "HIP37891": [
+     116.487,
+     -14.5638,
+     72.1,
+     5.03,
+     "4 Pup",
+     "F2V"
+    ],
+    "HIP36795": [
+     113.5133,
+     -22.2961,
+     25.3,
+     4.44,
+     "HR 2906",
+     "F6V"
+    ],
+    "HIP36817": [
+     113.5776,
+     -23.4737,
+     31.69,
+     5.06,
+     "HR 2909",
+     "F6V"
+    ],
+    "HIP36431": [
+     112.4642,
+     -23.0243,
+     952.38,
+     4.85,
+     "HR 2874",
+     "A6Ib/II"
+    ]
+   },
+   "iau": [
+    "Pup"
+   ],
+   "story": "Formed by Petrus Plancius on his 1612 globe, Gallus lay in the Milky Way in northern Puppis behind Canis Major and below the feet of Monoceros. Jacob Bartsch tied it to the cock that crowed after Peter's denial. It overlapped the stern of Argo Navis and was dropped; Hevelius returned its stars to Argo. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1612 (Plancius globe)",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-globus-aerostaticus",
+   "name": "Globus Aerostaticus",
+   "meaning": "the hot-air balloon",
+   "kind": "constellation",
+   "group": "Lalande / Bode",
+   "lines": [
+    [
+     "HIP105140",
+     "HIP104174"
+    ],
+    [
+     "HIP104174",
+     "HIP103738"
+    ],
+    [
+     "HIP103738",
+     "HIP102831"
+    ],
+    [
+     "HIP104174",
+     "HIP104234"
+    ],
+    [
+     "HIP104234",
+     "HIP102485"
+    ]
+   ],
+   "extraStars": {
+    "HIP104234": [
+     316.782,
+     -25.0059,
+     139.86,
+     4.49,
+     "24 Cap",
+     "K5/M0III"
+    ]
+   },
+   "iau": [
+    "Mic",
+    "PsA",
+    "Cap"
+   ],
+   "story": "Lalande suggested the Montgolfier balloon to Bode at the 1798 Gotha congress; Bode drew it south of Capricornus beside the tail of Piscis Austrinus. Its brightest star, magnitude 4.7, is now Epsilon Microscopii. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1798 (Lalande); charted by Bode 1801",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-telescopium-herschelii",
+   "name": "Telescopium Herschelii",
+   "meaning": "Herschel's telescope",
+   "kind": "constellation",
+   "group": "Hell / Bode",
+   "lines": [
+    [
+     "HIP31832",
+     "HIP32173"
+    ],
+    [
+     "HIP31832",
+     "HIP32844"
+    ],
+    [
+     "HIP32173",
+     "HIP33485"
+    ],
+    [
+     "HIP32844",
+     "HIP34752"
+    ],
+    [
+     "HIP32173",
+     "HIP30520"
+    ]
+   ],
+   "extraStars": {
+    "HIP31832": [
+     99.8326,
+     42.4889,
+     127.55,
+     4.8,
+     "Psi2 Aur",
+     "K3III"
+    ],
+    "HIP32173": [
+     100.7708,
+     44.5245,
+     99.21,
+     5.04,
+     "Psi4 Aur",
+     "K5III"
+    ],
+    "HIP32844": [
+     102.6915,
+     41.7812,
+     116.14,
+     4.99,
+     "Psi7 Aur",
+     "K3III"
+    ],
+    "HIP33485": [
+     104.4046,
+     45.0941,
+     73.86,
+     4.9,
+     "16 Lyn",
+     "A2Vn"
+    ],
+    "HIP34752": [
+     107.9138,
+     39.3205,
+     148.81,
+     4.91,
+     "63 Aur",
+     "K4II-III"
+    ],
+    "HIP30520": [
+     96.2246,
+     49.2879,
+     null,
+     4.92,
+     "Psi1 Aur",
+     "K5Iabvar"
+    ]
+   },
+   "iau": [
+    "Aur",
+    "Gem",
+    "Lyn"
+   ],
+   "story": "Maximilian Hell introduced two telescope constellations in 1789 to honour William Herschel's discovery of Uranus. Bode merged them into one, Telescopium Herschelii, between Auriga, Gemini and Lynx; its brightest star was 50 Aurigae (Psi-2 Aurigae), magnitude 4.8. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1789 (Hell); Bode 1801",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-sceptrum-brandenburgicum",
+   "name": "Sceptrum Brandenburgicum",
+   "meaning": "the Brandenburg sceptre",
+   "kind": "constellation",
+   "group": "Kirch",
+   "lines": [
+    [
+     "HIP22701",
+     "HIP21296",
+     "HIP21644",
+     "HIP21594",
+     "HIP22479"
+    ]
+   ],
+   "extraStars": {
+    "HIP22701": [
+     73.2236,
+     -5.4527,
+     72.05,
+     4.36,
+     "Ome Eri",
+     "A9IV"
+    ],
+    "HIP21296": [
+     68.5485,
+     -8.2314,
+     304.88,
+     5.2,
+     "47 Eri",
+     "M3III"
+    ],
+    "HIP21644": [
+     69.7231,
+     -12.1231,
+     71.33,
+     4.99,
+     "HR 1483",
+     "A0V"
+    ],
+    "HIP21594": [
+     69.5451,
+     -14.304,
+     33.68,
+     3.86,
+     "Sceptrum",
+     "K1III"
+    ],
+    "HIP22479": [
+     72.5484,
+     -16.2172,
+     72.31,
+     5.03,
+     "60 Eri",
+     "K0III"
+    ]
+   },
+   "iau": [
+    "Eri"
+   ],
+   "story": "Introduced by Gottfried Kirch in 1688 to honour Brandenburg and Frederick III, it lay in a bend of Eridanus near Orion's foot as a roughly north-south row of five stars of 4th to 6th magnitude. The name survives as that of 53 Eridani, Sceptrum. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1688 (Kirch)",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-officina-typographica",
+   "name": "Officina Typographica",
+   "meaning": "the printing workshop",
+   "kind": "constellation",
+   "group": "Bode",
+   "lines": [
+    [
+     "HIP39906",
+     "HIP39095"
+    ],
+    [
+     "HIP39095",
+     "HIP38211"
+    ],
+    [
+     "HIP38211",
+     "HIP38382"
+    ],
+    [
+     "HIP39095",
+     "HIP38835"
+    ],
+    [
+     "HIP38835",
+     "HIP39023"
+    ]
+   ],
+   "extraStars": {
+    "HIP39906": [
+     122.2568,
+     -19.245,
+     142.65,
+     4.4,
+     "16 Pup",
+     "B5V"
+    ],
+    "HIP39095": [
+     119.9669,
+     -18.3992,
+     73.96,
+     4.61,
+     "HR 3131",
+     "A1V"
+    ],
+    "HIP38211": [
+     117.4217,
+     -17.2284,
+     78.06,
+     5.17,
+     "6 Pup",
+     "K3III"
+    ],
+    "HIP38382": [
+     117.9429,
+     -13.898,
+     16.5,
+     5.16,
+     "9 Pup",
+     "G2V"
+    ],
+    "HIP39023": [
+     119.7738,
+     -23.3104,
+     263.85,
+     5.09,
+     "12 Pup",
+     "G8II"
+    ]
+   },
+   "iau": [
+    "Pup"
+   ],
+   "story": "Bode proposed it in his 1801 Uranographia to commemorate Gutenberg's movable type, placing it in northern Puppis. The brightest star was 16 Puppis, magnitude 4.4. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1801 (Bode)",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-solitarius",
+   "name": "Solitarius",
+   "meaning": "the Solitaire (Turdus Solitarius)",
+   "kind": "constellation",
+   "group": "Le Monnier",
+   "lines": [
+    [
+     "HIP73714",
+     "HIP72571"
+    ],
+    [
+     "HIP72571",
+     "HIP72197"
+    ],
+    [
+     "HIP72571",
+     "HIP70753"
+    ],
+    [
+     "HIP70753",
+     "HIP70306"
+    ],
+    [
+     "HIP70306",
+     "HIP69415"
+    ]
+   ],
+   "extraStars": {
+    "HIP72197": [
+     221.5004,
+     -25.4432,
+     30.28,
+     5.15,
+     "54 Hya",
+     "F0V + G/K"
+    ],
+    "HIP70753": [
+     217.0435,
+     -29.4916,
+     120.63,
+     4.97,
+     "52 Hya",
+     "B7/B8V"
+    ],
+    "HIP70306": [
+     215.7741,
+     -27.754,
+     48.26,
+     4.78,
+     "51 Hya",
+     "K3III"
+    ],
+    "HIP69415": [
+     213.1918,
+     -27.2612,
+     66.71,
+     5.07,
+     "50 Hya",
+     "K2III"
+    ]
+   },
+   "iau": [
+    "Hya",
+    "Lib"
+   ],
+   "story": "Pierre-Charles Le Monnier introduced the Solitaire in 1776, perched on the tail of Hydra with its head overlapping southern Libra, with 22 stars. Bode renamed it Turdus Solitarius (1801); its brightest star, Le Monnier's Gamma, is now Sigma Librae and 58 Hydrae was later named Solitaire by the IAU. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1776 (Le Monnier)",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-noctua",
+   "name": "Noctua",
+   "meaning": "the owl",
+   "kind": "constellation",
+   "group": "Jamieson",
+   "lines": [
+    [
+     "HIP73714",
+     "HIP72571"
+    ],
+    [
+     "HIP72571",
+     "HIP72197"
+    ],
+    [
+     "HIP72571",
+     "HIP70753"
+    ],
+    [
+     "HIP70753",
+     "HIP70306"
+    ],
+    [
+     "HIP70306",
+     "HIP69415"
+    ]
+   ],
+   "extraStars": {
+    "HIP72197": [
+     221.5004,
+     -25.4432,
+     30.28,
+     5.15,
+     "54 Hya",
+     "F0V + G/K"
+    ],
+    "HIP70753": [
+     217.0435,
+     -29.4916,
+     120.63,
+     4.97,
+     "52 Hya",
+     "B7/B8V"
+    ],
+    "HIP70306": [
+     215.7741,
+     -27.754,
+     48.26,
+     4.78,
+     "51 Hya",
+     "K3III"
+    ],
+    "HIP69415": [
+     213.1918,
+     -27.2612,
+     66.71,
+     5.07,
+     "50 Hya",
+     "K2III"
+    ]
+   },
+   "iau": [
+    "Hya",
+    "Lib"
+   ],
+   "story": "Alexander Jamieson turned Le Monnier's Solitaire into an owl, Noctua, in his 1822 Celestial Atlas (reproduced in Urania's Mirror), reversing the bird so it faced Libra. It occupies the same stars as the Solitaire. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1822 (Jamieson)",
+   "status": "variant"
+  },
+  {
+   "id": "historical-custos-messium",
+   "name": "Custos Messium",
+   "meaning": "the harvest keeper (Messier)",
+   "kind": "constellation",
+   "group": "Lalande",
+   "lines": [
+    [
+     "HIP9598",
+     "HIP9480"
+    ],
+    [
+     "HIP9480",
+     "HIP8016"
+    ],
+    [
+     "HIP8016",
+     "HIP9009"
+    ],
+    [
+     "HIP9598",
+     "HIP14862"
+    ],
+    [
+     "HIP14862",
+     "HIP17959"
+    ],
+    [
+     "HIP17959",
+     "HIP17884"
+    ]
+   ],
+   "extraStars": {
+    "HIP9480": [
+     30.4897,
+     70.907,
+     35.26,
+     4.49,
+     "48 Cas",
+     "A3IV"
+    ],
+    "HIP8016": [
+     25.7324,
+     70.6225,
+     85.11,
+     5.18,
+     "42 Cas",
+     "B9V"
+    ],
+    "HIP9009": [
+     29.0001,
+     68.6852,
+     215.05,
+     4.97,
+     "Ome Cas",
+     "B8III"
+    ],
+    "HIP14862": [
+     47.9844,
+     74.3937,
+     50.71,
+     4.85,
+     "HR 932",
+     "A2Vnn"
+    ]
+   },
+   "iau": [
+    "Cas",
+    "Cam",
+    "Cep"
+   ],
+   "story": "Lalande placed it on his 1775 globe as a pun on Charles Messier, in the area where the comet of 1774 was first seen, between Cepheus and Camelopardalis. Its brightest star is 50 Cassiopeiae; BE Camelopardalis (HR 1155) was named Custos by the IAU. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1775 (Lalande)",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-lochium-funis",
+   "name": "Lochium Funis",
+   "meaning": "the nautical log and line",
+   "kind": "constellation",
+   "group": "Bode",
+   "lines": [
+    [
+     "HIP42483",
+     "HIP43825"
+    ],
+    [
+     "HIP43825",
+     "HIP44824"
+    ],
+    [
+     "HIP44824",
+     "HIP45902"
+    ],
+    [
+     "HIP45902",
+     "HIP46026"
+    ],
+    [
+     "HIP46026",
+     "HIP45001"
+    ]
+   ],
+   "extraStars": {
+    "HIP45001": [
+     137.4851,
+     -30.3654,
+     64.98,
+     5.59,
+     "Eps Pyx",
+     "A4IV"
+    ]
+   },
+   "iau": [
+    "Pyx"
+   ],
+   "story": "Bode added the ship's log and line, coiled around Lacaille's compass Pyxis, in the 1801 Uranographia and treated Pyxis and Lochium Funis as one figure. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving. Chosen here as the fainter Pyxis stars away from the compass triad.",
+   "era": "1801 (Bode)",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-mons-maenalus",
+   "name": "Mons Maenalus",
+   "meaning": "Mount Maenalus",
+   "kind": "constellation",
+   "group": "Hevelius / Bode",
+   "lines": [
+    [
+     "HIP72220",
+     "HIP73620"
+    ],
+    [
+     "HIP73620",
+     "HIP74975"
+    ],
+    [
+     "HIP72220",
+     "HIP72631"
+    ],
+    [
+     "HIP72220",
+     "HIP71832"
+    ],
+    [
+     "HIP71832",
+     "HIP70400"
+    ],
+    [
+     "HIP71832",
+     "HIP71795"
+    ]
+   ],
+   "extraStars": {
+    "HIP73620": [
+     225.7252,
+     2.0913,
+     59.92,
+     4.39,
+     "110 Vir",
+     "K0III"
+    ],
+    "HIP74975": [
+     229.8283,
+     1.7654,
+     25.38,
+     5.04,
+     "5 Ser",
+     "F8III-IV"
+    ],
+    "HIP72631": [
+     222.7545,
+     -2.2992,
+     67.02,
+     4.93,
+     "11 Lib",
+     "G8..."
+    ],
+    "HIP71832": [
+     220.4115,
+     8.1618,
+     164.74,
+     4.86,
+     "31 Boo",
+     "G8IIIvar"
+    ],
+    "HIP70400": [
+     216.0473,
+     5.8201,
+     48.76,
+     5.1,
+     "HR 5392",
+     "A5V"
+    ]
+   },
+   "iau": [
+    "Vir",
+    "Boo",
+    "Ser"
+   ],
+   "story": "Hevelius's mountain of Arcadia lay largely in northern Virgo and Serpens Caput; Bode restricted it to southern Bootes. Its brightest star, 109 Virginis (mag 3.7), was named Maenalus by the IAU. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1687 (Hevelius)",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-taurus-poniatovii",
+   "name": "Taurus Poniatovii",
+   "meaning": "Poniatowski's Bull",
+   "kind": "constellation",
+   "group": "Poczobut",
+   "lines": [
+    [
+     "HIP88771",
+     "HIP88149",
+     "HIP88192",
+     "HIP88290"
+    ],
+    [
+     "HIP88192",
+     "HIP88601"
+    ]
+   ],
+   "extraStars": {
+    "HIP88771": [
+     271.8374,
+     9.5638,
+     26.63,
+     3.71,
+     "72 Oph",
+     "A4IVs"
+    ],
+    "HIP88149": [
+     270.0658,
+     4.3686,
+     199.6,
+     4.79,
+     "66 Oph",
+     "B2Ve"
+    ],
+    "HIP88192": [
+     270.1613,
+     2.9316,
+     377.36,
+     3.93,
+     "67 Oph",
+     "B5Ib"
+    ],
+    "HIP88290": [
+     270.4383,
+     1.3051,
+     89.69,
+     4.42,
+     "68 Oph",
+     "A2Vn"
+    ],
+    "HIP88601": [
+     271.3637,
+     2.5001,
+     5.08,
+     4.03,
+     "70 Oph",
+     "K0V SB"
+    ]
+   },
+   "iau": [
+    "Oph",
+    "Ser"
+   ],
+   "story": "Marcin Poczobut formed the bull in 1777 to honour Stanislaus Poniatowski of Poland; its V-shaped face used Ptolemy's unformed stars 66, 67, 68, 70 and 72 Ophiuchi, and its 16-star catalogue contained Barnard's Star. Stellarium's western culture draws it with 73 rather than 72 Ophiuchi.",
+   "era": "1777 (Poczobut)",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-frederici-honores",
+   "name": "Frederici Honores",
+   "meaning": "Frederick's Glory",
+   "kind": "constellation",
+   "group": "Bode",
+   "lines": [
+    [
+     "HIP116805",
+     "HIP116584",
+     "HIP117221",
+     "HIP116805",
+     "HIP116631"
+    ]
+   ],
+   "iau": [
+    "And",
+    "Cas",
+    "Cep",
+    "Peg"
+   ],
+   "story": "Bode introduced Frederici Honores in 1787 for Frederick the Great, with a sword and pen (stars of Andromeda, Cassiopeia, Cepheus and Pegasus). Its brightest members were Omicron, Lambda and Kappa Andromedae; 7 Andromedae was named Honores by the IAU. Outline from Stellarium's western culture.",
+   "era": "1787 (Bode)",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-cerberus",
+   "name": "Cerberus",
+   "meaning": "the three-headed hound of Hades",
+   "kind": "constellation",
+   "group": "Hevelius",
+   "lines": [
+    [
+     "HIP88128",
+     "HIP88267",
+     "HIP88886",
+     "HIP90139"
+    ]
+   ],
+   "extraStars": {
+    "HIP88128": [
+     270.0142,
+     16.7509,
+     205.76,
+     4.67,
+     "93 Her",
+     "K0II-III"
+    ],
+    "HIP88267": [
+     270.3767,
+     21.5958,
+     127.88,
+     4.26,
+     "95 Her",
+     "G5"
+    ],
+    "HIP88886": [
+     272.1895,
+     20.8146,
+     280.9,
+     4.37,
+     "102 Her",
+     "B2IV"
+    ],
+    "HIP90139": [
+     275.9245,
+     21.7698,
+     36.47,
+     3.85,
+     "109 Her",
+     "K2III"
+    ]
+   },
+   "iau": [
+    "Her"
+   ],
+   "story": "Hevelius's 1687 catalogue added Cerberus in the hand of Hercules; it consisted of 93, 95, 102 and 109 Herculis. It replaced Bayer's apple branch (Ramus Pomifer).",
+   "era": "1687 (Hevelius)",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-anser",
+   "name": "Anser",
+   "meaning": "the goose (Vulpecula cum Ansere)",
+   "kind": "constellation",
+   "group": "Hevelius",
+   "lines": [
+    [
+     "HIP95771",
+     "HIP95785"
+    ],
+    [
+     "HIP95785",
+     "HIP95260"
+    ],
+    [
+     "HIP95785",
+     "HIP97077"
+    ],
+    [
+     "HIP97077",
+     "HIP97886"
+    ],
+    [
+     "HIP97886",
+     "HIP97679"
+    ]
+   ],
+   "extraStars": {
+    "HIP95785": [
+     292.2378,
+     24.7687,
+     157.73,
+     5.82,
+     "8 Vul",
+     "K0III"
+    ],
+    "HIP95260": [
+     290.712,
+     26.2624,
+     120.48,
+     5.22,
+     "3 Vul",
+     "B6III"
+    ],
+    "HIP97077": [
+     295.9289,
+     25.7719,
+     101.73,
+     5.5,
+     "10 Vul",
+     "G8III"
+    ]
+   },
+   "iau": [
+    "Vul"
+   ],
+   "story": "Hevelius introduced the fox and goose as Vulpecula cum Ansere in 1687; the goose, carried in the fox's jaws, is marked by Alpha Vulpeculae, which still bears the name Anser. Later atlases merged the pair into Vulpecula. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1687 (Hevelius)",
+   "status": "variant"
+  },
+  {
+   "id": "historical-machina-electrica",
+   "name": "Machina Electrica",
+   "meaning": "the electrostatic generator",
+   "kind": "constellation",
+   "group": "Bode",
+   "lines": [
+    [
+     "HIP4577",
+     "HIP2210"
+    ],
+    [
+     "HIP2210",
+     "HIP1708"
+    ],
+    [
+     "HIP1708",
+     "HIP183"
+    ],
+    [
+     "HIP183",
+     "HIP117452"
+    ]
+   ],
+   "iau": [
+    "Scl",
+    "For"
+   ],
+   "story": "Bode's 1801 Uranographia introduced an electrostatic machine of Ramsden's type between Fornax and Sculptor, mostly taking over the area of Lacaille's Sculptor. Its stars are faint and are back in Sculptor and Fornax. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1801 (Bode)",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-rangifer",
+   "name": "Rangifer (Tarandus)",
+   "meaning": "the reindeer",
+   "kind": "constellation",
+   "group": "Le Monnier",
+   "lines": [
+    [
+     "HIP9763",
+     "HIP9727"
+    ],
+    [
+     "HIP9727",
+     "HIP5372"
+    ],
+    [
+     "HIP9727",
+     "HIP114222"
+    ]
+   ],
+   "extraStars": {
+    "HIP9763": [
+     31.3815,
+     76.1151,
+     122.7,
+     5.22,
+     "49 Cas",
+     "G8III"
+    ],
+    "HIP9727": [
+     31.2797,
+     77.2813,
+     33.16,
+     5.27,
+     "47 Cas",
+     "F0Vn"
+    ],
+    "HIP5372": [
+     17.1842,
+     86.2571,
+     85.91,
+     4.24,
+     "HR 285",
+     "K2II-III"
+    ],
+    "HIP114222": [
+     346.9743,
+     75.3875,
+     75.64,
+     4.41,
+     "Pi Cep",
+     "G2III"
+    ]
+   },
+   "iau": [
+    "Cep",
+    "Cas",
+    "UMi"
+   ],
+   "story": "Le Monnier placed the reindeer on his 1743 chart of the 1742 comet, recalling his Lapland trip of 1736-37, close to the pole between Cepheus and Camelopardalis. Bode catalogued 46 faint stars for it in 1801. The IAU named 49 Cassiopeiae Rangifer and 2 Ursae Minoris (HR 285) Tarandus. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving. Bode's Latin name is Tarandus vel Rangifer; they are one figure.",
+   "era": "1743 (Le Monnier)",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-psalterium-georgianum",
+   "name": "Psalterium Georgianum (Harpa Georgii)",
+   "meaning": "George's harp",
+   "kind": "constellation",
+   "group": "Hell / Bode",
+   "lines": [
+    [
+     "HIP16852",
+     "HIP17457"
+    ],
+    [
+     "HIP17457",
+     "HIP18255"
+    ],
+    [
+     "HIP18255",
+     "HIP18788"
+    ],
+    [
+     "HIP17457",
+     "HIP16341"
+    ],
+    [
+     "HIP16341",
+     "HIP14293"
+    ]
+   ],
+   "extraStars": {
+    "HIP17457": [
+     56.1271,
+     -1.1631,
+     200.8,
+     5.24,
+     "24 Eri",
+     "B7V"
+    ],
+    "HIP18255": [
+     58.5729,
+     -2.9547,
+     95.97,
+     4.46,
+     "32 Eri",
+     "G8III"
+    ],
+    "HIP18788": [
+     60.3835,
+     -1.5497,
+     126.9,
+     5.28,
+     "35 Eri",
+     "B5V"
+    ],
+    "HIP16341": [
+     52.6544,
+     -5.0751,
+     123.92,
+     4.74,
+     "17 Eri",
+     "B9Vs"
+    ],
+    "HIP14293": [
+     46.0688,
+     -7.6009,
+     41.56,
+     5.26,
+     "Rho3 Eri",
+     "A8V"
+    ]
+   },
+   "iau": [
+    "Eri",
+    "Tau"
+   ],
+   "story": "Maximilian Hell introduced it in 1789 for King George III, patron of Herschel; Bode simplified it to Harpa Georgii in 1801. Its brightest star was 10 Tauri (mag 4.3), the rest are in northern Eridanus. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1789 (Hell); Bode 1801",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-sceptrum-et-manus-iustitiae",
+   "name": "Sceptrum et Manus Iustitiae",
+   "meaning": "the Sceptre and Hand of Justice",
+   "kind": "constellation",
+   "group": "Royer",
+   "lines": [
+    [
+     "HIP110538",
+     "HIP111169",
+     "HIP111022",
+     "HIP110351",
+     "HIP111104"
+    ],
+    [
+     "HIP111022",
+     "HIP110609",
+     "HIP111674"
+    ]
+   ],
+   "iau": [
+    "Lac"
+   ],
+   "story": "Augustin Royer's 1679 sceptre and hand of justice honoured Louis XIV with 17 stars of 4th to 6th magnitude; it lay in the area Hevelius filled with Lacerta in 1687. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1679 (Royer)",
+   "status": "superseded"
+  },
+  {
+   "id": "historical-musca-borealis",
+   "name": "Musca Borealis",
+   "meaning": "the northern fly",
+   "kind": "constellation",
+   "group": "Plancius / Hevelius",
+   "lines": [
+    [
+     "HIP12489",
+     "HIP12719",
+     "HIP13061",
+     "HIP13209"
+    ]
+   ],
+   "extraStars": {
+    "HIP12489": [
+     40.1711,
+     27.0609,
+     70.97,
+     5.3,
+     "33 Ari",
+     "A3V"
+    ]
+   },
+   "iau": [
+    "Ari"
+   ],
+   "story": "Plancius formed it as the Bee over Aries's rump in 1612; Bartsch made it a wasp, Hevelius a fly (1687), and the name Musca Borealis appeared in 1822. Its stars are 33, 35, 39 and 41 Arietis; 39 Arietis is named Lilii Borea.",
+   "era": "1612 (Plancius, as Apes); Hevelius 1687; Jamieson 1822",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-lilium",
+   "name": "Lilium",
+   "meaning": "the fleur-de-lis",
+   "kind": "constellation",
+   "group": "Pardies / Royer",
+   "lines": [
+    [
+     "HIP12489",
+     "HIP12719",
+     "HIP13061",
+     "HIP13209"
+    ]
+   ],
+   "extraStars": {
+    "HIP12489": [
+     40.1711,
+     27.0609,
+     70.97,
+     5.3,
+     "33 Ari",
+     "A3V"
+    ]
+   },
+   "iau": [
+    "Ari"
+   ],
+   "story": "Ignace-Gaston Pardies used the same four stars as Musca Borealis to form the fleur-de-lis of France in his 1674 atlas, and Royer enlarged it to seven stars in 1679.",
+   "era": "1674 (Pardies); enlarged by Royer 1679",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-triangulum-minus",
+   "name": "Triangulum Minus",
+   "meaning": "the lesser triangle",
+   "kind": "constellation",
+   "group": "Hevelius",
+   "lines": [
+    [
+     "HIP10280",
+     "HIP10793",
+     "HIP11486",
+     "HIP10280"
+    ]
+   ],
+   "iau": [
+    "Tri"
+   ],
+   "story": "Hevelius's small triangle adjoining Triangulum (sometimes jointly Triangula) comprised 6, 10 and 12 Trianguli. The IAU named 6 Trianguli Triminus.",
+   "era": "1687 (Hevelius)",
+   "status": "obsolete"
+  },
+  {
+   "id": "historical-robur-carolinum",
+   "name": "Robur Carolinum",
+   "meaning": "Charles's oak",
+   "kind": "constellation",
+   "group": "Halley",
+   "lines": [
+    [
+     "HIP45238",
+     "HIP48002",
+     "HIP52419"
+    ],
+    [
+     "HIP52419",
+     "HR4210"
+    ],
+    [
+     "HR4210",
+     "HIP52405"
+    ],
+    [
+     "HIP52405",
+     "HIP52102"
+    ],
+    [
+     "HIP52102",
+     "HIP51912"
+    ]
+   ],
+   "extraStars": {
+    "HR4210": [
+     161.265,
+     -59.6842,
+     null,
+     6.21,
+     "Eta Car",
+     "pec"
+    ],
+    "HIP52405": [
+     160.669,
+     -59.2158,
+     null,
+     5.36,
+     "HR 4198",
+     "B2.5Ia"
+    ],
+    "HIP52102": [
+     159.6875,
+     -59.183,
+     719.42,
+     4.69,
+     "HR 4177",
+     "K4/K5III:"
+    ],
+    "HIP51912": [
+     159.0856,
+     -59.5644,
+     80.52,
+     5.08,
+     "HR 4164",
+     "K1III"
+    ]
+   },
+   "iau": [
+    "Car"
+   ],
+   "story": "Edmond Halley planted the royal oak in 1678 for Charles II, from stars then in Argo Navis; Beta Carinae marks the roots and Theta Carinae the top of the trunk, with leaves around Eta Carinae. Halley listed 12 stars; Lacaille removed it in 1756. The stick figure is schematic: it joins real stars of the region the atlas assigned to the figure, not a transcription of the original engraving.",
+   "era": "1678 (Halley)",
+   "status": "superseded"
+  },
+  {
+   "id": "historical-columba-noachi",
+   "name": "Columba Noachi",
+   "meaning": "Noah's dove",
+   "kind": "constellation",
+   "group": "Plancius",
+   "lines": [
+    [
+     "HIP30277",
+     "HIP27628",
+     "HIP26634",
+     "HIP25859"
+    ],
+    [
+     "HIP27628",
+     "HIP28328"
+    ]
+   ],
+   "iau": [
+    "Col"
+   ],
+   "story": "Plancius formed Columba from Ptolemy's unformed stars south of Canis Major in 1592; Lacaille added the Greek letters. Same stars as the modern Columba.",
+   "era": "1592 (Plancius)",
+   "status": "variant"
+  },
+  {
+   "id": "historical-serpentarius",
+   "name": "Serpentarius",
+   "meaning": "the serpent-bearer (Ophiuchus with Serpens)",
+   "kind": "constellation",
+   "group": "Ptolemaic",
+   "lines": [
+    [
+     "HIP88048",
+     "HIP87108",
+     "HIP86742",
+     "HIP86032",
+     "HIP83000",
+     "HIP80883",
+     "HIP79593",
+     "HIP79882",
+     "HIP81377",
+     "HIP84012"
+    ],
+    [
+     "HIP83000",
+     "HIP81377",
+     "HIP80894",
+     "HIP80569",
+     "HIP80343",
+     "HIP80473"
+    ],
+    [
+     "HIP86742",
+     "HIP84012",
+     "HIP84970",
+     "HIP85423"
+    ],
+    [
+     "HIP77233",
+     "HIP76852",
+     "HIP77450",
+     "HIP78072",
+     "HIP77233",
+     "HIP76276",
+     "HIP77070",
+     "HIP77622",
+     "HIP79593"
+    ],
+    [
+     "HIP84012",
+     "HIP86263",
+     "HIP88048",
+     "HIP88404",
+     "HIP89962",
+     "HIP92946"
+    ]
+   ],
+   "iau": [
+    "Oph",
+    "Ser"
+   ],
+   "story": "Ptolemy's Ophiuchus (Serpentarius) holds the snake Serpens in both hands; the IAU retains them as two constellations, drawn together here.",
+   "era": "Antiquity (Ptolemy)",
+   "status": "variant"
+  },
+  {
+   "id": "historical-sextans-uraniae",
+   "name": "Sextans Uraniae",
+   "meaning": "Urania's sextant",
+   "kind": "constellation",
+   "group": "Hevelius",
+   "lines": [
+    [
+     "HIP49641",
+     "HIP48437",
+     "HIP51362",
+     "HIP51437"
+    ]
+   ],
+   "iau": [
+    "Sex"
+   ],
+   "story": "Hevelius's 1687 name for the sextant of his Danzig observatory; the IAU kept Sextans with the same stars.",
+   "era": "1687 (Hevelius)",
+   "status": "variant"
+  },
+  {
+   "id": "historical-apparatus-sculptoris",
+   "name": "Apparatus Sculptoris",
+   "meaning": "the sculptor's workshop",
+   "kind": "constellation",
+   "group": "Lacaille",
+   "lines": [
+    [
+     "HIP4577",
+     "HIP117452",
+     "HIP115102",
+     "HIP116231"
+    ]
+   ],
+   "iau": [
+    "Scl"
+   ],
+   "story": "Lacaille's original 1756 name for Sculptor ('Atelier du Sculpteur'), Latinised in his 1763 catalogue; Bode later shortened it.",
+   "era": "1756 (Lacaille)",
+   "status": "variant"
+  },
+  {
+   "id": "historical-cela-sculptoris",
+   "name": "Cela Sculptoris",
+   "meaning": "the sculptor's burin",
+   "kind": "constellation",
+   "group": "Lacaille",
+   "lines": [
+    [
+     "HIP21060",
+     "HIP21770",
+     "HIP21861",
+     "HIP23595"
+    ]
+   ],
+   "iau": [
+    "Cae"
+   ],
+   "story": "Lacaille's 1763 Latin name for the sculptor's chisel, which became Caelum.",
+   "era": "1756 (Lacaille)",
+   "status": "variant"
+  },
+  {
+   "id": "historical-norma-et-regula",
+   "name": "Norma et Regula",
+   "meaning": "the set square and ruler",
+   "kind": "constellation",
+   "group": "Lacaille",
+   "lines": [
+    [
+     "HIP78914",
+     "HIP80582",
+     "HIP80000",
+     "HIP78639",
+     "HIP78914"
+    ]
+   ],
+   "iau": [
+    "Nor"
+   ],
+   "story": "Lacaille's 1763 Latin name, shortened to Norma.",
+   "era": "1756 (Lacaille)",
+   "status": "variant"
+  },
+  {
+   "id": "historical-machina-pneumatica",
+   "name": "Machina Pneumatica",
+   "meaning": "the air pump",
+   "kind": "constellation",
+   "group": "Lacaille",
+   "lines": [
+    [
+     "HIP46515",
+     "HIP51172",
+     "HIP53502"
+    ]
+   ],
+   "iau": [
+    "Ant"
+   ],
+   "story": "Lacaille's 1763 Latin name for the air pump, now Antlia.",
+   "era": "1756 (Lacaille)",
+   "status": "variant"
+  },
+  {
+   "id": "historical-scutum-sobiescianum",
+   "name": "Scutum Sobiescianum",
+   "meaning": "Sobieski's shield",
+   "kind": "constellation",
+   "group": "Hevelius",
+   "lines": [
+    [
+     "HIP91117",
+     "HIP92175",
+     "HIP91726",
+     "HIP90595",
+     "HIP91117"
+    ]
+   ],
+   "iau": [
+    "Sct"
+   ],
+   "story": "Hevelius named it in 1684 for King John III Sobieski; the IAU shortened it to Scutum.",
+   "era": "1684 (Hevelius)",
+   "status": "variant"
+  },
+  {
+   "id": "historical-jordanus",
+   "name": "Jordanus",
+   "meaning": "the river Jordan",
+   "kind": "constellation",
+   "group": "Plancius",
+   "lines": [
+    [
+     "HIP66458",
+     "HIP63125",
+     "HIP64844",
+     "HIP64540"
+    ]
+   ],
+   "iau": [
+    "CVn",
+    "UMa"
+   ],
+   "story": "Plancius's 1612 globe made the Jordan from Ptolemy's unformed stars around Ursa Major; its fountains Ior (25 CVn, named Jordanus by the IAU) and Dan (20 CVn and HR 4997) lie under the Bear's tail, with Cor Caroli beneath the confluence. Hevelius did not adopt it.",
+   "era": "1612 (Plancius)",
+   "status": "obsolete"
+  }
+ ]
+}

@@ -16,8 +16,15 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    name: "Listen",
+    pages: [{ href: "/kosmo/radio", label: "Space Radio" }],
+  },
+  {
     name: "Study",
-    pages: [{ href: "/kosmo/tools/university", label: "University" }],
+    pages: [
+      { href: "/kosmo/university", label: "Courses", prefix: "/kosmo/university" },
+      { href: "/kosmo/tools/university", label: "University" },
+    ],
   },
   {
     name: "Domains",
@@ -43,6 +50,10 @@ export const NAV_GROUPS: NavGroup[] = [
     name: "Lab",
     pages: [
       { href: "/kosmo/tools/shipyard", label: "Shipyard" },
+      { href: "/kosmo/tools/landing", label: "Landing Lab" },
+      { href: "/kosmo/tools/warp", label: "Warp Drive" },
+      { href: "/kosmo/tools/space-access", label: "Space Access" },
+      { href: "/kosmo/tools/settlement", label: "Settlement" },
       { href: "/kosmo/tools/oracle", label: "Oracle", prefix: "/kosmo/tools/oracle" },
     ],
   },
@@ -50,7 +61,6 @@ export const NAV_GROUPS: NavGroup[] = [
 
 export function isNavActive(pathname: string, page: NavPage) {
   const { href, prefix } = page;
-      { href: "/kosmo/tools/landing", label: "Landing Lab" },
   if (href === "/kosmo") return pathname === "/kosmo";
   if (prefix) return pathname.startsWith(prefix);
   return pathname === href || pathname.startsWith(`${href}/`);

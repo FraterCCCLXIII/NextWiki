@@ -1,0 +1,1670 @@
+{
+ "id": "tibetan",
+ "name": "Tibetan",
+ "region": "Tibet",
+ "era": "Traditional",
+ "color": "#d94f30",
+ "description": "Tibetan zodiac signs and lunar mansions with Tibetan names, compiled for Stellarium. Upstream asks for specialist review.",
+ "source": [
+  "Stellarium sky culture 'tibetan' (https://github.com/Stellarium/stellarium/tree/master/skycultures/tibetan); contributed by: Georg Zotti on May 21, 2019, reworked July-October 2023. *Zodiac* and *Gyukars* added in V25.2. Lyu Haocheng supplemented the Tibetan names of the twelve zodiacal signs and the 28 (27) lunar mansions with native script, transliteration, and IPA. Specialist review is still requested.",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: tibetan: CC BY-SA. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "tibetan-tibetan-aries",
+   "name": "Aries",
+   "kind": "zodiac",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP13209",
+     "HIP9884",
+     "HIP8903",
+     "HIP8832"
+    ]
+   ],
+   "native": "ལུག",
+   "romanized": "lug",
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-taurus",
+   "name": "Taurus",
+   "kind": "zodiac",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP25428",
+     "HIP21881",
+     "HIP20889"
+    ],
+    [
+     "HIP21421",
+     "HIP26451"
+    ],
+    [
+     "HIP20205",
+     "HIP20455"
+    ],
+    [
+     "HIP20205",
+     "HIP18724",
+     "HIP15900"
+    ],
+    [
+     "HIP21421",
+     "HIP20889"
+    ],
+    [
+     "HIP21421",
+     "HIP20894",
+     "HIP20205"
+    ],
+    [
+     "HIP20889",
+     "HIP20648",
+     "HIP20455",
+     "HIP17847"
+    ]
+   ],
+   "native": "གླང",
+   "romanized": "glang",
+   "extraStars": {
+    "HIP21881": [
+     70.5613,
+     22.9569,
+     122.1,
+     4.27,
+     "94Tau Tau",
+     "B3V"
+    ],
+    "HIP20648": [
+     66.3724,
+     17.9279,
+     45.54,
+     4.3,
+     "68Del3Tau",
+     "A2IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-gemini",
+   "name": "Gemini",
+   "kind": "zodiac",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP31681",
+     "HIP34088",
+     "HIP35550",
+     "HIP35350",
+     "HIP32362"
+    ],
+    [
+     "HIP35550",
+     "HIP36962",
+     "HIP37740"
+    ],
+    [
+     "HIP36962",
+     "HIP37826"
+    ],
+    [
+     "HIP36962",
+     "HIP36046",
+     "HIP34693",
+     "HIP36850"
+    ],
+    [
+     "HIP34693",
+     "HIP33018"
+    ],
+    [
+     "HIP34693",
+     "HIP32246",
+     "HIP30883"
+    ],
+    [
+     "HIP32246",
+     "HIP30343",
+     "HIP29655",
+     "HIP28734"
+    ]
+   ],
+   "native": "འཁྲིག",
+   "romanized": "'khrig",
+   "extraStars": {
+    "HIP36046": [
+     111.4317,
+     27.7981,
+     36.9,
+     3.78,
+     "60Iot Gem",
+     "G9III+..."
+    ],
+    "HIP33018": [
+     103.1972,
+     33.9613,
+     57.97,
+     3.6,
+     "34The Gem",
+     "A3III"
+    ],
+    "HIP30883": [
+     97.2408,
+     20.2121,
+     166.94,
+     4.13,
+     "18Nu  Gem",
+     "B6III"
+    ],
+    "HIP28734": [
+     91.0301,
+     23.2633,
+     47.55,
+     4.16,
+     "1    Gem",
+     "G7III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-cancer",
+   "name": "Cancer",
+   "kind": "zodiac",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP43103",
+     "HIP42806",
+     "HIP40843"
+    ],
+    [
+     "HIP42806",
+     "HIP42911",
+     "HIP40526"
+    ],
+    [
+     "HIP42911",
+     "HIP44066"
+    ]
+   ],
+   "native": "ཀརྚ་ཀ",
+   "romanized": "kar ṭa ka",
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-leo",
+   "name": "Leo",
+   "kind": "zodiac",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP57632",
+     "HIP54879",
+     "HIP49669",
+     "HIP49583",
+     "HIP50583",
+     "HIP54872",
+     "HIP57632"
+    ],
+    [
+     "HIP50583",
+     "HIP50335",
+     "HIP48455",
+     "HIP47908"
+    ],
+    [
+     "HIP54872",
+     "HIP54879"
+    ]
+   ],
+   "native": "སེང་གེ",
+   "romanized": "seng ge",
+   "story": "Stellarium description: Senge; Simha. Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-virgo",
+   "name": "Virgo",
+   "kind": "zodiac",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP57380",
+     "HIP60030",
+     "HIP61941",
+     "HIP65474",
+     "HIP69427",
+     "HIP69701",
+     "HIP71957"
+    ],
+    [
+     "HIP65474",
+     "HIP66249",
+     "HIP68520",
+     "HIP72220"
+    ],
+    [
+     "HIP66249",
+     "HIP63090",
+     "HIP63608"
+    ],
+    [
+     "HIP63090",
+     "HIP61941"
+    ]
+   ],
+   "native": "བུ་མོ",
+   "romanized": "bu mo",
+   "extraStars": {
+    "HIP60030": [
+     184.668,
+     -0.7872,
+     114.55,
+     5.9,
+     "13    Vir",
+     "A5Vn"
+    ],
+    "HIP69427": [
+     213.2239,
+     -10.2737,
+     78.12,
+     4.18,
+     "Kang",
+     "K3III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-libra",
+   "name": "Libra",
+   "kind": "zodiac",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP77853",
+     "HIP76333",
+     "HIP74785",
+     "HIP72622",
+     "HIP73714",
+     "HIP76333"
+    ]
+   ],
+   "native": "སྲང",
+   "romanized": "srang",
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-scorpius",
+   "name": "Scorpius",
+   "kind": "zodiac",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP85927",
+     "HIP86670",
+     "HIP87073",
+     "HIP86228",
+     "HIP84143",
+     "HIP82671",
+     "HIP82514",
+     "HIP82396",
+     "HIP81266",
+     "HIP80763",
+     "HIP80112",
+     "HIP78401"
+    ],
+    [
+     "HIP80112",
+     "HIP78265"
+    ],
+    [
+     "HIP80112",
+     "HIP78820"
+    ]
+   ],
+   "native": "སྡིག་པ",
+   "romanized": "sdig pa",
+   "extraStars": {
+    "HIP82671": [
+     253.4989,
+     -42.362,
+     787.4,
+     4.7,
+     "Zet1Sco",
+     "B1Iae"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-sagittarius",
+   "name": "Sagittarius",
+   "kind": "zodiac",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP89931",
+     "HIP90496"
+    ],
+    [
+     "HIP89642",
+     "HIP90185",
+     "HIP88635",
+     "HIP87072"
+    ],
+    [
+     "HIP88635",
+     "HIP89931",
+     "HIP90185",
+     "HIP93506",
+     "HIP92041",
+     "HIP89931"
+    ],
+    [
+     "HIP92041",
+     "HIP90496",
+     "HIP89341"
+    ],
+    [
+     "HIP93506",
+     "HIP93864",
+     "HIP92855",
+     "HIP92041"
+    ],
+    [
+     "HIP92855",
+     "HIP93085",
+     "HIP93683",
+     "HIP94820",
+     "HIP95168"
+    ],
+    [
+     "HIP93864",
+     "HIP96406",
+     "HIP98688",
+     "HIP98412",
+     "HIP98032",
+     "HIP95347"
+    ],
+    [
+     "HIP98032",
+     "HIP95294"
+    ]
+   ],
+   "native": "གཞུ",
+   "romanized": "gzhu",
+   "extraStars": {
+    "HIP87072": [
+     266.8901,
+     -27.8308,
+     302.11,
+     4.53,
+     "3    Sgr",
+     "F7II"
+    ],
+    "HIP96406": [
+     294.0069,
+     -24.7191,
+     90.25,
+     5.64,
+     "51    Sgr",
+     "A1m..."
+    ],
+    "HIP98688": [
+     300.6645,
+     -27.7098,
+     137.55,
+     4.43,
+     "62    Sgr",
+     "M4III"
+    ],
+    "HIP95294": [
+     290.8046,
+     -44.7998,
+     41.14,
+     4.27,
+     "Arkab Posterior",
+     "F2III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-capricornus",
+   "name": "Capricornus",
+   "kind": "zodiac",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP100064",
+     "HIP100345",
+     "HIP104139",
+     "HIP105515",
+     "HIP106985",
+     "HIP107556"
+    ],
+    [
+     "HIP105515",
+     "HIP105881",
+     "HIP104139"
+    ],
+    [
+     "HIP100345",
+     "HIP102485"
+    ],
+    [
+     "HIP104139",
+     "HIP102978"
+    ]
+   ],
+   "native": "ཆུ་སྲིན",
+   "romanized": "chu srin",
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-aquarius",
+   "name": "Aquarius",
+   "kind": "zodiac",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP106278",
+     "HIP109074",
+     "HIP110395",
+     "HIP110960",
+     "HIP111497",
+     "HIP112961",
+     "HIP114855",
+     "HIP115438"
+    ],
+    [
+     "HIP109074",
+     "HIP110003",
+     "HIP109139"
+    ],
+    [
+     "HIP110003",
+     "HIP111123",
+     "HIP112716",
+     "HIP113136",
+     "HIP114341"
+    ],
+    [
+     "HIP102618",
+     "HIP106278"
+    ]
+   ],
+   "native": "བུམ་པ",
+   "romanized": "bum pa",
+   "extraStars": {
+    "HIP114855": [
+     348.9729,
+     -9.0877,
+     45.93,
+     4.24,
+     "91Psi1Aqr",
+     "K0III"
+    ],
+    "HIP111123": [
+     337.6617,
+     -10.6779,
+     88.81,
+     4.82,
+     "57Sig Aqr",
+     "A0IVs"
+    ],
+    "HIP112716": [
+     342.3979,
+     -13.5926,
+     97.37,
+     4.05,
+     "71Tau2Aqr",
+     "K5III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-pisces",
+   "name": "Pisces",
+   "kind": "zodiac",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP4889",
+     "HIP5742"
+    ],
+    [
+     "HIP4889",
+     "HIP6193",
+     "HIP5742",
+     "HIP7097",
+     "HIP8198",
+     "HIP9487",
+     "HIP8833",
+     "HIP7884",
+     "HIP7007",
+     "HIP4906",
+     "HIP3760",
+     "HIP1645",
+     "HIP118268",
+     "HIP116771",
+     "HIP116928",
+     "HIP115738",
+     "HIP114971",
+     "HIP115830",
+     "HIP116771"
+    ]
+   ],
+   "native": "ཉ",
+   "romanized": "nya",
+   "extraStars": {
+    "HIP4889": [
+     15.7046,
+     31.8043,
+     132.98,
+     5.5,
+     "69Sig Psc",
+     "B9.5V"
+    ],
+    "HIP3760": [
+     12.0725,
+     7.2999,
+     177.62,
+     5.92,
+     "62    Psc",
+     "G8III"
+    ],
+    "HIP1645": [
+     5.1494,
+     8.1903,
+     125.0,
+     5.38,
+     "41    Psc",
+     "K3III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm00",
+   "name": "LM00",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP9884",
+     "HIP8903",
+     "HIP8832"
+    ]
+   ],
+   "native": "ཐ་སྐར།",
+   "romanized": "tha skar",
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm01",
+   "name": "LM01",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP12719",
+     "HIP13061",
+     "HIP13209"
+    ]
+   ],
+   "native": "བྲ་ཉེ།",
+   "romanized": "bra nye",
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm02",
+   "name": "LM02",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP17847",
+     "HIP17608",
+     "HIP17702",
+     "HIP17499",
+     "HIP17573",
+     "HIP17531"
+    ]
+   ],
+   "native": "སྨིན་དྲུག",
+   "romanized": "smin drug",
+   "extraStars": {
+    "HIP17608": [
+     56.5816,
+     23.9484,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17573": [
+     56.4567,
+     24.3677,
+     117.51,
+     3.87,
+     "Maia",
+     "B8III"
+    ],
+    "HIP17531": [
+     56.3021,
+     24.4673,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm03",
+   "name": "LM03",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP18724",
+     "HIP20205",
+     "HIP20713",
+     "HIP20894",
+     "HIP21421"
+    ],
+    [
+     "HIP20205",
+     "HIP20455",
+     "HIP20648",
+     "HIP20889"
+    ]
+   ],
+   "native": "སྣར་མ།",
+   "romanized": "snar ma",
+   "extraStars": {
+    "HIP20713": [
+     66.5864,
+     15.6183,
+     49.09,
+     4.48,
+     "71    Tau",
+     "F0V..."
+    ],
+    "HIP20648": [
+     66.3724,
+     17.9279,
+     45.54,
+     4.3,
+     "68Del3Tau",
+     "A2IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm04",
+   "name": "LM04",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP26366",
+     "HIP26207",
+     "HIP26176"
+    ],
+    [
+     "HIP27989",
+     "HIP26727",
+     "HIP27366"
+    ],
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ],
+    [
+     "HIP25336",
+     "HIP25930",
+     "HIP24436"
+    ],
+    [
+     "HIP26311",
+     "HIP26237",
+     "HIP26235",
+     "HIP26241"
+    ]
+   ],
+   "native": "མགོ",
+   "romanized": "mgo",
+   "extraStars": {
+    "HIP26366": [
+     84.2266,
+     9.2907,
+     36.02,
+     4.09,
+     "40Phi2Ori",
+     "G8III-IV"
+    ],
+    "HIP26176": [
+     83.7052,
+     9.4896,
+     333.33,
+     4.39,
+     "37Phi1Ori",
+     "B0IV..."
+    ],
+    "HIP26237": [
+     83.8465,
+     -4.8384,
+     271.0,
+     4.58,
+     "42    Ori",
+     "B2III..."
+    ],
+    "HIP26235": [
+     83.8454,
+     -5.4161,
+     473.93,
+     4.98,
+     "43The2Ori",
+     "O9.5Vpe"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm05",
+   "name": "LM05",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP28614",
+     "HIP27511",
+     "HIP29038",
+     "HIP27913",
+     "HIP29655",
+     "HIP29696",
+     "HIP27661",
+     "HIP28380",
+     "HIP27673"
+    ]
+   ],
+   "native": "ལག",
+   "romanized": "lag",
+   "extraStars": {
+    "HIP27511": [
+     87.3872,
+     12.6513,
+     76.28,
+     4.89,
+     "134    Tau",
+     "B9IV"
+    ],
+    "HIP29696": [
+     93.8446,
+     29.4981,
+     54.26,
+     4.32,
+     "44Kap Aur",
+     "G8IIIvar"
+    ],
+    "HIP27661": [
+     87.8573,
+     32.1247,
+     183.82,
+     6.28,
+     "HR 2018",
+     "M3III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm06",
+   "name": "LM06",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP30343",
+     "HIP30883",
+     "HIP31681",
+     "HIP32362"
+    ],
+    [
+     "HIP32246",
+     "HIP32921",
+     "HIP34088",
+     "HIP35350"
+    ],
+    [
+     "HIP32921",
+     "HIP30883"
+    ],
+    [
+     "HIP34088",
+     "HIP31681"
+    ]
+   ],
+   "native": "ནབས་སོ།",
+   "romanized": "nabs so",
+   "extraStars": {
+    "HIP30883": [
+     97.2408,
+     20.2121,
+     166.94,
+     4.13,
+     "18Nu  Gem",
+     "B6III"
+    ],
+    "HIP32921": [
+     102.8877,
+     21.7611,
+     150.6,
+     5.28,
+     "36    Gem",
+     "A2V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm07",
+   "name": "LM07",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP41822",
+     "HIP41909",
+     "HIP42806",
+     "HIP42911",
+     "HIP41822"
+    ]
+   ],
+   "native": "རྒྱལ།",
+   "romanized": "rgyal",
+   "extraStars": {
+    "HIP41822": [
+     127.8989,
+     18.0944,
+     127.23,
+     5.33,
+     "31The Cnc",
+     "K5III"
+    ],
+    "HIP41909": [
+     128.1771,
+     20.4412,
+     91.49,
+     5.33,
+     "33Eta Cnc",
+     "K3III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm08",
+   "name": "LM08",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP45336",
+     "HIP47431",
+     "HIP48356",
+     "HIP46390",
+     "HIP42402",
+     "HIP42799",
+     "HIP43109",
+     "HIP43813"
+    ]
+   ],
+   "native": "སྐག",
+   "romanized": "skag",
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm09",
+   "name": "LM09",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP49637",
+     "HIP49669"
+    ],
+    [
+     "HIP47508",
+     "HIP49669",
+     "HIP49583",
+     "HIP50583"
+    ],
+    [
+     "HIP47908",
+     "HIP48455",
+     "HIP50335",
+     "HIP50583",
+     "HIP47908"
+    ]
+   ],
+   "native": "མཆུ།",
+   "romanized": "mchu",
+   "extraStars": {
+    "HIP49637": [
+     151.9761,
+     9.9975,
+     90.58,
+     4.39,
+     "31    Leo",
+     "K4III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm10",
+   "name": "LM10",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP54872",
+     "HIP54879",
+     "HIP54182",
+     "HIP55434"
+    ],
+    [
+     "HIP54879",
+     "HIP55642",
+     "HIP55434",
+     "HIP55137"
+    ]
+   ],
+   "native": "གྲེ",
+   "romanized": "gre",
+   "extraStars": {
+    "HIP54182": [
+     166.2543,
+     7.336,
+     28.99,
+     4.62,
+     "63Chi Leo",
+     "F2III-IVvar"
+    ],
+    "HIP55434": [
+     170.2841,
+     6.0293,
+     67.48,
+     4.05,
+     "77Sig Leo",
+     "B9.5Vs"
+    ],
+    "HIP55642": [
+     170.981,
+     10.5295,
+     23.67,
+     4.0,
+     "78Iot Leo",
+     "F2IV SB"
+    ],
+    "HIP55137": [
+     169.3225,
+     2.0106,
+     101.83,
+     5.18,
+     "75    Leo",
+     "M0III comp"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm11",
+   "name": "LM11",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP57587",
+     "HIP56633",
+     "HIP55687",
+     "HIP54029",
+     "HIP52980"
+    ],
+    [
+     "HIP55687",
+     "HIP56802"
+    ],
+    [
+     "HIP50066",
+     "HIP51979",
+     "HIP54477",
+     "HIP56280",
+     "HIP57613"
+    ],
+    [
+     "HIP54477",
+     "HIP54204",
+     "HIP51718",
+     "HIP54682",
+     "HIP55598",
+     "HIP53740",
+     "HIP52943"
+    ],
+    [
+     "HIP55598",
+     "HIP57283",
+     "HIP58188"
+    ],
+    [
+     "HIP57283",
+     "HIP55705",
+     "HIP53740"
+    ],
+    [
+     "HIP55705",
+     "HIP55282",
+     "HIP58188"
+    ]
+   ],
+   "native": "དབོ།",
+   "romanized": "dbo",
+   "extraStars": {
+    "HIP57587": [
+     177.0979,
+     -10.3131,
+     43.05,
+     6.24,
+     "HR 4529",
+     "F7V"
+    ],
+    "HIP54029": [
+     165.812,
+     -11.3035,
+     103.84,
+     5.51,
+     "HR 4305",
+     "G7III..."
+    ],
+    "HIP52980": [
+     162.5752,
+     -8.8978,
+     95.24,
+     5.8,
+     "41    Sex",
+     "A3m"
+    ],
+    "HIP50066": [
+     153.331,
+     -27.0289,
+     144.72,
+     6.23,
+     "HR 4011",
+     "A9m..."
+    ],
+    "HIP51979": [
+     159.3072,
+     -27.4126,
+     149.48,
+     4.87,
+     "HR 4162",
+     "M1III"
+    ],
+    "HIP54477": [
+     167.1834,
+     -28.0807,
+     55.65,
+     5.43,
+     "HR 4334",
+     "A1V"
+    ],
+    "HIP56280": [
+     173.0684,
+     -29.261,
+     26.3,
+     4.93,
+     "HR 4443",
+     "F8V"
+    ],
+    "HIP57613": [
+     177.1879,
+     -26.7498,
+     167.22,
+     5.1,
+     "HR 4532",
+     "M4III"
+    ],
+    "HIP54204": [
+     166.333,
+     -27.2936,
+     43.23,
+     4.92,
+     "Chi1Hya",
+     "F3IV/V"
+    ],
+    "HIP51718": [
+     158.5037,
+     -23.7452,
+     244.5,
+     5.08,
+     "44    Hya",
+     "K5III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm12",
+   "name": "LM12",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP61359",
+     "HIP59316",
+     "HIP59803",
+     "HIP60965",
+     "HIP61359"
+    ]
+   ],
+   "native": "མེ་བཞི།",
+   "romanized": "me bzhi",
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm13",
+   "name": "LM13",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP65474",
+     "HIP66249"
+    ]
+   ],
+   "native": "ནག་པ།",
+   "romanized": "nag pa",
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm14",
+   "name": "LM14",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP69427",
+     "HIP69701",
+     "HIP70755"
+    ],
+    [
+     "HIP69427",
+     "HIP69974"
+    ]
+   ],
+   "native": "ས་རི།",
+   "romanized": "sa ri",
+   "extraStars": {
+    "HIP69427": [
+     213.2239,
+     -10.2737,
+     78.12,
+     4.18,
+     "Kang",
+     "K3III"
+    ],
+    "HIP70755": [
+     217.0506,
+     -2.228,
+     36.26,
+     4.81,
+     "Elgafar",
+     "G2III"
+    ],
+    "HIP69974": [
+     214.7775,
+     -13.3711,
+     57.18,
+     4.52,
+     "Khambalia",
+     "A1V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm15",
+   "name": "LM15",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP76333",
+     "HIP73714",
+     "HIP72622",
+     "HIP74785"
+    ]
+   ],
+   "native": "ས་ག",
+   "romanized": "sa ga",
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm16",
+   "name": "LM16",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP80763",
+     "HIP80112",
+     "HIP78265"
+    ],
+    [
+     "HIP80112",
+     "HIP78401"
+    ],
+    [
+     "HIP80112",
+     "HIP78820"
+    ],
+    [
+     "HIP80112",
+     "HIP79374"
+    ],
+    [
+     "HIP80112",
+     "HIP80343"
+    ]
+   ],
+   "native": "ལྷ་མཚམས།",
+   "romanized": "lha mtshams",
+   "extraStars": {
+    "HIP79374": [
+     242.9989,
+     -19.4607,
+     145.35,
+     4.0,
+     "Jabbah",
+     "B2IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm17",
+   "name": "LM17",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP83196",
+     "HIP81266",
+     "HIP82396"
+    ]
+   ],
+   "native": "སྣྲོན།",
+   "romanized": "snron",
+   "extraStars": {
+    "HIP83196": [
+     255.0396,
+     -24.9891,
+     33.7,
+     5.74,
+     "26    Oph",
+     "F3V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm18",
+   "name": "LM18",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP82514",
+     "HIP80945",
+     "HIP82493"
+    ],
+    [
+     "HIP82729",
+     "HIP84143",
+     "HIP86228",
+     "HIP87073",
+     "HIP86670",
+     "HIP85927"
+    ],
+    [
+     "HIP86670",
+     "HIP87261"
+    ]
+   ],
+   "native": "སྣྲུབས།",
+   "romanized": "snrubs",
+   "extraStars": {
+    "HIP80945": [
+     247.924,
+     -41.8171,
+     833.33,
+     5.31,
+     "HR 6142",
+     "B1Ia"
+    ],
+    "HIP82493": [
+     252.8905,
+     -41.2305,
+     null,
+     5.23,
+     "HR 6245",
+     "O9e"
+    ],
+    "HIP87261": [
+     267.4645,
+     -37.0433,
+     38.58,
+     3.19,
+     "Fuyue",
+     "K0/K1III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm19",
+   "name": "LM19",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP88635",
+     "HIP89931",
+     "HIP90185",
+     "HIP89642"
+    ]
+   ],
+   "native": "ཆུ་སྟོད།",
+   "romanized": "chu stod",
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm20",
+   "name": "LM20",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP93864",
+     "HIP92855",
+     "HIP92041",
+     "HIP93506",
+     "HIP94986",
+     "HIP94114"
+    ]
+   ],
+   "native": "ཆུ་སྨད།",
+   "romanized": "chu smad",
+   "extraStars": {
+    "HIP94986": [
+     289.9166,
+     -35.4215,
+     276.24,
+     5.59,
+     "HR 7316",
+     "B4III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm21",
+   "name": "LM21",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP100064",
+     "HIP100345",
+     "HIP101027",
+     "HIP101123",
+     "HIP100881",
+     "HIP100345",
+     "HIP100310"
+    ],
+    [
+     "HIP102618",
+     "HIP103045",
+     "HIP103005",
+     "HIP102624"
+    ]
+   ],
+   "native": "གྲོ་བཞིན།",
+   "romanized": "gro bzhin",
+   "extraStars": {
+    "HIP101123": [
+     307.4746,
+     -18.5832,
+     66.36,
+     5.94,
+     "12Omi Cap",
+     "A1V"
+    ],
+    "HIP100881": [
+     306.83,
+     -18.2117,
+     167.22,
+     5.08,
+     "10Pi  Cap",
+     "B4V"
+    ],
+    "HIP100310": [
+     305.1659,
+     -12.7591,
+     77.64,
+     4.77,
+     "Alshat",
+     "B9IV"
+    ],
+    "HIP103005": [
+     313.0362,
+     -5.5071,
+     199.2,
+     5.55,
+     "5    Aqr",
+     "B9III"
+    ],
+    "HIP102624": [
+     311.9343,
+     -5.0277,
+     179.53,
+     4.43,
+     "3    Aqr",
+     "M3IIIvar"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm22",
+   "name": "LM22",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP104987",
+     "HIP106278"
+    ]
+   ],
+   "native": "མོན་གྲེ།",
+   "romanized": "mon gre",
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm23",
+   "name": "LM23",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP109427",
+     "HIP107315",
+     "HIP107348"
+    ]
+   ],
+   "native": "མོན་གྲུ།",
+   "romanized": "mon gru",
+   "extraStars": {
+    "HIP107348": [
+     326.1279,
+     17.35,
+     284.09,
+     4.34,
+     "9    Peg",
+     "G5Ib"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm24",
+   "name": "LM24",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP113881",
+     "HIP113963"
+    ]
+   ],
+   "native": "ཁྲུམས་སྟོད།",
+   "romanized": "khrums stod",
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm25",
+   "name": "LM25",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP677",
+     "HIP1067"
+    ]
+   ],
+   "native": "ཁྲུམས་སྨད།",
+   "romanized": "khrums smad",
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  },
+  {
+   "id": "tibetan-tibetan-lm26",
+   "name": "LM26",
+   "kind": "mansion",
+   "group": "Tibetan",
+   "lines": [
+    [
+     "HIP5571",
+     "HIP5131",
+     "HIP3693",
+     "HIP3885",
+     "HIP3092",
+     "HIP4889",
+     "HIP2912",
+     "HIP4185"
+    ],
+    [
+     "HIP5571",
+     "HIP5742",
+     "HIP4510",
+     "HIP5544",
+     "HIP4552",
+     "HIP5447",
+     "HIP4436",
+     "HIP4185"
+    ]
+   ],
+   "native": "ནམ་གྲུ།",
+   "romanized": "nam gru",
+   "extraStars": {
+    "HIP5131": [
+     16.4206,
+     21.4732,
+     84.32,
+     5.33,
+     "74Psi1Psc",
+     "A1Vn"
+    ],
+    "HIP3885": [
+     12.4715,
+     27.7103,
+     88.57,
+     5.55,
+     "65    Psc",
+     "F5III+..."
+    ],
+    "HIP4889": [
+     15.7046,
+     31.8043,
+     132.98,
+     5.5,
+     "69Sig Psc",
+     "B9.5V"
+    ],
+    "HIP4185": [
+     13.3676,
+     37.4182,
+     107.87,
+     6.07,
+     "HR 249",
+     "K3III:"
+    ],
+    "HIP4510": [
+     14.459,
+     28.9922,
+     198.81,
+     5.44,
+     "68    Psc",
+     "G6III"
+    ],
+    "HIP5544": [
+     17.7782,
+     31.4247,
+     147.28,
+     5.15,
+     "82    Psc",
+     "F0V"
+    ],
+    "HIP4552": [
+     14.5592,
+     33.9509,
+     56.37,
+     5.99,
+     "HR 275",
+     "K0"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tibetan' sky culture; see source for documentation."
+  }
+ ]
+}

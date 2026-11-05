@@ -1,0 +1,1197 @@
+{
+ "id": "egyptian",
+ "name": "Egyptian",
+ "region": "North Africa",
+ "era": "c. 2500 BCE - Roman period",
+ "color": "#e6c84f",
+ "description": "Ancient Egyptian star figures after Belmonte's map of the firmament, including the Bull's Foreleg (Big Dipper), Sah (Orion) and Sopdet (Sirius).",
+ "source": [
+  "Stellarium sky cultures (github.com/Stellarium/stellarium-skycultures) - egyptian/index.json and description.md (contributed by Karrie Berglund, Digitalis Education Solutions, from J. A. Belmonte \"A Map of the Ancient Egyptian Firmament\"; reworked by Susanne M. Hoffmann)",
+  "Hoffmann, S.M., Hipparchs Himmelsglobus, Springer 2017 (cited by Stellarium)",
+  "Stars not in constellations.json taken from HYG v4.1 (github.com/astronexus/HYG-Database)"
+ ],
+ "license": "GPL-2.0 (Stellarium egyptian sky culture, \"GNU GPL v2.0\"); HYG v4.1 data CC BY-SA 4.0. GPL-vs-CC-BY-SA compatibility of the combined work has not been legally reviewed. Omission: the Egyptian decans are not defined in Stellarium and have no star list at hand from a credible open source, so they are skipped.",
+ "figures": [
+  {
+   "id": "egyptian-bull-s-foreleg",
+   "name": "Bull's Foreleg (Meskhetiu)",
+   "meaning": "Bull's Foreleg",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP67301",
+     "HIP65378",
+     "HIP62956",
+     "HIP59774",
+     "HIP54061",
+     "HIP53910",
+     "HIP58001",
+     "HIP59774"
+    ]
+   ],
+   "iau": [
+    "UMa"
+   ],
+   "story": "The Big Dipper, an ancient Egyptian constellation: the foreleg of the god Seth (per the Stellarium description).",
+   "native": "ms-ḫtyw",
+   "romanized": "Meskhetiu"
+  },
+  {
+   "id": "egyptian-two-poles",
+   "name": "Two Poles",
+   "meaning": "Two Poles",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP68756",
+     "HIP75097",
+     "HIP72607",
+     "HIP99255"
+    ],
+    [
+     "HIP72607",
+     "HIP68756"
+    ],
+    [
+     "HIP94376",
+     "HIP75458",
+     "HIP78527",
+     "HIP80331",
+     "HIP83895"
+    ]
+   ],
+   "iau": [
+    "Dra",
+    "UMi",
+    "Cep"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source.",
+   "extraStars": {
+    "HIP99255": [
+     302.22217,
+     77.71142,
+     96.53,
+     4.38,
+     "",
+     "B9III"
+    ]
+   }
+  },
+  {
+   "id": "egyptian-lion",
+   "name": "Lion",
+   "meaning": "Lion",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP57632",
+     "HIP54872",
+     "HIP53954",
+     "HIP49583",
+     "HIP50583",
+     "HIP50335",
+     "HIP48455",
+     "HIP47908"
+    ],
+    [
+     "HIP49583",
+     "HIP49669",
+     "HIP47508"
+    ],
+    [
+     "HIP49669",
+     "HIP54879",
+     "HIP54872"
+    ]
+   ],
+   "iau": [
+    "Leo"
+   ],
+   "story": "Leo, shown as a lion on the Dendera zodiac.",
+   "extraStars": {
+    "HIP53954": [
+     165.5824,
+     20.17984,
+     38.87,
+     4.42,
+     "",
+     "A1m"
+    ]
+   }
+  },
+  {
+   "id": "egyptian-two-jaws",
+   "name": "Two Jaws",
+   "meaning": "Two Jaws",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP8886",
+     "HIP6686",
+     "HIP4427",
+     "HIP3179",
+     "HIP746"
+    ]
+   ],
+   "iau": [
+    "Cas"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source."
+  },
+  {
+   "id": "egyptian-sah",
+   "name": "Sah",
+   "meaning": "Orion (Osiris)",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP27072",
+     "HIP28103",
+     "HIP29651",
+     "HIP30867"
+    ],
+    [
+     "HIP28103",
+     "HIP27366",
+     "HIP26234",
+     "HIP26727",
+     "HIP27989",
+     "HIP26594",
+     "HIP25930",
+     "HIP26311",
+     "HIP26727"
+    ],
+    [
+     "HIP25930",
+     "HIP25281",
+     "HIP25247",
+     "HIP24436",
+     "HIP23875",
+     "HIP22797",
+     "HIP22549",
+     "HIP22449"
+    ],
+    [
+     "HIP23875",
+     "HIP24244",
+     "HIP24327",
+     "HIP24305",
+     "HIP23685",
+     "HIP21393"
+    ],
+    [
+     "HIP24305",
+     "HIP25985"
+    ],
+    [
+     "HIP23685",
+     "HIP25606"
+    ],
+    [
+     "HIP25859",
+     "HIP25606",
+     "HIP25985",
+     "HIP27366"
+    ]
+   ],
+   "iau": [
+    "Ori",
+    "Lep",
+    "Eri"
+   ],
+   "story": "Sah, the Egyptian Orion, in Belmonte's map of the Egyptian firmament as rendered by Stellarium.",
+   "extraStars": {
+    "HIP26234": [
+     83.84298,
+     -4.42432,
+     408.16,
+     6.24,
+     "",
+     "B2.5V"
+    ],
+    "HIP26594": [
+     84.79644,
+     4.12147,
+     423.73,
+     4.5,
+     "",
+     "B3IIIe"
+    ],
+    "HIP24244": [
+     78.0746,
+     -11.86922,
+     71.07,
+     4.45,
+     "",
+     "B8V"
+    ],
+    "HIP25247": [
+     80.98678,
+     -7.80807,
+     48.24,
+     4.13,
+     "",
+     "G8III"
+    ]
+   },
+   "romanized": "Sah"
+  },
+  {
+   "id": "egyptian-bird",
+   "name": "Bird",
+   "meaning": "Bird",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP8796",
+     "HIP10064",
+     "HIP14668",
+     "HIP12777",
+     "HIP13268",
+     "HIP15863",
+     "HIP19167",
+     "HIP19812",
+     "HIP17271",
+     "HIP18614",
+     "HIP17467",
+     "HIP14576",
+     "HIP13254",
+     "HIP10670",
+     "HIP8796"
+    ]
+   ],
+   "iau": [
+    "Per",
+    "Tri"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source.",
+   "extraStars": {
+    "HIP17467": [
+     56.14628,
+     35.85573,
+     332.23,
+     8.37,
+     "",
+     "A0"
+    ],
+    "HIP17271": [
+     55.47913,
+     43.51437,
+     152.44,
+     7.6,
+     "",
+     "G5"
+    ],
+    "HIP13254": [
+     42.64594,
+     38.31864,
+     37.02,
+     4.22,
+     "",
+     "F2III"
+    ]
+   }
+  },
+  {
+   "id": "egyptian-sek",
+   "name": "Sek",
+   "meaning": "Sek",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP40526",
+     "HIP44659",
+     "HIP45336",
+     "HIP47431",
+     "HIP55282",
+     "HIP55705",
+     "HIP56343",
+     "HIP54204",
+     "HIP51069",
+     "HIP48356",
+     "HIP46390",
+     "HIP42402",
+     "HIP40526"
+    ]
+   ],
+   "iau": [
+    "Hya",
+    "Crt",
+    "Cnc"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source.",
+   "extraStars": {
+    "HIP54204": [
+     166.33301,
+     -27.29361,
+     43.23,
+     4.92,
+     "",
+     "F3IV/V"
+    ],
+    "HIP44659": [
+     136.49319,
+     5.09232,
+     274.73,
+     4.99,
+     "",
+     "K2II-III"
+    ]
+   }
+  },
+  {
+   "id": "egyptian-triangle",
+   "name": "Triangle",
+   "meaning": "Triangle",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP33160",
+     "HIP32349",
+     "HIP34045",
+     "HIP33160"
+    ]
+   ],
+   "iau": [
+    "CMa"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source."
+  },
+  {
+   "id": "egyptian-ferry-boat",
+   "name": "Ferry Boat",
+   "meaning": "Ferry Boat",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP39429",
+     "HIP39953"
+    ]
+   ],
+   "iau": [
+    "Vel",
+    "Pup"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source."
+  },
+  {
+   "id": "egyptian-boat",
+   "name": "Boat",
+   "meaning": "Boat",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP107128",
+     "HIP105515"
+    ],
+    [
+     "HIP105668",
+     "HIP104459",
+     "HIP103398"
+    ],
+    [
+     "HIP107556",
+     "HIP106985",
+     "HIP106039",
+     "HIP105881",
+     "HIP104234",
+     "HIP102978",
+     "HIP102485",
+     "HIP100345",
+     "HIP100064"
+    ]
+   ],
+   "iau": [
+    "Cap",
+    "Aqr"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source.",
+   "extraStars": {
+    "HIP106039": [
+     322.18081,
+     -21.80718,
+     52.47,
+     4.5,
+     "",
+     "K0III"
+    ],
+    "HIP104234": [
+     316.78196,
+     -25.00585,
+     139.86,
+     4.49,
+     "",
+     "K5/M0III"
+    ],
+    "HIP104459": [
+     317.39853,
+     -11.37169,
+     48.85,
+     4.5,
+     "",
+     "G8III"
+    ],
+    "HIP103398": [
+     314.21976,
+     -22.00575,
+     344.83,
+     7.47,
+     "",
+     "K2/K3III"
+    ],
+    "HIP107128": [
+     325.50288,
+     -23.26286,
+     70.72,
+     5.24,
+     "",
+     "K0III"
+    ],
+    "HIP105668": [
+     321.04788,
+     -12.87811,
+     47.1,
+     5.48,
+     "",
+     "F0V"
+    ]
+   }
+  },
+  {
+   "id": "egyptian-crocodile",
+   "name": "Crocodile",
+   "meaning": "Crocodile",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP89826",
+     "HIP88794",
+     "HIP86974",
+     "HIP85693",
+     "HIP84379",
+     "HIP80816",
+     "HIP77450",
+     "HIP76852",
+     "HIP78554",
+     "HIP86399",
+     "HIP89826"
+    ]
+   ],
+   "iau": [
+    "Her",
+    "Ser",
+    "Lyr"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source.",
+   "extraStars": {
+    "HIP78554": [
+     240.57372,
+     22.80445,
+     54.88,
+     4.82,
+     "",
+     "A3V"
+    ],
+    "HIP85693": [
+     262.68462,
+     26.11065,
+     113.25,
+     4.41,
+     "Maasym",
+     "K3IIIvar"
+    ],
+    "HIP86399": [
+     264.8164,
+     30.25336,
+     70.22,
+     7.18,
+     "",
+     "F2"
+    ]
+   }
+  },
+  {
+   "id": "egyptian-selkis",
+   "name": "Selkis",
+   "meaning": "Selkis",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP72622",
+     "HIP65474",
+     "HIP61941",
+     "HIP56647",
+     "HIP55434",
+     "HIP57380"
+    ],
+    [
+     "HIP61941",
+     "HIP63090",
+     "HIP63608"
+    ],
+    [
+     "HIP63090",
+     "HIP66249",
+     "HIP65474"
+    ],
+    [
+     "HIP66249",
+     "HIP72220"
+    ]
+   ],
+   "iau": [
+    "Vir",
+    "Leo",
+    "Lib"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source.",
+   "extraStars": {
+    "HIP56647": [
+     174.23721,
+     -0.82375,
+     55.65,
+     4.3,
+     "",
+     "G9III"
+    ],
+    "HIP55434": [
+     170.28414,
+     6.02932,
+     67.48,
+     4.05,
+     "",
+     "B9.5Vs"
+    ]
+   }
+  },
+  {
+   "id": "egyptian-prow",
+   "name": "Prow",
+   "meaning": "Prow",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP78820",
+     "HIP78401",
+     "HIP78265"
+    ],
+    [
+     "HIP78401",
+     "HIP80112",
+     "HIP80763",
+     "HIP82396",
+     "HIP82729",
+     "HIP84143",
+     "HIP86228",
+     "HIP85927",
+     "HIP86670"
+    ]
+   ],
+   "iau": [
+    "Sco"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source."
+  },
+  {
+   "id": "egyptian-horus",
+   "name": "Horus",
+   "meaning": "Horus",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP64394",
+     "HIP60742",
+     "HIP55219",
+     "HIP53229",
+     "HIP51233",
+     "HIP50801",
+     "HIP50372",
+     "HIP54539",
+     "HIP57399",
+     "HIP61317",
+     "HIP63125"
+    ],
+    [
+     "HIP54539",
+     "HIP55219"
+    ],
+    [
+     "HIP51233",
+     "HIP49593",
+     "HIP45860",
+     "HIP46146",
+     "HIP43103"
+    ],
+    [
+     "HIP45860",
+     "HIP44700",
+     "HIP44248",
+     "HIP43531",
+     "HIP44127",
+     "HIP46853"
+    ],
+    [
+     "HIP44248",
+     "HIP50372"
+    ]
+   ],
+   "iau": [
+    "UMa",
+    "Lyn",
+    "LMi"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source.",
+   "extraStars": {
+    "HIP43531": [
+     132.9868,
+     43.7266,
+     81.23,
+     5.15,
+     "",
+     "K0III"
+    ],
+    "HIP46146": [
+     141.16359,
+     26.18232,
+     61.73,
+     4.47,
+     "",
+     "K2III"
+    ]
+   }
+  },
+  {
+   "id": "egyptian-sheepfold",
+   "name": "Sheepfold",
+   "meaning": "Sheepfold",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP12828",
+     "HIP11484",
+     "HIP12706",
+     "HIP14135",
+     "HIP12828"
+    ]
+   ],
+   "iau": [
+    "Cet"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source."
+  },
+  {
+   "id": "egyptian-giant",
+   "name": "Giant",
+   "meaning": "Giant",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP111944",
+     "HIP111104",
+     "HIP109410",
+     "HIP107354",
+     "HIP109176",
+     "HIP113881",
+     "HIP115623",
+     "HIP677",
+     "HIP1067",
+     "HIP116771",
+     "HIP113963",
+     "HIP113881"
+    ],
+    [
+     "HIP107354",
+     "HIP107348",
+     "HIP105502",
+     "HIP103527",
+     "HIP101769",
+     "HIP101958",
+     "HIP102532",
+     "HIP102281",
+     "HIP101769"
+    ],
+    [
+     "HIP103527",
+     "HIP103571",
+     "HIP104987",
+     "HIP107315",
+     "HIP109427",
+     "HIP111497",
+     "HIP110395",
+     "HIP106278"
+    ],
+    [
+     "HIP109427",
+     "HIP112029",
+     "HIP112447",
+     "HIP113963"
+    ],
+    [
+     "HIP103512",
+     "HIP97649",
+     "HIP97278"
+    ]
+   ],
+   "iau": [
+    "Peg",
+    "Del",
+    "Aqr"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source.",
+   "extraStars": {
+    "HIP107348": [
+     326.1279,
+     17.35002,
+     284.09,
+     4.34,
+     "",
+     "G5Ib"
+    ],
+    "HIP105502": [
+     320.52165,
+     19.80451,
+     47.78,
+     4.08,
+     "",
+     "K1III"
+    ],
+    "HIP115623": [
+     351.3449,
+     23.4041,
+     52.25,
+     4.42,
+     "Alkarab",
+     "F8IV"
+    ],
+    "HIP103527": [
+     314.60807,
+     10.83929,
+     75.3,
+     5.51,
+     "Musica",
+     "G6III:"
+    ],
+    "HIP103512": [
+     314.57258,
+     8.51535,
+     110.99,
+     8.2,
+     "",
+     "F2"
+    ]
+   }
+  },
+  {
+   "id": "egyptian-hippopotamus",
+   "name": "Hippopotamus",
+   "meaning": "Hippopotamus",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP92420",
+     "HIP91262"
+    ],
+    [
+     "HIP92420",
+     "HIP92791",
+     "HIP91971",
+     "HIP91262",
+     "HIP87563",
+     "HIP87808",
+     "HIP83207",
+     "HIP81693",
+     "HIP78159",
+     "HIP76952",
+     "HIP76267",
+     "HIP72659",
+     "HIP72105",
+     "HIP71075",
+     "HIP73555",
+     "HIP76041",
+     "HIP82321",
+     "HIP85670",
+     "HIP87833",
+     "HIP87563"
+    ]
+   ],
+   "iau": [
+    "Lyr",
+    "Her",
+    "Boo"
+   ],
+   "story": "A hippopotamus figure in Belmonte's map of the Egyptian firmament, as rendered in the Stellarium Egyptian sky culture.",
+   "extraStars": {
+    "HIP72659": [
+     222.8474,
+     19.10046,
+     6.71,
+     4.54,
+     "",
+     "G8V + K4V"
+    ],
+    "HIP82321": [
+     252.30922,
+     45.98332,
+     55.25,
+     4.82,
+     "",
+     "A2p..."
+    ],
+    "HIP76041": [
+     232.94577,
+     40.89933,
+     119.05,
+     4.98,
+     "",
+     "A5V"
+    ],
+    "HIP87563": [
+     268.32511,
+     40.00796,
+     108.46,
+     5.17,
+     "",
+     "K3III"
+    ]
+   }
+  },
+  {
+   "id": "egyptian-flock",
+   "name": "Flock",
+   "meaning": "Flock",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP17851",
+     "HIP17847",
+     "HIP17702",
+     "HIP17851"
+    ],
+    [
+     "HIP17702",
+     "HIP17531",
+     "HIP17499",
+     "HIP17608",
+     "HIP17702"
+    ]
+   ],
+   "iau": [
+    "Tau"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source.",
+   "extraStars": {
+    "HIP17499": [
+     56.2189,
+     24.11334,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17851": [
+     57.29673,
+     24.13671,
+     117.1,
+     5.05,
+     "Pleione",
+     "B7p"
+    ],
+    "HIP17608": [
+     56.58156,
+     23.94836,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ],
+    "HIP17531": [
+     56.30205,
+     24.46728,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ]
+   }
+  },
+  {
+   "id": "egyptian-pair-of-stars",
+   "name": "Pair of Stars",
+   "meaning": "Pair of Stars",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP37826",
+     "HIP36850"
+    ]
+   ],
+   "iau": [
+    "Gem"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source."
+  },
+  {
+   "id": "egyptian-khanuwy-fish",
+   "name": "Khanuwy Fish",
+   "meaning": "Khanuwy Fish",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP95241",
+     "HIP98032"
+    ],
+    [
+     "HIP95347",
+     "HIP97749"
+    ]
+   ],
+   "iau": [
+    "Sgr"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source.",
+   "extraStars": {
+    "HIP97749": [
+     297.96084,
+     -39.87437,
+     92.42,
+     5.32,
+     "",
+     "A0p"
+    ]
+   }
+  },
+  {
+   "id": "egyptian-net",
+   "name": "Net",
+   "meaning": "Net",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP93174",
+     "HIP93825",
+     "HIP94114",
+     "HIP94160",
+     "HIP93542"
+    ]
+   ],
+   "iau": [
+    "CrA"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source."
+  },
+  {
+   "id": "egyptian-jaw",
+   "name": "Jaw",
+   "meaning": "Jaw",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP20889",
+     "HIP20455",
+     "HIP20205",
+     "HIP20894",
+     "HIP21421"
+    ]
+   ],
+   "iau": [
+    "Tau"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source."
+  },
+  {
+   "id": "egyptian-mooring-post",
+   "name": "Mooring Post",
+   "meaning": "Mooring Post",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP69673",
+     "HIP67927",
+     "HIP67301",
+     "HIP69673"
+    ]
+   ],
+   "iau": [
+    "Boo",
+    "UMa"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source."
+  },
+  {
+   "id": "egyptian-kenemet",
+   "name": "Kenemet",
+   "meaning": "Kenemet",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP34444",
+     "HIP32349",
+     "HIP30324",
+     "HIP33579",
+     "HIP34444"
+    ]
+   ],
+   "iau": [
+    "CMa"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source."
+  },
+  {
+   "id": "egyptian-chematy",
+   "name": "Chematy",
+   "meaning": "Chematy",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP45941",
+     "HIP42913",
+     "HIP41037",
+     "HIP45556",
+     "HIP45941"
+    ]
+   ],
+   "iau": [
+    "Car",
+    "Vel"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source."
+  },
+  {
+   "id": "egyptian-waty-bekety",
+   "name": "Waty Bekety",
+   "meaning": "Waty Bekety",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP61084",
+     "HIP59747",
+     "HIP60718",
+     "HIP62434",
+     "HIP61084"
+    ]
+   ],
+   "iau": [
+    "Cru"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source."
+  },
+  {
+   "id": "egyptian-sheep",
+   "name": "Sheep",
+   "meaning": "Sheep",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP108085",
+     "HIP109268",
+     "HIP112623",
+     "HIP110997",
+     "HIP108085"
+    ]
+   ],
+   "iau": [
+    "Gru"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source."
+  },
+  {
+   "id": "egyptian-stars-of-water",
+   "name": "Stars of Water",
+   "meaning": "Stars of Water",
+   "kind": "constellation",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP42628",
+     "HIP42201",
+     "HIP42133",
+     "HIP42673",
+     "HIP42628"
+    ]
+   ],
+   "iau": [
+    "Cnc"
+   ],
+   "story": "Figure from Belmonte's map of the ancient Egyptian firmament as rendered in the Stellarium Egyptian sky culture; Egyptian name or reading of this figure follows that source.",
+   "extraStars": {
+    "HIP42628": [
+     130.31379,
+     20.4769,
+     167.5,
+     6.72,
+     "",
+     "A0III"
+    ],
+    "HIP42133": [
+     128.83103,
+     19.59006,
+     202.84,
+     6.55,
+     "",
+     "G0III"
+    ],
+    "HIP42673": [
+     130.45867,
+     19.87417,
+     218.34,
+     6.9,
+     "",
+     "K0III"
+    ],
+    "HIP42201": [
+     129.07267,
+     20.34151,
+     159.74,
+     7.47,
+     "",
+     "Am"
+    ]
+   }
+  },
+  {
+   "id": "egyptian-sopdet",
+   "name": "Sopdet (Sirius)",
+   "romanized": "Sopdet",
+   "meaning": "Sirius, the star of Isis",
+   "kind": "asterism",
+   "group": "Belmonte map of the Egyptian firmament",
+   "lines": [
+    [
+     "HIP32349",
+     "HIP32349"
+    ]
+   ],
+   "iau": [
+    "CMa"
+   ],
+   "story": "Sopdet (Greek Sothis) is the Egyptian name of Sirius, whose heliacal rising marked the start of the year and was linked to the goddess Isis. Marked as a single star (HIP 32349, named in the Stellarium Egyptian sky culture)."
+  }
+ ]
+}

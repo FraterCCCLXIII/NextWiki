@@ -143,24 +143,24 @@ export function xiSlope(xi) {
  */
 export function makeTiledCloud(web, { n = 150000, R = 1000, seed = 99, observer = null, bias = 0 } = {}) {
   const r = rng(seed), L = web.L, n3 = web.N ** 3, tiles = Math.ceil(R / L) + 1;
-  const org = new Float32Array(n * 3), perm = new Uint8Array(n), idx = new Int32Array(n);
+  const org = new Float32Array(n * 3), perm = new Uint8Array(n), idx = new Int32Array(n), sh = new Float32Array(n * 3);   // sh: a per-tile random slide of the lattice, so the 48 orientations do not repeat as a visible grid of identical clumps
   const off = observer || [L / 2, L / 2, L / 2];   // the Sun sits at this place inside the home tile
   let i = 0, guard = 0;
   const permOf = (tx, ty, tz) => { let h = (tx * 73856093) ^ (ty * 19349663) ^ (tz * 83492791); h = Math.abs(h) % 48; return h; };
   while (i < n && guard++ < n * 400) {
     const tx = Math.floor(r() * (2 * tiles + 1)) - tiles, ty = Math.floor(r() * (2 * tiles + 1)) - tiles, tz = Math.floor(r() * (2 * tiles + 1)) - tiles, j = Math.floor(r() * n3), pm = permOf(tx, ty, tz);
     if (bias > 0 && r() > Math.min(1, Math.pow(Math.max(web.rho[j], 0.02), bias) / 4)) continue;   // galaxies trace mass with a bias: thin the voids, keep the nodes
-    const p = permuted(web, j, pm, 1, L), X = tx * L + p[0] - off[0], Y = ty * L + p[1] - off[1], Z = tz * L + p[2] - off[2];
+    const tsh = tileShift(tx, ty, tz, L), p = permuted(web, j, pm, 1, L, tsh), X = tx * L + p[0] - off[0], Y = ty * L + p[1] - off[1], Z = tz * L + p[2] - off[2];
     if (X * X + Y * Y + Z * Z > R * R) continue;
-    org[3 * i] = tx * L - off[0]; org[3 * i + 1] = ty * L - off[1]; org[3 * i + 2] = tz * L - off[2]; perm[i] = pm; idx[i] = j; i++;
+    org[3 * i] = tx * L - off[0]; org[3 * i + 1] = ty * L - off[1]; org[3 * i + 2] = tz * L - off[2]; perm[i] = pm; idx[i] = j; sh[3 * i] = tsh[0]; sh[3 * i + 1] = tsh[1]; sh[3 * i + 2] = tsh[2]; i++;
   }
   const m = i;
   return {
-    n: m, R, L, org, perm, idx,
+    n: m, R, L, org, perm, idx, sh,
     /** write positions (Mpc/h about the observer) for growth factor D (1 = today) into out; colours from the static density into col */
     eval(D, out, col, lo = 0, hi = m) {
       for (let k = lo; k < hi; k++) {
-        const p = permuted(web, idx[k], perm[k], D, L);
+        const p = permuted(web, idx[k], perm[k], D, L, sh, 3 * k);
         out[3 * k] = org[3 * k] + p[0]; out[3 * k + 1] = org[3 * k + 1] + p[1]; out[3 * k + 2] = org[3 * k + 2] + p[2];
         if (col) { const d = Math.log10(Math.max(0.05, web.rho[idx[k]])) / 1.6 + 0.35, w = d < 0 ? 0 : d > 1 ? 1 : d; col[3 * k] = 0.45 + 0.55 * w; col[3 * k + 1] = 0.55 + 0.3 * w * (1 - 0.3 * w); col[3 * k + 2] = 1 - 0.6 * w; }
       }
@@ -168,8 +168,13 @@ export function makeTiledCloud(web, { n = 150000, R = 1000, seed = 99, observer 
   };
 }
 const _pp = [0, 0, 0];
-function permuted(web, j, pm, D, L) {   // particle j at growth D, turned by orientation pm (0..47: 6 axis orders x 8 mirrors) inside its tile
+function tileShift(tx, ty, tz, L) {   // a stable pseudo-random offset in [0, L) per tile and axis
+  const f = (a, b, c) => { let h = Math.imul(a | 0, 374761393) ^ Math.imul(b | 0, 668265263) ^ Math.imul(c | 0, 2147483647); h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296 * L; };
+  return [f(tx, ty, tz), f(ty, tz, tx + 7), f(tz, tx, ty + 13)];
+}
+function permuted(web, j, pm, D, L, sh, o = 0) {   // particle j at growth D, turned by orientation pm (0..47: 6 axis orders x 8 mirrors) inside its tile
   let x = web.lat[3 * j] + D * web.psi[3 * j], y = web.lat[3 * j + 1] + D * web.psi[3 * j + 1], z = web.lat[3 * j + 2] + D * web.psi[3 * j + 2];
+  if (sh) { x += sh[o]; y += sh[o + 1]; z += sh[o + 2]; }
   x = ((x % L) + L) % L; y = ((y % L) + L) % L; z = ((z % L) + L) % L;
   const ax = [x, y, z], order = ORDERS[pm % 6], mir = pm >> 3 & 7;
   _pp[0] = ax[order[0]]; _pp[1] = ax[order[1]]; _pp[2] = ax[order[2]];

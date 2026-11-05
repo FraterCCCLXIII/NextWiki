@@ -1,0 +1,125 @@
+{
+ "id": "norse",
+ "name": "Norse",
+ "region": "Northern Europe",
+ "era": "Medieval (incomplete)",
+ "color": "#9aa7b8",
+ "description": "Norse star names and groups compiled for Stellarium; marked incomplete upstream.",
+ "source": [
+  "Stellarium sky culture 'norse' (https://github.com/Stellarium/stellarium/tree/master/skycultures/norse); contributed by: This sky culture was contributed by Stellarium user *Jonas Persson*, jonas.perssonmna.hkr.se",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: norse: CC BY-SA 4.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "norse-norse-aurvandil-s-toe",
+   "name": "Aurvandil's Toe",
+   "kind": "constellation",
+   "group": "Norse",
+   "lines": [
+    [
+     "HIP76127",
+     "HIP75695",
+     "HIP76267",
+     "HIP76952",
+     "HIP77512",
+     "HIP78159",
+     "HIP78493"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'norse' sky culture; see source for documentation."
+  },
+  {
+   "id": "norse-norse-wolf-s-mouth",
+   "name": "Wolf's Mouth",
+   "kind": "constellation",
+   "group": "Norse",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP20894",
+     "HIP20205",
+     "HIP20455",
+     "HIP20889"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'norse' sky culture; see source for documentation."
+  },
+  {
+   "id": "norse-norse-the-fishermen",
+   "name": "The Fishermen",
+   "kind": "constellation",
+   "group": "Norse",
+   "lines": [
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'norse' sky culture; see source for documentation."
+  },
+  {
+   "id": "norse-norse-woman-s-cart",
+   "name": "Woman's Cart",
+   "kind": "constellation",
+   "group": "Norse",
+   "lines": [
+    [
+     "HIP11767",
+     "HIP85822",
+     "HIP82080",
+     "HIP77055",
+     "HIP79822",
+     "HIP75097",
+     "HIP72607",
+     "HIP77055"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'norse' sky culture; see source for documentation."
+  },
+  {
+   "id": "norse-norse-man-s-cart",
+   "name": "Man's Cart",
+   "kind": "constellation",
+   "group": "Norse",
+   "lines": [
+    [
+     "HIP67301",
+     "HIP65378",
+     "HIP62956",
+     "HIP59774",
+     "HIP54061",
+     "HIP53910",
+     "HIP58001",
+     "HIP59774"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'norse' sky culture; see source for documentation."
+  },
+  {
+   "id": "norse-norse-the-asar-battlefield",
+   "name": "The Asar Battlefield",
+   "kind": "constellation",
+   "group": "Norse",
+   "lines": [
+    [
+     "HIP28380",
+     "HIP28360",
+     "HIP24608",
+     "HIP23453",
+     "HIP23015"
+    ],
+    [
+     "HIP25428",
+     "HIP23015"
+    ],
+    [
+     "HIP25428",
+     "HIP28380"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'norse' sky culture; see source for documentation."
+  }
+ ]
+}

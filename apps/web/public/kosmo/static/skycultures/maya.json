@@ -1,0 +1,431 @@
+{
+ "id": "maya",
+ "name": "Maya",
+ "region": "Mesoamerica",
+ "era": "Classic to colonial (historical)",
+ "color": "#e0b100",
+ "description": "Maya constellations reconstructed from codices, inscriptions and ethnohistory, compiled for Stellarium.",
+ "source": [
+  "Stellarium sky culture 'maya' (https://github.com/Stellarium/stellarium/tree/master/skycultures/maya); contributed by: This sky culture was contributed by *Eduardo Rodas-Quito* and *Javier Mejuto* of the Archaeoastronomy and Cultural Astronomy Department at Space Sciences Faculty, Universidad Nacional Autonoma de Honduras.",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: maya: CC BY-NC-SA 4.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "maya-maya-way-paat-ahiin",
+   "name": "Way Paat Ahiin",
+   "kind": "constellation",
+   "group": "Maya",
+   "lines": [
+    [
+     "HIP6686",
+     "HIP4427",
+     "HIP3179",
+     "HIP746",
+     "HIP102098",
+     "HIP100453",
+     "HIP99824"
+    ],
+    [
+     "HIP100453",
+     "HIP91262"
+    ]
+   ],
+   "meaning": "Hole-backed Caiman",
+   "story": "Line pattern from the Stellarium 'maya' sky culture; see source for documentation."
+  },
+  {
+   "id": "maya-maya-aak",
+   "name": "Aak",
+   "kind": "constellation",
+   "group": "Maya",
+   "lines": [
+    [
+     "HIP26727",
+     "HIP25930"
+    ]
+   ],
+   "meaning": "Turtle",
+   "story": "Line pattern from the Stellarium 'maya' sky culture; see source for documentation."
+  },
+  {
+   "id": "maya-maya-oxib-xk-ub",
+   "name": "Oxib' Xk'ub'",
+   "kind": "constellation",
+   "group": "Maya",
+   "lines": [
+    [
+     "HIP27366",
+     "HIP24436",
+     "HIP26727"
+    ],
+    [
+     "HIP27366",
+     "HIP26727"
+    ]
+   ],
+   "meaning": "Primordial Fire",
+   "story": "Line pattern from the Stellarium 'maya' sky culture; see source for documentation."
+  },
+  {
+   "id": "maya-maya-kitamob",
+   "name": "kitamob",
+   "kind": "constellation",
+   "group": "Maya",
+   "lines": [
+    [
+     "HIP37826",
+     "HIP36850",
+     "HIP38016"
+    ]
+   ],
+   "meaning": "Peccaries",
+   "extraStars": {
+    "HIP38016": [
+     116.8764,
+     33.4157,
+     202.84,
+     5.14,
+     "80Pi  Gem",
+     "M0III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'maya' sky culture; see source for documentation."
+  },
+  {
+   "id": "maya-maya-xoc",
+   "name": "Xoc",
+   "kind": "constellation",
+   "group": "Maya",
+   "lines": [
+    [
+     "HIP68895",
+     "HIP68933",
+     "HIP76470"
+    ],
+    [
+     "HIP68933",
+     "HIP65109",
+     "HIP68002",
+     "HIP71352",
+     "HIP73273",
+     "HIP71860"
+    ]
+   ],
+   "meaning": "Shark",
+   "story": "Line pattern from the Stellarium 'maya' sky culture; see source for documentation."
+  },
+  {
+   "id": "maya-maya-siina-an",
+   "name": "Siina'an",
+   "kind": "constellation",
+   "group": "Maya",
+   "lines": [
+    [
+     "HIP80763",
+     "HIP78104",
+     "HIP80911",
+     "HIP82729"
+    ],
+    [
+     "HIP80911",
+     "HIP76939"
+    ]
+   ],
+   "meaning": "Scorpion",
+   "extraStars": {
+    "HIP78104": [
+     239.2212,
+     -29.2141,
+     144.72,
+     3.87,
+     "Iklil",
+     "B2IV/V"
+    ],
+    "HIP80911": [
+     247.8456,
+     -34.7044,
+     170.07,
+     4.24,
+     "HR 6143",
+     "B2III-IV"
+    ],
+    "HIP76939": [
+     235.6597,
+     -37.4249,
+     79.94,
+     5.23,
+     "HR 5837",
+     "G8/K0III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'maya' sky culture; see source for documentation."
+  },
+  {
+   "id": "maya-maya-kaan",
+   "name": "Kaan",
+   "kind": "constellation",
+   "group": "Maya",
+   "lines": [
+    [
+     "HIP92855",
+     "HIP93506",
+     "HIP90185",
+     "HIP88635"
+    ],
+    [
+     "HIP90185",
+     "HIP89642",
+     "HIP86228",
+     "HIP90422",
+     "HIP93174",
+     "HIP93825",
+     "HIP94160",
+     "HIP93542"
+    ]
+   ],
+   "meaning": "Snake",
+   "story": "Line pattern from the Stellarium 'maya' sky culture; see source for documentation."
+  },
+  {
+   "id": "maya-maya-paddler-gods",
+   "name": "Paddler Gods",
+   "kind": "constellation",
+   "group": "Maya",
+   "lines": [
+    [
+     "HIP60718",
+     "HIP32349"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'maya' sky culture; see source for documentation."
+  },
+  {
+   "id": "maya-maya-zool",
+   "name": "Zool",
+   "kind": "constellation",
+   "group": "Maya",
+   "lines": [
+    [
+     "HIP5364",
+     "HIP3419",
+     "HIP1562"
+    ],
+    [
+     "HIP4577",
+     "HIP5364"
+    ],
+    [
+     "HIP1562",
+     "HIP1708",
+     "HIP4577"
+    ]
+   ],
+   "meaning": "Bat",
+   "story": "Line pattern from the Stellarium 'maya' sky culture; see source for documentation."
+  },
+  {
+   "id": "maya-maya-kulte",
+   "name": "Kulte'",
+   "kind": "constellation",
+   "group": "Maya",
+   "lines": [
+    [
+     "HIP18907",
+     "HIP19860"
+    ],
+    [
+     "HIP21421",
+     "HIP20205",
+     "HIP20889"
+    ],
+    [
+     "HIP20205",
+     "HIP18724"
+    ],
+    [
+     "HIP20205",
+     "HIP19860"
+    ],
+    [
+     "HIP21589",
+     "HIP20205"
+    ],
+    [
+     "HIP21589",
+     "HIP22449"
+    ],
+    [
+     "HIP18724",
+     "HIP17771",
+     "HIP17563"
+    ]
+   ],
+   "meaning": "Owl",
+   "extraStars": {
+    "HIP19860": [
+     63.8836,
+     8.8924,
+     139.66,
+     4.27,
+     "49Mu  Tau",
+     "B3IV"
+    ],
+    "HIP21589": [
+     69.5394,
+     12.5108,
+     47.08,
+     4.27,
+     "90    Tau",
+     "A6V"
+    ],
+    "HIP17771": [
+     57.0678,
+     11.1433,
+     139.08,
+     5.08,
+     "30    Tau",
+     "B3V"
+    ],
+    "HIP17563": [
+     56.4185,
+     6.05,
+     163.67,
+     5.34,
+     "29    Tau",
+     "B3V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'maya' sky culture; see source for documentation."
+  },
+  {
+   "id": "maya-maya-ch-oom",
+   "name": "Ch'oom",
+   "kind": "constellation",
+   "group": "Maya",
+   "lines": [
+    [
+     "HIP12832",
+     "HIP12828",
+     "HIP11249"
+    ],
+    [
+     "HIP12828",
+     "HIP11484"
+    ],
+    [
+     "HIP12828",
+     "HIP14135"
+    ],
+    [
+     "HIP11484",
+     "HIP12706"
+    ]
+   ],
+   "meaning": "Vulture",
+   "extraStars": {
+    "HIP12832": [
+     41.2399,
+     12.4458,
+     36.34,
+     5.17,
+     "38    Ari",
+     "A7III-IV"
+    ],
+    "HIP11249": [
+     36.2044,
+     10.6106,
+     267.38,
+     5.48,
+     "24Xi  Ari",
+     "B7IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'maya' sky culture; see source for documentation."
+  },
+  {
+   "id": "maya-maya-kimi",
+   "name": "Kimi",
+   "kind": "constellation",
+   "group": "Maya",
+   "lines": [
+    [
+     "HIP50851",
+     "HIP46771",
+     "HIP47431",
+     "HIP50851"
+    ]
+   ],
+   "meaning": "Death",
+   "extraStars": {
+    "HIP50851": [
+     155.7519,
+     6.5426,
+     71.12,
+     6.06,
+     "43    Leo",
+     "K3III"
+    ],
+    "HIP46771": [
+     142.9864,
+     11.2998,
+     66.09,
+     4.99,
+     "5Xi  Leo",
+     "K0IIIvar"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'maya' sky culture; see source for documentation."
+  },
+  {
+   "id": "maya-maya-b-alaam",
+   "name": "B'alaam",
+   "kind": "constellation",
+   "group": "Maya",
+   "lines": [
+    [
+     "HIP107380",
+     "HIP98353",
+     "HIP98761",
+     "HIP107380"
+    ]
+   ],
+   "meaning": "Jaguar",
+   "extraStars": {
+    "HIP98353": [
+     299.7383,
+     -26.1958,
+     96.06,
+     4.84,
+     "60    Sgr",
+     "G8II/III"
+    ],
+    "HIP98761": [
+     300.8894,
+     -37.9407,
+     112.36,
+     4.77,
+     "HR 7652",
+     "K4III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'maya' sky culture; see source for documentation."
+  },
+  {
+   "id": "maya-maya-uo",
+   "name": "Uo",
+   "kind": "constellation",
+   "group": "Maya",
+   "lines": [
+    [
+     "HIP64962",
+     "HIP60965",
+     "HIP59316",
+     "HIP64962"
+    ]
+   ],
+   "meaning": "Toad",
+   "story": "Line pattern from the Stellarium 'maya' sky culture; see source for documentation."
+  }
+ ]
+}

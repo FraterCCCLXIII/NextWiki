@@ -1,0 +1,335 @@
+{
+ "cultures": [
+  {
+   "id": "western",
+   "name": "Western (IAU)",
+   "region": "Europe / worldwide",
+   "era": "Ptolemy 2nd c. - IAU 1922/1930",
+   "color": "#7fa7ff",
+   "description": "The 88 IAU constellations, drawn from constellations.json.",
+   "figureCount": 88,
+   "file": null,
+   "builtin": true
+  },
+  {
+   "id": "historical",
+   "name": "Historical & obsolete",
+   "region": "Europe (Greek, Roman, Renaissance and Enlightenment atlases)",
+   "era": "c. 150 CE - 1922",
+   "color": "#c9a66b",
+   "description": "Constellations that appeared in star atlases and globes from Ptolemy to the 19th century but were dropped or renamed when the IAU fixed the 88 modern constellations in 1922. Each is drawn as a schematic stick figure on real Hipparcos/HYG stars.",
+   "figureCount": 35,
+   "file": "historical.json"
+  },
+  {
+   "id": "western-asterisms",
+   "name": "Western asterisms",
+   "region": "Europe, North America, Southern Hemisphere (popular sky lore)",
+   "era": "Antiquity - present",
+   "color": "#7fb5a8",
+   "description": "Popular star patterns used by observers in the Western tradition, such as the Big Dipper, Summer Triangle and Southern Cross. Asterisms are informal groupings and may sit inside or span IAU constellations.",
+   "figureCount": 47,
+   "file": "western-asterisms.json"
+  },
+  {
+   "id": "aboriginal",
+   "name": "Aboriginal Australian (Boorong)",
+   "region": "Australia (north-west Victoria)",
+   "era": "Recorded 1857",
+   "color": "#d9822b",
+   "description": "The Boorong sky of Lake Tyrrell as written down by William Stanbridge in 1857 and identified by John Morieson. Other Aboriginal skies are documented but are not included here (see report).",
+   "figureCount": 28,
+   "file": "aboriginal.json"
+  },
+  {
+   "id": "arabic",
+   "name": "Arabic",
+   "region": "Arabian Peninsula and Middle East",
+   "era": "pre-Islamic - present",
+   "color": "#2ec4a6",
+   "description": "The 28 manazil al-qamar (lunar mansions) of Arabic astronomy, identified with their stars.",
+   "figureCount": 27,
+   "file": "arabic.json"
+  },
+  {
+   "id": "aztec",
+   "name": "Aztec (Mexica)",
+   "region": "Central Mexico",
+   "era": "Postclassic (historical)",
+   "color": "#a64ca6",
+   "description": "Mexica (Aztec) constellations compiled for Stellarium from colonial sources.",
+   "figureCount": 5,
+   "file": "aztec.json"
+  },
+  {
+   "id": "babylonian",
+   "name": "Babylonian",
+   "region": "Mesopotamia",
+   "era": "c. 1200 - 300 BCE",
+   "color": "#a78bfa",
+   "description": "Constellations of the Babylonian MUL.APIN star catalogue, including the Moon-path stations that preceded the zodiac.",
+   "figureCount": 17,
+   "file": "babylonian.json"
+  },
+  {
+   "id": "belarusian",
+   "name": "Belarusian (folk)",
+   "region": "Eastern Europe",
+   "era": "Traditional",
+   "color": "#7d9c3a",
+   "description": "Belarusian folk constellations compiled for Stellarium.",
+   "figureCount": 20,
+   "file": "belarusian.json"
+  },
+  {
+   "id": "chinese",
+   "name": "Chinese",
+   "region": "East Asia",
+   "era": "c. 1000 BCE - present",
+   "color": "#e2554b",
+   "description": "The traditional Chinese star system: Three Enclosures around the pole, the Twenty-Eight Mansions along the ecliptic grouped into the Four Symbols, and the xingguan asterisms of the Yixiang kaocheng.",
+   "figureCount": 316,
+   "file": "chinese.json"
+  },
+  {
+   "id": "egyptian",
+   "name": "Egyptian",
+   "region": "North Africa",
+   "era": "c. 2500 BCE - Roman period",
+   "color": "#e6c84f",
+   "description": "Ancient Egyptian star figures after Belmonte's map of the firmament, including the Bull's Foreleg (Big Dipper), Sah (Orion) and Sopdet (Sirius).",
+   "figureCount": 29,
+   "file": "egyptian.json"
+  },
+  {
+   "id": "inca",
+   "name": "Inca (Quechua)",
+   "region": "Andes (Cuzco region)",
+   "era": "Inca and modern Quechua tradition",
+   "color": "#cc7a00",
+   "description": "Quechua dark constellations: animal shapes seen in the dark lanes of the Milky Way rather than among bright stars. Polygons are schematic approximations.",
+   "figureCount": 5,
+   "file": "inca.json"
+  },
+  {
+   "id": "indian",
+   "name": "Indian (Vedic)",
+   "region": "South Asia",
+   "era": "c. 1500 BCE - present",
+   "color": "#ff9f43",
+   "description": "The 27/28 nakshatras (lunar mansions) of Vedic astronomy with their junction stars (yogataras), plus the Saptarshi sages and the Pole Star Dhruva.",
+   "figureCount": 31,
+   "file": "indian.json"
+  },
+  {
+   "id": "inuit",
+   "name": "Inuit",
+   "region": "Arctic North America",
+   "era": "Traditional",
+   "color": "#6fb7e8",
+   "description": "Inuit star groups and star names compiled for Stellarium.",
+   "figureCount": 13,
+   "file": "inuit.json"
+  },
+  {
+   "id": "japanese",
+   "name": "Japanese",
+   "region": "East Asia",
+   "era": "Nara/Heian period - Edo period (Yasui Santetsu / Shibukawa Harumi, Tenmon Seisho)",
+   "color": "#e8b84a",
+   "description": "Japan's adaptation of the Chinese star system as shown on the Edo-era Yasui (Shibukawa Harumi) star map, with Japanese readings, the 28 shuku with their native star names, and 61 asterisms (J01-J61) unique to Japan named for the Ritsuryo court offices.",
+   "figureCount": 373,
+   "file": "japanese.json"
+  },
+  {
+   "id": "korean",
+   "name": "Korean",
+   "region": "East Asia",
+   "era": "Goguryeo tomb murals (c. 5th c.) - Joseon (Cheonsang Yeolcha Bunyajido, 1395)",
+   "color": "#3fb6c9",
+   "description": "The Korean form of the Chinese star system: Three Palaces (enclosures), Twenty-Eight Mansions (isipalsu) and the Four Symbols, with Korean readings of the Hanja names.",
+   "figureCount": 312,
+   "file": "korean.json"
+  },
+  {
+   "id": "macedonian",
+   "name": "Macedonian (folk)",
+   "region": "Balkans",
+   "era": "Traditional",
+   "color": "#cf6a87",
+   "description": "Macedonian folk star names and groups compiled for Stellarium.",
+   "figureCount": 19,
+   "file": "macedonian.json"
+  },
+  {
+   "id": "maya",
+   "name": "Maya",
+   "region": "Mesoamerica",
+   "era": "Classic to colonial (historical)",
+   "color": "#e0b100",
+   "description": "Maya constellations reconstructed from codices, inscriptions and ethnohistory, compiled for Stellarium.",
+   "figureCount": 14,
+   "file": "maya.json"
+  },
+  {
+   "id": "melanesian",
+   "name": "Melanesian (Anuta and Vanuatu)",
+   "region": "Solomon Islands and Vanuatu",
+   "era": "Ethnographic",
+   "color": "#33a1c9",
+   "description": "Star lore of Anuta (Solomon Islands) and the Netwar (Vanuatu) people compiled for Stellarium.",
+   "figureCount": 21,
+   "file": "melanesian.json"
+  },
+  {
+   "id": "mongolian",
+   "name": "Mongolian",
+   "region": "Mongolia",
+   "era": "Traditional",
+   "color": "#4e9f9f",
+   "description": "Mongolian star groups compiled for Stellarium.",
+   "figureCount": 4,
+   "file": "mongolian.json"
+  },
+  {
+   "id": "navajo",
+   "name": "Navajo (Dine)",
+   "region": "North America (Southwest)",
+   "era": "Traditional",
+   "color": "#c0392b",
+   "description": "Navajo (Dine) star groups compiled for Stellarium.",
+   "figureCount": 8,
+   "file": "navajo.json"
+  },
+  {
+   "id": "norse",
+   "name": "Norse",
+   "region": "Northern Europe",
+   "era": "Medieval (incomplete)",
+   "color": "#9aa7b8",
+   "description": "Norse star names and groups compiled for Stellarium; marked incomplete upstream.",
+   "figureCount": 6,
+   "file": "norse.json"
+  },
+  {
+   "id": "northern-andes",
+   "name": "Northern Andes",
+   "region": "Ecuador and the Northern Andes",
+   "era": "Modern reconstruction",
+   "color": "#b5651d",
+   "description": "Star patterns and dark constellations proposed by Andean researchers (Guayasamin and colleagues) for the equatorial sky; the figure names honour modern researchers and are a contemporary reconstruction, not attested Inca names.",
+   "figureCount": 8,
+   "file": "northern-andes.json"
+  },
+  {
+   "id": "polynesian",
+   "name": "Polynesian",
+   "region": "Polynesia and Aotearoa",
+   "era": "Traditional, recorded 19th-21st c.",
+   "color": "#2ec4b6",
+   "description": "Star lore and navigation star lines from Hawaii (Hawaiian Starlines as used by the Polynesian Voyaging Society), Aotearoa (Maori), the Society Islands (Ruanui sky of Tahiti), Samoa and Tonga.",
+   "figureCount": 63,
+   "file": "polynesian.json"
+  },
+  {
+   "id": "potawatomi",
+   "name": "Potawatomi (Neshnabe)",
+   "region": "Great Lakes, North America",
+   "era": "Traditional",
+   "color": "#8fd0a0",
+   "description": "Potawatomi Star Knowledge (Neshnabe Nengosek Kenomagewen) compiled for Stellarium. Only line data are used here; the artwork is under a separate non-commercial licence and is not included.",
+   "figureCount": 18,
+   "file": "potawatomi.json"
+  },
+  {
+   "id": "romanian",
+   "name": "Romanian (folk)",
+   "region": "Eastern Europe",
+   "era": "Traditional",
+   "color": "#3d7ea6",
+   "description": "Romanian folk star names and groups compiled for Stellarium.",
+   "figureCount": 39,
+   "file": "romanian.json"
+  },
+  {
+   "id": "sami",
+   "name": "Sami",
+   "region": "Northern Fennoscandia",
+   "era": "Traditional",
+   "color": "#5f8dd3",
+   "description": "Sami star groups compiled for Stellarium.",
+   "figureCount": 10,
+   "file": "sami.json"
+  },
+  {
+   "id": "sardinian",
+   "name": "Sardinian (folk)",
+   "region": "Sardinia",
+   "era": "Traditional",
+   "color": "#e08e45",
+   "description": "Sardinian folk star names and groups compiled for Stellarium.",
+   "figureCount": 12,
+   "file": "sardinian.json"
+  },
+  {
+   "id": "seri",
+   "name": "Seri (Comcaac)",
+   "region": "Sonora, Mexico",
+   "era": "Traditional",
+   "color": "#e86f9a",
+   "description": "Seri (Comcaac) constellations compiled for Stellarium.",
+   "figureCount": 15,
+   "file": "seri.json"
+  },
+  {
+   "id": "siberian",
+   "name": "Siberian (Russia)",
+   "region": "Northern Asia",
+   "era": "Ethnographic",
+   "color": "#b8a1e3",
+   "description": "Star groups of Siberian peoples compiled for Stellarium.",
+   "figureCount": 3,
+   "file": "siberian.json"
+  },
+  {
+   "id": "tibetan",
+   "name": "Tibetan",
+   "region": "Tibet",
+   "era": "Traditional",
+   "color": "#d94f30",
+   "description": "Tibetan zodiac signs and lunar mansions with Tibetan names, compiled for Stellarium. Upstream asks for specialist review.",
+   "figureCount": 39,
+   "file": "tibetan.json"
+  },
+  {
+   "id": "tikuna",
+   "name": "Tikuna",
+   "region": "Upper Amazon",
+   "era": "Ethnographic",
+   "color": "#6aa84f",
+   "description": "Tikuna constellations compiled for Stellarium.",
+   "figureCount": 4,
+   "file": "tikuna.json"
+  },
+  {
+   "id": "tukano",
+   "name": "Tukano",
+   "region": "North-west Amazon",
+   "era": "Ethnographic",
+   "color": "#c9a227",
+   "description": "Tukano constellations compiled for Stellarium.",
+   "figureCount": 11,
+   "file": "tukano.json"
+  },
+  {
+   "id": "tupi",
+   "name": "Tupi-Guarani",
+   "region": "Brazil",
+   "era": "Traditional, documented 20th c.",
+   "color": "#7cc242",
+   "description": "Tupi-Guarani constellations of Brazil, including the Ema (Guira-nhandu, rhea) drawn along the Milky Way, as compiled for Stellarium.",
+   "figureCount": 7,
+   "file": "tupi.json"
+  }
+ ]
+}

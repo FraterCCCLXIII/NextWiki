@@ -1,0 +1,1557 @@
+{
+ "id": "romanian",
+ "name": "Romanian (folk)",
+ "region": "Eastern Europe",
+ "era": "Traditional",
+ "color": "#3d7ea6",
+ "description": "Romanian folk star names and groups compiled for Stellarium.",
+ "source": [
+  "Stellarium sky culture 'romanian' (https://github.com/Stellarium/stellarium/tree/master/skycultures/romanian); contributed by: This sky culture was contributed by Stellarium user Mircea Lite on behalf of Baia Mare Planetarium, as a result of a project called *Traditional Romanian Constellations* primarily based on the book *Romanian peasants beliefs in stars and sky* by Ioan Otescu. The Romanian constellation lines, images,",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: romanian: CC BY-SA 3.0 Unported. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "romanian-romanian-carul-mare",
+   "name": "Carul Mare",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP67301",
+     "HIP65378",
+     "HIP62956",
+     "HIP59774",
+     "HIP54061",
+     "HIP53910",
+     "HIP58001",
+     "HIP59774"
+    ],
+    [
+     "HIP58001",
+     "HIP57399",
+     "HIP54539",
+     "HIP50372"
+    ],
+    [
+     "HIP54539",
+     "HIP50801"
+    ],
+    [
+     "HIP53910",
+     "HIP48402",
+     "HIP46853",
+     "HIP44471"
+    ],
+    [
+     "HIP46853",
+     "HIP44127"
+    ],
+    [
+     "HIP48402",
+     "HIP48319",
+     "HIP41704",
+     "HIP46733",
+     "HIP54061"
+    ]
+   ],
+   "meaning": "The Great Chariot",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-capra",
+   "name": "Capra",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP24608",
+     "HIP23767",
+     "HIP23416",
+     "HIP23453",
+     "HIP23767"
+    ]
+   ],
+   "meaning": "The She-Goat with Three She-Goat’s Kids",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-coasa",
+   "name": "Coasa",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP116727",
+     "HIP105199",
+     "HIP107259",
+     "HIP109492",
+     "HIP110991"
+    ],
+    [
+     "HIP106032",
+     "HIP108587"
+    ]
+   ],
+   "meaning": "The Scythe",
+   "extraStars": {
+    "HIP108587": [
+     329.9564,
+     70.866,
+     277.01,
+     9.68,
+     "HIP 108587",
+     "K0"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-ciobanul-cu-oile",
+   "name": "Ciobanul cu oile",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP91262",
+     "HIP91971",
+     "HIP92791",
+     "HIP93194",
+     "HIP92420",
+     "HIP91971"
+    ]
+   ],
+   "meaning": "The Shepherd with His Sheep",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-hora",
+   "name": "Hora",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP76127",
+     "HIP75695",
+     "HIP76267",
+     "HIP76952",
+     "HIP77512",
+     "HIP78159",
+     "HIP78493",
+     "HIP76127"
+    ]
+   ],
+   "meaning": "The Ring Dance",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-jgheabul-si-putul",
+   "name": "Jgheabul si putul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP9640",
+     "HIP5447",
+     "HIP3092",
+     "HIP677",
+     "HIP113881",
+     "HIP113963"
+    ],
+    [
+     "HIP677",
+     "HIP1067"
+    ]
+   ],
+   "meaning": "The Well with a Drain",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-tronul",
+   "name": "Tronul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP8886",
+     "HIP6686",
+     "HIP4427",
+     "HIP2599",
+     "HIP746"
+    ],
+    [
+     "HIP6686",
+     "HIP5542"
+    ],
+    [
+     "HIP4427",
+     "HIP3179"
+    ]
+   ],
+   "meaning": "God’s Chair",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-fata-de-imparat",
+   "name": "Fata de imparat",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP97278",
+     "HIP97649",
+     "HIP98036"
+    ]
+   ],
+   "meaning": "The Emperor’s Daughter with a Yoke",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-closca-cu-pui",
+   "name": "Closca cu pui",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP17847",
+     "HIP17702",
+     "HIP17573",
+     "HIP17499",
+     "HIP17608",
+     "HIP17847"
+    ]
+   ],
+   "meaning": "The Hatching Hen with Her Chicks",
+   "extraStars": {
+    "HIP17573": [
+     56.4567,
+     24.3677,
+     117.51,
+     3.87,
+     "Maia",
+     "B8III"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17608": [
+     56.5816,
+     23.9484,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-carul-mic",
+   "name": "Carul mic",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP11767",
+     "HIP85822",
+     "HIP82080",
+     "HIP77055",
+     "HIP79822",
+     "HIP75097",
+     "HIP72607",
+     "HIP77055"
+    ]
+   ],
+   "meaning": "The Little Chariot",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-fratii",
+   "name": "Fratii",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP37826",
+     "HIP35550",
+     "HIP34088",
+     "HIP31681",
+     "HIP30343",
+     "HIP32246",
+     "HIP36850",
+     "HIP37826"
+    ]
+   ],
+   "meaning": "The Brothers",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-crucea-mare",
+   "name": "Crucea mare",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP107310",
+     "HIP104732",
+     "HIP102488",
+     "HIP100453",
+     "HIP97165",
+     "HIP95853"
+    ],
+    [
+     "HIP102098",
+     "HIP100453",
+     "HIP98110",
+     "HIP95947"
+    ]
+   ],
+   "meaning": "The Great Cross",
+   "extraStars": {
+    "HIP107310": [
+     326.0357,
+     28.7426,
+     22.24,
+     4.49,
+     "78Mu 1Cyg",
+     "F6V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-crucea-mica",
+   "name": "Crucea mica",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP101421",
+     "HIP101769",
+     "HIP102532"
+    ],
+    [
+     "HIP102281",
+     "HIP101958"
+    ]
+   ],
+   "meaning": "The Little Cross",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-tapul",
+   "name": "Tapul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP107556",
+     "HIP107188",
+     "HIP106723",
+     "HIP105881",
+     "HIP102978",
+     "HIP102485",
+     "HIP100345",
+     "HIP104139",
+     "HIP105515",
+     "HIP106985",
+     "HIP107556"
+    ]
+   ],
+   "meaning": "The He-Goat",
+   "extraStars": {
+    "HIP107188": [
+     325.6646,
+     -18.8663,
+     90.17,
+     4.72,
+     "43Kap Cap",
+     "G8III"
+    ],
+    "HIP106723": [
+     324.2701,
+     -19.466,
+     323.62,
+     4.51,
+     "39Eps Cap",
+     "B3V:p"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-racul",
+   "name": "Racul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP44066",
+     "HIP42911",
+     "HIP42806",
+     "HIP43103"
+    ],
+    [
+     "HIP40526",
+     "HIP42911"
+    ]
+   ],
+   "meaning": "The Crayfish",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-calul",
+   "name": "Calul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP49669",
+     "HIP54879",
+     "HIP57632",
+     "HIP54872",
+     "HIP50583",
+     "HIP49583",
+     "HIP49669"
+    ],
+    [
+     "HIP50583",
+     "HIP50335",
+     "HIP48455",
+     "HIP47908"
+    ]
+   ],
+   "meaning": "The Horse",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-balaurul",
+   "name": "Balaurul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP87585",
+     "HIP87833",
+     "HIP85670",
+     "HIP85829",
+     "HIP87585",
+     "HIP94376",
+     "HIP97433",
+     "HIP94648",
+     "HIP89937",
+     "HIP83895",
+     "HIP80331",
+     "HIP78527",
+     "HIP75458",
+     "HIP68756",
+     "HIP61281",
+     "HIP56211"
+    ]
+   ],
+   "meaning": "The Dragon",
+   "extraStars": {
+    "HIP94648": [
+     288.8884,
+     73.3555,
+     44.88,
+     4.45,
+     "60Tau Dra",
+     "K3III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-corbul",
+   "name": "Corbul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP60965",
+     "HIP59803",
+     "HIP59316",
+     "HIP59199",
+     "HIP61359",
+     "HIP60965"
+    ]
+   ],
+   "meaning": "The Raven",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-cantarul",
+   "name": "Cantarul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP73714",
+     "HIP76333",
+     "HIP74785",
+     "HIP72622",
+     "HIP73714"
+    ]
+   ],
+   "meaning": "The Scales",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-fecioara",
+   "name": "Fecioara",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP65474",
+     "HIP61941",
+     "HIP60129",
+     "HIP57757",
+     "HIP57380",
+     "HIP58590",
+     "HIP58948"
+    ],
+    [
+     "HIP61941",
+     "HIP63090",
+     "HIP66249",
+     "HIP65474"
+    ],
+    [
+     "HIP73497",
+     "HIP72631",
+     "HIP72220",
+     "HIP73350",
+     "HIP71832",
+     "HIP68520",
+     "HIP66249"
+    ],
+    [
+     "HIP63090",
+     "HIP63608"
+    ]
+   ],
+   "meaning": "The Virgin",
+   "extraStars": {
+    "HIP58590": [
+     180.2183,
+     6.6143,
+     117.79,
+     4.65,
+     "8Pi  Vir",
+     "A5V"
+    ],
+    "HIP58948": [
+     181.3023,
+     8.733,
+     50.05,
+     4.12,
+     "9Omi Vir",
+     "G8III"
+    ],
+    "HIP73497": [
+     225.3326,
+     -2.7549,
+     227.79,
+     5.52,
+     "HR 5590",
+     "M0III"
+    ],
+    "HIP72631": [
+     222.7545,
+     -2.2992,
+     67.02,
+     4.93,
+     "11    Lib",
+     "G8..."
+    ],
+    "HIP73350": [
+     224.8463,
+     4.5678,
+     215.05,
+     5.91,
+     "HR 5584",
+     "M1III"
+    ],
+    "HIP71832": [
+     220.4115,
+     8.1618,
+     164.74,
+     4.86,
+     "31    Boo",
+     "G8IIIvar"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-crapii",
+   "name": "Crapii",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP113889",
+     "HIP114971",
+     "HIP115738",
+     "HIP116928",
+     "HIP118268",
+     "HIP4906",
+     "HIP5737",
+     "HIP7007",
+     "HIP7884",
+     "HIP8404",
+     "HIP8833",
+     "HIP9487",
+     "HIP8198",
+     "HIP7097",
+     "HIP5742"
+    ],
+    [
+     "HIP113889",
+     "HIP115830",
+     "HIP116771",
+     "HIP118268"
+    ],
+    [
+     "HIP5742",
+     "HIP5914",
+     "HIP6315",
+     "HIP5586",
+     "HIP4893",
+     "HIP5742"
+    ]
+   ],
+   "meaning": "The Carp",
+   "extraStars": {
+    "HIP8404": [
+     27.1084,
+     3.6854,
+     98.43,
+     5.91,
+     "HR 527",
+     "G9III"
+    ],
+    "HIP5914": [
+     19.021,
+     25.7694,
+     384.62,
+     6.76,
+     "HIP 5914",
+     "N0"
+    ],
+    "HIP6315": [
+     20.2807,
+     28.7382,
+     107.41,
+     5.23,
+     "91    Psc",
+     "K5III"
+    ],
+    "HIP4893": [
+     15.7096,
+     26.2994,
+     61.84,
+     7.21,
+     "HIP 4893",
+     "F3V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-berbecul",
+   "name": "Berbecul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP8832",
+     "HIP8903",
+     "HIP9884",
+     "HIP13209",
+     "HIP13914",
+     "HIP14838"
+    ],
+    [
+     "HIP13914",
+     "HIP15110"
+    ]
+   ],
+   "meaning": "The Ram",
+   "extraStars": {
+    "HIP15110": [
+     48.7254,
+     21.0444,
+     80.39,
+     4.87,
+     "58Zet Ari",
+     "A1V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-dulaul",
+   "name": "Dulaul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP32349",
+     "HIP30324",
+     "HIP30122",
+     "HIP33579",
+     "HIP33856",
+     "HIP35904"
+    ],
+    [
+     "HIP33579",
+     "HIP32349"
+    ]
+   ],
+   "meaning": "The Mastiff",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-catelul",
+   "name": "Catelul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP37279",
+     "HIP36188"
+    ]
+   ],
+   "meaning": "The Little Dog",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-vacarul",
+   "name": "Vacarul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP67459",
+     "HIP67927",
+     "HIP71795",
+     "HIP72125",
+     "HIP72105",
+     "HIP74666",
+     "HIP73555",
+     "HIP71075",
+     "HIP71053",
+     "HIP72105",
+     "HIP67927",
+     "HIP67275"
+    ],
+    [
+     "HIP74666",
+     "HIP75411",
+     "HIP76041"
+    ],
+    [
+     "HIP71075",
+     "HIP69732",
+     "HIP69483"
+    ],
+    [
+     "HIP70497",
+     "HIP69732"
+    ]
+   ],
+   "meaning": "The Herdsman",
+   "extraStars": {
+    "HIP72125": [
+     221.3103,
+     16.9643,
+     74.52,
+     4.6,
+     "35Omi Boo",
+     "K0III"
+    ],
+    "HIP75411": [
+     231.1227,
+     37.3772,
+     34.69,
+     4.31,
+     "Alkalurops",
+     "F0V"
+    ],
+    "HIP76041": [
+     232.9458,
+     40.8993,
+     119.05,
+     4.98,
+     "53Nu 2Boo",
+     "A5V"
+    ],
+    "HIP69483": [
+     213.3708,
+     51.79,
+     50.1,
+     4.53,
+     "17Kap2Boo",
+     "A8IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-porumbita",
+   "name": "Porumbita",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP25859",
+     "HIP27766",
+     "HIP28199",
+     "HIP29807"
+    ],
+    [
+     "HIP26634",
+     "HIP28199"
+    ]
+   ],
+   "meaning": "The Turtle Dove",
+   "extraStars": {
+    "HIP27766": [
+     88.1382,
+     -37.6311,
+     98.72,
+     5.62,
+     "HR 2053",
+     "K1III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-varsatorul",
+   "name": "Varsatorul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP102624",
+     "HIP102618",
+     "HIP103045",
+     "HIP106278",
+     "HIP109074",
+     "HIP110395",
+     "HIP110960",
+     "HIP110672"
+    ],
+    [
+     "HIP111497",
+     "HIP110960"
+    ],
+    [
+     "HIP110395",
+     "HIP112961",
+     "HIP114939",
+     "HIP115033",
+     "HIP117756",
+     "HIP117722",
+     "HIP115438",
+     "HIP113136",
+     "HIP112716",
+     "HIP109139",
+     "HIP106278"
+    ],
+    [
+     "HIP110395",
+     "HIP110273",
+     "HIP109139"
+    ],
+    [
+     "HIP117629",
+     "HIP117218",
+     "HIP116901"
+    ]
+   ],
+   "meaning": "He Who Pours Out the Water",
+   "extraStars": {
+    "HIP102624": [
+     311.9343,
+     -5.0277,
+     179.53,
+     4.43,
+     "3    Aqr",
+     "M3IIIvar"
+    ],
+    "HIP114939": [
+     349.2123,
+     -7.7265,
+     187.97,
+     4.93,
+     "92Chi Aqr",
+     "M3III"
+    ],
+    "HIP117756": [
+     358.2105,
+     -8.9968,
+     189.04,
+     5.76,
+     "HR 9040",
+     "K0III"
+    ],
+    "HIP117722": [
+     358.125,
+     -14.2512,
+     86.36,
+     5.85,
+     "HR 9037",
+     "K2III"
+    ],
+    "HIP112716": [
+     342.3979,
+     -13.5926,
+     97.37,
+     4.05,
+     "71Tau2Aqr",
+     "K5III"
+    ],
+    "HIP110273": [
+     335.0496,
+     -7.8211,
+     270.27,
+     5.35,
+     "46Rho Aqr",
+     "B8IIIMNp..."
+    ],
+    "HIP117629": [
+     357.8389,
+     -18.9092,
+     97.75,
+     5.17,
+     "108    Aqr",
+     "Ap Si"
+    ],
+    "HIP117218": [
+     356.5038,
+     -18.6783,
+     73.21,
+     5.28,
+     "107    Aqr",
+     "F2:V+..."
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-chitul",
+   "name": "Chitul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP10324",
+     "HIP11484",
+     "HIP12828",
+     "HIP13954",
+     "HIP14135",
+     "HIP12706",
+     "HIP12093",
+     "HIP11484"
+    ],
+    [
+     "HIP12706",
+     "HIP12387",
+     "HIP10642",
+     "HIP8645",
+     "HIP11345",
+     "HIP12390",
+     "HIP12770",
+     "HIP11783",
+     "HIP11345"
+    ],
+    [
+     "HIP8645",
+     "HIP6537",
+     "HIP5364",
+     "HIP8102",
+     "HIP8645"
+    ],
+    [
+     "HIP8778",
+     "HIP8102"
+    ],
+    [
+     "HIP5364",
+     "HIP3419",
+     "HIP1562"
+    ]
+   ],
+   "meaning": "The Whale",
+   "extraStars": {
+    "HIP10324": [
+     33.25,
+     8.8467,
+     117.51,
+     4.36,
+     "65Xi 1Cet",
+     "G8II:"
+    ],
+    "HIP10642": [
+     34.246,
+     -6.4221,
+     102.04,
+     5.51,
+     "67    Cet",
+     "G8III"
+    ],
+    "HIP11345": [
+     36.4875,
+     -12.2905,
+     139.86,
+     4.88,
+     "72Rho Cet",
+     "A0V"
+    ],
+    "HIP12390": [
+     39.891,
+     -11.8722,
+     21.48,
+     4.83,
+     "83Eps Cet",
+     "F5V"
+    ],
+    "HIP11783": [
+     38.0218,
+     -15.2447,
+     26.7,
+     4.74,
+     "76Sig Cet",
+     "F5V"
+    ],
+    "HIP8778": [
+     28.2171,
+     -16.9292,
+     94.16,
+     5.78,
+     "HR 547",
+     "F0V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-rarita",
+   "name": "Rarita",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP25336",
+     "HIP25930",
+     "HIP26311",
+     "HIP26727",
+     "HIP27366",
+     "HIP24436",
+     "HIP25930"
+    ]
+   ],
+   "meaning": "The Little Plough",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-secera",
+   "name": "Secera",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP26237",
+     "HIP26235",
+     "HIP26199",
+     "HIP25923",
+     "HIP25247",
+     "HIP24674"
+    ]
+   ],
+   "meaning": "The Sickle",
+   "extraStars": {
+    "HIP26237": [
+     83.8465,
+     -4.8384,
+     271.0,
+     4.58,
+     "42    Ori",
+     "B2III..."
+    ],
+    "HIP26235": [
+     83.8454,
+     -5.4161,
+     473.93,
+     4.98,
+     "43The2Ori",
+     "O9.5Vpe"
+    ],
+    "HIP26199": [
+     83.7612,
+     -6.002,
+     495.05,
+     4.78,
+     "HR 1887",
+     "B0.5V"
+    ],
+    "HIP25923": [
+     82.9827,
+     -7.3015,
+     877.19,
+     4.62,
+     "36Ups Ori",
+     "B0V"
+    ],
+    "HIP25247": [
+     80.9868,
+     -7.8081,
+     48.24,
+     4.13,
+     "29    Ori",
+     "G8III"
+    ],
+    "HIP24674": [
+     79.4016,
+     -6.8444,
+     151.52,
+     3.59,
+     "20Tau Ori",
+     "B5III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-sfredelul-mare",
+   "name": "Sfredelul mare",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ],
+    [
+     "HIP24436",
+     "HIP26311"
+    ]
+   ],
+   "meaning": "The Great Auger",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-taurul",
+   "name": "Taurul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP20894",
+     "HIP20205",
+     "HIP20455",
+     "HIP20889",
+     "HIP21251",
+     "HIP21421"
+    ]
+   ],
+   "meaning": "The Bull",
+   "extraStars": {
+    "HIP21251": [
+     68.3877,
+     18.0167,
+     134.23,
+     6.24,
+     "HR 1442",
+     "B9IVn"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-omul",
+   "name": "Omul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP79992",
+     "HIP81126",
+     "HIP81833",
+     "HIP84380",
+     "HIP84606",
+     "HIP85112",
+     "HIP87808",
+     "HIP86414"
+    ],
+    [
+     "HIP81833",
+     "HIP81693",
+     "HIP83207",
+     "HIP84380"
+    ],
+    [
+     "HIP81693",
+     "HIP80816",
+     "HIP80170"
+    ],
+    [
+     "HIP83207",
+     "HIP85693",
+     "HIP86974",
+     "HIP87933",
+     "HIP88794",
+     "HIP88817",
+     "HIP88528"
+    ]
+   ],
+   "meaning": "The Man",
+   "extraStars": {
+    "HIP84606": [
+     259.4178,
+     37.2915,
+     53.79,
+     4.64,
+     "69    Her",
+     "A2V"
+    ],
+    "HIP85693": [
+     262.6846,
+     26.1106,
+     113.25,
+     4.41,
+     "Maasym",
+     "K3IIIvar"
+    ],
+    "HIP88817": [
+     271.9563,
+     26.0973,
+     38.58,
+     5.79,
+     "100    Her",
+     "A3V"
+    ],
+    "HIP88528": [
+     271.1675,
+     23.942,
+     61.58,
+     6.34,
+     "HR 6754",
+     "F0IV-V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-sarpele",
+   "name": "Sarpele",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP78554",
+     "HIP77661",
+     "HIP76852",
+     "HIP77450",
+     "HIP78072",
+     "HIP77233",
+     "HIP77450",
+     "HIP77661"
+    ],
+    [
+     "HIP77233",
+     "HIP76276",
+     "HIP77070",
+     "HIP77622",
+     "HIP79593",
+     "HIP79882",
+     "HIP81377",
+     "HIP84012",
+     "HIP85755",
+     "HIP86263",
+     "HIP88048",
+     "HIP89962",
+     "HIP92946",
+     "HIP88771",
+     "HIP86032",
+     "HIP83000",
+     "HIP80883",
+     "HIP79593"
+    ],
+    [
+     "HIP86032",
+     "HIP86742",
+     "HIP85355"
+    ],
+    [
+     "HIP86742",
+     "HIP87108",
+     "HIP88192",
+     "HIP88290",
+     "HIP88601"
+    ],
+    [
+     "HIP88149",
+     "HIP88192"
+    ]
+   ],
+   "meaning": "The Serpent",
+   "extraStars": {
+    "HIP78554": [
+     240.5737,
+     22.8045,
+     54.88,
+     4.82,
+     "44Pi  Ser",
+     "A3V"
+    ],
+    "HIP77661": [
+     237.8163,
+     20.9779,
+     114.94,
+     4.74,
+     "38Rho Ser",
+     "K5III"
+    ],
+    "HIP85755": [
+     262.854,
+     -23.9626,
+     124.38,
+     4.78,
+     "51    Oph",
+     "A0V"
+    ],
+    "HIP88771": [
+     271.8374,
+     9.5638,
+     26.63,
+     3.71,
+     "72    Oph",
+     "A4IVs"
+    ],
+    "HIP85355": [
+     261.6287,
+     4.1404,
+     276.24,
+     4.34,
+     "49Sig Oph",
+     "K3IIvar"
+    ],
+    "HIP88192": [
+     270.1613,
+     2.9316,
+     377.36,
+     3.93,
+     "67    Oph",
+     "B5Ib"
+    ],
+    "HIP88290": [
+     270.4383,
+     1.3051,
+     89.69,
+     4.42,
+     "68    Oph",
+     "A2Vn"
+    ],
+    "HIP88601": [
+     271.3637,
+     2.5001,
+     5.08,
+     4.03,
+     "70    Oph",
+     "K0V SB"
+    ],
+    "HIP88149": [
+     270.0658,
+     4.3686,
+     199.6,
+     4.79,
+     "66    Oph",
+     "B2Ve"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-scorpia",
+   "name": "Scorpia",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP74857",
+     "HIP76470",
+     "HIP76600",
+     "HIP78104",
+     "HIP78265",
+     "HIP78401",
+     "HIP78820"
+    ],
+    [
+     "HIP78401",
+     "HIP80763",
+     "HIP81266",
+     "HIP82396",
+     "HIP82514"
+    ]
+   ],
+   "meaning": "The Scorpion",
+   "extraStars": {
+    "HIP74857": [
+     229.4577,
+     -30.1487,
+     99.9,
+     4.35,
+     "2    Lup",
+     "K1II/III"
+    ],
+    "HIP78104": [
+     239.2212,
+     -29.2141,
+     144.72,
+     3.87,
+     "Iklil",
+     "B2IV/V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-barda",
+   "name": "Barda",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP18246",
+     "HIP18614",
+     "HIP18532",
+     "HIP17448",
+     "HIP18246"
+    ],
+    [
+     "HIP18532",
+     "HIP15863",
+     "HIP14328",
+     "HIP13268",
+     "HIP13531",
+     "HIP12777",
+     "HIP14632",
+     "HIP15863",
+     "HIP14668",
+     "HIP14576",
+     "HIP14354"
+    ],
+    [
+     "HIP13254",
+     "HIP14576"
+    ]
+   ],
+   "meaning": "The Axe",
+   "extraStars": {
+    "HIP13254": [
+     42.6459,
+     38.3186,
+     37.02,
+     4.22,
+     "16    Per",
+     "F2III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-arcasul",
+   "name": "Arcasul",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP92041",
+     "HIP90185",
+     "HIP89931",
+     "HIP90496",
+     "HIP92041",
+     "HIP92855"
+    ],
+    [
+     "HIP90496",
+     "HIP92111",
+     "HIP93085",
+     "HIP93683",
+     "HIP94141",
+     "HIP94820",
+     "HIP95168"
+    ]
+   ],
+   "meaning": "The Archer",
+   "extraStars": {
+    "HIP92111": [
+     281.5859,
+     -22.3922,
+     209.64,
+     5.37,
+     "28    Sgr",
+     "K5III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-trisfetitele",
+   "name": "Trisfetitele",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ]
+   ],
+   "meaning": "The Three Saints",
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  },
+  {
+   "id": "romanian-romanian-vierii",
+   "name": "Vierii",
+   "kind": "constellation",
+   "group": "Romanian",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP20894",
+     "HIP20205",
+     "HIP20455",
+     "HIP20889",
+     "HIP21251",
+     "HIP21421"
+    ]
+   ],
+   "meaning": "The Boars",
+   "extraStars": {
+    "HIP21251": [
+     68.3877,
+     18.0167,
+     134.23,
+     6.24,
+     "HR 1442",
+     "B9IVn"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'romanian' sky culture; see source for documentation."
+  }
+ ]
+}

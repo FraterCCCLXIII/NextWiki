@@ -1,0 +1,10 @@
+{
+  "note": "Concepts are what lessons teach. A concept is one idea (gravity) that many lessons at many levels point at, so the encyclopedia and the curriculum do not duplicate each other. 'requires' is the concept-level prerequisite graph. Wikidata QIDs are from memory and flagged qidVerified:false until someone checks them.",
+  "concepts": {
+    "force": { "name": "Force", "summary": "A push or a pull that can change how something moves.", "wikidata": "Q11402", "qidVerified": false, "requires": [] },
+    "mass": { "name": "Mass", "summary": "How much matter something contains; how hard it is to speed up or slow down.", "wikidata": "Q11423", "qidVerified": false, "requires": [] },
+    "gravity": { "name": "Gravity", "summary": "The pull between all things that have mass; it holds us to the Earth and the planets to the Sun.", "wikidata": "Q11412", "qidVerified": false, "requires": ["force", "mass"] },
+    "weight": { "name": "Weight", "summary": "The pull of gravity on an object; it changes from world to world while mass does not.", "wikidata": "Q4044", "qidVerified": false, "requires": ["gravity", "mass"] },
+    "orbit": { "name": "Orbit", "summary": "The curved path of one body around another, held by gravity.", "wikidata": "Q44626", "qidVerified": false, "requires": ["gravity"] }
+  }
+}

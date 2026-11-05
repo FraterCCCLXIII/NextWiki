@@ -1,0 +1,496 @@
+{
+ "id": "melanesian",
+ "name": "Melanesian (Anuta and Vanuatu)",
+ "region": "Solomon Islands and Vanuatu",
+ "era": "Ethnographic",
+ "color": "#33a1c9",
+ "description": "Star lore of Anuta (Solomon Islands) and the Netwar (Vanuatu) people compiled for Stellarium.",
+ "source": [
+  "Stellarium sky culture 'anutan' (https://github.com/Stellarium/stellarium/tree/master/skycultures/anutan); contributed by: This sky culture was contributed to Stellarium by *Dan Smale*, smaledanieloutlook.com",
+  "Stellarium sky culture 'vanuatu_netwar' (https://github.com/Stellarium/stellarium/tree/master/skycultures/vanuatu_netwar); contributed by: This sky culture was contributed by *Dominik M. Ramík*. Web: dominicweb.eu, e-mail: Elders from local communities on Tanna, who contributed with their ancestral knowledge to this project: Jimmy Napip from Ikumhala, Lomai Tain from Ielkes, Sylvano Kapalu from Ipai, Iawilu Naumusapen from Lowkweria, K",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: anutan: CC BY-SA 4.0 | vanuatu_netwar: CC BY-SA 4.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "melanesian-anutan-te-kope",
+   "name": "Te Kope",
+   "kind": "constellation",
+   "group": "Anuta",
+   "lines": [
+    [
+     "HIP112623",
+     "HIP112122",
+     "HIP111043",
+     "HIP109111",
+     "HIP108085"
+    ]
+   ],
+   "meaning": "The Bamboo",
+   "story": "Stellarium description: Grus. Line pattern from the Stellarium 'anutan' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-anutan-ara-toru",
+   "name": "Ara Toru",
+   "kind": "constellation",
+   "group": "Anuta",
+   "lines": [
+    [
+     "HIP25930",
+     "HIP26311",
+     "HIP26727"
+    ]
+   ],
+   "meaning": "Path of Three",
+   "story": "Stellarium description: Orion's belt. Line pattern from the Stellarium 'anutan' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-anutan-manu",
+   "name": "Manu",
+   "kind": "constellation",
+   "group": "Anuta",
+   "lines": [
+    [
+     "HIP37279",
+     "HIP32349",
+     "HIP30438",
+     "HIP32607"
+    ]
+   ],
+   "meaning": "Bird of Flight",
+   "story": "Line pattern from the Stellarium 'anutan' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-anutan-te-angaanga",
+   "name": "Te Angaanga",
+   "kind": "constellation",
+   "group": "Anuta",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP21029",
+     "HIP20885",
+     "HIP20205",
+     "HIP20455",
+     "HIP20648",
+     "HIP20889"
+    ]
+   ],
+   "meaning": "The Tongs",
+   "extraStars": {
+    "HIP21029": [
+     67.6401,
+     16.194,
+     43.2,
+     4.78,
+     "HR 1427",
+     "A6IV"
+    ],
+    "HIP20885": [
+     67.1437,
+     15.9622,
+     47.33,
+     3.84,
+     "77The1Tau",
+     "G7III"
+    ],
+    "HIP20648": [
+     66.3724,
+     17.9279,
+     45.54,
+     4.3,
+     "68Del3Tau",
+     "A2IV"
+    ]
+   },
+   "story": "Stellarium description: Taurus's forehead. Line pattern from the Stellarium 'anutan' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-anutan-kaavei",
+   "name": "Kaavei",
+   "kind": "constellation",
+   "group": "Anuta",
+   "lines": [
+    [
+     "HIP8903",
+     "HIP9884",
+     "HIP13209"
+    ]
+   ],
+   "meaning": "Octopus Tentacle",
+   "story": "Stellarium description: Aries. Line pattern from the Stellarium 'anutan' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-anutan-taki-mua",
+   "name": "Taki Mua",
+   "kind": "constellation",
+   "group": "Anuta",
+   "lines": [
+    [
+     "HIP107354",
+     "HIP109176",
+     "HIP113881",
+     "HIP113963"
+    ]
+   ],
+   "meaning": "Forward Precursor",
+   "story": "Stellarium description: Pegasus's front legs and Shoulder. Line pattern from the Stellarium 'anutan' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-anutan-toki",
+   "name": "Toki",
+   "kind": "constellation",
+   "group": "Anuta",
+   "lines": [
+    [
+     "HIP101421",
+     "HIP101769",
+     "HIP101958",
+     "HIP102532",
+     "HIP102281",
+     "HIP101958"
+    ]
+   ],
+   "meaning": "Adze",
+   "story": "Stellarium description: Delphinus. Line pattern from the Stellarium 'anutan' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-anutan-te-aamonga",
+   "name": "Te Aamonga",
+   "kind": "constellation",
+   "group": "Anuta",
+   "lines": [
+    [
+     "HIP97278",
+     "HIP97649",
+     "HIP98036"
+    ]
+   ],
+   "meaning": "The Carrying Stick",
+   "story": "Stellarium description: Three stars in Aquila in a straight line. Line pattern from the Stellarium 'anutan' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-anutan-te-paka-poi-ika-tapu",
+   "name": "Te Paka Poi Ika Tapu",
+   "kind": "constellation",
+   "group": "Anuta",
+   "lines": [
+    [
+     "HIP88635",
+     "HIP90496",
+     "HIP92855",
+     "HIP94141"
+    ],
+    [
+     "HIP92855",
+     "HIP95865"
+    ],
+    [
+     "HIP92855",
+     "HIP90185",
+     "HIP88635"
+    ]
+   ],
+   "meaning": "Sammara Squirrelfish",
+   "extraStars": {
+    "HIP95865": [
+     292.4674,
+     -26.9856,
+     71.74,
+     5.46,
+     "HR 7398",
+     "K1/K2III"
+    ]
+   },
+   "story": "Stellarium description: Four large stars in Sagittarius. Line pattern from the Stellarium 'anutan' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-anutan-taro",
+   "name": "Taro",
+   "kind": "constellation",
+   "group": "Anuta",
+   "lines": [
+    [
+     "HIP81266",
+     "HIP80763",
+     "HIP80112",
+     "HIP78401",
+     "HIP78820",
+     "HIP80473",
+     "HIP78401"
+    ],
+    [
+     "HIP80763",
+     "HIP78265",
+     "HIP78104",
+     "HIP79881",
+     "HIP78265"
+    ]
+   ],
+   "meaning": "Taro Plant",
+   "extraStars": {
+    "HIP78104": [
+     239.2212,
+     -29.2141,
+     144.72,
+     3.87,
+     "Iklil",
+     "B2IV/V"
+    ],
+    "HIP79881": [
+     244.5746,
+     -28.614,
+     41.29,
+     4.8,
+     "HR 6070",
+     "A0V:"
+    ]
+   },
+   "story": "Stellarium description: Scorpius, Antares is Te Kau (the stem). Five star around Antares is Ona Rau (its leaves). Line pattern from the Stellarium 'anutan' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-anutan-te-kupenga",
+   "name": "Te Kupenga",
+   "kind": "constellation",
+   "group": "Anuta",
+   "lines": [
+    [
+     "HIP71683",
+     "HIP68702",
+     "HIP62434",
+     "HIP61084",
+     "HIP59747",
+     "HIP60718",
+     "HIP62434"
+    ]
+   ],
+   "meaning": "The Net",
+   "story": "Line pattern from the Stellarium 'anutan' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-vanuatu-kasulia-apam",
+   "name": "Kasulia apam",
+   "kind": "constellation",
+   "group": "Netwar, Vanuatu",
+   "lines": [
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ]
+   ],
+   "meaning": "Long Yoke",
+   "story": "Line pattern from the Stellarium 'vanuatu_netwar' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-vanuatu-kasulia-rerparep",
+   "name": "Kasulia rerparep",
+   "kind": "constellation",
+   "group": "Netwar, Vanuatu",
+   "lines": [
+    [
+     "HIP26237",
+     "HIP26235",
+     "HIP26241"
+    ]
+   ],
+   "meaning": "Short Yoke",
+   "extraStars": {
+    "HIP26237": [
+     83.8465,
+     -4.8384,
+     271.0,
+     4.58,
+     "42    Ori",
+     "B2III..."
+    ],
+    "HIP26235": [
+     83.8454,
+     -5.4161,
+     473.93,
+     4.98,
+     "43The2Ori",
+     "O9.5Vpe"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'vanuatu_netwar' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-vanuatu-kou",
+   "name": "Kou",
+   "kind": "constellation",
+   "group": "Netwar, Vanuatu",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP20894",
+     "HIP20205",
+     "HIP20455",
+     "HIP20889"
+    ]
+   ],
+   "meaning": "Tweezers for Hot Stones",
+   "story": "Line pattern from the Stellarium 'vanuatu_netwar' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-vanuatu-kahaur-rul",
+   "name": "Kahaur rul",
+   "kind": "constellation",
+   "group": "Netwar, Vanuatu",
+   "lines": [
+    [
+     "HIP85927",
+     "HIP85696",
+     "HIP87073",
+     "HIP86670",
+     "HIP85927"
+    ]
+   ],
+   "meaning": "Rat",
+   "story": "Line pattern from the Stellarium 'vanuatu_netwar' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-vanuatu-kilil",
+   "name": "Kilil",
+   "kind": "constellation",
+   "group": "Netwar, Vanuatu",
+   "lines": [
+    [
+     "HIP27989",
+     "HIP25336",
+     "HIP25930",
+     "HIP24436",
+     "HIP27366",
+     "HIP26727",
+     "HIP27989"
+    ]
+   ],
+   "meaning": "Fan",
+   "story": "Line pattern from the Stellarium 'vanuatu_netwar' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-vanuatu-suatu-kywer",
+   "name": "Suatu kywer",
+   "kind": "constellation",
+   "group": "Netwar, Vanuatu",
+   "lines": [
+    [
+     "HIP61084",
+     "HIP60718"
+    ],
+    [
+     "HIP62434",
+     "HIP59747"
+    ]
+   ],
+   "meaning": "Four roads",
+   "story": "Line pattern from the Stellarium 'vanuatu_netwar' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-vanuatu-nowaswas-lapnuman-neperawen-lapnuman",
+   "name": "Nowaswas Lapnuman, Neperawen Lapnuman",
+   "kind": "constellation",
+   "group": "Netwar, Vanuatu",
+   "lines": [
+    [
+     "HIP17847",
+     "HIP17702",
+     "HIP17608",
+     "HIP17499",
+     "HIP17573",
+     "HIP17702"
+    ]
+   ],
+   "meaning": "Young Boys from Lapnuman, Young Girls from Lapnuman",
+   "extraStars": {
+    "HIP17608": [
+     56.5816,
+     23.9484,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17573": [
+     56.4567,
+     24.3677,
+     117.51,
+     3.87,
+     "Maia",
+     "B8III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'vanuatu_netwar' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-vanuatu-nowanuman",
+   "name": "Nowanuman",
+   "kind": "constellation",
+   "group": "Netwar, Vanuatu",
+   "lines": [
+    [
+     "HIP25482",
+     "HIP25482"
+    ]
+   ],
+   "meaning": "Earth oven",
+   "extraStars": {
+    "HIP25482": [
+     81.7492,
+     -68.6225,
+     77.88,
+     6.02,
+     "HR 1859",
+     "F0IV/V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'vanuatu_netwar' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-vanuatu-nowanuman-2",
+   "name": "Nowanuman",
+   "kind": "constellation",
+   "group": "Netwar, Vanuatu",
+   "lines": [
+    [
+     "HIP3042",
+     "HIP3042"
+    ]
+   ],
+   "meaning": "Earth oven",
+   "extraStars": {
+    "HIP3042": [
+     9.6694,
+     -73.1376,
+     116.69,
+     6.87,
+     "HR 169",
+     "A1m..."
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'vanuatu_netwar' sky culture; see source for documentation."
+  },
+  {
+   "id": "melanesian-vanuatu-nemrau",
+   "name": "Nemrau",
+   "kind": "constellation",
+   "group": "Netwar, Vanuatu",
+   "lines": [
+    [
+     "HIP39429",
+     "HIP39429"
+    ]
+   ],
+   "meaning": "Ashes",
+   "story": "Line pattern from the Stellarium 'vanuatu_netwar' sky culture; see source for documentation."
+  }
+ ]
+}

@@ -36,7 +36,10 @@
     "_db:seed:permissions": "tsx src/seeds/permissions.ts",
     "_db:seed:custom": "tsx src/seeds/custom-seeds.ts",
     "db:kosmo:report": "tsx src/seeds/kosmo/report.ts",
-    "test": "node --import tsx --test src/seeds/kosmo/plan.test.ts src/seeds/kosmo/time.test.ts"
+    "db:seed:university": "tsx src/seeds/kosmo/university/run.ts",
+    "db:university:ids": "tsx src/seeds/kosmo/university/sync-ids.ts",
+    "db:university:lint": "tsx src/seeds/kosmo/university/lint.ts",
+    "test": "node --import tsx --test src/seeds/kosmo/plan.test.ts src/seeds/kosmo/time.test.ts src/seeds/kosmo/university/registry.test.ts src/seeds/kosmo/university/lesson.test.ts"
   },
   "dependencies": {
     "@repo/types": "workspace:*",

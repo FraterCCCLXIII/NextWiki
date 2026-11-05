@@ -19,6 +19,7 @@
 //     and acceleration limit, not a full rigid-body model; there is no aerodynamic torque.
 //   * Thrust acts along the body axis; steering losses and angle-of-attack drag are included.
 //   * Parallel (strap-on) staging is not modelled yet.
+//   * `mission.release = { alt, speed }` starts a launch from a balloon or aircraft instead of the pad.
 //
 // Conventions: SI. Position x,y from the body centre, orbits are counter-clockwise.
 // `th` is the angle of the body axis n (from engine to nose); thrust pushes the craft along +n.
@@ -133,6 +134,13 @@ export function createSim(cfg0) {
   const padPos = fromAng(M.padAngle * DEG).map(x => x * W.R);
   if (M.start === 'pad') {
     main.padH = 0.35 * geom(main).L; main.pos = padPos.map(x => x * (W.R + main.padH) / W.R); main.vel = [-W.w * main.pos[1], W.w * main.pos[0]]; main.th = ang(unit(main.pos)); main.onPad = true; main.ap.phase = 'pad';
+    // Released from a balloon or carrier aircraft: start in the air, co-moving with the rotating atmosphere
+    // plus any forward speed, and light the engines on release. M.release = { alt (m), speed (m/s) }.
+    if (M.release && M.release.alt > 0) {
+      const r = W.R + M.release.alt, up = unit(padPos), east = [-up[1], up[0]];
+      main.pos = up.map(x => x * r); main.vel = [-W.w * main.pos[1] + east[0] * (M.release.speed || 0), W.w * main.pos[0] + east[1] * (M.release.speed || 0)];
+      main.onPad = false; main.released = true; log(`Released at ${(M.release.alt / 1e3).toFixed(0)} km${M.release.speed ? `, ${M.release.speed} m/s` : ''}`, 'stage');
+    }
   } else {
     const r = W.R + M.orbitAlt, v = Math.sqrt(W.mu / r), a0 = (M.padAngle) * DEG;
     main.pos = fromAng(a0).map(x => x * r); main.vel = rot([v, 0], a0 + Math.PI / 2).map((_, i) => i === 0 ? -Math.sin(a0) * v : Math.cos(a0) * v);
@@ -324,7 +332,7 @@ export function createSim(cfg0) {
         if (!s) break;
         const vrel = e.speed;
         let u;
-        if (!ap.kickAt) { u = e.up; if (vrel >= M.kickSpeed || e.h > 600) { ap.kickAt = sim.t; log(`Pitch kick ${M.kickDeg.toFixed(1)}°`); } }
+        if (!ap.kickAt) { u = e.up; if (vrel >= M.kickSpeed || (e.h > 600 && !c.released)) { ap.kickAt = sim.t; log(`Pitch kick ${M.kickDeg.toFixed(1)}°`); } }
         const kt = sim.t - (ap.kickAt ?? 1e9);
         if (ap.kickAt) {
           if (kt < 6) { const d = M.kickDeg * DEG * Math.min(1, kt / 2); u = rot(e.up, d); }

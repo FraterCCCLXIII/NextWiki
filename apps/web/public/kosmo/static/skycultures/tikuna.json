@@ -1,0 +1,126 @@
+{
+ "id": "tikuna",
+ "name": "Tikuna",
+ "region": "Upper Amazon",
+ "era": "Ethnographic",
+ "color": "#6aa84f",
+ "description": "Tikuna constellations compiled for Stellarium.",
+ "source": [
+  "Stellarium sky culture 'tikuna' (https://github.com/Stellarium/stellarium/tree/master/skycultures/tikuna); contributed by: **Priscila Faulhaber** (Museum of Astronomy and Related Sciences) **Fernando Vieira** (Astronomer and Former Coordinator of Astronomy in The Planetarium Foundation of the City of Rio de Janeiro) helped with the interpretation of the astronomical correlations between Western and Tikuna constellations",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: tikuna: CC BY-SA 4.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "tikuna-tikuna-baweta",
+   "name": "Baweta",
+   "kind": "constellation",
+   "group": "Tikuna",
+   "lines": [
+    [
+     "HIP17702",
+     "HIP17448"
+    ],
+    [
+     "HIP17702",
+     "HIP18246"
+    ]
+   ],
+   "meaning": "Turtle Collective",
+   "story": "Line pattern from the Stellarium 'tikuna' sky culture; see source for documentation."
+  },
+  {
+   "id": "tikuna-tikuna-w-c-tcha",
+   "name": "Wücütcha",
+   "kind": "constellation",
+   "group": "Tikuna",
+   "lines": [
+    [
+     "HIP25930",
+     "HIP26311",
+     "HIP26727"
+    ],
+    [
+     "HIP26311",
+     "HIP26241",
+     "HIP27366",
+     "HIP28103",
+     "HIP28816",
+     "HIP27654",
+     "HIP26862"
+    ]
+   ],
+   "meaning": "Wücütcha's leg",
+   "extraStars": {
+    "HIP28816": [
+     91.2464,
+     -16.4844,
+     278.55,
+     4.92,
+     "17    Lep",
+     "Ap shell"
+    ],
+    "HIP26862": [
+     85.5483,
+     -30.5354,
+     226.76,
+     6.18,
+     "HR 1972",
+     "A0V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tikuna' sky culture; see source for documentation."
+  },
+  {
+   "id": "tikuna-tikuna-coyatchic-ra",
+   "name": "Coyatchicüra",
+   "kind": "constellation",
+   "group": "Tikuna",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP20205",
+     "HIP20889"
+    ]
+   ],
+   "meaning": "Cayman’s Jaw",
+   "story": "Line pattern from the Stellarium 'tikuna' sky culture; see source for documentation."
+  },
+  {
+   "id": "tikuna-tikuna-tchat-ai",
+   "name": "Tchatü-Ai",
+   "kind": "constellation",
+   "group": "Tikuna",
+   "lines": [
+    [
+     "HIP60718",
+     "HIP59747",
+     "HIP61084",
+     "HIP66657",
+     "HIP74395",
+     "HIP71683",
+     "HIP71908"
+    ],
+    [
+     "HIP74395",
+     "HIP82396",
+     "HIP80763"
+    ],
+    [
+     "HIP82396",
+     "HIP85927"
+    ],
+    [
+     "HIP84143",
+     "HIP86228",
+     "HIP83081",
+     "HIP82363",
+     "HIP79664",
+     "HIP77952"
+    ]
+   ],
+   "meaning": "Anteater’s Jaguar",
+   "story": "Line pattern from the Stellarium 'tikuna' sky culture; see source for documentation."
+  }
+ ]
+}

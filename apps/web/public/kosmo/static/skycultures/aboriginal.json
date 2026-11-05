@@ -1,0 +1,1938 @@
+{
+ "id": "aboriginal",
+ "name": "Aboriginal Australian (Boorong)",
+ "region": "Australia (north-west Victoria)",
+ "era": "Recorded 1857",
+ "color": "#d9822b",
+ "description": "The Boorong sky of Lake Tyrrell as written down by William Stanbridge in 1857 and identified by John Morieson. Other Aboriginal skies are documented but are not included here (see report).",
+ "source": [
+  "Stellarium sky culture 'boorong' (https://github.com/Stellarium/stellarium/tree/master/skycultures/boorong); contributed by: This sky culture was contributed by *John Morieson* and *Alex Cherney*.",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: boorong: CC BY-SA 4.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "aboriginal-boorong-wanjel",
+   "name": "Wanjel",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP37740",
+     "HIP38538"
+    ],
+    [
+     "HIP37740",
+     "HIP36962"
+    ],
+    [
+     "HIP38538",
+     "HIP37629"
+    ],
+    [
+     "HIP36962",
+     "HIP37629",
+     "HIP36393",
+     "HIP35941"
+    ]
+   ],
+   "meaning": "Long-necked tortoise",
+   "extraStars": {
+    "HIP38538": [
+     118.3742,
+     26.7658,
+     68.21,
+     4.97,
+     "83Phi Gem",
+     "A3V"
+    ],
+    "HIP37629": [
+     115.828,
+     28.8835,
+     38.34,
+     4.23,
+     "75Sig Gem",
+     "K1III SB"
+    ],
+    "HIP36393": [
+     112.3352,
+     28.1183,
+     54.02,
+     5.07,
+     "64    Gem",
+     "A4V"
+    ],
+    "HIP35941": [
+     111.1394,
+     27.6379,
+     57.41,
+     5.77,
+     "59    Gem",
+     "F0:III:"
+    ]
+   },
+   "story": "Stellarium description: Pollux. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-yurree",
+   "name": "Yurree",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP36366",
+     "HIP36850"
+    ],
+    [
+     "HIP36896",
+     "HIP36850",
+     "HIP37204"
+    ],
+    [
+     "HIP36850",
+     "HIP38319"
+    ],
+    [
+     "HIP37204",
+     "HIP37265",
+     "HIP37580",
+     "HIP38016",
+     "HIP38319"
+    ]
+   ],
+   "meaning": "Fan-tailed cockatoo",
+   "extraStars": {
+    "HIP36366": [
+     112.2779,
+     31.7845,
+     18.05,
+     4.16,
+     "62Rho Gem",
+     "F0V..."
+    ],
+    "HIP36896": [
+     113.7867,
+     30.9609,
+     114.16,
+     5.34,
+     "HR 2896",
+     "K0III"
+    ],
+    "HIP37204": [
+     114.6369,
+     35.0485,
+     114.03,
+     5.58,
+     "70    Gem",
+     "K0III"
+    ],
+    "HIP38319": [
+     117.7598,
+     33.2337,
+     70.47,
+     6.06,
+     "HR 3040",
+     "A2m"
+    ],
+    "HIP37265": [
+     114.7914,
+     34.5843,
+     50.99,
+     4.89,
+     "Jishui",
+     "F3III"
+    ],
+    "HIP37580": [
+     115.6815,
+     34.0002,
+     59.81,
+     6.05,
+     "HR 2962",
+     "F7V"
+    ],
+    "HIP38016": [
+     116.8764,
+     33.4157,
+     202.84,
+     5.14,
+     "80Pi  Gem",
+     "M0III"
+    ]
+   },
+   "story": "Stellarium description: Castor. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-kulkunbulla",
+   "name": "Kulkunbulla",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP26594",
+     "HIP26795",
+     "HIP26870",
+     "HIP26885",
+     "HIP26762",
+     "HIP26727"
+    ],
+    [
+     "HIP26762",
+     "HIP27253",
+     "HIP27588",
+     "HIP27750"
+    ],
+    [
+     "HIP25930",
+     "HIP25737"
+    ],
+    [
+     "HIP26727",
+     "HIP26549"
+    ],
+    [
+     "HIP26213",
+     "HIP26210",
+     "HIP26188",
+     "HIP26149",
+     "HIP25976",
+     "HIP25930"
+    ],
+    [
+     "HIP26149",
+     "HIP26762"
+    ],
+    [
+     "HIP26213",
+     "HIP26174",
+     "HIP26106",
+     "HIP26063",
+     "HIP25980",
+     "HIP26020",
+     "HIP26117",
+     "HIP26319",
+     "HIP26439",
+     "HIP26508",
+     "HIP26727"
+    ]
+   ],
+   "meaning": "Two teenage boys",
+   "extraStars": {
+    "HIP26594": [
+     84.7964,
+     4.1215,
+     423.73,
+     4.5,
+     "47Ome Ori",
+     "B3IIIe"
+    ],
+    "HIP26795": [
+     85.3616,
+     3.778,
+     136.8,
+     6.82,
+     "HIP 26795",
+     "G5"
+    ],
+    "HIP26870": [
+     85.5734,
+     2.3672,
+     357.14,
+     6.67,
+     "HIP 26870",
+     "B8"
+    ],
+    "HIP26885": [
+     85.6193,
+     1.4746,
+     90.01,
+     4.9,
+     "51    Ori",
+     "K1III"
+    ],
+    "HIP26762": [
+     85.2733,
+     0.3378,
+     47.94,
+     5.93,
+     "HR 1955",
+     "F0IV"
+    ],
+    "HIP27253": [
+     86.6455,
+     1.1682,
+     39.28,
+     5.95,
+     "HR 1988",
+     "G4V"
+    ],
+    "HIP27588": [
+     87.6251,
+     2.0247,
+     316.46,
+     5.97,
+     "HR 2024",
+     "G8III+..."
+    ],
+    "HIP27750": [
+     88.1102,
+     1.8551,
+     386.1,
+     4.76,
+     "56    Ori",
+     "K2IIvar"
+    ],
+    "HIP25737": [
+     82.4333,
+     -1.0922,
+     155.76,
+     4.71,
+     "31    Ori",
+     "K5III"
+    ],
+    "HIP26549": [
+     84.6865,
+     -2.6001,
+     328.95,
+     3.77,
+     "48Sig Ori",
+     "O9.5V..."
+    ],
+    "HIP26213": [
+     83.8033,
+     -0.7354,
+     338.98,
+     6.97,
+     "HIP 26213",
+     "B3V"
+    ],
+    "HIP26210": [
+     83.7884,
+     -0.2696,
+     332.23,
+     7.5,
+     "HIP 26210",
+     "B7V"
+    ],
+    "HIP26188": [
+     83.7354,
+     -0.1229,
+     230.95,
+     7.14,
+     "HIP 26188",
+     "B5"
+    ],
+    "HIP26149": [
+     83.622,
+     -0.0123,
+     294.12,
+     6.25,
+     "HIP 26149",
+     "G5"
+    ],
+    "HIP25976": [
+     83.1582,
+     0.0119,
+     337.84,
+     6.15,
+     "HIP 25976",
+     "K5"
+    ],
+    "HIP26174": [
+     83.7008,
+     -0.9536,
+     224.72,
+     6.98,
+     "HIP 26174",
+     "G5"
+    ],
+    "HIP26106": [
+     83.5162,
+     -1.0357,
+     310.56,
+     6.24,
+     "HR 1873",
+     "B2.5V"
+    ],
+    "HIP26063": [
+     83.381,
+     -1.1561,
+     450.45,
+     5.36,
+     "HR 1868",
+     "B1V"
+    ],
+    "HIP25980": [
+     83.1723,
+     -1.5918,
+     478.47,
+     5.34,
+     "HR 1861",
+     "B1IV"
+    ],
+    "HIP26020": [
+     83.2806,
+     -1.7174,
+     315.46,
+     6.53,
+     "HR 1863",
+     "B4Vn"
+    ],
+    "HIP26117": [
+     83.5406,
+     -1.9019,
+     210.53,
+     7.06,
+     "HIP 26117",
+     "A1m"
+    ],
+    "HIP26319": [
+     84.0743,
+     -1.6353,
+     398.41,
+     8.01,
+     "HIP 26319",
+     "B8V"
+    ],
+    "HIP26439": [
+     84.395,
+     -1.4221,
+     641.03,
+     7.11,
+     "HIP 26439",
+     "B4V"
+    ],
+    "HIP26508": [
+     84.5572,
+     -1.1692,
+     465.12,
+     6.84,
+     "HIP 26508",
+     "B2V"
+    ]
+   },
+   "story": "Stellarium description: Kulkanbulla; Belt and Scabbard of Orion. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-lamankurrk",
+   "name": "Lamankurrk",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP17664",
+     "HIP17579",
+     "HIP17531",
+     "HIP17489",
+     "HIP17499",
+     "HIP17608",
+     "HIP17702",
+     "HIP17851",
+     "HIP17847",
+     "HIP17900",
+     "HIP17776"
+    ]
+   ],
+   "meaning": "Girls",
+   "extraStars": {
+    "HIP17664": [
+     56.7475,
+     24.5201,
+     130.55,
+     6.83,
+     "HIP 17664",
+     "B9.5V"
+    ],
+    "HIP17579": [
+     56.477,
+     24.5545,
+     114.03,
+     5.76,
+     "Asterope",
+     "B8V"
+    ],
+    "HIP17531": [
+     56.3021,
+     24.4673,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ],
+    "HIP17489": [
+     56.2009,
+     24.2895,
+     115.61,
+     5.45,
+     "Celaeno",
+     "B7IV"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17608": [
+     56.5816,
+     23.9484,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ],
+    "HIP17851": [
+     57.2967,
+     24.1367,
+     117.1,
+     5.05,
+     "Pleione",
+     "B7p"
+    ],
+    "HIP17900": [
+     57.4314,
+     23.7119,
+     114.68,
+     6.17,
+     "HR 1183",
+     "B8V"
+    ],
+    "HIP17776": [
+     57.0867,
+     23.4213,
+     118.34,
+     5.44,
+     "HR 1172",
+     "B8V"
+    ]
+   },
+   "story": "Stellarium description: Girls, young women; Pleiades. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-purra",
+   "name": "Purra",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP18246",
+     "HIP18614",
+     "HIP19811",
+     "HIP21476"
+    ],
+    [
+     "HIP23416",
+     "HIP21928",
+     "HIP19811"
+    ],
+    [
+     "HIP21928",
+     "HIP24608"
+    ],
+    [
+     "HIP24902",
+     "HIP24813"
+    ],
+    [
+     "HIP23767",
+     "HIP24902",
+     "HIP24813",
+     "HIP25143"
+    ],
+    [
+     "HIP24902",
+     "HIP25143"
+    ],
+    [
+     "HIP23767",
+     "HIP23453",
+     "HIP21476",
+     "HIP19811"
+    ],
+    [
+     "HIP23416",
+     "HIP25816"
+    ],
+    [
+     "HIP25143",
+     "HIP25816"
+    ]
+   ],
+   "meaning": "Red kangaroo",
+   "extraStars": {
+    "HIP19811": [
+     63.7221,
+     40.4837,
+     291.55,
+     4.67,
+     "52    Per",
+     "G5II comp"
+    ],
+    "HIP21476": [
+     69.1726,
+     41.2648,
+     244.5,
+     4.25,
+     "58    Per",
+     "G8II comp"
+    ],
+    "HIP21928": [
+     70.7263,
+     43.3651,
+     73.96,
+     5.3,
+     "59    Per",
+     "A1Vn"
+    ],
+    "HIP24902": [
+     80.0611,
+     41.0862,
+     84.96,
+     5.46,
+     "HR 1738",
+     "A3V"
+    ],
+    "HIP24813": [
+     79.7849,
+     40.0991,
+     12.63,
+     4.69,
+     "15Lam Aur",
+     "G0V"
+    ],
+    "HIP25143": [
+     80.7097,
+     41.0293,
+     89.69,
+     5.54,
+     "HR 1760",
+     "A3V"
+    ],
+    "HIP25816": [
+     82.7027,
+     41.462,
+     128.87,
+     5.99,
+     "HR 1824",
+     "K0IIIp"
+    ]
+   },
+   "story": "Stellarium description: Capella. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-bunya",
+   "name": "Bunya",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP60851",
+     "HIP60718",
+     "HIP59747",
+     "HIP61084"
+    ],
+    [
+     "HIP60969",
+     "HIP60870",
+     "HIP60308",
+     "HIP60379",
+     "HIP60781",
+     "HIP61136",
+     "HIP61966",
+     "HIP62434",
+     "HIP63007"
+    ],
+    [
+     "HIP59397",
+     "HIP59747"
+    ]
+   ],
+   "meaning": "Ring-tail possum",
+   "extraStars": {
+    "HIP60851": [
+     187.0804,
+     -64.341,
+     97.94,
+     6.05,
+     "HR 4744",
+     "A0Vn"
+    ],
+    "HIP60969": [
+     187.4758,
+     -56.5249,
+     156.01,
+     5.78,
+     "HR 4754",
+     "M1III"
+    ],
+    "HIP60870": [
+     187.1404,
+     -56.4078,
+     42.37,
+     6.15,
+     "HR 4749",
+     "K0/K1III"
+    ],
+    "HIP60308": [
+     185.4893,
+     -56.3744,
+     694.44,
+     5.91,
+     "HR 4702",
+     "K4III + (F)"
+    ],
+    "HIP60379": [
+     185.706,
+     -57.6761,
+     110.86,
+     5.38,
+     "HR 4706",
+     "B9V"
+    ],
+    "HIP60781": [
+     186.8703,
+     -58.9918,
+     135.87,
+     5.38,
+     "HR 4739",
+     "M4/M5III"
+    ],
+    "HIP61136": [
+     187.9181,
+     -59.4239,
+     429.18,
+     5.49,
+     "HR 4768",
+     "F5III"
+    ],
+    "HIP61966": [
+     190.4858,
+     -59.6858,
+     293.26,
+     4.91,
+     "HR 4823",
+     "B6IV"
+    ],
+    "HIP63007": [
+     193.6633,
+     -59.1467,
+     117.65,
+     4.62,
+     "Lam Cru",
+     "B4Vn"
+    ],
+    "HIP59397": [
+     182.7745,
+     -56.4014,
+     112.99,
+     7.33,
+     "HIP 59397",
+     "A2V"
+    ]
+   },
+   "story": "Stellarium description: Top star in Southern Cross. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-djuit",
+   "name": "Djuit",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP78820",
+     "HIP78401",
+     "HIP78265",
+     "HIP78104"
+    ],
+    [
+     "HIP81266",
+     "HIP80763",
+     "HIP80112",
+     "HIP76742"
+    ]
+   ],
+   "meaning": "Red-rumped parrot",
+   "extraStars": {
+    "HIP78104": [
+     239.2212,
+     -29.2141,
+     144.72,
+     3.87,
+     "Iklil",
+     "B2IV/V"
+    ],
+    "HIP76742": [
+     235.0704,
+     -23.8181,
+     117.23,
+     4.97,
+     "42    Lib",
+     "K3III"
+    ]
+   },
+   "story": "Stellarium description: Antares. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-war",
+   "name": "War",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP32402",
+     "HIP31407",
+     "HIP30438",
+     "HIP29990",
+     "HIP30104"
+    ]
+   ],
+   "meaning": "Crow",
+   "extraStars": {
+    "HIP32402": [
+     101.4738,
+     -52.4097,
+     395.26,
+     5.81,
+     "HR 2515",
+     "K3III"
+    ],
+    "HIP31407": [
+     98.7441,
+     -52.9756,
+     418.41,
+     4.35,
+     "HR 2435",
+     "B9III"
+    ],
+    "HIP29990": [
+     94.6949,
+     -50.3591,
+     657.89,
+     7.03,
+     "HR 2281",
+     "G2Ib"
+    ],
+    "HIP30104": [
+     95.0253,
+     -48.7411,
+     25.13,
+     6.61,
+     "HR 2290",
+     "G4V"
+    ]
+   },
+   "story": "Stellarium description: Canopus. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-collowgulloric-war",
+   "name": "Collowgulloric War",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP50785",
+     "HIP51232",
+     "HIP52102",
+     "HIP52405",
+     "HIP52558",
+     "HIP52922",
+     "HIP53253",
+     "HIP54463"
+    ]
+   ],
+   "meaning": "Female crow, wife of War",
+   "extraStars": {
+    "HIP50785": [
+     155.5435,
+     -58.2656,
+     110.99,
+     6.34,
+     "HIP 50785",
+     "G6III"
+    ],
+    "HIP51232": [
+     156.9697,
+     -58.7394,
+     411.52,
+     3.81,
+     "HR 4114",
+     "F2II"
+    ],
+    "HIP52102": [
+     159.6875,
+     -59.183,
+     719.42,
+     4.69,
+     "HR 4177",
+     "K4/K5III:"
+    ],
+    "HIP52405": [
+     160.669,
+     -59.2158,
+     null,
+     5.36,
+     "HR 4198",
+     "B2.5Ia"
+    ],
+    "HIP52558": [
+     161.1876,
+     -59.5652,
+     null,
+     7.35,
+     "HIP 52558",
+     "O5"
+    ],
+    "HIP52922": [
+     162.3519,
+     -59.3238,
+     225.73,
+     5.85,
+     "HR 4239",
+     "B9.5IV/V"
+    ]
+   },
+   "story": "Stellarium description: Eta Carinae. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-yerredetkurrk",
+   "name": "Yerredetkurrk",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP7506",
+     "HIP7387",
+     "HIP7588",
+     "HIP7699",
+     "HIP7751"
+    ]
+   ],
+   "meaning": "Owlet nightjar",
+   "extraStars": {
+    "HIP7506": [
+     24.1866,
+     -58.271,
+     228.83,
+     6.18,
+     "HR 468",
+     "M3III"
+    ],
+    "HIP7387": [
+     23.812,
+     -58.1395,
+     40.19,
+     6.03,
+     "HR 460",
+     "F2V"
+    ],
+    "HIP7699": [
+     24.7816,
+     -56.4294,
+     47.57,
+     7.08,
+     "HIP 7699",
+     "F5V"
+    ],
+    "HIP7751": [
+     24.9475,
+     -56.1964,
+     7.82,
+     5.76,
+     "p Eridani",
+     "K0V"
+    ]
+   },
+   "story": "Stellarium description: Achernar. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-tourtchinboiongerra",
+   "name": "Tourtchinboiongerra",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP65245",
+     "HIP64394",
+     "HIP64022",
+     "HIP62763",
+     "HIP62576",
+     "HIP60746",
+     "HIP60351"
+    ],
+    [
+     "HIP64394",
+     "HIP64417",
+     "HIP63950",
+     "HIP61418"
+    ]
+   ],
+   "meaning": "Needlewood hakea and willie wagtails",
+   "extraStars": {
+    "HIP65245": [
+     200.5628,
+     30.2919,
+     235.85,
+     6.8,
+     "HIP 65245",
+     "K2III"
+    ],
+    "HIP62763": [
+     192.9247,
+     27.5407,
+     89.13,
+     4.93,
+     "31    Com",
+     "G0III"
+    ],
+    "HIP62576": [
+     192.3227,
+     27.5524,
+     92.94,
+     5.76,
+     "30    Com",
+     "A2V"
+    ],
+    "HIP60746": [
+     186.7471,
+     26.8257,
+     85.18,
+     4.98,
+     "16    Com",
+     "A4V"
+    ],
+    "HIP64417": [
+     198.035,
+     24.258,
+     131.75,
+     6.31,
+     "HR 4984",
+     "K1III"
+    ],
+    "HIP63950": [
+     196.5942,
+     22.6162,
+     225.73,
+     5.53,
+     "40    Com",
+     "M5III"
+    ],
+    "HIP61418": [
+     188.7823,
+     18.3771,
+     138.12,
+     5.03,
+     "24    Com",
+     "K2III"
+    ]
+   },
+   "story": "Stellarium description: Tourchingboiongerra; Coma Berenices. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-berm-berm-gle",
+   "name": "Berm-Berm-Gle",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP73776",
+     "HIP72131",
+     "HIP71908"
+    ],
+    [
+     "HIP72131",
+     "HIP73036"
+    ],
+    [
+     "HIP72131",
+     "HIP70035"
+    ],
+    [
+     "HIP72131",
+     "HIP71683"
+    ]
+   ],
+   "meaning": "Red-kneed dotterel",
+   "extraStars": {
+    "HIP70035": [
+     214.965,
+     -61.273,
+     48.36,
+     5.22,
+     "HR 5349",
+     "Am"
+    ]
+   },
+   "story": "Stellarium description: Alpha and Beta Centauri. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-karik-karik",
+   "name": "Karik Karik",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP85927",
+     "HIP86670"
+    ],
+    [
+     "HIP85696",
+     "HIP86670",
+     "HIP87073"
+    ],
+    [
+     "HIP86670",
+     "HIP85889",
+     "HIP84143"
+    ],
+    [
+     "HIP86670",
+     "HIP89642"
+    ]
+   ],
+   "meaning": "Australian kestrel",
+   "extraStars": {
+    "HIP85889": [
+     263.2808,
+     -41.1731,
+     465.12,
+     5.84,
+     "HR 6523",
+     "B9Ib/II"
+    ]
+   },
+   "story": "Stellarium description: Spear thrower; Australian Kestrel; Two stars at end of Scorpius. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-neilloan",
+   "name": "Neilloan",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP91262",
+     "HIP91971"
+    ],
+    [
+     "HIP91926",
+     "HIP91971"
+    ],
+    [
+     "HIP91926",
+     "HIP92791",
+     "HIP92833",
+     "HIP93017",
+     "HIP93194",
+     "HIP93279",
+     "HIP92405",
+     "HIP92420",
+     "HIP91852",
+     "HIP91971"
+    ]
+   ],
+   "meaning": "Mallee fowl",
+   "extraStars": {
+    "HIP92833": [
+     283.7188,
+     33.9686,
+     358.42,
+     5.99,
+     "HR 7140",
+     "G8III+..."
+    ],
+    "HIP93017": [
+     284.2566,
+     32.9013,
+     14.87,
+     5.2,
+     "HR 7162",
+     "G0V"
+    ],
+    "HIP93279": [
+     285.0034,
+     32.1455,
+     338.98,
+     4.94,
+     "15Lam Lyr",
+     "K3III"
+    ],
+    "HIP92405": [
+     282.4705,
+     32.5511,
+     70.97,
+     5.22,
+     "9Nu 2Lyr",
+     "A3V"
+    ],
+    "HIP91852": [
+     280.9004,
+     36.5566,
+     139.47,
+     6.04,
+     "Xihe",
+     "G8"
+    ]
+   },
+   "story": "Stellarium description: Lyra. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-unurgunite",
+   "name": "Unurgunite",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP33152",
+     "HIP33478",
+     "HIP33575",
+     "HIP33804",
+     "HIP34041",
+     "HIP34318",
+     "HIP34579",
+     "HIP34798",
+     "HIP34981",
+     "HIP35037",
+     "HIP35044",
+     "HIP34924",
+     "HIP34814",
+     "HIP34624",
+     "HIP34331"
+    ],
+    [
+     "HIP33804",
+     "HIP33817",
+     "HIP33611",
+     "HIP33532",
+     "HIP33492"
+    ],
+    [
+     "HIP33532",
+     "HIP33040"
+    ],
+    [
+     "HIP33492",
+     "HIP33856",
+     "HIP33760",
+     "HIP33492"
+    ],
+    [
+     "HIP33856",
+     "HIP33817"
+    ]
+   ],
+   "meaning": "Jacky lizard",
+   "extraStars": {
+    "HIP33478": [
+     104.3913,
+     -24.6308,
+     37.94,
+     5.45,
+     "HR 2607",
+     "F3V"
+    ],
+    "HIP33575": [
+     104.6496,
+     -25.4142,
+     264.55,
+     5.59,
+     "HR 2616",
+     "B2V"
+    ],
+    "HIP33804": [
+     105.2748,
+     -25.2156,
+     312.5,
+     5.64,
+     "HR 2640",
+     "B2/B3III/IV"
+    ],
+    "HIP34041": [
+     105.9288,
+     -25.0839,
+     507.61,
+     6.86,
+     "HIP 34041",
+     "B2/B3V"
+    ],
+    "HIP34318": [
+     106.7187,
+     -24.9606,
+     280.9,
+     6.09,
+     "HR 2686",
+     "K2III"
+    ],
+    "HIP34579": [
+     107.4293,
+     -25.231,
+     564.97,
+     5.69,
+     "HR 2704",
+     "B2V"
+    ],
+    "HIP34798": [
+     108.0509,
+     -25.9426,
+     257.07,
+     5.91,
+     "26    CMa",
+     "B2IV/V"
+    ],
+    "HIP34981": [
+     108.5634,
+     -26.3525,
+     531.91,
+     4.42,
+     "27    CMa",
+     "B3III"
+    ],
+    "HIP35037": [
+     108.7027,
+     -26.7727,
+     279.33,
+     4.01,
+     "28Ome CMa",
+     "B2IV/Ve"
+    ],
+    "HIP35044": [
+     108.7132,
+     -27.038,
+     83.33,
+     5.58,
+     "HR 2750",
+     "K3III"
+    ],
+    "HIP34924": [
+     108.4019,
+     -27.3564,
+     null,
+     6.12,
+     "HR 2734",
+     "B2II"
+    ],
+    "HIP34814": [
+     108.1007,
+     -27.4748,
+     246.91,
+     6.59,
+     "HR 2724",
+     "A5IV/V"
+    ],
+    "HIP34624": [
+     107.5805,
+     -27.4915,
+     216.45,
+     5.46,
+     "HR 2708",
+     "G8III"
+    ],
+    "HIP34331": [
+     106.75,
+     -26.6568,
+     724.64,
+     6.61,
+     "HR 2688",
+     "B3III"
+    ],
+    "HIP33817": [
+     105.3072,
+     -25.9487,
+     14.65,
+     6.71,
+     "HIP 33817",
+     "K1V"
+    ],
+    "HIP33611": [
+     104.7525,
+     -26.4744,
+     429.18,
+     7.17,
+     "HIP 33611",
+     "B2V"
+    ],
+    "HIP33532": [
+     104.5315,
+     -27.1644,
+     854.7,
+     6.36,
+     "HR 2614",
+     "B2V"
+    ],
+    "HIP33492": [
+     104.4276,
+     -27.5375,
+     312.5,
+     6.22,
+     "HR 2611",
+     "B2/B3V"
+    ],
+    "HIP33040": [
+     103.2513,
+     -26.9576,
+     279.33,
+     6.33,
+     "HR 2567",
+     "M6III"
+    ],
+    "HIP33760": [
+     105.1771,
+     -28.4896,
+     68.68,
+     6.28,
+     "HR 2637",
+     "F3/F5V"
+    ]
+   },
+   "story": "Stellarium description: Sigma Canis Majoris. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-kourt-chin",
+   "name": "Kourt-chin",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP15371",
+     "HIP16245",
+     "HIP17440",
+     "HIP24372",
+     "HIP34481",
+     "HIP33682",
+     "HIP35228"
+    ],
+    [
+     "HIP24372",
+     "HIP37331"
+    ],
+    [
+     "HIP24372",
+     "HIP26069"
+    ],
+    [
+     "HIP24372",
+     "HIP17678"
+    ]
+   ],
+   "meaning": "Male and female brolga",
+   "extraStars": {
+    "HIP37331": [
+     114.9519,
+     -72.5819,
+     211.42,
+     8.13,
+     "HIP 37331",
+     "K0III"
+    ]
+   },
+   "story": "Stellarium description: Clouds of Magellan. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-otchocut",
+   "name": "Otchocut",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP101589",
+     "HIP102080",
+     "HIP102281",
+     "HIP102532",
+     "HIP102029",
+     "HIP101958"
+    ],
+    [
+     "HIP102029",
+     "HIP101909"
+    ],
+    [
+     "HIP102029",
+     "HIP101589"
+    ],
+    [
+     "HIP102532",
+     "HIP102611"
+    ]
+   ],
+   "meaning": "Great fish",
+   "extraStars": {
+    "HIP102080": [
+     310.3175,
+     14.5829,
+     155.52,
+     6.01,
+     "10    Del",
+     "K4III:"
+    ],
+    "HIP102029": [
+     310.1471,
+     15.6432,
+     71.63,
+     6.76,
+     "HIP 102029",
+     "F5"
+    ],
+    "HIP101909": [
+     309.7707,
+     15.8382,
+     413.22,
+     5.99,
+     "HR 7899",
+     "B3V"
+    ],
+    "HIP102611": [
+     311.91,
+     16.2384,
+     55.52,
+     7.6,
+     "HIP 102611",
+     "F9Vm"
+    ]
+   },
+   "story": "Stellarium description: Delphinus. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-warepil",
+   "name": "Warepil",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP30324",
+     "HIP31592",
+     "HIP32349",
+     "HIP33347",
+     "HIP34045"
+    ]
+   ],
+   "meaning": "Wedge tailed eagle",
+   "extraStars": {
+    "HIP31592": [
+     99.171,
+     -19.2559,
+     19.75,
+     3.95,
+     "7Nu 2CMa",
+     "K1III+..."
+    ]
+   },
+   "story": "Stellarium description: Sirius. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-collowgulloric-warepil",
+   "name": "Collowgulloric Warepil",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP22701",
+     "HIP23364",
+     "HIP23972",
+     "HIP24244",
+     "HIP24327",
+     "HIP24305"
+    ],
+    [
+     "HIP23972",
+     "HIP24436"
+    ]
+   ],
+   "meaning": "Female eagle, wife of Warepil",
+   "extraStars": {
+    "HIP22701": [
+     73.2236,
+     -5.4527,
+     72.05,
+     4.36,
+     "61Ome Eri",
+     "A9IV"
+    ],
+    "HIP23364": [
+     75.3598,
+     -7.174,
+     226.76,
+     4.8,
+     "65Psi Eri",
+     "B3V"
+    ],
+    "HIP23972": [
+     77.2866,
+     -8.7541,
+     248.76,
+     4.25,
+     "69Lam Eri",
+     "B2IVn"
+    ],
+    "HIP24244": [
+     78.0746,
+     -11.8692,
+     71.07,
+     4.45,
+     "3Iot Lep",
+     "B8V"
+    ]
+   },
+   "story": "Stellarium description: Colowgulloric Warepil; Rigel In Orion. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-tchingal",
+   "name": "Tchingal",
+   "kind": "dark-cloud",
+   "group": "Boorong",
+   "polygon": [
+    [
+     277.368,
+     -12.413
+    ],
+    [
+     276.1,
+     -17.501
+    ],
+    [
+     274.371,
+     -22.641
+    ],
+    [
+     271.28,
+     -29.397
+    ],
+    [
+     266.706,
+     -36.291
+    ],
+    [
+     260.041,
+     -43.917
+    ],
+    [
+     252.954,
+     -49.454
+    ],
+    [
+     242.338,
+     -54.349
+    ],
+    [
+     232.219,
+     -58.612
+    ],
+    [
+     219.335,
+     -61.458
+    ],
+    [
+     204.069,
+     -63.111
+    ],
+    [
+     196.843,
+     -63.728
+    ],
+    [
+     187.331,
+     -66.204
+    ],
+    [
+     188.065,
+     -64.126
+    ],
+    [
+     188.107,
+     -62.48
+    ],
+    [
+     195.27,
+     -59.924
+    ],
+    [
+     206.712,
+     -60.426
+    ],
+    [
+     220.196,
+     -58.116
+    ],
+    [
+     234.256,
+     -52.419
+    ],
+    [
+     238.514,
+     -45.748
+    ],
+    [
+     241.479,
+     -38.185
+    ],
+    [
+     249.853,
+     -29.812
+    ],
+    [
+     252.771,
+     -27.76
+    ],
+    [
+     256.926,
+     -22.742
+    ],
+    [
+     259.25,
+     -18.839
+    ],
+    [
+     261.437,
+     -16.94
+    ],
+    [
+     266.544,
+     -14.136
+    ],
+    [
+     270.146,
+     -13.256
+    ],
+    [
+     273.024,
+     -10.784
+    ],
+    [
+     275.261,
+     -10.73
+    ],
+    [
+     277.368,
+     -12.413
+    ]
+   ],
+   "meaning": "Emu",
+   "story": "Tchingal, the emu of the Boorong (Lake Tyrrell, Victoria), recorded by William Stanbridge in 1857 as a dark space near the Cross. The outline is the approximate RA/Dec polygon traced for Stellarium by John Morieson and Alex Cherney, running from the Coalsack through the dark lanes of the Milky Way towards Scorpius. The widely known Emu in the Sky is documented in other Aboriginal communities (e.g. Euahlayi and Kamilaroi; Fuller, Norris and Trudgett 2014, Australian Aboriginal astronomy); those community datasets are not included here."
+  },
+  {
+   "id": "aboriginal-boorong-totyarguil",
+   "name": "Totyarguil",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP96229",
+     "HIP97229",
+     "HIP97938",
+     "HIP98526",
+     "HIP99158"
+    ],
+    [
+     "HIP97278",
+     "HIP97649",
+     "HIP98036"
+    ]
+   ],
+   "meaning": "Purple crowned lorikeet",
+   "extraStars": {
+    "HIP96229": [
+     293.5223,
+     7.3789,
+     32.99,
+     4.45,
+     "38Mu  Aql",
+     "K3III"
+    ],
+    "HIP97229": [
+     296.4164,
+     7.6132,
+     53.62,
+     5.89,
+     "49Ups Aql",
+     "A3IV"
+    ],
+    "HIP97938": [
+     298.562,
+     8.4615,
+     56.27,
+     4.71,
+     "Libertas",
+     "K0III"
+    ],
+    "HIP98526": [
+     300.2457,
+     8.5577,
+     212.31,
+     5.9,
+     "HR 7648",
+     "K5III"
+    ],
+    "HIP99158": [
+     301.9599,
+     9.3998,
+     39.37,
+     6.43,
+     "HR 7693",
+     "F3V"
+    ]
+   },
+   "story": "Stellarium description: Altair. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-marpeankurrk",
+   "name": "Marpeankurrk",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP67459",
+     "HIP67275",
+     "HIP67927",
+     "HIP69673",
+     "HIP71762",
+     "HIP71795"
+    ],
+    [
+     "HIP69673",
+     "HIP72105"
+    ],
+    [
+     "HIP69673",
+     "HIP71053"
+    ],
+    [
+     "HIP72105",
+     "HIP74666"
+    ],
+    [
+     "HIP71053",
+     "HIP73555",
+     "HIP74666"
+    ]
+   ],
+   "meaning": "Meat ant",
+   "extraStars": {
+    "HIP71762": [
+     220.1815,
+     16.4183,
+     93.72,
+     4.49,
+     "29Pi 1Boo",
+     "B9p MnHg"
+    ]
+   },
+   "story": "Stellarium description: Meat ant; treecreeper; Arcturus. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-warring",
+   "name": "Warring",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP89931",
+     "HIP89931"
+    ]
+   ],
+   "meaning": "Milky Way",
+   "story": "Stellarium description: Galaxy. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-weetkurrk",
+   "name": "Weetkurrk",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP67480",
+     "HIP67480"
+    ]
+   ],
+   "meaning": "Singing bushlark",
+   "extraStars": {
+    "HIP67480": [
+     207.4285,
+     21.2641,
+     123.0,
+     4.92,
+     "6    Boo",
+     "K4III"
+    ]
+   },
+   "story": "Stellarium description: Star in Bootes west of Arcturus. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-gellarlec",
+   "name": "Gellarlec",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP21421"
+    ]
+   ],
+   "meaning": "Pink cockatoo",
+   "story": "Stellarium description: Aldebaran. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-collenbitchick",
+   "name": "Collenbitchick",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP100064",
+     "HIP100064"
+    ]
+   ],
+   "meaning": "Species of ant",
+   "story": "Stellarium description: Double star in head of Capricornus. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-won",
+   "name": "Won",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP92953",
+     "HIP93542",
+     "HIP94005",
+     "HIP94160",
+     "HIP94114",
+     "HIP93825",
+     "HIP93174",
+     "HIP91875"
+    ]
+   ],
+   "meaning": "Boomerang",
+   "extraStars": {
+    "HIP92953": [
+     284.0707,
+     -42.7107,
+     90.58,
+     5.35,
+     "HR 7122",
+     "G6III-IV"
+    ],
+    "HIP91875": [
+     280.9456,
+     -38.3234,
+     62.93,
+     5.11,
+     "Lam CrA",
+     "A0/A1V"
+    ]
+   },
+   "story": "Stellarium description: Corona Australis. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  },
+  {
+   "id": "aboriginal-boorong-mindi",
+   "name": "Mindi",
+   "kind": "constellation",
+   "group": "Boorong",
+   "lines": [
+    [
+     "HIP44816",
+     "HIP44816"
+    ]
+   ],
+   "meaning": "The maned snake",
+   "story": "Stellarium description: Part of the Milky Way. Line pattern from the Stellarium 'boorong' sky culture; see source for documentation."
+  }
+ ]
+}

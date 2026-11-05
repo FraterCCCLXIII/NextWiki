@@ -1,0 +1,1716 @@
+{
+ "id": "polynesian",
+ "name": "Polynesian",
+ "region": "Polynesia and Aotearoa",
+ "era": "Traditional, recorded 19th-21st c.",
+ "color": "#2ec4b6",
+ "description": "Star lore and navigation star lines from Hawaii (Hawaiian Starlines as used by the Polynesian Voyaging Society), Aotearoa (Maori), the Society Islands (Ruanui sky of Tahiti), Samoa and Tonga.",
+ "source": [
+  "Stellarium sky culture 'hawaiian_starlines' (https://github.com/Stellarium/stellarium/tree/master/skycultures/hawaiian_starlines); contributed by: The *master navigator* behind this sky culture was Mau Piailug of Satawal, who taught the Polynesian art of celestial navigation to Nainoa Thompson, who developed this version of the sky culture that was used from 2013-17 by Hawaiians to sail around the world during the Malama Honua Voyage of Hokule",
+  "Stellarium sky culture 'maori' (https://github.com/Stellarium/stellarium/tree/master/skycultures/maori); contributed by: This sky culture was contributed by Stellarium user *Dan Smale*, smaledanieloutlook.com",
+  "Stellarium sky culture 'ruanui_sky_tahiti_and_society_islands' (https://github.com/Stellarium/stellarium/tree/master/skycultures/ruanui_sky_tahiti_and_society_islands); contributed by: This sky culture was contributed by a working group composed of Christine Briant, Libor Prokop, Regis Plichart and Thibaud Guillaud-Saumur, with the help of association \"Fa'afaite i te Ao Ma'ohi\" (Rereao Carlson, Titaua Teipoarii) for the Maui's Hook/Hiro's Kite constellation and the association \"Te",
+  "Stellarium sky culture 'samoan' (https://github.com/Stellarium/stellarium/tree/master/skycultures/samoan); contributed by: This sky culture was contributed by Jake Fitisemanu (jjfitisemanu (a^t^) gmail.com) with consultation of Samoan cultural custodians and published historical sources. Programming support from Dan Smale.",
+  "Stellarium sky culture 'tongan' (https://github.com/Stellarium/stellarium/tree/master/skycultures/tongan); contributed by: This sky culture was contributed by Stellarium user *Dan Smale*, smaledanieloutlook.com",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: hawaiian_starlines: CC BY-SA 4.0 | maori: CC BY-SA 4.0 | ruanui_sky_tahiti_and_society_islands: CC BY-SA 4.0 | samoan: CC BY-SA 4.0 | tongan: CC BY-SA 4.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "polynesian-hawaiian-ke-ka-o-makali-i",
+   "name": "Ke Ka o Makali`i",
+   "kind": "constellation",
+   "group": "Hawaiian star lines",
+   "lines": [
+    [
+     "HIP32349",
+     "HIP37279",
+     "HIP37826",
+     "HIP36850",
+     "HIP28360",
+     "HIP28380",
+     "HIP25428",
+     "HIP23015",
+     "HIP24608",
+     "HIP28360"
+    ],
+    [
+     "HIP32349",
+     "HIP30324",
+     "HIP30438"
+    ]
+   ],
+   "meaning": "The Canoe Bailer of Makali`i",
+   "story": "Stellarium description: November to April. Line pattern from the Stellarium 'hawaiian_starlines' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-hawaiian-ka-hei-hei-o-na-keiki",
+   "name": "Ka Hei-Hei o Na Keiki",
+   "kind": "constellation",
+   "group": "Hawaiian star lines",
+   "lines": [
+    [
+     "HIP27989",
+     "HIP26727",
+     "HIP27366",
+     "HIP24436",
+     "HIP25930",
+     "HIP25336",
+     "HIP27989"
+    ],
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ]
+   ],
+   "meaning": "The Cat's Cradle",
+   "story": "Line pattern from the Stellarium 'hawaiian_starlines' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-hawaiian-makali-i",
+   "name": "Makali`i",
+   "kind": "constellation",
+   "group": "Hawaiian star lines",
+   "lines": [
+    [
+     "HIP17499",
+     "HIP17489"
+    ]
+   ],
+   "meaning": "The Chief's Eyes",
+   "extraStars": {
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17489": [
+     56.2009,
+     24.2895,
+     115.61,
+     5.45,
+     "Celaeno",
+     "B7IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'hawaiian_starlines' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-hawaiian-me-e",
+   "name": "Me`e",
+   "kind": "constellation",
+   "group": "Hawaiian star lines",
+   "lines": [
+    [
+     "HIP60965",
+     "HIP59803",
+     "HIP59316",
+     "HIP61359",
+     "HIP60965"
+    ]
+   ],
+   "meaning": "Voice of Joy",
+   "story": "Line pattern from the Stellarium 'hawaiian_starlines' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-hawaiian-na-hiku",
+   "name": "Na Hiku",
+   "kind": "constellation",
+   "group": "Hawaiian star lines",
+   "lines": [
+    [
+     "HIP67301",
+     "HIP65378",
+     "HIP62956",
+     "HIP59774",
+     "HIP54061",
+     "HIP53910",
+     "HIP58001",
+     "HIP59774"
+    ]
+   ],
+   "meaning": "The Seven",
+   "story": "Line pattern from the Stellarium 'hawaiian_starlines' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-hawaiian-ka-iwikuamo-o",
+   "name": "Ka Iwikuamo`o",
+   "kind": "constellation",
+   "group": "Hawaiian star lines",
+   "lines": [
+    [
+     "HIP11767",
+     "HIP54061"
+    ],
+    [
+     "HIP67301",
+     "HIP69673",
+     "HIP65474"
+    ],
+    [
+     "HIP60965",
+     "HIP65474"
+    ],
+    [
+     "HIP60221",
+     "HIP61084"
+    ]
+   ],
+   "meaning": "The Backbone",
+   "story": "Stellarium description: April to July. Line pattern from the Stellarium 'hawaiian_starlines' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-hawaiian-manaiakalani",
+   "name": "Manaiakalani",
+   "kind": "constellation",
+   "group": "Hawaiian star lines",
+   "lines": [
+    [
+     "HIP85927",
+     "HIP86670",
+     "HIP87073",
+     "HIP86228",
+     "HIP84143",
+     "HIP82671",
+     "HIP82514",
+     "HIP82396",
+     "HIP81266",
+     "HIP80763",
+     "HIP80112",
+     "HIP78401"
+    ],
+    [
+     "HIP78820",
+     "HIP78401",
+     "HIP78265"
+    ]
+   ],
+   "meaning": "The Chief's Fishline",
+   "extraStars": {
+    "HIP82671": [
+     253.4989,
+     -42.362,
+     787.4,
+     4.7,
+     "Zet1Sco",
+     "B1Iae"
+    ]
+   },
+   "story": "Stellarium description: May to October. Line pattern from the Stellarium 'hawaiian_starlines' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-hawaiian-navigator-s-triangle",
+   "name": "Navigator's Triangle",
+   "kind": "constellation",
+   "group": "Hawaiian star lines",
+   "lines": [
+    [
+     "HIP102098",
+     "HIP97649",
+     "HIP91262",
+     "HIP102098"
+    ],
+    [
+     "HIP95947",
+     "HIP97165",
+     "HIP100453",
+     "HIP102488",
+     "HIP102098",
+     "HIP100453"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'hawaiian_starlines' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-hawaiian-ka-lupe-o-kawelo",
+   "name": "Ka Lupe o Kawelo",
+   "kind": "constellation",
+   "group": "Hawaiian star lines",
+   "lines": [
+    [
+     "HIP677",
+     "HIP113881",
+     "HIP113963",
+     "HIP1067",
+     "HIP677"
+    ],
+    [
+     "HIP113368",
+     "HIP113963"
+    ],
+    [
+     "HIP746",
+     "HIP677"
+    ],
+    [
+     "HIP3419",
+     "HIP2081"
+    ],
+    [
+     "HIP1067",
+     "HIP3419"
+    ],
+    [
+     "HIP113881",
+     "HIP112731"
+    ]
+   ],
+   "meaning": "Kite of Kawelo",
+   "extraStars": {
+    "HIP112731": [
+     342.4428,
+     55.9028,
+     121.8,
+     5.43,
+     "HR 8688",
+     "K1III"
+    ]
+   },
+   "story": "Stellarium description: September to February. Line pattern from the Stellarium 'hawaiian_starlines' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-hawaiian-iwa-keli-i",
+   "name": "`Iwa Keli`i",
+   "kind": "constellation",
+   "group": "Hawaiian star lines",
+   "lines": [
+    [
+     "HIP8886",
+     "HIP6686",
+     "HIP4427",
+     "HIP3179",
+     "HIP746"
+    ]
+   ],
+   "meaning": "Chief Frigate Bird",
+   "story": "Line pattern from the Stellarium 'hawaiian_starlines' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-hawaiian-hanaiakamalama",
+   "name": "Hanaiakamalama",
+   "kind": "constellation",
+   "group": "Hawaiian star lines",
+   "lines": [
+    [
+     "HIP61084",
+     "HIP60718"
+    ],
+    [
+     "HIP62434",
+     "HIP59747"
+    ]
+   ],
+   "meaning": "Cared for by Moon",
+   "story": "Line pattern from the Stellarium 'hawaiian_starlines' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-hawaiian-nakuhikuhi",
+   "name": "Nakuhikuhi",
+   "kind": "constellation",
+   "group": "Hawaiian star lines",
+   "lines": [
+    [
+     "HIP71683",
+     "HIP68702"
+    ]
+   ],
+   "meaning": "The Pointers",
+   "story": "Line pattern from the Stellarium 'hawaiian_starlines' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-hawaiian-ka-ohiweliweli",
+   "name": "Ka`ohiweliweli",
+   "kind": "constellation",
+   "group": "Hawaiian star lines",
+   "lines": [
+    [
+     "HIP57632",
+     "HIP54872",
+     "HIP54879",
+     "HIP49669",
+     "HIP49583",
+     "HIP50583",
+     "HIP50335",
+     "HIP48455",
+     "HIP47908"
+    ],
+    [
+     "HIP57632",
+     "HIP54879"
+    ]
+   ],
+   "meaning": "Leo",
+   "story": "Line pattern from the Stellarium 'hawaiian_starlines' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-maori-taki-o-autahi",
+   "name": "Taki-o-Autahi",
+   "kind": "constellation",
+   "group": "Maori",
+   "lines": [
+    [
+     "HIP61084",
+     "HIP60718"
+    ],
+    [
+     "HIP62434",
+     "HIP59747"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'maori' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-maori-te-taura-o-te-waka-o-tamarereti",
+   "name": "Te Taura-o-te-waka-o-tamarereti",
+   "kind": "constellation",
+   "group": "Maori",
+   "lines": [
+    [
+     "HIP68702",
+     "HIP71683"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'maori' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-maori-tau-toro",
+   "name": "Tau-toro",
+   "kind": "constellation",
+   "group": "Maori",
+   "lines": [
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'maori' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-maori-te-waka-o-tama-rereti",
+   "name": "Te-Waka-o-Tama-Rereti",
+   "kind": "constellation",
+   "group": "Maori",
+   "lines": [
+    [
+     "HIP82396",
+     "HIP82514",
+     "HIP82671",
+     "HIP84143",
+     "HIP86228",
+     "HIP87073",
+     "HIP86670",
+     "HIP85927",
+     "HIP85696"
+    ]
+   ],
+   "meaning": "The Great Boat of Tama Rereti",
+   "extraStars": {
+    "HIP82671": [
+     253.4989,
+     -42.362,
+     787.4,
+     4.7,
+     "Zet1Sco",
+     "B1Iae"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'maori' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-maori-matakarehu",
+   "name": "Matakarehu",
+   "kind": "constellation",
+   "group": "Maori",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP20894",
+     "HIP20205",
+     "HIP20455",
+     "HIP20889"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'maori' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-maori-te-ra-o-tainui",
+   "name": "Te-Ra-o-Tainui",
+   "kind": "constellation",
+   "group": "Maori",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP20894",
+     "HIP20205",
+     "HIP20455",
+     "HIP20889"
+    ],
+    [
+     "HIP21421",
+     "HIP20889"
+    ],
+    [
+     "HIP20205",
+     "HIP25930"
+    ],
+    [
+     "HIP17499",
+     "HIP20205"
+    ],
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ]
+   ],
+   "meaning": "The Sail of Tainui",
+   "extraStars": {
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ]
+   },
+   "story": "Stellarium description: A maori constellation without a European counterpart. It is a sea voyaging catamaran. The belt of orion is the keel, the hyades is a claw sail and the Pleiades is the bow.. Line pattern from the Stellarium 'maori' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-tau-h",
+   "name": "Tau-hā",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP61084",
+     "HIP59747"
+    ],
+    [
+     "HIP59747",
+     "HIP60718"
+    ],
+    [
+     "HIP62434",
+     "HIP61084"
+    ],
+    [
+     "HIP60718",
+     "HIP62434"
+    ]
+   ],
+   "meaning": "Cluster of four",
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-matau-a-maui",
+   "name": "Matau-a-maui",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP85927",
+     "HIP86670"
+    ],
+    [
+     "HIP86670",
+     "HIP87073"
+    ],
+    [
+     "HIP87073",
+     "HIP86228"
+    ],
+    [
+     "HIP86228",
+     "HIP84143"
+    ],
+    [
+     "HIP84143",
+     "HIP82671"
+    ],
+    [
+     "HIP82671",
+     "HIP82514"
+    ],
+    [
+     "HIP82514",
+     "HIP82396"
+    ],
+    [
+     "HIP82396",
+     "HIP81266"
+    ],
+    [
+     "HIP81266",
+     "HIP80763"
+    ],
+    [
+     "HIP80763",
+     "HIP78820"
+    ],
+    [
+     "HIP78820",
+     "HIP78401"
+    ],
+    [
+     "HIP78401",
+     "HIP78265"
+    ]
+   ],
+   "meaning": "Maui's hook",
+   "extraStars": {
+    "HIP82671": [
+     253.4989,
+     -42.362,
+     787.4,
+     4.7,
+     "Zet1Sco",
+     "B1Iae"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-matari-i",
+   "name": "Matari'i",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP17847",
+     "HIP17702",
+     "HIP17608",
+     "HIP17499",
+     "HIP17489",
+     "HIP17531",
+     "HIP17573",
+     "HIP17702"
+    ]
+   ],
+   "meaning": "Small eyes",
+   "extraStars": {
+    "HIP17608": [
+     56.5816,
+     23.9484,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17489": [
+     56.2009,
+     24.2895,
+     115.61,
+     5.45,
+     "Celaeno",
+     "B7IV"
+    ],
+    "HIP17531": [
+     56.3021,
+     24.4673,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ],
+    "HIP17573": [
+     56.4567,
+     24.3677,
+     117.51,
+     3.87,
+     "Maia",
+     "B8III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-fa-a-nui",
+   "name": "Fa'a-nui",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP28380",
+     "HIP28360"
+    ],
+    [
+     "HIP28360",
+     "HIP24608"
+    ],
+    [
+     "HIP24608",
+     "HIP23453"
+    ],
+    [
+     "HIP23453",
+     "HIP23015"
+    ],
+    [
+     "HIP25428",
+     "HIP23015"
+    ],
+    [
+     "HIP25428",
+     "HIP28380"
+    ]
+   ],
+   "meaning": "Great valley",
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-fa-a-iti",
+   "name": "Fa'a-iti",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP17448",
+     "HIP18246"
+    ],
+    [
+     "HIP18246",
+     "HIP18614"
+    ],
+    [
+     "HIP18614",
+     "HIP18532"
+    ],
+    [
+     "HIP18532",
+     "HIP17358"
+    ],
+    [
+     "HIP17358",
+     "HIP15863"
+    ],
+    [
+     "HIP15863",
+     "HIP14576"
+    ],
+    [
+     "HIP14576",
+     "HIP17448"
+    ]
+   ],
+   "meaning": "Little valley",
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-atu-tahi",
+   "name": "Atu-tahi",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP113368",
+     "HIP111954"
+    ],
+    [
+     "HIP111954",
+     "HIP108661"
+    ],
+    [
+     "HIP108661",
+     "HIP107608"
+    ],
+    [
+     "HIP107608",
+     "HIP109422"
+    ],
+    [
+     "HIP109422",
+     "HIP111188"
+    ],
+    [
+     "HIP111188",
+     "HIP113246"
+    ],
+    [
+     "HIP113368",
+     "HIP115102"
+    ],
+    [
+     "HIP115102",
+     "HIP113246"
+    ]
+   ],
+   "meaning": "Single bonito",
+   "extraStars": {
+    "HIP108661": [
+     330.2093,
+     -28.4537,
+     250.63,
+     5.43,
+     "12Eta PsA",
+     "B8/B9V+..."
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-atu-ra-i-putuputu",
+   "name": "Atu-ra'i-putuputu",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP4889",
+     "HIP5742"
+    ],
+    [
+     "HIP5742",
+     "HIP7097",
+     "HIP8198",
+     "HIP9487",
+     "HIP8833",
+     "HIP7884",
+     "HIP7007",
+     "HIP4906",
+     "HIP3760",
+     "HIP1645",
+     "HIP118268",
+     "HIP116771",
+     "HIP116928",
+     "HIP115738",
+     "HIP114971",
+     "HIP115830",
+     "HIP116771"
+    ]
+   ],
+   "meaning": "Numerous heavenly fishes",
+   "extraStars": {
+    "HIP4889": [
+     15.7046,
+     31.8043,
+     132.98,
+     5.5,
+     "69Sig Psc",
+     "B9.5V"
+    ],
+    "HIP3760": [
+     12.0725,
+     7.2999,
+     177.62,
+     5.92,
+     "62    Psc",
+     "G8III"
+    ],
+    "HIP1645": [
+     5.1494,
+     8.1903,
+     125.0,
+     5.38,
+     "41    Psc",
+     "K3III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-pira-e-tea",
+   "name": "Pira'e-tea",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP94779",
+     "HIP95853",
+     "HIP97165",
+     "HIP100453",
+     "HIP102098"
+    ],
+    [
+     "HIP100453",
+     "HIP102488",
+     "HIP104732",
+     "HIP107310"
+    ],
+    [
+     "HIP100453",
+     "HIP98110",
+     "HIP95947"
+    ]
+   ],
+   "meaning": "White sea swallow",
+   "extraStars": {
+    "HIP107310": [
+     326.0357,
+     28.7426,
+     22.24,
+     4.49,
+     "78Mu 1Cyg",
+     "F6V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-metua-ai-papa",
+   "name": "Metua-'ai-papa",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP60965",
+     "HIP59803"
+    ],
+    [
+     "HIP59803",
+     "HIP59316"
+    ],
+    [
+     "HIP59316",
+     "HIP61359"
+    ],
+    [
+     "HIP61359",
+     "HIP60965"
+    ]
+   ],
+   "meaning": "Parent eater of rock",
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-n-hui-t-rava-ia-mere",
+   "name": "Nā-hui-tārava-ia-mere",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP25930",
+     "HIP26311"
+    ],
+    [
+     "HIP26311",
+     "HIP26727"
+    ]
+   ],
+   "meaning": "The aligned stars of Mere",
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-moana-ohu-noa-ei-ha-amoe-hara",
+   "name": "Moana-'ohu-noa-'ei-ha'amoe-hara",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP53740",
+     "HIP54682",
+     "HIP55705",
+     "HIP55282",
+     "HIP53740"
+    ],
+    [
+     "HIP55282",
+     "HIP55687",
+     "HIP56633",
+     "HIP58188",
+     "HIP57283",
+     "HIP55705"
+    ]
+   ],
+   "meaning": "Vortex ocean in which to lose crime",
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-n-ainanu",
+   "name": "Nā-'ainanu",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP36850",
+     "HIP37826"
+    ]
+   ],
+   "meaning": "The two asking for food",
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-fa-a-t-potupotu",
+   "name": "Fa'a-tā-potupotu",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP31681",
+     "HIP34088",
+     "HIP35550",
+     "HIP36962",
+     "HIP37826",
+     "HIP36850",
+     "HIP34693",
+     "HIP32246",
+     "HIP30343"
+    ]
+   ],
+   "meaning": "Open valley",
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-n-matarua",
+   "name": "Nā-matarua",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP71683",
+     "HIP68702"
+    ]
+   ],
+   "meaning": "Two eyes",
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-uru-meremere",
+   "name": "Uru-meremere",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ],
+    [
+     "HIP27989",
+     "HIP26727",
+     "HIP27366",
+     "HIP24436",
+     "HIP25930",
+     "HIP25336",
+     "HIP26207",
+     "HIP27989"
+    ]
+   ],
+   "meaning": "Forest of parental yearnings",
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-te-uo-a-hiro",
+   "name": "Te-'uo-a-hiro",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP85927",
+     "HIP86670",
+     "HIP87073",
+     "HIP86228",
+     "HIP84143",
+     "HIP82671",
+     "HIP82514",
+     "HIP82396",
+     "HIP81266",
+     "HIP80763",
+     "HIP80079",
+     "HIP78265",
+     "HIP78401",
+     "HIP78820",
+     "HIP79374",
+     "HIP80343",
+     "HIP80975",
+     "HIP80079"
+    ]
+   ],
+   "meaning": "Hiro's kite",
+   "extraStars": {
+    "HIP82671": [
+     253.4989,
+     -42.362,
+     787.4,
+     4.7,
+     "Zet1Sco",
+     "B1Iae"
+    ],
+    "HIP80079": [
+     245.1591,
+     -24.1693,
+     269.54,
+     4.55,
+     "19Omi Sco",
+     "A4II/III"
+    ],
+    "HIP79374": [
+     242.9989,
+     -19.4607,
+     145.35,
+     4.0,
+     "Jabbah",
+     "B2IV"
+    ],
+    "HIP80975": [
+     248.0342,
+     -21.4664,
+     51.71,
+     4.45,
+     "9Ome Oph",
+     "Ap"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-rua-o-mere",
+   "name": "Rua-o-mere",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP100345",
+     "HIP104139",
+     "HIP105515",
+     "HIP106985",
+     "HIP107556"
+    ],
+    [
+     "HIP100345",
+     "HIP102978",
+     "HIP105881"
+    ],
+    [
+     "HIP105881",
+     "HIP107556"
+    ]
+   ],
+   "meaning": "Cavern of the parental yearnings",
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-t-i-te-moana-urif",
+   "name": "Tū-i-te-moana-urifā",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP42799",
+     "HIP42402",
+     "HIP42313",
+     "HIP43109",
+     "HIP43234",
+     "HIP42799"
+    ],
+    [
+     "HIP43234",
+     "HIP43813",
+     "HIP45336",
+     "HIP46776",
+     "HIP46509",
+     "HIP46390",
+     "HIP48356",
+     "HIP49841",
+     "HIP51069",
+     "HIP52943",
+     "HIP56343",
+     "HIP57936",
+     "HIP64166",
+     "HIP64962"
+    ]
+   ],
+   "meaning": "Stand in the sea of rank odor",
+   "extraStars": {
+    "HIP46776": [
+     142.9955,
+     -1.1847,
+     158.73,
+     4.54,
+     "32Tau2Hya",
+     "A3V"
+    ],
+    "HIP46509": [
+     142.2871,
+     -2.769,
+     17.33,
+     4.59,
+     "31Tau1Hya",
+     "F6V"
+    ],
+    "HIP64166": [
+     197.2636,
+     -23.1181,
+     70.97,
+     4.94,
+     "45Psi Hya",
+     "K0III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-ruanui-pipiri-ma",
+   "name": "Pipiri-ma",
+   "kind": "constellation",
+   "group": "Tahiti and Society Islands",
+   "lines": [
+    [
+     "HIP85927",
+     "HIP85696"
+    ]
+   ],
+   "meaning": "The greedy",
+   "story": "Line pattern from the Stellarium 'ruanui_sky_tahiti_and_society_islands' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-samoan-sumu",
+   "name": "Sumu",
+   "kind": "constellation",
+   "group": "Samoan",
+   "lines": [
+    [
+     "HIP61084",
+     "HIP60718"
+    ],
+    [
+     "HIP62434",
+     "HIP59747"
+    ]
+   ],
+   "meaning": "Triggerfish",
+   "story": "Line pattern from the Stellarium 'samoan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-samoan-luatagata",
+   "name": "Luatagata",
+   "kind": "constellation",
+   "group": "Samoan",
+   "lines": [
+    [
+     "HIP68702",
+     "HIP71683"
+    ]
+   ],
+   "meaning": "Two men",
+   "story": "Line pattern from the Stellarium 'samoan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-samoan-tolug-m-uli",
+   "name": "Tolugāmāuli",
+   "kind": "constellation",
+   "group": "Samoan",
+   "lines": [
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ]
+   ],
+   "meaning": "Triad of moons",
+   "story": "Line pattern from the Stellarium 'samoan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-samoan-toloa",
+   "name": "Toloa",
+   "kind": "constellation",
+   "group": "Samoan",
+   "lines": [
+    [
+     "HIP80763",
+     "HIP80112",
+     "HIP78401",
+     "HIP78820"
+    ],
+    [
+     "HIP78401",
+     "HIP78104"
+    ]
+   ],
+   "meaning": "Wild duck",
+   "extraStars": {
+    "HIP78104": [
+     239.2212,
+     -29.2141,
+     144.72,
+     3.87,
+     "Iklil",
+     "B2IV/V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'samoan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-samoan-faip",
+   "name": "Faipā",
+   "kind": "constellation",
+   "group": "Samoan",
+   "lines": [
+    [
+     "HIP85696",
+     "HIP85927",
+     "HIP86670",
+     "HIP87073",
+     "HIP86228",
+     "HIP84143",
+     "HIP82671",
+     "HIP82514",
+     "HIP82396"
+    ]
+   ],
+   "meaning": "Fishhook lure",
+   "extraStars": {
+    "HIP82671": [
+     253.4989,
+     -42.362,
+     787.4,
+     4.7,
+     "Zet1Sco",
+     "B1Iae"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'samoan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-samoan-t-l-lupe",
+   "name": "Tūlālupe",
+   "kind": "constellation",
+   "group": "Samoan",
+   "lines": [
+    [
+     "HIP86228",
+     "HIP87073",
+     "HIP85927"
+    ]
+   ],
+   "meaning": "Pigeon Perch",
+   "story": "Line pattern from the Stellarium 'samoan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-samoan-ti-otala",
+   "name": "Ti'otala",
+   "kind": "constellation",
+   "group": "Samoan",
+   "lines": [
+    [
+     "HIP102532",
+     "HIP102281",
+     "HIP101769",
+     "HIP101421"
+    ],
+    [
+     "HIP102532",
+     "HIP101958",
+     "HIP101769"
+    ]
+   ],
+   "meaning": "Kingfisher",
+   "story": "Line pattern from the Stellarium 'samoan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-samoan-s",
+   "name": "Sē",
+   "kind": "constellation",
+   "group": "Samoan",
+   "lines": [
+    [
+     "HIP107354",
+     "HIP112440",
+     "HIP113881",
+     "HIP113963"
+    ],
+    [
+     "HIP112440",
+     "HIP115250"
+    ]
+   ],
+   "meaning": "Grasshopper",
+   "extraStars": {
+    "HIP115250": [
+     350.1593,
+     23.7403,
+     49.58,
+     4.58,
+     "Salm",
+     "A5V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'samoan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-samoan-amoga",
+   "name": "Amoga",
+   "kind": "constellation",
+   "group": "Samoan",
+   "lines": [
+    [
+     "HIP22449",
+     "HIP24331",
+     "HIP25930",
+     "HIP26311",
+     "HIP26727",
+     "HIP29651"
+    ]
+   ],
+   "meaning": "Carrying pole",
+   "extraStars": {
+    "HIP24331": [
+     78.3228,
+     2.8613,
+     107.3,
+     4.46,
+     "17Rho Ori",
+     "K3III..."
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'samoan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-samoan-tuig-lama",
+   "name": "Tuigālama",
+   "kind": "constellation",
+   "group": "Samoan",
+   "lines": [
+    [
+     "HIP28614",
+     "HIP28716",
+     "HIP27913",
+     "HIP28614"
+    ]
+   ],
+   "meaning": "Candlenut torch",
+   "story": "Line pattern from the Stellarium 'samoan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-samoan-i-ofi",
+   "name": "I'ofi",
+   "kind": "constellation",
+   "group": "Samoan",
+   "lines": [
+    [
+     "HIP25428",
+     "HIP20205",
+     "HIP26451"
+    ]
+   ],
+   "meaning": "Tongs",
+   "story": "Line pattern from the Stellarium 'samoan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-samoan-tanif",
+   "name": "Tanifā",
+   "kind": "constellation",
+   "group": "Samoan",
+   "lines": [
+    [
+     "HIP12706",
+     "HIP14135",
+     "HIP13954",
+     "HIP12828",
+     "HIP11484",
+     "HIP12706",
+     "HIP10826",
+     "HIP9487"
+    ],
+    [
+     "HIP10826",
+     "HIP8645",
+     "HIP8102",
+     "HIP9347"
+    ],
+    [
+     "HIP8645",
+     "HIP6537",
+     "HIP5364",
+     "HIP3419",
+     "HIP1562",
+     "HIP5364"
+    ]
+   ],
+   "meaning": "Sea monster",
+   "story": "Line pattern from the Stellarium 'samoan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-samoan-anava",
+   "name": "'Anava",
+   "kind": "constellation",
+   "group": "Samoan",
+   "lines": [
+    [
+     "HIP24608",
+     "HIP33449",
+     "HIP41704",
+     "HIP58001",
+     "HIP59774",
+     "HIP41704"
+    ]
+   ],
+   "meaning": "Heirloom Warclub",
+   "story": "Line pattern from the Stellarium 'samoan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-samoan-to-iv",
+   "name": "To'ivā",
+   "kind": "constellation",
+   "group": "Samoan",
+   "lines": [
+    [
+     "HIP49669",
+     "HIP49583",
+     "HIP50583",
+     "HIP50335",
+     "HIP48455",
+     "HIP47908"
+    ]
+   ],
+   "meaning": "Great Adze",
+   "story": "Line pattern from the Stellarium 'samoan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-tongan-toloatonga",
+   "name": "Toloatonga",
+   "kind": "constellation",
+   "group": "Tongan",
+   "lines": [
+    [
+     "HIP61084",
+     "HIP60718"
+    ],
+    [
+     "HIP62434",
+     "HIP59747"
+    ]
+   ],
+   "meaning": "Southern Wild Duck",
+   "story": "Stellarium description: Southern Cross. Line pattern from the Stellarium 'tongan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-tongan-lua-tangata",
+   "name": "Lua tangata",
+   "kind": "constellation",
+   "group": "Tongan",
+   "lines": [
+    [
+     "HIP36850",
+     "HIP37826"
+    ]
+   ],
+   "meaning": "Two Men",
+   "story": "Stellarium description: Castor and/or Pollux. Line pattern from the Stellarium 'tongan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-tongan-toloa",
+   "name": "Toloa",
+   "kind": "constellation",
+   "group": "Tongan",
+   "lines": [
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ]
+   ],
+   "meaning": "Wild Duck",
+   "story": "Stellarium description: Belt of Orion. Line pattern from the Stellarium 'tongan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-tongan-tu-ulalupe",
+   "name": "Tu'ulalupe",
+   "kind": "constellation",
+   "group": "Tongan",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP20885",
+     "HIP20205",
+     "HIP20455",
+     "HIP20889"
+    ]
+   ],
+   "meaning": "Pigeon Perch",
+   "extraStars": {
+    "HIP20885": [
+     67.1437,
+     15.9622,
+     47.33,
+     3.84,
+     "77The1Tau",
+     "G7III"
+    ]
+   },
+   "story": "Stellarium description: Hyades. Line pattern from the Stellarium 'tongan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-tongan-toloalahi",
+   "name": "Toloalahi",
+   "kind": "constellation",
+   "group": "Tongan",
+   "lines": [
+    [
+     "HIP42913",
+     "HIP45556"
+    ],
+    [
+     "HIP41037",
+     "HIP45941"
+    ]
+   ],
+   "meaning": "Big Wild Duck",
+   "story": "Stellarium description: False Cross. Line pattern from the Stellarium 'tongan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-tongan-fungasia",
+   "name": "Fungasia",
+   "kind": "constellation",
+   "group": "Tongan",
+   "lines": [
+    [
+     "HIP71683",
+     "HIP68702"
+    ]
+   ],
+   "meaning": "Mound Top",
+   "story": "Stellarium description: Toliman and/or Agena. Line pattern from the Stellarium 'tongan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-tongan-tuinga-ika",
+   "name": "Tuinga ika",
+   "kind": "constellation",
+   "group": "Tongan",
+   "lines": [
+    [
+     "HIP25281",
+     "HIP25930",
+     "HIP26311",
+     "HIP26727",
+     "HIP26549",
+     "HIP26263",
+     "HIP26237",
+     "HIP26258",
+     "HIP26241"
+    ]
+   ],
+   "meaning": "String of fishes",
+   "extraStars": {
+    "HIP26549": [
+     84.6865,
+     -2.6001,
+     328.95,
+     3.77,
+     "48Sig Ori",
+     "O9.5V..."
+    ],
+    "HIP26263": [
+     83.8996,
+     -3.2528,
+     476.19,
+     6.4,
+     "HR 1900",
+     "B3IV"
+    ],
+    "HIP26237": [
+     83.8465,
+     -4.8384,
+     271.0,
+     4.58,
+     "42    Ori",
+     "B2III..."
+    ],
+    "HIP26258": [
+     83.8807,
+     -5.2674,
+     444.44,
+     6.75,
+     "HIP 26258",
+     "B1V"
+    ]
+   },
+   "story": "Stellarium description: Part of Orion, belt and sword. Line pattern from the Stellarium 'tongan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-tongan-houmatoloa",
+   "name": "Houmatoloa",
+   "kind": "constellation",
+   "group": "Tongan",
+   "lines": [
+    [
+     "HIP26311",
+     "HIP45496",
+     "HIP60781"
+    ]
+   ],
+   "meaning": "Wild Duck's Point of Land",
+   "extraStars": {
+    "HIP45496": [
+     139.0504,
+     -57.5415,
+     149.7,
+     4.34,
+     "HR 3696",
+     "M1III"
+    ],
+    "HIP60781": [
+     186.8703,
+     -58.9918,
+     135.87,
+     5.38,
+     "HR 4739",
+     "M4/M5III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tongan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-tongan-fatanalua",
+   "name": "Fatanalua",
+   "kind": "constellation",
+   "group": "Tongan",
+   "lines": [
+    [
+     "HIP60742",
+     "HIP64394",
+     "HIP64241"
+    ]
+   ],
+   "meaning": "Two Carriers",
+   "story": "Stellarium description: Coma Berenices (*Speculative*). Line pattern from the Stellarium 'tongan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-tongan-cloud-of-uvea",
+   "name": "Cloud of 'Uvea",
+   "kind": "constellation",
+   "group": "Tongan",
+   "lines": [
+    [
+     "HIP78493",
+     "HIP78159",
+     "HIP77512",
+     "HIP76952",
+     "HIP76267",
+     "HIP75695",
+     "HIP76127"
+    ]
+   ],
+   "native": "ʻAo ʻo ʻUvea",
+   "story": "Line pattern from the Stellarium 'tongan' sky culture; see source for documentation."
+  },
+  {
+   "id": "polynesian-tongan-kapakau-o-tafahi",
+   "name": "Kapakau'o'tafahi",
+   "kind": "constellation",
+   "group": "Tongan",
+   "lines": [
+    [
+     "HIP8886",
+     "HIP6686",
+     "HIP4427",
+     "HIP3179",
+     "HIP746"
+    ]
+   ],
+   "meaning": "Wing of Tafahi",
+   "story": "Stellarium description: Cassiopeia (*Speculative*). Line pattern from the Stellarium 'tongan' sky culture; see source for documentation."
+  }
+ ]
+}

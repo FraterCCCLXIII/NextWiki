@@ -1,0 +1,651 @@
+{
+ "id": "northern-andes",
+ "name": "Northern Andes",
+ "region": "Ecuador and the Northern Andes",
+ "era": "Modern reconstruction",
+ "color": "#b5651d",
+ "description": "Star patterns and dark constellations proposed by Andean researchers (Guayasamin and colleagues) for the equatorial sky; the figure names honour modern researchers and are a contemporary reconstruction, not attested Inca names.",
+ "source": [
+  "Stellarium sky culture 'northern_andes' (https://github.com/Stellarium/stellarium/tree/master/skycultures/northern_andes); contributed by: These constellations, asterisms and measurements are part of **the legacy of Ancestral Knowledge** protected and compiled by the **Clan Quinatoa, guardians of the millenary knowledge of the Lundauco Valley in Imbabura - Ecuador** . The astral information is based on the study of Andrés Alejandro Aya",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: northern_andes: GNU GPL v2.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "northern-andes-northern-estelina-quinatoa-el-jaguar",
+   "name": "Estelina Quinatoa (El Jaguar)",
+   "kind": "constellation",
+   "group": "Northern Andes",
+   "lines": [
+    [
+     "HIP32578",
+     "HIP31622",
+     "HIP31646",
+     "HIP32533",
+     "HIP31216",
+     "HIP30419",
+     "HIP29860",
+     "HIP30185",
+     "HIP30545",
+     "HIP30493",
+     "HIP30666",
+     "HIP30093",
+     "HIP29651",
+     "HIP30772",
+     "HIP31278",
+     "HIP31083",
+     "HIP32578"
+    ]
+   ],
+   "meaning": "The Jaguar",
+   "extraStars": {
+    "HIP31622": [
+     99.2645,
+     5.5194,
+     101.21,
+     7.14,
+     "HIP 31622",
+     "F0II"
+    ],
+    "HIP31646": [
+     99.3502,
+     6.1354,
+     null,
+     6.05,
+     "HR 2422",
+     "O8e"
+    ],
+    "HIP32533": [
+     101.8326,
+     8.0373,
+     151.06,
+     4.77,
+     "17    Mon",
+     "K4III"
+    ],
+    "HIP29860": [
+     94.3172,
+     5.1001,
+     19.25,
+     5.7,
+     "HR 2251",
+     "G0.5Vb"
+    ],
+    "HIP30185": [
+     95.262,
+     2.5688,
+     170.36,
+     7.25,
+     "HIP 30185",
+     "M..."
+    ],
+    "HIP30545": [
+     96.3189,
+     -0.9459,
+     33.57,
+     5.88,
+     "HR 2313",
+     "F8V"
+    ],
+    "HIP30493": [
+     96.1414,
+     -1.4182,
+     242.13,
+     6.72,
+     "HIP 30493",
+     "B8"
+    ],
+    "HIP30666": [
+     96.6649,
+     -1.5073,
+     72.46,
+     5.87,
+     "HR 2324",
+     "A3Vn"
+    ],
+    "HIP30093": [
+     94.9983,
+     -2.9445,
+     142.45,
+     4.91,
+     "HR 2275",
+     "M1III"
+    ],
+    "HIP30772": [
+     96.9899,
+     -4.7622,
+     333.33,
+     5.06,
+     "10    Mon",
+     "B2V"
+    ],
+    "HIP31278": [
+     98.408,
+     -1.2202,
+     169.78,
+     5.09,
+     "HR 2395",
+     "B5Vn"
+    ],
+    "HIP31083": [
+     97.8395,
+     2.9113,
+     27.78,
+     7.14,
+     "HIP 31083",
+     "G0"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'northern_andes' sky culture; see source for documentation."
+  },
+  {
+   "id": "northern-andes-northern-mercedes-cotacachi-el-mono",
+   "name": "Mercedes Cotacachi (El Mono)",
+   "kind": "constellation",
+   "group": "Northern Andes",
+   "lines": [
+    [
+     "HIP92175",
+     "HIP92202",
+     "HIP93026",
+     "HIP93429",
+     "HIP93805",
+     "HIP93717",
+     "HIP93526",
+     "HIP91308",
+     "HIP90441",
+     "HIP90642",
+     "HIP88404",
+     "HIP86768",
+     "HIP88048",
+     "HIP88326",
+     "HIP87879",
+     "HIP87544",
+     "HIP87074",
+     "HIP87161",
+     "HIP88258",
+     "HIP88857",
+     "HIP88981",
+     "HIP91105",
+     "HIP92175"
+    ]
+   ],
+   "meaning": "The Monkey",
+   "extraStars": {
+    "HIP93717": [
+     286.2403,
+     -4.0314,
+     88.73,
+     5.4,
+     "15    Aql",
+     "K1III"
+    ],
+    "HIP93526": [
+     285.7271,
+     -3.699,
+     153.14,
+     5.4,
+     "14    Aql",
+     "A1V"
+    ],
+    "HIP91308": [
+     279.3739,
+     -2.92,
+     413.22,
+     6.74,
+     "HIP 91308",
+     "K0"
+    ],
+    "HIP90441": [
+     276.8021,
+     0.1961,
+     143.88,
+     5.2,
+     "59    Ser",
+     "G0III+..."
+    ],
+    "HIP90642": [
+     277.4208,
+     -1.9853,
+     70.42,
+     5.38,
+     "60    Ser",
+     "K0III"
+    ],
+    "HIP86768": [
+     265.9459,
+     -7.0796,
+     333.33,
+     6.3,
+     "HR 6601",
+     "B1.5V"
+    ],
+    "HIP88326": [
+     270.5927,
+     -12.3184,
+     271.74,
+     7.66,
+     "HIP 88326",
+     "M2III"
+    ],
+    "HIP87879": [
+     269.2793,
+     -13.6532,
+     118.06,
+     7.54,
+     "HIP 87879",
+     "A8IIIm..."
+    ],
+    "HIP87544": [
+     268.271,
+     -13.6502,
+     62.93,
+     7.14,
+     "HIP 87544",
+     "F5V"
+    ],
+    "HIP87074": [
+     266.9033,
+     -14.7258,
+     183.82,
+     5.93,
+     "HR 6620",
+     "B9V"
+    ],
+    "HIP87161": [
+     267.1065,
+     -16.8272,
+     349.65,
+     8.35,
+     "HIP 87161",
+     "B9.5/A0V"
+    ],
+    "HIP88258": [
+     270.3463,
+     -17.1569,
+     806.45,
+     6.27,
+     "6    Sgr",
+     "K2III"
+    ],
+    "HIP88857": [
+     272.1198,
+     -16.4167,
+     925.93,
+     7.65,
+     "HIP 88857",
+     "B3V"
+    ],
+    "HIP88981": [
+     272.4307,
+     -13.9344,
+     253.16,
+     6.38,
+     "HR 6785",
+     "K1II"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'northern_andes' sky culture; see source for documentation."
+  },
+  {
+   "id": "northern-andes-northern-hernan-crespo-toral-el-guerrero",
+   "name": "Hernan Crespo Toral (El Guerrero)",
+   "kind": "constellation",
+   "group": "Northern Andes",
+   "lines": [
+    [
+     "HIP2599",
+     "HIP115990",
+     "HIP112731",
+     "HIP6686",
+     "HIP2599"
+    ],
+    [
+     "HIP6686",
+     "HIP8020",
+     "HIP12346",
+     "HIP10893",
+     "HIP8886",
+     "HIP11569",
+     "HIP5518",
+     "HIP112724",
+     "HIP6686"
+    ]
+   ],
+   "meaning": "The Warrior",
+   "extraStars": {
+    "HIP115990": [
+     352.508,
+     58.5489,
+     190.48,
+     4.89,
+     "HR 8926",
+     "B3IV"
+    ],
+    "HIP112731": [
+     342.4428,
+     55.9028,
+     121.8,
+     5.43,
+     "HR 8688",
+     "K1III"
+    ],
+    "HIP8020": [
+     25.743,
+     61.4211,
+     446.43,
+     6.33,
+     "HR 488",
+     "B7II"
+    ],
+    "HIP12346": [
+     39.743,
+     62.5915,
+     125.31,
+     6.66,
+     "HIP 12346",
+     "B9"
+    ],
+    "HIP10893": [
+     35.0536,
+     64.3369,
+     146.84,
+     6.59,
+     "HR 668",
+     "B9.5V"
+    ],
+    "HIP11569": [
+     37.2666,
+     67.4025,
+     40.73,
+     4.46,
+     "Iot Cas",
+     "A5p Sr"
+    ],
+    "HIP5518": [
+     17.6637,
+     68.7786,
+     84.89,
+     5.32,
+     "31    Cas",
+     "A0Vnn"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'northern_andes' sky culture; see source for documentation."
+  },
+  {
+   "id": "northern-andes-northern-ana-jaramillo-de-velastegui-el-sapo",
+   "name": "Ana Jaramillo de Velastegui (El Sapo)",
+   "kind": "constellation",
+   "group": "Northern Andes",
+   "lines": [
+    [
+     "HIP59996",
+     "HIP59072",
+     "HIP59457",
+     "HIP60771",
+     "HIP60944",
+     "HIP62053",
+     "HIP61158",
+     "HIP62227",
+     "HIP63802",
+     "HIP63277",
+     "HIP62268",
+     "HIP62732",
+     "HIP64016",
+     "HIP63117",
+     "HIP61179",
+     "HIP60379",
+     "HIP61136",
+     "HIP59649",
+     "HIP59282",
+     "HIP58901",
+     "HIP60260",
+     "HIP59396",
+     "HIP59996"
+    ]
+   ],
+   "meaning": "The Frog",
+   "extraStars": {
+    "HIP59996": [
+     184.5704,
+     -63.2801,
+     226.76,
+     9.73,
+     "HIP 59996",
+     ""
+    ],
+    "HIP59457": [
+     182.9345,
+     -64.9488,
+     178.57,
+     7.04,
+     "HIP 59457",
+     "K0III"
+    ],
+    "HIP60771": [
+     186.8535,
+     -63.789,
+     203.25,
+     6.02,
+     "HR 4736",
+     "B8IV"
+    ],
+    "HIP60944": [
+     187.3796,
+     -66.8605,
+     869.57,
+     7.32,
+     "HIP 60944",
+     "B5Ib"
+    ],
+    "HIP62053": [
+     190.7796,
+     -65.6731,
+     212.31,
+     8.59,
+     "HIP 62053",
+     "K0/K1III"
+    ],
+    "HIP61158": [
+     187.9839,
+     -63.5058,
+     75.13,
+     5.96,
+     "HR 4771",
+     "A8III"
+    ],
+    "HIP62227": [
+     191.3087,
+     -62.2177,
+     null,
+     7.59,
+     "HIP 62227",
+     "A3/A4Ib"
+    ],
+    "HIP63802": [
+     196.1536,
+     -61.7103,
+     909.09,
+     8.22,
+     "HIP 63802",
+     "B1Ia"
+    ],
+    "HIP63277": [
+     194.5041,
+     -61.0553,
+     null,
+     8.41,
+     "HIP 63277",
+     "B1/B2II/III"
+    ],
+    "HIP62268": [
+     191.4083,
+     -60.9813,
+     36.81,
+     4.69,
+     "Iot Cru",
+     "K1III"
+    ],
+    "HIP62732": [
+     192.8249,
+     -60.3298,
+     null,
+     5.71,
+     "HR 4876",
+     "A2Iab"
+    ],
+    "HIP64016": [
+     196.76,
+     -58.8055,
+     309.6,
+     7.13,
+     "HIP 64016",
+     "K0II"
+    ],
+    "HIP63117": [
+     193.9881,
+     -56.8358,
+     null,
+     5.34,
+     "HR 4908",
+     "O9Ib"
+    ],
+    "HIP61179": [
+     188.0367,
+     -56.1295,
+     500.0,
+     6.54,
+     "HIP 61179",
+     "K5III"
+    ],
+    "HIP60379": [
+     185.706,
+     -57.6761,
+     110.86,
+     5.38,
+     "HR 4706",
+     "B9V"
+    ],
+    "HIP61136": [
+     187.9181,
+     -59.4239,
+     429.18,
+     5.49,
+     "HR 4768",
+     "F5III"
+    ],
+    "HIP59649": [
+     183.4888,
+     -57.9443,
+     454.55,
+     7.9,
+     "HIP 59649",
+     "A0V"
+    ],
+    "HIP59282": [
+     182.4117,
+     -58.3497,
+     104.17,
+     7.39,
+     "HIP 59282",
+     "A3V"
+    ],
+    "HIP58901": [
+     181.1886,
+     -59.2533,
+     106.27,
+     6.3,
+     "HIP 58901",
+     "B9Vn"
+    ],
+    "HIP59396": [
+     182.7716,
+     -61.2774,
+     95.33,
+     6.08,
+     "HR 4634",
+     "F0III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'northern_andes' sky culture; see source for documentation."
+  },
+  {
+   "id": "northern-andes-northern-la-flecha-jorge-trujillo",
+   "name": "La Flecha (Jorge Trujillo)",
+   "kind": "constellation",
+   "group": "Northern Andes",
+   "lines": [
+    [
+     "HIP6686",
+     "HIP4427",
+     "HIP2599",
+     "HIP746",
+     "HIP3179",
+     "HIP3821",
+     "HIP4422",
+     "HIP6686"
+    ]
+   ],
+   "meaning": "The Arrow",
+   "extraStars": {
+    "HIP4422": [
+     14.1665,
+     59.1811,
+     61.27,
+     4.62,
+     "Castula",
+     "G8III-IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'northern_andes' sky culture; see source for documentation."
+  },
+  {
+   "id": "northern-andes-northern-molestina-triangle",
+   "name": "Molestina Triangle",
+   "kind": "asterism",
+   "group": "Northern Andes",
+   "lines": [
+    [
+     "HIP80763",
+     "HIP97649",
+     "HIP91262",
+     "HIP80763"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'northern_andes' sky culture; see source for documentation."
+  },
+  {
+   "id": "northern-andes-northern-southern-cross",
+   "name": "Southern Cross",
+   "kind": "asterism",
+   "group": "Northern Andes",
+   "lines": [
+    [
+     "HIP60718",
+     "HIP62434",
+     "HIP61084",
+     "HIP59747",
+     "HIP60718"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'northern_andes' sky culture; see source for documentation."
+  },
+  {
+   "id": "northern-andes-northern-antonio-quinatoa-cross",
+   "name": "Antonio Quinatoa Cross",
+   "kind": "asterism",
+   "group": "Northern Andes",
+   "lines": [
+    [
+     "HIP37279",
+     "HIP32349",
+     "HIP24436",
+     "HIP27989",
+     "HIP37279"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'northern_andes' sky culture; see source for documentation."
+  }
+ ]
+}

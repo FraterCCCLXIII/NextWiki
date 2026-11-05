@@ -58,7 +58,7 @@ export function KosmoMenu({ siteLogo }: { siteLogo?: string | null }) {
   // the folder tree is big now (every catalogue object has a page), so fetch it only once the menu opens
   const { data: folders, isLoading } = useQuery({ ...trpc.wiki.getFolderStructure.queryOptions(), enabled: open });
   const contents = (folders?.children ?? []).slice(0, CONTENTS_LIMIT);
-  const mainGroups = NAV_GROUPS.filter((g) => g.name !== "Lab");
+  const mainGroups = NAV_GROUPS.filter((g) => g.name !== "Lab" && g.name !== "Listen");
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>

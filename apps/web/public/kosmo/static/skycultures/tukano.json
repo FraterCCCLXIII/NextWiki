@@ -1,0 +1,1213 @@
+{
+ "id": "tukano",
+ "name": "Tukano",
+ "region": "North-west Amazon",
+ "era": "Ethnographic",
+ "color": "#c9a227",
+ "description": "Tukano constellations compiled for Stellarium.",
+ "source": [
+  "Stellarium sky culture 'tukano' (https://github.com/Stellarium/stellarium/tree/master/skycultures/tukano); contributed by: #### SOME WORDS ABOUT OUR RESEARCH WITHIN NORTWESTERN AMAZONIAN INDIANS This work is part of an amount of researches developed as a survey, conducted between 2005 and 2007 that resulted in a doctoral/PhD thesis (Cardoso, 2007). Relying on Ethnomatematics sources (D’ambrosio, 2002), in practical sky ",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: tukano: CC BY-SA 4.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "tukano-tukano-a-a",
+   "name": "Aña",
+   "kind": "constellation",
+   "group": "Tukano",
+   "lines": [
+    [
+     "HIP78820",
+     "HIP78401",
+     "HIP78265"
+    ],
+    [
+     "HIP78401",
+     "HIP80112",
+     "HIP80763",
+     "HIP81266",
+     "HIP82396",
+     "HIP82514",
+     "HIP82729",
+     "HIP84143",
+     "HIP86228",
+     "HIP87073",
+     "HIP86670",
+     "HIP86170",
+     "HIP85696",
+     "HIP85927",
+     "HIP87261",
+     "HIP87073",
+     "HIP89642",
+     "HIP90185",
+     "HIP89931",
+     "HIP89678",
+     "HIP90496",
+     "HIP92041",
+     "HIP92855",
+     "HIP93864",
+     "HIP93506",
+     "HIP91918",
+     "HIP90968",
+     "HIP90887",
+     "HIP90982",
+     "HIP91494",
+     "HIP92382",
+     "HIP92953",
+     "HIP93542",
+     "HIP94005",
+     "HIP94160",
+     "HIP94114",
+     "HIP93825",
+     "HIP93174",
+     "HIP92989",
+     "HIP91875",
+     "HIP91989",
+     "HIP92226"
+    ]
+   ],
+   "meaning": "Fer-de-lance (snake)",
+   "extraStars": {
+    "HIP86170": [
+     264.1368,
+     -38.6353,
+     50.84,
+     4.26,
+     "HR 6546",
+     "G8/K0III/IV"
+    ],
+    "HIP87261": [
+     267.4645,
+     -37.0433,
+     38.58,
+     3.19,
+     "Fuyue",
+     "K0/K1III"
+    ],
+    "HIP89678": [
+     274.5133,
+     -27.0426,
+     233.64,
+     4.66,
+     "HR 6842",
+     "K3III"
+    ],
+    "HIP91918": [
+     281.0807,
+     -35.642,
+     143.06,
+     4.86,
+     "HR 7029",
+     "B2V"
+    ],
+    "HIP90968": [
+     278.3464,
+     -38.726,
+     298.51,
+     5.67,
+     "Kap1CrA",
+     "B9.5"
+    ],
+    "HIP90887": [
+     278.0889,
+     -39.704,
+     70.27,
+     5.16,
+     "HR 6942",
+     "A3V"
+    ],
+    "HIP91494": [
+     279.8965,
+     -43.1859,
+     196.08,
+     5.42,
+     "HR 6991",
+     "M2III"
+    ],
+    "HIP92953": [
+     284.0707,
+     -42.7107,
+     90.58,
+     5.35,
+     "HR 7122",
+     "G6III-IV"
+    ],
+    "HIP92989": [
+     284.1687,
+     -37.3432,
+     131.93,
+     5.36,
+     "HR 7129",
+     "B3V"
+    ],
+    "HIP91875": [
+     280.9456,
+     -38.3234,
+     62.93,
+     5.11,
+     "Lam CrA",
+     "A0/A1V"
+    ],
+    "HIP91989": [
+     281.2382,
+     -39.6862,
+     400.0,
+     5.4,
+     "HR 7031",
+     "K1/K2III+.."
+    ],
+    "HIP92226": [
+     281.9359,
+     -40.4062,
+     121.36,
+     5.2,
+     "Mu  CrA",
+     "G5/G6III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tukano' sky culture; see source for documentation."
+  },
+  {
+   "id": "tukano-tukano-pam",
+   "name": "Pamõ",
+   "kind": "constellation",
+   "group": "Tukano",
+   "lines": [
+    [
+     "HIP102532",
+     "HIP102281",
+     "HIP101769",
+     "HIP101958",
+     "HIP102532"
+    ],
+    [
+     "HIP101769",
+     "HIP101882"
+    ],
+    [
+     "HIP101769",
+     "HIP101589",
+     "HIP101483",
+     "HIP101421",
+     "HIP101800"
+    ],
+    [
+     "HIP101421",
+     "HIP101916"
+    ],
+    [
+     "HIP98036",
+     "HIP97649",
+     "HIP97278"
+    ]
+   ],
+   "meaning": "Armadillo",
+   "extraStars": {
+    "HIP101882": [
+     309.6833,
+     13.3151,
+     617.28,
+     5.69,
+     "8The Del",
+     "K3Ib"
+    ],
+    "HIP101800": [
+     309.4547,
+     11.3777,
+     57.94,
+     5.42,
+     "5Iot Del",
+     "A2V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tukano' sky culture; see source for documentation."
+  },
+  {
+   "id": "tukano-tukano-dahsiaw",
+   "name": "Dahsiaw",
+   "kind": "constellation",
+   "group": "Tukano",
+   "lines": [
+    [
+     "HIP115438",
+     "HIP115669",
+     "HIP116118",
+     "HIP116247",
+     "HIP116901",
+     "HIP117089",
+     "HIP117218",
+     "HIP117629",
+     "HIP301",
+     "HIP696",
+     "HIP983",
+     "HIP1170",
+     "HIP1402",
+     "HIP1728"
+    ],
+    [
+     "HIP116901",
+     "HIP116957",
+     "HIP116971",
+     "HIP116758",
+     "HIP116368"
+    ],
+    [
+     "HIP116758",
+     "HIP116591"
+    ]
+   ],
+   "meaning": "Caridean Shrimp",
+   "extraStars": {
+    "HIP115669": [
+     351.5116,
+     -20.642,
+     86.88,
+     4.38,
+     "99    Aqr",
+     "K4III"
+    ],
+    "HIP116118": [
+     352.9252,
+     -21.3695,
+     76.16,
+     6.24,
+     "100    Aqr",
+     "F0V"
+    ],
+    "HIP116247": [
+     353.3193,
+     -20.9145,
+     90.01,
+     4.7,
+     "101    Aqr",
+     "A0V"
+    ],
+    "HIP117089": [
+     356.0503,
+     -18.2769,
+     116.14,
+     5.24,
+     "106    Aqr",
+     "B9V"
+    ],
+    "HIP117218": [
+     356.5038,
+     -18.6783,
+     73.21,
+     5.28,
+     "107    Aqr",
+     "F2:V+..."
+    ],
+    "HIP117629": [
+     357.8389,
+     -18.9092,
+     97.75,
+     5.17,
+     "108    Aqr",
+     "Ap Si"
+    ],
+    "HIP301": [
+     0.935,
+     -17.336,
+     83.47,
+     4.55,
+     "2    Cet",
+     "B9IVn"
+    ],
+    "HIP696": [
+     2.1396,
+     -17.5782,
+     578.03,
+     6.11,
+     "HR 18",
+     "M0/M1IIICNp"
+    ],
+    "HIP983": [
+     3.0416,
+     -17.9383,
+     190.84,
+     5.29,
+     "HR 37",
+     "K4III"
+    ],
+    "HIP1170": [
+     3.6601,
+     -18.9329,
+     137.17,
+     4.44,
+     "7    Cet",
+     "M1III"
+    ],
+    "HIP1402": [
+     4.3863,
+     -19.0511,
+     48.5,
+     6.46,
+     "HR 66",
+     "F3V"
+    ],
+    "HIP1728": [
+     5.4428,
+     -20.058,
+     270.27,
+     5.61,
+     "HR 85",
+     "M5/M6Ib/II"
+    ],
+    "HIP116957": [
+     355.6159,
+     -15.448,
+     82.78,
+     5.27,
+     "HR 8987",
+     "K3III"
+    ],
+    "HIP116971": [
+     355.6806,
+     -14.5449,
+     45.54,
+     4.49,
+     "105Ome2Aqr",
+     "B9V"
+    ],
+    "HIP116758": [
+     354.9461,
+     -14.2222,
+     43.59,
+     4.97,
+     "102Ome1Aqr",
+     "A7IV"
+    ],
+    "HIP116368": [
+     353.7057,
+     -15.246,
+     113.9,
+     5.95,
+     "HR 8946",
+     "K4III"
+    ],
+    "HIP116591": [
+     354.4148,
+     -13.0602,
+     81.9,
+     5.66,
+     "HR 8958",
+     "K0III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tukano' sky culture; see source for documentation."
+  },
+  {
+   "id": "tukano-tukano-mhua",
+   "name": "Mhua",
+   "kind": "constellation",
+   "group": "Tukano",
+   "lines": [
+    [
+     "HIP114724",
+     "HIP114939",
+     "HIP114855",
+     "HIP115033",
+     "HIP115115"
+    ],
+    [
+     "HIP115033",
+     "HIP114939"
+    ]
+   ],
+   "meaning": "A kind of fish",
+   "extraStars": {
+    "HIP114724": [
+     348.5807,
+     -6.049,
+     61.96,
+     4.22,
+     "90Phi Aqr",
+     "M2III"
+    ],
+    "HIP114939": [
+     349.2123,
+     -7.7265,
+     187.97,
+     4.93,
+     "92Chi Aqr",
+     "M3III"
+    ],
+    "HIP114855": [
+     348.9729,
+     -9.0877,
+     45.93,
+     4.24,
+     "91Psi1Aqr",
+     "K0III"
+    ],
+    "HIP115115": [
+     349.7403,
+     -9.6107,
+     80.19,
+     4.99,
+     "95Psi3Aqr",
+     "A0V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tukano' sky culture; see source for documentation."
+  },
+  {
+   "id": "tukano-tukano-yai",
+   "name": "Yai",
+   "kind": "constellation",
+   "group": "Tukano",
+   "lines": [
+    [
+     "HIP17772",
+     "HIP18453",
+     "HIP19167",
+     "HIP20070",
+     "HIP19812",
+     "HIP19343",
+     "HIP18396",
+     "HIP17358",
+     "HIP16826",
+     "HIP16244",
+     "HIP15863",
+     "HIP15444",
+     "HIP15219",
+     "HIP15979",
+     "HIP16599",
+     "HIP16292",
+     "HIP16602",
+     "HIP16281",
+     "HIP16228"
+    ],
+    [
+     "HIP16292",
+     "HIP14328",
+     "HIP12692",
+     "HIP11279",
+     "HIP10729",
+     "HIP9990",
+     "HIP8886",
+     "HIP8626",
+     "HIP7965",
+     "HIP6692"
+    ],
+    [
+     "HIP8886",
+     "HIP6686",
+     "HIP4422",
+     "HIP4427",
+     "HIP4962",
+     "HIP5021",
+     "HIP4475",
+     "HIP4151",
+     "HIP4427",
+     "HIP2876",
+     "HIP746",
+     "HIP518"
+    ],
+    [
+     "HIP746",
+     "HIP117863"
+    ],
+    [
+     "HIP746",
+     "HIP117301"
+    ],
+    [
+     "HIP746",
+     "HIP43"
+    ],
+    [
+     "HIP746",
+     "HIP3179",
+     "HIP2611",
+     "HIP2505",
+     "HIP2920",
+     "HIP3544",
+     "HIP3179",
+     "HIP3821",
+     "HIP4422"
+    ],
+    [
+     "HIP3821",
+     "HIP5251",
+     "HIP6371",
+     "HIP7607",
+     "HIP10814",
+     "HIP13339",
+     "HIP13965",
+     "HIP14544",
+     "HIP16335",
+     "HIP17358"
+    ]
+   ],
+   "meaning": "Puma or Jaguar",
+   "extraStars": {
+    "HIP17772": [
+     57.0753,
+     50.7368,
+     250.63,
+     6.18,
+     "HR 1160",
+     "B8Vn"
+    ],
+    "HIP18453": [
+     59.1521,
+     50.6954,
+     37.44,
+     5.28,
+     "43    Per",
+     "F5IV"
+    ],
+    "HIP20070": [
+     64.5608,
+     50.2955,
+     96.15,
+     4.6,
+     "HR 1324",
+     "A2V"
+    ],
+    "HIP18396": [
+     58.9924,
+     47.8714,
+     223.71,
+     5.39,
+     "HR 1207",
+     "B6V"
+    ],
+    "HIP16244": [
+     52.3418,
+     49.5089,
+     165.29,
+     4.67,
+     "34    Per",
+     "B3V"
+    ],
+    "HIP15444": [
+     49.7818,
+     50.095,
+     171.82,
+     5.05,
+     "31    Per",
+     "B5V"
+    ],
+    "HIP15219": [
+     49.0509,
+     50.9377,
+     242.13,
+     5.04,
+     "HR 969",
+     "G5II"
+    ],
+    "HIP15979": [
+     51.4495,
+     53.9215,
+     80.91,
+     6.51,
+     "HR 1020",
+     "A9III-IV"
+    ],
+    "HIP16599": [
+     53.4128,
+     54.9749,
+     74.4,
+     5.98,
+     "HR 1073",
+     "A3V"
+    ],
+    "HIP16292": [
+     52.5009,
+     55.4518,
+     60.9,
+     5.09,
+     "HR 1046",
+     "A1V"
+    ],
+    "HIP16602": [
+     53.4218,
+     57.8687,
+     66.93,
+     6.37,
+     "HR 1071",
+     "F7V"
+    ],
+    "HIP12692": [
+     40.7618,
+     55.106,
+     132.28,
+     5.76,
+     "11    Per",
+     "B7IIIp..."
+    ],
+    "HIP11279": [
+     36.3168,
+     56.6098,
+     null,
+     6.25,
+     "10    Per",
+     "B2Ia"
+    ],
+    "HIP10729": [
+     34.5191,
+     57.5163,
+     251.26,
+     5.99,
+     "7    Per",
+     "G7III"
+    ],
+    "HIP9990": [
+     32.1691,
+     58.4236,
+     null,
+     5.66,
+     "HR 618",
+     "A1Ia"
+    ],
+    "HIP8626": [
+     27.8205,
+     64.855,
+     null,
+     6.54,
+     "HIP 8626",
+     "K5Ia0-a..."
+    ],
+    "HIP7965": [
+     25.5853,
+     68.043,
+     119.19,
+     5.57,
+     "43    Cas",
+     "A0p SiSr"
+    ],
+    "HIP6692": [
+     21.4831,
+     68.13,
+     59.81,
+     4.72,
+     "36Psi Cas",
+     "K0III"
+    ],
+    "HIP4422": [
+     14.1665,
+     59.1811,
+     61.27,
+     4.62,
+     "Castula",
+     "G8III-IV"
+    ],
+    "HIP4962": [
+     15.9042,
+     61.0748,
+     613.5,
+     5.92,
+     "HR 292",
+     "F0II"
+    ],
+    "HIP5021": [
+     16.0813,
+     61.5802,
+     80.78,
+     5.83,
+     "HR 297",
+     "F6V"
+    ],
+    "HIP4475": [
+     14.3315,
+     61.4219,
+     198.81,
+     6.44,
+     "HIP 4475",
+     "G8IV"
+    ],
+    "HIP4151": [
+     13.2677,
+     61.124,
+     18.74,
+     4.8,
+     "HR 244",
+     "F8V"
+    ],
+    "HIP2876": [
+     9.1139,
+     60.3262,
+     null,
+     5.78,
+     "HR 146",
+     "A4III"
+    ],
+    "HIP518": [
+     1.5653,
+     58.4367,
+     21.48,
+     5.98,
+     "HR 5",
+     "G5V"
+    ],
+    "HIP117863": [
+     358.596,
+     57.4994,
+     null,
+     4.51,
+     "7Rho Cas",
+     "F8Iavar"
+    ],
+    "HIP117301": [
+     356.7643,
+     58.652,
+     53.33,
+     4.88,
+     "5Tau Cas",
+     "K1III"
+    ],
+    "HIP43": [
+     0.1289,
+     59.5597,
+     136.24,
+     6.18,
+     "HR 9079",
+     "G9III-IV"
+    ],
+    "HIP2611": [
+     8.2932,
+     54.895,
+     114.16,
+     5.93,
+     "HR 135",
+     "K0III"
+    ],
+    "HIP2505": [
+     7.9431,
+     54.5223,
+     115.74,
+     4.74,
+     "14Lam Cas",
+     "B8Vn"
+    ],
+    "HIP3544": [
+     11.3216,
+     55.2214,
+     98.81,
+     5.41,
+     "HR 196",
+     "A2Vs"
+    ],
+    "HIP5251": [
+     16.7894,
+     53.4982,
+     512.82,
+     6.31,
+     "HR 318",
+     "K0"
+    ],
+    "HIP6371": [
+     20.4664,
+     50.122,
+     null,
+     6.54,
+     "HIP 6371",
+     "K0"
+    ],
+    "HIP10814": [
+     34.7951,
+     46.4723,
+     136.61,
+     6.21,
+     "HR 671",
+     "A4V"
+    ],
+    "HIP13339": [
+     42.9239,
+     46.8419,
+     119.9,
+     5.86,
+     "HR 842",
+     "G8III"
+    ],
+    "HIP13965": [
+     44.9575,
+     47.2207,
+     156.49,
+     5.47,
+     "HR 885",
+     "G4p"
+    ],
+    "HIP14544": [
+     46.9473,
+     47.3087,
+     82.1,
+     6.38,
+     "HR 933",
+     "A3Vnn"
+    ],
+    "HIP16335": [
+     52.6437,
+     47.9952,
+     110.25,
+     4.36,
+     "35Sig Per",
+     "K3III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tukano' sky culture; see source for documentation."
+  },
+  {
+   "id": "tukano-tukano-nhorkoatero",
+   "name": "Nhorkoatero",
+   "kind": "constellation",
+   "group": "Tukano",
+   "lines": [
+    [
+     "HIP17847",
+     "HIP17702",
+     "HIP17608",
+     "HIP17499",
+     "HIP17489",
+     "HIP17531",
+     "HIP17579",
+     "HIP17573",
+     "HIP17702"
+    ]
+   ],
+   "meaning": "Group of Stars",
+   "extraStars": {
+    "HIP17608": [
+     56.5816,
+     23.9484,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17489": [
+     56.2009,
+     24.2895,
+     115.61,
+     5.45,
+     "Celaeno",
+     "B7IV"
+    ],
+    "HIP17531": [
+     56.3021,
+     24.4673,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ],
+    "HIP17579": [
+     56.477,
+     24.5545,
+     114.03,
+     5.76,
+     "Asterope",
+     "B8V"
+    ],
+    "HIP17573": [
+     56.4567,
+     24.3677,
+     117.51,
+     3.87,
+     "Maia",
+     "B8III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tukano' sky culture; see source for documentation."
+  },
+  {
+   "id": "tukano-tukano-waikasa",
+   "name": "Waikasa",
+   "kind": "constellation",
+   "group": "Tukano",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP20885",
+     "HIP20205",
+     "HIP20455",
+     "HIP20889"
+    ]
+   ],
+   "meaning": "A kind of grill to cook fish",
+   "extraStars": {
+    "HIP20885": [
+     67.1437,
+     15.9622,
+     47.33,
+     3.84,
+     "77The1Tau",
+     "G7III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tukano' sky culture; see source for documentation."
+  },
+  {
+   "id": "tukano-tukano-sioyahpu",
+   "name": "Sioyahpu",
+   "kind": "constellation",
+   "group": "Tukano",
+   "lines": [
+    [
+     "HIP25930",
+     "HIP26311",
+     "HIP26727",
+     "HIP26885",
+     "HIP27989",
+     "HIP25336",
+     "HIP26594",
+     "HIP26885"
+    ]
+   ],
+   "meaning": "Adze Handle",
+   "extraStars": {
+    "HIP26885": [
+     85.6193,
+     1.4746,
+     90.01,
+     4.9,
+     "51    Ori",
+     "K1III"
+    ],
+    "HIP26594": [
+     84.7964,
+     4.1215,
+     423.73,
+     4.5,
+     "47Ome Ori",
+     "B3IIIe"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tukano' sky culture; see source for documentation."
+  },
+  {
+   "id": "tukano-tukano-yh",
+   "name": "Yhé",
+   "kind": "constellation",
+   "group": "Tukano",
+   "lines": [
+    [
+     "HIP61418",
+     "HIP62356",
+     "HIP61724",
+     "HIP62886",
+     "HIP63948"
+    ],
+    [
+     "HIP61724",
+     "HIP60957",
+     "HIP60202"
+    ],
+    [
+     "HIP60957",
+     "HIP61420",
+     "HIP61724",
+     "HIP61719",
+     "HIP62886"
+    ],
+    [
+     "HIP61719",
+     "HIP61295",
+     "HIP61071",
+     "HIP60941",
+     "HIP61420"
+    ],
+    [
+     "HIP60941",
+     "HIP60351",
+     "HIP60170"
+    ],
+    [
+     "HIP60351",
+     "HIP60514"
+    ],
+    [
+     "HIP60351",
+     "HIP60066"
+    ],
+    [
+     "HIP61071",
+     "HIP60904",
+     "HIP60746",
+     "HIP60697",
+     "HIP60742"
+    ]
+   ],
+   "meaning": "Egret",
+   "extraStars": {
+    "HIP61418": [
+     188.7823,
+     18.3771,
+     138.12,
+     5.03,
+     "24    Com",
+     "K2III"
+    ],
+    "HIP62356": [
+     191.6615,
+     16.5777,
+     104.17,
+     5.12,
+     "27    Com",
+     "K3III"
+    ],
+    "HIP61724": [
+     189.7805,
+     21.0626,
+     83.82,
+     5.49,
+     "26    Com",
+     "G9III"
+    ],
+    "HIP63948": [
+     196.5885,
+     21.1534,
+     49.68,
+     6.0,
+     "39    Com",
+     "F4V"
+    ],
+    "HIP60957": [
+     187.4302,
+     20.8961,
+     84.03,
+     5.68,
+     "20    Com",
+     "A3V"
+    ],
+    "HIP61420": [
+     188.784,
+     21.8814,
+     195.69,
+     5.86,
+     "HR 4793",
+     "K1III"
+    ],
+    "HIP61719": [
+     189.7591,
+     22.6595,
+     133.16,
+     6.39,
+     "HR 4812",
+     "K1III"
+    ],
+    "HIP61295": [
+     188.3926,
+     24.283,
+     89.05,
+     6.28,
+     "22    Com",
+     "A4V"
+    ],
+    "HIP61071": [
+     187.7523,
+     24.5672,
+     82.71,
+     5.47,
+     "21    Com",
+     "A2pvar"
+    ],
+    "HIP60941": [
+     187.3627,
+     24.1089,
+     61.61,
+     5.47,
+     "18    Com",
+     "F5III"
+    ],
+    "HIP60170": [
+     185.082,
+     26.6195,
+     49.36,
+     5.52,
+     "HR 4693",
+     "K2III-IV"
+    ],
+    "HIP60514": [
+     186.0772,
+     26.0986,
+     81.1,
+     5.17,
+     "13    Com",
+     "A3V"
+    ],
+    "HIP60066": [
+     184.7584,
+     26.0083,
+     85.69,
+     6.44,
+     "HR 4684",
+     "Am"
+    ],
+    "HIP60904": [
+     187.2279,
+     25.9129,
+     72.89,
+     5.29,
+     "17    Com",
+     "A0p"
+    ],
+    "HIP60746": [
+     186.7471,
+     26.8257,
+     85.18,
+     4.98,
+     "16    Com",
+     "A4V"
+    ],
+    "HIP60697": [
+     186.6003,
+     27.2682,
+     84.6,
+     4.92,
+     "14    Com",
+     "F0p"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'tukano' sky culture; see source for documentation."
+  },
+  {
+   "id": "tukano-tukano-yurara",
+   "name": "Yurara",
+   "kind": "constellation",
+   "group": "Tukano",
+   "lines": [
+    [
+     "HIP60718",
+     "HIP62434",
+     "HIP61084",
+     "HIP59747",
+     "HIP60718"
+    ]
+   ],
+   "meaning": "Tortoise",
+   "story": "Line pattern from the Stellarium 'tukano' sky culture; see source for documentation."
+  },
+  {
+   "id": "tukano-tukano-sip-phair",
+   "name": "Sipé Phairó",
+   "kind": "constellation",
+   "group": "Tukano",
+   "lines": [
+    [
+     "HIP54061",
+     "HIP53910",
+     "HIP58001",
+     "HIP59774",
+     "HIP62956",
+     "HIP65378",
+     "HIP67301"
+    ]
+   ],
+   "meaning": "Snake Large Anus",
+   "story": "Line pattern from the Stellarium 'tukano' sky culture; see source for documentation."
+  }
+ ]
+}

@@ -49,5 +49,10 @@ for (const [site, reserve] of [['rtls', 90000], ['downrange', 55000]]) {
   const s = flight(cfg), L = s.outcome.landings;
   check('full mission: orbit, booster landing, dock, return, capsule landing', !!s.outcome.orbit?.ok && !!s.outcome.docked?.ok && L.length === 2 && L.every(x => x.ok), L.map(x => `${x.name} ${x.speed.toFixed(1)} m/s`).join(', ')); }
 
+// 7. release from a balloon at 30 km carries a payload the pad launch cannot
+{ const mk = release => ({ world: 'earth', stages: [{ name: 'S1', engine: 'merlin-1d', count: 1, prop: 40000, diameter: 2 }, { name: 'S2', engine: 'merlin-vac', count: 1, prop: 8000, diameter: 2 }], payload: { mass: 2400, fairing: 60 }, mission: { orbitAlt: 250e3, release, kickSpeed: release ? 15 : 45 } });
+  const run = release => { const c = mk(release); c.mission.kickDeg = tuneAscent(c, { lo: 1, hi: 14 }).kickDeg; return flight(c, 3000).outcome.orbit?.ok; };
+  check('2.4 t: pad launch fails, 30 km balloon release reaches orbit', !run(null) && !!run({ alt: 30e3, speed: 0 })); }
+
 console.log(failed ? `\n${failed} check(s) failed` : '\nall checks passed');
 process.exit(failed ? 1 : 0);

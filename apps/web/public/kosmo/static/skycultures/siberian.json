@@ -1,0 +1,141 @@
+{
+ "id": "siberian",
+ "name": "Siberian (Russia)",
+ "region": "Northern Asia",
+ "era": "Ethnographic",
+ "color": "#b8a1e3",
+ "description": "Star groups of Siberian peoples compiled for Stellarium.",
+ "source": [
+  "Stellarium sky culture 'russian_siberian' (https://github.com/Stellarium/stellarium/tree/master/skycultures/russian_siberian); contributed by: Alexander Wolf",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: russian_siberian: CC BY-SA 4.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "siberian-russian-elk",
+   "name": "Elk",
+   "kind": "constellation",
+   "group": "Siberian",
+   "lines": [
+    [
+     "HIP67301",
+     "HIP65378",
+     "HIP62956",
+     "HIP59774",
+     "HIP58001",
+     "HIP53910",
+     "HIP54061",
+     "HIP59774"
+    ]
+   ],
+   "native": "Лось",
+   "story": "Line pattern from the Stellarium 'russian_siberian' sky culture; see source for documentation."
+  },
+  {
+   "id": "siberian-russian-threshers",
+   "name": "Threshers",
+   "kind": "constellation",
+   "group": "Siberian",
+   "lines": [
+    [
+     "HIP26241",
+     "HIP26268",
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ]
+   ],
+   "native": "Кичиги",
+   "extraStars": {
+    "HIP26268": [
+     83.9145,
+     -4.8561,
+     110.25,
+     5.24,
+     "45    Ori",
+     "F0III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'russian_siberian' sky culture; see source for documentation."
+  },
+  {
+   "id": "siberian-russian-duck-nest",
+   "name": "Duck Nest",
+   "kind": "constellation",
+   "group": "Siberian",
+   "lines": [
+    [
+     "HIP17499",
+     "HIP17489",
+     "HIP17531",
+     "HIP17579",
+     "HIP17664",
+     "HIP17851",
+     "HIP17847",
+     "HIP17608",
+     "HIP17499"
+    ]
+   ],
+   "native": "Утиное гнездо",
+   "extraStars": {
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17489": [
+     56.2009,
+     24.2895,
+     115.61,
+     5.45,
+     "Celaeno",
+     "B7IV"
+    ],
+    "HIP17531": [
+     56.3021,
+     24.4673,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ],
+    "HIP17579": [
+     56.477,
+     24.5545,
+     114.03,
+     5.76,
+     "Asterope",
+     "B8V"
+    ],
+    "HIP17664": [
+     56.7475,
+     24.5201,
+     130.55,
+     6.83,
+     "HIP 17664",
+     "B9.5V"
+    ],
+    "HIP17851": [
+     57.2967,
+     24.1367,
+     117.1,
+     5.05,
+     "Pleione",
+     "B7p"
+    ],
+    "HIP17608": [
+     56.5816,
+     23.9484,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'russian_siberian' sky culture; see source for documentation."
+  }
+ ]
+}

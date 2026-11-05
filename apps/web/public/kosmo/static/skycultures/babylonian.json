@@ -1,0 +1,627 @@
+{
+ "id": "babylonian",
+ "name": "Babylonian",
+ "region": "Mesopotamia",
+ "era": "c. 1200 - 300 BCE",
+ "color": "#a78bfa",
+ "description": "Constellations of the Babylonian MUL.APIN star catalogue, including the Moon-path stations that preceded the zodiac.",
+ "source": [
+  "Wikipedia, \"Babylonian star catalogues\" (Zodiacal constellations table) https://en.wikipedia.org/wiki/Babylonian_star_catalogues",
+  "Wikipedia, \"MUL.APIN\" https://en.wikipedia.org/wiki/MUL.APIN (sources: Hunger & Pingree 1989; Hoffmann 2017; Rogers 1998)",
+  "Figures reuse the IAU constellation stick figures in constellations.json (d3-celestial, BSD-3-Clause; HYG, CC BY-SA 4.0); extra stars from HYG v4.1"
+ ],
+ "license": "Wikipedia text: CC BY-SA 4.0; HYG v4.1 data CC BY-SA 4.0. Stellarium has no Babylonian sky culture. Omissions: the Three Ways of Enlil/Anu/Ea are declination bands (>+17, +-17, <-17 deg) without star figures, so they are not drawn; Tails/Great Swallow/Anunitu are only partly identified and skipped.",
+ "figures": [
+  {
+   "id": "babylonian-pleiades",
+   "name": "Pleiades",
+   "native": "MUL.MUL",
+   "romanized": "MUL.MUL",
+   "meaning": "Pleiades",
+   "kind": "constellation",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP17702",
+     "HIP17847",
+     "HIP17851",
+     "HIP17608",
+     "HIP17499",
+     "HIP17531",
+     "HIP17573",
+     "HIP17579"
+    ]
+   ],
+   "iau": [
+    "Tau"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as MUL.MUL, identified with \"The Star Cluster (Star of Stars)\". Marker lines connect the identified stars.",
+   "extraStars": {
+    "HIP17579": [
+     56.47698,
+     24.55451,
+     114.03,
+     5.76,
+     "Asterope",
+     "B8V"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.11334,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17851": [
+     57.29673,
+     24.13671,
+     117.1,
+     5.05,
+     "Pleione",
+     "B7p"
+    ],
+    "HIP17608": [
+     56.58156,
+     23.94836,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ],
+    "HIP17573": [
+     56.45669,
+     24.36775,
+     117.51,
+     3.87,
+     "Maia",
+     "B8III"
+    ],
+    "HIP17531": [
+     56.30205,
+     24.46728,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ]
+   }
+  },
+  {
+   "id": "babylonian-bull-of-heaven",
+   "name": "Bull of Heaven",
+   "native": "GU4.AN.NA",
+   "romanized": "alû",
+   "meaning": "Bull of Heaven",
+   "kind": "zodiac",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP26451",
+     "HIP21421",
+     "HIP20894",
+     "HIP20205",
+     "HIP20455",
+     "HIP20889",
+     "HIP25428"
+    ],
+    [
+     "HIP20205",
+     "HIP18724",
+     "HIP16083",
+     "HIP18907"
+    ],
+    [
+     "HIP16083",
+     "HIP15900",
+     "HIP16852"
+    ]
+   ],
+   "iau": [
+    "Tau"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as GU4.AN.NA, identified with Taurus and Hyades. Lines are borrowed from the modern constellation of the identification; the Babylonian outline itself is not recorded, so treat it as an approximation of the star area."
+  },
+  {
+   "id": "babylonian-loyal-shepherd-of-heaven",
+   "name": "Loyal Shepherd of Heaven",
+   "native": "SIPA.ZI.AN.NA",
+   "romanized": "šitaddaru",
+   "meaning": "Loyal Shepherd of Heaven",
+   "kind": "constellation",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP29038",
+     "HIP27913",
+     "HIP28716",
+     "HIP29426",
+     "HIP28614",
+     "HIP27989",
+     "HIP25336",
+     "HIP22845"
+    ],
+    [
+     "HIP23123",
+     "HIP22797",
+     "HIP22549",
+     "HIP22449",
+     "HIP22509",
+     "HIP22845",
+     "HIP22957",
+     "HIP23607",
+     "HIP24010"
+    ],
+    [
+     "HIP24436",
+     "HIP25281",
+     "HIP25930",
+     "HIP25336",
+     "HIP26207",
+     "HIP27989",
+     "HIP26727",
+     "HIP27366"
+    ],
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ]
+   ],
+   "iau": [
+    "Ori"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as SIPA.ZI.AN.NA, identified with Orion. Lines are borrowed from the modern constellation of the identification; the Babylonian outline itself is not recorded, so treat it as an approximation of the star area."
+  },
+  {
+   "id": "babylonian-the-old-one",
+   "name": "The Old One",
+   "native": "ŠU.GI",
+   "romanized": "šību",
+   "meaning": "The Old One",
+   "kind": "constellation",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP17448",
+     "HIP18246",
+     "HIP18614",
+     "HIP18532",
+     "HIP17529",
+     "HIP17358",
+     "HIP16826",
+     "HIP15863",
+     "HIP14328",
+     "HIP13268",
+     "HIP13531",
+     "HIP14632",
+     "HIP14668",
+     "HIP14576",
+     "HIP14817",
+     "HIP14354",
+     "HIP13879",
+     "HIP13949",
+     "HIP14576"
+    ],
+    [
+     "HIP19167",
+     "HIP19812",
+     "HIP19343",
+     "HIP17358"
+    ],
+    [
+     "HIP14632",
+     "HIP12777",
+     "HIP8068"
+    ]
+   ],
+   "iau": [
+    "Per"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as ŠU.GI, identified with Perseus. Lines are borrowed from the modern constellation of the identification; the Babylonian outline itself is not recorded, so treat it as an approximation of the star area."
+  },
+  {
+   "id": "babylonian-the-scimitar",
+   "name": "The Scimitar",
+   "native": "GAM",
+   "romanized": "gamlu",
+   "meaning": "The Scimitar",
+   "kind": "constellation",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP28360",
+     "HIP24608",
+     "HIP23767",
+     "HIP23015",
+     "HIP25428",
+     "HIP28380",
+     "HIP28360",
+     "HIP28358",
+     "HIP24608",
+     "HIP23416",
+     "HIP23453"
+    ]
+   ],
+   "iau": [
+    "Aur"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as GAM, identified with Auriga. Lines are borrowed from the modern constellation of the identification; the Babylonian outline itself is not recorded, so treat it as an approximation of the star area."
+  },
+  {
+   "id": "babylonian-the-great-twins",
+   "name": "The Great Twins",
+   "native": "MAŠ.TAB.BA.GAL.GAL",
+   "romanized": "māšu",
+   "meaning": "The Great Twins",
+   "kind": "zodiac",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP29655",
+     "HIP30343",
+     "HIP32246",
+     "HIP34693",
+     "HIP36850",
+     "HIP37826",
+     "HIP36962",
+     "HIP35550",
+     "HIP34088",
+     "HIP31681",
+     "HIP32362"
+    ],
+    [
+     "HIP35550",
+     "HIP35350"
+    ]
+   ],
+   "iau": [
+    "Gem"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as MAŠ.TAB.BA.GAL.GAL, identified with Gemini. Lines are borrowed from the modern constellation of the identification; the Babylonian outline itself is not recorded, so treat it as an approximation of the star area."
+  },
+  {
+   "id": "babylonian-the-crayfish",
+   "name": "The Crayfish",
+   "native": "AL.LUL",
+   "romanized": "alluttu",
+   "meaning": "The Crayfish",
+   "kind": "zodiac",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP44066",
+     "HIP42911",
+     "HIP42806",
+     "HIP43100"
+    ],
+    [
+     "HIP42911",
+     "HIP40526"
+    ]
+   ],
+   "iau": [
+    "Cnc"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as AL.LUL, identified with Cancer. Lines are borrowed from the modern constellation of the identification; the Babylonian outline itself is not recorded, so treat it as an approximation of the star area."
+  },
+  {
+   "id": "babylonian-the-lion",
+   "name": "The Lion",
+   "native": "UR.GU.LA",
+   "romanized": "urgulû",
+   "meaning": "The Lion",
+   "kind": "zodiac",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP49669",
+     "HIP49583",
+     "HIP50583",
+     "HIP54872",
+     "HIP57632",
+     "HIP54879",
+     "HIP49669"
+    ],
+    [
+     "HIP50583",
+     "HIP50335",
+     "HIP48455",
+     "HIP47908"
+    ]
+   ],
+   "iau": [
+    "Leo"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as UR.GU.LA, identified with Leo. Lines are borrowed from the modern constellation of the identification; the Babylonian outline itself is not recorded, so treat it as an approximation of the star area."
+  },
+  {
+   "id": "babylonian-the-seed-furrow",
+   "name": "The Seed-Furrow",
+   "native": "ABSIN",
+   "romanized": "absinnu",
+   "meaning": "The Seed-Furrow",
+   "kind": "zodiac",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP57380",
+     "HIP57757",
+     "HIP60129",
+     "HIP61941",
+     "HIP64238",
+     "HIP65474",
+     "HIP69701",
+     "HIP71957"
+    ],
+    [
+     "HIP63608",
+     "HIP63090",
+     "HIP61941"
+    ],
+    [
+     "HIP64238",
+     "HIP66249",
+     "HIP68520",
+     "HIP72220"
+    ]
+   ],
+   "iau": [
+    "Vir"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as ABSIN, identified with Virgo. Lines are borrowed from the modern constellation of the identification; the Babylonian outline itself is not recorded, so treat it as an approximation of the star area."
+  },
+  {
+   "id": "babylonian-the-scales",
+   "name": "The Scales",
+   "native": "ZI.BA.AN.NA",
+   "romanized": "zibānītu",
+   "meaning": "The Scales",
+   "kind": "zodiac",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP73714",
+     "HIP72622",
+     "HIP74785",
+     "HIP76333",
+     "HIP76470",
+     "HIP76600"
+    ],
+    [
+     "HIP72622",
+     "HIP76333"
+    ]
+   ],
+   "iau": [
+    "Lib"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as ZI.BA.AN.NA, identified with Libra. Lines are borrowed from the modern constellation of the identification; the Babylonian outline itself is not recorded, so treat it as an approximation of the star area."
+  },
+  {
+   "id": "babylonian-the-scorpion",
+   "name": "The Scorpion",
+   "native": "GIR.TAB",
+   "romanized": "zuqaqīpu",
+   "meaning": "The Scorpion",
+   "kind": "zodiac",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP78265",
+     "HIP78401",
+     "HIP78820"
+    ],
+    [
+     "HIP78401",
+     "HIP80112",
+     "HIP80763",
+     "HIP81266",
+     "HIP82396",
+     "HIP82514",
+     "HIP82729",
+     "HIP84143",
+     "HIP86228",
+     "HIP87073",
+     "HIP86670",
+     "HIP85927"
+    ]
+   ],
+   "iau": [
+    "Sco"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as GIR.TAB, identified with Scorpius. Lines are borrowed from the modern constellation of the identification; the Babylonian outline itself is not recorded, so treat it as an approximation of the star area."
+  },
+  {
+   "id": "babylonian-the-god-pabilsag",
+   "name": "The God Pabilsag",
+   "native": "PA.BIL.SAG",
+   "romanized": "pabilsaĝ",
+   "meaning": "The God Pabilsag",
+   "kind": "zodiac",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP89642",
+     "HIP90185",
+     "HIP89931",
+     "HIP90496",
+     "HIP89341"
+    ],
+    [
+     "HIP95241",
+     "HIP95347",
+     "HIP93506",
+     "HIP92041",
+     "HIP90496"
+    ],
+    [
+     "HIP98032",
+     "HIP98412",
+     "HIP98066",
+     "HIP96465",
+     "HIP95477",
+     "HIP94643",
+     "HIP92855",
+     "HIP92041",
+     "HIP89931",
+     "HIP88635",
+     "HIP90185",
+     "HIP93506",
+     "HIP93864",
+     "HIP92855",
+     "HIP93683",
+     "HIP94141",
+     "HIP94820",
+     "HIP95168",
+     "HIP95176"
+    ],
+    [
+     "HIP93683",
+     "HIP93085",
+     "HIP92761",
+     "HIP92855"
+    ]
+   ],
+   "iau": [
+    "Sgr"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as PA.BIL.SAG, identified with Sagittarius. Lines are borrowed from the modern constellation of the identification; the Babylonian outline itself is not recorded, so treat it as an approximation of the star area."
+  },
+  {
+   "id": "babylonian-the-goat-fish",
+   "name": "The Goat-Fish",
+   "native": "SUḪUR.MAŠ",
+   "romanized": "suḫurmāšu",
+   "meaning": "The Goat-Fish",
+   "kind": "zodiac",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP100027",
+     "HIP100345",
+     "HIP101027",
+     "HIP102485",
+     "HIP102978",
+     "HIP105881",
+     "HIP107556",
+     "HIP106985",
+     "HIP105515",
+     "HIP104139",
+     "HIP100027"
+    ]
+   ],
+   "iau": [
+    "Cap"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as SUḪUR.MAŠ, identified with Capricornus. Lines are borrowed from the modern constellation of the identification; the Babylonian outline itself is not recorded, so treat it as an approximation of the star area."
+  },
+  {
+   "id": "babylonian-the-great-one",
+   "name": "The Great One",
+   "native": "GU.LA",
+   "romanized": "ṣinundu",
+   "meaning": "The Great One",
+   "kind": "zodiac",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP102618",
+     "HIP103045",
+     "HIP106278",
+     "HIP109074",
+     "HIP110395",
+     "HIP110960",
+     "HIP111497",
+     "HIP112961",
+     "HIP115033",
+     "HIP114341"
+    ],
+    [
+     "HIP106278",
+     "HIP109139"
+    ],
+    [
+     "HIP109074",
+     "HIP110003"
+    ],
+    [
+     "HIP110960",
+     "HIP110672"
+    ],
+    [
+     "HIP115438",
+     "HIP115033",
+     "HIP116901"
+    ]
+   ],
+   "iau": [
+    "Aqr"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as GU.LA, identified with Aquarius. Lines are borrowed from the modern constellation of the identification; the Babylonian outline itself is not recorded, so treat it as an approximation of the star area."
+  },
+  {
+   "id": "babylonian-the-farm-worker",
+   "name": "The Farm Worker",
+   "native": "LU2.ḪUN.GA2",
+   "romanized": "agru",
+   "meaning": "The Farm Worker",
+   "kind": "zodiac",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP13209",
+     "HIP9884",
+     "HIP8903",
+     "HIP8832"
+    ]
+   ],
+   "iau": [
+    "Ari"
+   ],
+   "story": "Listed in the Babylonian \"Path of the Moon\" (MUL.APIN, c. 1000 BCE) as LU2.ḪUN.GA2, identified with Aries. Lines are borrowed from the modern constellation of the identification; the Babylonian outline itself is not recorded, so treat it as an approximation of the star area."
+  },
+  {
+   "id": "babylonian-the-field",
+   "name": "The Field",
+   "native": "IKU",
+   "romanized": "ikû",
+   "meaning": "The Field",
+   "kind": "constellation",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP113881",
+     "HIP113963",
+     "HIP1067",
+     "HIP677",
+     "HIP113881"
+    ]
+   ],
+   "iau": [
+    "Peg",
+    "And"
+   ],
+   "story": "Babylonian constellation IKU, identified with Pegasus (Great Square) in the literature. Marker lines connect the identified stars."
+  },
+  {
+   "id": "babylonian-the-arrow",
+   "name": "The Arrow",
+   "native": "KAK.SI.SA2",
+   "romanized": "šukudu",
+   "meaning": "The Arrow",
+   "kind": "constellation",
+   "group": "MUL.APIN",
+   "lines": [
+    [
+     "HIP32349",
+     "HIP32349"
+    ]
+   ],
+   "iau": [
+    "CMa"
+   ],
+   "story": "Babylonian constellation KAK.SI.SA2, identified with Sirius in the literature. Marker lines connect the identified stars."
+  }
+ ]
+}

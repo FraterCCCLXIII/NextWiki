@@ -1,0 +1,761 @@
+{
+ "id": "indian",
+ "name": "Indian (Vedic)",
+ "region": "South Asia",
+ "era": "c. 1500 BCE - present",
+ "color": "#ff9f43",
+ "description": "The 27/28 nakshatras (lunar mansions) of Vedic astronomy with their junction stars (yogataras), plus the Saptarshi sages and the Pole Star Dhruva.",
+ "source": [
+  "Stellarium sky cultures (github.com/Stellarium/stellarium-skycultures) - indian/index.json and description.md (authors: Tanmoy Saha, Vishvas Vasuki and the sanskrit-coders community; reworked by Susanne M. Hoffmann)",
+  "Nakshatra: https://en.wikipedia.org/wiki/Nakshatra (cited by Stellarium for the mansions)",
+  "Stars not in constellations.json taken from HYG v4.1 (github.com/astronexus/HYG-Database)"
+ ],
+ "license": "CC BY-SA 4.0 (Stellarium indian sky culture: \"CC BY-SA\"; share-alike applies). HYG v4.1 data: CC BY-SA 4.0. Omission: the twelve Rashi (sidereal zodiac signs) are 30-degree sectors with no star figures in any source, so none are included.",
+ "figures": [
+  {
+   "id": "indian-nakshatra-01",
+   "name": "Aśvinī",
+   "native": "अश्विनी",
+   "romanized": "Aśvinī",
+   "meaning": "Twin physicians of Gods",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP8832",
+     "HIP8903"
+    ]
+   ],
+   "iau": [
+    "Ari"
+   ],
+   "story": "Nakshatra 1 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-02",
+   "name": "Bharaṇī",
+   "native": "भरणी",
+   "romanized": "Bharaṇī",
+   "meaning": "She who bears",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP12719",
+     "HIP13061",
+     "HIP13209"
+    ]
+   ],
+   "iau": [
+    "Ari"
+   ],
+   "story": "Nakshatra 2 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-03",
+   "name": "Kṛttikā",
+   "native": "कृत्तिका",
+   "romanized": "Kṛttikā",
+   "meaning": "Nurses of kartiikeya",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP17851",
+     "HIP17847",
+     "HIP17702",
+     "HIP17608",
+     "HIP17499",
+     "HIP17531",
+     "HIP17573",
+     "HIP17579"
+    ]
+   ],
+   "iau": [
+    "Tau"
+   ],
+   "story": "Nakshatra 3 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star).",
+   "extraStars": {
+    "HIP17579": [
+     56.47698,
+     24.55451,
+     114.03,
+     5.76,
+     "Asterope",
+     "B8V"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.11334,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17851": [
+     57.29673,
+     24.13671,
+     117.1,
+     5.05,
+     "Pleione",
+     "B7p"
+    ],
+    "HIP17608": [
+     56.58156,
+     23.94836,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ],
+    "HIP17573": [
+     56.45669,
+     24.36775,
+     117.51,
+     3.87,
+     "Maia",
+     "B8III"
+    ],
+    "HIP17531": [
+     56.30205,
+     24.46728,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ]
+   }
+  },
+  {
+   "id": "indian-nakshatra-04",
+   "name": "Rohiṇī",
+   "native": "रोहिणी",
+   "romanized": "Rohiṇī",
+   "meaning": "The spirited one",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP21421"
+    ]
+   ],
+   "iau": [
+    "Tau"
+   ],
+   "story": "Nakshatra 4 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-05",
+   "name": "Mṛgaśirā",
+   "native": "मृगशिरा",
+   "romanized": "Mṛgaśirā",
+   "meaning": "The deer's head",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP26207",
+     "HIP26176",
+     "HIP26366"
+    ]
+   ],
+   "iau": [
+    "Ori"
+   ],
+   "story": "Nakshatra 5 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star).",
+   "extraStars": {
+    "HIP26366": [
+     84.22662,
+     9.29067,
+     36.02,
+     4.09,
+     "",
+     "G8III-IV"
+    ],
+    "HIP26176": [
+     83.70516,
+     9.48958,
+     333.33,
+     4.39,
+     "",
+     "B0IV..."
+    ]
+   }
+  },
+  {
+   "id": "indian-nakshatra-06",
+   "name": "Ārdrā",
+   "native": "आर्द्रा",
+   "romanized": "Ārdrā",
+   "meaning": "The moist one",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP27989",
+     "HIP27989"
+    ]
+   ],
+   "iau": [
+    "Ori"
+   ],
+   "story": "Nakshatra 6 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-07",
+   "name": "Punarvasu",
+   "native": "पुनर्वसु",
+   "romanized": "Punarvasu",
+   "meaning": "The restorers of goods",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP36850",
+     "HIP37826"
+    ]
+   ],
+   "iau": [
+    "Gem"
+   ],
+   "story": "Nakshatra 7 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-08",
+   "name": "Puṣya",
+   "native": "पुष्य",
+   "romanized": "Puṣya",
+   "meaning": "The nourisher",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP42911",
+     "HIP41822"
+    ]
+   ],
+   "iau": [
+    "Cnc"
+   ],
+   "story": "Nakshatra 8 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star).",
+   "extraStars": {
+    "HIP41822": [
+     127.89888,
+     18.09442,
+     127.23,
+     5.33,
+     "",
+     "K5III"
+    ]
+   }
+  },
+  {
+   "id": "indian-nakshatra-09",
+   "name": "Āśleṣā",
+   "native": "आश्लेषा",
+   "romanized": "Āśleṣā",
+   "meaning": "The embrace",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP43109",
+     "HIP42313",
+     "HIP42402",
+     "HIP42799",
+     "HIP43234"
+    ]
+   ],
+   "iau": [
+    "Hya"
+   ],
+   "story": "Nakshatra 9 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-10",
+   "name": "Maghā",
+   "native": "मघा",
+   "romanized": "Maghā",
+   "meaning": "The bountiful one",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP49669",
+     "HIP49669"
+    ]
+   ],
+   "iau": [
+    "Leo"
+   ],
+   "story": "Nakshatra 10 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-11",
+   "name": "Pūrva Phālgunī",
+   "native": "पूर्वफाल्गुनी",
+   "romanized": "Pūrva Phālgunī",
+   "meaning": "The former red one",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP54872",
+     "HIP54879"
+    ]
+   ],
+   "iau": [
+    "Leo"
+   ],
+   "story": "Nakshatra 11 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-12",
+   "name": "Uttara Phālgunī",
+   "native": "उत्तरफाल्गुनी",
+   "romanized": "Uttara Phālgunī",
+   "meaning": "The latter red one",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP57632",
+     "HIP57632"
+    ]
+   ],
+   "iau": [
+    "Leo"
+   ],
+   "story": "Nakshatra 12 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-13",
+   "name": "Hasta",
+   "native": "हस्त",
+   "romanized": "Hasta",
+   "meaning": "The hand",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP60965",
+     "HIP61359"
+    ],
+    [
+     "HIP60965",
+     "HIP59803",
+     "HIP59316",
+     "HIP59199"
+    ],
+    [
+     "HIP59316",
+     "HIP61359"
+    ]
+   ],
+   "iau": [
+    "Crv"
+   ],
+   "story": "Nakshatra 13 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-14",
+   "name": "Citrā",
+   "native": "चित्रा",
+   "romanized": "Citrā",
+   "meaning": "The bright one",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP65474",
+     "HIP65474"
+    ]
+   ],
+   "iau": [
+    "Vir"
+   ],
+   "story": "Nakshatra 14 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-15",
+   "name": "Svātī",
+   "native": "स्वाति",
+   "romanized": "Svātī",
+   "meaning": "The honest one",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP69673",
+     "HIP69673"
+    ]
+   ],
+   "iau": [
+    "Boo"
+   ],
+   "story": "Nakshatra 15 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-16",
+   "name": "Viśākhā",
+   "native": "विशाखा",
+   "romanized": "Viśākhā",
+   "meaning": "The gifted one",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP76333",
+     "HIP74785",
+     "HIP72622"
+    ],
+    [
+     "HIP74785",
+     "HIP74392"
+    ]
+   ],
+   "iau": [
+    "Lib"
+   ],
+   "story": "Nakshatra 16 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-17",
+   "name": "Anurādhā",
+   "native": "अनुराधा",
+   "romanized": "Anurādhā",
+   "meaning": "Followers of Radha",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP78820",
+     "HIP78401",
+     "HIP78265"
+    ]
+   ],
+   "iau": [
+    "Sco"
+   ],
+   "story": "Nakshatra 17 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-18",
+   "name": "Jyeṣṭhā",
+   "native": "ज्येष्ठा",
+   "romanized": "Jyeṣṭhā",
+   "meaning": "The eldest one",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP80112",
+     "HIP80763",
+     "HIP81266"
+    ]
+   ],
+   "iau": [
+    "Sco"
+   ],
+   "story": "Nakshatra 18 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-19",
+   "name": "Mūla",
+   "native": "मूल",
+   "romanized": "Mūla",
+   "meaning": "The root",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP82396",
+     "HIP82545",
+     "HIP82729",
+     "HIP84143",
+     "HIP86228",
+     "HIP87073",
+     "HIP86670",
+     "HIP85927",
+     "HIP85696"
+    ]
+   ],
+   "iau": [
+    "Sco"
+   ],
+   "story": "Nakshatra 19 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star).",
+   "extraStars": {
+    "HIP82545": [
+     253.08394,
+     -38.01754,
+     145.35,
+     3.56,
+     "Pipirima",
+     "B2IV"
+    ]
+   }
+  },
+  {
+   "id": "indian-nakshatra-20",
+   "name": "Pūrva Āṣāḍhā",
+   "native": "पूर्वाषाढा",
+   "romanized": "Pūrva Āṣāḍhā",
+   "meaning": "The former undefeated one",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP90185",
+     "HIP89931"
+    ]
+   ],
+   "iau": [
+    "Sgr"
+   ],
+   "story": "Nakshatra 20 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-21",
+   "name": "Uttara Āṣāḍhā",
+   "native": "उत्तराषाढा",
+   "romanized": "Uttara Āṣāḍhā",
+   "meaning": "The latter undefeated one",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP92855",
+     "HIP93506"
+    ]
+   ],
+   "iau": [
+    "Sgr"
+   ],
+   "story": "Nakshatra 21 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-22",
+   "name": "Śravaṇa",
+   "native": "श्रवण",
+   "romanized": "Śravaṇa",
+   "meaning": "The Ear",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP98036",
+     "HIP97649",
+     "HIP97278"
+    ]
+   ],
+   "iau": [
+    "Aql"
+   ],
+   "story": "Nakshatra 22 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-23",
+   "name": "Dhaniṣṭhā",
+   "native": "धनिष्ठा",
+   "romanized": "Dhaniṣṭhā",
+   "meaning": "The most famous one",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP102281",
+     "HIP101958"
+    ]
+   ],
+   "iau": [
+    "Del"
+   ],
+   "story": "Nakshatra 23 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-24",
+   "name": "Śatabhiṣā",
+   "native": "शतभिषा",
+   "romanized": "Śatabhiṣā",
+   "meaning": "Hundred cures",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP110395",
+     "HIP110395"
+    ]
+   ],
+   "iau": [
+    "Aqr"
+   ],
+   "story": "Nakshatra 24 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-25",
+   "name": "Pūrva Bhādrapadā",
+   "native": "पूर्वभाद्रपदा",
+   "romanized": "Pūrva Bhādrapadā",
+   "meaning": "The first of the blessed feet",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP113881",
+     "HIP113963"
+    ]
+   ],
+   "iau": [
+    "Peg"
+   ],
+   "story": "Nakshatra 25 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-26",
+   "name": "Uttara Bhādrapadā",
+   "native": "उत्तरभाद्रपदा",
+   "romanized": "Uttara Bhādrapadā",
+   "meaning": "The second of the blessed feet",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP1067",
+     "HIP667"
+    ]
+   ],
+   "iau": [
+    "And",
+    "Peg"
+   ],
+   "story": "Nakshatra 26 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star).",
+   "extraStars": {
+    "HIP667": [
+     2.05692,
+     29.73227,
+     259.74,
+     8.31,
+     "",
+     "K0"
+    ]
+   }
+  },
+  {
+   "id": "indian-nakshatra-27",
+   "name": "Revatī",
+   "native": "रेवती",
+   "romanized": "Revatī",
+   "meaning": "The prosperous one",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP5737",
+     "HIP5737"
+    ]
+   ],
+   "iau": [
+    "Psc"
+   ],
+   "story": "Nakshatra 27 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-nakshatra-28",
+   "name": "Abhijit",
+   "native": "अभिजित्",
+   "romanized": "Abhijit",
+   "meaning": "The invincible one",
+   "kind": "mansion",
+   "group": "Nakshatra (lunar mansions)",
+   "lines": [
+    [
+     "HIP91926",
+     "HIP91262",
+     "HIP91971"
+    ]
+   ],
+   "iau": [
+    "Lyr"
+   ],
+   "story": "Nakshatra 28 of the 28-fold list (27 in the later system, with Abhijit omitted); a division of the Moon's path used for ritual timing and the calendar. Star identification follows the Stellarium Vedic sky culture; a one-star line marks the yogatara (junction star)."
+  },
+  {
+   "id": "indian-saptarishi",
+   "name": "Saptarṣi",
+   "native": "सप्तर्षि",
+   "romanized": "Saptarṣi",
+   "meaning": "The Seven Sages",
+   "kind": "asterism",
+   "group": "Rishis and the Pole Star",
+   "lines": [
+    [
+     "HIP54061",
+     "HIP53910",
+     "HIP58001",
+     "HIP59774",
+     "HIP54061"
+    ],
+    [
+     "HIP59774",
+     "HIP62956",
+     "HIP65378",
+     "HIP67301"
+    ]
+   ],
+   "iau": [
+    "UMa"
+   ],
+   "story": "The seven stars of the Big Dipper, each assigned to a Vedic sage (names as in the Stellarium Vedic sky culture): Kratu (Dubhe), Pulaha (Merak), Pulastya (Phecda), Atri (Megrez), Aṅgiras (Alioth), Vasiṣṭha (Mizar) and Marīci (Alkaid)."
+  },
+  {
+   "id": "indian-arundhati",
+   "name": "Arundhatī",
+   "native": "अरुन्धती",
+   "romanized": "Arundhatī",
+   "meaning": "Wife of Vasiṣṭha",
+   "kind": "asterism",
+   "group": "Rishis and the Pole Star",
+   "lines": [
+    [
+     "HIP65378",
+     "HIP65477"
+    ]
+   ],
+   "iau": [
+    "UMa"
+   ],
+   "story": "Alcor (HIP 65477), the faint companion of Mizar (Vasiṣṭha), is named Arundhatī after the sage's wife in the Stellarium Vedic sky culture.",
+   "extraStars": {
+    "HIP65477": [
+     201.3062,
+     54.98796,
+     25.06,
+     3.99,
+     "Alcor",
+     "A5V SB"
+    ]
+   }
+  },
+  {
+   "id": "indian-dhruva",
+   "name": "Dhruva",
+   "native": "ध्रुव",
+   "romanized": "Dhruva",
+   "meaning": "The fixed one (Pole Star)",
+   "kind": "asterism",
+   "group": "Rishis and the Pole Star",
+   "lines": [
+    [
+     "HIP54061",
+     "HIP53910",
+     "HIP11767"
+    ]
+   ],
+   "iau": [
+    "UMi"
+   ],
+   "story": "Dhruva is the Pole Star (Polaris, HIP 11767). The line runs along the two pointer stars of the Saptarṣi bowl (Kratu, Pulaha) to Dhruva."
+  }
+ ]
+}

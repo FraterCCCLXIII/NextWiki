@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
+<script src="kosmo-scrollfade.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Warp Drive Lab</title>
+<style>
+  :root { --bg: #0d0d0d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --good: #7fe0a0; --bad: #ff8a8a; --line: rgba(140,170,220,0.14); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 15px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(127,195,255,0.55), rgba(255,184,107,0.45)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+  * { scrollbar-width: thin; scrollbar-color: rgba(127,195,255,0.6) transparent; }
+  .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+  #navbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(13,13,13,0.95), rgba(13,13,13,0.6)); }
+  #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 20px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 13px; color: #fff; opacity: 0.8; margin-top: 2px; }
+  #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.16em; font-size: 14px; text-transform: uppercase; }
+  @media (max-width: 1320px) { #menu { overflow-x: auto; min-width: 0; scrollbar-width: none; } #menu::-webkit-scrollbar { display: none; } }
+  #menu a { color: rgba(255,255,255,0.72); text-decoration: none; white-space: nowrap; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+  #view { position: absolute; inset: 0; } #scene { display: block; width: 100%; height: 100%; }
+  #side { position: absolute; left: 14px; top: 66px; bottom: 14px; width: 350px; z-index: 4; overflow: auto; padding: 4px 8px 12px 4px; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
+  h1 { font-weight: 500; font-size: 28px; margin: 2px 0 2px; }
+  h2 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
+  input[type=text], input[type=number], button, select { background: rgba(26,26,26,0.85); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 8px; padding: 4px 8px; font: inherit; }
+  select { width: 100%; } input[type=range] { width: 100%; accent-color: #7fc3ff; }
+  button { cursor: pointer; margin: 2px 3px 2px 0; } button:hover:not(:disabled) { border-color: var(--accent); } button:disabled { opacity: .45; cursor: default; }
+  button.on { border-color: var(--accent); color: #fff; background: rgba(40,80,130,0.55); }
+  .dim { color: var(--muted); } .small { font-size: 13px; }
+  .f label { display: block; font-size: 12px; color: var(--muted); margin: 6px 0 1px; }
+  .f label b { color: var(--text); font-weight: 400; float: right; }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 8px 9px; margin: 8px 0; background: rgba(18,22,30,0.55); }
+  .chk { display: flex; align-items: center; gap: 6px; margin: 4px 0; color: #c3d0e2; } .chk input { margin: 0; }
+  .okc { color: var(--good); } .badc { color: var(--bad); } .warn { color: var(--accent2); }
+  table.an { border-collapse: collapse; width: 100%; font-size: 13px; } table.an td, table.an th { padding: 2px 4px 2px 0; text-align: right; font-variant-numeric: tabular-nums; } table.an th { color: var(--muted); font-weight: 400; } table.an td:first-child, table.an th:first-child { text-align: left; }
+  #hud { position: absolute; right: 14px; top: 66px; bottom: 62px; width: 380px; z-index: 4; overflow: auto; text-shadow: 0 1px 6px #000; padding-right: 4px; }
+  #hud h3 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 400; margin: 12px 0 4px; }
+  #chart { display: block; width: 100%; height: 210px; margin-top: 6px; border: 1px solid var(--line); border-radius: 8px; background: rgba(10,12,18,0.6); }
+  #bar { position: absolute; left: 372px; right: 408px; bottom: 12px; z-index: 4; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; text-shadow: 0 1px 6px #000; font-size: 14px; color: #c3d0e2; }
+  #bar button, #bar select { margin: 0; padding: 4px 10px; width: auto; }
+  #banner { position: absolute; left: 372px; top: 66px; z-index: 4; font-size: 13px; color: var(--muted); text-shadow: 0 1px 6px #000; max-width: 560px; pointer-events: none; }
+  #legend { position: absolute; left: 372px; bottom: 50px; z-index: 4; font-size: 12px; color: var(--muted); text-shadow: 0 1px 6px #000; pointer-events: none; }
+  kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); }
+  html.embedded #side, html.embedded #hud, html.embedded #banner { top: 12px; }
+  @media (max-width: 1150px) { #hud { display: none; } #bar { right: 14px; } }
+</style>
+  <link rel="stylesheet" href="kosmographica.css?v=15">
+  <script src="atlas-nav.js" defer></script>
+  <script src="accordion.js" defer></script>
+</head>
+<body>
+<div id="view"><canvas id="scene"></canvas></div>
+<div id="gl" style="position:absolute;inset:0;display:none;z-index:1"></div>
+<div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
+  <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="shipyard.html">Shipyard</a><a href="landing-lab.html">Landing Lab</a><a href="warp-lab.html" class="here">Warp Drive</a></nav><span></span></div>
+
+<div id="side">
+  <h1 class="serif">Warp Drive Lab</h1>
+  <div class="dim small">Bend space instead of pushing through it. A numerical general-relativity engine builds the Einstein tensor of each warp metric and reads off the stress-energy it would need; photons and test masses are then flown through the bubble.</div>
+
+  <h2>Metric</h2>
+  <select id="model"></select>
+  <div id="mnote" class="small dim" style="margin-top:4px"></div>
+
+  <h2>Ship</h2>
+  <select id="ship"></select>
+  <div id="shipNote" class="small dim" style="margin-top:4px"></div>
+
+  <h2>Bubble</h2>
+  <div class="f">
+    <label>Speed <b id="vsV"></b></label><input type="range" id="vs" min="0" max="1000">
+    <label id="RL">Bubble radius <b id="RV"></b></label><input type="range" id="R" min="0" max="1000">
+    <label>Wall thickness <b id="wallV"></b></label><input type="range" id="wall" min="0" max="1000">
+    <div id="vdbBox"><label>Pocket factor α (interior = (1+α) × neck) <b id="alphaV"></b></label><input type="range" id="alpha" min="0" max="1200"></div>
+    <div id="shellBox"><label>Shell mass μ = GM / 2Rc² <b id="muV"></b></label><input type="range" id="mu" min="0" max="900"></div>
+  </div>
+  <div style="margin-top:6px"><span class="small dim">wall profile</span> <select id="shape" style="width:auto"><option value="tanh">tanh (Alcubierre)</option><option value="quintic">quintic (compact)</option></select></div>
+
+  <h2>Try different math</h2>
+  <div class="small dim">Each run recomputes the curvature of the chosen spacetime from scratch.</div>
+  <div style="margin-top:4px"><button id="cmp">Compare all four metrics</button><button id="scanW">Wall-thickness scan</button><button id="scanM">Find the shell mass</button><button id="opt">Minimise the energy</button></div>
+  <div id="out" class="small"></div>
+
+  <h2>Trip</h2>
+  <select id="dest"></select>
+  <div id="trip" class="small" style="margin-top:4px"></div>
+</div>
+
+<div id="banner">Slice through the bubble (flight is left to right). Blue = negative energy density, red = positive. Photons (yellow) and dropped test masses (white) fly through the real metric. <kbd>space</kbd> pause</div>
+<div id="legend"></div>
+<div id="hud">
+  <div id="viewTog"><button id="v2d" class="on">2D slice</button><button id="v3d">3D orbit</button></div>
+  <div id="ctl3d" style="display:none" class="small"><label class="chk" style="display:inline-flex;margin-right:10px"><input type="checkbox" id="spin" checked> auto-spin</label><label class="chk" style="display:inline-flex"><input type="checkbox" id="bloom" checked> glow</label><br><span class="dim">camera</span> <button data-cam="orbit">orbit</button><button data-cam="chase">chase</button><button data-cam="side">side</button><button data-cam="top">top</button><button data-cam="front">front</button><div class="dim">drag to rotate · wheel to zoom</div></div>
+  <h3>What the metric demands</h3>
+  <table class="an" id="res"></table>
+  <h3>Can anything pay for it?</h3>
+  <div id="exotic" class="small"></div>
+  <h3>Horizons</h3>
+  <div id="hor" class="small"></div>
+  <canvas id="chart" width="760" height="420"></canvas>
+  <div class="small dim" id="chartNote" style="margin-top:4px"></div>
+</div>
+<div id="bar">
+  <span class="dim">layer</span>
+  <select id="layer"><option value="rho">energy density ρ</option><option value="nec">null-energy margin</option><option value="tidal">tidal stress</option><option value="shift">shift speed |X|/c</option><option value="exp">space expansion ∇·X</option></select>
+  <button id="play" class="on">pause</button><button id="reset">reset</button>
+  <label class="chk" style="margin:0"><input type="checkbox" id="arrows" checked> shift field</label>
+  <label class="chk" style="margin:0"><input type="checkbox" id="trails" checked> trails</label>
+  <span id="status" class="dim"></span>
+</div>
+
+<script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
+<script type="module">
+import * as W from './warp-sim.js';
+const $ = id => document.getElementById(id), esc = s => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+const cv = $('scene'), ctx = cv.getContext('2d');
+let cw = 0, ch = 0, dpr = 1;
+function resize() { dpr = Math.min(2, devicePixelRatio || 1); cw = cv.clientWidth; ch = cv.clientHeight; cv.width = cw * dpr; cv.height = ch * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+addEventListener('resize', resize); resize();
+
+/* ---------------- parameters ---------------- */
+const lerpLog = (lo, hi, s) => Math.pow(10, lo + (hi - lo) * s / 1000);
+const SL = {
+  vs: { lo: -1, hi: 3, fmt: v => v.toPrecision(3) + ' c' },
+  R: { lo: 0, hi: 3, fmt: v => v.toPrecision(3) + ' m' },
+  wall: { lo: -1.3, hi: 2.3, fmt: v => v.toPrecision(3) + ' m' },
+};
+let SHIPS = null;
+const P = { ship: 'cone', model: 'alcubierre', vs: 2, R: 50, wall: 10, shape: 'tanh', alpha: 3, mu: 0.2 };
+const fromLog = (k, v) => Math.round(1000 * (Math.log10(v) - SL[k].lo) / (SL[k].hi - SL[k].lo));
+function syncUI() {
+  for (const k of ['vs', 'R', 'wall']) { $(k).value = fromLog(k, P[k]); $(k + 'V').textContent = SL[k].fmt(P[k]); }
+  $('alpha').value = P.alpha * 100; $('alphaV').textContent = P.alpha.toFixed(2); $('mu').value = P.mu * 1000; $('muV').textContent = P.mu.toFixed(3);
+  $('model').value = P.model; $('shape').value = P.shape;
+  $('vdbBox').style.display = P.model === 'vandenbroeck' ? '' : 'none'; $('shellBox').style.display = P.model === 'shell' ? '' : 'none';
+  $('RL').firstChild.textContent = P.model === 'vandenbroeck' ? 'Ship (interior) radius ' : 'Bubble radius ';
+  $('mnote').textContent = W.MODELS[P.model].note;
+}
+for (const k of ['vs', 'R', 'wall']) $(k).oninput = () => { P[k] = lerpLog(SL[k].lo, SL[k].hi, +$(k).value); $(k + 'V').textContent = SL[k].fmt(P[k]); changed(); };
+$('alpha').oninput = () => { P.alpha = $('alpha').value / 100; syncUI(); changed(); };
+$('mu').oninput = () => { P.mu = $('mu').value / 1000; syncUI(); changed(); };
+$('model').innerHTML = Object.entries(W.MODELS).map(([k, m]) => `<option value="${k}">${esc(m.name)}</option>`).join('');
+$('model').onchange = () => { P.model = $('model').value; syncUI(); changed(); };
+$('shape').onchange = () => { P.shape = $('shape').value; changed(); };
+$('dest').innerHTML = W.DESTINATIONS.map(d => `<option value="${d.id}">${esc(d.name)}</option>`).join(''); $('dest').value = 'alpha'; $('dest').onchange = () => report();
+const cfg = () => { const c = { ...P }; if (P.model === 'vandenbroeck') { c.rIn = P.R; } return c; };
+
+const SHIP_META = {
+  cone: ['Original cone (Alcubierre probe)', 'Point-like dart of the 1994 paper, ~10 m, uncrewed. It needs no engine: the bubble carries it.'],
+  ring: ['Warp-ring ship (White / IXS-style)', '~80 m, crew 12. A capsule threaded through a toroidal warp ring; White (2011) argued a thick oscillating wall lowers the energy.'],
+  saucer: ['Saucer cruiser', '~120 m, crew 200. The bubble must enclose the whole disc, so the wall area (energy ~ R²) is set by its width.'],
+  needle: ['Needle scout', '~60 m, crew 3. Long and thin: a sphere around it is mostly empty; a prolate bubble would be cheaper.'],
+  pod: ['Pocket habitat (Van den Broeck)', '~100 m, crew 2000. Pair with the Van den Broeck metric: interior is (1+α) × the neck radius.'],
+  wedge: ['Wedge shuttle', '~25 m, crew 8. A stubby arrowhead; the streamlined body suits the smooth Natário flow.'],
+};
+$('ship').innerHTML = Object.entries(SHIP_META).map(([k, v]) => `<option value="${k}">${esc(v[0])}</option>`).join('');
+$('ship').onchange = () => { P.ship = $('ship').value; $('shipNote').textContent = SHIP_META[P.ship][1]; if (view3d) view3d.setShip(); };
+$('shipNote').textContent = SHIP_META.cone[1];
+
+/* ---------------- number formatting ---------------- */
+const sci = (x, d = 2) => x === 0 ? '0' : x.toExponential(d).replace('e+', ' × 10^').replace('e-', ' × 10^-');
+const fJ = j => sci(j) + ' J';
+function fMass(kg) { const a = Math.abs(kg); if (a > W.MSUN * 0.01) return (kg / W.MSUN).toPrecision(3) + ' M☉'; if (a > 5.97e24 * 0.01) return (kg / 5.97e24).toPrecision(3) + ' M⊕'; return sci(kg) + ' kg'; }
+const gm = x => sci(x / 9.80665) + ' g/m';
+
+/* ---------------- field, rays ---------------- */
+let model = null, field = null, sim = null, view = { W: 100 }, gridToken = 0;
+const GX = 150, GY = 40;
+function buildSim() {
+  sim = W.createWarp(cfg()); const m = sim.m, R = m.R;
+  for (let i = 0; i < 40; i++) { const a = 2 * Math.PI * i / 40; sim.photon(0, 0, 0, [Math.cos(a), Math.sin(a), 0]); }
+  for (let i = 0; i < 12; i++) { const a = -0.5 + i / 11; sim.photon(-3.2 * (R + m.cfg.wall), 0, 0, [1, a * 0.25, 0]); }   // light from the stern
+  for (const s of [-1, 1]) for (let i = -2; i <= 2; i++) for (const k of [0.4, 0.8, 1.15, 1.6]) sim.drop(s * k * (R + m.cfg.wall) * 1.15, i * 0.35 * R, 0);
+  for (let i = 0; i < 48; i++) { const z = 1 - 2 * (i + 0.5) / 48, rr = Math.sqrt(1 - z * z), a = 2.399963 * i; sim.photon(0, 0, 0, [rr * Math.cos(a), rr * Math.sin(a), z], 'sph'); }
+  sim.simdt = Math.max(2e-4, m.cfg.wall / 50 / Math.max(m.vs, 1));
+  for (const r of sim.rays) r.path = [[r.s[0] - m.xs, r.s[1]]]; for (const r of sim.dust) r.path = [[r.s[0] - m.xs, r.s[1]]];
+  view.W = (R + 3 * m.cfg.wall) * 1.7; if (m.cfg.model === 'vandenbroeck') view.W = (m.R + 3 * m.cfg.wall) * 1.7;
+}
+function computeField() {
+  const tok = ++gridToken, m = model, Wd = view.W, hx = 2 * Wd / GX, hy = Wd / GY;
+  const rho = new Float32Array(GX * GY), nec = new Float32Array(GX * GY), tid = new Float32Array(GX * GY), sh = new Float32Array(GX * GY);
+  field = { rho, nec, tid, sh, ready: false, tok, GX, GY };
+  let k = 0; const total = GX * GY;
+  (function chunk() {
+    if (tok !== gridToken) return;
+    const t0 = performance.now();
+    while (k < total && performance.now() - t0 < 30) {
+      const i = k % GX, j = (k / GX) | 0, x = -Wd + (i + 0.5) * hx, y = (j + 0.5) * hy;
+      const s = W.sampleField(m, x, y, 0, 0);
+      rho[k] = s.rho; nec[k] = s.nec; tid[k] = s.tidal;   // geometric units (Float32 cannot hold J/m^3 at this scale)
+      const X = m.X(x, y, 0); sh[k] = Math.hypot(X[0], X[1], X[2]) / m.N(x, y, 0);
+      k++;
+    }
+    $('status').textContent = k < total ? `curvature grid ${Math.round(100 * k / total)} %` : '';
+    if (k < total) setTimeout(chunk, 0); else field.ready = true;
+  })();
+}
+
+/* ---------------- analysis ---------------- */
+const rowR = (a, b, cls = '') => `<tr><td>${a}</td><td class="${cls}">${b}</td></tr>`;
+let analysis = null;
+function analyse() {
+  const m = model, c = m.cfg;
+  const e = W.energyExtrapolated(m);
+  const rhoMin = e.rhoMin * W.RHO_TO_SI;
+  const hz = W.horizons(m);
+  const wallVol = 4 * Math.PI * m.R * m.R * c.wall;
+  const qi = W.quantumInequality(P.vs, rhoMin, c.wall), cas = W.casimirSupply(rhoMin || -1e-30, wallVol), ph = W.phantomField(rhoMin);
+  // Alcubierre wall at the quantum-inequality thickness: scale the model to the largest wall physics allows
+  const aShape = W.makeShape('tanh', m.R, qi.Dmax), eQI = Math.abs(W.alcubierreEnergy(P.vs, aShape));
+  const ratio = Math.abs(e.Eneg) / Math.abs(W.alcubierreEnergy(P.vs, m.shape));
+  analysis = { e, hz, qi, cas, ph, eQI, ratio, wallVol };
+  report();
+}
+function report() {
+  if (!analysis) return;
+  const { e, hz, qi, cas, ph, eQI, ratio } = analysis, m = model;
+  const neg = W.toJoules(e.Eneg), pos = W.toJoules(e.Epos);
+  const wec = e.wecMin < -1e-12, nec = e.necMin < -1e-12;
+  $('res').innerHTML =
+    rowR('negative energy', `${fJ(neg)}<br><span class="dim">${fMass(W.toKg(e.Eneg))}${e.extrapolated ? ' (extrapolated, thin wall)' : ''}</span>`, e.Eneg < 0 ? 'badc' : '') +
+    rowR('positive energy', `${fJ(pos)}<br><span class="dim">${fMass(W.toKg(e.Epos))}</span>`) +
+    rowR('net', `${fJ(neg + pos)}`) +
+    rowR('peak |ρ|', `${sci(Math.abs(e.rhoMin * W.RHO_TO_SI))} J/m³`) +
+    rowR('weak energy cond.', wec ? 'violated' : 'holds', wec ? 'badc' : 'okc') +
+    rowR('null energy cond.', nec ? 'violated' : 'holds', nec ? 'badc' : 'okc') +
+    rowR('peak tidal stress', `${gm(e.tidal * W.C * W.C)}`) +
+    rowR('clock inside', m.N(0, 0, 0) < 0.9999 ? `${(m.N(0, 0, 0) * 100).toFixed(1)} % of lab` : 'same as lab (no dilation)') +
+    rowR('ship acceleration', 'zero — it free-falls (geodesic)', 'okc');
+  const casCls = cas.ratio1nm > 1 ? 'badc' : 'okc';
+  $('exotic').innerHTML =
+    `<div class="card"><b>Quantum inequality</b> (Ford–Roman)<br>the wall may be at most ${sci(qi.Dmax)} m thick (${(qi.Dmax / W.PLANCK_L).toFixed(2)} Planck lengths). Yours is ${m.cfg.wall.toPrecision(2)} m: needs ${sci(qi.ratio)}× the allowed negative density → <b class="${qi.ok ? 'okc' : 'badc'}">${qi.ok ? 'allowed' : 'forbidden'}</b>.<br>
+      At the allowed wall an Alcubierre bubble of this radius costs ${fJ(eQI * W.GEO_TO_J)} = <b>${fMass(eQI * W.GEO_TO_KG)}</b> of negative mass.</div>` +
+    `<div class="card"><b>Casimir plates</b><br>to supply ${sci(Math.abs(e.rhoMin * W.RHO_TO_SI))} J/m³ the plates would sit ${sci(cas.gap)} m apart; at a realistic 1 nm they give ${sci(Math.abs(cas.gapAt1nm))} J/m³ — <span class="${casCls}">${sci(cas.ratio1nm)}× short</span>.</div>` +
+    `<div class="card"><b>Phantom scalar field</b> (negative kinetic term, ρ = −½(∇φ)²)<br>needs |∇φ| = ${sci(ph.gradPlanck)} in Planck units; the wall's peak density is ${sci(ph.fractionOfPlanck)} of the Planck density — <span class="${ph.fractionOfPlanck > 1 ? 'badc' : 'okc'}">${ph.fractionOfPlanck > 1 ? 'trans-Planckian' : 'sub-Planckian'}</span>.</div>` +
+    `<div class="small dim">Model energy vs. plain Alcubierre at the same R and wall: ${ratio.toPrecision(3)}×.</div>`;
+  $('hor').innerHTML = hz.length ? hz.map(h => `at x = ${h.x.toFixed(1)} m: ${esc(h.type)}, surface gravity ${sci(h.kappa)} s⁻¹ → Hawking temperature <b class="badc">${sci(h.T)} K</b>`).join('<br>') + '<div class="dim">Superluminal: the ship cannot signal the front wall, so it cannot be steered once started.</div>' : '<span class="okc">none — the shift never reaches c, so this bubble is not faster than light</span>';
+  const d = W.DESTINATIONS.find(x => x.id === $('dest').value), tt = W.tripTime(d.d, P.vs);
+  $('trip').innerHTML = `${esc(d.name)}: ${(d.d / W.LY).toPrecision(3)} ly → <b>${W.fmtTime(tt)}</b> at ${P.vs.toPrecision(3)} c<br><span class="dim">light takes ${W.fmtTime(d.d / W.C)}; the ship's own clock runs ${model.N(0, 0, 0) < 0.9999 ? 'slow' : 'at the lab rate (no time dilation)'}.</span>`;
+}
+
+/* ---------------- charts ---------------- */
+function chart(title, series, o = {}) {
+  const c = $('chart'), g = c.getContext('2d'), w = c.width, h = c.height; g.clearRect(0, 0, w, h);
+  const pad = { l: 78, r: 14, t: 30, b: 40 }, pts = series.flatMap(s => s.pts).filter(p => isFinite(p[0]) && isFinite(p[1]) && (!o.logy || p[1] > 0));
+  if (!pts.length) return;
+  const tx = o.logx ? Math.log10 : (v => v), ty = o.logy ? Math.log10 : (v => v);
+  let x0 = Math.min(...pts.map(p => tx(p[0]))), x1 = Math.max(...pts.map(p => tx(p[0]))), y0 = Math.min(...pts.map(p => ty(p[1]))), y1 = Math.max(...pts.map(p => ty(p[1])));
+  if (x1 - x0 < 1e-9) x1 = x0 + 1; if (y1 - y0 < 1e-9) y1 = y0 + 1; const yp = (y1 - y0) * 0.06; y0 -= yp; y1 += yp;
+  const X = v => pad.l + (tx(v) - x0) / (x1 - x0) * (w - pad.l - pad.r), Y = v => h - pad.b - (ty(v) - y0) / (y1 - y0) * (h - pad.t - pad.b);
+  g.font = '19px sans-serif'; g.fillStyle = '#8a9bb8'; g.strokeStyle = 'rgba(140,170,220,0.14)'; g.lineWidth = 1;
+  g.fillText(title, pad.l, 20);
+  for (let i = 0; i <= 4; i++) { const yv = y0 + (y1 - y0) * i / 4, py = h - pad.b - (h - pad.t - pad.b) * i / 4; g.beginPath(); g.moveTo(pad.l, py); g.lineTo(w - pad.r, py); g.stroke(); g.fillText(o.logy ? '1e' + yv.toFixed(0) : yv.toPrecision(2), 4, py + 6); }
+  for (let i = 0; i <= 4; i++) { const xv = x0 + (x1 - x0) * i / 4, px = pad.l + (w - pad.l - pad.r) * i / 4; g.fillText(o.logx ? (10 ** xv).toPrecision(2) : xv.toPrecision(2), px - 18, h - 18); }
+  g.fillText(o.xlabel || '', w - pad.r - g.measureText(o.xlabel || '').width, h - 2);
+  series.forEach((s, si) => {
+    g.strokeStyle = s.color; g.fillStyle = s.color; g.lineWidth = 3; g.beginPath(); let first = true;
+    for (const p of s.pts) { if (!isFinite(p[1]) || (o.logy && p[1] <= 0)) continue; first ? g.moveTo(X(p[0]), Y(p[1])) : g.lineTo(X(p[0]), Y(p[1])); first = false; }
+    g.stroke(); for (const p of s.pts) if (isFinite(p[1]) && !(o.logy && p[1] <= 0)) { g.beginPath(); g.arc(X(p[0]), Y(p[1]), 4, 0, 7); g.fill(); }
+    g.font = '18px sans-serif'; g.fillText(s.label, pad.l + 8 + si * 150, pad.t + 20);
+  });
+}
+const COL = { alcubierre: '#7fc3ff', natario: '#7fe0a0', vandenbroeck: '#ffb86b', shell: '#d9a0ff' };
+function profileChart() {
+  const m = model, R = m.R + 3 * m.cfg.wall, pts = [], X = [], rho = [];
+  for (let i = 0; i <= 120; i++) { const x = -R + 2 * R * i / 120; pts.push([x, m.shape.f(Math.abs(x))]); X.push([x, m.X(x, 0, 0)[0]]); }
+  chart('shape f(r) and axis shift X/c', [{ label: 'f(r)', color: '#7fc3ff', pts }, { label: 'X/c', color: '#ffb86b', pts: X }], { xlabel: 'x (m)' });
+  $('chartNote').textContent = 'The shift reaches 1 (the speed of light) where the orange curve crosses 1 — that is a horizon.';
+}
+
+/* ---------------- experiments ---------------- */
+let busy = false;
+const tick = () => new Promise(r => setTimeout(r, 0));
+async function lock(fn) { if (busy) return; busy = true; try { await fn(); } finally { busy = false; } }
+$('cmp').onclick = () => lock(async () => {
+  const rows = [];
+  for (const id of Object.keys(W.MODELS)) {
+    $('out').textContent = `computing ${W.MODELS[id].name}…`; await tick();
+    const m = W.makeModel({ ...cfg(), model: id }), e = W.energyExtrapolated(m);
+    rows.push({ id, e, m });
+  }
+  const best = Math.min(...rows.map(r => Math.abs(r.e.Eneg)));
+  $('out').innerHTML = `<div class="card"><table class="an"><tr><th>metric</th><th>negative</th><th>positive</th><th>WEC</th><th>NEC</th></tr>${rows.map(r => `<tr><td>${esc(W.MODELS[r.id].name.replace(/ \(.*/, ''))}</td><td class="${Math.abs(r.e.Eneg) === best ? 'okc' : ''}">${sci(W.toSolar(r.e.Eneg), 1)} M☉</td><td>${sci(W.toSolar(r.e.Epos), 1)} M☉</td><td class="${r.e.wecMin < -1e-12 ? 'badc' : 'okc'}">${r.e.wecMin < -1e-12 ? '✗' : '✓'}</td><td class="${r.e.necMin < -1e-12 ? 'badc' : 'okc'}">${r.e.necMin < -1e-12 ? '✗' : '✓'}</td></tr>`).join('')}</table><div class="dim">Same speed, radius and wall. Van den Broeck uses the radius as the <i>interior</i> size. Cheapest negative energy in green.</div></div>`;
+});
+$('scanW').onclick = () => lock(async () => {
+  const series = Object.keys(W.MODELS).map(id => ({ label: W.MODELS[id].name.split(' ')[0], color: COL[id], pts: [] }));
+  const Ds = Array.from({ length: 8 }, (_, i) => P.R * 10 ** (-1.7 + 2.2 * i / 7));
+  for (const D of Ds) {
+    $('out').textContent = `wall ${D.toPrecision(2)} m…`; await tick();
+    Object.keys(W.MODELS).forEach((id, k) => { const e = W.energy(W.makeModel({ ...cfg(), model: id, wall: D })); series[k].pts.push([D, Math.abs(W.toJoules(e.Eneg))]); });
+  }
+  chart('|negative energy| vs wall thickness (J)', series, { logx: true, logy: true, xlabel: 'wall thickness (m)' });
+  $('chartNote').textContent = 'Thin walls: the energy grows ∝ R²/Δ — and the quantum inequalities force Δ down to Planck length.';
+  $('out').innerHTML = '<span class="dim">scan done (see the chart)</span>';
+});
+$('scanM').onclick = () => lock(async () => {
+  const mus = Array.from({ length: 10 }, (_, i) => i * 0.08), rows = [];
+  for (const mu of mus) { $('out').textContent = `μ = ${mu.toFixed(2)}…`; await tick(); rows.push(W.scanShell({ ...cfg(), model: 'shell' }, [mu])[0]); }
+  chart('shell mass μ: energy of the bubble (J)', [{ label: 'negative', color: '#7fc3ff', pts: rows.map(r => [r.mu, Math.abs(W.toJoules(r.Eneg)) + 1e-30]) }, { label: 'positive', color: '#ff8a8a', pts: rows.map(r => [r.mu, W.toJoules(r.Epos) + 1e-30]) }], { logy: true, xlabel: 'μ' });
+  const ok = rows.find(r => r.rhoMin > -1e-9 * Math.max(1e-30, Math.abs(rows[0].rhoMin)) && r.mu > 0);
+  const R = W.makeModel(cfg()).R, wecOk = rows.find(r => r.wecMin > -1e-12);
+  $('out').innerHTML = `<div class="card">${ok ? `Eulerian energy density turns non-negative everywhere at <b>μ ≈ ${ok.mu.toFixed(2)}</b> — a shell of ${fMass(ok.massKg)} (Schwarzschild radius ${sci(ok.rS)} m, clocks inside run at ${(ok.clockRate * 100).toFixed(0)} %).` : `No μ below 0.72 removes all negative Eulerian energy at ${P.vs.toPrecision(3)} c — the shift's momentum flux outgrows the shell's mass.`}<br>${wecOk ? '<span class="okc">The full weak energy condition holds at that mass.</span>' : '<span class="badc">The weak and null energy conditions are still violated: positive density alone is not enough — the shell also needs the right stresses (Bobrick–Martire).</span>'}</div>`;
+});
+$('opt').onclick = () => lock(async () => {
+  $('out').textContent = 'searching…'; await tick();
+  const free = { alcubierre: ['wall'], natario: ['wall'], vandenbroeck: ['wall', 'alpha'], shell: ['wall', 'mu'] }[P.model];
+  const r = W.optimize(cfg(), { iters: 14, free });
+  const hist = r.history.map((h, i) => [i + 1, W.toJoules(h.cost)]);
+  chart('descent on |E⁻| (J)', [{ label: 'cost', color: '#7fe0a0', pts: hist }], { logy: true, xlabel: 'improvement step' });
+  $('out').innerHTML = `<div class="card">${hist.length - 1} improving steps. Best: ${free.map(k => `${k} = ${r.cfg[k].toPrecision(3)}`).join(', ')} → |E⁻| = ${fJ(W.toJoules(r.cost))}<br><button id="apply">Use these values</button><div class="dim">Thicker walls are cheaper, until the quantum inequalities forbid them.</div></div>`;
+  $('apply').onclick = () => { for (const k of free) P[k] = r.cfg[k]; syncUI(); changed(); };
+});
+
+/* ---------------- drawing ---------------- */
+const RIGHT = () => cw > 1150 ? 400 : 14, FREEW = () => Math.max(120, cw - 372 - RIGHT());
+const SCX = () => 372 + FREEW() / 2, SCY = () => ch / 2 + 6, SCALE = () => Math.max(0.01, Math.min(FREEW() / 2, (ch - 130) / 2) / view.W);
+function drawShip2D(id, cx, cy, u) {
+  ctx.save(); ctx.translate(cx, cy); ctx.fillStyle = '#e8eef7'; ctx.strokeStyle = '#7fd0ff'; ctx.lineWidth = 1.5;
+  const poly = pts => { ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0] * u, p[1] * u) : ctx.moveTo(p[0] * u, p[1] * u)); ctx.closePath(); ctx.fill(); };
+  if (id === 'ring') { ctx.beginPath(); ctx.roundRect(-0.9 * u, -0.17 * u, 1.8 * u, 0.34 * u, 0.17 * u); ctx.fill(); ctx.beginPath(); ctx.ellipse(-0.1 * u, 0, 0.12 * u, 0.62 * u, 0, 0, 7); ctx.stroke(); }
+  else if (id === 'saucer') { ctx.beginPath(); ctx.ellipse(0, 0, 1.1 * u, 0.28 * u, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#9fd8ff'; ctx.beginPath(); ctx.ellipse(0.1 * u, -0.05 * u, 0.35 * u, 0.2 * u, 0, 0, 7); ctx.fill(); ctx.beginPath(); ctx.ellipse(0, 0, 1.05 * u, 0.25 * u, 0, 0, 7); ctx.stroke(); }
+  else if (id === 'needle') { poly([[1.5, 0], [-1.2, -0.1], [-1.2, 0.1]]); poly([[-0.9, 0], [-1.3, -0.45], [-1.1, 0]]); poly([[-0.9, 0], [-1.3, 0.45], [-1.1, 0]]); }
+  else if (id === 'pod') { ctx.fillStyle = 'rgba(159,216,255,0.55)'; ctx.beginPath(); ctx.arc(0, 0, 0.7 * u, 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#ffe3a0'; ctx.beginPath(); ctx.arc(0, 0, 0.22 * u, 0, 7); ctx.fill(); }
+  else if (id === 'wedge') poly([[1.1, 0], [-0.9, -0.6], [-0.6, 0], [-0.9, 0.6]]);
+  else poly([[1.0, 0], [-0.8, -0.4], [-0.8, 0.4]]);
+  ctx.restore();
+}
+let running = true, off = null;
+function heatImage(layer) {
+  if (!field) return null;
+  if (!off) { off = document.createElement('canvas'); off.width = GX; off.height = GY * 2; }
+  const g = off.getContext('2d'), img = g.createImageData(GX, GY * 2), arr = layer === 'rho' ? field.rho : layer === 'nec' ? field.nec : layer === 'tidal' ? field.tid : field.sh;
+  let mx = 1e-300; for (let i = 0; i < arr.length; i++) mx = Math.max(mx, Math.abs(arr[i]));
+  const r0 = mx * 1e-4, norm = Math.log10(1 + mx / r0);
+  for (let j = 0; j < GY; j++) for (let i = 0; i < GX; i++) {
+    const v = arr[j * GX + i]; let R = 14, Gc = 14, B = 18;
+    if (layer === 'tidal' || layer === 'shift') { const t = Math.log10(1 + Math.abs(v) / (layer === 'shift' ? mx * 0.2 : r0)) / (layer === 'shift' ? Math.log10(6) : norm); const u = Math.min(1, t); R = 14 + 230 * u; Gc = 14 + 150 * u * u; B = 18 + 60 * (1 - u); if (layer === 'shift' && v >= 1) { R = 255; Gc = 190; B = 70; } }
+    else { const t = Math.log10(1 + Math.abs(v) / r0) / norm; if (v < 0) { R = 14 + 40 * t; Gc = 14 + 110 * t; B = 18 + 235 * t; } else { R = 14 + 240 * t; Gc = 14 + 70 * t; B = 18 + 40 * t; } }
+    for (const jj of [GY + j, GY - 1 - j]) { const o = (jj * GX + i) * 4; img.data[o] = R; img.data[o + 1] = Gc; img.data[o + 2] = B; img.data[o + 3] = 255; }
+  }
+  g.putImageData(img, 0, 0); return { off, mx };
+}
+function drawBubble() {
+  const cx = SCX(), cy = SCY(), K = SCALE(), Wd = view.W;
+  ctx.fillStyle = '#0a0c11'; ctx.fillRect(0, 0, cw, ch);
+  // lab-frame stars drift backward
+  ctx.fillStyle = 'rgba(255,255,255,0.5)'; const drift = sim ? sim.m.xs : 0;
+  for (let i = 0; i < 160; i++) { const xx = ((((i * 7919 % 1000) / 1000 * 2 * Wd - drift) % (2 * Wd)) + 2 * Wd) % (2 * Wd) - Wd, yy = ((i * 104729 % 1000) / 1000 * 2 - 1) * Wd; ctx.fillRect(cx + xx * K, cy + yy * K, 1.2, 1.2); }
+  ctx.save(); ctx.beginPath(); ctx.rect(cx - Wd * K, cy - Wd * K, 2 * Wd * K, 2 * Wd * K); ctx.clip();
+  const hm = heatImage($('layer').value);
+  if (hm) { ctx.imageSmoothingEnabled = true; ctx.drawImage(hm.off, cx - Wd * K, cy - Wd * K, 2 * Wd * K, 2 * Wd * K); }
+  const m = sim.m, R = m.R;
+  ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.setLineDash([5, 5]); ctx.beginPath(); ctx.arc(cx, cy, R * K, 0, 7); ctx.stroke(); ctx.setLineDash([]);
+  if ($('arrows').checked) {
+    ctx.strokeStyle = 'rgba(255,184,107,0.8)'; ctx.fillStyle = 'rgba(255,184,107,0.8)'; ctx.lineWidth = 1;
+    for (let i = -7; i <= 7; i++) for (let j = -3; j <= 3; j++) { const x = i * Wd / 7.4, y = j * Wd / 8, Xv = m.X(x, y, 0), mag = Math.hypot(Xv[0], Xv[1]); if (mag < 0.02 * Math.max(m.vs, 0.1)) continue;
+      const L = Math.min(28, 10 + 14 * mag / Math.max(m.vs, 0.1)), a = Math.atan2(-Xv[1], Xv[0]), px = cx + x * K, py = cy - y * K; ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px + L * Math.cos(a), py + L * Math.sin(a)); ctx.stroke(); ctx.beginPath(); ctx.arc(px + L * Math.cos(a), py + L * Math.sin(a), 1.8, 0, 7); ctx.fill(); }
+  }
+  const trail = $('trails').checked;
+  const draw = (r, color, rad) => {
+    if (trail && r.path.length > 1) { ctx.strokeStyle = color.replace('1)', '0.22)'); ctx.lineWidth = 1; ctx.beginPath(); r.path.forEach((p, i) => { const px = cx + p[0] * K, py = cy - p[1] * K; i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }); ctx.stroke(); }
+    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(cx + (r.s[0] - m.xs) * K, cy - r.s[1] * K, rad, 0, 7); ctx.fill();
+  };
+  for (const r of sim.dust) draw(r, 'rgba(255,255,255,1)', 2.4);
+  for (const r of sim.rays) if (r.tag !== 'sph') draw(r, 'rgba(255,230,120,1)', 2.2);
+  ctx.restore();
+  // the ship
+  drawShip2D(P.ship, cx, cy, Math.max(9, Math.min(R * K * 0.3, 46)));
+  ctx.fillStyle = '#8a9bb8'; ctx.font = '13px sans-serif'; ctx.fillText(`${(2 * Wd).toPrecision(3)} m across`, cx - Wd * K + 6, cy + Wd * K - 8);
+  $('legend').innerHTML = hm ? `layer scale: ±${sci(hm.mx * ($('layer').value === 'rho' || $('layer').value === 'nec' ? W.RHO_TO_SI : 1), 1)} ${$('layer').value === 'tidal' ? '1/m²' : $('layer').value === 'shift' ? '(speed of light = 1)' : 'J/m³'}` : '';
+}
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now; let stepped = 0;
+  if (sim && running) {
+    const m = sim.m, target = dt * Math.max(m.R, 8) * 0.6, n = Math.min(400, Math.ceil(target / sim.simdt));
+    for (let i = 0; i < n; i++) sim.step(sim.simdt); stepped = n * sim.simdt;
+    for (const r of sim.rays.concat(sim.dust)) { if (!r.alive) continue; const last = r.path[r.path.length - 1]; r.path[r.path.length - 1] = [r.s[0] - m.xs, r.s[1]]; if (r.path.length < 2 || Math.hypot(last[0] - r.path[r.path.length - 1][0], last[1] - r.path[r.path.length - 1][1]) > view.W * 0.015) r.path.push([r.s[0] - m.xs, r.s[1]]); if (r.path.length > 50) r.path.shift(); }
+    $('status').textContent = field && !field.ready ? $('status').textContent : `lab time ${sim.t.toFixed(0)} m/c · bubble has moved ${sci(m.xs, 2)} m · ${sim.rays.filter(r => Math.hypot(r.s[0] - m.xs, r.s[1]) < 1.5 * m.R + 2 * m.cfg.wall).length} photons inside`;
+  }
+  if (mode === '3d' && view3d) { try { view3d.frame(dt, stepped, running); } catch (e) { console.error(e); mode = '2d'; setMode('2d'); } } else if (sim) drawBubble();
+  requestAnimationFrame(frame);
+}
+
+/* ---------------- plumbing ---------------- */
+let mode = '2d', view3d = null;
+function setMode(m) {
+  mode = m; $('v2d').classList.toggle('on', m === '2d'); $('v3d').classList.toggle('on', m === '3d');
+  $('scene').style.display = m === '2d' ? '' : 'none'; $('gl').style.display = m === '3d' ? '' : 'none'; $('ctl3d').style.display = m === '3d' ? '' : 'none';
+  $('banner').textContent = m === '3d' ? 'Drag to spin the bubble, wheel to zoom. The sheet is the chosen layer (valleys = negative); streaks are lab-frame stars, dots are space itself flowing past; yellow trails are light.' : 'Slice through the bubble (flight is left to right). Blue = negative energy density, red = positive. Photons (yellow) and dropped test masses (white) fly through the real metric.';
+  if (m === '3d' && view3d) view3d.resize();
+}
+async function load3d() {
+  try { const mod = await import('./warp-view3d.js'); SHIPS = mod.SHIPS; view3d = mod.createView3D($('gl'), { ship: () => P.ship, sim: () => sim, model: () => model, field: () => field, view: () => view, layer: () => $('layer').value }); view3d.rebuild(); view3d.resize(); view3d.bloom = $('bloom').checked; view3d.spin = $('spin').checked; return true; }
+  catch (e) { console.error('3D view unavailable', e); $('v3d').disabled = true; $('v3d').title = '3D needs Three.js (could not load)'; return false; }
+}
+$('v2d').onclick = () => setMode('2d');
+$('v3d').onclick = async () => { if (!view3d && !(await load3d())) return; setMode('3d'); };
+$('spin').onchange = () => { if (view3d) view3d.spin = $('spin').checked; };
+$('bloom').onchange = () => { if (view3d) view3d.bloom = $('bloom').checked; };
+document.querySelectorAll('[data-cam]').forEach(b => b.onclick = () => view3d && view3d.preset(b.dataset.cam));
+addEventListener('resize', () => { if (view3d) view3d.resize(); });
+$('layer').addEventListener('change', () => view3d && view3d.invalidate());
+let debounce = 0;
+function changed() { clearTimeout(debounce); debounce = setTimeout(rebuild, 120); }
+function rebuild() {
+  model = W.makeModel(cfg()); buildSim(); computeField(); if (view3d) view3d.rebuild();
+  setTimeout(() => { analyse(); profileChart(); }, 0);
+}
+$('layer').onchange = () => { };
+$('play').onclick = () => { running = !running; $('play').textContent = running ? 'pause' : 'play'; $('play').classList.toggle('on', running); };
+$('reset').onclick = () => { buildSim(); if (view3d) view3d.rebuild(); };
+addEventListener('keydown', e => { if (e.code === 'Space' && !/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) { e.preventDefault(); $('play').click(); } });
+window.__warp = { W, setMode, load3d, P, get sim() { return sim; }, get model() { return model; }, get analysis() { return analysis; } };
+syncUI(); rebuild(); requestAnimationFrame(frame);
+</script>
+</body>
+</html>

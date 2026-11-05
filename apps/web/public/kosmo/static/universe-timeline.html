@@ -180,6 +180,12 @@
   /* Locations: filter chips, sort, collapsible groups, highlighted type-ahead matches */
   #filters { margin: 6px 0 4px; } #chips { display: flex; flex-wrap: wrap; gap: 5px; }
   #chips button { padding: 3px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: var(--muted); font-size: 12px; cursor: pointer; white-space: nowrap; }
+  #skyCtl { margin: 6px 0 2px; font-size: 12px; color: var(--muted); } #skyCtl summary { cursor: pointer; } #skyCtl small { opacity: 0.6; margin-left: 4px; } #skyList { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 8px; margin: 4px 0; max-height: 132px; overflow: auto; }
+  .skyc { display: flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap; overflow: hidden; } .skyc.on { color: #fff; } .skyc span { overflow: hidden; text-overflow: ellipsis; } .skyc input { margin: 0; }
+  .cdot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; flex: none; box-shadow: 0 0 0 1px rgba(255,255,255,0.3); } #skyKinds { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; } #skyKinds button { padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: var(--muted); font-size: 11px; cursor: pointer; } #skyKinds button.on { color: #fff; border-color: rgba(127,195,255,0.6); background: rgba(127,195,255,0.22); } #skyKinds small { margin-left: 3px; }
+  .skyopt { display: flex; flex-wrap: wrap; gap: 4px 12px; } .skyopt select { max-width: 130px; font-size: 11px; }
+  #skyInfo { position: fixed; left: 14px; bottom: 14px; width: min(300px, 80vw); max-height: 45vh; overflow: auto; padding: 10px 12px; font-size: 12px; line-height: 1.45; z-index: 30; } #skyInfo h4 { margin: 0 0 4px; font-size: 14px; } #skyInfo .sk-x { position: absolute; right: 6px; top: 4px; background: none; border: 0; color: var(--muted); font-size: 16px; cursor: pointer; }
+  #skyInfo .sk-nat { font-size: 15px; } #skyInfo .sk-mean, #locCard .sk-mean { color: var(--muted); } #skyInfo .sk-story, #locCard .sk-story { margin-top: 4px; } .sk-row { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; } .sk-badge { margin-top: 3px; color: #9fd0ff; }
   #chips button small { opacity: 0.6; margin-left: 4px; } #chips button.on { color: #fff; background: rgba(127,195,255,0.22); border-color: rgba(127,195,255,0.6); } #chips button:hover { color: #fff; }
   #sortrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; font-size: 12px; color: var(--muted); } #sortrow select { margin-left: 6px; background: rgba(0,0,0,0.35); color: #e8eef8; border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 3px 6px; font-size: 12px; color-scheme: dark; } #sortrow .chk { cursor: pointer; }
   #results .grp { cursor: pointer; user-select: none; } #results .grp .cv { display: inline-block; width: 12px; transition: transform .2s ease; } #results .grp.closed .cv { transform: rotate(-90deg); } #results .grpbox.closed { display: none; }
@@ -393,6 +399,25 @@
   #help kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); font: inherit; }
   #label { position: absolute; z-index: 3; pointer-events: none; transform: translate(-50%, -140%); color: #fff; font-size: 14px; letter-spacing: 0.04em; text-shadow: 0 0 8px rgba(0,0,0,0.9); white-space: nowrap; }
   body.map-labels-off #syslabels, body.map-labels-off #label { display: none !important; }
+  /* Layers: a dropdown under the round Layers button */
+  #layersMenu { position: fixed; z-index: 30; width: 300px; max-height: calc(100vh - 80px); overflow-y: auto; padding: 10px 12px 12px; border-radius: 14px; font-size: 14px; line-height: 1.4; background: rgba(13,13,13,0.97); border: 1px solid var(--line2, #303133); box-shadow: 0 12px 40px rgba(0,0,0,0.6); text-shadow: none; }
+  #layersMenu[hidden] { display: none; }
+  #layersMenu h4 { margin: 10px 0 4px; font-size: 11px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  #layersMenu h4:first-child { margin-top: 2px; }
+  #layersMenu label.lyr { display: flex; align-items: center; gap: 10px; padding: 5px 4px; border-radius: 8px; cursor: pointer; }
+  #layersMenu label.lyr:hover { background: rgba(127,195,255,0.08); }
+  #layersMenu label.lyr small { display: block; color: var(--muted); font-size: 12px; }
+  #layersMenu input[type=checkbox] { appearance: none; width: 34px; height: 20px; margin: 0; flex: none; border-radius: 10px; background: rgba(255,255,255,0.14); position: relative; cursor: pointer; transition: background .15s; }
+  #layersMenu input[type=checkbox]::after { content: ""; position: absolute; left: 2px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: #dfe6ee; transition: transform .15s; }
+  #layersMenu input[type=checkbox]:checked { background: var(--accent); }
+  #layersMenu input[type=checkbox]:checked::after { transform: translateX(14px); background: #0b0d10; }
+  #layersMenu .wrow { display: grid; grid-template-columns: 58px 1fr 66px; align-items: center; gap: 8px; padding: 3px 4px; color: #b7c6da; }
+  #layersMenu .wrow input[type=range] { width: 100%; }
+  #layersMenu .wrow output { text-align: right; font-variant-numeric: tabular-nums; color: var(--accent); }
+  #layersMenu .lyrbtns { display: flex; gap: 6px; margin: 6px 0 2px; }
+  #layersMenu .lyrbtns button { flex: 1; margin: 0; font-size: 13px; padding: 6px 6px; background: rgba(26,26,26,0.85); border: 1px solid var(--line2, #303133); border-radius: 9px; color: var(--text); }
+  #layersMenu .lyrbtns button:hover { border-color: var(--accent); color: var(--accent); }
+  #layersMenu #lyrRead { margin-top: 6px; padding: 6px 8px; border-radius: 8px; background: rgba(255,255,255,0.05); color: #b7c6da; font-size: 12.5px; font-variant-numeric: tabular-nums; }
   button.orb.off { opacity: 0.55; } button.orb.off::after { content: ""; position: absolute; left: 9px; right: 9px; top: 50%; height: 1.6px; background: currentColor; transform: rotate(-35deg); }
   button.orb { position: relative; }
   #syslabels span { position: absolute; z-index: 2; pointer-events: none; transform: translate(-50%, 8px); color: rgba(220,232,250,0.85); font-size: 13px; letter-spacing: 0.03em; text-shadow: 0 0 6px rgba(0,0,0,0.95); white-space: nowrap; }
@@ -410,10 +435,22 @@
   <script src="accordion.js" defer></script>
 </head>
 <body>
+<div id="kosmoLoading" role="status" aria-live="polite"><div class="kl-box"><div class="kl-spin"></div><div class="kl-title">Loading the universe</div><div class="kl-msg" id="klMsg">Preparing the star map…</div><div class="kl-bar"><i id="klBar"></i></div></div></div>
+<style>
+#kosmoLoading{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.88);backdrop-filter:blur(3px);color:#e8e8e8;font:14px system-ui,sans-serif;transition:opacity .45s ease}
+#kosmoLoading.done{opacity:0;pointer-events:none}
+#kosmoLoading .kl-box{text-align:center;min-width:240px}
+#kosmoLoading .kl-spin{width:38px;height:38px;margin:0 auto 14px;border:3px solid rgba(255,255,255,.2);border-top-color:#e8e8e8;border-radius:50%;animation:klspin 1s linear infinite}
+#kosmoLoading .kl-title{font-size:16px;font-weight:600;margin-bottom:4px}
+#kosmoLoading .kl-msg{opacity:.7;margin-bottom:12px}
+#kosmoLoading .kl-bar{height:3px;background:rgba(255,255,255,.14);border-radius:2px;overflow:hidden}
+#kosmoLoading .kl-bar i{display:block;height:100%;width:8%;background:#e8e8e8;transition:width .3s}
+@keyframes klspin{to{transform:rotate(360deg)}}
+</style>
 <div id="view"></div>
 <canvas id="warp" aria-hidden="true"></canvas>
-<div id="locCard" class="glass" hidden></div><canvas id="snapdots"></canvas><div id="hoverRing"></div><div id="hoverTip"></div>
-<div id="navbar"><div id="logo"><div class="mark"></div><div><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div></div><nav id="menu"><a href="universe-timeline.html" class="here">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span class="orbwrap"><span class="dim" id="navTime"></span><button id="drawerBtn" class="orb" type="button" title="Chronicle: vertical timeline and map" aria-label="Chronicle" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></button><button id="destBtn" class="orb" type="button" title="Locations: travel to a destination" aria-label="Locations" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></button><button id="fxBtn" class="orb" type="button" title="Star effects" aria-label="Star effects" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.1 6.9L21 12l-6.9 2.1L12 21l-2.1-6.9L3 12l6.9-2.1z"/></svg></button><button id="flyBtn" class="orb" type="button" title="Flight mode (G)" aria-label="Flight mode" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3.2 2.4 4.6 5.6 4.6 9.2L12 21l-4.6-8.8C7.4 8.6 8.8 5.4 12 3z"/><circle cx="12" cy="10.5" r="1.6"/></svg></button><button id="labelsBtn" class="orb" type="button" title="Map labels: show or hide the names on the map (I)" aria-label="Map labels" aria-pressed="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12.2V5.5a2 2 0 0 1 2-2h6.7l8.3 8.3a2 2 0 0 1 0 2.8l-5.9 5.9a2 2 0 0 1-2.8 0z"/><circle cx="8" cy="8" r="1.4" fill="currentColor"/></svg></button></span></div>
+<div id="layersMenu" class="glass" role="menu" aria-label="Layers" hidden></div><div id="locCard" class="glass" hidden></div><canvas id="snapdots"></canvas><div id="hoverRing"></div><div id="hoverTip"></div>
+<div id="navbar"><div id="logo"><div class="mark"></div><div><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div></div><nav id="menu"><a href="universe-timeline.html" class="here">Kosmographica</a><a href="kosmopedia.html">Kosmopedia</a><a href="university.html">University</a><a href="domain.html?d=math">Math</a><a href="domain.html?d=physics">Physics</a><a href="domain.html?d=philosophy">Philosophy</a><a href="domain.html?d=models">Models</a><a href="chemistry.html">Chemistry</a><a href="contraption-sim.html">Simulator</a><a href="oracle/index.html">Oracle</a></nav><span class="orbwrap"><span class="dim" id="navTime"></span><button id="drawerBtn" class="orb" type="button" title="Chronicle: vertical timeline and map" aria-label="Chronicle" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></button><button id="destBtn" class="orb" type="button" title="Locations: travel to a destination" aria-label="Locations" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></button><button id="fxBtn" class="orb" type="button" title="Star effects" aria-label="Star effects" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.1 6.9L21 12l-6.9 2.1L12 21l-2.1-6.9L3 12l6.9-2.1z"/></svg></button><button id="layersBtn" class="orb" type="button" title="Layers: atmospheres, clouds, aurora, magnetosphere, solar wind" aria-label="Layers" aria-expanded="false" aria-haspopup="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 12.5l9 5 9-5"/><path d="M3 16.5l9 5 9-5"/></svg></button><button id="flyBtn" class="orb" type="button" title="Flight mode (G)" aria-label="Flight mode" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3.2 2.4 4.6 5.6 4.6 9.2L12 21l-4.6-8.8C7.4 8.6 8.8 5.4 12 3z"/><circle cx="12" cy="10.5" r="1.6"/></svg></button><button id="labelsBtn" class="orb" type="button" title="Map labels: show or hide the names on the map (I)" aria-label="Map labels" aria-pressed="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12.2V5.5a2 2 0 0 1 2-2h6.7l8.3 8.3a2 2 0 0 1 0 2.8l-5.9 5.9a2 2 0 0 1-2.8 0z"/><circle cx="8" cy="8" r="1.4" fill="currentColor"/></svg></button></span></div>
 <div id="top"><canvas id="timeline"></canvas><canvas id="minimap" title="Drag the window to pan the timeline"></canvas><div id="tl-handle" title="Click to show or hide the timeline; drag to resize it"></div><div id="tlbrush"></div><div id="tlzoom" title="Wheel: zoom at the pointer · drag: pan · double-click: zoom in · shift-drag: zoom to a range"><button id="tlOut" type="button" aria-label="Zoom out">−</button><button id="tlIn" type="button" aria-label="Zoom in">+</button><button id="tlFit" type="button" aria-label="Show the whole timeline">fit</button></div></div>
 <aside id="drawer">
   <div class="head"><h3 class="serif">Chronicle</h3><span class="dim" id="drawerWhen"></span></div>
@@ -532,7 +569,7 @@
 <aside id="nav" class="glass" aria-label="Locations">
   <div class="head"><h3>Locations</h3></div>
   <input type="text" id="search" placeholder="Travel to… (Proxima, Andromeda, Sgr A*, Jupiter, Crab Nebula)" autocomplete="off">
-  <div id="filters"><div id="chips" role="group" aria-label="Filter by kind"></div><div id="sortrow"><label>sort <select id="sortSel"><option value="name">A to Z</option><option value="sun">nearest the Sun</option><option value="view">nearest the view centre</option><option value="size">largest first</option></select></label><label class="chk"><input type="checkbox" id="placedOnly"> on the map</label></div></div>
+  <div id="filters"><div id="chips" role="group" aria-label="Filter by kind"></div><details id="skyCtl" open><summary>Sky cultures <small id="skySum"></small></summary><div id="skyList"></div><div id="skyKinds" role="group" aria-label="Filter sky-culture figures by kind"></div><div class="skyopt"><label class="chk"><input type="checkbox" id="skyObs"> include obsolete / variant</label><label class="chk"><input type="checkbox" id="skyBnd"> IAU boundaries</label><label class="chk">constellation <select id="conSel" disabled><option value="">any</option></select></label></div></details><div id="sortrow"><label>sort <select id="sortSel"><option value="name">A to Z</option><option value="sun">nearest the Sun</option><option value="view">nearest the view centre</option><option value="size">largest first</option></select></label><label class="chk"><input type="checkbox" id="placedOnly"> on the map</label></div></div>
   <span class="dim" id="catStatus">built-in destinations</span>
   <div id="results"></div>
   <div class="line">
@@ -673,10 +710,13 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import * as P from './sim-physics.js?v=20261029b';
 import { createModel, textures } from './kosmo-models.js';
+import { poleEquatorial } from './ring-system.js';
+import { layers } from './layers.js';
 import { makeTiledCloud } from './cosmic-web.js';
 import * as SB from './scale-balance.js';
 import { HISTORY } from './history-taxonomy.js';
-fetch('textures/index.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => { if (j) for (const [k, v] of Object.entries(j)) textures.register(k, v); }).catch(() => {});
+// top-level await: the registry must be filled BEFORE any body model is built (bodyMat reads textures.urlFor once, at creation)
+try { const j = await fetch('textures/index.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null); if (j) for (const [k, v] of Object.entries(j)) textures.register(k, v); } catch (e) { console.warn('texture index', e); }
 const MASS = { Mercury: 3.301e23, Venus: 4.867e24, Earth: 5.972e24, Mars: 6.417e23, Jupiter: 1.898e27, Saturn: 5.683e26, Uranus: 8.681e25, Neptune: 1.024e26, Pluto: 1.303e22, Moon: 7.346e22 };
 
 // ---------------------------------------------------------------------------
@@ -1039,7 +1079,7 @@ const rnd = () => { seed = (seed + 0x6D2B79F5) >>> 0; let t = seed; t = Math.imu
 const gauss = () => Math.sqrt(-2 * Math.log(1 - rnd())) * Math.cos(2 * Math.PI * rnd());
 // ---- Star look: sprite shapes, halo, twinkle, brightness. Every point cloud registers its material here, and the
 // "Stars" drawer (the sparkle button) edits `fx`; choices persist in localStorage ("kosmoFx"). ----
-const FX_DEFAULTS = { shape: 'round', size: 1, halo: 0.7, spike: 0.7, rot: 0, twinkle: 0, gain: 1, additive: true, real: true, exposure: 1, trail: 0.6, warp: false, warpAmt: 1, flight: 'instant', pull: 1, flightSpeed: 1, ease: 'smooth', arc: 0 };
+const FX_DEFAULTS = { shape: 'round', size: 1, halo: 0.7, spike: 0.7, rot: 0, twinkle: 0, gain: 1, additive: true, real: true, exposure: 1, trail: 0, warp: false, warpAmt: 1, flight: 'instant', pull: 1, flightSpeed: 1, ease: 'smooth', arc: 0 };
 const fx = { ...FX_DEFAULTS };
 try { Object.assign(fx, JSON.parse(localStorage.getItem('kosmoFx') || '{}')); if (!localStorage.getItem('kosmoFxStreaksOff')) { fx.warp = false; localStorage.setItem('kosmoFxStreaksOff', '1'); } if (!localStorage.getItem('kosmoFxInstant')) { fx.flight = 'instant'; localStorage.setItem('kosmoFxInstant', '1'); } } catch { /* storage blocked or bad JSON: defaults */ }   // streak effects are off unless the user switches them on (one-time reset of older saved settings)
 window.kosmoTimeline.fx = fx;   // debug hook
@@ -1150,7 +1190,7 @@ function webCloud(n, rMpc, opacity) {   // a point cloud that fills itself from 
 }
 function fillWebCloud(pts, D) {   // positions for growth D (1 = today), in units of the cloud's own radius
   const u = pts.userData; if (!WEB.data) return false;
-  if (!u.tc) u.tc = makeTiledCloud(WEB.data, { n: u.n, R: u.rMpcH, seed: 11 + u.n % 97, bias: u.rMpcH < 2000 ? 0.9 : 0.4 });
+  if (!u.tc) u.tc = makeTiledCloud(WEB.data, { n: u.n, R: u.rMpcH, seed: 11 + u.n % 97, bias: u.rMpcH < 2000 ? 0.9 : 0.12 });
   const pos = pts.geometry.attributes.position.array, col = pts.geometry.attributes.color.array, sc = 1 / u.rMpcH;
   u.tc.eval(D, pos, col); for (let i = 0, m = u.tc.n * 3; i < m; i++) pos[i] *= sc;
   pts.geometry.userData.n = u.tc.n; pts.geometry.setDrawRange(0, Math.floor(u.tc.n * Math.min(1, Math.max(0.05, quality.applied > 0 ? quality.applied : 1))));   // only the points the sampler placed
@@ -1243,6 +1283,11 @@ function updateSky() {   // build the packed systems a few per frame so the firs
   if (!skyPack().on) return;
   let n = 0; for (const H of SKY_HOSTS.slice(0, state.skyN)) { if (SYSTEMS.has(H.key)) continue; systemFor(H.key); if (++n >= 3) break; }
 }
+const POLE_CACHE = new Map();
+function poleOf(name) {   // IAU north pole (J2000 equatorial) -> ecliptic -> the scene frame
+  if (!POLE_CACHE.has(name)) { const q = poleEquatorial(name); if (!q) return null; const e = 23.4392911 * Math.PI / 180; POLE_CACHE.set(name, gsv(q[0], q[1] * Math.cos(e) + q[2] * Math.sin(e), -q[1] * Math.sin(e) + q[2] * Math.cos(e)).normalize()); }
+  return POLE_CACHE.get(name);
+}
 function updateSolar(g) {
   const t = simT(), Lo = layout(), { pos, r } = Lo;
   if (g.userData.nMoons !== MOONS.length) addMoonModels(g);
@@ -1255,6 +1300,8 @@ function updateSolar(g) {
     m.scale.setScalar(r[name] / AU);
     if (m.userData.lightDir) m.userData.lightDir.copy(m.position).multiplyScalar(-1).normalize();   // lit from the Sun
     m.rotation.y = spinAngle(name, t);
+    m.userData.helioAU = m.position.length();   // AU from the Sun: the solar wind a planet's magnetosphere meets thins with distance
+    if (m.userData.rings) { m.userData.rings.setPole(poleOf(name)); m.userData.rings.setSimSeconds((clock.jd - 2451545) * 86400); }   // ring plane = the planet's equator; Kepler motion follows the simulation clock
   }
   for (const mo of MOONS) { const line = g.userData.moonOrbits[mo.name], pp = pos[mo.parent]; if (!line || !pp || !(mo.shownA > 0)) continue; line.position.set((pp[0] - SUN[0]) / AU, (pp[2] - SUN[2]) / AU, -(pp[1] - SUN[1]) / AU); line.scale.setScalar(mo.shownA / AU); }
   for (const m of g.userData.models) m.tick(t);
@@ -1380,9 +1427,9 @@ function desiDetail(force) {
 async function loadDesi() {
   try {
     const [meta, nodes, buf] = await Promise.all([
-      fetch('../data/desi/desi_dr1_cone.meta.json', { cache: 'no-store' }).then(r => r.json()),
-      fetch('../data/desi/desi_dr1_cone.nodes.json', { cache: 'no-store' }).then(r => r.json()),
-      fetch('../data/desi/desi_dr1_cone.f32', { cache: 'no-store' }).then(r => r.arrayBuffer()),
+      fetch('../data/desi/desi_dr1_cone.meta.json').then(r => r.json()),
+      fetch('../data/desi/desi_dr1_cone.nodes.json').then(r => r.json()),
+      fetch('../data/desi/desi_dr1_cone.f32').then(r => r.arrayBuffer()),
     ]);
     const n = Math.floor(buf.byteLength / 16); if (!n) throw 0;
     DESI.meta = meta; DESI.nodes = nodes; DESI.src = new Float32Array(buf); DESI.count = n;
@@ -1543,7 +1590,7 @@ function exoShownR(name) { for (const S of SYSTEMS.values()) if (S.lay.r[name] !
 function exoExag(name) { for (const S of SYSTEMS.values()) if (S.lay.exag[name] != null) return S.lay.exag[name]; return undefined; }
 async function loadCatalog() {
   try {
-    const r = await fetch('catalog/objects.json', { cache: 'no-store' }); if (!r.ok) throw 0;
+    const r = await fetch('catalog/objects.json'); if (!r.ok) throw 0;
     const rows = await r.json(), byName = new Map();
     const add = o => { if (!o.name || byName.has(o.name.toLowerCase())) return; byName.set(o.name.toLowerCase(), o); const i = DEST.findIndex(d => d.name.toLowerCase() === o.name.toLowerCase()); if (i >= 0 && !DEST[i].meta) DEST[i] = o; else DEST.push(o); };   // a catalogue row replaces the built-in entry of the same name
     let n = 0;
@@ -1589,8 +1636,12 @@ async function loadCatalog() {
     goHash();
   } catch { $('catStatus').textContent = `${DEST.length} built-in destinations (catalog/objects.json not found yet)`; }
 }
-loadCatalog();
-loadDesi(); Object.assign(window.kosmoTimeline, { goDest, DEST, CENSUS, camera, controls });   // debug hook
+const klMsg = t => { const e = document.getElementById('klMsg'); if (e) e.textContent = t; }, klBar = f => { const e = document.getElementById('klBar'); if (e) e.style.width = Math.round(f * 100) + '%'; };
+klMsg('Loading the object catalogue…'); klBar(0.3);
+loadCatalog().finally(() => { klBar(0.9); klMsg('Rendering…'); window.__kosmoCatalogDone = true; });
+// the 54 MB DESI light cone is only a level of its own: fetch it once the map is up, not before the first frame
+{ const later = () => loadDesi(); setTimeout(() => ('requestIdleCallback' in window ? requestIdleCallback(later, { timeout: 8000 }) : later()), 2500); }
+Object.assign(window.kosmoTimeline, { goDest, DEST, CENSUS, camera, controls });   // debug hook
 function goHash() {
   const m = /go=([^&]+)/.exec(location.hash); if (!m) return;
   const q = decodeURIComponent(m[1]).toLowerCase(), d = DEST.find(d => d.name.toLowerCase() === q) || DEST.find(d => d.name.toLowerCase().includes(q));
@@ -1718,6 +1769,7 @@ function applyScalePreset(p) {
   syncScaleBars(); fxApply(false);
 }
 function goDest(d, force) {
+  try { skyInfoFor(d); } catch { /* sky info is optional */ }
   if (d.name && !d.census) { try { noteRecent(d.name); } catch { /* list not ready */ } }
   if (!d.pos && !d.preset && !d.census) { toast(`${d.name} has no position in the catalogue`); return; }
   if (helm.on && !force && !d.census) { setCourse(d); return; }
@@ -1985,6 +2037,7 @@ function previewFor(d) {
   const cls = (c) => `class="pv ${c}"`;
   if (d.census || d.preset || d.skyView || t === 'view') return `<i ${cls('sq')} style="background: conic-gradient(from 210deg at 50% 50%, #35507a, #6c4a8a, #35507a); background-size: cover"><svg viewBox="0 0 36 36" width="36" height="36" style="position:absolute;inset:0"><circle cx="18" cy="18" r="3" fill="#fff"/><circle cx="18" cy="18" r="9" fill="none" stroke="#fff8" stroke-width="1"/><circle cx="18" cy="18" r="15" fill="none" stroke="#fff5" stroke-width="1"/></svg></i>`;
   if (d.scale != null || t === 'scale') return `<i ${cls('sq')} style="background:#10131c"><svg viewBox="0 0 36 36" width="36" height="36" style="position:absolute;inset:0"><path d="M6 24h24M6 24v-4M12 24v-2M18 24v-4M24 24v-2M30 24v-4" stroke="#9fb4d8" stroke-width="1.4" fill="none"/><circle cx="18" cy="13" r="3" fill="#ffd37a"/></svg></i>`;
+  if (t === 'skyfigure') return skyPreview(d);
   if (t === 'constellation') return `<i ${cls('sq')} style="background:#0b0e18"><svg viewBox="0 0 36 36" width="36" height="36" style="position:absolute;inset:0"><path d="M7 26L14 15L22 20L29 8M22 20L27 29" stroke="#7fa7ff" stroke-width="1" fill="none" opacity=".8"/><g fill="#fff"><circle cx="7" cy="26" r="1.6"/><circle cx="14" cy="15" r="2.2"/><circle cx="22" cy="20" r="1.8"/><circle cx="29" cy="8" r="1.6"/><circle cx="27" cy="29" r="1.4"/></g></svg></i>`;
   if (t === 'star' || t === 'white dwarf') { const T = o.temperature_K > 0 ? o.temperature_K : (t === 'white dwarf' ? 12000 : 5500), c = bbRGB(T).map(v => Math.round(v * 255)).join(','), L = o.luminosity_W > 0 ? o.luminosity_W / 3.828e26 : 1, r = clamp(26 + 8 * Math.log10(Math.max(L, 1e-4)) / 2, 12, 46); return `<i ${cls('')} style="background: radial-gradient(circle, #fff 0 ${Math.round(r * 0.18)}%, rgba(${c},1) ${Math.round(r * 0.45)}%, rgba(${c},0.35) ${Math.round(r * 0.8)}%, transparent 100%), #05060a"></i>`; }
   if (t === 'galaxy') { const spiral = /spiral|SA|SB|S[abc]|barred/i.test(o.notes || '') || !/elliptical|dwarf|dE|dSph|irr/i.test(o.notes || ''); return spiral ? `<i ${cls('')} style="background: radial-gradient(circle, #fff0c0 0 10%, rgba(255,214,150,0.9) 18%, transparent 34%), conic-gradient(from 20deg, rgba(120,160,255,0.9), rgba(40,60,120,0.1) 22%, rgba(120,160,255,0.9) 50%, rgba(40,60,120,0.1) 72%, rgba(120,160,255,0.9)), #05060a; -webkit-mask: radial-gradient(circle, #000 55%, transparent 74%); mask: radial-gradient(circle, #000 55%, transparent 74%)"></i>` : `<i ${cls('')} style="background: radial-gradient(ellipse 80% 55%, rgba(255,226,170,0.95), rgba(220,170,110,0.5) 45%, transparent 75%), #05060a"></i>`; }
@@ -2003,10 +2056,15 @@ function previewFor(d) {
   }
   return `<i ${cls('')} style="background: radial-gradient(circle, rgba(200,215,255,0.9) 0 8%, rgba(120,150,220,0.3) 24%, transparent 55%), #05060a"></i>`;
 }
+function skyTag(d) { const cid = cultureOf(d); if (!cid) return ''; return `<i class="cdot" style="background:${esc(skyColour(cid))}"></i> ${esc(skyName(cid))} · ${esc(d.fig ? d.fig.kind : 'constellation')}`; }
+function skyPreview(d) {
+  const col = esc(skyColour(d.fig.cultureId)), cloud = d.fig.polygon && !(d.fig.lines && d.fig.lines.length);
+  return `<i class="pv sq" style="background:#0b0e18"><svg viewBox="0 0 36 36" width="36" height="36" style="position:absolute;inset:0">${cloud ? `<path d="M6 22C5 12 14 6 22 9c8 2 10 10 6 16-4 6-13 8-18 3z" fill="${col}" fill-opacity=".25" stroke="${col}" stroke-width="1.2" stroke-dasharray="2 1.5"/>` : `<path d="M7 26L14 15L22 20L29 8M22 20L27 29" stroke="${col}" stroke-width="1.2" fill="none"/><g fill="#fff"><circle cx="7" cy="26" r="1.6"/><circle cx="14" cy="15" r="2.2"/><circle cx="22" cy="20" r="1.8"/><circle cx="29" cy="8" r="1.6"/><circle cx="27" cy="29" r="1.4"/></g>`}</svg></i>`;
+}
 function destButton(d, ql) {
   const row = document.createElement('div'); row.className = 'drow'; row._d = d;
   const b = document.createElement('button'); b.className = 'dest';
-  b.innerHTML = `<span class="l">${previewFor(d)}<span class="nm">${hl(d.name, ql)}</span></span><small>${d.type || ''}${d.viaParent ? ' · via ' + d.parent : ''}${d.unplaced ? ' · no sky position' : ''}</small>`;
+  b.innerHTML = `<span class="l">${previewFor(d)}<span class="nm">${hl(d.name, ql)}</span></span><small>${skyTag(d) || d.type || ''}${d.viaParent ? ' · via ' + d.parent : ''}${d.unplaced ? ' · no sky position' : ''}</small>`;
   b.addEventListener('click', () => { if (d.unplaced) { toast(`${d.name} has no position in the catalogue; open it in Kosmopedia (↗)`); return; } goDest(d); $('search').value = d.name; });
   row.appendChild(b);
   if (pinnable(d)) row.appendChild(eyeButton(VIS.set.has(d.name), 'Show this place on the map, at any scale', () => { setPinned(d, !VIS.set.has(d.name)); refreshEyes(); }));
@@ -2022,7 +2080,7 @@ function destButton(d, ql) {
     const o = d.meta || {}, pos = d.pos && !d.unplaced ? at(typeof d.pos === 'function' ? d.pos() : d.pos) : null, here = pos ? dist3(pos, focus) : null, sun = pos ? dist3(pos, SUN) : null;
     const bits = [o.discovery_year ? `discovered ${o.discovery_year}` : '', o.parent ? `in ${o.parent}` : '', o.redshift != null && Math.abs(o.redshift) > 1e-4 ? `redshift ${(+o.redshift).toPrecision(3)}` : ''].filter(Boolean);
     const note = String(o.notes || '').replace(/morphology: ?/i, 'type ').split(';').slice(0, 3).join(' · ').slice(0, 240);
-    card.innerHTML = `<div class="lt">${d.type || 'place'}</div><h4>${d.name}</h4>${physicsLine(o) ? `<div class="lp">${physicsLine(o)}</div>` : ''}`
+    card.innerHTML = `<div class="lt">${d.fig ? d.fig.kind : d.type || 'place'}</div><h4>${d.name}</h4>${skyCardHtml(d)}${physicsLine(o) ? `<div class="lp">${physicsLine(o)}</div>` : ''}`
       + (pos ? `<div class="ld">${P.fmtLength(here)} from the view centre${sun != null ? ' · ' + P.fmtLength(sun) + ' from the Sun' : ''}</div>` : `<div class="ld">${d.unplaced ? 'no position in the catalogue' : 'view'}</div>`)
       + (bits.length ? `<div class="ld">${bits.join(' · ')}</div>` : '') + (note ? `<div class="ln">${note}</div>` : '') + `<div class="lg">click to fly there${o.id != null ? ' · ↗ opens its Kosmopedia page' : ''}</div>`;
     card.hidden = false; const r = row.getBoundingClientRect(), cw = card.offsetWidth, ch = card.offsetHeight;
@@ -2052,7 +2110,37 @@ scene.add(VIS.group);
 try { for (const n of JSON.parse(localStorage.getItem('kosmoVisible') || '[]')) VIS.set.add(n); } catch { /* none saved */ }
 const EYE_ON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
 const EYE_OFF = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 5.2A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.6 6.7A17 17 0 0 0 2 12s3.6 7 10 7c1.6 0 3-.4 4.3-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
-const LOC = { chip: 'all', sort: 'name', placed: false, closed: new Set() };
+const LOC = { chip: 'all', sort: 'name', placed: false, closed: new Set(), con: null };
+// ---- sky-culture state (declared early: the Locations list reads it) ----
+const SKY = { index: null, byId: new Map(), sel: new Set(['western']), loaded: new Map(), loading: new Map(), kinds: new Set(), obsolete: false, bnd: false };
+const SKY_KINDS = ['constellation', 'asterism', 'mansion', 'dark-cloud', 'zodiac'], SKY_WESTERN = '#7fa7ff';
+try { const s = JSON.parse(localStorage.getItem('kosmoSkyCultures') || 'null'); if (Array.isArray(s) && s.length) SKY.sel = new Set(s); SKY.kinds = new Set(JSON.parse(localStorage.getItem('kosmoSkyKinds') || '[]')); SKY.obsolete = localStorage.getItem('kosmoSkyObs') === '1'; SKY.bnd = localStorage.getItem('kosmoSkyBnd') === '1'; } catch { /* defaults */ }
+const saveSky = () => { try { localStorage.setItem('kosmoSkyCultures', JSON.stringify([...SKY.sel])); localStorage.setItem('kosmoSkyKinds', JSON.stringify([...SKY.kinds])); localStorage.setItem('kosmoSkyObs', SKY.obsolete ? '1' : '0'); localStorage.setItem('kosmoSkyBnd', SKY.bnd ? '1' : '0'); } catch { /* storage blocked */ } };
+const cultureOf = d => d.fig ? d.fig.cultureId : d.type === 'constellation' ? 'western' : null;
+const skyColour = id => SKY.byId.get(id)?.color || SKY_WESTERN;
+const hexInt = h => /^#[0-9a-f]{6}$/i.test(String(h)) ? parseInt(h.slice(1), 16) : 0xc8d0e0;
+const skyName = id => SKY.byId.get(id)?.name || (id === 'western' ? 'Western (IAU)' : id);
+function skyShown(d, ignoreKind) {   // is this destination switched on by the Sky culture controls (always true for anything that is not a figure)
+  const cid = cultureOf(d); if (!cid) return true;
+  if (!SKY.sel.has(cid)) return false;
+  const f = d.fig; if (!ignoreKind && SKY.kinds.size && !SKY.kinds.has(f ? f.kind : 'constellation')) return false;
+  if (f && !SKY.obsolete && /obsolete|superseded|variant/.test(f.status || '')) return false;
+  return true;
+}
+// ---- constellation names and the object -> constellation lookup ----
+const CONLOOK = new Map(), CONNAME = new Map(); let OBJCON = null;
+function conIndex() { if (!CONST.data) return; for (const c of CONST.data.constellations) { CONNAME.set(c.abbr, c.name); for (const k of [c.name, c.latin, c.abbr]) if (k) CONLOOK.set(String(k).toLowerCase(), c.abbr); } }
+const normCon = v => v == null || v === '' ? null : CONLOOK.get(String(v).toLowerCase()) || String(v);
+const objConst = d => d.constellation?.abbr || normCon(d.meta?.constellation) || (OBJCON && d.meta?.id != null ? normCon(OBJCON[d.meta.id]) : null) || null;
+function parseIn(ql) {   // "in:Orion rigel" / in:"Canis Major" / in:canis_major -> { abbr, rest }
+  const m = /(^|\s)in:\s*/.exec(ql); if (!m) return { abbr: null, rest: ql };
+  const before = ql.slice(0, m.index).trim(); let after = ql.slice(m.index + m[0].length), quoted = /^["']([^"']*)["']\s*(.*)$/.exec(after);
+  if (quoted) { const a = normCon(quoted[1].replace(/_/g, ' ')); return { abbr: CONLOOK.has(quoted[1].toLowerCase()) ? a : (a && CONNAME.has(a) ? a : '?none'), rest: `${before} ${quoted[2]}`.trim() }; }
+  const tok = after.split(/\s+/).filter(Boolean);
+  for (let n = Math.min(tok.length, 3); n >= 1; n--) { const key = tok.slice(0, n).join(' ').replace(/_/g, ' '); if (CONLOOK.has(key)) return { abbr: CONLOOK.get(key), rest: `${before} ${tok.slice(n).join(' ')}`.trim() }; }
+  const first = (tok[0] || '').replace(/_/g, ' '), pre = first ? [...new Set([...CONLOOK].filter(([k]) => k.startsWith(first)).map(([, a]) => a))] : [];
+  return { abbr: pre.length === 1 ? pre[0] : '?none', rest: `${before} ${tok.slice(1).join(' ')}`.trim() };
+}
 const FAMILIES = [['all', 'All', () => true], ['recent', 'Recent', null],
   ['views', 'Views', d => d.type === 'view' || d.type === 'scale'], ['constellation', 'Constellations', d => d.type === 'constellation'],
   ['solar', 'Planets & moons', d => /^(planet|dwarf planet|moon|asteroid|comet)$/.test(d.type)], ['star', 'Stars', d => d.type === 'star' || d.type === 'white dwarf'],
@@ -2076,16 +2164,16 @@ function sortItems(items) {
 function drawChips(counts) {
   const box = $('chips'); box.innerHTML = '';
   for (const [id, label] of [...FAMILIES.map(f => [f[0], f[1]]), ['other', 'Other']]) {
-    const n = id === 'all' ? DEST.length : id === 'recent' ? RECENT.length : counts[id] || 0; if (!n && id !== 'all') continue;
+    const n = id === 'all' ? DEST.filter(d => skyShown(d)).length : id === 'recent' ? RECENT.length : counts[id] || 0; if (!n && id !== 'all') continue;
     const b = document.createElement('button'); b.type = 'button'; b.className = LOC.chip === id ? 'on' : ''; b.innerHTML = `${label}<small>${n.toLocaleString()}</small>`;
     b.addEventListener('click', () => { LOC.chip = id; showResults($('search').value); }); box.appendChild(b);
   }
 }
 function showResults(q) {
   results.innerHTML = '';
-  const ql = (q || '').trim().toLowerCase(), counts = {}; for (const d of DEST) { const f = familyOf(d); counts[f] = (counts[f] || 0) + 1; }
+  let ql = (q || '').trim().toLowerCase(); const inq = parseIn(ql), conF = inq.abbr || LOC.con || null, pool = DEST.filter(d => skyShown(d)), counts = {}; ql = inq.rest; for (const d of pool) { const f = familyOf(d); counts[f] = (counts[f] || 0) + 1; }
   drawChips(counts);
-  const fam = FAMILIES.find(f => f[0] === LOC.chip), keep = d => (!LOC.placed || (d.pos && !d.unplaced)) && (LOC.chip === 'all' || (LOC.chip === 'recent' ? RECENT.includes(d.name) : LOC.chip === 'other' ? familyOf(d) === 'other' : fam[2](d)));
+  const fam = FAMILIES.find(f => f[0] === LOC.chip), keep = d => (!conF || objConst(d) === conF) && (!LOC.placed || (d.pos && !d.unplaced)) && (LOC.chip === 'all' || (LOC.chip === 'recent' ? RECENT.includes(d.name) : LOC.chip === 'other' ? familyOf(d) === 'other' : fam[2](d)));
   const section = (title, items, collapsible) => {
     const head = document.createElement('div'); head.className = 'grp' + (LOC.closed.has(title) ? ' closed' : ''); head.innerHTML = `<span><span class="cv">▾</span> ${esc(title)}</span><span>${items.length.toLocaleString()}</span>`;
     const eg = groupEye(items); const cnt = head.lastElementChild; head.insertBefore(eg, cnt);
@@ -2093,13 +2181,13 @@ function showResults(q) {
     if (collapsible) head.addEventListener('click', e => { if (e.target.closest && e.target.closest('button.eye')) return; const c = !LOC.closed.has(title); c ? LOC.closed.add(title) : LOC.closed.delete(title); head.classList.toggle('closed', c); box.classList.toggle('closed', c); });
   };
   if (ql) {   // type-ahead: one ranked list, best matches first, the matching letters highlighted
-    const hits = DEST.filter(keep).map(d => [d, matchScore(d, ql)]).filter(x => x[1] < 9); hits.sort((a, b) => a[1] - b[1] || a[0].name.localeCompare(b[0].name));
+    const hits = pool.filter(keep).map(d => [d, matchScore(d, ql)]).filter(x => x[1] < 9); hits.sort((a, b) => a[1] - b[1] || a[0].name.localeCompare(b[0].name));
     const ranked = LOC.sort === 'name' ? hits.map(x => x[0]) : sortItems(hits.map(x => x[0]));
     section(`matches for "${q.trim()}"`, ranked, false); return;
   }
-  const items = DEST.filter(keep);
+  const items = pool.filter(keep);
   if (LOC.chip !== 'all') { section(fam ? fam[1] : 'Other', sortItems(items), false); return; }
-  const recent = RECENT.map(n => DEST.find(d => d.name === n)).filter(Boolean); if (recent.length && !LOC.placed) section('Recent', recent, true);
+  const recent = RECENT.map(n => DEST.find(d => d.name === n)).filter(d => d && skyShown(d) && (!conF || objConst(d) === conF)); if (recent.length && !LOC.placed) section('Recent', recent, true);
   const groups = new Map(); for (const d of items) { const f = familyOf(d); if (!groups.has(f)) groups.set(f, []); groups.get(f).push(d); }
   for (const [id, label] of [...FAMILIES.filter(f => f[0] !== 'all' && f[0] !== 'recent').map(f => [f[0], f[1]]), ['other', 'Other']]) if (groups.has(id)) section(label, sortItems(groups.get(id)), true);
 }
@@ -2716,18 +2804,19 @@ function updateConstellation(k) {
   if (!ent) { CONST.group.visible = false; return; }
   if (CONST.active !== name) {   // build this figure
     CONST.active = name; CONST.group.clear();
-    const { c, starPos } = ent, j = CONST.data, segs = [], ids = [];
+    const { c, starPos } = ent, j = CONST.data || { stars: {} }, segs = [], ids = [];
+    if (ent.cloud) { ent.cloudAct = ent.cloudAct || makeCloud(ent); CONST.group.add(ent.cloudAct.group); }
     for (const poly of c.figure) for (let i = 0; i + 1 < poly.length; i++) { segs.push(poly[i], poly[i + 1]); }
     const used = [...new Set(segs)].filter(id => starPos(id)); ent.ids = used; ent.segs = segs;
-    ent.line = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(segs.length * 3), 3)), new THREE.LineBasicMaterial({ color: 0x7fa7ff, transparent: true, opacity: 0.65, depthTest: false }));
+    ent.line = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(segs.length * 3), 3)), new THREE.LineBasicMaterial({ color: ent.colorInt || 0x7fa7ff, transparent: true, opacity: 0.65, depthTest: false }));
     ent.line.frustumCulled = false;
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(used.length * 3), 3)); g.setAttribute('aSize', new THREE.BufferAttribute(new Float32Array(used.length), 1)); g.setAttribute('aColor', new THREE.BufferAttribute(new Float32Array(used.length * 3), 3)); g.setAttribute('aKind', new THREE.BufferAttribute(new Float32Array(used.length).fill(1), 1));
-    ent.sizes = []; used.forEach((id, i) => { const st = j.stars[id], col = CONST_STAR_COLOUR[String(st[5] || 'G')[0]] || CONST_STAR_COLOUR.G; g.attributes.aColor.setXYZ(i, ...col); ent.sizes[i] = clamp(22 - 3.2 * (st[3] ?? 4), 8, 40); g.attributes.aSize.setX(i, ent.sizes[i]); });
+    ent.sizes = []; used.forEach((id, i) => { const st = ent.stars ? ent.stars(id) : j.stars[id], col = CONST_STAR_COLOUR[String(st[5] || 'G')[0]] || CONST_STAR_COLOUR.G; g.attributes.aColor.setXYZ(i, ...col); ent.sizes[i] = clamp(22 - 3.2 * (st[3] ?? 4), 8, 40); g.attributes.aSize.setX(i, ent.sizes[i]); });
     ent.pts = new THREE.Points(g, CENSUS_SPRITE_MAT); ent.pts.frustumCulled = false; CONST.group.add(ent.line, ent.pts);
     // the line of sight from the Sun (us) to the figure: the shape only exists from here, because its stars lie at very different distances along it
     ent.sun = new THREE.Line(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3)), new THREE.LineBasicMaterial({ color: 0xffd37a, transparent: true, opacity: 0.35, depthTest: false })); ent.sun.frustumCulled = false; CONST.group.add(ent.sun);
   }
-  CONST.group.visible = true; CENSUS_SPRITE_MAT.uniforms.uPx.value = renderer.getPixelRatio();
+  CONST.group.visible = true; CENSUS_SPRITE_MAT.uniforms.uPx.value = renderer.getPixelRatio(); if (ent.cloudAct) ent.cloudAct.update(k);
   const lp = ent.line.geometry.attributes.position, pp = ent.pts.geometry.attributes.position, cache = new Map();
   const sceneOf = id => { let v = cache.get(id); if (!v) { v = toScene(at(ent.starPos(id)), focus, k); cache.set(id, v); } return v; };
   const off = v => Math.hypot(v[0], v[1], v[2]) > FAR_SCENE;
@@ -2737,7 +2826,178 @@ function updateConstellation(k) {
   lp.needsUpdate = true; pp.needsUpdate = true;
   if (ent.sun) { const a = toScene(SUN, focus, k), dd = DEST.find(x => x.name === name), b = dd ? toScene(at(dd.pos), focus, k) : a, sp = ent.sun.geometry.attributes.position; const fa = Math.hypot(a[0], a[1], a[2]) > FAR_SCENE || Math.hypot(b[0], b[1], b[2]) > FAR_SCENE; sp.setXYZ(0, fa ? 0 : a[0], fa ? 0 : a[1], fa ? 0 : a[2]); sp.setXYZ(1, fa ? 0 : b[0], fa ? 0 : b[1], fa ? 0 : b[2]); sp.needsUpdate = true; }
 }
-loadConstellations();
+CONST.ready = loadConstellations();
+// ---- sky cultures: other peoples' star patterns (skycultures/index.json + one lazily-loaded file per culture). Every figure becomes a destination that is
+// searched, flown to and pinned like an IAU constellation, drawn in its culture's colour between the same real 3D stars. All of it is optional. ----
+// ---- geometry helpers ----
+const skyUnit = (ra, dec) => { const [l, b] = eqToGal(ra, dec), L = l * Math.PI / 180, B = b * Math.PI / 180; return [Math.cos(B) * Math.cos(L), Math.cos(B) * Math.sin(L), Math.sin(B)]; };   // unit vector, galactic axes
+const sceneAx = v => [v[0], v[2], -v[1]];
+const vnorm = v => { const n = Math.hypot(v[0], v[1], v[2]) || 1; return [v[0] / n, v[1] / n, v[2] / n]; };
+const vdot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+function slerpArc(a, b, maxDeg) { const ang = Math.acos(clamp(vdot(a, b), -1, 1)) * 180 / Math.PI, n = Math.max(1, Math.ceil(ang / maxDeg)), out = []; for (let i = 0; i < n; i++) { const t = i / n; out.push(vnorm([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t])); } return out; }
+function dirCentroid(radec) { const s = [0, 0, 0]; for (const [ra, dec] of radec) { const u = skyUnit(ra, dec); s[0] += u[0]; s[1] += u[1]; s[2] += u[2]; } return Math.hypot(...s) > 1e-6 ? vnorm(s) : null; }
+// a dark cloud / outline: a translucent filled polygon + outline lying on a sphere of radius R round the Sun (fill triangulated in a stereographic projection, then refined onto the sphere)
+function cloudGeometry(poly) {
+  const ring = poly.map(([ra, dec]) => skyUnit(ra, dec)), edge = [];
+  for (let i = 0; i < ring.length; i++) edge.push(...slerpArc(ring[i], ring[(i + 1) % ring.length], 1.5));
+  const c = dirCentroid(poly), outline = new Float32Array(edge.length * 6);
+  edge.forEach((p, i) => { const q = edge[(i + 1) % edge.length], a = sceneAx(p), b = sceneAx(q); outline.set([...a, ...b], i * 6); });
+  let fill = null;
+  if (c) try {
+    const t = Math.abs(c[2]) < 0.9 ? [0, 0, 1] : [1, 0, 0], e1 = vnorm([c[1] * t[2] - c[2] * t[1], c[2] * t[0] - c[0] * t[2], c[0] * t[1] - c[1] * t[0]]), e2 = [c[1] * e1[2] - c[2] * e1[1], c[2] * e1[0] - c[0] * e1[2], c[0] * e1[1] - c[1] * e1[0]];
+    if (edge.every(p => 1 + vdot(p, c) > 0.05)) {
+      const pts2 = edge.map(p => { const w = 1 + vdot(p, c); return new THREE.Vector2(vdot(p, e1) / w, vdot(p, e2) / w); }), tris = THREE.ShapeUtils.triangulateShape(pts2, []), out = [];
+      const sub = (a, b, d, depth) => { const m = (u, v) => vnorm([u[0] + v[0], u[1] + v[1], u[2] + v[2]]), L = Math.max(...[[a, b], [b, d], [d, a]].map(([u, v]) => Math.acos(clamp(vdot(u, v), -1, 1)) * 180 / Math.PI)); if (L <= 8 || depth >= 4) { out.push(...sceneAx(a), ...sceneAx(b), ...sceneAx(d)); return; } const ab = m(a, b), bd = m(b, d), da = m(d, a); sub(a, ab, da, depth + 1); sub(ab, b, bd, depth + 1); sub(da, bd, d, depth + 1); sub(ab, bd, da, depth + 1); };
+      for (const [i, j, k2] of tris) sub(edge[i], edge[j], edge[k2], 0);
+      if (out.length) fill = new Float32Array(out);
+    }
+  } catch { fill = null; }
+  return { outline, fill };
+}
+function makeCloud(ent) {   // a live object for one dark-cloud figure; update(k) repositions it for the current view
+  const col = ent.colorInt, g = new THREE.Group(), R = ent.cloud.R, geo = ent.cloud.geo || (ent.cloud.geo = cloudGeometry(ent.fig.polygon));
+  const line = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(geo.outline, 3)), new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: 0.85, depthTest: false })); line.frustumCulled = false; g.add(line);
+  if (geo.fill) { const m = new THREE.Mesh(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(geo.fill, 3)), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.16, side: THREE.DoubleSide, depthTest: false, depthWrite: false })); m.frustumCulled = false; g.add(m); }
+  return { group: g, update(k) { const o = toScene(at(SUN), focus, k), s = k * R; g.visible = Math.hypot(o[0], o[1], o[2]) < FAR_SCENE && s < FAR_SCENE; g.position.set(o[0], o[1], o[2]); g.scale.setScalar(s); } };
+}
+// ---- build destinations from a culture file ----
+function skyEnt(fig, meta) {
+  const lines = (Array.isArray(fig.lines) ? fig.lines : []).filter(p => Array.isArray(p) && p.length > 1), extra = fig.extraStars || {}, cache = new Map();
+  const stars = id => extra[id] || CONST.data?.stars?.[id];
+  const starPos = id => { if (cache.has(id)) return cache.get(id); const s = stars(id); let v = null; if (s && s[0] != null) { const [l, b] = eqToGal(s[0], s[1]); v = gal(l, b, (s[2] > 0 ? s[2] : 1000) * pc); } cache.set(id, v); return v; };   // a star without a catalogue distance is drawn at 1 kpc
+  const ent = { c: { figure: lines, name: fig.name }, fig, color: meta.color, colorInt: hexInt(meta.color), stars, starPos };
+  let pos, w;
+  if (lines.length) {
+    const pts = [...new Set(lines.flat())].map(starPos).filter(Boolean);
+    if (pts.length >= 2) { pos = [0, 1, 2].map(i => pts.reduce((a, p) => a + p[i], 0) / pts.length); w = 2.6 * Math.max(...pts.map(p => dist3(p, pos))); }
+    else { const dc = dirCentroid([...new Set(lines.flat())].map(stars).filter(Boolean).map(s => [s[0], s[1]])) || [1, 0, 0]; pos = [SUN[0] + dc[0] * 100 * pc, SUN[1] + dc[1] * 100 * pc, SUN[2] + dc[2] * 100 * pc]; w = 60 * pc; }
+  } else if (Array.isArray(fig.polygon) && fig.polygon.length >= 3) {
+    const c = dirCentroid(fig.polygon); if (!c) return null; const R = (fig.dist_pc > 0 ? fig.dist_pc : 2000) * pc;
+    const rad = Math.max(...fig.polygon.map(([ra, dec]) => Math.acos(clamp(vdot(skyUnit(ra, dec), c), -1, 1))));
+    ent.c.figure = []; ent.cloud = { R }; pos = [SUN[0] + c[0] * R, SUN[1] + c[1] * R, SUN[2] + c[2] * R]; w = Math.max(2.6 * R * Math.sin(Math.min(rad, 1.5)), 100 * pc);
+  } else return null;
+  return { ent, pos, w: Math.max(w, 8 * pc) };
+}
+function skyAddCulture(meta, j) {
+  let n = 0;
+  for (const fig of Array.isArray(j.figures) ? j.figures : []) {
+    try {
+      if (!fig || !fig.id || !fig.name) continue; fig.cultureId = meta.id; fig.kind = fig.kind || 'constellation';
+      const e = skyEnt(fig, meta); if (!e) continue;
+      const short = String(meta.name).replace(/\s*\(.*$/, '') || meta.id; let name = `${fig.name} (${short})`; if (CONST.byName.has(name)) name = `${fig.name} (${short}, ${fig.id})`;
+      const alt = [fig.native, fig.romanized, meta.name, fig.group, fig.meaning, ...(fig.iau || [])].filter(Boolean);
+      const d = { name, type: 'skyfigure', pos: e.pos, w: e.w, nopick: true, fig, constellation: undefined, meta: { type: 'skyfigure', name, notes: fig.meaning || '', alt_names: alt } };
+      CONST.byName.set(name, e.ent); DEST.push(d); n++;
+    } catch { /* one bad figure never blocks the rest */ }
+  }
+  return n;
+}
+function skyAddParts() {   // Serpens (and any other IAU constellation) may carry `parts`: separate drawable pieces
+  if (!CONST.data) return;
+  for (const c of CONST.data.constellations) {
+    if (!c.parts) continue;
+    const items = Array.isArray(c.parts) ? c.parts : Object.entries(c.parts).map(([k, v]) => (Array.isArray(v) ? { name: k, figure: v } : { name: k, ...v }));
+    items.forEach((it, i) => {
+      const polys = Array.isArray(it) ? it : it.figure || it.lines; if (!Array.isArray(polys) || !polys.length) return;
+      const nm = it.name ? (String(it.name).includes(c.name) ? it.name : `${c.name} ${it.name}`) : `${c.name} part ${i + 1}`;
+      if (CONST.byName.has(nm)) return;
+      const ent = skyEnt({ id: `west-${c.abbr}-${i}`, name: nm, kind: 'constellation', cultureId: 'western', lines: polys, extraStars: it.extraStars }, { color: SKY_WESTERN }); if (!ent) return;
+      ent.ent.c.abbr = c.abbr; CONST.byName.set(nm, ent.ent);
+      DEST.push({ name: nm, type: 'constellation', pos: ent.pos, w: ent.w, nopick: true, constellation: c, part: true, meta: { type: 'constellation', name: nm, notes: `${c.meaning}. ${it.story || c.story || ''}`, alt_names: [c.abbr, c.name] } });
+    });
+  }
+}
+async function skyEnsure(id) {   // resolves true when the culture's figures are in DEST
+  if (id === 'western' || SKY.loaded.has(id)) return true; if (SKY.loading.has(id)) return SKY.loading.get(id);
+  const meta = SKY.byId.get(id); if (!meta || !meta.file) return false;
+  const p = (async () => {
+    try { await CONST.ready; const r = await fetch('skycultures/' + meta.file, { cache: 'no-store' }); if (!r.ok) throw new Error(r.status); const j = await r.json(); SKY.loaded.set(id, skyAddCulture(meta, j)); VIS.dirty = true; return true; }
+    catch (e) { SKY.sel.delete(id); saveSky(); try { toast(`Sky culture "${meta.name}" could not be loaded`); } catch { /* ui not ready */ } return false; }
+    finally { SKY.loading.delete(id); }
+  })();
+  SKY.loading.set(id, p); return p;
+}
+// ---- the Sky culture control ----
+function skyRefresh() { VIS.dirty = true; skyDraw(); showResults($('search').value); }
+function skyDraw() {
+  const box = $('skyList'); if (!box) return; box.innerHTML = '';
+  for (const c of SKY.index || []) {
+    const lab = document.createElement('label'); lab.className = 'skyc' + (SKY.sel.has(c.id) ? ' on' : ''); lab.title = `${c.region || ''}${c.era ? ' · ' + c.era : ''}${c.description ? '\n' + c.description : ''}`;
+    lab.innerHTML = `<input type="checkbox" ${SKY.sel.has(c.id) ? 'checked' : ''}><i class="cdot" style="background:${esc(c.color)}"></i><span>${esc(c.name)}</span><small>${(+c.figureCount || 0).toLocaleString()}</small>`;
+    lab.querySelector('input').addEventListener('change', async e => { if (e.target.checked) { SKY.sel.add(c.id); saveSky(); skyDraw(); await skyEnsure(c.id); } else { SKY.sel.delete(c.id); } saveSky(); skyRefresh(); });
+    box.appendChild(lab);
+  }
+  const kb = $('skyKinds'); kb.innerHTML = '';
+  for (const k of SKY_KINDS) { const n = DEST.filter(d => (d.fig ? d.fig.kind : d.type === 'constellation' ? 'constellation' : null) === k && SKY.sel.has(cultureOf(d))).length; const b = document.createElement('button'); b.type = 'button'; b.className = SKY.kinds.has(k) ? 'on' : ''; b.innerHTML = `${k}<small>${n}</small>`; b.title = 'Show only figures of this kind (none selected = all)'; b.addEventListener('click', () => { SKY.kinds.has(k) ? SKY.kinds.delete(k) : SKY.kinds.add(k); saveSky(); skyRefresh(); }); kb.appendChild(b); }
+  $('skyObs').checked = SKY.obsolete; $('skyBnd').checked = SKY.bnd;
+  $('skySum').textContent = SKY.index ? `${[...SKY.sel].filter(id => SKY.byId.has(id)).length} of ${SKY.index.length}` : 'none found';
+}
+function conSelDraw() {
+  const s = $('conSel'); if (!s || !CONST.data) return; const keep = LOC.con || ''; s.innerHTML = '<option value="">any</option>' + CONST.data.constellations.map(c => `<option value="${c.abbr}">${esc(c.name)} (${c.abbr})</option>`).join(''); s.value = keep;
+  s.disabled = false; s.title = OBJCON || DEST.some(d => d.meta?.constellation) ? 'Show only catalogue objects inside this IAU constellation (or type in:Orion)' : 'The catalogue has no constellation data yet; type in:Orion once it does';
+}
+(async () => {
+  try {   // optional data: every piece may be missing
+    const [idx, oc] = await Promise.all([fetch('skycultures/index.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null), fetch('catalog/object-constellations.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null)]);
+    if (oc && typeof oc === 'object') OBJCON = oc;
+    await CONST.ready; conIndex(); skyAddParts(); for (const d of DEST) if (d.type === 'constellation' && d.constellation) d.meta.alt_names = [d.constellation.abbr, d.constellation.latin, d.constellation.genitive].filter(Boolean);
+    SKY.index = idx && Array.isArray(idx.cultures) ? idx.cultures.filter(c => c && c.id) : [];
+    if (!SKY.index.some(c => c.id === 'western')) SKY.index.unshift({ id: 'western', name: 'Western (IAU)', color: SKY_WESTERN, figureCount: CONST.data ? CONST.data.constellations.length : 88, region: 'IAU', era: '', description: 'The 88 IAU constellations.' });
+    for (const c of SKY.index) SKY.byId.set(c.id, c);
+    SKY.sel = new Set([...SKY.sel].filter(id => SKY.byId.has(id))); if (!SKY.sel.size) SKY.sel.add('western');
+    skyDraw(); conSelDraw(); await Promise.all([...SKY.sel].map(skyEnsure)); skyDraw(); showResults($('search').value); skyUpdateBnd(true);
+    $('catStatus').textContent = `${DEST.length.toLocaleString()} destinations (${SKY.loaded.size ? SKY.loaded.size + ' sky cultures loaded, ' : ''}${DEST.filter(skyShown).length.toLocaleString()} shown)`;
+  } catch (e) { console.warn('sky cultures unavailable', e); }
+})();
+$('skyObs').addEventListener('change', e => { SKY.obsolete = e.target.checked; saveSky(); skyRefresh(); });
+$('skyBnd').addEventListener('change', e => { SKY.bnd = e.target.checked; saveSky(); skyUpdateBnd(true); });
+$('conSel').addEventListener('change', e => { LOC.con = e.target.value || null; showResults($('search').value); });
+// ---- IAU boundaries: drawn on a sphere round the Sun; inside a constellation view only that constellation's border, tinted in the figure's culture colour ----
+const BND = { group: new THREE.Group(), data: null, lines: new Map(), loading: null, R: 100 * pc };
+scene.add(BND.group);
+function skyBndLoad() {
+  if (BND.loading) return BND.loading;
+  return BND.loading = fetch('skycultures/boundaries.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => {
+    const b = j && (j.boundaries || j); if (!b || typeof b !== 'object') return null; BND.data = b;
+    for (const [abbr, rings] of Object.entries(b)) {
+      const seg = [];
+      for (const ring of rings) { if (!Array.isArray(ring) || ring.length < 2) continue; for (let i = 0; i < ring.length; i++) { const a = ring[i], c = ring[(i + 1) % ring.length]; let dr = c[0] - a[0]; if (dr > 180) dr -= 360; else if (dr < -180) dr += 360; const n = Math.max(1, Math.ceil(Math.max(Math.abs(dr), Math.abs(c[1] - a[1])) / 1)); let prev = sceneAx(skyUnit(a[0], a[1])); for (let s = 1; s <= n; s++) { const t = s / n, cur = sceneAx(skyUnit(a[0] + dr * t, a[1] + (c[1] - a[1]) * t)); seg.push(...prev, ...cur); prev = cur; } } }
+      const m = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(seg), 3)), new THREE.LineBasicMaterial({ color: 0x7fa7ff, transparent: true, opacity: 0.3, depthTest: false })); m.frustumCulled = false; m.visible = false; BND.group.add(m); BND.lines.set(abbr, m);
+    }
+    return b;
+  }).catch(() => null);
+}
+function skyUpdateBnd(ensure) { if (SKY.bnd && ensure) skyBndLoad().then(b => { if (!b) { toast('IAU boundaries are not available (skycultures/boundaries.json)'); $('skyBnd').checked = false; SKY.bnd = false; saveSky(); } }); if (!SKY.bnd) BND.group.visible = false; }
+function updateBoundaries(k) {
+  if (!SKY.bnd || !BND.data) { BND.group.visible = false; return; }
+  const aName = !CENSUS.key ? (travel ? travel.name : lastDest && lastDest.name) : null, act = aName && CONST.byName.get(aName);
+  let abbrs = null, R = 100 * pc, col;
+  if (act) { const abbr = act.c.abbr ? [act.c.abbr] : (act.fig?.iau || []).map(normCon).filter(Boolean), dd = DEST.find(x => x.name === aName); abbrs = new Set(abbr); R = dd && dd.pos ? Math.max(dist3(at(dd.pos), SUN), 1 * pc) : R; col = act.colorInt || 0x7fa7ff; }
+  else { const cs = [...SKY.sel].map(skyColour).map(hexInt); const rr = [0, 8, 16].map(s => cs.length ? cs.reduce((a, c) => a + ((c >> s) & 255), 0) / cs.length : 160); col = (rr[2] << 16) | (rr[1] << 8) | rr[0]; }
+  for (const [abbr, m] of BND.lines) { m.visible = !abbrs || abbrs.has(abbr); if (m.visible) { m.material.color.setHex(col); m.material.opacity = abbrs ? 0.55 : 0.28; } }
+  const o = toScene(at(SUN), focus, k); BND.group.visible = Math.hypot(o[0], o[1], o[2]) < FAR_SCENE && R * k < FAR_SCENE;
+  BND.group.position.set(o[0], o[1], o[2]); BND.group.scale.setScalar(R * k);
+}
+// ---- info panel: native name, romanisation, meaning, group, story; and a constellation badge for catalogue objects ----
+const skyInfoEl = document.createElement('aside'); skyInfoEl.id = 'skyInfo'; skyInfoEl.className = 'glass'; skyInfoEl.hidden = true; document.body.appendChild(skyInfoEl);
+const skyKindLabel = f => [f.kind, f.group].filter(Boolean).join(' · ');
+function skyCardHtml(d, long) {
+  const f = d.fig; if (!f) { const a = objConst(d); return a && d.type !== 'constellation' ? `<div class="sk-badge">constellation <b>${esc(CONNAME.get(a) || a)}</b> (${esc(a)})</div>` : ''; }
+  const col = skyColour(f.cultureId), story = String(f.story || '');
+  return `<div class="sk-row"><i class="cdot" style="background:${esc(col)}"></i><b>${esc(skyName(f.cultureId))}</b> · ${esc(skyKindLabel(f))}${f.status ? ` · <em>${esc(f.status)}</em>` : ''}${f.era ? ` · ${esc(f.era)}` : ''}</div>`
+    + (f.native || f.romanized ? `<div class="sk-nat">${esc(f.native || '')}${f.native && f.romanized ? ' · ' : ''}${esc(f.romanized || '')}</div>` : '') + (f.meaning ? `<div class="sk-mean">“${esc(f.meaning)}”</div>` : '')
+    + (f.polygon && !(f.lines && f.lines.length) ? '<div class="sk-mean">approximate outline, drawn at a nominal distance</div>' : '') + (f.iau && f.iau.length ? `<div class="sk-mean">in ${f.iau.map(a => esc(CONNAME.get(normCon(a)) || a)).join(', ')}</div>` : '')
+    + (story ? `<div class="sk-story">${esc(long ? story : story.slice(0, 260) + (story.length > 260 ? '…' : ''))}</div>` : '');
+}
+function skyInfoFor(d) {
+  const f = d.fig, a = objConst(d);
+  if (!f && !(d.type === 'constellation' && d.constellation) && !(a && d.meta)) { skyInfoEl.hidden = true; return; }
+  let h = `<button type="button" class="sk-x" aria-label="Close">×</button><h4>${esc(f ? f.name : d.name)}</h4>`;
+  if (f) h += skyCardHtml(d, true);
+  else if (d.type === 'constellation') h += `<div class="sk-row"><i class="cdot" style="background:${SKY_WESTERN}"></i><b>Western (IAU)</b> · ${esc(d.constellation.abbr)}</div><div class="sk-mean">“${esc(d.constellation.meaning)}”</div>`;
+  else h += skyCardHtml(d, true);
+  skyInfoEl.innerHTML = h; skyInfoEl.hidden = false; skyInfoEl.querySelector('.sk-x').onclick = () => { skyInfoEl.hidden = true; };
+}
 // ---- visibility: an eye on each place and each group pins it on the map (a glow marker at its real position; a constellation draws its whole figure), at any
 // scale, until switched off. Remembered between visits. ----
 function pinnable(d) { return d.pos && !d.unplaced && !d.census && !d.preset && d.type !== 'view' && d.type !== 'scale'; }
@@ -2757,19 +3017,25 @@ function groupEye(items) {
 function updateVisible(k) {
   if (VIS.dirty) {   // rebuild the pinned list
     VIS.dirty = false; VIS.cache = []; const consts = [];
-    for (const n of VIS.set) { const d = DEST.find(x => x.name === n); if (!d || !pinnable(d)) continue; if (d.type === 'constellation') consts.push(d); else VIS.cache.push({ d, style: censusStyle(d.meta || { type: d.type }) }); }
+    for (const n of VIS.set) { const d = DEST.find(x => x.name === n); if (!d || !pinnable(d)) continue; if (d.type === 'constellation' || d.type === 'skyfigure') { if (skyShown(d, true)) consts.push(d); } else VIS.cache.push({ d, style: censusStyle(d.meta || { type: d.type }) }); }
     VIS.consts = consts.map(d => ({ d, ent: CONST.byName.get(d.name) })).filter(x => x.ent);
     const need = VIS.cache.length; if (need > VIS.cap) { if (VIS.pts) { CENSUS.group.remove(VIS.pts); VIS.pts.geometry.dispose(); } VIS.cap = Math.max(64, need * 2); const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(VIS.cap * 3), 3)); g.setAttribute('aSize', new THREE.BufferAttribute(new Float32Array(VIS.cap), 1)); g.setAttribute('aColor', new THREE.BufferAttribute(new Float32Array(VIS.cap * 3), 3)); g.setAttribute('aKind', new THREE.BufferAttribute(new Float32Array(VIS.cap), 1)); VIS.pts = new THREE.Points(g, CENSUS_SPRITE_MAT); VIS.pts.frustumCulled = false; CENSUS.group.add(VIS.pts); }
     if (VIS.pts) VIS.cache.forEach((it, i) => { VIS.pts.geometry.attributes.aColor.setXYZ(i, ...it.style.c); VIS.pts.geometry.attributes.aKind.setX(i, it.style.k); VIS.pts.geometry.attributes.aColor.needsUpdate = true; VIS.pts.geometry.attributes.aKind.needsUpdate = true; });
     // one line object for every pinned figure
     if (VIS.lines) { VIS.group.remove(VIS.lines); VIS.lines.geometry.dispose(); VIS.lines = null; }
-    VIS.segs = []; for (const { ent } of VIS.consts) for (const poly of ent.c.figure) for (let i = 0; i + 1 < poly.length; i++) VIS.segs.push([ent, poly[i], poly[i + 1]]);
-    if (VIS.segs.length) { VIS.lines = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(VIS.segs.length * 6), 3)), new THREE.LineBasicMaterial({ color: 0x7fa7ff, transparent: true, opacity: 0.55, depthTest: false })); VIS.lines.frustumCulled = false; VIS.group.add(VIS.lines); }
+    // overlaid cultures: a segment drawn by several pinned figures (a shared pair of stars) is cut into pieces that alternate between their colours, so each stays readable
+    VIS.segs = []; const share = new Map(), skey = (a, b) => a < b ? a + '|' + b : b + '|' + a;
+    for (const { ent } of VIS.consts) for (const poly of ent.c.figure) for (let i = 0; i + 1 < poly.length; i++) { const key = skey(poly[i], poly[i + 1]); if (!share.has(key)) share.set(key, []); const arr = share.get(key); if (!arr.includes(ent)) arr.push(ent); }
+    for (const { ent } of VIS.consts) for (const poly of ent.c.figure) for (let i = 0; i + 1 < poly.length; i++) { const arr = share.get(skey(poly[i], poly[i + 1])), m = arr.length; if (m === 1) VIS.segs.push([ent, poly[i], poly[i + 1], 0, 1, ent.colorInt || 0x7fa7ff]); else { const rank = arr.indexOf(ent), n = 6 * m; for (let j = rank; j < n; j += m) VIS.segs.push([ent, poly[i], poly[i + 1], j / n, (j + 1) / n, ent.colorInt || 0x7fa7ff]); } }
+    if (VIS.segs.length) { const cg = new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(VIS.segs.length * 6), 3)), ca = new Float32Array(VIS.segs.length * 6); VIS.segs.forEach((sg, i) => { const c = new THREE.Color(sg[5]); ca.set([c.r, c.g, c.b, c.r, c.g, c.b], i * 6); }); cg.setAttribute('color', new THREE.BufferAttribute(ca, 3)); VIS.lines = new THREE.LineSegments(cg, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.7, depthTest: false })); VIS.lines.frustumCulled = false; VIS.group.add(VIS.lines); }
+    for (const o of VIS.clouds || []) VIS.group.remove(o.group); VIS.clouds = [];
+    for (const { ent } of VIS.consts) if (ent.cloud) { ent.cloudPin = ent.cloudPin || makeCloud(ent); VIS.group.add(ent.cloudPin.group); VIS.clouds.push(ent.cloudPin); }
   }
   const have = VIS.cache.length > 0 && VIS.pts; if (VIS.pts) VIS.pts.visible = !!have; CENSUS_SPRITE_MAT.uniforms.uPx.value = renderer.getPixelRatio();
   if (have) { const pa = VIS.pts.geometry.attributes, H2 = view.clientHeight / 2; VIS.cache.forEach((it, i) => { const p = at(typeof it.d.pos === 'function' ? it.d.pos() : it.d.pos), sc = toScene(p, focus, k), near = Math.hypot(sc[0], sc[1], sc[2]) < 1e5; pa.position.setXYZ(i, sc[0], sc[1], sc[2]); const w = typeof it.d.w === 'function' ? it.d.w() : it.d.w || 0; pa.aSize.setX(i, near ? Math.max(it.style.s, Math.min(60, (w / 5) * k * H2 * 2)) : 0); }); pa.position.needsUpdate = true; pa.aSize.needsUpdate = true; }
-  if (VIS.lines) { const lp = VIS.lines.geometry.attributes.position, cache = new Map(); const so = (ent, id) => { const key = id; let v = cache.get(key); if (v === undefined) { const sp = ent.starPos(id); v = sp ? toScene(at(sp), focus, k) : null; cache.set(key, v); } return v; }; VIS.segs.forEach(([ent, a, b], i) => { const va = so(ent, a), vb = so(ent, b), far = !va || !vb || Math.hypot(va[0], va[1], va[2]) > FAR_SCENE || Math.hypot(vb[0], vb[1], vb[2]) > FAR_SCENE;   // single-precision lines fall apart far from the origin: drop segments that far away
-    if (far) { lp.setXYZ(2 * i, 0, 0, 0); lp.setXYZ(2 * i + 1, 0, 0, 0); } else { lp.setXYZ(2 * i, va[0], va[1], va[2]); lp.setXYZ(2 * i + 1, vb[0], vb[1], vb[2]); } }); lp.needsUpdate = true; }
+  if (VIS.lines) { const lp = VIS.lines.geometry.attributes.position, cache = new Map(); const so = (ent, id) => { const key = id; let v = cache.get(key); if (v === undefined) { const sp = ent.starPos(id); v = sp ? toScene(at(sp), focus, k) : null; cache.set(key, v); } return v; }; VIS.segs.forEach(([ent, a, b, t0, t1], i) => { let va = so(ent, a), vb = so(ent, b), far = !va || !vb || Math.hypot(va[0], va[1], va[2]) > FAR_SCENE || Math.hypot(vb[0], vb[1], vb[2]) > FAR_SCENE;   // single-precision lines fall apart far from the origin: drop segments that far away
+    if (far) { lp.setXYZ(2 * i, 0, 0, 0); lp.setXYZ(2 * i + 1, 0, 0, 0); } else { if (t1 - t0 < 1) { const A = va, B = vb; va = [A[0] + (B[0] - A[0]) * t0, A[1] + (B[1] - A[1]) * t0, A[2] + (B[2] - A[2]) * t0]; vb = [A[0] + (B[0] - A[0]) * t1, A[1] + (B[1] - A[1]) * t1, A[2] + (B[2] - A[2]) * t1]; } lp.setXYZ(2 * i, va[0], va[1], va[2]); lp.setXYZ(2 * i + 1, vb[0], vb[1], vb[2]); } }); lp.needsUpdate = true; }
+  for (const o of VIS.clouds || []) o.update(k);
 }
 function updateCensus(k) {
   for (const [key, B] of CENSUS.built) if (key !== CENSUS.key) { B.pts.visible = false; for (const it of B.items) if (it.obj) it.obj.visible = false; }
@@ -2796,14 +3062,14 @@ function updateScene() {
     const grow = L.comoving ? a : 1, cover = at(L.width) * grow / viewW;
     if (L.cosmic && L.obj.material) { const cu = L.obj.material.userData.cosU, c0 = atRaw(L.centre); if (cu) { cu.centre.value.set((c0[0] - SUN[0]) / COS_R0, (c0[2] - SUN[2]) / COS_R0, -(c0[1] - SUN[1]) / COS_R0); cu.unit.value = at(L.unit) * grow / COS_R0; } }
     const off = toScene(L.cosmic ? atRaw(L.centre) : at(L.centre), focus, k), far = Math.hypot(off[0], off[1], off[2]) / 2;   // in view widths
-    L.obj.visible = cover > 1e-4 && cover < 1e8 && far < cover * 1.5 + 3e3 && !(L.key === 'stars' && CONST.active) && !(CENSUS.key && CENSUS_DEFS[CENSUS.key] && CENSUS_DEFS[CENSUS.key].solo);   // the generated 50 pc star cloud is not real data: hide it while a constellation's real stars are shown
+    L.obj.visible = cover > 1e-4 && cover < (L.key === 'solar' ? 1e12 : 1e8) &&   /* the Solar level stays drawn down to ~60 m so a ringed planet's particle tier can be flown through */  far < cover * 1.5 + 3e3 && !(L.key === 'stars' && CONST.active) && !(CENSUS.key && CENSUS_DEFS[CENSUS.key] && CENSUS_DEFS[CENSUS.key].solo);   // the generated 50 pc star cloud is not real data: hide it while a constellation's real stars are shown
     if (!L.obj.visible) continue;
     L.obj.scale.setScalar(at(L.unit) * k * grow); L.obj.position.set(off[0], off[1], off[2]);
     if (L.comoving) updateUniverse(L.obj, a);
     if (L.update) L.update(L.obj);
   }
   const sp = toScene(SUN, focus, k); sunLight.position.set(sp[0], sp[1], sp[2]);
-  updateBlackHoles(k); updateCensus(k); updateDestModel(k); updateConstellation(k); updateVisible(k); courseMarker(k); window.KosmoCraft?.update(k);
+  updateBlackHoles(k); updateCensus(k); updateDestModel(k); updateConstellation(k); updateVisible(k); updateBoundaries(k); courseMarker(k); window.KosmoCraft?.update(k);
   if (megaObj) {
     const mg = MEGAS[state.mega], cover = mg.width() / viewW;
     megaObj.visible = state.mega !== 'none' && cover > 1e-4 && cover < 1e8;
@@ -3296,8 +3562,49 @@ function animate(now) {
   renderFrame(dt);
 }
 // craft layer (craft.js): the Orbital Flight Deck dock, the shared craft state, its marker and the follow camera
+// ---- Layers dropdown: atmospheres, clouds, aurora, magnetosphere, solar wind, radiation belts (state in layers.js, drawn by planet-layers.js) ----
+(() => {
+  const btn = $('layersBtn'), menu = $('layersMenu'); if (!btn || !menu) return;
+  const TOGGLES = [
+    ['Appearance', [['atmosphere', 'Atmospheres', 'scattering sky, limb glow, hazes'], ['clouds', 'Clouds', 'Earth, Venus, Mars, Titan'], ['aurora', 'Aurora', 'ovals that brighten in storms']]],
+    ['Magnetic environment', [['magnetosphere', 'Magnetosphere', 'bow shock, magnetopause, field lines, tail'], ['wind', 'Solar wind flow', 'particles streaming round the shock'], ['belts', 'Radiation belts', 'Van Allen belts']]],
+  ];
+  const box = (k, name, note) => `<label class="lyr"><input type="checkbox" data-k="${k}"${layers.state[k] ? ' checked' : ''}><span>${name}<small>${note}</small></span></label>`;
+  const wr = (id, name, min, max, step, val, unit) => `<div class="wrow"><span>${name}</span><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"><output id="${id}V">${val} ${unit}</output></div>`;
+  menu.innerHTML = TOGGLES.map(([h, rows]) => `<h4>${h}</h4>` + rows.map(r => box(...r)).join('')).join('') +
+    `<h4>Solar wind (at 1 AU)</h4>${wr('lyrSpeed', 'Speed', 250, 1200, 10, layers.wind.speed, 'km/s')}${wr('lyrDens', 'Density', 1, 60, 1, layers.wind.density, '/cm³')}${wr('lyrBz', 'IMF Bz', -20, 20, 1, layers.wind.bz, 'nT')}` +
+    `<div class="lyrbtns"><button id="lyrStorm" type="button" title="A coronal mass ejection hits: faster, denser, southward field, then it fades">Solar storm</button><button id="lyrReset" type="button">Quiet Sun</button></div><div id="lyrRead"></div>`;
+  const place = () => { const r = btn.getBoundingClientRect(), w = menu.offsetWidth || 300; menu.style.top = Math.min(r.bottom + 10, Math.max(8, innerHeight - menu.offsetHeight - 8)) + 'px'; menu.style.left = Math.max(8, Math.min(r.right - w, innerWidth - w - 8)) + 'px'; };   // hangs under the round button, right edges aligned
+  let readTimer = 0;
+  const readout = () => {
+    const w = layers.now(1), r0 = layers.standoff(3.12e-5, 1), jr = layers.standoff(4.28e-4, 5.2);
+    $('lyrRead').innerHTML = `Wind at Earth: <b>${w.speed.toFixed(0)}</b> km/s · <b>${w.density.toFixed(1)}</b>/cm³ · ${(w.pdyn * 1e9).toFixed(2)} nPa${w.storm > 0.02 ? ' · <b style="color:var(--bad)">storm</b>' : ''}<br>Earth magnetopause: <b>${r0.toFixed(1)}</b> R⊕ (${Math.round(r0 * 6371).toLocaleString()} km) · bow shock ≈ ${(r0 * 1.3).toFixed(1)}<br>Jupiter magnetopause: <b>${jr.toFixed(0)}</b> R♃`;
+  };
+  const open = on => {
+    menu.hidden = !on; btn.classList.toggle('open', on); btn.setAttribute('aria-expanded', String(on)); clearInterval(readTimer);
+    if (on) { place(); readout(); readTimer = setInterval(readout, 400); }
+  };
+  btn.addEventListener('click', e => { e.stopPropagation(); open(menu.hidden); });
+  document.addEventListener('pointerdown', e => { if (!menu.hidden && !menu.contains(e.target) && !btn.contains(e.target)) open(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) open(false); });
+  addEventListener('resize', () => { if (!menu.hidden) place(); });
+  menu.addEventListener('change', e => { const k = e.target.dataset?.k; if (k) layers.set(k, e.target.checked); });
+  const bind = (id, key, unit) => $(id).addEventListener('input', e => { layers.setWind({ [key]: +e.target.value }); $(id + 'V').textContent = e.target.value + ' ' + unit; readout(); });
+  bind('lyrSpeed', 'speed', 'km/s'); bind('lyrDens', 'density', '/cm³'); bind('lyrBz', 'bz', 'nT');
+  $('lyrStorm').addEventListener('click', () => { layers.storm(); if (!layers.state.magnetosphere) { layers.set('magnetosphere', true); menu.querySelector('[data-k=magnetosphere]').checked = true; } });
+  $('lyrReset').addEventListener('click', () => { layers.setWind({ speed: 400, density: 5, bz: 0 }); layers.stormT0 = -1e12; for (const [id, v, u] of [['lyrSpeed', 400, 'km/s'], ['lyrDens', 5, '/cm³'], ['lyrBz', 0, 'nT']]) { $(id).value = v; $(id + 'V').textContent = v + ' ' + u; } readout(); });
+  const sync = () => menu.querySelectorAll('input[data-k]').forEach(i => { i.checked = !!layers.state[i.dataset.k]; });
+  layers.onChange(sync);
+})();
 window.KosmoCraft?.init({ THREE, scene, P, SUN, layout, focus, toScene, toast, setFollow: f => { follow = f; }, setZoom: z => { state.zoom = clamp(z, 2.6, 27); sync('zoom', 2); } });
 requestAnimationFrame(animate);
+// Opening view: the whole observable universe fits the frame (unless an address / ?go= says where to look), then the loading overlay lifts
+function fitUniverse() { const w = view.clientWidth || 1, h = view.clientHeight || 1; state.zoom = Math.min(27, Math.log10(2 * CHI0 * 1.08 / Math.min(1, w / h))); sync('zoom', 2); }
+const hasTarget = /(^|[#&])(a|go)=/.test(location.hash);
+if (!hasTarget) fitUniverse();
+{ const ov = document.getElementById('kosmoLoading'), t0 = performance.now(); let n = 0;
+  const lift = () => { if (!hasTarget && !travel) fitUniverse(); ov.classList.add('done'); setTimeout(() => ov.remove(), 600); };
+  const iv = setInterval(() => { n++; if ((window.__kosmoCatalogDone && n > 2) || performance.now() - t0 > 20000) { clearInterval(iv); lift(); } }, 150); }
 window.kosmo = { get desi() { return DESI; }, desiQuality, VIS, CONST, DM, autoFrame, frameStats, trail, renderFrame, quality, drawCube, drawTimeline, drawMinimap, updateHover, updateDrawer, stepDial, get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
 </script>
 </body>

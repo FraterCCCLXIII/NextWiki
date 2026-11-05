@@ -1,0 +1,563 @@
+{
+ "id": "potawatomi",
+ "name": "Potawatomi (Neshnabe)",
+ "region": "Great Lakes, North America",
+ "era": "Traditional",
+ "color": "#8fd0a0",
+ "description": "Potawatomi Star Knowledge (Neshnabe Nengosek Kenomagewen) compiled for Stellarium. Only line data are used here; the artwork is under a separate non-commercial licence and is not included.",
+ "source": [
+  "Stellarium sky culture 'potawatomi' (https://github.com/Stellarium/stellarium/tree/master/skycultures/potawatomi); contributed by: ### Neshnabé Nengosêk Kenomagéwen (Potawatomi Star Knowledge) Project Team Blaire Morseau, PI Aaron Martin, Artist Advisory Board: Michael Zimmerman Jr., Bmejwen Kyle Malott, DeJonay Morseau ### Programming and data formatting John Foerch",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: potawatomi: License (artwork): CC BY-NC-SA 4.0 The artwork in this Sky Culture may be shared, copied, redistributed, and adapted (remix, tweak, build upon) for non-commercial purposes. It requires proper attribut. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "potawatomi-potawatomi-mshign-b-k",
+   "name": "Mshignébêk",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP43813",
+     "HIP42799",
+     "HIP42313",
+     "HIP43109",
+     "HIP43813",
+     "HIP45336",
+     "HIP46390",
+     "HIP49841",
+     "HIP52943",
+     "HIP56343",
+     "HIP57936",
+     "HIP64962"
+    ]
+   ],
+   "meaning": "Big Snake",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-nambezho",
+   "name": "Nambezho",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP47908",
+     "HIP48455",
+     "HIP50335",
+     "HIP50583",
+     "HIP49583",
+     "HIP49669"
+    ],
+    [
+     "HIP49583",
+     "HIP43109",
+     "HIP43813",
+     "HIP49669"
+    ],
+    [
+     "HIP43109",
+     "HIP42313",
+     "HIP42799",
+     "HIP43813"
+    ]
+   ],
+   "meaning": "Underwater panther",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-mo-w",
+   "name": "Mo’ëwé",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP32349",
+     "HIP30324"
+    ],
+    [
+     "HIP32349",
+     "HIP33977",
+     "HIP34444",
+     "HIP33579"
+    ],
+    [
+     "HIP34444",
+     "HIP35904"
+    ],
+    [
+     "HIP32349",
+     "HIP33347",
+     "HIP34045",
+     "HIP33160",
+     "HIP33347"
+    ]
+   ],
+   "meaning": "Wolf",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-m-k",
+   "name": "Mëk",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP37826",
+     "HIP36850",
+     "HIP36366",
+     "HIP34693",
+     "HIP32246",
+     "HIP30883",
+     "HIP31681",
+     "HIP34088",
+     "HIP35550",
+     "HIP36962",
+     "HIP37826"
+    ],
+    [
+     "HIP37740",
+     "HIP36962",
+     "HIP36046",
+     "HIP34693",
+     "HIP33018"
+    ],
+    [
+     "HIP35350",
+     "HIP35550"
+    ],
+    [
+     "HIP34088",
+     "HIP32246",
+     "HIP30343"
+    ]
+   ],
+   "meaning": "Beaver",
+   "extraStars": {
+    "HIP36366": [
+     112.2779,
+     31.7845,
+     18.05,
+     4.16,
+     "62Rho Gem",
+     "F0V..."
+    ],
+    "HIP30883": [
+     97.2408,
+     20.2121,
+     166.94,
+     4.13,
+     "18Nu  Gem",
+     "B6III"
+    ],
+    "HIP36046": [
+     111.4317,
+     27.7981,
+     36.9,
+     3.78,
+     "60Iot Gem",
+     "G9III+..."
+    ],
+    "HIP33018": [
+     103.1972,
+     33.9613,
+     57.97,
+     3.6,
+     "34The Gem",
+     "A3III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-pond-s-ktthe-sab-nenikboz",
+   "name": "Pondésé / Ktthe Sabé / Nenikboz",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ],
+    [
+     "HIP26727",
+     "HIP27366"
+    ],
+    [
+     "HIP25930",
+     "HIP25281",
+     "HIP24436"
+    ],
+    [
+     "HIP26727",
+     "HIP27989",
+     "HIP26207",
+     "HIP25336",
+     "HIP25930"
+    ],
+    [
+     "HIP27989",
+     "HIP28614",
+     "HIP29426",
+     "HIP28716"
+    ],
+    [
+     "HIP25336",
+     "HIP22449"
+    ]
+   ],
+   "meaning": "Winter Maker / Bigfoot / Nanabozho",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-bzh-k",
+   "name": "Bzhêké",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP20894",
+     "HIP20205",
+     "HIP20455",
+     "HIP20889",
+     "HIP25428",
+     "HIP26451",
+     "HIP21421"
+    ]
+   ],
+   "meaning": "Bison",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-mdodo-senik",
+   "name": "Mdodo Senik",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP17573",
+     "HIP17573"
+    ],
+    [
+     "HIP17847",
+     "HIP17847"
+    ],
+    [
+     "HIP17702",
+     "HIP17702"
+    ],
+    [
+     "HIP17608",
+     "HIP17608"
+    ],
+    [
+     "HIP17499",
+     "HIP17499"
+    ]
+   ],
+   "meaning": "Sweat Lodge Stones",
+   "extraStars": {
+    "HIP17573": [
+     56.4567,
+     24.3677,
+     117.51,
+     3.87,
+     "Maia",
+     "B8III"
+    ],
+    "HIP17608": [
+     56.5816,
+     23.9484,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-shkenigsh-k-gi-nsogmowat",
+   "name": "Shkenigshêk égi-nsogmowat",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP746",
+     "HIP3179",
+     "HIP4427",
+     "HIP6686",
+     "HIP8886"
+    ]
+   ],
+   "meaning": "Three Brothers Floating in a Canoe",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-mshik",
+   "name": "Mshiké",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP24608",
+     "HIP23416",
+     "HIP23015",
+     "HIP25428",
+     "HIP28380",
+     "HIP28360",
+     "HIP24608"
+    ]
+   ],
+   "meaning": "Turtle",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-wthik",
+   "name": "Wthik",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP67301",
+     "HIP65378",
+     "HIP62956",
+     "HIP59774",
+     "HIP54061",
+     "HIP53910",
+     "HIP58001",
+     "HIP59774"
+    ],
+    [
+     "HIP54061",
+     "HIP46733",
+     "HIP41704",
+     "HIP48319",
+     "HIP53910"
+    ],
+    [
+     "HIP58001",
+     "HIP57399"
+    ],
+    [
+     "HIP48319",
+     "HIP46853"
+    ],
+    [
+     "HIP65378",
+     "HIP68756"
+    ]
+   ],
+   "meaning": "Fisher",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-mang",
+   "name": "Mang",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP11767",
+     "HIP85822",
+     "HIP82080",
+     "HIP77055",
+     "HIP79822",
+     "HIP75097",
+     "HIP72607",
+     "HIP77055"
+    ]
+   ],
+   "meaning": "Loon",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-thethak-wabzhi-bgak",
+   "name": "Thethak / Wabzhi / Bgak",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP102098",
+     "HIP100453",
+     "HIP98110",
+     "HIP95947"
+    ],
+    [
+     "HIP104732",
+     "HIP102488",
+     "HIP100453",
+     "HIP97165"
+    ]
+   ],
+   "meaning": "Crane / Swan / Human skeleton-like creature with wings",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-moz",
+   "name": "Moz",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP677",
+     "HIP113881",
+     "HIP113963",
+     "HIP1067",
+     "HIP677"
+    ],
+    [
+     "HIP113963",
+     "HIP112447",
+     "HIP112029",
+     "HIP109427"
+    ],
+    [
+     "HIP113881",
+     "HIP112158",
+     "HIP109352"
+    ]
+   ],
+   "meaning": "Moose",
+   "extraStars": {
+    "HIP109352": [
+     332.3068,
+     33.1723,
+     88.5,
+     5.58,
+     "27Pi 1Peg",
+     "G6III:"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-gigo",
+   "name": "Gigo",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP101769",
+     "HIP102281",
+     "HIP102532",
+     "HIP101958",
+     "HIP101769",
+     "HIP101421"
+    ]
+   ],
+   "meaning": "Fish",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-mko-shtegwan",
+   "name": "Mko Shtegwan",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP91262",
+     "HIP97649",
+     "HIP102098",
+     "HIP91262"
+    ]
+   ],
+   "meaning": "Bear Head",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-w-nondeshik",
+   "name": "Wénondeshik",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP81833",
+     "HIP81693",
+     "HIP83207",
+     "HIP84380",
+     "HIP81833"
+    ],
+    [
+     "HIP84380",
+     "HIP85112",
+     "HIP87808"
+    ],
+    [
+     "HIP81833",
+     "HIP81126",
+     "HIP79992"
+    ],
+    [
+     "HIP83207",
+     "HIP84379"
+    ],
+    [
+     "HIP81693",
+     "HIP80816"
+    ]
+   ],
+   "meaning": "One Who is Exhausted",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-mdodoswen",
+   "name": "Mdodoswen",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP78159",
+     "HIP77512",
+     "HIP76952",
+     "HIP76267",
+     "HIP75695",
+     "HIP76127"
+    ]
+   ],
+   "meaning": "Sweat Lodge",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  },
+  {
+   "id": "potawatomi-potawatomi-nenikboz",
+   "name": "Nenikboz",
+   "kind": "constellation",
+   "group": "Potawatomi",
+   "lines": [
+    [
+     "HIP78401",
+     "HIP80112",
+     "HIP80763",
+     "HIP81266",
+     "HIP82396",
+     "HIP82514",
+     "HIP82729",
+     "HIP84143",
+     "HIP86228",
+     "HIP87073",
+     "HIP86670",
+     "HIP85927",
+     "HIP84970",
+     "HIP80763"
+    ],
+    [
+     "HIP78820",
+     "HIP78401",
+     "HIP78265"
+    ]
+   ],
+   "meaning": "Nanabozho",
+   "story": "Line pattern from the Stellarium 'potawatomi' sky culture; see source for documentation."
+  }
+ ]
+}

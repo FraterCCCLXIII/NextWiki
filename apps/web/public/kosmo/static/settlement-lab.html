@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settlement Lab</title>
+<!-- Settlement Lab: simulate galactic colonization (Earth-origin or Fermi/random-origin), overlay a habitability prior,
+     slice the galaxy with a query language, and sweep two assumptions to map where "Fact A" (Earth is unsettled) holds.
+     Modules: settlement-sim.js (engine), habitability.js (prior), query.js (safe expression language). -->
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+</script>
+<style>
+  :root { --bg: #05060a; --fg: #d9dde6; --dim: #8a93a6; --line: #26304a; --acc: #9fb8ab; --warn: #e0a070; --panel: rgba(12, 15, 24, 0.86); }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font: 13px/1.45 system-ui, sans-serif; overflow: hidden; }
+  canvas#c { display: block; width: 100%; height: 100%; touch-action: none; }
+  .panel { position: fixed; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; backdrop-filter: blur(6px); }
+  #hud { left: 12px; top: 12px; width: min(320px, calc(100vw - 24px)); max-height: calc(100vh - 100px); overflow: auto; }
+  h1 { font-size: 13px; margin: 0 0 6px; letter-spacing: .04em; text-transform: uppercase; color: var(--acc); }
+  h2 { font-size: 11px; margin: 10px 0 4px; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+  .row { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+  button, select, input[type=text] { background: #141a2b; color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; font: inherit; cursor: pointer; }
+  button:hover { border-color: var(--acc); } button.on { border-color: var(--acc); color: var(--acc); }
+  label.k { display: grid; grid-template-columns: 112px 1fr 64px; align-items: center; gap: 6px; color: var(--dim); margin: 3px 0; }
+  label.k span { text-align: right; color: var(--fg); font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; }
+  #stat { color: var(--dim); font-variant-numeric: tabular-nums; white-space: pre-line; margin-top: 8px; }
+  #qbar { left: 50%; transform: translateX(-50%); top: 12px; width: min(560px, calc(100vw - 700px)); min-width: 320px; }
+  #qbar .row { margin: 0; flex-wrap: nowrap; } #qbar input[type=text] { flex: 1; cursor: text; font-family: ui-monospace, monospace; }
+  #qmsg { font-size: 12px; margin-top: 4px; color: var(--dim); } #qmsg.err { color: var(--warn); }
+  #rank { right: 12px; top: 12px; width: 280px; max-height: calc(100vh - 100px); overflow: auto; }
+  #rank .it { padding: 4px 0; border-bottom: 1px solid var(--line); cursor: pointer; } #rank .it:hover { color: var(--acc); }
+  #rank .it small { display: block; color: var(--dim); font-size: 11px; }
+  #sweep { left: 12px; right: 12px; bottom: 12px; display: none; } #sweep.show { display: block; }
+  #sweep .grid { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+  #heat { border: 1px solid var(--line); cursor: pointer; background: #0a0d16; }
+  #foot { position: fixed; left: 12px; bottom: 12px; display: flex; gap: 6px; }
+  #hint { position: fixed; right: 12px; bottom: 10px; color: var(--dim); font-size: 12px; }
+  .tag { font-size: 10px; padding: 0 4px; border: 1px solid var(--line); border-radius: 4px; color: var(--dim); }
+  @media (max-width: 1100px) { #qbar { top: auto; bottom: 52px; transform: none; left: 12px; width: calc(100vw - 24px); } #rank { display: none; } }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="hud" class="panel">
+  <h1>Settlement Lab</h1>
+  <div class="row" id="scen"><button data-s="earth" class="on">Earth origin</button><button data-s="fermi">Fermi · random origin</button></div>
+  <div class="row" id="presets"></div>
+  <div id="knobs"></div>
+  <div class="row">
+    <select id="nstars"><option value="5000">5k stars</option><option value="12000" selected>12k stars</option><option value="30000">30k stars</option></select>
+    <select id="layer"><option value="state">Layer: settlement</option><option value="hab">Layer: habitability</option></select>
+  </div>
+  <label class="k" style="grid-template-columns:auto 1fr"><input type="checkbox" id="habw" checked><em style="font-style:normal">weight settleable stars by habitability</em></label>
+  <div class="row"><button id="play">Pause</button><button id="reset">Reset</button><button id="sweepBtn">Fact A sweep</button></div>
+  <label class="k"><em style="font-style:normal">Speed</em><input id="speed" type="range" min="0" max="3" step="0.05" value="1.2"><span id="speedV"></span></label>
+  <div id="stat">loading…</div>
+</div>
+
+<div id="qbar" class="panel">
+  <div class="row"><input type="text" id="q" placeholder='query, e.g.  !settled && sphere(sol, 2000)' spellcheck="false">
+    <select id="qex"><option value="">examples</option></select></div>
+  <div class="row" style="margin-top:6px"><button id="qh" class="on">Highlight</button><button id="qi">Isolate</button><button id="qx">Clear</button></div>
+  <div id="qmsg">fields: settled tSettled gen score synthetic catalog distSol r x y z halo alive name type · regions: sphere shell slab cone</div>
+</div>
+
+<div id="rank" class="panel"><h1>Most habitable (prior)</h1><div id="ranklist"></div>
+  <div style="color:var(--dim);font-size:11px;margin-top:6px">A prior from catalog data, not a detection. Tags: catalog = measured, modelled = derived, assumed = default.</div></div>
+
+<div id="sweep" class="panel">
+  <h1>Fact A sweep · P(Sol still unsettled) <span class="tag">red = likely, blue = unlikely</span></h1>
+  <div class="grid">
+    <div>
+      <div class="row">X <select id="sx"></select> Y <select id="sy"></select></div>
+      <div class="row"><button id="sweepRun">Run 6×6, 3 seeds</button><button id="sweepClose">Close</button></div>
+      <div id="sweepMsg" style="color:var(--dim)">Random settleable origin per seed; Sol is always settleable. Uses a 3k-star galaxy and ignores the habitability weighting. Click a cell to load its parameters.</div>
+    </div>
+    <canvas id="heat" width="320" height="230"></canvas>
+  </div>
+</div>
+
+<div id="hint">drag: orbit · wheel: zoom · click a ranked star to follow it</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { generateGalaxy, createSim, factA, TECH_PRESETS, SOL } from './settlement-sim.js';
+import { scoreStar, galacticHabitability } from './habitability.js';
+import { compileQuery, runQuery, EXAMPLE_QUERIES } from './query.js';
+
+const $ = (id) => document.getElementById(id);
+const KNOBS = [
+  { k: 'settleableFraction', label: 'Settleable frac', min: 0.001, max: 1, log: true, fmt: (v) => (v < 0.01 ? v.toExponential(1) : v.toFixed(3)) },
+  { k: 'lifetimeYr', label: 'Colony lifetime', min: 1e2, max: 1e8, log: true, fmt: (v) => v.toExponential(1) + ' yr' },
+  { k: 'launchIntervalYr', label: 'Launch interval', min: 1e3, max: 1e6, log: true, fmt: (v) => v.toExponential(1) + ' yr' },
+  { k: 'rangeLy', label: 'Probe range', min: 4, max: 400, log: true, fmt: (v) => v.toFixed(0) + ' ly' },
+  { k: 'probeSpeedC', label: 'Probe speed', min: 0.001, max: 0.2, log: true, fmt: (v) => v.toFixed(3) + ' c' },
+  { k: 'seed', label: 'Seed', min: 1, max: 99, log: false, fmt: (v) => String(Math.round(v)) },
+];
+const state = { scenario: 'earth', params: { ...TECH_PRESETS['von-neumann'], settleableFraction: 0.1, seed: 1 }, speed: 0, paused: false, layer: 'state', qmode: 'highlight', follow: -1 };
+
+// ---------- UI: knobs ----------
+const knobEls = {};
+for (const d of KNOBS) {
+  const lab = document.createElement('label'); lab.className = 'k';
+  lab.innerHTML = `${d.label}<input type="range" min="0" max="1000"><span></span>`;
+  $('knobs').appendChild(lab);
+  const inp = lab.querySelector('input'), out = lab.querySelector('span');
+  const toPos = (v) => Math.round(1000 * (d.log ? (Math.log(v) - Math.log(d.min)) / (Math.log(d.max) - Math.log(d.min)) : (v - d.min) / (d.max - d.min)));
+  const fromPos = (p) => d.log ? Math.exp(Math.log(d.min) + (p / 1000) * (Math.log(d.max) - Math.log(d.min))) : d.min + (p / 1000) * (d.max - d.min);
+  inp.oninput = () => { state.params[d.k] = d.k === 'seed' ? Math.round(fromPos(+inp.value)) : fromPos(+inp.value); out.textContent = d.fmt(state.params[d.k]); scheduleReset(); };
+  knobEls[d.k] = () => { inp.value = toPos(state.params[d.k]); out.textContent = d.fmt(state.params[d.k]); };
+}
+const syncKnobs = () => KNOBS.forEach((d) => knobEls[d.k]());
+for (const name of Object.keys(TECH_PRESETS)) {
+  const b = document.createElement('button'); b.textContent = name;
+  b.onclick = () => { Object.assign(state.params, TECH_PRESETS[name]); syncKnobs(); reset(); };
+  $('presets').appendChild(b);
+}
+$('scen').onclick = (e) => { const s = e.target.dataset.s; if (!s) return; state.scenario = s; [...$('scen').children].forEach((b) => b.classList.toggle('on', b === e.target)); reset(); };
+$('speed').oninput = () => { state.speed = Math.pow(10, +$('speed').value) / 10 * 3; $('speedV').textContent = state.speed.toFixed(1) + ' Myr/s'; };
+$('speed').oninput();
+$('layer').onchange = (e) => { state.layer = e.target.value; colorsDirty = true; };
+$('play').onclick = () => { state.paused = !state.paused; $('play').textContent = state.paused ? 'Play' : 'Pause'; };
+$('reset').onclick = () => reset();
+$('nstars').onchange = () => buildGalaxy().then(reset);
+$('habw').onchange = () => reset();
+let rt = null; function scheduleReset() { clearTimeout(rt); rt = setTimeout(reset, 250); }
+syncKnobs();
+
+// ---------- data ----------
+let catalogStars = [], planetsByParent = {}, galaxy = null, score = null, sim = null, names = [], rankItems = [];
+async function loadCatalog() {
+  try {
+    const all = await (await fetch('./catalog/objects.json')).json();
+    catalogStars = all.filter((o) => o.type === 'star');
+    for (const o of all) if (o.type === 'exoplanet' && o.parent) (planetsByParent[o.parent] ||= []).push(o);
+  } catch (e) { console.warn('catalog unavailable; synthetic-only', e); }
+}
+async function buildGalaxy() {
+  $('stat').textContent = 'generating galaxy…';
+  await new Promise((r) => setTimeout(r, 10));
+  const n = +$('nstars').value;
+  galaxy = generateGalaxy({ n, seed: 7, catalogStars });
+  const N = galaxy.count; score = new Float32Array(N); names = new Array(N).fill('');
+  const classes = ['M', 'M', 'M', 'M', 'K', 'K', 'G', 'F', 'A'];
+  rankItems = [];
+  for (let i = 0; i < N; i++) {
+    const rPc = Math.hypot(galaxy.x[i], galaxy.y[i]), zPc = galaxy.z[i], ci = galaxy.catalogIndex[i];
+    let r;
+    if (ci >= 0) {
+      const s = catalogStars[ci]; names[i] = s.name || s.id;
+      r = scoreStar(s, { planets: planetsByParent[s.name] || [], rPc, zPc });
+      rankItems.push({ i, r, name: names[i] });
+    } else {
+      const cls = classes[(i * 2654435761 >>> 0) % classes.length];
+      r = scoreStar({ spectral_type: cls }, { rPc, zPc });
+      if (i === galaxy.solIndex) { names[i] = 'Sol'; r = scoreStar({ spectral_type: 'G2V' }, { rPc, zPc, planets: [{ radius_m: 6.371e6, mass_kg: 5.972e24, temperature_K: 288, semi_major_axis_m: 1.496e11 }] }); r.score = Math.max(r.score, 0.5); rankItems.push({ i, r, name: 'Sol (Earth)' }); }
+    }
+    score[i] = r.score;
+  }
+  rankItems.sort((a, b) => b.r.score - a.r.score);
+  const list = $('ranklist'); list.innerHTML = '';
+  for (const it of rankItems.slice(0, 15)) {
+    const d = document.createElement('div'); d.className = 'it';
+    d.innerHTML = `${it.name} <span class="tag">${it.r.score.toFixed(2)}</span><small>${it.r.why}</small>`;
+    d.onclick = () => { state.follow = it.i; };
+    list.appendChild(d);
+  }
+  buildPoints();
+}
+
+// ---------- 3D ----------
+const canvas = $('c'), renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
+renderer.setPixelRatio(Math.min(2, devicePixelRatio)); renderer.setClearColor(0x05060a);
+const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(50, 1, 0.001, 1000);
+const cam = { target: new THREE.Vector3(SOL.x / 1000, SOL.y / 1000, SOL.z / 1000), dist: 28, yaw: 0.5, pitch: 0.9 };
+let points = null, posAttr = null, colAttr = null, shipLines = null, shipAttr = null, solMark = null, colorsDirty = true, qMask = null, qActive = false;
+const MAXSHIPS = 4000;
+function buildPoints() {
+  if (points) { scene.remove(points); points.geometry.dispose(); }
+  const N = galaxy.count, g = new THREE.BufferGeometry();
+  posAttr = new THREE.BufferAttribute(new Float32Array(N * 3), 3); colAttr = new THREE.BufferAttribute(new Float32Array(N * 3), 3);
+  g.setAttribute('position', posAttr); g.setAttribute('color', colAttr);
+  points = new THREE.Points(g, new THREE.PointsMaterial({ size: 2.2, sizeAttenuation: false, vertexColors: true, transparent: true, depthWrite: false }));
+  points.frustumCulled = false; scene.add(points);
+  if (!shipLines) {
+    shipAttr = new THREE.BufferAttribute(new Float32Array(MAXSHIPS * 6), 3);
+    const sg = new THREE.BufferGeometry(); sg.setAttribute('position', shipAttr); sg.setDrawRange(0, 0);
+    shipLines = new THREE.LineSegments(sg, new THREE.LineBasicMaterial({ color: 0xffe2a0, transparent: true, opacity: 0.55 }));
+    shipLines.frustumCulled = false; scene.add(shipLines);
+    solMark = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(3), 3)),
+      new THREE.PointsMaterial({ size: 9, sizeAttenuation: false, color: 0x6fd0ff, depthTest: false }));
+    solMark.frustumCulled = false; scene.add(solMark);
+  }
+}
+
+function reset() {
+  if (!galaxy) return;
+  const p = { ...state.params, score: $('habw').checked ? score : null };
+  if (state.scenario === 'fermi') {
+    let o; const s = state.params.seed * 977;
+    o = (s * 2654435761 >>> 0) % galaxy.count; if (o === galaxy.solIndex) o = (o + 1) % galaxy.count;
+    p.originIndex = o;
+  } else p.originIndex = galaxy.solIndex;
+  sim = createSim(galaxy, p); colorsDirty = true; qMask = null;
+  if (sim.origin !== galaxy.solIndex) state.follow = sim.origin; else state.follow = -1;
+}
+
+function updateBuffers() {
+  const N = galaxy.count, P = posAttr.array, C = colAttr.array, S = sim, hab = state.layer === 'hab';
+  for (let i = 0; i < N; i++) {
+    P[i * 3] = S.x[i] / 1000; P[i * 3 + 1] = S.z[i] / 1000; P[i * 3 + 2] = S.y[i] / 1000;
+  }
+  posAttr.needsUpdate = true;
+  if (colorsDirty || (!state.paused)) {
+    for (let i = 0; i < N; i++) {
+      let r, g, b;
+      const settled = S.settledAt[i] >= 0;
+      if (hab) { const s = Math.min(1, score[i] * 1.6); r = 0.1 + 0.9 * s * s; g = 0.15 + 0.85 * s; b = 0.35 * (1 - s) + 0.1; }
+      else if (settled) {
+        const t = Math.min(1, S.gen[i] / 30);
+        if (S.alive[i]) { r = 1; g = 0.85 - 0.5 * t; b = 0.3 - 0.2 * t; } else { r = 0.45; g = 0.3; b = 0.2; }
+      } else if (S.settleable[i]) { r = 0.3; g = 0.4; b = 0.58; } else { r = 0.16; g = 0.19; b = 0.27; }
+      if (qActive && qMask) {
+        if (qMask[i]) { r = 0.4 + 0.6 * r; g = 0.7 + 0.3 * g; b = 1; }
+        else if (state.qmode === 'isolate') { r = g = b = 0; } else { r *= 0.35; g *= 0.35; b *= 0.35; }
+      }
+      C[i * 3] = r; C[i * 3 + 1] = g; C[i * 3 + 2] = b;
+    }
+    colAttr.needsUpdate = true; colorsDirty = false;
+  }
+  const sp = shipAttr.array, ships = S.ships, n = Math.min(ships.length, MAXSHIPS);
+  for (let k = 0; k < n; k++) {
+    const s = ships[k], f = Math.max(0, Math.min(1, (S.time - s.tLaunch) / Math.max(1e-9, s.tArrive - s.tLaunch)));
+    const a = s.from, b = s.to;
+    sp[k * 6] = S.x[a] / 1000; sp[k * 6 + 1] = S.z[a] / 1000; sp[k * 6 + 2] = S.y[a] / 1000;
+    sp[k * 6 + 3] = (S.x[a] + (S.x[b] - S.x[a]) * f) / 1000; sp[k * 6 + 4] = (S.z[a] + (S.z[b] - S.z[a]) * f) / 1000; sp[k * 6 + 5] = (S.y[a] + (S.y[b] - S.y[a]) * f) / 1000;
+  }
+  shipAttr.needsUpdate = true; shipLines.geometry.setDrawRange(0, n * 2);
+  const si = galaxy.solIndex, m = solMark.geometry.attributes.position.array;
+  m[0] = S.x[si] / 1000; m[1] = S.z[si] / 1000; m[2] = S.y[si] / 1000; solMark.geometry.attributes.position.needsUpdate = true;
+}
+
+// ---------- query ----------
+for (const e of EXAMPLE_QUERIES) { const o = document.createElement('option'); o.value = e.q; o.textContent = e.label; $('qex').appendChild(o); }
+$('qex').onchange = (e) => { if (e.target.value) { $('q').value = e.target.value; applyQuery(); } e.target.value = ''; };
+$('q').addEventListener('keydown', (e) => { if (e.key === 'Enter') applyQuery(); });
+$('q').addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(applyQuery, 350); }); let qt = null;
+$('qh').onclick = () => setQMode('highlight'); $('qi').onclick = () => setQMode('isolate');
+$('qx').onclick = () => { $('q').value = ''; applyQuery(); };
+function setQMode(m) { state.qmode = m; $('qh').classList.toggle('on', m === 'highlight'); $('qi').classList.toggle('on', m === 'isolate'); colorsDirty = true; }
+function queryEnv() {
+  const S = sim, G = galaxy;
+  return {
+    fields: {
+      settled: (i) => S.settledAt[i] >= 0, tSettled: (i) => (S.settledAt[i] >= 0 ? S.settledAt[i] : 1e12), gen: (i) => S.gen[i],
+      score: (i) => score[i], synthetic: (i) => !!G.synthetic[i] && G.catalogIndex[i] < 0, catalog: (i) => G.catalogIndex[i] >= 0,
+      distSol: (i) => Math.hypot(S.x[i] - S.x[G.solIndex], S.y[i] - S.y[G.solIndex], S.z[i] - S.z[G.solIndex]),
+      r: (i) => Math.hypot(S.x[i], S.y[i]), x: (i) => S.x[i], y: (i) => S.y[i], z: (i) => S.z[i], halo: (i) => !!G.haloFlag[i],
+      alive: (i) => !!S.alive[i], name: (i) => names[i] || '', type: (i) => (G.catalogIndex[i] >= 0 ? 'star' : 'synthetic'),
+    },
+    points: { sol: { x: S.x[G.solIndex], y: S.y[G.solIndex], z: S.z[G.solIndex] }, origin: { x: S.x[S.origin], y: S.y[S.origin], z: S.z[S.origin] } },
+    positions: { x: (i) => S.x[i], y: (i) => S.y[i], z: (i) => S.z[i] },
+  };
+}
+let compiled = null;
+function applyQuery() {
+  const src = $('q').value.trim(), msg = $('qmsg');
+  if (!src || !sim) { qActive = false; compiled = null; qMask = null; msg.className = ''; msg.textContent = 'fields: settled tSettled gen score synthetic catalog distSol r x y z halo alive name type'; colorsDirty = true; return; }
+  compiled = compileQuery(src, queryEnv());
+  if (!compiled.ok) { qActive = false; msg.className = 'err'; msg.textContent = `${compiled.error} (at ${compiled.pos})`; colorsDirty = true; return; }
+  qActive = true; refreshMask(); msg.className = '';
+}
+function refreshMask() {
+  if (!compiled || !compiled.ok) return;
+  compiled = compileQuery($('q').value.trim(), queryEnv()); // rebind to the current sim arrays
+  qMask = runQuery(compiled, galaxy.count);
+  let c = 0; for (let i = 0; i < qMask.length; i++) c += qMask[i];
+  $('qmsg').textContent = `${c.toLocaleString()} of ${galaxy.count.toLocaleString()} stars match`; colorsDirty = true;
+}
+
+// ---------- sweep ----------
+const SW = KNOBS.filter((d) => d.k !== 'seed');
+for (const id of ['sx', 'sy']) for (const d of SW) { const o = document.createElement('option'); o.value = d.k; o.textContent = d.label; $(id).appendChild(o); }
+$('sx').value = 'settleableFraction'; $('sy').value = 'lifetimeYr';
+$('sweepBtn').onclick = () => $('sweep').classList.toggle('show'); $('sweepClose').onclick = () => $('sweep').classList.remove('show');
+const heat = $('heat'), hc = heat.getContext('2d'); let sweepRes = null, sweepBusy = false;
+const gridVals = (d) => Array.from({ length: 6 }, (_, i) => Math.exp(Math.log(d.min) + (i / 5) * (Math.log(d.max) - Math.log(d.min))));
+function drawHeat() {
+  hc.clearRect(0, 0, heat.width, heat.height); if (!sweepRes) return;
+  const { p, xVals, yVals } = sweepRes, cw = 44, ch = 34, ox = 40, oy = 6;
+  for (let yi = 0; yi < 6; yi++) for (let xi = 0; xi < 6; xi++) {
+    const v = p[yi][xi]; if (v == null) continue;
+    hc.fillStyle = `rgb(${Math.round(40 + 190 * v)},${Math.round(70 - 30 * Math.abs(v - 0.5))},${Math.round(220 - 180 * v)})`;
+    hc.fillRect(ox + xi * cw, oy + (5 - yi) * ch, cw - 1, ch - 1);
+    hc.fillStyle = '#fff'; hc.font = '11px system-ui'; hc.fillText(v.toFixed(2), ox + xi * cw + 10, oy + (5 - yi) * ch + 20);
+  }
+  hc.fillStyle = '#8a93a6'; hc.font = '10px system-ui';
+  const dx = KNOBS.find((d) => d.k === sweepRes.xKey), dy = KNOBS.find((d) => d.k === sweepRes.yKey);
+  hc.fillText(dx.label + ' →', ox, 226); hc.save(); hc.translate(10, 150); hc.rotate(-Math.PI / 2); hc.fillText(dy.label + ' →', 0, 0); hc.restore();
+}
+heat.onclick = (e) => {
+  if (!sweepRes) return; const r = heat.getBoundingClientRect(), sx = heat.width / r.width;
+  const xi = Math.floor(((e.clientX - r.left) * sx - 40) / 44), yi = 5 - Math.floor(((e.clientY - r.top) * sx - 6) / 34);
+  if (xi < 0 || xi > 5 || yi < 0 || yi > 5) return;
+  state.params[sweepRes.xKey] = sweepRes.xVals[xi]; state.params[sweepRes.yKey] = sweepRes.yVals[yi]; syncKnobs(); state.scenario = 'fermi';
+  [...$('scen').children].forEach((b) => b.classList.toggle('on', b.dataset.s === 'fermi')); reset();
+};
+$('sweepRun').onclick = async () => {
+  if (sweepBusy) return; sweepBusy = true;
+  const xKey = $('sx').value, yKey = $('sy').value;
+  if (xKey === yKey) { $('sweepMsg').textContent = 'Pick two different axes.'; sweepBusy = false; return; }
+  const xVals = gridVals(KNOBS.find((d) => d.k === xKey)), yVals = gridVals(KNOBS.find((d) => d.k === yKey));
+  const small = generateGalaxy({ n: 3000, seed: 7, catalogStars: [] });
+  const p = yVals.map(() => xVals.map(() => null)); sweepRes = { xKey, yKey, xVals, yVals, p };
+  const base = { ...state.params, score: null };
+  for (let yi = 0; yi < 6; yi++) for (let xi = 0; xi < 6; xi++) {
+    $('sweepMsg').textContent = `running… ${yi * 6 + xi + 1}/36`;
+    await new Promise((r) => setTimeout(r, 0));
+    p[yi][xi] = factA(small, base, xKey, [xVals[xi]], yKey, [yVals[yi]], 3, 300).p[0][0];
+    drawHeat();
+  }
+  $('sweepMsg').textContent = 'done · click a cell to load it as a Fermi run'; sweepBusy = false;
+};
+
+// ---------- input + loop ----------
+let drag = null;
+canvas.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); });
+canvas.addEventListener('pointerup', () => { drag = null; });
+canvas.addEventListener('pointermove', (e) => { if (!drag) return; cam.yaw -= (e.clientX - drag.x) * 0.005; cam.pitch = Math.max(-1.5, Math.min(1.5, cam.pitch + (e.clientY - drag.y) * 0.005)); drag = { x: e.clientX, y: e.clientY }; });
+canvas.addEventListener('wheel', (e) => { e.preventDefault(); cam.dist = Math.max(0.05, Math.min(120, cam.dist * Math.exp(e.deltaY * 0.0015))); }, { passive: false });
+
+let last = performance.now(), statT = 0, frameN = 0;
+function frame(now) {
+  requestAnimationFrame(frame);
+  const w = innerWidth, h = innerHeight;
+  if (canvas.width !== Math.floor(w * renderer.getPixelRatio()) || canvas.height !== Math.floor(h * renderer.getPixelRatio())) { renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  const dt = Math.min(0.1, (now - last) / 1000); last = now;
+  if (!sim || !galaxy || !points) return;
+  if (!state.paused) {
+    let todo = state.speed * dt; const dts = sim.params.dtMyr; let guard = 0;
+    while (todo > 1e-9 && guard++ < 60) { const s = Math.min(dts, todo); sim.step(s); todo -= s; }
+  }
+  frameN++;
+  if (qActive && frameN % 20 === 0 && !state.paused) refreshMask();
+  updateBuffers();
+  const fi = state.follow >= 0 ? state.follow : galaxy.solIndex;
+  const tgt = new THREE.Vector3(sim.x[fi] / 1000, sim.z[fi] / 1000, sim.y[fi] / 1000);
+  cam.target.lerp(tgt, state.follow >= 0 ? 0.15 : 0.05);
+  const cp = Math.cos(cam.pitch);
+  camera.position.set(cam.target.x + cam.dist * Math.sin(cam.yaw) * cp, cam.target.y + cam.dist * Math.sin(cam.pitch), cam.target.z + cam.dist * Math.cos(cam.yaw) * cp);
+  camera.lookAt(cam.target); renderer.render(scene, camera);
+  if (now - statT > 300) {
+    statT = now; const s = sim.stats();
+    $('stat').textContent = `t = ${s.time.toFixed(1)} Myr  ·  ${state.scenario === 'earth' ? 'origin Sol' : 'origin ' + (names[sim.origin] || 'star #' + sim.origin)}\n` +
+      `settled ${s.settledCount.toLocaleString()} / ${s.settleableCount.toLocaleString()} settleable (${(100 * s.fractionSettled).toFixed(1)}%)\n` +
+      `colonies alive ${s.aliveCount.toLocaleString()} · ships in flight ${s.shipsInFlight}\n` +
+      `frontier (90th pct) ${(s.frontierRadiusPc / 1000).toFixed(2)} kpc\n` +
+      (state.scenario === 'fermi' ? `Sol: ${s.solSettled ? 'SETTLED (Fact A false)' : 'unsettled (Fact A holds)'}\n` : '') +
+      `1 sim star ≈ ${Math.round(2e11 / galaxy.count / 1e3)}k real stars (hops scaled ×${sim.scale.toFixed(0)})`;
+  }
+}
+requestAnimationFrame(frame);
+
+await loadCatalog();
+await buildGalaxy();
+reset();
+window.settlementLab = { state, get sim() { return sim; }, get galaxy() { return galaxy; }, reset };
+</script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+{
+ "id": "sardinian",
+ "name": "Sardinian (folk)",
+ "region": "Sardinia",
+ "era": "Traditional",
+ "color": "#e08e45",
+ "description": "Sardinian folk star names and groups compiled for Stellarium.",
+ "source": [
+  "Stellarium sky culture 'sardinian' (https://github.com/Stellarium/stellarium/tree/master/skycultures/sardinian); contributed by: These constellations have been created by the Stellarium's user *Giuseppe Putzolu*, giuseppe.putzolugmail.com ### Credits The constellations of the Sardinian culture are the result of research done by Tonino Bussu and Marco Puddu",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: sardinian: GNU GPL v2.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "sardinian-sardinian-su-pinnetu",
+   "name": "Su Pinnetu",
+   "kind": "constellation",
+   "group": "Sardinian",
+   "lines": [
+    [
+     "HIP20889",
+     "HIP20648",
+     "HIP20455",
+     "HIP20205",
+     "HIP20885",
+     "HIP21421",
+     "HIP20889"
+    ]
+   ],
+   "meaning": "The Hut",
+   "extraStars": {
+    "HIP20648": [
+     66.3724,
+     17.9279,
+     45.54,
+     4.3,
+     "68Del3Tau",
+     "A2IV"
+    ],
+    "HIP20885": [
+     67.1437,
+     15.9622,
+     47.33,
+     3.84,
+     "77The1Tau",
+     "G7III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'sardinian' sky culture; see source for documentation."
+  },
+  {
+   "id": "sardinian-sardinian-s-udrone",
+   "name": "S'Udrone",
+   "kind": "constellation",
+   "group": "Sardinian",
+   "lines": [
+    [
+     "HIP17851",
+     "HIP17847",
+     "HIP17702",
+     "HIP17573",
+     "HIP17531",
+     "HIP17499",
+     "HIP17608",
+     "HIP17702"
+    ]
+   ],
+   "meaning": "The Bunch",
+   "extraStars": {
+    "HIP17851": [
+     57.2967,
+     24.1367,
+     117.1,
+     5.05,
+     "Pleione",
+     "B7p"
+    ],
+    "HIP17573": [
+     56.4567,
+     24.3677,
+     117.51,
+     3.87,
+     "Maia",
+     "B8III"
+    ],
+    "HIP17531": [
+     56.3021,
+     24.4673,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17608": [
+     56.5816,
+     23.9484,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'sardinian' sky culture; see source for documentation."
+  },
+  {
+   "id": "sardinian-sardinian-sos-sette-frades",
+   "name": "Sos Sette Frades",
+   "kind": "constellation",
+   "group": "Sardinian",
+   "lines": [
+    [
+     "HIP67301",
+     "HIP65378",
+     "HIP62956",
+     "HIP59774",
+     "HIP58001",
+     "HIP53910",
+     "HIP54061",
+     "HIP59774"
+    ]
+   ],
+   "meaning": "The Seven Brothers",
+   "story": "Line pattern from the Stellarium 'sardinian' sky culture; see source for documentation."
+  },
+  {
+   "id": "sardinian-sardinian-sos-bacheddos",
+   "name": "Sos Bacheddos",
+   "kind": "constellation",
+   "group": "Sardinian",
+   "lines": [
+    [
+     "HIP27989",
+     "HIP26207",
+     "HIP25336",
+     "HIP25930",
+     "HIP24436",
+     "HIP27366",
+     "HIP26727",
+     "HIP27989"
+    ]
+   ],
+   "meaning": "The Sticks",
+   "story": "Line pattern from the Stellarium 'sardinian' sky culture; see source for documentation."
+  },
+  {
+   "id": "sardinian-sardinian-sa-mandra",
+   "name": "Sa Mandra",
+   "kind": "constellation",
+   "group": "Sardinian",
+   "lines": [
+    [
+     "HIP25428",
+     "HIP28380",
+     "HIP28360",
+     "HIP24608",
+     "HIP23453",
+     "HIP23015",
+     "HIP25428"
+    ]
+   ],
+   "meaning": "The Fence for Sheep",
+   "story": "Line pattern from the Stellarium 'sardinian' sky culture; see source for documentation."
+  },
+  {
+   "id": "sardinian-sardinian-su-ballu-de-sas-fiuda",
+   "name": "Su Ballu de sas Fiuda",
+   "kind": "constellation",
+   "group": "Sardinian",
+   "lines": [
+    [
+     "HIP76127",
+     "HIP75695",
+     "HIP76267",
+     "HIP76952",
+     "HIP77512",
+     "HIP78159",
+     "HIP78493"
+    ]
+   ],
+   "meaning": "The Dance of Widows",
+   "story": "Line pattern from the Stellarium 'sardinian' sky culture; see source for documentation."
+  },
+  {
+   "id": "sardinian-sardinian-sa-frache",
+   "name": "Sa Frache",
+   "kind": "constellation",
+   "group": "Sardinian",
+   "lines": [
+    [
+     "HIP49669",
+     "HIP49583",
+     "HIP50583",
+     "HIP50335",
+     "HIP48455",
+     "HIP47908"
+    ]
+   ],
+   "meaning": "The Sickle",
+   "story": "Line pattern from the Stellarium 'sardinian' sky culture; see source for documentation."
+  },
+  {
+   "id": "sardinian-sardinian-su-corru-e-chervu",
+   "name": "Su Corru 'e Chervu",
+   "kind": "constellation",
+   "group": "Sardinian",
+   "lines": [
+    [
+     "HIP17448",
+     "HIP18246",
+     "HIP18614",
+     "HIP18532",
+     "HIP17358",
+     "HIP15863",
+     "HIP14328",
+     "HIP13268"
+    ],
+    [
+     "HIP15863",
+     "HIP14576",
+     "HIP14354",
+     "HIP13254"
+    ]
+   ],
+   "meaning": "The Deer Horn",
+   "extraStars": {
+    "HIP13254": [
+     42.6459,
+     38.3186,
+     37.02,
+     4.22,
+     "16    Per",
+     "F2III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'sardinian' sky culture; see source for documentation."
+  },
+  {
+   "id": "sardinian-sardinian-sa-rughe-de-santu-antinu",
+   "name": "Sa Rughe de Santu Antinu",
+   "kind": "constellation",
+   "group": "Sardinian",
+   "lines": [
+    [
+     "HIP102098",
+     "HIP100453",
+     "HIP98110",
+     "HIP95947"
+    ],
+    [
+     "HIP102488",
+     "HIP100453",
+     "HIP97165"
+    ]
+   ],
+   "meaning": "The Cross of St. Constantine",
+   "story": "Line pattern from the Stellarium 'sardinian' sky culture; see source for documentation."
+  },
+  {
+   "id": "sardinian-sardinian-sa-tona",
+   "name": "Sa Tona",
+   "kind": "constellation",
+   "group": "Sardinian",
+   "lines": [
+    [
+     "HIP8886",
+     "HIP6686",
+     "HIP4427",
+     "HIP3179",
+     "HIP746"
+    ]
+   ],
+   "meaning": "The Throne",
+   "story": "Line pattern from the Stellarium 'sardinian' sky culture; see source for documentation."
+  },
+  {
+   "id": "sardinian-sardinian-sas-tres-marias",
+   "name": "Sas Tres Marias",
+   "kind": "constellation",
+   "group": "Sardinian",
+   "lines": [
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ]
+   ],
+   "meaning": "Three Marias",
+   "story": "Line pattern from the Stellarium 'sardinian' sky culture; see source for documentation."
+  },
+  {
+   "id": "sardinian-sardinian-sa-loba",
+   "name": "Sa Loba",
+   "kind": "constellation",
+   "group": "Sardinian",
+   "lines": [
+    [
+     "HIP37826",
+     "HIP36850"
+    ]
+   ],
+   "meaning": "The Twins",
+   "story": "Line pattern from the Stellarium 'sardinian' sky culture; see source for documentation."
+  }
+ ]
+}

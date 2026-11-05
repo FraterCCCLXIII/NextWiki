@@ -1,3 +1,4 @@
+import { RadioTab } from "./RadioTab";
 import { UserMenu } from "../auth/UserMenu";
 import { Suspense } from "react";
 import { unstable_noStore as noStore } from "next/cache";
@@ -31,6 +32,8 @@ export async function Header({
         <KosmoMenu siteLogo={siteLogo} />
         {/* show / hide the left nav, right of the menu chevron */}
         <KosmoNavToggle />
+        {/* top tab: Space Radio */}
+        <RadioTab />
       </div>
 
       {/* Center: Search Bar */}

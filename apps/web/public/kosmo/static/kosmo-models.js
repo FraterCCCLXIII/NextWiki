@@ -31,13 +31,15 @@ vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0);m=m*m;retu
 float fbm(vec3 p){float f=0.0,a=0.5;for(int i=0;i<5;i++){f+=a*snoise(p);p=p*2.03+vec3(17.1,9.2,3.7);a*=0.5;}return f;}
 `;
 const BODY_VERT = /* glsl */`
-varying vec3 vN; varying vec3 vP; varying vec2 vUv; varying vec3 vW;
-void main(){ vN = normalize(normalMatrix * normal); vP = position; vUv = uv; vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`;
+varying vec3 vN; varying vec3 vP; varying vec2 vUv; varying vec3 vW; varying vec3 vT;
+void main(){ vN = normalize(normalMatrix * normal); vT = normalMatrix * vec3(position.z, 0.0, -position.x); vP = position; vUv = uv; vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`;
 
 // Planets, moons, rocky and icy bodies, gas giants. kind: 0 rocky, 1 gas giant, 2 icy, 3 lava, 4 ocean/earthlike
 const BODY_FRAG = NOISE + /* glsl */`
 uniform float uTime, uSeed, uKind, uHasMap, uAtmo; uniform vec3 uColor, uColor2, uColor3, uLightDir; uniform sampler2D uMap;
-varying vec3 vN; varying vec3 vP; varying vec2 vUv; varying vec3 vW;
+// relief: uHasNormal 0 none, 1 tangent-space normal map (east, north, up; equirect), 2 height map (red channel, derivative bump); uBump scales the slopes; uHeightRange = relief / radius at height 1
+uniform float uHasNormal, uBump, uHeightRange; uniform sampler2D uNormalMap;
+varying vec3 vN; varying vec3 vP; varying vec2 vUv; varying vec3 vW; varying vec3 vT;
 void main(){
   vec3 p = normalize(vP) * 2.2 + uSeed;
   vec3 col; float h;
@@ -63,11 +65,26 @@ void main(){
       if (uKind > 1.5) col = mix(col, vec3(0.9, 0.95, 1.0), smoothstep(0.1, 0.5, h) * 0.5);
     }
   }
-  if (uHasMap > 0.5) { vec3 t = texture2D(uMap, vUv).rgb; col = t * (0.85 + 0.3 * h); }
-  vec3 n = normalize(vN); float diff = max(dot(n, uLightDir), 0.0);
-  float terminator = smoothstep(-0.15, 0.25, dot(n, uLightDir));
+  if (uHasMap > 0.5) { vec3 t = texture2D(uMap, vUv).rgb; col = t * mix(0.85 + 0.3 * h, 1.0, step(0.5, uHasNormal)); }
+  vec3 n = normalize(vN), ng = n;
+  if (uHasNormal > 0.5) {                                 // real relief: perturb the view-space normal in the (east, north, up) frame of the equirect map
+    vec3 T = vT - ng * dot(vT, ng); T = dot(T, T) > 1e-8 ? normalize(T) : vec3(1.0, 0.0, 0.0); vec3 B = cross(ng, T);
+    float ya = abs(normalize(vP).y), fade = 1.0 - smoothstep(0.93, 0.995, ya), cl = max(sqrt(max(1.0 - ya * ya, 0.0)), 0.03);   // fade the relief towards the poles where the map pinches
+    vec3 tn;
+    if (uHasNormal < 1.5) { tn = texture2D(uNormalMap, vUv).xyz * 2.0 - 1.0; tn.xy *= uBump * fade; }
+    else {
+      vec2 d = 1.0 / vec2(textureSize(uNormalMap, 0));
+      float hE = texture2D(uNormalMap, vUv + vec2(d.x, 0.0)).r - texture2D(uNormalMap, vUv - vec2(d.x, 0.0)).r;
+      float hN = texture2D(uNormalMap, vUv + vec2(0.0, d.y)).r - texture2D(uNormalMap, vUv - vec2(0.0, d.y)).r;
+      vec2 slope = uHeightRange * vec2(hE / (4.0 * 3.14159265 * cl * d.x), hN / (4.0 * 3.14159265 * d.y));
+      tn = normalize(vec3(-slope * uBump * fade, 1.0));
+    }
+    n = normalize(T * tn.x + B * tn.y + ng * max(tn.z, 0.05));
+  }
+  float diff = max(dot(n, uLightDir), 0.0);
+  float terminator = smoothstep(-0.15, 0.25, dot(ng, uLightDir));
   vec3 lit = col * (0.06 + 0.94 * diff);
-  if (uAtmo > 0.0) { float rim = pow(1.0 - max(dot(n, vec3(0.0, 0.0, 1.0)), 0.0), 2.5); lit += uColor3 * rim * uAtmo * terminator; }
+  if (uAtmo > 0.0) { float rim = pow(1.0 - max(dot(ng, vec3(0.0, 0.0, 1.0)), 0.0), 2.5); lit += uColor3 * rim * uAtmo * terminator; }
   gl_FragColor = vec4(lit, 1.0);
 }`;
 
@@ -96,7 +113,7 @@ void main(){
   if (uShape < 0.5) a = pow(max(1.0 - r, 0.0), uSoft);
   else if (uShape < 1.5) { a = exp(-pow((r - 0.72) / 0.06, 2.0)) + 0.25 * exp(-pow((r - 0.72) / 0.25, 2.0)); }
   else if (uShape < 2.5) { float n = fbm(vec3(q * 3.0, uSeed + uTime * 0.03)); a = smoothstep(0.0, 1.0, (1.0 - r) * 1.2) * (0.55 + 0.6 * n); a *= smoothstep(1.0, 0.6, r); }
-  else if (uShape < 3.5) { a = rR < 1.0 ? 1.0 : exp(-(rR - 1.0) * uSoft); a *= smoothstep(1.0, 0.72, r); }   // limb glow: bright at the edge of the body, fading outward (atmospheres, coronae)
+  else if (uShape < 3.5) { a = rR < 1.0 ? 0.0 : exp(-(rR - 1.0) * uSoft); a *= smoothstep(1.0, 0.72, r); }   // nothing inside the disc: the opaque body hides it from outside, and from inside the ring system it would white out the view   // limb glow: bright at the edge of the body, fading outward (atmospheres, coronae)
   else { float ang = atan(q.y, q.x); float rays = pow(abs(cos(ang * 3.0 + uSeed)), 22.0) * 0.9 + pow(abs(cos(ang * 5.0 + uSeed * 2.3)), 44.0) * 0.6; a = pow(max(1.0 - r, 0.0), 2.2) * (0.06 + rays); }   // radiating spikes
   vec3 col = mix(uColor2, uColor, clamp(a, 0.0, 1.0));
   float k = a * uAlpha;
@@ -642,11 +659,17 @@ const MEARTH = 5.9722e24, REARTH = 6.371e6, MJUP = 1.89813e27;
 // texture registry: textures.register('Earth', 'textures/earth.jpg'); textures.register('type:planet', url)
 // ---------------------------------------------------------------------------------------------------
 import { createNebula } from './nebula-gen.js';
+import { createRingedBody, ringSystemKey } from './ring-system.js';
+import { attachPlanetLayers } from './planet-layers.js';
+import { addEarthLayers } from './earth-layers.js';
 export const textures = {
   map: new Map(), cache: new Map(), loader: null,
   register(key, url) { this.map.set(String(key).toLowerCase(), url); },
-  urlFor(spec) { return this.map.get(String(spec.name || '').toLowerCase()) || spec.texture || this.map.get(`type:${spec.type}`) || null; },
-  load(THREE, url) { if (!this.cache.has(url)) { this.loader ||= new THREE.TextureLoader(); const t = this.loader.load(url); t.colorSpace = THREE.SRGBColorSpace; this.cache.set(url, t); } return this.cache.get(url); },
+  // an entry is a url string (colour map) or { color, height?, normal?, relief? } (height/normal: linear maps; relief = height range / radius, default 0.01)
+  entryFor(spec) { const v = this.map.get(String(spec.name || '').toLowerCase()) || spec.texture || this.map.get(`type:${spec.type}`) || null; return !v ? null : typeof v === 'string' ? { color: v } : v; },
+  urlFor(spec) { return this.entryFor(spec)?.color || null; },
+  // data: true loads a linear (non-sRGB) relief map that wraps in longitude so the seam stays smooth
+  load(THREE, url, data = false) { const key = data ? `data:${url}` : url; if (!this.cache.has(key)) { this.loader ||= new THREE.TextureLoader(); const t = this.loader.load(url); if (data) { t.wrapS = THREE.RepeatWrapping; t.anisotropy = 4; } else t.colorSpace = THREE.SRGBColorSpace; this.cache.set(key, t); } return this.cache.get(key); },
 };
 
 // ---------------------------------------------------------------------------------------------------
@@ -694,9 +717,16 @@ export function createModel(THREE, spec = {}) {
     const s = new THREE.Mesh(g, m); s.onBeforeRender = (r, sc, cam) => { s.quaternion.copy(cam.quaternion); }; group.add(s); disposables.push(g, m); tickers.push(t => { m.uniforms.uTime.value = t; }); return s;
   };
   const bodyMat = (opts) => {
-    const url = textures.urlFor(spec), map = url ? textures.load(THREE, url) : null;
-    const m = new THREE.ShaderMaterial({ vertexShader: BODY_VERT, fragmentShader: BODY_FRAG, uniforms: { uTime: { value: 0 }, uSeed: { value: seed }, uKind: { value: opts.kind }, uHasMap: { value: map ? 1 : 0 }, uMap: { value: map || new THREE.Texture() }, uAtmo: { value: opts.atmo || 0 }, uColor: { value: opts.c1 }, uColor2: { value: opts.c2 }, uColor3: { value: opts.c3 }, uLightDir: { value: new THREE.Vector3(0.55, 0.35, 0.76).normalize() } } });
-    disposables.push(m); tickers.push(t => { m.uniforms.uTime.value = t; }); group.userData.lightDir = m.uniforms.uLightDir.value; return m;
+    const ent = textures.entryFor(spec), url = ent?.color, map = url ? textures.load(THREE, url) : null;
+    const reliefUrl = ent?.normal || ent?.height, relief = reliefUrl ? textures.load(THREE, reliefUrl, true) : null;   // relief maps are optional; the normal map wins over a height map
+    const m = new THREE.ShaderMaterial({ vertexShader: BODY_VERT, fragmentShader: BODY_FRAG, uniforms: { uTime: { value: 0 }, uSeed: { value: seed }, uKind: { value: opts.kind }, uHasMap: { value: map ? 1 : 0 }, uMap: { value: map || new THREE.Texture() }, uHasNormal: { value: !relief ? 0 : ent.normal ? 1 : 2 }, uNormalMap: { value: relief || new THREE.Texture() }, uBump: { value: ent?.bump ?? 1 }, uHeightRange: { value: ent?.relief ?? 0.01 }, uAtmo: { value: opts.atmo || 0 }, uColor: { value: opts.c1 }, uColor2: { value: opts.c2 }, uColor3: { value: opts.c3 }, uLightDir: { value: new THREE.Vector3(0.55, 0.35, 0.76).normalize() } } });
+    disposables.push(m); tickers.push(t => { m.uniforms.uTime.value = t; }); // the body shader dots its VIEW-space normal with uLightDir, so the uniform holds the sun direction in view space. userData.lightDir stays the WORLD-space
+    // direction the app rewrites each frame; userData.lightView is the view-space copy, refreshed for every draw (the old code fed the world vector straight in, so the
+    // lit side followed the camera instead of the Sun).
+    if (!group.userData.lightDir) group.userData.lightDir = new THREE.Vector3(0.55, 0.35, 0.76).normalize();
+    group.userData.lightView = m.uniforms.uLightDir.value; m.onBeforeRender = (r, sc, cam) => { group.userData.lightView.copy(group.userData.lightDir).transformDirection(cam.matrixWorldInverse); };
+    if (relief) { group.userData.bump = m.uniforms.uBump; group.userData.setBump = v => { m.uniforms.uBump.value = v; }; }   // height exaggeration: group.userData.setBump(2) or userData.bump.value = 2 (1 = baked scale)
+    return m;
   };
   const pal = {
     rocky: [[C(0.42, 0.38, 0.34), C(0.62, 0.55, 0.47), C(0.25, 0.22, 0.2)], [C(0.6, 0.45, 0.35), C(0.82, 0.6, 0.42), C(0.35, 0.25, 0.2)], [C(0.5, 0.5, 0.52), C(0.72, 0.72, 0.74), C(0.3, 0.3, 0.32)]],
@@ -714,10 +744,16 @@ export function createModel(THREE, spec = {}) {
       group.userData.viewRadius = cell.userData.viewRadius;
       break;
     }
-    case 'ocean': { group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 4, c1: C(0.08, 0.25, 0.55), c2: C(0.2, 0.42, 0.18), c3: C(0.55, 0.5, 0.35), atmo: 0.6 }))); addSprite(2.5, C(0.45, 0.65, 1.0), C(0.1, 0.2, 0.5), 3, 11, 0.85); break; }   // Earth-like: blue limb glow
+    case 'ocean': { group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 4, c1: C(0.08, 0.25, 0.55), c2: C(0.2, 0.42, 0.18), c3: C(0.55, 0.5, 0.35), atmo: 0.6 }))); if (String(spec.name).toLowerCase() === 'earth') { try { addEarthLayers(THREE, group, { tickers, disposables, lightDir: group.userData.lightView, sphere }); } catch (err) { console.warn('earth layers', err); } } addSprite(2.5, C(0.45, 0.65, 1.0), C(0.1, 0.2, 0.5), 3, 11, 0.85); break; }   // Earth-like: blue limb glow; Earth adds clouds, city lights and ocean glint (earth-layers.js)
     case 'lava': { group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 3, c1: C(0.12, 0.08, 0.07), c2: C(1.0, 0.45, 0.1), c3: C(1.0, 0.8, 0.3), atmo: 0 }))); break; }
     case 'icy': { group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 2, c1: C(0.7, 0.74, 0.8), c2: C(0.88, 0.9, 0.95), c3: C(0.5, 0.55, 0.6), atmo: 0 }))); break; }
-    case 'gasgiant': { const [c1, c2, c3] = pick(pal.gasgiant); group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 1, c1, c2, c3, atmo: 0.35 }))); const nm = String(spec.name || '').toLowerCase(); if (nm === 'saturn' || nm === 'uranus' || (!SOLAR_NAMES.has(nm) && R() < 0.3)) { /* Jupiter's and Neptune's rings are too faint to draw at this scale */ const rg = new THREE.RingGeometry(nm === 'uranus' ? 1.6 : 1.25, nm === 'uranus' ? 1.75 : 2.3, 96), rm = new THREE.MeshBasicMaterial({ color: c3, transparent: true, opacity: 0.45, side: THREE.DoubleSide }); const ring = new THREE.Mesh(rg, rm); ring.rotation.x = Math.PI / 2 + 0.3; group.add(ring); disposables.push(rg, rm); } addSprite(2.45, c1.clone().lerp(C(1, 1, 1), 0.3), C(0, 0, 0), 3, 12, 0.5); break; }
+    case 'gasgiant': {
+      const [c1, c2, c3] = pick(pal.gasgiant), nm = String(spec.name || '').toLowerCase(), planet = new THREE.Mesh(sphere(), bodyMat({ kind: 1, c1, c2, c3, atmo: 0.35 }));
+      // Saturn, Uranus, Neptune and Jupiter get their real ring systems (ring-system.js); other giants sometimes get a generic one
+      if (ringSystemKey(nm) || (!SOLAR_NAMES.has(nm) && R() < 0.3)) { const rb = createRingedBody(THREE, { spec, group, body: planet, lightDir: group.userData.lightDir, seed }); group.add(rb.frame); group.userData.polarFrame = rb.frame; tickers.push(t => rb.tick(t)); disposables.push(rb); group.userData.rings = rb.api; }
+      else group.add(planet);
+      addSprite(2.45, c1.clone().lerp(C(1, 1, 1), 0.3), C(0, 0, 0), 3, 12, 0.5); break;
+    }
     case 'rocky': { const [c1, c2, c3] = pick(pal.rocky); group.add(new THREE.Mesh(sphere(), bodyMat({ kind: 0, c1, c2, c3, atmo: spec.type === 'moon' ? 0 : 0.2 }))); if (spec.type !== 'moon') addSprite(2.3, C(0.85, 0.72, 0.6), C(0, 0, 0), 3, 14, 0.3); break; }
     case 'asteroid': case 'comet': {
       const g = new THREE.IcosahedronGeometry(1, 4); const pos = g.attributes.position; const v = new THREE.Vector3();
@@ -819,6 +855,7 @@ export function createModel(THREE, spec = {}) {
       break;
     }
   }
+  if (['ocean', 'rocky', 'gasgiant', 'icy', 'lava'].includes(kind)) attachPlanetLayers(THREE, group, spec, kind, { tickers, disposables, sphere });   // atmospheres, magnetosphere, aurora (planet-layers.js)
   group.tick = t => { for (const f of tickers) f(t); };
   group.dispose = () => { for (const d of disposables) d.dispose?.(); };
   group.viewRadius = group.userData.viewRadius || { galaxy: 1.1, gcluster: 1.2, scluster: 1.1, nebula: 1.3, pnebula: 1.3, snr: 1.4, blackhole: 2.2, quasar: 3, pulsar: 2.4, comet: 2.5, star: 1.6, browndwarf: 1.3, whitedwarf: 1.4 }[kind] || 1.15;

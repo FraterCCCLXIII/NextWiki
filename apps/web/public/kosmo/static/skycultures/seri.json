@@ -1,0 +1,377 @@
+{
+ "id": "seri",
+ "name": "Seri (Comcaac)",
+ "region": "Sonora, Mexico",
+ "era": "Traditional",
+ "color": "#e86f9a",
+ "description": "Seri (Comcaac) constellations compiled for Stellarium.",
+ "source": [
+  "Stellarium sky culture 'seri' (https://github.com/Stellarium/stellarium/tree/master/skycultures/seri); contributed by: **Ra&#250;l Pérez-Enríquez**: raulpe55gmail(dot)com ### Thanks to - Arturo Morales Blanco - Alejandro Aguilar Zeleny - Julio Saucedo Morales - Alfredo Manríquez - UNISON English translation by: Alfredo Manríquez",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: seri: CC BY-SA 4.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "seri-seri-zaamth",
+   "name": "Zaamth",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP25281",
+     "HIP24436",
+     "HIP26241",
+     "HIP26727",
+     "HIP26311",
+     "HIP25930",
+     "HIP25281",
+     "HIP24436"
+    ],
+    [
+     "HIP25930",
+     "HIP26366",
+     "HIP27989",
+     "HIP26727"
+    ],
+    [
+     "HIP25336",
+     "HIP26366"
+    ],
+    [
+     "HIP24436",
+     "HIP23875"
+    ]
+   ],
+   "meaning": "Crab",
+   "extraStars": {
+    "HIP26366": [
+     84.2266,
+     9.2907,
+     36.02,
+     4.09,
+     "40Phi2Ori",
+     "G8III-IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  },
+  {
+   "id": "seri-seri-cohamc",
+   "name": "Cohamc",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP54061",
+     "HIP53910",
+     "HIP54539",
+     "HIP55219"
+    ],
+    [
+     "HIP54951",
+     "HIP54872"
+    ]
+   ],
+   "meaning": "The wife and husband",
+   "extraStars": {
+    "HIP54951": [
+     168.801,
+     23.0955,
+     294.12,
+     4.56,
+     "72    Leo",
+     "M3III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  },
+  {
+   "id": "seri-seri-haapjc",
+   "name": "Haapjc",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP37826",
+     "HIP36962",
+     "HIP36429",
+     "HIP36046",
+     "HIP36850",
+     "HIP37826"
+    ],
+    [
+     "HIP37629",
+     "HIP20205"
+    ],
+    [
+     "HIP21421",
+     "HIP20205",
+     "HIP20889"
+    ]
+   ],
+   "meaning": "The deer hunter",
+   "extraStars": {
+    "HIP36429": [
+     112.4532,
+     27.9161,
+     148.37,
+     5.01,
+     "65    Gem",
+     "K2III"
+    ],
+    "HIP36046": [
+     111.4317,
+     27.7981,
+     36.9,
+     3.78,
+     "60Iot Gem",
+     "G9III+..."
+    ],
+    "HIP37629": [
+     115.828,
+     28.8835,
+     38.34,
+     4.23,
+     "75Sig Gem",
+     "K1III SB"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  },
+  {
+   "id": "seri-seri-caamoilcoj",
+   "name": "Caamoilcoj",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP58001",
+     "HIP59774",
+     "HIP62956",
+     "HIP65378",
+     "HIP66634",
+     "HIP67301"
+    ],
+    [
+     "HIP60485",
+     "HIP60988"
+    ]
+   ],
+   "meaning": "Wheel game",
+   "extraStars": {
+    "HIP66634": [
+     204.8771,
+     52.9212,
+     53.59,
+     5.46,
+     "82    UMa",
+     "A3Vn"
+    ],
+    "HIP60988": [
+     187.5122,
+     51.5356,
+     44.76,
+     6.21,
+     "7    CVn",
+     "F7V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  },
+  {
+   "id": "seri-seri-h-cosa",
+   "name": "Hácosa",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP746",
+     "HIP4427",
+     "HIP6686"
+    ],
+    [
+     "HIP3179",
+     "HIP4427"
+    ]
+   ],
+   "meaning": "Pitahayas cutter",
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  },
+  {
+   "id": "seri-seri-hazoj-canoj-hantifica",
+   "name": "Hazoj canoj Hantificaü",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP32349",
+     "HIP31758",
+     "HIP32349"
+    ]
+   ],
+   "meaning": "He who comes at sunrise",
+   "extraStars": {
+    "HIP31758": [
+     99.6476,
+     -16.8735,
+     149.48,
+     6.01,
+     "HR 2448",
+     "A0IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  },
+  {
+   "id": "seri-seri-yay-xapi-hanopas",
+   "name": "Yay xapi hanopas",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP30438",
+     "HIP31685",
+     "HIP30438"
+    ]
+   ],
+   "meaning": "Young hunter",
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  },
+  {
+   "id": "seri-seri-quetoh",
+   "name": "Quetoh",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP69673",
+     "HIP67927"
+    ]
+   ],
+   "meaning": "Small dove",
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  },
+  {
+   "id": "seri-seri-coozactim",
+   "name": "Coozactim",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP24608",
+     "HIP27196",
+     "HIP28360"
+    ]
+   ],
+   "meaning": "Hunter",
+   "extraStars": {
+    "HIP27196": [
+     86.4752,
+     49.8263,
+     126.74,
+     5.46,
+     "27Omi Aur",
+     "A0p..."
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  },
+  {
+   "id": "seri-seri-hap",
+   "name": "Hap",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP23015",
+     "HIP25428",
+     "HIP26451"
+    ]
+   ],
+   "meaning": "Deer",
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  },
+  {
+   "id": "seri-seri-hee",
+   "name": "Hee",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP91262",
+     "HIP92791"
+    ]
+   ],
+   "meaning": "Hare",
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  },
+  {
+   "id": "seri-seri-hazoj-koii",
+   "name": "Hazoj Koii",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP80763",
+     "HIP79593",
+     "HIP86032",
+     "HIP80816",
+     "HIP86974"
+    ],
+    [
+     "HIP86032",
+     "HIP87933"
+    ],
+    [
+     "HIP80763",
+     "HIP84012",
+     "HIP86032"
+    ]
+   ],
+   "meaning": "Person",
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  },
+  {
+   "id": "seri-seri-hazoj-canoj-himatax",
+   "name": "Hazoj canoj Himatax",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP11767",
+     "HIP11767"
+    ]
+   ],
+   "meaning": "Polar star",
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  },
+  {
+   "id": "seri-seri-hazoj-c-iiqui",
+   "name": "Hazoj Cöiiqui",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP80763",
+     "HIP80763"
+    ]
+   ],
+   "meaning": "Antares",
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  },
+  {
+   "id": "seri-seri-hazoj-canoj-hantifica-2",
+   "name": "Hazoj canoj Hantificaü",
+   "kind": "constellation",
+   "group": "Seri",
+   "lines": [
+    [
+     "HIP32349",
+     "HIP32349"
+    ]
+   ],
+   "meaning": "Sirius",
+   "story": "Line pattern from the Stellarium 'seri' sky culture; see source for documentation."
+  }
+ ]
+}

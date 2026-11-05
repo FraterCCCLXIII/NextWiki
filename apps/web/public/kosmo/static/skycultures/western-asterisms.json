@@ -1,0 +1,1300 @@
+{
+ "id": "western-asterisms",
+ "name": "Western asterisms",
+ "region": "Europe, North America, Southern Hemisphere (popular sky lore)",
+ "era": "Antiquity - present",
+ "color": "#7fb5a8",
+ "description": "Popular star patterns used by observers in the Western tradition, such as the Big Dipper, Summer Triangle and Southern Cross. Asterisms are informal groupings and may sit inside or span IAU constellations.",
+ "source": [
+  "Stellarium skycultures, western (https://github.com/Stellarium/stellarium-skycultures/tree/master/western): asterism outlines in index.json, by Hipparcos number; data CC BY-SA 4.0.",
+  "HYG Star Database v4.1 (https://github.com/astronexus/HYG-Database), David Nash: positions and parallax distances for extraStars; CC BY-SA 4.0.",
+  "Wikipedia 'List of asterisms' and the asterism articles (https://en.wikipedia.org/wiki/List_of_asterisms): descriptions, CC BY-SA 4.0, facts only.",
+  "Ian Ridpath, Star Tales (http://www.ianridpath.com/startales/): star identifications as reference only; no text copied."
+ ],
+ "license": "CC BY-SA 4.0 (share-alike: derived from Stellarium skycultures and HYG v4.1)",
+ "figures": [
+  {
+   "id": "asterism-big-dipper",
+   "name": "Big Dipper (Plough)",
+   "meaning": "seven brightest stars of Ursa Major",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP67301",
+     "HIP65378",
+     "HIP62956",
+     "HIP59774",
+     "HIP54061",
+     "HIP53910",
+     "HIP58001",
+     "HIP59774"
+    ]
+   ],
+   "iau": [
+    "UMa"
+   ],
+   "story": "The seven brightest stars of Ursa Major: Dubhe, Merak, Phecda, Megrez, Alioth, Mizar and Alkaid. Called the Plough in Britain. Dubhe and Merak point to Polaris."
+  },
+  {
+   "id": "asterism-little-dipper",
+   "name": "Little Dipper",
+   "meaning": "the main stars of Ursa Minor",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP11767",
+     "HIP85822",
+     "HIP82080",
+     "HIP77055",
+     "HIP79822",
+     "HIP75097",
+     "HIP72607",
+     "HIP77055"
+    ]
+   ],
+   "iau": [
+    "UMi"
+   ],
+   "story": "The seven main stars of Ursa Minor, with Polaris at the end of the handle and Kochab and Pherkad forming the front of the bowl."
+  },
+  {
+   "id": "asterism-summer-triangle",
+   "name": "Summer Triangle",
+   "meaning": "Vega, Deneb and Altair",
+   "kind": "asterism",
+   "group": "Seasonal and large-scale",
+   "lines": [
+    [
+     "HIP91262",
+     "HIP97649",
+     "HIP102098",
+     "HIP91262"
+    ]
+   ],
+   "iau": [
+    "Cyg",
+    "Lyr",
+    "Aql"
+   ],
+   "story": "A large triangle of Vega (Lyra), Deneb (Cygnus) and Altair (Aquila), high in the evening sky of northern summer."
+  },
+  {
+   "id": "asterism-winter-triangle",
+   "name": "Winter Triangle",
+   "meaning": "Betelgeuse, Sirius and Procyon",
+   "kind": "asterism",
+   "group": "Seasonal and large-scale",
+   "lines": [
+    [
+     "HIP32349",
+     "HIP37279",
+     "HIP27989",
+     "HIP32349"
+    ]
+   ],
+   "iau": [
+    "Ori",
+    "CMa",
+    "CMi"
+   ],
+   "story": "A triangle of Betelgeuse (Orion), Sirius (Canis Major) and Procyon (Canis Minor), conspicuous in northern winter."
+  },
+  {
+   "id": "asterism-winter-hexagon",
+   "name": "Winter Hexagon (Winter Circle)",
+   "meaning": "six first-magnitude stars around Orion",
+   "kind": "asterism",
+   "group": "Seasonal and large-scale",
+   "lines": [
+    [
+     "HIP32349",
+     "HIP37279",
+     "HIP37826",
+     "HIP24608",
+     "HIP21421",
+     "HIP24436",
+     "HIP32349"
+    ]
+   ],
+   "iau": [
+    "Tau",
+    "Ori",
+    "Aur",
+    "CMa",
+    "CMi",
+    "Gem"
+   ],
+   "story": "A ring of Sirius, Procyon, Pollux, Capella, Aldebaran and Rigel surrounding Orion. Also called the Winter Circle."
+  },
+  {
+   "id": "asterism-heavenly-g",
+   "name": "Heavenly G",
+   "meaning": "a G-shaped loop of winter stars",
+   "kind": "asterism",
+   "group": "Seasonal and large-scale",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP24608",
+     "HIP36850",
+     "HIP37826",
+     "HIP37279",
+     "HIP32349",
+     "HIP24436",
+     "HIP25336",
+     "HIP27989"
+    ]
+   ],
+   "iau": [
+    "Tau",
+    "Ori",
+    "Aur",
+    "CMa",
+    "Gem",
+    "CMi"
+   ],
+   "story": "A G-shaped chain through Aldebaran, Capella, Castor and Pollux, Procyon, Sirius, Rigel, Bellatrix and Betelgeuse."
+  },
+  {
+   "id": "asterism-great-square-of-pegasus",
+   "name": "Great Square of Pegasus",
+   "meaning": "also the Square of Pegasus",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP113963",
+     "HIP113881",
+     "HIP677",
+     "HIP1067",
+     "HIP113963"
+    ]
+   ],
+   "iau": [
+    "Peg",
+    "And"
+   ],
+   "story": "The body of Pegasus: Markab, Scheat, Alpheratz (Alpha Andromedae) and Algenib. Also called the Square of Pegasus."
+  },
+  {
+   "id": "asterism-northern-cross",
+   "name": "Northern Cross",
+   "meaning": "the main stars of Cygnus",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP102098",
+     "HIP100453",
+     "HIP95947"
+    ],
+    [
+     "HIP102488",
+     "HIP100453",
+     "HIP97165"
+    ]
+   ],
+   "iau": [
+    "Cyg"
+   ],
+   "story": "Cygnus drawn as a cross, with Deneb at the top, Albireo at the foot, and Sadr at the crossing."
+  },
+  {
+   "id": "asterism-teapot",
+   "name": "Teapot",
+   "meaning": "the main stars of Sagittarius",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP93506",
+     "HIP92041",
+     "HIP89931",
+     "HIP90185",
+     "HIP93506",
+     "HIP93864",
+     "HIP92855",
+     "HIP92041",
+     "HIP90496",
+     "HIP89931",
+     "HIP88635",
+     "HIP90185"
+    ]
+   ],
+   "iau": [
+    "Sgr"
+   ],
+   "story": "Eight stars of Sagittarius forming a teapot: the Kaus stars (Australis, Media and Borealis) make the body, Alnasl the spout tip, and Ascella, Tau, Phi and Nunki the lid and handle."
+  },
+  {
+   "id": "asterism-milk-dipper",
+   "name": "Milk Dipper",
+   "meaning": "the Sagittarius dipper",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP92041",
+     "HIP92855",
+     "HIP93864",
+     "HIP93506",
+     "HIP92041",
+     "HIP90496"
+    ]
+   ],
+   "iau": [
+    "Sgr"
+   ],
+   "story": "A small dipper inside the Teapot made of Phi Sagittarii, Nunki, Tau Sagittarii, Ascella and Kaus Borealis, set in the Milky Way."
+  },
+  {
+   "id": "asterism-sickle-of-leo",
+   "name": "Sickle of Leo",
+   "meaning": "the lion's head and mane",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP49669",
+     "HIP49583",
+     "HIP50583",
+     "HIP50335",
+     "HIP48455",
+     "HIP47908"
+    ]
+   ],
+   "iau": [
+    "Leo"
+   ],
+   "story": "A backward question-mark of Regulus, Eta Leonis, Algieba, Adhafera, Rasalas and Ras Elased Australis forming the head and mane of Leo."
+  },
+  {
+   "id": "asterism-keystone-of-hercules",
+   "name": "Keystone of Hercules",
+   "meaning": "the torso of Hercules",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP83207",
+     "HIP81693",
+     "HIP81833",
+     "HIP84380",
+     "HIP83207"
+    ]
+   ],
+   "iau": [
+    "Her"
+   ],
+   "story": "The four-star trapezoid of Hercules (Eta, Zeta, Epsilon and Pi Herculis) between Vega and Arcturus; the Hercules Cluster M13 lies on its western side."
+  },
+  {
+   "id": "asterism-butterfly-of-hercules",
+   "name": "Butterfly of Hercules",
+   "meaning": "Keystone with the arms",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP83207",
+     "HIP81693",
+     "HIP81833",
+     "HIP84380",
+     "HIP83207",
+     "HIP84379",
+     "HIP80816",
+     "HIP81693"
+    ]
+   ],
+   "iau": [
+    "Her"
+   ],
+   "story": "Joins Kornephoros, Zet Her, Eta Her, Eps Her, Sarin, Pi Her in Her. Outline from Stellarium's western sky culture."
+  },
+  {
+   "id": "asterism-orions-belt",
+   "name": "Orion's Belt",
+   "meaning": "Mintaka, Alnilam and Alnitak",
+   "kind": "asterism",
+   "group": "Orion and Taurus",
+   "lines": [
+    [
+     "HIP25930",
+     "HIP26311",
+     "HIP26727"
+    ]
+   ],
+   "iau": [
+    "Ori"
+   ],
+   "story": "Three bright stars in a row: Mintaka, Alnilam and Alnitak, in the middle of Orion. Also known as Three Kings, Three Marys."
+  },
+  {
+   "id": "asterism-orions-sword",
+   "name": "Orion's Sword",
+   "meaning": "below the belt",
+   "kind": "asterism",
+   "group": "Orion and Taurus",
+   "lines": [
+    [
+     "HIP26241",
+     "HIP26221",
+     "HIP26237"
+    ]
+   ],
+   "extraStars": {
+    "HIP26221": [
+     83.8186,
+     -5.3897,
+     null,
+     5.13,
+     "The1 Ori",
+     "O6pe"
+    ],
+    "HIP26237": [
+     83.8465,
+     -4.8384,
+     271.0,
+     4.58,
+     "42 Ori",
+     "B2III..."
+    ]
+   },
+   "iau": [
+    "Ori"
+   ],
+   "story": "Joins The1 Ori, 42 Ori, Hatysa in Ori. Outline from Stellarium's western sky culture."
+  },
+  {
+   "id": "asterism-orions-shield",
+   "name": "Orion's Shield",
+   "meaning": "the arc west of the belt",
+   "kind": "asterism",
+   "group": "Orion and Taurus",
+   "lines": [
+    [
+     "HIP22845",
+     "HIP22509",
+     "HIP22449",
+     "HIP22549",
+     "HIP22797",
+     "HIP23123"
+    ]
+   ],
+   "iau": [
+    "Ori"
+   ],
+   "story": "Joins Tabit, Pi-2 Ori, Pi-4 Ori, Pi-5 Ori, Pi-1 Ori, Pi-6 Ori in Ori. Outline from Stellarium's western sky culture."
+  },
+  {
+   "id": "asterism-orions-club",
+   "name": "Orion's Club",
+   "meaning": "the cudgel arm",
+   "kind": "asterism",
+   "group": "Orion and Taurus",
+   "lines": [
+    [
+     "HIP27913",
+     "HIP28716",
+     "HIP29434",
+     "HIP29426",
+     "HIP29038",
+     "HIP27913"
+    ]
+   ],
+   "extraStars": {
+    "HIP29434": [
+     93.0137,
+     16.1304,
+     162.07,
+     4.95,
+     "69 Ori",
+     "B5Vn"
+    ]
+   },
+   "iau": [
+    "Ori"
+   ],
+   "story": "Joins Chi-1 Ori, Chi-2 Ori, Nu Ori, Xi Ori, 69 Ori in Ori. Outline from Stellarium's western sky culture."
+  },
+  {
+   "id": "asterism-kids",
+   "name": "Kids (Haedi)",
+   "meaning": "three stars in Auriga",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP23767",
+     "HIP23453",
+     "HIP23416",
+     "HIP23767"
+    ]
+   ],
+   "iau": [
+    "Aur"
+   ],
+   "story": "The small triangle of Almaaz (Epsilon Aurigae) and the two stars Zeta and Eta Aurigae, Haedus I and II, held by Capella in Auriga. Also known as Haedi, Goatlings."
+  },
+  {
+   "id": "asterism-circlet-of-pisces",
+   "name": "Circlet of Pisces",
+   "meaning": "the western Fish",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP114971",
+     "HIP115738",
+     "HIP116928",
+     "HIP117245",
+     "HIP116771",
+     "HIP115830",
+     "HIP115227",
+     "HIP114971"
+    ]
+   ],
+   "iau": [
+    "Psc"
+   ],
+   "story": "An oval ring of stars (Gamma, Kappa, Lambda, 19, Iota and Theta Piscium, and 7 Piscium) forming the Western Fish of Pisces, south of the Great Square of Pegasus."
+  },
+  {
+   "id": "asterism-y-of-aquarius",
+   "name": "Y of Aquarius (Water Jar)",
+   "meaning": "the Water Jar",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP110395",
+     "HIP110960"
+    ],
+    [
+     "HIP111497",
+     "HIP110960"
+    ],
+    [
+     "HIP110672",
+     "HIP110960"
+    ]
+   ],
+   "iau": [
+    "Aqr"
+   ],
+   "story": "A Y-shaped group of Zeta Aquarii with Gamma (Sadachbia), Eta and Pi Aquarii, known as the Water Jar of Aquarius. Also known as The Urn, Water Jar."
+  },
+  {
+   "id": "asterism-spring-triangle",
+   "name": "Spring Triangle",
+   "meaning": "Arcturus, Spica and Regulus",
+   "kind": "asterism",
+   "group": "Seasonal and large-scale",
+   "lines": [
+    [
+     "HIP69673",
+     "HIP65474",
+     "HIP49669",
+     "HIP69673"
+    ]
+   ],
+   "iau": [
+    "Leo",
+    "Vir",
+    "Boo"
+   ],
+   "story": "A triangle of Arcturus (Bootes), Spica (Virgo) and Regulus (Leo) visible in northern spring evenings."
+  },
+  {
+   "id": "asterism-great-diamond",
+   "name": "Great Diamond (Diamond of Virgo)",
+   "meaning": "Arcturus, Spica, Denebola and Cor Caroli",
+   "kind": "asterism",
+   "group": "Seasonal and large-scale",
+   "lines": [
+    [
+     "HIP69673",
+     "HIP65474",
+     "HIP57632",
+     "HIP63125",
+     "HIP69673"
+    ]
+   ],
+   "iau": [
+    "Leo",
+    "CVn",
+    "Vir",
+    "Boo"
+   ],
+   "story": "A diamond of Arcturus, Spica, Denebola and Cor Caroli; adding Regulus gives the Spring Triangle. Also called the Diamond of Virgo."
+  },
+  {
+   "id": "asterism-coathanger",
+   "name": "Coathanger (Cr 399, Brocchi's Cluster)",
+   "meaning": "star group in Vulpecula",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP95818",
+     "HIP95700",
+     "HIP95584",
+     "HIP95487",
+     "HIP95340",
+     "HIP95291"
+    ],
+    [
+     "HIP95584",
+     "HIP95560",
+     "HIP95582",
+     "HIP95498",
+     "HIP95432"
+    ]
+   ],
+   "extraStars": {
+    "HIP95818": [
+     292.3371,
+     20.2797,
+     355.87,
+     6.34,
+     "7 Vul",
+     "B5Vn"
+    ],
+    "HIP95700": [
+     291.9753,
+     20.2474,
+     411.52,
+     6.88,
+     "HD 183261",
+     "B3II"
+    ],
+    "HIP95584": [
+     291.6275,
+     20.259,
+     246.91,
+     6.64,
+     "HD 182972",
+     "A1V"
+    ],
+    "HIP95487": [
+     291.3433,
+     20.2717,
+     147.06,
+     6.31,
+     "HR 7384",
+     "A0V"
+    ],
+    "HIP95340": [
+     290.9455,
+     20.2644,
+     421.94,
+     6.4,
+     "HR 7364",
+     "B9.5V"
+    ],
+    "HIP95291": [
+     290.8009,
+     20.2779,
+     118.76,
+     7.11,
+     "HD 182293",
+     "K3IVp"
+    ],
+    "HIP95560": [
+     291.5552,
+     20.0977,
+     72.89,
+     5.6,
+     "5 Vul",
+     "A0V"
+    ],
+    "HIP95582": [
+     291.6195,
+     19.8915,
+     187.97,
+     5.84,
+     "HR 7391",
+     "M0III"
+    ],
+    "HIP95498": [
+     291.3692,
+     19.7984,
+     83.26,
+     5.14,
+     "4 Vul",
+     "K0III"
+    ],
+    "HIP95432": [
+     291.1848,
+     19.9394,
+     213.68,
+     7.16,
+     "HD 182620",
+     "A2V"
+    ]
+   },
+   "iau": [
+    "Vul"
+   ],
+   "story": "A line of six stars with a hook of four more in Vulpecula, an open cluster catalogued as Collinder 399 or Brocchi's Cluster; much of it is a chance alignment rather than a bound cluster. Also known as Brocchi's Cluster, Cr 399."
+  },
+  {
+   "id": "asterism-jobs-coffin",
+   "name": "Job's Coffin",
+   "meaning": "the diamond of Delphinus",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP102532",
+     "HIP101958",
+     "HIP101769",
+     "HIP102281",
+     "HIP102532"
+    ]
+   ],
+   "iau": [
+    "Del"
+   ],
+   "story": "The small diamond of Alpha, Beta, Gamma and Delta Delphini. Also known as Delphinus diamond."
+  },
+  {
+   "id": "asterism-guardians-of-the-pole",
+   "name": "Guardians of the Pole",
+   "meaning": "Kochab and Pherkad",
+   "kind": "asterism",
+   "group": "Pole and pointers",
+   "lines": [
+    [
+     "HIP72607",
+     "HIP75097"
+    ]
+   ],
+   "iau": [
+    "UMi"
+   ],
+   "story": "Beta and Gamma Ursae Minoris, Kochab and Pherkad, which circle Polaris and were used as clock hands. Also known as Guards."
+  },
+  {
+   "id": "asterism-false-cross",
+   "name": "False Cross",
+   "meaning": "Vela and Carina",
+   "kind": "asterism",
+   "group": "Southern sky",
+   "lines": [
+    [
+     "HIP42913",
+     "HIP45556"
+    ],
+    [
+     "HIP45941",
+     "HIP41037"
+    ]
+   ],
+   "iau": [
+    "Car",
+    "Vel"
+   ],
+   "story": "Two stars each of Vela (Delta and Kappa) and Carina (Epsilon and Iota) forming a cross often mistaken for the Southern Cross; it is larger and dimmer and lacks a bright pointer pair."
+  },
+  {
+   "id": "asterism-hyades-v",
+   "name": "Hyades V",
+   "meaning": "the face of Taurus",
+   "kind": "asterism",
+   "group": "Orion and Taurus",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP20894",
+     "HIP20205",
+     "HIP20455",
+     "HIP20648",
+     "HIP20889"
+    ]
+   ],
+   "extraStars": {
+    "HIP20648": [
+     66.3724,
+     17.9279,
+     45.54,
+     4.3,
+     "Del3 Tau",
+     "A2IV"
+    ]
+   },
+   "iau": [
+    "Tau"
+   ],
+   "story": "The V-shaped open cluster of the Hyades forms the face of Taurus, with orange Aldebaran marking one tip (a foreground star, not a cluster member). Gamma (Prima Hyadum), Delta, Epsilon (Ain) and Theta Tauri trace the V."
+  },
+  {
+   "id": "asterism-segment-of-perseus",
+   "name": "Segment of Perseus",
+   "meaning": "curve in Perseus",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP13268",
+     "HIP14328",
+     "HIP15863",
+     "HIP17358",
+     "HIP18532",
+     "HIP18246"
+    ]
+   ],
+   "iau": [
+    "Per"
+   ],
+   "story": "Joins Miram, Gam Per, Mirfak, Del Per, Zet Per, Eps Per in Per. Outline from Stellarium's western sky culture."
+  },
+  {
+   "id": "asterism-w-of-cassiopeia",
+   "name": "W of Cassiopeia",
+   "meaning": "the Queen's W",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP8886",
+     "HIP6686",
+     "HIP4427",
+     "HIP3179",
+     "HIP746"
+    ]
+   ],
+   "iau": [
+    "Cas"
+   ],
+   "story": "The five main stars of Cassiopeia (Caph, Schedar, Gamma Cassiopeiae, Ruchbah, Segin) form a W or M shape opposite the Big Dipper across Polaris."
+  },
+  {
+   "id": "asterism-bier-of-ursa-major",
+   "name": "Bier of Ursa Major",
+   "meaning": "the bowl of the Dipper",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP54061",
+     "HIP53910",
+     "HIP58001",
+     "HIP59774",
+     "HIP54061"
+    ]
+   ],
+   "iau": [
+    "UMa"
+   ],
+   "story": "Joins Merak, Dubhe, Phecda, Megrez in UMa. Outline from Stellarium's western sky culture."
+  },
+  {
+   "id": "asterism-dragon-head",
+   "name": "Head of Draco (Lozenge)",
+   "meaning": "Eltanin and neighbours",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP85670",
+     "HIP87833",
+     "HIP87585",
+     "HIP85819",
+     "HIP85670"
+    ]
+   ],
+   "extraStars": {
+    "HIP85819": [
+     263.0438,
+     55.1842,
+     30.25,
+     4.89,
+     "Nu1 Dra",
+     "Am..."
+    ]
+   },
+   "iau": [
+    "Dra"
+   ],
+   "story": "The lozenge of Rastaban, Eltanin, Grumium and Nu Draconis that forms the head of Draco."
+  },
+  {
+   "id": "asterism-medusa-head",
+   "name": "Head of Medusa",
+   "meaning": "the Algol head",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP14576",
+     "HIP13879",
+     "HIP14354",
+     "HIP14817",
+     "HIP14576"
+    ]
+   ],
+   "iau": [
+    "Per"
+   ],
+   "story": "Joins Pi Per, Rho Per, Algol, Ome Per in Per. Outline from Stellarium's western sky culture."
+  },
+  {
+   "id": "asterism-head-of-cetus",
+   "name": "Head of Cetus",
+   "meaning": "the whale's head",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP14135",
+     "HIP13954",
+     "HIP12828",
+     "HIP11484",
+     "HIP12706",
+     "HIP14135"
+    ]
+   ],
+   "iau": [
+    "Cet"
+   ],
+   "story": "Joins Xi-2 Cet, Kaffaljidhma, Mu Cet, Lam Cet, Menkar in Cet. Outline from Stellarium's western sky culture."
+  },
+  {
+   "id": "asterism-head-of-serpens",
+   "name": "Head of Serpens",
+   "meaning": "",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP78481",
+     "HIP77450",
+     "HIP77233",
+     "HIP78072",
+     "HIP78481"
+    ],
+    [
+     "HIP78072",
+     "HIP77450"
+    ]
+   ],
+   "extraStars": {
+    "HIP78481": [
+     240.3097,
+     17.8184,
+     76.92,
+     5.1,
+     "5 Her",
+     "G8III"
+    ]
+   },
+   "iau": [
+    "Ser",
+    "Her"
+   ],
+   "story": "Joins Bet Ser, Gudja, Gam Ser, 5 Her in Ser/Her. Outline from Stellarium's western sky culture."
+  },
+  {
+   "id": "asterism-head-of-hydra",
+   "name": "Head of Hydra",
+   "meaning": "",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP43813",
+     "HIP43109",
+     "HIP42313",
+     "HIP42402",
+     "HIP42799",
+     "HIP43813"
+    ]
+   ],
+   "iau": [
+    "Hya"
+   ],
+   "story": "Joins Del Hya, Minchir, Eta Hya, Ashlesha, Zet Hya in Hya. Outline from Stellarium's western sky culture."
+  },
+  {
+   "id": "asterism-fish-hook",
+   "name": "Fish Hook (Scorpius)",
+   "meaning": "the tail of the Scorpion",
+   "kind": "asterism",
+   "group": "Southern sky",
+   "lines": [
+    [
+     "HIP85927",
+     "HIP86670",
+     "HIP87073",
+     "HIP86228",
+     "HIP84143",
+     "HIP82729",
+     "HIP82514",
+     "HIP82396",
+     "HIP81266",
+     "HIP80763",
+     "HIP80112"
+    ]
+   ],
+   "iau": [
+    "Sco"
+   ],
+   "story": "The curved body and tail of Scorpius from Antares to Shaula; in Polynesian tradition the figure is the fish hook of Maui."
+  },
+  {
+   "id": "asterism-terebellum",
+   "name": "Terebellum",
+   "meaning": "Sagittarius/Capricornus",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP98066",
+     "HIP98688"
+    ],
+    [
+     "HIP98353",
+     "HIP98162"
+    ]
+   ],
+   "extraStars": {
+    "HIP98688": [
+     300.6645,
+     -27.7098,
+     137.55,
+     4.43,
+     "62 Sgr",
+     "M4III"
+    ],
+    "HIP98353": [
+     299.7383,
+     -26.1958,
+     96.06,
+     4.84,
+     "60 Sgr",
+     "G8II/III"
+    ],
+    "HIP98162": [
+     299.2368,
+     -27.1699,
+     255.1,
+     4.54,
+     "59 Sgr",
+     "K3III"
+    ]
+   },
+   "iau": [
+    "Sgr"
+   ],
+   "story": "Joins Terebellum, 59 Sgr, 60 Sgr, 62 Sgr in Sgr. Outline from Stellarium's western sky culture."
+  },
+  {
+   "id": "asterism-kite-of-bootes",
+   "name": "Kite (Bootes)",
+   "meaning": "Arcturus and neighbours",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP69673",
+     "HIP72105",
+     "HIP74666",
+     "HIP73555",
+     "HIP71075",
+     "HIP71053",
+     "HIP69673"
+    ]
+   ],
+   "iau": [
+    "Boo"
+   ],
+   "story": "Joins Arcturus, Rho Boo, Seginus, Izar, Nekkar, Del Boo in Boo. Outline from Stellarium's western sky culture."
+  },
+  {
+   "id": "asterism-mini-cassiopeia",
+   "name": "Mini-Cassiopeia",
+   "meaning": "Vulpecula/Cygnus",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP97679",
+     "HIP97886",
+     "HIP98375",
+     "HIP98636",
+     "HIP99080"
+    ]
+   ],
+   "extraStars": {
+    "HIP98375": [
+     299.7939,
+     23.1013,
+     49.12,
+     5.68,
+     "14 Vul",
+     "F0"
+    ],
+    "HIP98636": [
+     300.5059,
+     24.938,
+     67.98,
+     5.23,
+     "16 Vul",
+     "F2III"
+    ],
+    "HIP99080": [
+     301.7225,
+     23.6144,
+     154.56,
+     5.08,
+     "17 Vul",
+     "B3V"
+    ]
+   },
+   "iau": [
+    "Vul"
+   ],
+   "story": "Joins 12 Vul, 13 Vul, 14 Vul, 16 Vul, 17 Vul in Vul. Outline from Stellarium's western sky culture."
+  },
+  {
+   "id": "asterism-trapezoid-of-bootes",
+   "name": "Trapezoid (Bootes)",
+   "meaning": "",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP71075",
+     "HIP73555",
+     "HIP75411",
+     "HIP74666",
+     "HIP71075"
+    ]
+   ],
+   "extraStars": {
+    "HIP75411": [
+     231.1227,
+     37.3772,
+     34.69,
+     4.31,
+     "Alkalurops",
+     "F0V"
+    ]
+   },
+   "iau": [
+    "Boo"
+   ],
+   "story": "Joins Seginus, Nekkar, Del Boo, Alkalurops in Boo. Outline from Stellarium's western sky culture."
+  },
+  {
+   "id": "asterism-southern-cross-and-pointers",
+   "name": "Southern Cross and Pointers",
+   "meaning": "Crux with Alpha and Beta Centauri",
+   "kind": "asterism",
+   "group": "Southern sky",
+   "lines": [
+    [
+     "HIP60718",
+     "HIP61084"
+    ],
+    [
+     "HIP62434",
+     "HIP59747"
+    ],
+    [
+     "HIP71683",
+     "HIP68702"
+    ],
+    [
+     "HIP68702",
+     "HIP62434"
+    ]
+   ],
+   "iau": [
+    "Cru",
+    "Cen"
+   ],
+   "story": "Crux's four bright stars (Acrux, Mimosa, Gacrux, Imai) with the Pointers Rigil Kentaurus (Alpha Centauri) and Hadar (Beta Centauri). The long axis of the Cross points toward the south celestial pole; Hadar and Rigil Kentaurus are the guide stars used to find the Cross."
+  },
+  {
+   "id": "asterism-southern-cross",
+   "name": "Southern Cross",
+   "meaning": "the Crux cross",
+   "kind": "asterism",
+   "group": "Southern sky",
+   "lines": [
+    [
+     "HIP60718",
+     "HIP61084"
+    ],
+    [
+     "HIP62434",
+     "HIP59747"
+    ]
+   ],
+   "iau": [
+    "Cru"
+   ],
+   "story": "Acrux, Mimosa, Gacrux and Imai, the four stars of Crux. Gacrux and Acrux mark the long axis, which points toward the south celestial pole."
+  },
+  {
+   "id": "asterism-southern-pointers",
+   "name": "Southern Pointers",
+   "meaning": "Alpha and Beta Centauri",
+   "kind": "asterism",
+   "group": "Southern sky",
+   "lines": [
+    [
+     "HIP71683",
+     "HIP68702"
+    ]
+   ],
+   "iau": [
+    "Cen"
+   ],
+   "story": "Rigil Kentaurus (Alpha Centauri, 4.4 light-years away) and Hadar (Beta Centauri) point toward the Southern Cross."
+  },
+  {
+   "id": "asterism-northern-pointers",
+   "name": "Northern Pointers",
+   "meaning": "Merak and Dubhe",
+   "kind": "asterism",
+   "group": "Pole and pointers",
+   "lines": [
+    [
+     "HIP53910",
+     "HIP54061",
+     "HIP11767"
+    ]
+   ],
+   "iau": [
+    "UMi",
+    "UMa"
+   ],
+   "story": "Beta and Alpha Ursae Majoris, Merak and Dubhe, the front of the Big Dipper's bowl, point toward Polaris, about five times their separation away."
+  },
+  {
+   "id": "asterism-jewel-box-pointers",
+   "name": "Jewel Box pointers",
+   "meaning": "Mimosa and Kappa Crucis",
+   "kind": "asterism",
+   "group": "Southern sky",
+   "lines": [
+    [
+     "HIP62434",
+     "HIP62931"
+    ]
+   ],
+   "extraStars": {
+    "HIP62931": [
+     193.4538,
+     -60.3762,
+     null,
+     5.89,
+     "Kap Cru",
+     "B5Ia"
+    ]
+   },
+   "iau": [
+    "Cru"
+   ],
+   "story": "The Jewel Box cluster (NGC 4755) surrounds Kappa Crucis, close to Beta Crucis (Mimosa) at the east arm of the Southern Cross; this pair serves as the guide to find it."
+  },
+  {
+   "id": "asterism-pleiades-seven-sisters",
+   "name": "Pleiades (Seven Sisters)",
+   "meaning": "M45, the dipper-shaped cluster",
+   "kind": "asterism",
+   "group": "Orion and Taurus",
+   "lines": [
+    [
+     "HIP17847",
+     "HIP17851",
+     "HIP17702",
+     "HIP17608",
+     "HIP17499",
+     "HIP17531",
+     "HIP17573",
+     "HIP17702"
+    ]
+   ],
+   "extraStars": {
+    "HIP17851": [
+     57.2967,
+     24.1367,
+     117.1,
+     5.05,
+     "Pleione",
+     "B7p"
+    ],
+    "HIP17608": [
+     56.5816,
+     23.9484,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17531": [
+     56.3021,
+     24.4673,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ],
+    "HIP17573": [
+     56.4567,
+     24.3677,
+     117.51,
+     3.87,
+     "Maia",
+     "B8III"
+    ]
+   },
+   "iau": [
+    "Tau"
+   ],
+   "story": "The brightest Pleiades: Alcyone, Atlas, Pleione, Electra, Maia, Merope and Taygeta, in a small dipper outline in Taurus."
+  },
+  {
+   "id": "asterism-y-of-virgo",
+   "name": "Y of Virgo",
+   "meaning": "the Y-shaped body of Virgo",
+   "kind": "asterism",
+   "group": "Within a constellation",
+   "lines": [
+    [
+     "HIP57757",
+     "HIP60129",
+     "HIP61941"
+    ],
+    [
+     "HIP61941",
+     "HIP63090",
+     "HIP63608"
+    ],
+    [
+     "HIP61941",
+     "HIP66249",
+     "HIP65474"
+    ]
+   ],
+   "iau": [
+    "Vir"
+   ],
+   "story": "Gamma Virginis (Porrima) at the fork, with arms running west through Eta and Beta, north through Delta to Epsilon Virginis (Vindemiatrix), and south-east through Zeta to Spica. A schematic of the common Y outline."
+  }
+ ]
+}

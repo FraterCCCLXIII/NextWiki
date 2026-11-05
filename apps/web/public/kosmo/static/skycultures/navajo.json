@@ -1,0 +1,736 @@
+{
+ "id": "navajo",
+ "name": "Navajo (Dine)",
+ "region": "North America (Southwest)",
+ "era": "Traditional",
+ "color": "#c0392b",
+ "description": "Navajo (Dine) star groups compiled for Stellarium.",
+ "source": [
+  "Stellarium sky culture 'navajo' (https://github.com/Stellarium/stellarium/tree/master/skycultures/navajo); contributed by: This sky culture was contributed by *Karrie Berglund* of Digitalis Education Solutions, Inc. based primarily on the book **Star Trails-Navajo** by Don Childrey.",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: navajo: GNU GPL v2.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "navajo-navajo-revolving-male",
+   "name": "Revolving Male",
+   "kind": "constellation",
+   "group": "Navajo",
+   "lines": [
+    [
+     "HIP67429",
+     "HIP67848",
+     "HIP65378",
+     "HIP64839",
+     "HIP61611"
+    ],
+    [
+     "HIP64839",
+     "HIP64906",
+     "HIP67301",
+     "HIP67429"
+    ],
+    [
+     "HIP61611",
+     "HIP62956",
+     "HIP68756"
+    ],
+    [
+     "HIP62956",
+     "HIP59774",
+     "HIP54061",
+     "HIP46733",
+     "HIP45075",
+     "HIP42527"
+    ],
+    [
+     "HIP54061",
+     "HIP53910",
+     "HIP51459",
+     "HIP48402",
+     "HIP47006"
+    ],
+    [
+     "HIP53910",
+     "HIP58001",
+     "HIP60485",
+     "HIP61611"
+    ],
+    [
+     "HIP60485",
+     "HIP62223",
+     "HIP63125"
+    ]
+   ],
+   "extraStars": {
+    "HIP67429": [
+     207.2914,
+     51.4834,
+     591.72,
+     9.12,
+     "HIP 67429",
+     "K2"
+    ],
+    "HIP67848": [
+     208.4626,
+     53.7287,
+     146.84,
+     5.7,
+     "86    UMa",
+     "A0V"
+    ],
+    "HIP64839": [
+     199.3763,
+     52.2075,
+     null,
+     10.13,
+     "HIP 64839",
+     "F8"
+    ],
+    "HIP61611": [
+     189.3855,
+     53.7532,
+     87.34,
+     9.5,
+     "HIP 61611",
+     "K0"
+    ],
+    "HIP64906": [
+     199.5605,
+     49.6821,
+     84.25,
+     5.14,
+     "21    CVn",
+     "A0V"
+    ],
+    "HIP45075": [
+     137.7291,
+     63.5136,
+     38.73,
+     4.67,
+     "14Tau UMa",
+     "Am"
+    ],
+    "HIP42527": [
+     130.0536,
+     64.3279,
+     78.49,
+     4.59,
+     "4Pi 2UMa",
+     "K2III"
+    ],
+    "HIP51459": [
+     157.6569,
+     55.9805,
+     12.78,
+     4.82,
+     "36    UMa",
+     "F8V"
+    ],
+    "HIP47006": [
+     143.7061,
+     52.0515,
+     80.39,
+     4.47,
+     "26    UMa",
+     "A2V"
+    ],
+    "HIP62223": [
+     191.2826,
+     45.4403,
+     320.51,
+     5.42,
+     "La Superba",
+     "C7Iab"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'navajo' sky culture; see source for documentation."
+  },
+  {
+   "id": "navajo-navajo-revolving-female",
+   "name": "Revolving Female",
+   "kind": "constellation",
+   "group": "Navajo",
+   "lines": [
+    [
+     "HIP13268",
+     "HIP10000",
+     "HIP8886",
+     "HIP7984",
+     "HIP9480"
+    ],
+    [
+     "HIP8886",
+     "HIP10388"
+    ],
+    [
+     "HIP7984",
+     "HIP4427",
+     "HIP746",
+     "HIP110991"
+    ],
+    [
+     "HIP746",
+     "HIP2920",
+     "HIP116584"
+    ],
+    [
+     "HIP2920",
+     "HIP6686",
+     "HIP10000"
+    ],
+    [
+     "HIP10388",
+     "HIP10557",
+     "HIP12222",
+     "HIP11569",
+     "HIP9909",
+     "HIP10388"
+    ]
+   ],
+   "extraStars": {
+    "HIP10000": [
+     32.1941,
+     60.9549,
+     236.97,
+     8.81,
+     "HIP 10000",
+     "A5V"
+    ],
+    "HIP7984": [
+     25.6345,
+     66.108,
+     353.36,
+     9.01,
+     "HIP 7984",
+     "K2"
+    ],
+    "HIP9480": [
+     30.4897,
+     70.907,
+     35.26,
+     4.49,
+     "48    Cas",
+     "A3IV"
+    ],
+    "HIP10388": [
+     33.4498,
+     64.855,
+     208.33,
+     7.43,
+     "HIP 10388",
+     "A2"
+    ],
+    "HIP10557": [
+     33.9808,
+     63.2363,
+     578.03,
+     7.04,
+     "HIP 10557",
+     "K3Ib"
+    ],
+    "HIP12222": [
+     39.344,
+     63.8814,
+     null,
+     8.57,
+     "HIP 12222",
+     "A5Iab"
+    ],
+    "HIP11569": [
+     37.2666,
+     67.4025,
+     40.73,
+     4.46,
+     "Iot Cas",
+     "A5p Sr"
+    ],
+    "HIP9909": [
+     31.8911,
+     66.9893,
+     719.42,
+     9.08,
+     "HIP 9909",
+     "A2"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'navajo' sky culture; see source for documentation."
+  },
+  {
+   "id": "navajo-navajo-man-with-feet-apart",
+   "name": "Man with Feet Apart",
+   "kind": "constellation",
+   "group": "Navajo",
+   "lines": [
+    [
+     "HIP61941",
+     "HIP64238",
+     "HIP61740",
+     "HIP60965",
+     "HIP61359",
+     "HIP62683"
+    ],
+    [
+     "HIP61359",
+     "HIP59316",
+     "HIP59199",
+     "HIP57936"
+    ],
+    [
+     "HIP59316",
+     "HIP59803",
+     "HIP60019",
+     "HIP56633"
+    ],
+    [
+     "HIP60019",
+     "HIP60816",
+     "HIP61740"
+    ],
+    [
+     "HIP60816",
+     "HIP60900",
+     "HIP59961",
+     "HIP59872",
+     "HIP61578",
+     "HIP61542",
+     "HIP60900"
+    ]
+   ],
+   "extraStars": {
+    "HIP61740": [
+     189.8115,
+     -7.9956,
+     90.01,
+     4.66,
+     "26Chi Vir",
+     "K2III"
+    ],
+    "HIP62683": [
+     192.6715,
+     -33.9993,
+     122.7,
+     4.9,
+     "HR 4874",
+     "B9V"
+    ],
+    "HIP60019": [
+     184.6338,
+     -8.9044,
+     67.75,
+     7.49,
+     "HIP 60019",
+     "G0"
+    ],
+    "HIP60816": [
+     186.9812,
+     -8.678,
+     29.83,
+     6.75,
+     "HIP 60816",
+     "G0"
+    ],
+    "HIP60900": [
+     187.2152,
+     -6.5303,
+     295.86,
+     8.15,
+     "HIP 60900",
+     "K2"
+    ],
+    "HIP59961": [
+     184.4725,
+     -6.4311,
+     83.54,
+     7.81,
+     "HIP 59961",
+     "F8"
+    ],
+    "HIP59872": [
+     184.1837,
+     -2.7395,
+     269.54,
+     8.04,
+     "HIP 59872",
+     "K0"
+    ],
+    "HIP61578": [
+     189.2784,
+     -2.3221,
+     48.52,
+     6.95,
+     "HIP 61578",
+     "F5"
+    ],
+    "HIP61542": [
+     189.1417,
+     -6.0656,
+     257.07,
+     8.5,
+     "HIP 61542",
+     "A3"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'navajo' sky culture; see source for documentation."
+  },
+  {
+   "id": "navajo-navajo-lizard",
+   "name": "Lizard",
+   "kind": "constellation",
+   "group": "Navajo",
+   "lines": [
+    [
+     "HIP12777",
+     "HIP9808",
+     "HIP7607"
+    ],
+    [
+     "HIP12777",
+     "HIP10777",
+     "HIP9640"
+    ],
+    [
+     "HIP7607",
+     "HIP8068",
+     "HIP9505"
+    ],
+    [
+     "HIP7607",
+     "HIP4436",
+     "HIP1366"
+    ],
+    [
+     "HIP4436",
+     "HIP2912",
+     "HIP114",
+     "HIP113881",
+     "HIP677",
+     "HIP3092",
+     "HIP5447",
+     "HIP5586"
+    ],
+    [
+     "HIP5447",
+     "HIP9640",
+     "HIP10064",
+     "HIP10670"
+    ]
+   ],
+   "extraStars": {
+    "HIP9808": [
+     31.5475,
+     49.1563,
+     null,
+     7.93,
+     "HIP 9808",
+     "B1.5II"
+    ],
+    "HIP10777": [
+     34.6764,
+     45.6397,
+     252.53,
+     8.77,
+     "HIP 10777",
+     "A0"
+    ],
+    "HIP9505": [
+     30.5754,
+     54.4875,
+     223.21,
+     4.99,
+     "4    Per",
+     "B8III"
+    ],
+    "HIP1366": [
+     4.2729,
+     38.6816,
+     94.7,
+     4.61,
+     "24The And",
+     "A2V"
+    ],
+    "HIP114": [
+     0.3717,
+     30.7358,
+     117.79,
+     7.95,
+     "HIP 114",
+     "G0IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'navajo' sky culture; see source for documentation."
+  },
+  {
+   "id": "navajo-navajo-dilyehe",
+   "name": "Dilyehe",
+   "kind": "constellation",
+   "group": "Navajo",
+   "lines": [
+    [
+     "HIP17847",
+     "HIP17851",
+     "HIP17702",
+     "HIP17847"
+    ],
+    [
+     "HIP17702",
+     "HIP17608",
+     "HIP17499",
+     "HIP17531",
+     "HIP17702"
+    ]
+   ],
+   "extraStars": {
+    "HIP17851": [
+     57.2967,
+     24.1367,
+     117.1,
+     5.05,
+     "Pleione",
+     "B7p"
+    ],
+    "HIP17608": [
+     56.5816,
+     23.9484,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17531": [
+     56.3021,
+     24.4673,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'navajo' sky culture; see source for documentation."
+  },
+  {
+   "id": "navajo-navajo-first-big-one",
+   "name": "First Big One",
+   "kind": "constellation",
+   "group": "Navajo",
+   "lines": [
+    [
+     "HIP80248",
+     "HIP80840",
+     "HIP80862",
+     "HIP79593",
+     "HIP79545",
+     "HIP80248",
+     "HIP80016"
+    ],
+    [
+     "HIP76333",
+     "HIP77853",
+     "HIP76470",
+     "HIP75177"
+    ],
+    [
+     "HIP78401",
+     "HIP78265",
+     "HIP78104",
+     "HIP77634",
+     "HIP78384"
+    ],
+    [
+     "HIP78104",
+     "HIP81266",
+     "HIP82396",
+     "HIP82514"
+    ],
+    [
+     "HIP81266",
+     "HIP80975",
+     "HIP80894",
+     "HIP81377",
+     "HIP84012"
+    ],
+    [
+     "HIP81377",
+     "HIP80016"
+    ]
+   ],
+   "extraStars": {
+    "HIP80248": [
+     245.7477,
+     -7.2089,
+     204.5,
+     7.47,
+     "HIP 80248",
+     "M..."
+    ],
+    "HIP80840": [
+     247.6251,
+     -7.5145,
+     null,
+     6.46,
+     "HR 6144",
+     "A7Ib"
+    ],
+    "HIP80862": [
+     247.6839,
+     -4.0826,
+     123.3,
+     9.31,
+     "HIP 80862",
+     "F8"
+    ],
+    "HIP79545": [
+     243.4747,
+     -6.9086,
+     66.45,
+     8.25,
+     "HIP 79545",
+     "G0"
+    ],
+    "HIP80016": [
+     245.0016,
+     -9.851,
+     367.65,
+     8.07,
+     "HIP 80016",
+     "K0"
+    ],
+    "HIP78104": [
+     239.2212,
+     -29.2141,
+     144.72,
+     3.87,
+     "Iklil",
+     "B2IV/V"
+    ],
+    "HIP80975": [
+     248.0342,
+     -21.4664,
+     51.71,
+     4.45,
+     "9Ome Oph",
+     "Ap"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'navajo' sky culture; see source for documentation."
+  },
+  {
+   "id": "navajo-navajo-rabbit-tracks",
+   "name": "Rabbit Tracks",
+   "kind": "constellation",
+   "group": "Navajo",
+   "lines": [
+    [
+     "HIP85927",
+     "HIP86670",
+     "HIP87073"
+    ],
+    [
+     "HIP86670",
+     "HIP85696"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'navajo' sky culture; see source for documentation."
+  },
+  {
+   "id": "navajo-navajo-first-slim-one",
+   "name": "First Slim One",
+   "kind": "constellation",
+   "group": "Navajo",
+   "lines": [
+    [
+     "HIP22957",
+     "HIP22449",
+     "HIP22549",
+     "HIP22797"
+    ],
+    [
+     "HIP28614",
+     "HIP27989",
+     "HIP28614",
+     "HIP28171",
+     "HIP28686",
+     "HIP29508",
+     "HIP29138",
+     "HIP28614"
+    ],
+    [
+     "HIP27989",
+     "HIP26207"
+    ],
+    [
+     "HIP27989",
+     "HIP25336"
+    ],
+    [
+     "HIP27989",
+     "HIP25930",
+     "HIP25281",
+     "HIP24436"
+    ],
+    [
+     "HIP25930",
+     "HIP26311",
+     "HIP26727",
+     "HIP27989"
+    ],
+    [
+     "HIP26727",
+     "HIP26199",
+     "HIP27366"
+    ]
+   ],
+   "extraStars": {
+    "HIP28171": [
+     89.2858,
+     10.2294,
+     132.45,
+     8.68,
+     "HIP 28171",
+     "F2"
+    ],
+    "HIP28686": [
+     90.8532,
+     11.6811,
+     158.98,
+     6.09,
+     "HR 2133",
+     "A0Vs"
+    ],
+    "HIP29508": [
+     93.2475,
+     10.2874,
+     273.97,
+     6.6,
+     "HIP 29508",
+     "B9"
+    ],
+    "HIP29138": [
+     92.196,
+     8.6694,
+     552.49,
+     6.55,
+     "HR 2167",
+     "B9V"
+    ],
+    "HIP26199": [
+     83.7612,
+     -6.002,
+     495.05,
+     4.78,
+     "HR 1887",
+     "B0.5V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'navajo' sky culture; see source for documentation."
+  }
+ ]
+}

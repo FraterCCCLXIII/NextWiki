@@ -1,0 +1,224 @@
+{
+ "id": "aztec",
+ "name": "Aztec (Mexica)",
+ "region": "Central Mexico",
+ "era": "Postclassic (historical)",
+ "color": "#a64ca6",
+ "description": "Mexica (Aztec) constellations compiled for Stellarium from colonial sources.",
+ "source": [
+  "Stellarium sky culture 'aztec' (https://github.com/Stellarium/stellarium/tree/master/skycultures/aztec); contributed by: Enrique G&#243;mez Candelario - <a ### Thanks to - Javier G&#243;mez Sandoval - Martha Patricia Rivera - Emilio Ram&#243;n Bola&#241;os Guerra - Hector Vega - Rafael Rojas Segoviano - Juan Caballero - SAAGS English translation by: Rafael Rojas Segoviano ### Conclusion It is noteworthy that the inter",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: aztec: GNU GPL v2.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "aztec-aztec-mamalhuaztli",
+   "name": "Mamalhuaztli",
+   "kind": "constellation",
+   "group": "Aztec",
+   "lines": [
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ],
+    [
+     "HIP26311",
+     "HIP26237",
+     "HIP26221",
+     "HIP26199"
+    ]
+   ],
+   "meaning": "The New fire",
+   "extraStars": {
+    "HIP26237": [
+     83.8465,
+     -4.8384,
+     271.0,
+     4.58,
+     "42    Ori",
+     "B2III..."
+    ],
+    "HIP26221": [
+     83.8186,
+     -5.3897,
+     null,
+     5.13,
+     "41The1Ori",
+     "O6pe"
+    ],
+    "HIP26199": [
+     83.7612,
+     -6.002,
+     495.05,
+     4.78,
+     "HR 1887",
+     "B0.5V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'aztec' sky culture; see source for documentation."
+  },
+  {
+   "id": "aztec-aztec-tianquiztli",
+   "name": "Tianquiztli",
+   "kind": "constellation",
+   "group": "Aztec",
+   "lines": [
+    [
+     "HIP17847",
+     "HIP17664",
+     "HIP17579",
+     "HIP17531",
+     "HIP17489",
+     "HIP17499",
+     "HIP17608",
+     "HIP17847"
+    ]
+   ],
+   "meaning": "The Market",
+   "extraStars": {
+    "HIP17664": [
+     56.7475,
+     24.5201,
+     130.55,
+     6.83,
+     "HIP 17664",
+     "B9.5V"
+    ],
+    "HIP17579": [
+     56.477,
+     24.5545,
+     114.03,
+     5.76,
+     "Asterope",
+     "B8V"
+    ],
+    "HIP17531": [
+     56.3021,
+     24.4673,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ],
+    "HIP17489": [
+     56.2009,
+     24.2895,
+     115.61,
+     5.45,
+     "Celaeno",
+     "B7IV"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17608": [
+     56.5816,
+     23.9484,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'aztec' sky culture; see source for documentation."
+  },
+  {
+   "id": "aztec-aztec-citlaltlachtli",
+   "name": "Citlaltlachtli",
+   "kind": "constellation",
+   "group": "Aztec",
+   "lines": [
+    [
+     "HIP37826",
+     "HIP36850",
+     "HIP34693",
+     "HIP32246",
+     "HIP30343",
+     "HIP30883",
+     "HIP31681",
+     "HIP34088",
+     "HIP36962",
+     "HIP37826"
+    ]
+   ],
+   "meaning": "The ball game of the stars",
+   "extraStars": {
+    "HIP30883": [
+     97.2408,
+     20.2121,
+     166.94,
+     4.13,
+     "18Nu  Gem",
+     "B6III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'aztec' sky culture; see source for documentation."
+  },
+  {
+   "id": "aztec-aztec-xonecuilli",
+   "name": "Xonecuilli",
+   "kind": "constellation",
+   "group": "Aztec",
+   "lines": [
+    [
+     "HIP11767",
+     "HIP85822",
+     "HIP82080",
+     "HIP77055",
+     "HIP72607",
+     "HIP75097",
+     "HIP79822"
+    ]
+   ],
+   "meaning": "Twisted foot",
+   "story": "Line pattern from the Stellarium 'aztec' sky culture; see source for documentation."
+  },
+  {
+   "id": "aztec-aztec-colotl-ixayac",
+   "name": "Colotl Ixayac",
+   "kind": "constellation",
+   "group": "Aztec",
+   "lines": [
+    [
+     "HIP85927",
+     "HIP86670",
+     "HIP87073",
+     "HIP86228",
+     "HIP84143",
+     "HIP82671",
+     "HIP82514",
+     "HIP82396",
+     "HIP81266",
+     "HIP80763",
+     "HIP78401"
+    ],
+    [
+     "HIP80763",
+     "HIP78265"
+    ],
+    [
+     "HIP80763",
+     "HIP78820"
+    ]
+   ],
+   "meaning": "Scorpion face",
+   "extraStars": {
+    "HIP82671": [
+     253.4989,
+     -42.362,
+     787.4,
+     4.7,
+     "Zet1Sco",
+     "B1Iae"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'aztec' sky culture; see source for documentation."
+  }
+ ]
+}

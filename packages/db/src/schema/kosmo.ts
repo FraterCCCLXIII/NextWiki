@@ -28,7 +28,11 @@ type KosmoEntityKind =
   | "lesson"
   | "event"
   | "period"
-  | "stage";
+  | "stage"
+  | "programme";
+
+/** A lesson's place in the quality pipeline. A stub is an outline with no body yet. */
+export type KosmoLessonStatus = "stub" | "drafted" | "reviewed";
 
 type KosmoTaxonScheme =
   | "astronomy"
@@ -228,6 +232,53 @@ export const kosmoEntityTaxa = pgTable(
   (t) => [primaryKey({ columns: [t.entityId, t.taxonId] })]
 );
 
+/**
+ * The teaching content and review state of a curriculum lesson. The lesson itself (title,
+ * place in the tree, stable id) is an entity; this row is what is written about it. Every
+ * lesson has a row: `stub` until a file under seeds/kosmo/university/content defines it.
+ * Rebuilt from those files by the seed, so edit the files, not the rows.
+ */
+export const kosmoLessons = pgTable(
+  "kosmo_lessons",
+  {
+    /** Stable curriculum id, e.g. KU-L00123. Never reused. */
+    kuId: text("ku_id").primaryKey(),
+    entityId: integer("entity_id")
+      .notNull()
+      .unique()
+      .references(() => kosmoEntities.id, { onDelete: "cascade" }),
+    status: text("status").notNull().$type<KosmoLessonStatus>().default("stub"),
+    kind: text("kind"),
+    minutes: integer("minutes"),
+    /** { explanation, workedExample, activity, summary } as Markdown. */
+    sections: jsonb("sections").$type<Record<string, string>>(),
+    /** [{ q, a, options? }] */
+    checks: jsonb("checks").$type<{ q: string; a: string; options?: string[] }[]>(),
+    /** [{ name, url?, license, adapted }] */
+    sources: jsonb("sources")
+      .$type<{ name: string; url?: string; license: string; adapted: boolean }[]>()
+      .default([]),
+    license: text("license"),
+    original: integer("original").default(0),
+    authorName: text("author_name"),
+    authorKind: text("author_kind"),
+    reviewerName: text("reviewer_name"),
+    reviewerKind: text("reviewer_kind"),
+    reviewedAt: timestamp("reviewed_at"),
+    /** Path of the Markdown file relative to the content folder. */
+    contentPath: text("content_path"),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (t) => [index("kosmo_lessons_status_idx").on(t.status)]
+);
+
+export const kosmoLessonsRelations = relations(kosmoLessons, ({ one }) => ({
+  entity: one(kosmoEntities, {
+    fields: [kosmoLessons.entityId],
+    references: [kosmoEntities.id],
+  }),
+}));
+
 // Relations
 
 export const kosmoSourcesRelations = relations(kosmoSources, ({ many }) => ({
@@ -358,6 +409,9 @@ export type NewKosmoClaimSource = typeof kosmoClaimSources.$inferInsert;
 
 export type KosmoEntityTaxon = typeof kosmoEntityTaxa.$inferSelect;
 export type NewKosmoEntityTaxon = typeof kosmoEntityTaxa.$inferInsert;
+
+export type KosmoLesson = typeof kosmoLessons.$inferSelect;
+export type NewKosmoLesson = typeof kosmoLessons.$inferInsert;
 
 export type KosmoDataset = typeof kosmoDatasets.$inferSelect;
 export type NewKosmoDataset = typeof kosmoDatasets.$inferInsert;

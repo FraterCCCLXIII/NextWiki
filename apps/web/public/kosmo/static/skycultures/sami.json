@@ -1,0 +1,182 @@
+{
+ "id": "sami",
+ "name": "Sami",
+ "region": "Northern Fennoscandia",
+ "era": "Traditional",
+ "color": "#5f8dd3",
+ "description": "Sami star groups compiled for Stellarium.",
+ "source": [
+  "Stellarium sky culture 'sami' (https://github.com/Stellarium/stellarium/tree/master/skycultures/sami); contributed by: Jonas Persson ",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: sami: CC BY-SA 4.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "sami-sami-sarva-the-elk",
+   "name": "Sarva the Elk",
+   "kind": "constellation",
+   "group": "Sami",
+   "lines": [
+    [
+     "HIP8886",
+     "HIP6686",
+     "HIP4427",
+     "HIP3179",
+     "HIP746"
+    ],
+    [
+     "HIP6686",
+     "HIP14328",
+     "HIP15863",
+     "HIP14576"
+    ],
+    [
+     "HIP15863",
+     "HIP17358",
+     "HIP18532",
+     "HIP18246"
+    ],
+    [
+     "HIP17358",
+     "HIP24608",
+     "HIP25428"
+    ],
+    [
+     "HIP24608",
+     "HIP23767",
+     "HIP23015"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'sami' sky culture; see source for documentation."
+  },
+  {
+   "id": "sami-sami-favdna-s-bow-and-arrow",
+   "name": "Favdna's Bow and Arrow",
+   "kind": "constellation",
+   "group": "Sami",
+   "lines": [
+    [
+     "HIP67301",
+     "HIP65378",
+     "HIP62956",
+     "HIP59774",
+     "HIP53910"
+    ],
+    [
+     "HIP54061",
+     "HIP58001"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'sami' sky culture; see source for documentation."
+  },
+  {
+   "id": "sami-sami-galla-s-sons",
+   "name": "Galla's Sons",
+   "kind": "constellation",
+   "group": "Sami",
+   "lines": [
+    [
+     "HIP26727",
+     "HIP26311",
+     "HIP25930"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'sami' sky culture; see source for documentation."
+  },
+  {
+   "id": "sami-sami-sky-support",
+   "name": "Sky Support",
+   "kind": "constellation",
+   "group": "Sami",
+   "lines": [
+    [
+     "HIP11767",
+     "HIP11767"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'sami' sky culture; see source for documentation."
+  },
+  {
+   "id": "sami-sami-favdna",
+   "name": "Favdna",
+   "kind": "constellation",
+   "group": "Sami",
+   "lines": [
+    [
+     "HIP69673",
+     "HIP69673"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'sami' sky culture; see source for documentation."
+  },
+  {
+   "id": "sami-sami-the-runner",
+   "name": "The Runner",
+   "kind": "constellation",
+   "group": "Sami",
+   "lines": [
+    [
+     "HIP91262",
+     "HIP91262"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'sami' sky culture; see source for documentation."
+  },
+  {
+   "id": "sami-sami-morning-star",
+   "name": "Morning Star",
+   "kind": "constellation",
+   "group": "Sami",
+   "lines": [
+    [
+     "HIP97649",
+     "HIP97649"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'sami' sky culture; see source for documentation."
+  },
+  {
+   "id": "sami-sami-pack-of-dogs",
+   "name": "Pack of Dogs",
+   "kind": "constellation",
+   "group": "Sami",
+   "lines": [
+    [
+     "HIP17702",
+     "HIP17702"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'sami' sky culture; see source for documentation."
+  },
+  {
+   "id": "sami-sami-galla",
+   "name": "Galla",
+   "kind": "constellation",
+   "group": "Sami",
+   "lines": [
+    [
+     "HIP37279",
+     "HIP37279"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'sami' sky culture; see source for documentation."
+  },
+  {
+   "id": "sami-sami-the-ski-runners",
+   "name": "The Ski Runners",
+   "kind": "constellation",
+   "group": "Sami",
+   "lines": [
+    [
+     "HIP36850",
+     "HIP36850"
+    ],
+    [
+     "HIP37826",
+     "HIP37826"
+    ]
+   ],
+   "story": "Line pattern from the Stellarium 'sami' sky culture; see source for documentation."
+  }
+ ]
+}

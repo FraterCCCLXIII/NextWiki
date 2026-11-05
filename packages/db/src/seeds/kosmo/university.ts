@@ -1,27 +1,17 @@
-import { eq } from "drizzle-orm";
-import { kosmoEntities } from "../../schema/index.js";
+import { and, eq } from "drizzle-orm";
+import { kosmoEntities, kosmoEntityExternalIds, kosmoLessons } from "../../schema/index.js";
 import {
   addClaim,
+  addExternalId,
   ensurePage,
   ensureTaxon,
   slugify,
   upsertEntity,
   upsertSource,
 } from "./util.js";
-import { loadKosmoModule, type Db, type UserId } from "./domains.js";
-
-type LessonSpec = { t: string; go?: string; sim?: unknown; pedia?: string };
-type Lesson = string | LessonSpec;
-type Module = { name: string; req: string[]; lessons: Lesson[] };
-type Programme = { name: string; modules: Module[] };
-type Stage = {
-  id: string;
-  name: string;
-  ages?: string;
-  color?: string;
-  blurb?: string;
-  programs: Programme[];
-};
+import type { KosmoLessonStatus } from "../../schema/kosmo.js";
+import type { Db, UserId } from "./domains.js";
+import { loadCurriculum } from "./university/content.js";
 
 /** Finds a Kosmopedia object entity: by slug object:<pedia>, then by slugified id, then by name. */
 async function findObjectId(db: Db, pedia: string): Promise<number | undefined> {
@@ -42,112 +32,236 @@ async function findObjectId(db: Db, pedia: string): Promise<number | undefined> 
   return byName[0]?.id;
 }
 
+type NodeInput = {
+  /** Stable curriculum id: KU-S01, KU-P001, KU-M0001, KU-L00001. */
+  kuId: string;
+  slug: string;
+  /** Slug the same node had before ids existed. Adopted so claims and pages stay attached. */
+  legacySlug?: string;
+  kind: "stage" | "programme" | "module" | "lesson";
+  name: string;
+  summary?: string | null;
+  data: Record<string, unknown>;
+  sourceId: number;
+};
+
 /**
- * Imports the Kosmographica University curriculum: stages (entities + curriculum taxa),
- * programmes (curriculum taxa), modules, lessons, prerequisite claims and learn pages.
+ * Upserts a curriculum node by its stable id. Order of lookup: the `ku` external id (so a
+ * renamed node keeps its entity), then the slug it had before ids existed, then a new row.
+ */
+async function upsertNode(db: Db, input: NodeInput): Promise<number> {
+  const ext = kosmoEntityExternalIds;
+  const [byExt] = await db
+    .select({ id: ext.entityId })
+    .from(ext)
+    .where(and(eq(ext.scheme, "ku"), eq(ext.value, input.kuId)))
+    .limit(1);
+
+  let id = byExt?.id;
+  if (id === undefined && input.legacySlug) {
+    const [legacy] = await db
+      .select({ id: kosmoEntities.id })
+      .from(kosmoEntities)
+      .where(eq(kosmoEntities.slug, input.legacySlug))
+      .limit(1);
+    id = legacy?.id;
+  }
+
+  const values = {
+    slug: input.slug,
+    kind: input.kind,
+    name: input.name,
+    summary: input.summary ?? null,
+    data: { ...input.data, kuId: input.kuId },
+    sourceId: input.sourceId,
+  };
+  if (id !== undefined) {
+    await db.update(kosmoEntities).set(values).where(eq(kosmoEntities.id, id));
+  } else {
+    id = await upsertEntity(db, values);
+  }
+  await addExternalId(db, { entityId: id, scheme: "ku", value: input.kuId, sourceId: input.sourceId });
+  return id;
+}
+
+/**
+ * Imports the Kosmographica University curriculum.
+ *
+ * Every stage, programme, module and lesson is keyed by its stable id from
+ * university/ids.json, so renaming or reordering the tree never splits or loses a node.
+ * Module prerequisites are written as `depends_on` claims between module ids. Concepts
+ * (university/concepts.json) are entities that lessons `teach` and that depend on each
+ * other. Every lesson gets a kosmo_lessons row: `stub` until a Markdown file in
+ * university/content defines it, then `drafted` or `reviewed` as that file says.
  */
 export async function importUniversity(db: Db, userId: UserId): Promise<void> {
-  const { TREE } = await loadKosmoModule<{ TREE: Stage[] }>(
-    "static/university-tree.js",
-  );
+  const cur = await loadCurriculum();
+  if (cur.fatal.length) {
+    throw new Error(`University curriculum is not loadable:\n  ${cur.fatal.join("\n  ")}`);
+  }
   const sourceId = await upsertSource(db, {
     key: "kosmo-university",
     title: "Kosmographica University curriculum",
   });
 
-  const moduleIds = new Map<string, number>();
-  const pendingReqs: { moduleId: number; req: string[] }[] = [];
+  // Concepts first, so lessons can point at them.
+  const conceptIds = new Map<string, number>();
+  for (const [slug, c] of Object.entries(cur.concepts)) {
+    const id = await upsertEntity(db, {
+      slug: `concept:${slug}`,
+      kind: "concept",
+      name: c.name,
+      summary: c.summary,
+      data: { wikidata: c.wikidata, qidVerified: c.qidVerified === true },
+      sourceId,
+    });
+    conceptIds.set(slug, id);
+    if (c.wikidata) await addExternalId(db, { entityId: id, scheme: "wikidata", value: c.wikidata, sourceId });
+  }
+  for (const [slug, c] of Object.entries(cur.concepts)) {
+    for (const req of c.requires) {
+      await addClaim(db, {
+        subjectId: conceptIds.get(slug)!,
+        predicate: "depends_on",
+        objectId: conceptIds.get(req)!,
+        sourceId,
+      });
+    }
+  }
 
-  for (const [stageIndex, stage] of TREE.entries()) {
-    const stageKey = slugify(stage.id);
-    const stageSlug = `stage:${stageKey}`;
-    const stageEntityId = await upsertEntity(db, {
+  const moduleEntity = new Map<string, number>(); // ku id -> entity id
+  const pendingReqs: { moduleId: number; requires: string[] }[] = [];
+  const counts = { stub: 0, drafted: 0, reviewed: 0, rejected: 0 };
+
+  for (const stage of cur.stages) {
+    const stageSlug = `stage:${slugify(stage.key)}`;
+    const stageEntityId = await upsertNode(db, {
+      kuId: stage.id,
       slug: stageSlug,
       kind: "stage",
       name: stage.name,
       summary: stage.blurb,
-      data: { id: stage.id, ages: stage.ages, color: stage.color, order: stageIndex },
+      data: { id: stage.key, ages: stage.ages, color: stage.color, order: stage.order },
       sourceId,
     });
     const stageTaxonId = await ensureTaxon(db, {
       scheme: "curriculum",
-      slug: stageKey,
+      slug: stage.key,
       name: stage.name,
-      sortOrder: stageIndex,
+      sortOrder: stage.order,
     });
 
-    for (const [progIndex, prog] of stage.programs.entries()) {
-      const progSlug = `${stageKey}/${slugify(prog.name)}`;
+    for (const prog of stage.programmes) {
+      const progPath = `${stage.key}/${slugify(prog.name)}`;
       await ensureTaxon(db, {
         scheme: "curriculum",
-        slug: progSlug,
+        slug: progPath,
         name: prog.name,
         parentId: stageTaxonId,
-        sortOrder: progIndex,
+        sortOrder: prog.order,
+      });
+      // Programmes are entities too (for the stable id and the route), but carry no claims:
+      // the stage's "children" listing stays modules, as it always was.
+      await upsertNode(db, {
+        kuId: prog.id,
+        slug: `programme:${prog.id.toLowerCase()}`,
+        kind: "programme",
+        name: prog.name,
+        data: { stage: stage.key, stageKuId: stage.id, path: progPath, order: prog.order },
+        sourceId,
       });
 
-      for (const [modIndex, mod] of prog.modules.entries()) {
+      for (const mod of prog.modules) {
         const moduleSlug = `module:${slugify(mod.name)}`;
-        if (moduleIds.has(mod.name)) {
-          console.warn(`  kosmo university: duplicate module name skipped: ${mod.name}`);
-          continue;
-        }
-
-        const moduleId = await upsertEntity(db, {
+        const moduleId = await upsertNode(db, {
+          kuId: mod.id,
           slug: moduleSlug,
           kind: "module",
           name: mod.name,
-          data: { stage: stageKey, programme: progSlug, order: modIndex },
+          data: {
+            stage: stage.key,
+            stageKuId: stage.id,
+            programme: progPath,
+            programmeKuId: prog.id,
+            programmeName: prog.name,
+            order: mod.order,
+          },
           sourceId,
         });
-        moduleIds.set(mod.name, moduleId);
-        pendingReqs.push({ moduleId, req: mod.req ?? [] });
+        moduleEntity.set(mod.id, moduleId);
+        pendingReqs.push({ moduleId, requires: mod.requires });
+        await addClaim(db, { subjectId: moduleId, predicate: "part_of", objectId: stageEntityId, sourceId });
 
-        await addClaim(db, {
-          subjectId: moduleId,
-          predicate: "part_of",
-          objectId: stageEntityId,
-          sourceId,
-        });
-
-        for (const [lessonIndex, lesson] of mod.lessons.entries()) {
-          const spec: LessonSpec = typeof lesson === "string" ? { t: lesson } : lesson;
-          const lessonSlug = `lesson:${moduleSlug}:${lessonIndex}`;
-          const lessonId = await upsertEntity(db, {
-            slug: lessonSlug,
+        for (const lesson of mod.lessons) {
+          const lessonId = await upsertNode(db, {
+            kuId: lesson.id,
+            slug: `lesson:${lesson.id.toLowerCase()}`,
+            legacySlug: `lesson:${moduleSlug}:${lesson.order}`,
             kind: "lesson",
-            name: spec.t,
+            name: lesson.title,
             data: {
               module: moduleSlug,
-              stage: stageKey,
-              order: lessonIndex,
-              go: spec.go,
-              sim: spec.sim,
-              pedia: spec.pedia,
+              moduleKuId: mod.id,
+              stage: stage.key,
+              order: lesson.order,
+              go: lesson.go,
+              sim: lesson.sim,
+              pedia: lesson.pedia,
             },
             sourceId,
           });
-          await addClaim(db, {
-            subjectId: lessonId,
-            predicate: "part_of",
-            objectId: moduleId,
-            sourceId,
-          });
+          await addClaim(db, { subjectId: lessonId, predicate: "part_of", objectId: moduleId, sourceId });
 
-          if (spec.pedia) {
-            const objectId = await findObjectId(db, spec.pedia);
+          if (lesson.pedia) {
+            const objectId = await findObjectId(db, lesson.pedia);
             if (objectId) {
-              await addClaim(db, {
-                subjectId: lessonId,
-                predicate: "teaches",
-                objectId,
-                sourceId,
-              });
+              await addClaim(db, { subjectId: lessonId, predicate: "teaches", objectId, sourceId });
+            }
+          }
+
+          // The teaching content and its review state.
+          const file = cur.lessons.get(lesson.id);
+          const usable = file && file.issues.every((i) => i.level !== "error") ? file : undefined;
+          if (file && !usable) {
+            counts.rejected++;
+            console.warn(`  kosmo university: ${file.path} fails the quality gate; kept as a stub`);
+          }
+          const doc = usable?.doc;
+          const status: KosmoLessonStatus = doc ? doc.status : "stub";
+          counts[status]++;
+          const row = {
+            kuId: lesson.id,
+            entityId: lessonId,
+            status,
+            kind: doc?.kind ?? null,
+            minutes: doc?.minutes ?? null,
+            sections: doc ? { ...doc.sections } : null,
+            checks: doc?.checks ?? null,
+            sources: doc?.sources ?? [],
+            license: doc?.license ?? null,
+            original: doc?.original ? 1 : 0,
+            authorName: doc?.author?.name ?? null,
+            authorKind: doc?.author?.kind ?? null,
+            reviewerName: doc?.reviewer?.name ?? null,
+            reviewerKind: doc?.reviewer?.kind ?? null,
+            reviewedAt: doc?.reviewedAt ? new Date(doc.reviewedAt) : null,
+            contentPath: usable?.path ?? null,
+            updatedAt: new Date(),
+          };
+          await db
+            .insert(kosmoLessons)
+            .values(row)
+            .onConflictDoUpdate({ target: kosmoLessons.kuId, set: row });
+
+          for (const slug of doc?.concepts ?? []) {
+            const conceptId = conceptIds.get(slug);
+            if (conceptId) {
+              await addClaim(db, { subjectId: lessonId, predicate: "teaches", objectId: conceptId, sourceId });
             }
           }
         }
 
-        const modulePath = `/kosmo/learn/${stageKey}/${slugify(mod.name)}`;
+        const modulePath = `/kosmo/learn/${stage.key}/${slugify(mod.name)}`;
         await ensurePage(db, {
           path: modulePath,
           title: mod.name,
@@ -166,14 +280,14 @@ export async function importUniversity(db: Db, userId: UserId): Promise<void> {
             "",
           ].join("\n"),
           userId,
-          tags: ["kosmo", "learn", stageKey],
+          tags: ["kosmo", "learn", stage.key],
           entityId: moduleId,
         });
       }
     }
 
     await ensurePage(db, {
-      path: `/kosmo/learn/${stageKey}`,
+      path: `/kosmo/learn/${stage.key}`,
       title: stage.name,
       markdown: [
         `# ${stage.name}`,
@@ -190,17 +304,17 @@ export async function importUniversity(db: Db, userId: UserId): Promise<void> {
     });
   }
 
-  // Second pass: prerequisites resolve by module name, so all modules must exist first.
-  for (const { moduleId, req } of pendingReqs) {
-    for (const name of req) {
-      const reqId = moduleIds.get(name);
+  // Second pass: prerequisites are module ids, resolved once every module exists.
+  const byKu = moduleEntity;
+  for (const { moduleId, requires } of pendingReqs) {
+    for (const kuId of requires) {
+      const reqId = byKu.get(kuId);
       if (!reqId || reqId === moduleId) continue;
-      await addClaim(db, {
-        subjectId: moduleId,
-        predicate: "depends_on",
-        objectId: reqId,
-        sourceId,
-      });
+      await addClaim(db, { subjectId: moduleId, predicate: "depends_on", objectId: reqId, sourceId });
     }
   }
+  console.log(
+    `  -> university: ${counts.stub} stub, ${counts.drafted} drafted, ${counts.reviewed} reviewed` +
+      (counts.rejected ? `, ${counts.rejected} rejected by the gate` : ""),
+  );
 }

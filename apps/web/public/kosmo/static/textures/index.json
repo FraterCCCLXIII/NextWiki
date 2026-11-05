@@ -1,11 +1,31 @@
 {
   "Sun": "textures/2k_sun.jpg",
-  "Mercury": "textures/2k_mercury.jpg",
-  "Venus": "textures/2k_venus_surface.jpg",
-  "Earth": "textures/2k_earth_daymap.jpg",
-  "Moon": "textures/2k_moon.jpg",
-  "Mars": "textures/2k_mars.jpg",
-  "Jupiter": "textures/2k_jupiter.jpg",
+  "Mercury": {
+    "color": "textures/mercury_color_4k.jpg",
+    "normal": "textures/mercury_normal_2k.jpg",
+    "bump": 1
+  },
+  "Venus": {
+    "color": "textures/venus_surface_2k.jpg",
+    "normal": "textures/venus_normal_4k.jpg",
+    "bump": 1
+  },
+  "Earth": {
+    "color": "textures/earth_day_8k.jpg",
+    "height": "textures/earth_height_4k.png",
+    "relief": 0.012
+  },
+  "Moon": {
+    "color": "textures/moon_color_4k.jpg",
+    "normal": "textures/moon_normal_4k.jpg",
+    "bump": 1
+  },
+  "Mars": {
+    "color": "textures/mars_color_8k.jpg",
+    "normal": "textures/mars_normal_4k.jpg",
+    "bump": 2
+  },
+  "Jupiter": "textures/jupiter_cassini_4k.jpg",
   "Saturn": "textures/2k_saturn.jpg",
   "Uranus": "textures/2k_uranus.jpg",
   "Neptune": "textures/2k_neptune.jpg",

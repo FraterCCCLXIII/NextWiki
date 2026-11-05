@@ -1,0 +1,532 @@
+{
+ "id": "macedonian",
+ "name": "Macedonian (folk)",
+ "region": "Balkans",
+ "era": "Traditional",
+ "color": "#cf6a87",
+ "description": "Macedonian folk star names and groups compiled for Stellarium.",
+ "source": [
+  "Stellarium sky culture 'macedonian' (https://github.com/Stellarium/stellarium/tree/master/skycultures/macedonian); contributed by: This sky culture was contributed by *Vancho Stojkoski* and *Gjore Cenev* from Macedonian Research Society based primarily on the book **Sky over Macedonia** by Cenev G, 2004.",
+  "HYG Database v4.1 (https://github.com/astronexus/HYG-Database), CC BY-SA 4.0, for stars not in constellations.json"
+ ],
+ "license": "Derived from Stellarium sky-culture data. Upstream licences: macedonian: GNU GPL v2.0. Redistributed with attribution; share-alike terms apply to derived data.",
+ "figures": [
+  {
+   "id": "macedonian-macedonian-aramii",
+   "name": "Aramii",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP67301",
+     "HIP65378",
+     "HIP62956",
+     "HIP59774",
+     "HIP58001",
+     "HIP53910",
+     "HIP54061",
+     "HIP59774"
+    ]
+   ],
+   "native": "арамии",
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-mother-hen",
+   "name": "Mother Hen",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP17847",
+     "HIP17702",
+     "HIP17608",
+     "HIP17499",
+     "HIP17531",
+     "HIP17573",
+     "HIP17702"
+    ]
+   ],
+   "native": "квачка",
+   "extraStars": {
+    "HIP17608": [
+     56.5816,
+     23.9484,
+     116.55,
+     4.14,
+     "Merope",
+     "B6IV"
+    ],
+    "HIP17499": [
+     56.2189,
+     24.1133,
+     124.07,
+     3.72,
+     "Electra",
+     "B6III"
+    ],
+    "HIP17531": [
+     56.3021,
+     24.4673,
+     125.47,
+     4.3,
+     "Taygeta",
+     "B6V"
+    ],
+    "HIP17573": [
+     56.4567,
+     24.3677,
+     117.51,
+     3.87,
+     "Maia",
+     "B8III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-plough",
+   "name": "Plough",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP26549",
+     "HIP26727",
+     "HIP26311"
+    ]
+   ],
+   "native": "рало",
+   "extraStars": {
+    "HIP26549": [
+     84.6865,
+     -2.6001,
+     328.95,
+     3.77,
+     "48Sig Ori",
+     "O9.5V..."
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-oxen",
+   "name": "Oxen",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP26311",
+     "HIP25930"
+    ]
+   ],
+   "native": "волови",
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-scales",
+   "name": "Scales",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP27366",
+     "HIP24436"
+    ],
+    [
+     "HIP25247",
+     "HIP24244"
+    ],
+    [
+     "HIP25247",
+     "HIP24873"
+    ],
+    [
+     "HIP25247",
+     "HIP25353",
+     "HIP24873",
+     "HIP24244",
+     "HIP24327",
+     "HIP24845",
+     "HIP25353"
+    ]
+   ],
+   "native": "терезии",
+   "extraStars": {
+    "HIP25247": [
+     80.9868,
+     -7.8081,
+     48.24,
+     4.13,
+     "29    Ori",
+     "G8III"
+    ],
+    "HIP24244": [
+     78.0746,
+     -11.8692,
+     71.07,
+     4.45,
+     "3Iot Lep",
+     "B8V"
+    ],
+    "HIP24873": [
+     79.9959,
+     -12.3156,
+     102.25,
+     5.29,
+     "7Nu  Lep",
+     "B7/B8V"
+    ],
+    "HIP25353": [
+     81.3339,
+     -12.5541,
+     146.63,
+     6.55,
+     "HIP 25353",
+     "K1IIICN..."
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-yoke",
+   "name": "Yoke",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP18532",
+     "HIP14576"
+    ]
+   ],
+   "native": "јарем",
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-wolves",
+   "name": "Wolves",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP37279",
+     "HIP32349"
+    ]
+   ],
+   "native": "волци",
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-threshing-floor",
+   "name": "Threshing Floor",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP3677",
+     "HIP3293"
+    ]
+   ],
+   "native": "гумно",
+   "extraStars": {
+    "HIP3677": [
+     11.7635,
+     41.9648,
+     176.68,
+     8.9,
+     "HIP 3677",
+     "F"
+    ],
+    "HIP3293": [
+     10.506,
+     40.6883,
+     50.02,
+     7.03,
+     "HIP 3293",
+     "F5"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-hawk",
+   "name": "Hawk",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP24951",
+     "HIP24109"
+    ]
+   ],
+   "native": "јастреб",
+   "extraStars": {
+    "HIP24951": [
+     80.1632,
+     46.9638,
+     273.22,
+     6.54,
+     "HR 1736",
+     "A2V+..."
+    ],
+    "HIP24109": [
+     77.6788,
+     46.9621,
+     48.69,
+     5.67,
+     "HR 1668",
+     "F5V"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-cross",
+   "name": "Cross",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP102532",
+     "HIP101769"
+    ],
+    [
+     "HIP102281",
+     "HIP101958"
+    ]
+   ],
+   "native": "крст",
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-fox",
+   "name": "Fox",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP21421",
+     "HIP21251",
+     "HIP21517",
+     "HIP22176"
+    ]
+   ],
+   "native": "лисица",
+   "extraStars": {
+    "HIP21251": [
+     68.3877,
+     18.0167,
+     134.23,
+     6.24,
+     "HR 1442",
+     "B9IVn"
+    ],
+    "HIP21517": [
+     69.3116,
+     18.543,
+     416.67,
+     6.49,
+     "HIP 21517",
+     "F5Ib"
+    ],
+    "HIP22176": [
+     71.5701,
+     18.7347,
+     80.19,
+     5.99,
+     "HR 1517",
+     "K4III"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-tongs",
+   "name": "Tongs",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP94713",
+     "HIP94685",
+     "HIP95673"
+    ]
+   ],
+   "native": "маши",
+   "extraStars": {
+    "HIP94685": [
+     288.9979,
+     27.9263,
+     429.18,
+     6.18,
+     "HR 7308",
+     "F6Ib-II"
+    ],
+    "HIP95673": [
+     291.9017,
+     37.9412,
+     724.64,
+     6.3,
+     "HR 7403",
+     "B3Ve"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-ploughman",
+   "name": "Ploughman",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP27989",
+     "HIP29038",
+     "HIP29426"
+    ]
+   ],
+   "native": "орач",
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-rooster",
+   "name": "Rooster",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP25428",
+     "HIP25492",
+     "HIP25291",
+     "HIP24504"
+    ]
+   ],
+   "native": "петел",
+   "extraStars": {
+    "HIP25492": [
+     81.7845,
+     30.2086,
+     440.53,
+     5.69,
+     "HR 1804",
+     "B9Ib"
+    ],
+    "HIP25291": [
+     81.1605,
+     31.1431,
+     211.42,
+     5.94,
+     "HR 1776",
+     "B9III"
+    ],
+    "HIP24504": [
+     78.8517,
+     32.6876,
+     87.57,
+     5.01,
+     "14    Aur",
+     "A9IV"
+    ]
+   },
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-trivet",
+   "name": "Trivet",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP91262",
+     "HIP92420"
+    ],
+    [
+     "HIP91262",
+     "HIP94481"
+    ],
+    [
+     "HIP92420",
+     "HIP93194"
+    ]
+   ],
+   "native": "пирустија",
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-sofra",
+   "name": "Sofra",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP78493",
+     "HIP78159",
+     "HIP77512",
+     "HIP76952",
+     "HIP76267",
+     "HIP75695",
+     "HIP76127"
+    ]
+   ],
+   "native": "софра",
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-pigs",
+   "name": "Pigs",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP20889",
+     "HIP20455",
+     "HIP20205"
+    ]
+   ],
+   "native": "свињи",
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-auger",
+   "name": "Auger",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP100453",
+     "HIP102488"
+    ],
+    [
+     "HIP100453",
+     "HIP102098"
+    ],
+    [
+     "HIP100453",
+     "HIP97165"
+    ],
+    [
+     "HIP100453",
+     "HIP95947"
+    ]
+   ],
+   "native": "сврдел",
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  },
+  {
+   "id": "macedonian-macedonian-ears",
+   "name": "Ears",
+   "kind": "constellation",
+   "group": "Macedonian",
+   "lines": [
+    [
+     "HIP6686",
+     "HIP4427",
+     "HIP746",
+     "HIP3179"
+    ]
+   ],
+   "native": "уши",
+   "story": "Line pattern from the Stellarium 'macedonian' sky culture; see source for documentation."
+  }
+ ]
+}

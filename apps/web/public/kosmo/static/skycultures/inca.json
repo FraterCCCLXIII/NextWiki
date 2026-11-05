@@ -1,0 +1,198 @@
+{
+ "id": "inca",
+ "name": "Inca (Quechua)",
+ "region": "Andes (Cuzco region)",
+ "era": "Inca and modern Quechua tradition",
+ "color": "#cc7a00",
+ "description": "Quechua dark constellations: animal shapes seen in the dark lanes of the Milky Way rather than among bright stars. Polygons are schematic approximations.",
+ "source": [
+  "Urton, G. (1981) At the Crossroads of the Earth and the Sky: An Andean Cosmology, University of Texas Press (Quechua dark-cloud constellations, Misminay, Cuzco region)",
+  "Positions: Galactic-to-equatorial conversion (J2000) by tools/skycultures/build-inca.py"
+ ],
+ "license": "Original compilation (CC0 for the coordinates); factual references only, no text copied from the sources",
+ "figures": [
+  {
+   "id": "inca-yacana",
+   "name": "Yacana",
+   "native": "Yakana",
+   "meaning": "The Llama",
+   "kind": "dark-cloud",
+   "group": "Dark constellations (yana phuyu)",
+   "polygon": [
+    [
+     184.83,
+     -60.63
+    ],
+    [
+     202.71,
+     -58.98
+    ],
+    [
+     223.37,
+     -54.78
+    ],
+    [
+     242.66,
+     -46.1
+    ],
+    [
+     253.4,
+     -35.9
+    ],
+    [
+     259.27,
+     -34.53
+    ],
+    [
+     260.52,
+     -40.1
+    ],
+    [
+     250.84,
+     -51.32
+    ],
+    [
+     231.01,
+     -61.71
+    ],
+    [
+     205.56,
+     -66.37
+    ],
+    [
+     183.33,
+     -65.58
+    ],
+    [
+     184.83,
+     -60.63
+    ]
+   ],
+   "story": "Dark-cloud llama of the Milky Way lane, with its head toward the Coalsack. Described in Quechua tradition by Urton (1981) and earlier chroniclers. The outline is a schematic, approximate region of the Milky Way dark lane, not a measured boundary; consult the source for the figure itself."
+  },
+  {
+   "id": "inca-yutu",
+   "name": "Yutu",
+   "native": "Yutu",
+   "meaning": "The Tinamou",
+   "kind": "dark-cloud",
+   "group": "Dark constellations (yana phuyu)",
+   "polygon": [
+    [
+     162.51,
+     -63.78
+    ],
+    [
+     182.95,
+     -66.57
+    ],
+    [
+     185.07,
+     -59.63
+    ],
+    [
+     168.36,
+     -57.39
+    ],
+    [
+     162.51,
+     -63.78
+    ]
+   ],
+   "story": "Dark-cloud tinamou (partridge-like bird) near the Southern Cross, per Urton (1981). The outline is a schematic, approximate region of the Milky Way dark lane, not a measured boundary; consult the source for the figure itself."
+  },
+  {
+   "id": "inca-hanpatu",
+   "name": "Hanp'atu",
+   "native": "Hanp'atu",
+   "meaning": "The Toad",
+   "kind": "dark-cloud",
+   "group": "Dark constellations (yana phuyu)",
+   "polygon": [
+    [
+     269.82,
+     -42.07
+    ],
+    [
+     274.52,
+     -35.08
+    ],
+    [
+     268.2,
+     -32.19
+    ],
+    [
+     263.04,
+     -38.99
+    ],
+    [
+     269.82,
+     -42.07
+    ]
+   ],
+   "story": "Dark-cloud toad toward the Scorpius end of the lane, per Urton (1981). The outline is a schematic, approximate region of the Milky Way dark lane, not a measured boundary; consult the source for the figure itself."
+  },
+  {
+   "id": "inca-atoq",
+   "name": "Atoq",
+   "native": "Atuq",
+   "meaning": "The Fox",
+   "kind": "dark-cloud",
+   "group": "Dark constellations (yana phuyu)",
+   "polygon": [
+    [
+     261.32,
+     -32.06
+    ],
+    [
+     267.38,
+     -23.62
+    ],
+    [
+     260.99,
+     -19.9
+    ],
+    [
+     254.75,
+     -27.97
+    ],
+    [
+     261.32,
+     -32.06
+    ]
+   ],
+   "story": "Dark-cloud fox in the Scorpius-Ophiuchus region of the lane, per Urton (1981). The outline is a schematic, approximate region of the Milky Way dark lane, not a measured boundary; consult the source for the figure itself."
+  },
+  {
+   "id": "inca-machacuay",
+   "name": "Mach'acuay",
+   "native": "Mach'aqway",
+   "meaning": "The Serpent",
+   "kind": "dark-cloud",
+   "group": "Dark constellations (yana phuyu)",
+   "polygon": [
+    [
+     225.56,
+     -52.96
+    ],
+    [
+     242.73,
+     -44.69
+    ],
+    [
+     238.21,
+     -40.94
+    ],
+    [
+     221.92,
+     -48.52
+    ],
+    [
+     225.56,
+     -52.96
+    ]
+   ],
+   "story": "Dark-cloud serpent lying alongside the llama, per Urton (1981). The outline is a schematic, approximate region of the Milky Way dark lane, not a measured boundary; consult the source for the figure itself."
+  }
+ ]
+}
