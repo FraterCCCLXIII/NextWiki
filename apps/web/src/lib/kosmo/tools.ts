@@ -16,6 +16,7 @@ export const KOSMO_TOOLS: Record<
   biology: { file: "biology.html", title: "Biology", group: "atlas" },
   spacecraft: { file: "spacecraft.html", title: "Spacecraft", group: "atlas" },
   contraption: { file: "contraption-sim.html", title: "Contraption simulator", group: "atlas" },
+  graph: { file: "graph.html", title: "Graph & calculator", group: "atlas" },
   flight: { file: "flight/index.html", title: "Orbital Flight Deck", group: "atlas" },
 
   oracle: { file: "oracle/index.html", title: "Dark Factory", group: "oracle" },

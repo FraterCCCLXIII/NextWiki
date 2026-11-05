@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Graph &amp; calculator</title>
+<style>
+  :root { --bg: #0d0d0d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --line: rgba(140,170,220,0.14); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 15px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+  .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  #navbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(13,13,13,0.95), rgba(13,13,13,0.6)); }
+  #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 20px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 13px; color: #fff; opacity: 0.8; margin-top: 2px; }
+  #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.16em; font-size: 14px; text-transform: uppercase; }
+  #menu a { color: rgba(255,255,255,0.72); text-decoration: none; white-space: nowrap; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+
+  #view { position: absolute; inset: 0; touch-action: none; } #view canvas { display: block; }
+  #labels { position: absolute; inset: 0; pointer-events: none; z-index: 2; overflow: hidden; }
+  #labels span { position: absolute; font-size: 11px; color: rgba(219,229,243,0.5); font-variant-numeric: tabular-nums; white-space: nowrap; transform: translate(-50%, 0); }
+  #labels span.l { transform: translate(0, -50%); } #labels span.ax { color: rgba(219,229,243,0.85); font-style: italic; font-size: 13px; }
+
+  #panel { position: absolute; left: 16px; top: 70px; bottom: 16px; width: 336px; z-index: 4; display: flex; flex-direction: column; min-height: 0; }
+  html.embedded #panel { top: 16px; }
+  #panel::before { content: ""; position: absolute; inset: -70px -70px -16px -16px; background: linear-gradient(90deg, rgba(13,13,13,0.96) 78%, rgba(13,13,13,0)); z-index: -1; pointer-events: none; }
+  html.embedded #panel::before { inset: -16px -70px -16px -16px; }
+  .tabs { display: flex; gap: 18px; border-bottom: 1px solid var(--line); margin-bottom: 10px; }
+  .tabs button { background: none; border: 0; border-bottom: 1px solid transparent; color: var(--muted); font: inherit; letter-spacing: 0.14em; text-transform: uppercase; font-size: 12px; padding: 6px 0 7px; margin-bottom: -1px; cursor: pointer; }
+  .tabs button.on { color: #fff; border-bottom-color: #fff; } .tabs button:hover { color: #fff; }
+  .pane { flex: 1; min-height: 0; overflow: auto; display: none; padding-right: 4px; } .pane.on { display: flex; flex-direction: column; }
+  .pane::-webkit-scrollbar { width: 6px; } .pane::-webkit-scrollbar-thumb { background: rgba(127,195,255,0.3); border-radius: 6px; }
+  h2 { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 400; margin: 18px 0 6px; }
+  input[type=text], select, button.b { background: transparent; color: var(--text); border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 5px 2px; font: inherit; outline: none; }
+  input[type=text]:focus { border-bottom-color: var(--accent); }
+  button.b, select { cursor: pointer; } button.b:hover, select:hover { color: #fff; border-bottom-color: var(--accent); }
+  select { background: var(--bg); } button.on { color: var(--accent) !important; border-bottom-color: var(--accent) !important; }
+
+  .row { display: flex; align-items: center; gap: 8px; } .row + .row, .row + .err { margin-top: 2px; }
+  .row .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .row input { flex: 1; min-width: 0; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px; }
+  .row .tag { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); flex: none; }
+  .row .x { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 16px; padding: 0 2px; opacity: 0; } .row:hover .x { opacity: 1; } .row .x:hover { color: #fff; }
+  .row.off { opacity: 0.4; } .row.off .tag { color: #ffb86b; }
+  .err { color: #ff8a8a; font-size: 12px; margin: 0 0 2px 16px; }
+  #add { align-self: flex-start; margin-top: 6px; color: var(--muted); }
+  .param { display: grid; grid-template-columns: 22px 1fr 54px; align-items: center; gap: 8px; margin: 3px 0; font-size: 13px; }
+  .param b { font-weight: 400; font-style: italic; color: #fff; font-family: "Iowan Old Style", Georgia, serif; font-size: 15px; } .param span { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 2px; background: rgba(140,170,220,0.3); outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #fff; cursor: pointer; }
+  input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 0; cursor: pointer; }
+  .demos { display: flex; flex-wrap: wrap; gap: 4px 14px; } .demos button { background: none; border: 0; padding: 2px 0; color: var(--muted); font: inherit; font-size: 14px; cursor: pointer; } .demos button:hover { color: #fff; } .demos button.on { color: var(--accent); }
+  .demos .g { width: 100%; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(138,155,184,0.55); margin-top: 6px; }
+  .hint { color: var(--muted); font-size: 12px; margin-top: 14px; line-height: 1.6; } .hint code { color: var(--text); font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; }
+
+  /* calculator */
+  #hist { flex: 1; min-height: 40px; overflow: auto; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; padding-bottom: 8px; }
+  #hist::-webkit-scrollbar { width: 0; }
+  .h { cursor: pointer; } .h .q { color: var(--muted); font-size: 13px; word-break: break-all; } .h .a { text-align: right; font-size: 22px; color: #fff; font-variant-numeric: tabular-nums; word-break: break-all; } .h .a.note { font-size: 14px; color: var(--muted); } .h .a.bad { font-size: 13px; color: #ff8a8a; }
+  #cin { width: 100%; font-size: 18px; padding: 6px 2px; }
+  #prev { height: 20px; flex: none; text-align: right; color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; overflow: hidden; white-space: nowrap; }
+  .ctl { flex: none; display: flex; justify-content: space-between; align-items: center; margin: 6px 0 4px; color: var(--muted); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .ctl button { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  #keys { flex: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; margin-top: 2px; }
+  #keys button { background: rgba(255,255,255,0.025); border: 0; color: var(--text); font: inherit; font-size: 15px; padding: 6px 0; cursor: pointer; border-radius: 0; }
+  #keys button:hover { background: rgba(127,195,255,0.14); } #keys button.fn { color: var(--muted); font-size: 13px; } #keys button.eq { background: rgba(127,195,255,0.18); color: #fff; grid-column: span 2; } #keys button.op { color: var(--accent); }
+
+  #modes { position: absolute; right: 16px; top: 70px; z-index: 4; display: flex; gap: 2px; border: 1px solid var(--line); border-radius: 20px; padding: 2px; background: rgba(13,13,13,0.7); backdrop-filter: blur(6px); }
+  html.embedded #modes { top: 16px; }
+  #modes button { background: none; border: 0; color: var(--muted); font: inherit; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 14px; border-radius: 16px; cursor: pointer; }
+  #modes button:hover { color: #fff; } #modes button.on { background: rgba(255,255,255,0.1); color: #fff; }
+  #bar { position: absolute; left: calc(352px + (100vw - 352px) / 2); bottom: 16px; transform: translateX(-50%); z-index: 4; display: flex; gap: 18px; align-items: center; flex-wrap: wrap; justify-content: center; font-size: 13px; color: var(--muted); }
+  #bar label { display: flex; align-items: center; gap: 8px; } #bar input[type=range] { width: 90px; } #bar b { font-weight: 400; color: var(--text); font-variant-numeric: tabular-nums; min-width: 2ch; display: inline-block; }
+  #bar button.b { font-size: 13px; color: var(--muted); padding: 2px 0; } #bar select { font-size: 13px; color: var(--muted); padding: 2px 0; border-bottom: 0; }
+  #readout { position: absolute; right: 18px; bottom: 54px; z-index: 4; text-align: right; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; pointer-events: none; min-height: 18px; }
+  #legend { position: absolute; right: 18px; top: 112px; z-index: 4; display: none; width: 12px; height: 160px; border-radius: 6px; }
+  #legend span { position: absolute; right: 20px; font-size: 11px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; } #legend .hi { top: -2px; } #legend .lo { bottom: -2px; }
+  html.embedded #legend { top: 58px; }
+  @media (max-width: 820px) {
+    #panel { top: auto; bottom: 0; left: 0; right: 0; width: auto; height: 46%; padding: 8px 14px 10px; background: linear-gradient(180deg, rgba(13,13,13,0), rgba(13,13,13,0.92) 18%); }
+    #bar { left: 50%; bottom: calc(46% + 8px); } #readout { bottom: calc(46% + 40px); } #modes { top: 62px; }
+  }
+</style>
+<script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
+<link rel="stylesheet" href="kosmographica.css?v=15">
+<script src="atlas-nav.js" defer></script>
+<script src="graph-math.js"></script>
+</head>
+<body>
+<div id="view"></div>
+<div id="labels"></div>
+<div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
+  <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="graph.html" class="here">Graph</a></nav><span></span></div>
+
+<div id="panel">
+  <div class="tabs"><button id="tG" class="on">Graph</button><button id="tC">Calculator</button></div>
+
+  <div class="pane on" id="pG">
+    <div id="rows"></div>
+    <button class="b" id="add">+ add expression</button>
+    <div id="paramsH"><h2>Parameters</h2><div id="params"></div></div>
+    <h2>Demos</h2>
+    <div class="demos" id="demos"></div>
+    <div class="hint">
+      <code>y = sin(a·x)</code> a curve &nbsp; <code>r = 1 + cos(theta)</code> polar<br>
+      <code>(cos(t), sin(t)) @ 0..2pi</code> parametric<br>
+      <code>z = sin(r)/r</code> a surface &nbsp; <code>(x(t), y(t), z(t))</code> a 3D curve<br>
+      <code>(…u…, …v…, …) @ 0..2pi, 0..pi</code> a parametric surface<br>
+      Any unknown letter becomes a slider. <code>f(x) = …</code> defines a function.
+    </div>
+  </div>
+
+  <div class="pane" id="pC">
+    <div id="hist"></div>
+    <div id="prev" class="mono"></div>
+    <input type="text" id="cin" class="mono" placeholder="2 + 3 · sin(pi/4)" autocomplete="off" spellcheck="false">
+    <div class="ctl"><button class="b" id="degBtn">rad</button><button class="b" id="toGraph">plot ↗</button><button class="b" id="clrHist">clear</button></div>
+    <div id="keys"></div>
+  </div>
+</div>
+
+<div id="modes"><button data-m="2d">2D</button><button data-m="3d">3D</button><button data-m="map">Map</button></div>
+<div id="legend"><span class="hi"></span><span class="lo"></span></div>
+<div id="readout"></div>
+<div id="bar"></div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+const G = window.GMath, $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const COLORS = ['#7fc3ff', '#ffb86b', '#7fe0a0', '#ff7f9d', '#c9a7ff', '#f2e86d'];
+const CMAPS = {
+  viridis: ['#440154', '#3b528b', '#21918c', '#5ec962', '#fde725'],
+  magma: ['#000004', '#51127c', '#b73779', '#fc8961', '#fcfdbf'],
+  ice: ['#0b1d3a', '#1f4e8c', '#4fa3d9', '#b8e3f5', '#ffffff'],
+  ember: ['#1a0a1e', '#5a1a4e', '#c2384a', '#ff9a3c', '#fff1b8'],
+  mono: ['#1a1a1a', '#555555', '#999999', '#dddddd', '#ffffff'],
+};
+const cmapRGB = {}; for (const k in CMAPS) cmapRGB[k] = CMAPS[k].map((h) => new THREE.Color(h));
+function cmap(name, t, out) {
+  const s = cmapRGB[name], n = s.length - 1; t = Math.min(1, Math.max(0, t)); const f = t * n, i = Math.min(n - 1, Math.floor(f));
+  return out.copy(s[i]).lerp(s[i + 1], f - i);
+}
+
+/* ---------- demos ---------- */
+const TAU = '2*pi';
+const DEMOS = [
+  { g: '2D' },
+  { n: 'Sine family', m: '2d', rows: ['y = sin(x)', 'y = a*sin(b*x)', 'y = sin(x)/x'], p: { a: 1.5, b: 2 } },
+  { n: 'Taylor series', m: '2d', rows: ['y = sin(x)', 'y = x - x^3/6', 'y = x - x^3/6 + x^5/120', 'y = x - x^3/6 + x^5/120 - x^7/5040'], view: [0, 0, 8] },
+  { n: 'Asymptotes', m: '2d', rows: ['y = tan(x)', 'y = 1/x', 'y = ln(x)'] },
+  { n: 'Cardioid', m: '2d', rows: ['r = a + b*cos(theta)', 'r = 1 + cos(theta)'], p: { a: 1, b: 2 }, view: [0, 0, 9] },
+  { n: 'Rose', m: '2d', rows: ['r = 3*cos(k*theta) @ 0..4*pi'], p: { k: 2.5 }, view: [0, 0, 8] },
+  { n: 'Lissajous', m: '2d', rows: ['(3*sin(a*t), 3*sin(b*t + 1)) @ 0..2*pi'], p: { a: 3, b: 2 }, view: [0, 0, 8] },
+  { n: 'Spirograph', m: '2d', rows: ['((a-b)*cos(t) + c*cos((a-b)/b*t), (a-b)*sin(t) - c*sin((a-b)/b*t)) @ 0..6*pi'], p: { a: 5, b: 3, c: 4 }, view: [0, 0, 14] },
+  { n: 'Spiral', m: '2d', rows: ['r = 0.15*theta @ 0..8*pi', 'r = 0.15*theta + 0.5 @ 0..8*pi'], view: [0, 0, 10] },
+  { g: '3D' },
+  { n: 'Ripple', m: '3d', rows: ['z = sin(a*r)/r'], p: { a: 2 }, R: 8 },
+  { n: 'Saddle', m: '3d', rows: ['z = (x^2 - y^2)/4'], R: 3 },
+  { n: 'Egg carton', m: '3d', rows: ['z = sin(x)*cos(y)'], R: 6 },
+  { n: 'Interference', m: '3d', rows: ['z = sin(3*hypot(x-2, y)) + sin(3*hypot(x+2, y))'], R: 6, cmap: 'ice' },
+  { n: 'Twisted', m: '3d', rows: ['z = r*sin(k*theta)'], p: { k: 3 }, R: 3, cmap: 'ember' },
+  { n: 'Torus', m: '3d', rows: ['((2 + 0.8*cos(v))*cos(u), (2 + 0.8*cos(v))*sin(u), 0.8*sin(v)) @ 0..2*pi'], R: 3, cmap: 'magma' },
+  { n: 'Möbius strip', m: '3d', rows: ['((1 + v/2*cos(u/2))*cos(u), (1 + v/2*cos(u/2))*sin(u), v/2*sin(u/2)) @ 0..2*pi, -1..1'], R: 3, cmap: 'ice' },
+  { n: 'Sphere', m: '3d', rows: ['(cos(u)*sin(v), sin(u)*sin(v), cos(v)) @ 0..2*pi, 0..pi'], R: 3, cmap: 'viridis' },
+  { n: 'Trefoil knot', m: '3d', rows: ['(sin(t) + 2*sin(2*t), cos(t) - 2*cos(2*t), -sin(3*t)) @ 0..2*pi'], R: 4 },
+  { n: 'Helix', m: '3d', rows: ['(cos(t), sin(t), t/6) @ -4*pi..4*pi', '(-cos(t), -sin(t), t/6) @ -4*pi..4*pi'], R: 4 },
+  { g: 'Map' },
+  { n: 'Moiré', m: 'map', rows: ['z = sin((x^2 + y^2)/2)'], view: [0, 0, 14], cmap: 'mono' },
+  { n: 'Plasma', m: 'map', rows: ['z = sin(x) + sin(y) + sin(x + y) + sin(r)'], view: [0, 0, 14], cmap: 'magma' },
+  { n: 'Rosette', m: 'map', rows: ['z = sin(5*theta)*exp(-r/4)'], view: [0, 0, 14], cmap: 'ice' },
+  { n: 'Two sources', m: 'map', rows: ['z = sin(3*hypot(x-2, y)) + sin(3*hypot(x+2, y))', '(2, 0)'], view: [0, 0, 14] },
+];
+
+/* ---------- state ---------- */
+const S = { mode: '2d', rows: [], R: 5, cmap: 'viridis', lines: true, spin: false, equal: false, contours: true, deg: false, tab: 'G' };
+let rowId = 0, an = new Map(), readoutTxt = '';
+const newRow = (src = '') => ({ id: ++rowId, src, color: COLORS[(rowId - 1) % COLORS.length] });
+const KIND_TAG = { y: 'y(x)', polar: 'polar', par2: 'param', surf: 'surface', curve3: '3D curve', psurf: 'surface', def: 'function', assign: 'slider' };
+const KIND_MODES = { y: ['2d', 'map'], polar: ['2d', 'map'], par2: ['2d', 'map'], surf: ['3d', 'map'], curve3: ['3d'], psurf: ['3d'], def: [], assign: [] };
+const KIND_HOME = { y: '2D', polar: '2D', par2: '2D', surf: '3D', curve3: '3D', psurf: '3D' };
+
+/* ---------- three scene ---------- */
+const view = $('view');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); view.appendChild(renderer.domElement);
+const BG = window.KOSMO_BG ? window.KOSMO_BG.pick(0x05070d) : 0x0d0d0d;
+const scene = new THREE.Scene(); scene.background = new THREE.Color(BG);
+const g2 = new THREE.Group(), g3 = new THREE.Group(), gm = new THREE.Group(); scene.add(g2, g3, gm);
+const ortho = new THREE.OrthographicCamera(-1, 1, 1, -1, -10, 10);
+const persp = new THREE.PerspectiveCamera(38, 1, 0.05, 2000); persp.up.set(0, 0, 1); persp.position.set(10, -12, 8);
+const controls = new OrbitControls(persp, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.08; controls.autoRotateSpeed = 1.1;
+scene.add(new THREE.AmbientLight(0xffffff, 0.75)); scene.add(new THREE.HemisphereLight(0xcfe3ff, 0x20242c, 0.55));
+const key = new THREE.DirectionalLight(0xffffff, 1.8); key.position.set(6, -8, 12); scene.add(key);
+const fill = new THREE.DirectionalLight(0x9fd3ff, 0.6); fill.position.set(-8, 6, 3); scene.add(fill);
+let W = 1, H = 1, dirty = true;
+const panelW = () => (innerWidth > 820 ? $('panel').offsetWidth + 16 : 0);
+
+function dispose(g) {
+  for (const o of [...g.children]) { g.remove(o); o.traverse((c) => { c.geometry && c.geometry.dispose(); if (c.material) { c.material.map && c.material.map.dispose(); c.material.dispose(); } }); }
+}
+function resize() {
+  W = view.clientWidth || innerWidth; H = view.clientHeight || innerHeight; renderer.setSize(W, H);
+  persp.aspect = W / H; persp.setViewOffset(W, H, -panelW() / 2, 0, W, H); persp.updateProjectionMatrix();
+  $('bar').style.left = innerWidth > 820 ? (panelW() + (innerWidth - panelW()) / 2) + 'px' : '50%';
+  if (!viewOk) applyView();
+  dirty = true; schedule();
+}
+addEventListener('resize', resize);
+if (window.ResizeObserver) new ResizeObserver(resize).observe(view);
+
+/* ---------- 2D view state (shared by 2D and Map) ---------- */
+const V = { cx: 0, cy: 0, s: 60 };
+function resetView(span = 10) {
+  V.s = Math.min(W - panelW(), H) / span * 1; V.cx = -panelW() / (2 * V.s); V.cy = 0;
+}
+const toX = (px) => V.cx + (px - W / 2) / V.s, toY = (py) => V.cy - (py - H / 2) / V.s;
+const sx = (x) => W / 2 + (x - V.cx) * V.s, sy = (y) => H / 2 - (y - V.cy) * V.s;
+function syncOrtho() {
+  ortho.left = V.cx - W / 2 / V.s; ortho.right = V.cx + W / 2 / V.s; ortho.top = V.cy + H / 2 / V.s; ortho.bottom = V.cy - H / 2 / V.s; ortho.updateProjectionMatrix();
+}
+
+let curView = null, viewOk = false;
+function applyView() {
+  resetView(curView ? curView[2] : 10); if (curView) { V.cx = curView[0] - panelW() / (2 * V.s); V.cy = curView[1]; }
+  viewOk = view.clientWidth > 50 && V.s > 0;
+}
+
+/* ---------- label pool ---------- */
+const labelsEl = $('labels'); const pool = [];
+function setLabels(list) {
+  while (pool.length < list.length) { const s = document.createElement('span'); labelsEl.appendChild(s); pool.push(s); }
+  for (let i = 0; i < pool.length; i++) {
+    const s = pool[i], l = list[i];
+    if (!l) { s.style.display = 'none'; continue; }
+    s.style.display = ''; s.textContent = l.t; s.style.left = l.x + 'px'; s.style.top = l.y + 'px'; s.className = (l.l ? 'l ' : '') + (l.ax ? 'ax' : '');
+  }
+}
+function niceStep(range, target) {
+  const raw = range / target, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / p;
+  return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * p;
+}
+function tickText(v, step) {
+  if (Math.abs(v) < step * 1e-6) return '0';
+  if (Math.abs(v) >= 1e6 || step < 1e-4) return v.toExponential(0).replace('e+', 'e');
+  return String(+v.toFixed(Math.max(0, -Math.floor(Math.log10(step)))));
+}
+
+/* ---------- 2D drawing ---------- */
+function ribbon(runs, w, color) {
+  const pos = [], idx = []; let base = 0;
+  for (const run of runs) {
+    const n = run.length / 2; if (n < 2) continue;
+    for (let i = 0; i < n; i++) {
+      const a = Math.max(0, i - 1), b = Math.min(n - 1, i + 1);
+      let tx = run[b * 2] - run[a * 2], ty = run[b * 2 + 1] - run[a * 2 + 1]; const l = Math.hypot(tx, ty) || 1; tx /= l; ty /= l;
+      const nx = -ty * w / 2, ny = tx * w / 2, x = run[i * 2], y = run[i * 2 + 1];
+      pos.push(x + nx, y + ny, 0, x - nx, y - ny, 0);
+      if (i < n - 1) { const k = base + i * 2; idx.push(k, k + 1, k + 2, k + 1, k + 3, k + 2); }
+    }
+    base += n * 2;
+  }
+  if (!pos.length) return null;
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx);
+  return new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide }));
+}
+function sampleRuns(a, r, nominalSpan) {
+  /* returns runs of [x0,y0,x1,y1…] in world coords for a 2D-kind analysis */
+  const spanY = H / V.s, runs = []; let cur = [];
+  const flush = () => { if (cur.length >= 4) runs.push(cur); cur = []; };
+  const lim = spanY * 60, ymid = V.cy;
+  if (a.kind === 'y') {
+    const x0 = toX(0), x1 = toX(W), n = Math.ceil(W / 1.2); let py = NaN;
+    for (let i = 0; i <= n; i++) {
+      const x = x0 + (x1 - x0) * i / n; let y; try { y = a.fns[0](x, 0, x, 0, 0, x); } catch { y = NaN; }
+      if (!Number.isFinite(y) || Math.abs(y - ymid) > lim) { flush(); py = NaN; continue; }
+      if (Number.isFinite(py) && Math.abs(y - py) > spanY * 2 && Math.sign(y) !== Math.sign(py)) flush();
+      cur.push(x, y); py = y;
+    }
+  } else if (a.kind === 'polar' || a.kind === 'par2') {
+    const rg = a.range ? a.range[0] : [0, Math.PI * 2], n = 5000;
+    for (let i = 0; i <= n; i++) {
+      const t = rg[0] + (rg[1] - rg[0]) * i / n; let x, y;
+      try {
+        if (a.kind === 'polar') { const rr = a.fns[0](t, 0, t, 0, 0, t); x = rr * Math.cos(t); y = rr * Math.sin(t); }
+        else { x = a.fns[0](t, 0, t, 0, 0, t); y = a.fns[1](t, 0, t, 0, 0, t); }
+      } catch { x = NaN; }
+      if (!Number.isFinite(x) || !Number.isFinite(y) || Math.abs(x) > 1e7 || Math.abs(y) > 1e7) { flush(); continue; }
+      cur.push(x, y);
+    }
+  }
+  flush(); return runs;
+}
+function drawGrid() {
+  const pos = [], step = niceStep(90 / V.s, 1), x0 = toX(0), x1 = toX(W), y1 = toY(0), y0 = toY(H);
+  for (let x = Math.ceil(x0 / step) * step; x <= x1; x += step) pos.push(x, y0, 0, x, y1, 0);
+  for (let y = Math.ceil(y0 / step) * step; y <= y1; y += step) pos.push(x0, y, 0, x1, y, 0);
+  const mk = (p, color, op) => { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3)); return new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color, transparent: true, opacity: op })); };
+  const light = S.mode === 'map';
+  if (pos.length) { const l = mk(pos, light ? 0xffffff : 0x8aa0c8, light ? 0.12 : 0.13); l.position.z = -1; g2.add(l); }
+  const ax = mk([x0, 0, 0, x1, 0, 0, 0, y0, 0, 0, y1, 0], 0xdbe5f3, light ? 0.6 : 0.5); ax.position.z = -0.5; g2.add(ax);
+  /* tick labels sit on the axes, clamped to the screen */
+  const labs = [], ay = Math.min(H - 18, Math.max(6, sy(0) + 5)), axx = Math.min(W - 6, Math.max(panelW() + 24, sx(0) - 7));
+  for (let x = Math.ceil(x0 / step) * step; x <= x1; x += step) { if (Math.abs(x) < step * 1e-6) continue; const px = sx(x); if (px > panelW() + 20) labs.push({ t: tickText(x, step), x: px, y: ay }); }
+  for (let y = Math.ceil(y0 / step) * step; y <= y1; y += step) { if (Math.abs(y) < step * 1e-6) continue; labs.push({ t: tickText(y, step), x: axx - 4, y: sy(y), l: true }); }
+  const ox = sx(0), oy = sy(0); if (ox > panelW() + 8 && ox < W && oy > 0 && oy < H) labs.push({ t: '0', x: ox - 8, y: oy + 7 });
+  return labs;
+}
+function build2D() {
+  dispose(g2); syncOrtho();
+  const labs = drawGrid(); setLabels(labs);
+  const w = 2.2 / V.s; let i = 0;
+  for (const r of S.rows) {
+    const a = an.get(r.id); if (!a || !KIND_MODES[a.kind] || KIND_MODES[a.kind].indexOf(S.mode === 'map' ? 'map' : '2d') < 0 || a.kind === 'surf') continue;
+    const m = ribbon(sampleRuns(a), w, r.color); if (m) { m.position.z = 1; g2.add(m); }
+  }
+  /* a lone point, e.g. "(2, 0) @ 0..1", is drawn as a dot */
+  for (const r of S.rows) {
+    const a = an.get(r.id); if (a && a.kind === 'par2' && !a.vars.has('t')) {
+      try { const x = a.fns[0](0, 0, 0, 0, 0, 0), y = a.fns[1](0, 0, 0, 0, 0, 0); const d = new THREE.Mesh(new THREE.CircleGeometry(4.5 / V.s, 24), new THREE.MeshBasicMaterial({ color: r.color })); d.position.set(x, y, 1.5); g2.add(d); } catch { /* ignore */ }
+    }
+  }
+}
+
+/* ---------- Map (heat map of z = f(x, y)) ---------- */
+let mapInfo = null, mapTimer = 0;
+function firstSurf() { for (const r of S.rows) { const a = an.get(r.id); if (a && a.kind === 'surf') return a; } return null; }
+function buildMap(px) {
+  dispose(gm);
+  const a = firstSurf(); mapInfo = null; $('legend').style.display = 'none';
+  if (!a) return;
+  const left = panelW(), step = px, nx = Math.max(8, Math.ceil(W / step)), ny = Math.max(8, Math.ceil(H / step));
+  const x0 = toX(0), x1 = toX(W), y1 = toY(0), y0 = toY(H);
+  const vals = new Float32Array(nx * ny), fin = [];
+  for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) {
+    const x = x0 + (x1 - x0) * (i + 0.5) / nx, y = y1 + (y0 - y1) * (j + 0.5) / ny; let z; try { z = a.fns[0](x, y, 0, 0, 0, Math.atan2(y, x)); } catch { z = NaN; }
+    vals[j * nx + i] = z; if (Number.isFinite(z) && i * step >= left * 0.6) fin.push(z);
+  }
+  if (!fin.length) return;
+  fin.sort((p, q) => p - q);
+  let lo = fin[Math.floor(fin.length * 0.01)], hi = fin[Math.min(fin.length - 1, Math.floor(fin.length * 0.99))]; if (hi - lo < 1e-12) { lo -= 1; hi += 1; }
+  const data = new Uint8Array(nx * ny * 4), c = new THREE.Color(), bands = 14;
+  for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) {
+    const k = j * nx + i, z = vals[k], o = ((ny - 1 - j) * nx + i) * 4;
+    if (!Number.isFinite(z)) { data[o] = 18; data[o + 1] = 18; data[o + 2] = 18; data[o + 3] = 255; continue; }
+    const t = (z - lo) / (hi - lo); cmap(S.cmap, t, c); let m = 1;
+    if (S.contours) {
+      const b = Math.floor(t * bands);
+      const r = i < nx - 1 ? Math.floor((vals[k + 1] - lo) / (hi - lo) * bands) : b, d = j < ny - 1 ? Math.floor((vals[k + nx] - lo) / (hi - lo) * bands) : b;
+      if (r !== b || d !== b) m = 0.62;
+    }
+    data[o] = c.r * 255 * m; data[o + 1] = c.g * 255 * m; data[o + 2] = c.b * 255 * m; data[o + 3] = 255;
+  }
+  const tex = new THREE.DataTexture(data, nx, ny, THREE.RGBAFormat); tex.colorSpace = THREE.SRGBColorSpace; tex.magFilter = step > 3 ? THREE.LinearFilter : THREE.NearestFilter; tex.minFilter = THREE.LinearFilter; tex.needsUpdate = true;
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: tex }));
+  mesh.position.set((x0 + x1) / 2, (y0 + y1) / 2, -5); mesh.scale.set(x1 - x0, y1 - y0, 1); gm.add(mesh);
+  mapInfo = { a, x0, x1, y0, y1, lo, hi };
+  const lg = $('legend'); lg.style.display = 'block'; lg.style.background = `linear-gradient(0deg, ${CMAPS[S.cmap].join(',')})`;
+  lg.querySelector('.hi').textContent = G.fmt(+hi.toPrecision(3)); lg.querySelector('.lo').textContent = G.fmt(+lo.toPrecision(3));
+}
+function refreshMap(fast) {
+  clearTimeout(mapTimer);
+  buildMap(fast ? 6 : 2.5);
+  if (fast) mapTimer = setTimeout(() => { buildMap(2.5); dirty = true; schedule(); }, 180);
+}
+
+/* ---------- 3D ---------- */
+let box3 = null, firstCam = true;
+function niceTicks(lo, hi, target) { const st = niceStep(hi - lo, target), out = []; for (let v = Math.ceil(lo / st - 1e-9) * st; v <= hi + st * 1e-9; v += st) out.push(+v.toPrecision(12)); return { st, ticks: out }; }
+function build3D() {
+  dispose(g3); box3 = null;
+  const R = S.R, items = []; let hasParam = false, hasSurf = false;
+  const finite = (v) => Number.isFinite(v) && Math.abs(v) < 1e7;
+  for (const r of S.rows) {
+    const a = an.get(r.id); if (!a) continue;
+    if (a.kind === 'surf') {
+      hasSurf = true; const N = 140, X = new Float32Array(N * N), Y = new Float32Array(N * N), Z = new Float32Array(N * N);
+      for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
+        const x = -R + 2 * R * i / (N - 1), y = -R + 2 * R * j / (N - 1); let z; try { z = a.fns[0](x, y, 0, 0, 0, Math.atan2(y, x)); } catch { z = NaN; }
+        const k = j * N + i; X[k] = x; Y[k] = y; Z[k] = finite(z) ? z : NaN;
+      }
+      items.push({ t: 'grid', nx: N, ny: N, X, Y, Z, zfit: true, color: r.color });
+    } else if (a.kind === 'psurf') {
+      hasParam = true; const N = 120, rg = a.range || [[0, Math.PI * 2]], ru = rg[0], rv = rg[1] || rg[0];
+      const X = new Float32Array(N * N), Y = new Float32Array(N * N), Z = new Float32Array(N * N);
+      for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
+        const u = ru[0] + (ru[1] - ru[0]) * i / (N - 1), v = rv[0] + (rv[1] - rv[0]) * j / (N - 1), k = j * N + i; let x, y, z;
+        try { x = a.fns[0](0, 0, 0, u, v, 0); y = a.fns[1](0, 0, 0, u, v, 0); z = a.fns[2](0, 0, 0, u, v, 0); } catch { x = NaN; }
+        if (!finite(x) || !finite(y) || !finite(z)) { x = y = z = NaN; } X[k] = x; Y[k] = y; Z[k] = z;
+      }
+      items.push({ t: 'grid', nx: N, ny: N, X, Y, Z, zfit: false, color: r.color });
+    } else if (a.kind === 'curve3') {
+      hasParam = true; const n = 1600, rg = a.range ? a.range[0] : [0, Math.PI * 2], pts = [];
+      for (let i = 0; i <= n; i++) {
+        const t = rg[0] + (rg[1] - rg[0]) * i / n; let x, y, z; try { x = a.fns[0](0, 0, t, 0, 0, t); y = a.fns[1](0, 0, t, 0, 0, t); z = a.fns[2](0, 0, t, 0, 0, t); } catch { x = NaN; }
+        if (finite(x) && finite(y) && finite(z)) pts.push([x, y, z]);
+      }
+      items.push({ t: 'curve', pts, color: r.color });
+    }
+  }
+  if (!items.length) { setLabels([]); return; }
+  /* bounds in data space */
+  const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
+  const eat = (x, y, z) => { if (x < lo[0]) lo[0] = x; if (x > hi[0]) hi[0] = x; if (y < lo[1]) lo[1] = y; if (y > hi[1]) hi[1] = y; if (z < lo[2]) lo[2] = z; if (z > hi[2]) hi[2] = z; };
+  for (const it of items) {
+    if (it.t === 'curve') for (const p of it.pts) eat(p[0], p[1], p[2]);
+    else if (it.zfit) {
+      const zs = Array.from(it.Z).filter(Number.isFinite).sort((p, q) => p - q);
+      if (!zs.length) { it.bad = true; continue; }
+      let a = zs[Math.floor(zs.length * 0.004)], b = zs[Math.min(zs.length - 1, Math.floor(zs.length * 0.996))]; if (b - a < 1e-9) { a -= 1; b += 1; }
+      const pad = (b - a) * 0.04; it.zlo = a - pad; it.zhi = b + pad; it.span = it.zhi - it.zlo;
+      eat(-R, -R, it.zlo); eat(R, R, it.zhi);
+    } else {
+      let a = Infinity, b = -Infinity; for (let k = 0; k < it.Z.length; k++) if (Number.isFinite(it.Z[k])) { eat(it.X[k], it.Y[k], it.Z[k]); a = Math.min(a, it.Z[k]); b = Math.max(b, it.Z[k]); }
+      it.zlo = a; it.zhi = b > a ? b : a + 1; it.span = it.zhi - it.zlo;
+    }
+  }
+  if (!Number.isFinite(lo[0])) { setLabels([]); return; }
+  const uniform = S.equal || hasParam || !hasSurf;
+  const ext = [hi[0] - lo[0] || 1, hi[1] - lo[1] || 1, hi[2] - lo[2] || 1];
+  const cen = [(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2];
+  let sc;
+  if (uniform) { const s = 2 * R / Math.max(ext[0], ext[1], ext[2]); sc = [s, s, s]; }
+  else sc = [1, 1, (R * 1.15) / ext[2]];
+  const T = (x, y, z) => [(x - cen[0]) * sc[0], (y - cen[1]) * sc[1], (z - cen[2]) * sc[2]];
+  const half = [ext[0] * sc[0] / 2, ext[1] * sc[1] / 2, ext[2] * sc[2] / 2];
+  const col = new THREE.Color();
+  for (const it of items) {
+    if (it.t === 'curve') {
+      if (it.pts.length < 2) continue;
+      const v3 = it.pts.map((p) => new THREE.Vector3(...T(p[0], p[1], p[2])));
+      const curve = new THREE.CatmullRomCurve3(v3, false, 'centripetal');
+      const geo = new THREE.TubeGeometry(curve, Math.min(1200, v3.length), Math.max(R * 0.014, 0.008), 6, false);
+      const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: it.color, emissive: it.color, emissiveIntensity: 0.35, roughness: 0.4 })); g3.add(m);
+      continue;
+    }
+    if (it.bad) continue;
+    const { nx, ny } = it, pos = new Float32Array(nx * ny * 3), colr = new Float32Array(nx * ny * 3), ok = new Uint8Array(nx * ny);
+    for (let k = 0; k < nx * ny; k++) {
+      let z = it.Z[k]; const good = Number.isFinite(z) && Number.isFinite(it.X[k]) && (!it.zfit || (z > it.zlo - it.span && z < it.zhi + it.span));
+      ok[k] = good ? 1 : 0;
+      if (!good) { continue; }
+      if (it.zfit) z = Math.min(it.zhi, Math.max(it.zlo, z));
+      const p = T(it.X[k], it.Y[k], z); pos[k * 3] = p[0]; pos[k * 3 + 1] = p[1]; pos[k * 3 + 2] = p[2];
+      cmap(S.cmap, (it.Z[k] - it.zlo) / it.span, col); colr[k * 3] = col.r; colr[k * 3 + 1] = col.g; colr[k * 3 + 2] = col.b;
+    }
+    const idx = [];
+    for (let j = 0; j < ny - 1; j++) for (let i = 0; i < nx - 1; i++) {
+      const a = j * nx + i, b = a + 1, c2 = a + nx, d = c2 + 1; if (ok[a] && ok[b] && ok[c2] && ok[d]) idx.push(a, c2, b, b, c2, d);
+    }
+    const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); geo.setAttribute('color', new THREE.BufferAttribute(colr, 3)); geo.setIndex(idx); geo.computeVertexNormals();
+    g3.add(new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.5, metalness: 0.05, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1 })));
+    if (S.lines) {
+      const seg = [], stride = 7;
+      const pushL = (a, b) => { if (ok[a] && ok[b]) seg.push(pos[a * 3], pos[a * 3 + 1], pos[a * 3 + 2], pos[b * 3], pos[b * 3 + 1], pos[b * 3 + 2]); };
+      for (let j = 0; j < ny; j += stride) for (let i = 0; i < nx - 1; i++) pushL(j * nx + i, j * nx + i + 1);
+      for (let i = 0; i < nx; i += stride) for (let j = 0; j < ny - 1; j++) pushL(j * nx + i, (j + 1) * nx + i);
+      const lg = new THREE.BufferGeometry(); lg.setAttribute('position', new THREE.Float32BufferAttribute(seg, 3));
+      g3.add(new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.28 })));
+    }
+  }
+  /* bounding box, floor grid and tick data */
+  const e = [], ed = (a, b) => e.push(...a, ...b);
+  const [hx, hy, hz] = half;
+  const c8 = []; for (const zz of [-hz, hz]) for (const yy of [-hy, hy]) for (const xx of [-hx, hx]) c8.push([xx, yy, zz]);
+  [[0, 1], [2, 3], [4, 5], [6, 7], [0, 2], [1, 3], [4, 6], [5, 7], [0, 4], [1, 5], [2, 6], [3, 7]].forEach(([a, b]) => ed(c8[a], c8[b]));
+  const tx = niceTicks(lo[0], hi[0], 5), ty = niceTicks(lo[1], hi[1], 5), tz = niceTicks(lo[2], hi[2], 4);
+  const fl = [];
+  for (const v of tx.ticks) { const d = (v - cen[0]) * sc[0]; fl.push(d, -hy, -hz, d, hy, -hz); }
+  for (const v of ty.ticks) { const d = (v - cen[1]) * sc[1]; fl.push(-hx, d, -hz, hx, d, -hz); }
+  const mk = (p, color, op) => { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(p, 3)); return new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color, transparent: true, opacity: op })); };
+  g3.add(mk(e, 0xdbe5f3, 0.45)); g3.add(mk(fl, 0x8aa0c8, 0.16));
+  box3 = { hx, hy, hz, tx, ty, tz, cen, sc, half, lo, hi };
+  if (firstCam) { firstCam = false; placeCamera(); }
+}
+function placeCamera() {
+  const d = Math.max(box3 ? Math.max(box3.hx, box3.hy, box3.hz) : S.R, 1) * 4.6;
+  persp.position.set(d * 0.72, -d * 0.82, d * 0.52); controls.target.set(0, 0, 0); controls.update();
+}
+const _v = new THREE.Vector3();
+function labels3D() {
+  if (!box3) { setLabels([]); return; }
+  const { hx, hy, hz, tx, ty, tz, cen, sc } = box3, out = [], pl = panelW();
+  const P = (x, y, z) => { _v.set(x, y, z).project(persp); return { x: (_v.x * 0.5 + 0.5) * W, y: (-_v.y * 0.5 + 0.5) * H, v: _v.z < 1 }; };
+  /* put axis labels on whichever floor edge faces the camera: the nearer one in screen y is drawn below */
+  const camy = persp.position.y - controls.target.y, camx = persp.position.x - controls.target.x;
+  const ey = camy > 0 ? -hy : hy, ex = camx > 0 ? -hx : hx, ez = -hz;
+  const pad = 0.06 * Math.max(hx, hy, hz);
+  for (const v of tx.ticks) { const p = P((v - cen[0]) * sc[0], ey + (ey < 0 ? -pad : pad), ez); if (p.v) out.push({ t: tickText(v, tx.st), x: p.x, y: p.y }); }
+  for (const v of ty.ticks) { const p = P(ex + (ex < 0 ? -pad : pad), (v - cen[1]) * sc[1], ez); if (p.v) out.push({ t: tickText(v, ty.st), x: p.x, y: p.y }); }
+  const zx = camx > 0 ? hx : -hx, zy = camy > 0 ? hy : -hy;
+  for (const v of tz.ticks) { const p = P(zx + (zx < 0 ? -pad : pad), zy + (zy < 0 ? -pad : pad), (v - cen[2]) * sc[2]); if (p.v) out.push({ t: tickText(v, tz.st), x: p.x, y: p.y, l: true }); }
+  for (const [t, a] of [['x', P(0, ey + (ey < 0 ? -pad * 4 : pad * 4), ez)], ['y', P(ex + (ex < 0 ? -pad * 4 : pad * 4), 0, ez)], ['z', P(zx + (zx < 0 ? -pad * 4 : pad * 4), zy + (zy < 0 ? -pad * 4 : pad * 4), hz)]]) if (a.v) out.push({ t, x: a.x, y: a.y, ax: true });
+  setLabels(out);
+}
+
+/* ---------- rows, params, analysis ---------- */
+function analyzeAll() {
+  an = new Map(); for (const r of S.rows) an.set(r.id, G.analyze(r.src));
+}
+function paramNames() {
+  const names = new Set();
+  for (const r of S.rows) { const a = an.get(r.id); if (a) { a.params.forEach((n) => names.add(n)); if (a.kind === 'assign') names.add(a.name); } }
+  return [...names];
+}
+function renderRows() {
+  const box = $('rows'); box.innerHTML = '';
+  for (const r of S.rows) {
+    const a = an.get(r.id) || { kind: 'empty' };
+    const modeKey = S.mode === 'map' ? 'map' : S.mode;
+    const compat = !KIND_MODES[a.kind] || KIND_MODES[a.kind].length === 0 || KIND_MODES[a.kind].indexOf(modeKey) >= 0;
+    const row = document.createElement('div'); row.className = 'row' + (compat ? '' : ' off');
+    const tag = a.kind === 'error' || a.kind === 'empty' ? '' : (compat ? (KIND_TAG[a.kind] || '') : (KIND_HOME[a.kind] || '') + ' only');
+    row.innerHTML = `<i class="dot" style="background:${r.color}"></i><input type="text" value="${esc(r.src)}" spellcheck="false" autocomplete="off" placeholder="y = …"><span class="tag">${esc(tag)}</span><button class="x" title="remove">×</button>`;
+    const inp = row.querySelector('input');
+    inp.addEventListener('input', () => { r.src = inp.value; schedule(true); });
+    inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { addRow('', r); } if (e.key === 'Backspace' && !inp.value && S.rows.length > 1) { e.preventDefault(); removeRow(r); } });
+    row.querySelector('.x').addEventListener('click', () => removeRow(r));
+    box.appendChild(row);
+    if (a.err) { const d = document.createElement('div'); d.className = 'err'; d.textContent = a.err; box.appendChild(d); }
+  }
+}
+function updateRowMeta() { /* light refresh of tags/errors without stealing focus */
+  const focusIdx = [...$('rows').querySelectorAll('input')].indexOf(document.activeElement);
+  const sel = focusIdx >= 0 ? [document.activeElement.selectionStart, document.activeElement.selectionEnd] : null;
+  renderRows();
+  if (focusIdx >= 0) { const el = $('rows').querySelectorAll('input')[focusIdx]; el.focus(); if (sel) el.setSelectionRange(sel[0], sel[1]); }
+}
+function addRow(src = '', after) {
+  const r = newRow(src); const i = after ? S.rows.indexOf(after) + 1 : S.rows.length; S.rows.splice(i, 0, r); renderRows();
+  $('rows').querySelectorAll('input')[i].focus(); schedule(true);
+}
+function removeRow(r) { S.rows.splice(S.rows.indexOf(r), 1); if (!S.rows.length) S.rows.push(newRow('')); renderRows(); schedule(true); }
+function renderParams() {
+  const names = paramNames(), box = $('params'); $('paramsH').style.display = names.length ? '' : 'none';
+  const have = new Map([...box.children].map((c) => [c.dataset.n, c]));
+  if (names.join() === [...have.keys()].join()) return;
+  box.innerHTML = '';
+  for (const n of names) {
+    const v = G.P[n], max = Math.max(5, Math.ceil(Math.abs(v) * 1.5)), d = document.createElement('div'); d.className = 'param'; d.dataset.n = n;
+    d.innerHTML = `<b>${esc(n)}</b><input type="range" min="${-max}" max="${max}" step="0.01" value="${v}"><span>${G.fmt(+v.toFixed(3))}</span>`;
+    const rg = d.querySelector('input'), sp = d.querySelector('span');
+    rg.addEventListener('input', () => { G.P[n] = parseFloat(rg.value); sp.textContent = G.fmt(+G.P[n].toFixed(3)); schedule(false); });
+    box.appendChild(d);
+  }
+}
+function syncParamSliders() { for (const d of $('params').children) { const v = G.P[d.dataset.n], rg = d.querySelector('input'); if (+rg.max < Math.abs(v)) { rg.max = Math.ceil(Math.abs(v) * 1.5); rg.min = -rg.max; } rg.value = v; d.querySelector('span').textContent = G.fmt(+v.toFixed(3)); } }
+
+/* ---------- render loop ---------- */
+let pending = false, reanalyze = false;
+function schedule(re) { if (re) reanalyze = true; dirty = true; if (!pending) { pending = true; requestAnimationFrame(frame); } }
+function rebuild() {
+  if (reanalyze) { analyzeAll(); reanalyze = false; updateRowMeta(); renderParams(); }
+  g2.visible = S.mode !== '3d'; gm.visible = S.mode === 'map'; g3.visible = S.mode === '3d';
+  if (S.mode === '3d') { build3D(); }
+  else { build2D(); if (S.mode === 'map') refreshMap(true); else { dispose(gm); $('legend').style.display = 'none'; } }
+}
+function frame() {
+  pending = false;
+  if (dirty) { dirty = false; rebuild(); }
+  if (S.mode === '3d') { controls.autoRotate = S.spin; controls.update(); renderer.render(scene, persp); labels3D(); if (!pending) { pending = true; requestAnimationFrame(frame); } }
+  else { syncOrtho(); renderer.render(scene, ortho); }
+}
+controls.addEventListener('change', () => { });
+
+/* ---------- mouse (2D / map) ---------- */
+let drag = null;
+function eventPos(e) { const r = view.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+view.addEventListener('pointerdown', (e) => { if (S.mode === '3d') return; drag = { x: e.clientX, y: e.clientY, cx: V.cx, cy: V.cy }; view.setPointerCapture(e.pointerId); });
+view.addEventListener('pointermove', (e) => {
+  const [px, py] = eventPos(e);
+  if (drag) { V.cx = drag.cx - (e.clientX - drag.x) / V.s; V.cy = drag.cy + (e.clientY - drag.y) / V.s; schedule(); }
+  if (S.mode !== '3d') readout(px, py);
+});
+view.addEventListener('pointerup', () => { drag = null; });
+view.addEventListener('pointerleave', () => { $('readout').textContent = ''; });
+view.addEventListener('dblclick', () => { if (S.mode !== '3d') { resetView(); schedule(); } });
+view.addEventListener('wheel', (e) => {
+  if (S.mode === '3d') return; e.preventDefault();
+  const [px, py] = eventPos(e), wx = toX(px), wy = toY(py), k = Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0016));
+  V.s = Math.min(1e7, Math.max(1e-3, V.s * k)); V.cx = wx - (px - W / 2) / V.s; V.cy = wy + (py - H / 2) / V.s; schedule();
+}, { passive: false });
+function readout(px, py) {
+  const x = toX(px), y = toY(py), el = $('readout'); let t = `x ${G.fmt(+x.toPrecision(5))} · y ${G.fmt(+y.toPrecision(5))}`;
+  if (S.mode === 'map') { const a = firstSurf(); if (a) { try { t += ` · z ${G.fmt(+a.fns[0](x, y, 0, 0, 0, Math.atan2(y, x)).toPrecision(5))}`; } catch { /* ignore */ } } }
+  else for (const r of S.rows) { const a = an.get(r.id); if (a && a.kind === 'y') { try { t = `x ${G.fmt(+x.toPrecision(5))} · y = ${G.fmt(+a.fns[0](x, 0, x, 0, 0, x).toPrecision(5))}`; } catch { /* ignore */ } break; } }
+  el.textContent = t;
+}
+
+/* ---------- mode / bar ---------- */
+function renderBar() {
+  const b = $('bar'); b.innerHTML = '';
+  const add = (html) => { const d = document.createElement('span'); d.innerHTML = html; b.appendChild(d.firstElementChild || d); return b.lastElementChild; };
+  if (S.mode === '3d') {
+    const rng = add(`<label>range <input type="range" min="1" max="20" step="0.5" value="${S.R}"><b>${S.R}</b></label>`);
+    rng.querySelector('input').addEventListener('input', (e) => { S.R = +e.target.value; rng.querySelector('b').textContent = S.R; schedule(); });
+    const tog = (label, key, after) => { const el = add(`<button class="b ${S[key] ? 'on' : ''}">${label}</button>`); el.addEventListener('click', () => { S[key] = !S[key]; el.classList.toggle('on', S[key]); after && after(); schedule(); }); };
+    tog('mesh', 'lines'); tog('equal axes', 'equal'); tog('spin', 'spin');
+    const rs = add(`<button class="b">reset view</button>`); rs.addEventListener('click', () => { placeCamera(); schedule(); });
+  } else {
+    if (S.mode === 'map') { const el = add(`<button class="b ${S.contours ? 'on' : ''}">contours</button>`); el.addEventListener('click', () => { S.contours = !S.contours; el.classList.toggle('on', S.contours); schedule(); }); }
+    const rs = add(`<button class="b">reset view</button>`); rs.addEventListener('click', () => { resetView(); schedule(); });
+  }
+  if (S.mode !== '2d') {
+    const sel = add(`<select>${Object.keys(CMAPS).map((k) => `<option ${k === S.cmap ? 'selected' : ''}>${k}</option>`).join('')}</select>`);
+    sel.addEventListener('change', () => { S.cmap = sel.value; schedule(); });
+  }
+}
+function setMode(m, keepView) {
+  S.mode = m; for (const b of document.querySelectorAll('#modes button')) b.classList.toggle('on', b.dataset.m === m);
+  controls.enabled = m === '3d'; view.style.cursor = m === '3d' ? '' : 'grab';
+  $('readout').textContent = ''; renderBar(); renderRows();
+  if (m === '3d') { setLabels([]); firstCam = true; }
+  if (m !== '3d' && !keepView) { /* view kept between 2D and Map */ }
+  schedule();
+}
+document.querySelectorAll('#modes button').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.m)));
+
+/* ---------- demos ---------- */
+function renderDemos() {
+  const box = $('demos'); box.innerHTML = '';
+  DEMOS.forEach((d, i) => {
+    if (d.g) { const g = document.createElement('div'); g.className = 'g'; g.textContent = d.g; box.appendChild(g); return; }
+    const b = document.createElement('button'); b.textContent = d.n; b.dataset.i = i; b.addEventListener('click', () => loadDemo(i)); box.appendChild(b);
+  });
+}
+function loadDemo(i) {
+  const d = DEMOS[i]; if (!d || d.g) return;
+  for (const k of Object.keys(G.P)) if (k !== 'ans') delete G.P[k];
+  if (d.p) Object.assign(G.P, d.p);
+  S.rows = d.rows.map((s) => newRow(s)); if (d.R) S.R = d.R; if (d.cmap) S.cmap = d.cmap; else S.cmap = d.m === '3d' ? 'viridis' : S.cmap;
+  curView = d.view || null; applyView();
+  $('params').innerHTML = ''; reanalyze = true; analyzeAll(); renderParams(); syncParamSliders(); renderRows();
+  document.querySelectorAll('.demos button').forEach((b) => b.classList.toggle('on', +b.dataset.i === i));
+  setMode(d.m); schedule(true); switchTab('G');
+}
+/* view [cx, cy, span*10]: the third number is ten times the visible height in units */
+
+/* ---------- tabs + calculator ---------- */
+function switchTab(t) { S.tab = t; $('tG').classList.toggle('on', t === 'G'); $('tC').classList.toggle('on', t === 'C'); $('pG').classList.toggle('on', t === 'G'); $('pC').classList.toggle('on', t === 'C'); if (t === 'C') $('cin').focus(); }
+$('tG').onclick = () => switchTab('G'); $('tC').onclick = () => switchTab('C');
+$('add').onclick = () => addRow('');
+
+const KEYS = [
+  ['sin', 'sin(', 'fn'], ['cos', 'cos(', 'fn'], ['tan', 'tan(', 'fn'], ['ln', 'ln(', 'fn'], ['log', 'log(', 'fn'],
+  ['π', 'pi', 'fn'], ['e', 'e', 'fn'], ['√', 'sqrt(', 'fn'], ['xʸ', '^', 'fn'], ['n!', '!', 'fn'],
+  ['(', '('], [')', ')'], ['ans', 'ans', 'fn'], ['C', 'CLR', 'fn'], ['⌫', 'BS', 'fn'],
+  ['7', '7'], ['8', '8'], ['9', '9'], ['÷', '/', 'op'], ['x²', '^2', 'fn'],
+  ['4', '4'], ['5', '5'], ['6', '6'], ['×', '*', 'op'], ['abs', 'abs(', 'fn'],
+  ['1', '1'], ['2', '2'], ['3', '3'], ['−', '-', 'op'], ['+', '+', 'op'],
+  ['0', '0'], ['.', '.'], ['10ⁿ', '*10^'],
+];
+const keys = $('keys');
+for (const [lab, ins, cls] of KEYS) {
+  if (cls === 'hide') continue;
+  const b = document.createElement('button'); b.textContent = lab; if (cls) b.className = cls;
+  b.addEventListener('click', () => { keyIn(ins); }); keys.appendChild(b);
+}
+const eq = document.createElement('button'); eq.textContent = '='; eq.className = 'eq'; eq.addEventListener('click', () => runCalc()); keys.appendChild(eq);
+const cin = $('cin'); const history = []; let hIdx = -1;
+function keyIn(ins) {
+  if (ins === 'CLR') { cin.value = ''; preview(); cin.focus(); return; }
+  if (ins === 'BS') { cin.value = cin.value.slice(0, -1); preview(); cin.focus(); return; }
+  const s = cin.selectionStart ?? cin.value.length, e = cin.selectionEnd ?? s;
+  cin.value = cin.value.slice(0, s) + ins + cin.value.slice(e); const p = s + ins.length; cin.focus(); cin.setSelectionRange(p, p); preview();
+}
+function preview() {
+  const t = cin.value.trim(); let out = '';
+  if (t && !/^[A-Za-z_]+\s*(\([^)]*\))?\s*=/.test(t)) { try { const r = G.calc(t); if (!/^-?[\d.]+$/.test(t)) out = '= ' + r.text; } catch { /* quiet while typing */ } }
+  $('prev').textContent = out;
+}
+function runCalc() {
+  const t = cin.value.trim(); if (!t) return;
+  const item = { q: t };
+  try { const r = G.calc(t); item.a = r.text; item.note = !!r.note; if (r.value !== undefined && !r.assigned) G.P.ans = r.value; if (r.assigned || r.note) { reanalyze = true; schedule(true); syncParamSliders(); } }
+  catch (e) { item.a = e.message; item.bad = true; }
+  history.push(item); hIdx = history.length; if (history.length > 60) history.shift();
+  cin.value = ''; $('prev').textContent = ''; renderHist();
+}
+function renderHist() {
+  const h = $('hist'); h.innerHTML = '';
+  for (const it of history) {
+    const d = document.createElement('div'); d.className = 'h';
+    d.innerHTML = `<div class="q mono">${esc(it.q)}</div><div class="a mono ${it.bad ? 'bad' : it.note ? 'note' : ''}">${esc(it.a)}</div>`;
+    d.querySelector('.q').addEventListener('click', () => { cin.value = it.q; cin.focus(); preview(); });
+    d.querySelector('.a').addEventListener('click', () => { if (!it.bad && !it.note) keyIn(String(it.a).replace(/^.* = /, '')); });
+    h.appendChild(d);
+  }
+  h.scrollTop = h.scrollHeight;
+}
+cin.addEventListener('input', preview);
+cin.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') runCalc();
+  else if (e.key === 'ArrowUp' && history.length) { hIdx = Math.max(0, hIdx - 1); cin.value = history[hIdx].q; e.preventDefault(); preview(); }
+  else if (e.key === 'ArrowDown' && history.length) { hIdx = Math.min(history.length, hIdx + 1); cin.value = hIdx >= history.length ? '' : history[hIdx].q; e.preventDefault(); preview(); }
+});
+$('degBtn').onclick = () => { S.deg = !S.deg; G.K.deg = S.deg; $('degBtn').textContent = S.deg ? 'deg' : 'rad'; preview(); schedule(true); };
+$('clrHist').onclick = () => { history.length = 0; renderHist(); };
+$('toGraph').onclick = () => {
+  const t = cin.value.trim() || (history.length ? history[history.length - 1].q : ''); if (!t) return;
+  const empty = S.rows.find((r) => !r.src.trim()); const r = empty || newRow(''); r.src = /\bx\b|\by\b/.test(t) ? t : 'y = ' + t.replace(/=.*$/, ''); if (!empty) S.rows.push(r);
+  cin.value = ''; setMode('2d'); renderRows(); switchTab('G'); schedule(true);
+};
+
+/* ---------- start ---------- */
+resize(); renderDemos();
+const q = new URLSearchParams(location.search), want = q.get('demo');
+let start = DEMOS.findIndex((d) => d.n && (want ? d.n.toLowerCase().replace(/\W/g, '') === want.toLowerCase().replace(/\W/g, '') : d.n === 'Sine family'));
+if (start < 0) start = 1;
+renderBar(); loadDemo(start);
+if (q.get('tab') === 'calc') switchTab('C');
+window.__graph = { S, V, loadDemo, setMode, an: () => an };
+</script>
+</body>
+</html>

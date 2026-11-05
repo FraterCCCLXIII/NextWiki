@@ -32,7 +32,8 @@
     { name: "Tools", pages: [
       { href: "chemistry.html", label: "Chemistry" },
       { href: "spacecraft.html", label: "Spacecraft" },
-      { href: "contraption-sim.html", label: "Simulator" }
+      { href: "contraption-sim.html", label: "Simulator" },
+      { href: "graph.html", label: "Graph" }
     ] },
     { name: "Lab", pages: [
       { href: "oracle/index.html", label: "Oracle" }
