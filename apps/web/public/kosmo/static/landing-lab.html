@@ -28,6 +28,8 @@
   input[type=text], input[type=number], button, select { background: rgba(26,26,26,0.85); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 8px; padding: 4px 8px; font: inherit; }
   input[type=number] { width: 100%; } select { width: 100%; } input[type=range] { width: 100%; accent-color: #7fc3ff; }
   button { cursor: pointer; margin: 2px 3px 2px 0; } button:hover:not(:disabled) { border-color: var(--accent); } button:disabled { opacity: .45; cursor: default; }
+  button.on { border-color: var(--accent); color: var(--accent); }
+  #scene3 { position: absolute; inset: 0; display: none; } #scene3 canvas { display: block; }
   button.primary { border-color: var(--accent); color: #fff; background: rgba(40,80,130,0.55); }
   .dim { color: var(--muted); } .small { font-size: 13px; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 8px; }
@@ -52,12 +54,13 @@
   html.embedded #side, html.embedded #hud, html.embedded #banner { top: 12px; }
   @media (max-width: 1100px) { #hud { display: none; } #bar { right: 14px; } }
 </style>
+<script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
   <link rel="stylesheet" href="kosmographica.css?v=15">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
 </head>
 <body>
-<div id="view"><canvas id="scene"></canvas></div>
+<div id="view"><canvas id="scene"></canvas><div id="scene3"></div></div>
 <div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
   <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="shipyard.html">Shipyard</a><a href="landing-lab.html" class="here">Landing Lab</a></nav><span></span></div>
 
@@ -95,6 +98,7 @@
 
 <div id="banner">Land the stage inside the circle, upright, below the speed limits.&nbsp; <kbd>space</kbd> play / pause &nbsp; <kbd>R</kbd> reset</div>
 <div id="hud">
+  <div style="margin-bottom:6px"><span class="dim small">view </span><button id="v2" class="on">2D</button><button id="v3">3D</button><span id="v3note" class="dim small"></span></div>
   <p class="phase serif" id="phase">Ready</p>
   <div id="result" hidden></div>
   <table class="tele" id="tele"></table>
@@ -236,8 +240,10 @@ const cv = $('scene'), ctx = cv.getContext('2d');
 function resize() { const r = devicePixelRatio || 1; cv.width = cv.clientWidth * r; cv.height = cv.clientHeight * r; ctx.setTransform(r, 0, 0, r, 0, 0); }
 addEventListener('resize', () => { resize(); draw(); }); resize();
 const stars = Array.from({ length: 140 }, (_, i) => ({ x: (Math.sin(i * 12.9898) * 43758.5453) % 1, y: (Math.sin(i * 78.233) * 12543.123) % 1, r: 0.4 + Math.abs((Math.sin(i * 5.31) * 999) % 1) * 1.1 }));
+let mode3 = false;
 function draw() {
   if (!sim) return;
+  if (mode3) { draw3(); return; }
   const W = cv.clientWidth, H = cv.clientHeight, s = sim.s, v = sim.veh, moon = v.world === 'moon';
   const leftPad = innerWidth > 1100 ? 372 : 14, rightPad = innerWidth > 1100 ? 350 : 14, vw = W - leftPad - rightPad, cx0 = leftPad + vw / 2;
   // camera: keep the stage and the target in view, never smaller than the stage itself
@@ -301,6 +307,75 @@ function drawStage(px, py, K, v, s) {
   if (v.finArea > 0) { ctx.fillStyle = '#4b535c'; const fw = Math.max(2, Dw * 0.45); ctx.save(); ctx.translate(0, top + Dw * 0.5); ctx.fillRect(-Dw / 2 - fw * (0.2 + Math.abs(s.fin) * 0.6), -Dw * 0.12, fw, Dw * 0.25); ctx.fillRect(Dw / 2 - fw * (0.8 - Math.abs(s.fin) * 0.6), -Dw * 0.12, fw, Dw * 0.25); ctx.restore(); }
   ctx.restore();
 }
+
+
+/* ---------------- 3D view (three.js, loaded on first use) ---------------- */
+let T3 = null;
+async function init3() {
+  if (T3) return T3;
+  const THREE = await import('three'); const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+  const host = $('scene3'), renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); host.appendChild(renderer.domElement);
+  const scene = new THREE.Scene(), cam3 = new THREE.PerspectiveCamera(50, 1, 0.5, 200000), controls = new OrbitControls(cam3, renderer.domElement);
+  controls.enableDamping = true; controls.maxDistance = 20000;
+  scene.add(new THREE.HemisphereLight(0xdfe9ff, 0x3a3f46, 1.1)); const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(300, 800, 400); scene.add(sun);
+  T3 = { THREE, renderer, scene, cam3, controls, built: null, prev: null };
+  addEventListener('resize', resize3); resize3(); return T3;
+}
+function resize3() { if (!T3) return; const w = innerWidth, h = innerHeight; T3.renderer.setSize(w, h); T3.cam3.aspect = w / h; T3.cam3.updateProjectionMatrix(); }
+function build3() {
+  const { THREE, scene } = T3, v = sim.veh, moon = v.world === 'moon', kind = v.target.kind;
+  if (T3.world) { scene.remove(T3.world); T3.world.traverse(o => { o.geometry?.dispose(); o.material?.dispose?.(); }); }
+  const W = new THREE.Group(); T3.world = W; scene.add(W);
+  const mat = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.7, metalness: 0.2, ...o });
+  // ground, sea, pad / ship / tower
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(200000, 200000), mat(moon ? 0x5d5d5d : kind === 'ship' ? 0x10304a : 0x4a5a3a, { roughness: 1, metalness: 0 })); ground.rotation.x = -Math.PI / 2; ground.position.y = -0.2; W.add(ground);
+  if (kind === 'ship') { const deck = new THREE.Mesh(new THREE.BoxGeometry(92, 6, 52), mat(0x2b3138)); deck.position.y = -3; W.add(deck); T3.deck = deck; }
+  else if (kind === 'catch') { const tw = new THREE.Mesh(new THREE.BoxGeometry(8, 130, 8), mat(0x6b7380)); tw.position.set(-(v.diameter / 2 + 8), 65, 0); W.add(tw); for (const z of [-1, 1]) { const arm = new THREE.Mesh(new THREE.BoxGeometry(v.diameter / 2 + 9, 2, 2), mat(0x9aa3b0)); arm.position.set(-(v.diameter / 2 + 8) / 2 - 2, v.target.deckY - 1, z * (v.diameter / 2 + 1)); W.add(arm); } }
+  else { const pad = new THREE.Mesh(new THREE.CylinderGeometry(25, 25, 0.6, 48), mat(moon ? 0x8a8a8a : 0x9a9fa4)); pad.position.y = 0.1; W.add(pad); }
+  const ring = new THREE.Mesh(new THREE.RingGeometry(v.target.radius - 0.6, v.target.radius, 64), new THREE.MeshBasicMaterial({ color: 0x7fe0a0, side: THREE.DoubleSide })); ring.rotation.x = -Math.PI / 2; ring.position.y = kind === 'catch' ? v.target.deckY : 0.4; W.add(ring); T3.ring = ring;
+  if (moon) { const pts = []; for (let i = 0; i < 900; i++) { const a = Math.random() * 6.283, b = Math.random() * 1.4; pts.push(Math.cos(a) * Math.cos(b) * 90000, Math.sin(b) * 90000 + 100, Math.sin(a) * Math.cos(b) * 90000); } const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)); W.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0xffffff, size: 120, sizeAttenuation: true }))); }
+  // stage: CoM at the group origin, body axis +y
+  const R = v.diameter / 2, rock = new THREE.Group(); T3.rock = rock; W.add(rock);
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(R, R, v.length, 28), mat(0xe8ecf1, { metalness: 0.3 })); body.position.y = v.length / 2 - v.comHeight; rock.add(body);
+  const band = new THREE.Mesh(new THREE.CylinderGeometry(R * 1.01, R * 1.01, v.length * 0.06, 28), mat(0x20252b)); band.position.y = v.length - v.comHeight - v.length * 0.03; rock.add(band);
+  const nozzle = new THREE.Mesh(new THREE.CylinderGeometry(R * 0.35, R * 0.5, R * 0.5, 16), mat(0x222222)); nozzle.position.y = -v.comHeight - R * 0.2; rock.add(nozzle);
+  if (v.finArea > 0) for (const a of [0, 1, 2, 3]) { const fin = new THREE.Mesh(new THREE.BoxGeometry(R * 0.5, R * 0.45, R * 0.12), mat(0x4b535c)); const ang = a * Math.PI / 2; fin.position.set(Math.cos(ang) * (R + R * 0.2), v.length - v.comHeight - R * 1.2, Math.sin(ang) * (R + R * 0.2)); fin.rotation.y = -ang; rock.add(fin); }
+  T3.legs = []; if (v.legRadius > 0) for (let a = 0; a < 4; a++) { const ang = a * Math.PI / 2 + Math.PI / 4, leg = new THREE.Mesh(new THREE.BoxGeometry(0.4 + R * 0.05, v.legRadius * 1.1, 0.4 + R * 0.05), mat(0xc9d2dc)); leg.userData.ang = ang; rock.add(leg); T3.legs.push(leg); }
+  const flame = new THREE.Mesh(new THREE.ConeGeometry(R * 0.55, 1, 20, 1, true), new THREE.MeshBasicMaterial({ color: 0xffb060, transparent: true, opacity: 0.85, side: THREE.DoubleSide })); flame.geometry.translate(0, -0.5, 0); flame.position.y = -v.comHeight - R * 0.45; flame.visible = false; rock.add(flame); T3.flame = flame;
+  const trailG = new THREE.BufferGeometry(); trailG.setAttribute('position', new THREE.BufferAttribute(new Float32Array(3 * 4000), 3)); trailG.setDrawRange(0, 0);
+  const trail = new THREE.Line(trailG, new THREE.LineBasicMaterial({ color: 0xffb060 })); trail.frustumCulled = false; W.add(trail); T3.trail = trail;
+  T3.built = sim; T3.first = true;
+  scene.background = new THREE.Color(moon ? 0x000000 : 0x6fa0d0);
+}
+function draw3() {
+  if (!T3) return;
+  const { THREE, renderer, scene, cam3, controls } = T3, v = sim.veh, s = sim.s;
+  if (T3.built !== sim) build3();
+  const rock = T3.rock, deckY = sim.deck(s.t) - v.target.deckY;
+  rock.position.set(s.x, s.y + deckY * 0, 0); rock.rotation.z = -s.th;
+  if (T3.deck) T3.deck.position.y = deckY - 3;
+  const fl = s.thrust > 1 ? clamp(s.thrust / (v.engines * v.eng.thrustVac), 0, 1.2) : 0;
+  T3.flame.visible = fl > 0; if (fl > 0) { const L = v.length * (0.5 + 0.7 * fl) * (0.85 + 0.15 * Math.sin(s.t * 60)); T3.flame.scale.set(1, L, 1); T3.flame.rotation.z = -s.gimbal; }
+  const dep = sim.E.on || s.y - v.yf < 400 ? 1 : 0.2;
+  for (const leg of T3.legs) { const r = v.legRadius * dep, a = leg.userData.ang, hl = v.legRadius * 1.1; leg.position.set(Math.cos(a) * (v.diameter / 2 + r * 0.5), -v.comHeight + hl * 0.35, Math.sin(a) * (v.diameter / 2 + r * 0.5)); leg.rotation.set(Math.sin(a) * 0.5 * dep, 0, -Math.cos(a) * 0.5 * dep); }
+  // trail
+  const pa = T3.trail.geometry.attributes.position, n = Math.min(trail.length, 4000); for (let i = 0; i < n; i++) pa.setXYZ(i, trail[i].x, trail[i].y, 0); pa.needsUpdate = true; T3.trail.geometry.setDrawRange(0, n);
+  // chase camera: follow the stage, keep the user's orbit
+  const tgt = new THREE.Vector3(s.x, s.y, 0), dist = clamp(Math.max(v.length * 2.6, (s.y - v.yf) * 0.25), v.length * 2.2, 3000);
+  if (T3.first) { cam3.position.set(s.x + dist * 0.9, s.y + dist * 0.25, dist * 1.1); controls.target.copy(tgt); T3.first = false; T3.prev = tgt.clone(); }
+  const d = tgt.clone().sub(T3.prev || tgt); cam3.position.add(d); controls.target.add(d); T3.prev = tgt.clone();
+  const off = cam3.position.clone().sub(controls.target), want = dist, cur = off.length(); if (!controls.userZoomed) { off.setLength(sim.done ? want : cur + (want - cur) * 0.2); cam3.position.copy(controls.target).add(off); }
+  cam3.far = 200000; controls.update();
+  const alt = clamp(s.y / 12000, 0, 1); if (v.world !== 'moon') scene.background.setRGB(0.04 + 0.38 * (1 - alt), 0.08 + 0.5 * (1 - alt), 0.2 + 0.55 * (1 - alt));
+  renderer.render(scene, cam3);
+}
+async function setMode(m3) {
+  if (m3) { $('v3note').textContent = ' loading…'; try { await init3(); } catch (e) { $('v3note').textContent = ' 3D needs three.js from the network: ' + e.message; return; } $('v3note').textContent = ' drag to orbit · wheel to zoom'; T3.controls.addEventListener('start', () => { T3.controls.userZoomed = true; }); T3.built = null; }
+  else $('v3note').textContent = '';
+  mode3 = m3; $('scene3').style.display = m3 ? 'block' : 'none'; $('scene').style.display = m3 ? 'none' : 'block';
+  $('v2').classList.toggle('on', !m3); $('v3').classList.toggle('on', m3); draw();
+}
+$('v2').onclick = () => setMode(false); $('v3').onclick = () => setMode(true);
 
 /* ---------------- Monte Carlo and comparison ---------------- */
 let busy = false;
