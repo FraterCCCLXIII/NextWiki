@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flight Lab</title>
+<style>
+  :root { --bg: #0d0d0d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --line: rgba(140,170,220,0.18); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 15px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+  #tabs { position: absolute; left: 0; right: 0; top: 0; height: 40px; display: flex; align-items: center; gap: 6px; padding: 0 14px; background: rgba(13,13,13,0.96); border-bottom: 1px solid var(--line); z-index: 5; }
+  #tabs .brand { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; letter-spacing: 0.28em; text-transform: uppercase; font-size: 14px; color: #fff; margin-right: 14px; }
+  #tabs button { background: none; color: var(--muted); border: 0; border-bottom: 2px solid transparent; padding: 8px 12px; font: inherit; cursor: pointer; letter-spacing: 0.04em; }
+  #tabs button:hover { color: #fff; } #tabs button.on { color: #fff; border-bottom-color: var(--accent); }
+  #tabs .hint { margin-left: auto; font-size: 12px; color: var(--muted); }
+  iframe { position: absolute; left: 0; right: 0; top: 40px; bottom: 0; width: 100%; height: calc(100% - 40px); border: 0; background: var(--bg); display: none; }
+  iframe.on { display: block; }
+</style>
+</head>
+<body>
+<div id="tabs"><span class="brand">Flight Lab</span>
+  <button data-tab="mission" class="on">Design &amp; mission</button><button data-tab="landing">Landing</button>
+  <span class="hint" id="hint">Launch, stage, rendezvous, return -- and tune any booster's landing in detail.</span></div>
+<iframe id="f-mission" title="Design and mission" data-src="shipyard.html"></iframe>
+<iframe id="f-landing" title="Landing" data-src="landing-lab.html"></iframe>
+<script>
+const tabs = { mission: document.getElementById('f-mission'), landing: document.getElementById('f-landing') };
+const HINT = { mission: 'Launch, stage, rendezvous, return -- and tune any booster\'s landing in detail.', landing: 'Terminal descent: guidance algorithms, noise, wind, Monte Carlo, neural policy.' };
+let pending = null;
+function show(name) {
+  for (const [k, f] of Object.entries(tabs)) { if (k === name && !f.src) f.src = f.dataset.src; f.classList.toggle('on', k === name); }
+  for (const b of document.querySelectorAll('#tabs button')) b.classList.toggle('on', b.dataset.tab === name);
+  document.getElementById('hint').textContent = HINT[name]; try { history.replaceState(null, '', '#' + name); } catch {}
+}
+for (const b of document.querySelectorAll('#tabs button')) b.onclick = () => show(b.dataset.tab);
+// a booster handed over from the mission tab opens in the landing tab
+addEventListener('message', e => {
+  if (e.origin !== location.origin) return;
+  if (e.data?.type === 'flightlab:ready' && pending) { tabs.landing.contentWindow.postMessage(pending, location.origin); pending = null; return; }   // the landing page finished loading
+  if (e.data?.type !== 'flightlab:landing') return;
+  const fresh = !tabs.landing.src; show('landing'); pending = e.data;
+  if (!fresh) { tabs.landing.contentWindow.postMessage(pending, location.origin); pending = null; }
+});
+show(location.hash === '#landing' ? 'landing' : 'mission');
+</script>
+</body>
+</html>

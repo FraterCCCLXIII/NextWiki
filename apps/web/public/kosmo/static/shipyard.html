@@ -117,6 +117,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { loadEngines } from './engines.js';
+import { telemetryHTML, createEventLog } from './flight-hud.js';
 import { createSim, analyze, tuneAscent, planDock, ENGINES, WORLDS, elements, G0, completeStage, runAscent } from './ship-sim.js';
 // the engine table is shared with the Landing Lab; flight-data.json (served from the database) overrides the built-in rows
 try { const r = await fetch('flight-data.json', { cache: 'no-cache' }); if (r.ok) loadEngines((await r.json()).engines); } catch {}
@@ -201,6 +202,7 @@ function stageCard(s, i) {
       <div><label>Landing engines (max)</label><input type="number" data-k="landing.engines" min="1" max="${s.count}" step="1" value="${L.engines}"></div>
       ${i < n - 1 ? `<div><label>Return to</label><select data-k="landing.site"><option value="downrange">downrange (droneship)</option><option value="rtls">launch site</option></select></div>` : ''}` : ''}
     </div>
+    ${L.mode === 'propulsive' ? `<div style="margin-top:6px"><button data-act="tune" title="Fly this stage's landing burn in the Landing Lab">Tune this landing in the Landing Lab →</button></div>` : ''}
     <label class="chk"><input type="checkbox" data-k="isCraft" ${hasCraft ? 'checked' : ''}> spacecraft systems (RCS, docking port)</label>
     ${hasCraft ? `<div class="grid3 f">
       <div><label>RCS thrust (N)</label><input type="number" data-k="craft.rcsThrust" min="100" step="100" value="${s.craft.rcsThrust}"></div>
@@ -234,9 +236,16 @@ $('stages').addEventListener('input', e => {
 });
 $('stages').addEventListener('click', e => {
   const b = e.target.closest('button[data-act]'); if (!b) return; const i = +b.closest('.card').dataset.i, act = b.dataset.act; stop();
+  if (act === 'tune') { handoff(i); return; }
   if (act === 'del') state.stages.splice(i, 1); if (act === 'up' && i < state.stages.length - 1) [state.stages[i], state.stages[i + 1]] = [state.stages[i + 1], state.stages[i]]; if (act === 'down' && i > 0) [state.stages[i], state.stages[i - 1]] = [state.stages[i - 1], state.stages[i]];
   renderBuilder();
 });
+// hand a landing stage to the Landing Lab (inside the Flight Lab shell via postMessage, standalone via sessionStorage)
+function handoff(i) {
+  const msg = { type: 'flightlab:landing', stage: clone(state.stages[i]), world: state.world };
+  if (parent !== window) parent.postMessage(msg, location.origin);
+  else { try { sessionStorage.setItem('flightlab.handoff', JSON.stringify(msg)); } catch {} location.href = 'landing-lab.html?handoff=1'; }
+}
 $('addStage').onclick = () => { stop(); state.stages.push({ name: `Stage ${state.stages.length + 1}`, engine: 'merlin-vac', count: 1, prop: 20000, diameter: state.stages.at(-1)?.diameter ?? 3.7, landing: { mode: 'none', reserve: 0, site: 'downrange', engines: 1 } }); renderBuilder(); };
 for (const [id, fn] of Object.entries({
   world: v => { state.world = v; if (v !== 'earth') { state.mission.orbitAlt = Math.min(state.mission.orbitAlt, 300e3); } },
@@ -380,7 +389,7 @@ async function start() {
   } catch (e) { setStatus('error: ' + e.message); console.error(e); $('run').disabled = false; return; }
   setStatus(note); buildPlanet(sim.W); sceneCrafts.clear(); trailLines.clear(); followUserSet = false;
   $('run').disabled = false; $('pause').disabled = $('ff').disabled = $('reset').disabled = false; $('run').textContent = '▶ Resume';
-  $('log').innerHTML = ''; logCount = 0; plotData.length = 0; syncCrafts(); fillFollow(); snapCamera(true); running = true; wallLast = performance.now();
+  elog.clear(); plotData.length = 0; syncCrafts(); fillFollow(); snapCamera(true); running = true; wallLast = performance.now();
 }
 $('run').onclick = start;
 $('pause').onclick = () => { running = !running; $('pause').textContent = running ? 'Pause' : 'Play'; };
@@ -453,7 +462,7 @@ function updateScene() {
 }
 
 // ---------------- HUD ----------------
-let logCount = 0; const plotData = [];
+const elog = createEventLog($('log'), fmtT); const plotData = [];
 const PH = { pad: 'On the pad', ascent: 'Ascent', meco: 'Main engine cutoff', ullage: 'Stage separation', 'coast-apo': 'Coasting to apoapsis', circularize: 'Circularisation burn', 'orbit-done': 'In orbit', orbit: 'In orbit', phasing: 'Phasing for rendezvous', hoh1: 'Transfer burn', transfer: 'Transfer orbit', hoh2: 'Arrival burn', approach: 'Proximity operations', docked: 'Docked', undock: 'Undocking', 'deorbit-orient': 'Turning for deorbit', 'deorbit-burn': 'Deorbit burn', 'coast-entry': 'Entry', descent: 'Descent', landing: 'Landing burn', ballistic: 'Ballistic', sep: 'Stage separated', flip: 'Flip', boostback: 'Boostback burn', coast: 'Coasting' };
 function fmtD(m) { const a = Math.abs(m); return a >= 1e6 ? (m / 1e3).toFixed(0) + ' km' : a >= 1e4 ? (m / 1e3).toFixed(1) + ' km' : a >= 1e3 ? (m / 1e3).toFixed(2) + ' km' : m.toFixed(a < 10 ? 2 : 1) + ' m'; }
 function hud() {
@@ -465,8 +474,8 @@ function hud() {
     ['Acceleration', c.gNow.toFixed(2) + ' g'], ['Dynamic pressure', e.q > 1 ? (e.q / 1e3).toFixed(1) + ' kPa · Mach ' + e.mach.toFixed(1) : '—']];
   if (c.heat > 1e4) rows.push(['Stagnation heating', (c.heat / 1e3).toFixed(0) + ' kW/m²']);
   if (sim.station && c.role === 'main') { const st = sim.stationState(), D = [c.pos[0] - st.pos[0], c.pos[1] - st.pos[1]]; rows.push(['Range to station', fmtD(Math.hypot(...D))]); if (c.ap.phase === 'approach') { rows.push(['Gap to port', fmtD(c.ap.gapY)], ['Lateral offset', c.ap.lat.toFixed(2) + ' m'], ['Closing speed', c.ap.closing.toFixed(3) + ' m/s'], ['RCS propellant', c.parts.at(-1).craft.rcsProp.toFixed(0) + ' kg']); } }
-  $('tele').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
-  while (logCount < sim.events.length) { const ev = sim.events[logCount++]; const d = document.createElement('div'); d.className = ev.kind; d.innerHTML = `<span class="t">${fmtT(ev.t)}</span>${esc(ev.text)}`; $('log').appendChild(d); $('log').scrollTop = 1e9; }
+  $('tele').innerHTML = telemetryHTML(rows);
+  elog.sync(sim.events);
   if (sim.done && $('result').hidden) showResult();
 }
 function showResult() {

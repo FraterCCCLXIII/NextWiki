@@ -115,7 +115,7 @@
 <script type="module">
 import { createView3D, mountViewControls } from './view3d.js';
 import { telemetryHTML, drawPlots, createEventLog } from './flight-hud.js';
-import { loadFlightData, createLanding, VEHICLES, GUIDANCE, analyzeVehicle, resolveVehicle, mcRun, summarizeMC, trainPolicy, Policy } from './landing-sim.js';
+import { vehicleFromStage, loadFlightData, createLanding, VEHICLES, GUIDANCE, analyzeVehicle, resolveVehicle, mcRun, summarizeMC, trainPolicy, Policy } from './landing-sim.js';
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const DEG = Math.PI / 180, clamp = (x, a, b) => Math.min(b, Math.max(a, x));
@@ -363,7 +363,16 @@ $('train').onclick = async () => {
 };
 
 $('guidance').value = 'optimal';
+// a stage handed over from the Shipyard becomes the vehicle "from the Shipyard" and is selected
+function receiveStage(msg) {
+  if (!msg?.stage) return; VEHICLES.shipyard = vehicleFromStage(msg.stage, msg.world);
+  if (![...$('vehicle').options].some(o => o.value === 'shipyard')) $('vehicle').insertAdjacentHTML('afterbegin', '<option value="shipyard"></option>');
+  $('vehicle').querySelector('option[value="shipyard"]').textContent = VEHICLES.shipyard.name; $('vehicle').value = 'shipyard'; onVehicle(); onGuidance();
+}
+addEventListener('message', e => { if (e.origin === location.origin && e.data?.type === 'flightlab:landing') receiveStage(e.data); });
 onVehicle(); onGuidance(); requestAnimationFrame(frame);
+if (parent !== window) parent.postMessage({ type: 'flightlab:ready' }, location.origin);
+try { const h = sessionStorage.getItem('flightlab.handoff'); if (h && /handoff=1/.test(location.search)) { sessionStorage.removeItem('flightlab.handoff'); receiveStage(JSON.parse(h)); } } catch {}
 </script>
 </body>
 </html>

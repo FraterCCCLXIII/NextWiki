@@ -35,7 +35,7 @@
 // Conventions: SI.  th = angle of the body axis b = (sin th, cos th) from vertical.  Thrust
 // pushes along b rotated by the gimbal angle; the engine sits behind the centre of mass.
 
-import { WORLDS, G0 } from './ship-sim.js';
+import { WORLDS, G0, completeStage } from './ship-sim.js';
 import { ENGINES, P0, loadEngines } from './engines.js';
 export { ENGINES };
 
@@ -105,6 +105,22 @@ export function loadFlightData(d) {
   loadEngines(d.engines);
   for (const [k, v] of Object.entries(d.landingVehicles || {})) VEHICLES[k] = { ...VEHICLES[k], ...v, target: { ...VEHICLES[k]?.target, ...v.target }, start: { ...VEHICLES[k]?.start, ...v.start }, spread: { ...VEHICLES[k]?.spread, ...v.spread } };
   return true;
+}
+
+/** Turn a Shipyard stage (the booster that lands with its own engines) into a Landing Lab vehicle, so its landing can be tuned in detail.
+ *  Mass, engine, diameter and length come from the stage; legs, fins and the start state are sized from them.  The caller registers it
+ *  with `VEHICLES[id] = ...`. */
+export function vehicleFromStage(stage, worldId = 'earth') {
+  const s = completeStage(stage), eng = ENGINES[s.engineId] || ENGINES['merlin-1d'], W = WORLDS[worldId] || WORLDS.earth;
+  const n = Math.max(1, Math.min(s.count, s.landing.engines || 1)), prop = Math.max(500, s.landing.reserve || 0.1 * s.prop), dry = s.dry;
+  const g = W.mu / W.R ** 2, m = dry + prop, aMax = n * eng.thrustVac / m, v0 = 170, stop = v0 * v0 / (2 * Math.max(0.35 * (aMax - g), 1));
+  const earth = W.id === 'earth', L = s.length, D = s.diameter;
+  const base = VEHICLES.falcon9;
+  return { ...base, name: `${s.name} (from the Shipyard)`, world: W.id, engine: s.engineId, engines: n, dry, prop, diameter: D, length: L, comHeight: Math.max(1.5, 0.3 * L),
+    legRadius: 2.2 * D, gimbal: 6, gimbalRate: 15, finArea: earth ? 0.45 * D * D : 0, finLever: 0.55 * L, tiltMax: 28, latTilt: 22, vMaxV: 5.5, vMaxH: 3,
+    target: { kind: earth ? 'ship' : 'pad', radius: Math.max(14, 4 * D), deckY: 0, heave: earth ? 0.8 : 0, period: 9 }, wind: earth ? 6 : 0,
+    start: { y: Math.max(1500, 2.4 * stop + 400), vx: -0.25 * v0, vy: -v0 - (earth ? 60 : 0), th: 0 }, spread: { x: 6 * D, y: 40, vx: 2, vy: 4 },
+    note: `Built from the Shipyard stage "${s.name}": ${n} × ${eng.name}, ${(dry / 1e3).toFixed(1)} t dry, ${(prop / 1e3).toFixed(1)} t of landing propellant.` };
 }
 
 /* ---------------- small helpers ---------------- */

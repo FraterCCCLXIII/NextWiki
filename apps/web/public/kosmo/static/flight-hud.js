@@ -22,10 +22,10 @@ export function drawPlots(canvas, hist, panes) {
   });
 }
 
-export function createEventLog(el) {
+export function createEventLog(el, fmt = t => t.toFixed(1) + ' s') {
   let n = 0;
   return {
     clear() { n = 0; el.innerHTML = ''; },
-    sync(events) { while (n < events.length) { const ev = events[n++]; el.insertAdjacentHTML('beforeend', `<div class="${esc(ev.kind)}"><span class="t">${ev.t.toFixed(1)} s</span>${esc(ev.txt)}</div>`); el.scrollTop = el.scrollHeight; } },
+    sync(events) { while (n < events.length) { const ev = events[n++]; el.insertAdjacentHTML('beforeend', `<div class="${esc(ev.kind)}"><span class="t">${fmt(ev.t)}</span>${esc(ev.txt ?? ev.text)}</div>`); el.scrollTop = el.scrollHeight; } },
   };
 }

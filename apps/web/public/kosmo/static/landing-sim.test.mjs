@@ -1,5 +1,5 @@
 // Headless regression checks for landing-sim.js.  Run:  node landing-sim.test.mjs   (about 30 s)
-import { createLanding, monteCarlo, solveBurn, resolveVehicle, analyzeVehicle, trainPolicy, VEHICLES } from './landing-sim.js';
+import { createLanding, monteCarlo, solveBurn, resolveVehicle, analyzeVehicle, trainPolicy, vehicleFromStage, VEHICLES } from './landing-sim.js';
 
 let failed = 0;
 const check = (name, ok, detail = '') => { console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${detail ? '  (' + detail + ')' : ''}`); if (!ok) failed++; };
@@ -40,6 +40,14 @@ for (const id of ['falcon9', 'falcon9lz', 'newshepard', 'moonlander']) {
   check('Falcon 9: the fuel-optimal solver beats plain ZEM/ZEV (which ignores the throttle floor)', f9 > f9z + 0.2, `${(f9 * 100).toFixed(0)} % vs ${(f9z * 100).toFixed(0)} %`);
   check('New Shepard: success rate above 80 %', ns >= 0.8, (ns * 100).toFixed(0) + ' %');
   check('Lunar lander: success rate above 80 %', moon >= 0.8, (moon * 100).toFixed(0) + ' %'); }
+
+// 6b. a Shipyard booster handed to the Landing Lab becomes a flyable vehicle that lands
+{ const st = { name: 'Booster', engine: 'merlin-1d', count: 9, prop: 395700, diameter: 3.7, landing: { mode: 'propulsive', reserve: 55000, site: 'downrange', engines: 3 } };
+  VEHICLES.fromShipyard = vehicleFromStage(st);
+  const o = fly({ vehicle: 'fromShipyard', guidance: 'optimal' }).o, mc = monteCarlo({ vehicle: 'fromShipyard', guidance: 'optimal', noise: true }, 12, 500);
+  check('Shipyard stage -> Landing Lab vehicle: 3 engines, 55 t of landing propellant, sensible mass', VEHICLES.fromShipyard.engines === 3 && VEHICLES.fromShipyard.prop === 55000 && VEHICLES.fromShipyard.dry > 15000 && VEHICLES.fromShipyard.dry < 40000);
+  check('Shipyard stage lands in the nominal case', o.ok, o.ok ? o.vv.toFixed(1) + ' m/s' : o.reason);
+  check('Shipyard stage lands in about half of dispersed flights', mc.rate >= 0.4, (mc.rate * 100).toFixed(0) + ' %'); }
 
 // 7. learned policy: imitation of the solver must fly the stage down (small training run)
 { const p = await trainPolicy('falcon9lz', { episodes: 14, rounds: 3, epochs: 12, seed: 5 });
