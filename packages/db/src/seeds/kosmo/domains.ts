@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import type { NewKosmoTaxon } from "../../schema/kosmo.js";
 import {
   addClaim,
   ensurePage,
@@ -13,6 +14,9 @@ import {
 
 export type Db = Parameters<typeof upsertSource>[0];
 export type UserId = Parameters<typeof ensurePage>[1]["userId"];
+
+/** A domain tree's key doubles as its taxon scheme. */
+type TaxonScheme = NewKosmoTaxon["scheme"];
 
 const WEB_KOSMO = path.join("apps", "web", "public", "kosmo");
 
@@ -47,7 +51,12 @@ export async function readKosmoJson<T>(rel: string): Promise<T> {
   return JSON.parse(await readFile(resolveKosmoFile(rel), "utf8")) as T;
 }
 
-export const DOMAIN_KEYS = ["math", "physics", "philosophy", "models"] as const;
+export const DOMAIN_KEYS = [
+  "math",
+  "physics",
+  "philosophy",
+  "models",
+] as const satisfies readonly TaxonScheme[];
 
 type DomainNode = {
   name: string;
@@ -71,7 +80,7 @@ type DomainFile = {
 type WalkCtx = {
   db: Db;
   userId: UserId;
-  domain: string;
+  domain: TaxonScheme;
   sourceId: number;
 };
 
