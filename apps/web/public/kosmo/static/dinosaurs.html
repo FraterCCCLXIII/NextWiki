@@ -44,6 +44,7 @@
   .row .nm { font-size: 16px; line-height: 1.3; font-weight: 600; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .row .nm i { font-style: normal; font-weight: 400; color: var(--dim); font-size: 13px; margin-left: 8px; }
   .row .sub { font-size: 12.5px; line-height: 1.4; color: var(--dim); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row .m3 { float: right; font-style: normal; font-size: 11px; font-weight: 600; letter-spacing: .14em; color: var(--mint); }
   .row.inv .nm { color: var(--dim2); font-weight: 400; text-decoration: line-through; text-decoration-color: var(--line2); }
   #none { padding: 24px; color: var(--dim); }
 
@@ -114,6 +115,7 @@
       <div class="facet"><p class="lab">Diet</p><div class="opts" id="f-diet"></div></div>
       <div class="facet"><p class="lab">Habitat</p><div class="opts" id="f-env"></div></div>
       <div class="tog">
+        <label><input type="checkbox" id="t-model"> Real 3D models only <span id="n-model" class="dim"></span></label>
         <label><input type="checkbox" id="t-form"> Trace and egg taxa</label>
         <label><input type="checkbox" id="t-inv"> Invalid names</label>
       </div>
@@ -144,7 +146,6 @@
       <div id="thead"><p class="lab">Time range, Ma <span class="dim" id="time-t" style="letter-spacing:0;text-transform:none;font-weight:400"></span></p><button id="fit" title="Frame the selected genus">Fit to selection</button></div>
       <div id="tl" aria-label="Time axis. Drag to pan, pinch or scroll to zoom."></div>
     </div>
-    </div>
   </section>
 
   <section class="col" aria-label="Description"><div id="desc"><div id="empty">Choose a dinosaur from the list.</div></div></section>
@@ -167,7 +168,7 @@ const ERAS = [
   { k: 'Triassic', hi: 251.9, lo: 201.4 }, { k: 'Jurassic', hi: 201.4, lo: 145 }, { k: 'Cretaceous', hi: 145, lo: 66 },
 ];
 const byId = new Map(); let genera = [], speciesBy = null, meta = null;
-const F = { q: '', group: null, era: null, diet: null, env: null, clade: null, form: false, inv: false, sort: 'az' };
+const F = { model: false, q: '', group: null, era: null, diet: null, env: null, clade: null, form: false, inv: false, sort: 'az' };
 let view = [], sel = null;
 
 let MODELS = {};
@@ -189,6 +190,7 @@ for (const t of raw.taxa) {
 
 const eraHit = (t, e) => t.ma && t.ma[1] < e.hi && t.ma[0] > e.lo;
 function passes(t, skip) {
+  if (F.model && !MODELS[t.id]) return false;
   if (!F.form && t.form) return false;
   if (!F.inv && t.inv) return false;
   if (skip !== 'q' && F.q && !t.low.includes(F.q)) return false;
@@ -221,6 +223,7 @@ function apply() {
   facet('f-diet', 'diet', DIETS); facet('f-env', 'env', ENVS);
   const sc = $('scope');
   sc.hidden = !F.clade; if (F.clade) sc.textContent = `Within ${byId.get(F.clade).n}  ×`;
+  $('n-model').textContent = `(${Object.keys(MODELS).length})`;
   $('count').textContent = `${view.length.toLocaleString()} of ${genera.length.toLocaleString()} genera`;
   $('spacer').style.height = view.length * 54 + 'px';
   $('list').scrollTop = 0; paint();
@@ -229,7 +232,7 @@ function apply() {
 function rowHtml(t, i) {
   const age = t.ma ? `${fmt(t.ma[0])}–${fmt(t.ma[1])} Ma` : 'age unknown';
   const sub = [t.fam, age, t.diet].filter(Boolean).join(' · ');
-  return `<div class="row${sel === t ? ' on' : ''}${t.inv ? ' inv' : ''}" data-i="${i}" style="top:${i * 54}px"><div class="nm">${esc(t.n)}${t.cn ? `<i>${esc(t.cn)}</i>` : ''}</div><div class="sub">${esc(sub)}</div></div>`;
+  return `<div class="row${sel === t ? ' on' : ''}${t.inv ? ' inv' : ''}" data-i="${i}" style="top:${i * 54}px"><div class="nm">${esc(t.n)}${t.cn ? `<i>${esc(t.cn)}</i>` : ''}${MODELS[t.id] ? '<span class="m3">3D</span>' : ''}</div><div class="sub">${esc(sub)}</div></div>`;
 }
 function paint() {
   const L = $('list'), first = Math.max(0, Math.floor(L.scrollTop / 54) - 4), last = Math.min(view.length, first + Math.ceil(L.clientHeight / 54) + 9);
@@ -249,6 +252,7 @@ $('find').addEventListener('click', (e) => {
   const k = b.dataset.k; F[k] = F[k] === b.dataset.v ? null : b.dataset.v; apply();
 });
 $('q').addEventListener('input', (e) => { F.q = e.target.value.trim().toLowerCase(); apply(); });
+$('t-model').addEventListener('change', (e) => { F.model = e.target.checked; apply(); });
 $('t-form').addEventListener('change', (e) => { F.form = e.target.checked; apply(); });
 $('t-inv').addEventListener('change', (e) => { F.inv = e.target.checked; apply(); });
 $('sort').addEventListener('change', (e) => { F.sort = e.target.value; apply(); });
@@ -497,7 +501,7 @@ $('desc').addEventListener('click', () => {});
 /* ------------------------------------------------------------------- boot */
 apply();
 const hash = +location.hash.slice(1);
-const start = (hash && genera.find((t) => t.id === hash)) || genera.find((t) => t.n === 'Tyrannosaurus') || view[0];
+const start = (hash && genera.find((t) => t.id === hash)) || genera.find((t) => t.n === 'Triceratops' && MODELS[t.id]) || genera.find((t) => MODELS[t.id]) || view[0];
 if (start) { select(start, true); const i = view.indexOf(start); if (i > 3) $('list').scrollTop = (i - 3) * 54; paint(); }
 </script>
 </body>
