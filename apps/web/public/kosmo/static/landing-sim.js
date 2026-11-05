@@ -142,7 +142,7 @@ export function resolveVehicle(cfg = {}) {
   // Aim at a small descent rate just below the touchdown plane.  An engine that cannot throttle down below weight cannot hover: it has
   // to arrive with some speed, in the middle of what the legs can take, so a metre of height error never leaves it stopped in the air.
   const hover = v.engines * v.eng.minThrottle * thrustAt(v, 0) < v.dry * gravAt(v, 0) * 1.05;
-  v.vtd = v.target.kind === 'catch' ? 0.7 : hover ? 1.0 : 2.6; v.yAim = v.yf - (v.target.kind === 'catch' ? 0.5 : hover ? 0.8 : 0.2);
+  v.vtd = cfg.override?.vtd ?? (v.target.kind === 'catch' ? 0.7 : hover ? 1.0 : 2.3); v.yAim = v.yf - (cfg.override?.yOff ?? (v.target.kind === 'catch' ? 0.5 : hover ? 0.8 : 0.6));
   return v;
 }
 const thrustAt = (v, h) => Math.max(0, v.eng.thrustVac - v.eng.Ae * pressure(v.W, h));
