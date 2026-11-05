@@ -3,6 +3,9 @@
 //
 // A model matches a genus when a word in its title equals the genus name ("Accurate Triceratops horridus" -> Triceratops).
 // Titles that don't match are listed so you can map them by hand in models-manual.json: { "<sketchfab uid>": "<genus>" }.
+// Optional parts that can be toggled on the model (a saddle, armour...) come from models-accessories.json:
+//   { "<sketchfab uid>": [{ "id": "saddle", "label": "Saddle", "on": false, "match": ["saddle"] }] }
+// `match` words are tested, lowercase, against each mesh's node name and material name; matching meshes are hidden unless `on`.
 // Only models in models/dinosaurs/CREDITS.json are indexed; anything moved to _quarantine/ is ignored.
 import fs from "node:fs";
 import path from "node:path";
@@ -15,6 +18,9 @@ const manualFile = path.join(stat, "dinosaurs/models-manual.json");
 const manual = fs.existsSync(manualFile) ? JSON.parse(fs.readFileSync(manualFile, "utf8")) : {};
 if (!fs.existsSync(manualFile)) fs.writeFileSync(manualFile, "{}\n");
 
+const accFile = path.join(stat, "dinosaurs/models-accessories.json");
+const accessories = fs.existsSync(accFile) ? JSON.parse(fs.readFileSync(accFile, "utf8")) : {};
+
 const genusId = new Map(); // lowercase name -> id, valid body genera only
 for (const t of taxa) if (t.r === "genus" && !t.inv && !t.form && !genusId.has(t.n.toLowerCase())) genusId.set(t.n.toLowerCase(), t.id);
 
@@ -25,7 +31,7 @@ for (const [uid, c] of Object.entries(credits)) {
   const hit = manual[uid]?.toLowerCase() ?? words.find((w) => genusId.has(w));
   const id = hit && genusId.get(hit);
   if (!id) { unmatched.push(`${uid}  ${c.name}  (${c.author})`); continue; }
-  (out[id] ??= []).push({ uid, file: `models/dinosaurs/${uid}.glb`, title: c.name, author: c.author, authorUrl: c.authorUrl, license: c.license, source: c.source });
+  (out[id] ??= []).push({ uid, file: `models/dinosaurs/${uid}.glb`, title: c.name, author: c.author, authorUrl: c.authorUrl, license: c.license, source: c.source, ...(accessories[uid] ? { accessories: accessories[uid] } : {}) });
 }
 fs.writeFileSync(path.join(stat, "dinosaurs/models.json"), JSON.stringify(out));
 console.log(`${Object.values(out).flat().length} models matched to ${Object.keys(out).length} genera`);
