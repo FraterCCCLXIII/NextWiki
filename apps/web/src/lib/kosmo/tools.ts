@@ -14,6 +14,7 @@ export const KOSMO_TOOLS: Record<
   timeline: { file: "universe-timeline.html", title: "Universe timeline", group: "atlas" },
   chemistry: { file: "chemistry.html", title: "Chemistry", group: "atlas" },
   biology: { file: "biology.html", title: "Biology", group: "atlas" },
+  dinosaurs: { file: "dinosaurs.html", title: "Dinosaurs", group: "atlas" },
   spacecraft: { file: "spacecraft.html", title: "Spacecraft", group: "atlas" },
   shipyard: { file: "shipyard.html", title: "Shipyard", group: "atlas" },
   landing: { file: "landing-lab.html", title: "Landing Lab", group: "atlas" },
