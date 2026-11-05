@@ -329,6 +329,7 @@ async function init3() {
   const [{ OrbitControls }, { Sky }, { Water }, { EffectComposer }, { RenderPass }, { UnrealBloomPass }, { BokehPass }, { OutputPass }] = await Promise.all([
     import('three/addons/controls/OrbitControls.js'), import('three/addons/objects/Sky.js'), import('three/addons/objects/Water.js'), import('three/addons/postprocessing/EffectComposer.js'),
     import('three/addons/postprocessing/RenderPass.js'), import('three/addons/postprocessing/UnrealBloomPass.js'), import('three/addons/postprocessing/BokehPass.js'), import('three/addons/postprocessing/OutputPass.js')]);
+  const { RoomEnvironment } = await import('three/addons/environments/RoomEnvironment.js');
   const host = $('scene3'), renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance', logarithmicDepthBuffer: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.35; renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.localClippingEnabled = true; host.appendChild(renderer.domElement);
@@ -343,7 +344,8 @@ async function init3() {
     const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d'), im = g.createImageData(256, 256);
     for (let y = 0; y < 256; y++) for (let x = 0; x < 256; x++) { const u = x / 256 * 6.283, w = y / 256 * 6.283, i = (y * 256 + x) * 4; im.data[i] = 128 + 50 * Math.sin(3 * u + 2 * Math.sin(w)) + 30 * Math.sin(7 * w + u); im.data[i + 1] = 128 + 50 * Math.sin(4 * w + 2 * Math.sin(u)) + 30 * Math.sin(6 * u - w); im.data[i + 2] = 255; im.data[i + 3] = 255; }
     g.putImageData(im, 0, 0); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; res(t); }));
-  T3 = { THREE, renderer, scene, cam3, controls, composer, bloom, bokeh, sun, Sky, Water, normals, built: null, prev: null, pmrem: new THREE.PMREMGenerator(renderer) };
+  const fill = new THREE.DirectionalLight(0xbcd0ff, 0), rim = new THREE.DirectionalLight(0xffe6c8, 0); scene.add(fill, fill.target, rim, rim.target);
+  T3 = { RoomEnvironment, fill, rim, THREE, renderer, scene, cam3, controls, composer, bloom, bokeh, sun, Sky, Water, normals, built: null, prev: null, pmrem: new THREE.PMREMGenerator(renderer) };
   addEventListener('resize', resize3); resize3(); return T3;
 }
 function resize3() { if (!T3) return; const w = innerWidth, h = innerHeight; T3.renderer.setSize(w, h); T3.composer.setSize(w, h); T3.cam3.aspect = w / h; T3.cam3.updateProjectionMatrix(); }
@@ -359,7 +361,7 @@ function build3() {
   const PM = (c, o = {}) => new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.6, metalness: 0.1, ...o });
   // --- lighting and sky ---
   const dark = $('dark').checked, sunElev = moon ? 22 : 38, sunAz = 130, sunDir = new THREE.Vector3().setFromSphericalCoords(1, (90 - sunElev) * Math.PI / 180, sunAz * Math.PI / 180);
-  T3.sunDir = sunDir; sun.intensity = moon ? 5 : 3.2; sun.color.set(moon ? 0xffffff : 0xfff0dc);
+  T3.sunDir = sunDir; T3.dark = dark; sun.intensity = dark ? 4.5 : moon ? 5 : 3.2; sun.color.set(moon ? 0xffffff : 0xfff0dc);
   if (!moon && !dark) {
     const sky = new T3.Sky(); sky.scale.setScalar(450000); const u = sky.material.uniforms; u.turbidity.value = 3.5; u.rayleigh.value = 1.6; u.mieCoefficient.value = 0.004; u.mieDirectionalG.value = 0.82; u.sunPosition.value.copy(sunDir);
     scene.add(sky); T3.sky = sky; T3.skyU = u;
@@ -367,15 +369,16 @@ function build3() {
     scene.environment = T3.pmrem.fromScene(env, 0.04).texture; scene.fog = new THREE.FogExp2(0xa9c4de, 0.00006);
   } else if (dark) {
     scene.background = new THREE.Color(0x000000); scene.add(T3.fillLight = T3.fillLight || new THREE.HemisphereLight(0x222233, 0x111111, 0.15)); T3.fillLight.intensity = 0.5;
+    scene.environment = T3.pmrem.fromScene(new T3.RoomEnvironment(), 0.04).texture;      // neutral softbox studio light for the metal
   } else {
     const pts = []; for (let i = 0; i < 2500; i++) { const a = Math.random() * 6.283, b = Math.acos(Math.random() * 0.98); pts.push(Math.cos(a) * Math.sin(b) * 300000, Math.cos(b) * 300000, Math.sin(a) * Math.sin(b) * 300000); }
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3)); W.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0xffffff, size: 260, sizeAttenuation: true, fog: false })));
     scene.background = new THREE.Color(0x000000); scene.add(T3.fillLight = T3.fillLight || new THREE.HemisphereLight(0x222233, 0x111111, 0.15));
   }
   // --- ground / sea / pad / ship / tower ---
-  const poolTex = canvasTex(THREE, 512, 512, (g, w, h) => { const gr = g.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2); gr.addColorStop(0, '#3a3a3d'); gr.addColorStop(0.35, '#232326'); gr.addColorStop(0.7, '#0c0c0d'); gr.addColorStop(1, '#000'); g.fillStyle = gr; g.fillRect(0, 0, w, h); });
+  const poolTex = canvasTex(THREE, 512, 512, (g, w, h) => { const gr = g.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2); gr.addColorStop(0, '#202022'); gr.addColorStop(0.35, '#131314'); gr.addColorStop(0.7, '#050505'); gr.addColorStop(1, '#000'); g.fillStyle = gr; g.fillRect(0, 0, w, h); });
   poolTex.wrapS = poolTex.wrapT = THREE.ClampToEdgeWrapping;
-  const darkGround = y => { const bg = new THREE.Mesh(new THREE.PlaneGeometry(200000, 200000), PM(0x000000, { roughness: 1, metalness: 0 })); bg.rotation.x = -Math.PI / 2; bg.position.y = y - 0.05; W.add(bg); const pool = new THREE.Mesh(new THREE.CircleGeometry(900, 96), PM(0xffffff, { map: poolTex, roughness: 0.95, metalness: 0 })); pool.rotation.x = -Math.PI / 2; pool.position.y = y; pool.receiveShadow = true; W.add(pool); };
+  const darkGround = y => { const bg = new THREE.Mesh(new THREE.PlaneGeometry(200000, 200000), new THREE.MeshBasicMaterial({ color: 0x000000 })); bg.rotation.x = -Math.PI / 2; bg.position.y = y - 0.05; W.add(bg); const pool = new THREE.Mesh(new THREE.CircleGeometry(900, 96), new THREE.MeshBasicMaterial({ map: poolTex })); pool.rotation.x = -Math.PI / 2; pool.position.y = y; pool.receiveShadow = true; W.add(pool); };
   if (dark) darkGround(kind === 'ship' ? -3.2 : -0.2);
   if (kind === 'ship') {
     if (dark) { /* black studio: no sea */ }
@@ -512,9 +515,14 @@ function draw3() {
   // sun shadows follow the stage
   const sun = T3.sun, sc = Math.max(v.length * 1.4, 40); sun.target.position.set(s.x, Math.max(gY0, s.y - v.comHeight * 0.5), 0); sun.position.copy(sun.target.position).addScaledVector(T3.sunDir, 600);
   Object.assign(sun.shadow.camera, { left: -sc, right: sc, top: sc, bottom: -sc, near: 10, far: 1500 }); sun.shadow.camera.updateProjectionMatrix();
+  T3.fill.intensity = T3.rim.intensity = 0;
+  if (T3.dark) { const c = cam3.position, t = rock.position, dir = new THREE.Vector3().subVectors(c, t).setY(0).normalize(); T3.fill.intensity = 2.2; T3.rim.intensity = 3.5; T3.fill.target.position.copy(t); T3.rim.target.position.copy(t);
+    T3.fill.position.copy(t).addScaledVector(dir, 400).add(new THREE.Vector3(-dir.z, 150, dir.x).multiplyScalar(250)); T3.rim.position.copy(t).addScaledVector(dir, -400).add(new THREE.Vector3(0, 250, 0)); }
   // --- thin-lens camera: focal length -> field of view (24 mm sensor height), chase distance scales with it ---
   cam3.fov = 2 * Math.atan(12 / cs.mm) * 180 / Math.PI; cam3.updateProjectionMatrix();
-  const tgt = new THREE.Vector3(s.x, s.y, 0), dist = clamp(Math.max(v.length * 2.6, (s.y - v.yf) * 0.25), v.length * 2.2, 3000) * (cs.mm / 35);
+  // frame the whole stage by default: aim at the middle of the body and back off until its full length fits (with room for the header and panels)
+  const tgt = new THREE.Vector3(s.x, s.y + (v.length / 2 - v.comHeight) * Math.cos(s.th), 0), tanHalf = Math.tan(cam3.fov * Math.PI / 360);
+  const fitDist = (v.length * 0.5 * 1.55) / tanHalf, dist = Math.max(fitDist, clamp((s.y - v.yf) * 0.25, 0, 3000) * (cs.mm / 35));
   if (T3.first) { cam3.position.set(s.x + dist * 0.9, s.y + dist * 0.25, dist * 1.1); controls.target.copy(tgt); T3.first = false; T3.prev = tgt.clone(); }
   const d = tgt.clone().sub(T3.prev || tgt); cam3.position.add(d); controls.target.add(d); T3.prev = tgt.clone();
   const off = cam3.position.clone().sub(controls.target), cur = off.length(); if (!controls.userZoomed) { off.setLength(sim.done ? dist : cur + (dist - cur) * 0.2); cam3.position.copy(controls.target).add(off); }
@@ -524,7 +532,7 @@ function draw3() {
   // blur grows with the lens (focal length squared), with a wider aperture (1/N) and as the subject gets closer
   T3.bokeh.uniforms['focus'].value = camOffsetFocus; T3.bokeh.uniforms['aperture'].value = clamp(8e-5 * (2.8 / cs.N) * (cs.mm / 35) ** 2 * (100 / Math.max(camOffsetFocus, 5)) ** 2, 0, 6e-4);
   T3.bokeh.uniforms['maxblur'].value = 0.012;
-  T3.renderer.toneMappingExposure = (v.world === 'moon' ? 0.7 : 0.35) * Math.pow(5.6 / cs.N, 0.6);
+  T3.renderer.toneMappingExposure = (T3.dark ? 0.75 : v.world === 'moon' ? 0.7 : 0.35) * Math.pow(5.6 / cs.N, 0.6);
   T3.bloom.strength = 0.25 + 0.3 * Math.min(fl, 1);
   composer.render();
 }
