@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kosmographica Logo Reveals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@600;700&family=Bungee&family=Orbitron:wght@700;800&family=Caprasimo&family=Chango&family=Cormorant+Garamond:wght@300;500&family=Exo+2:ital,wght@0,700;0,800;1,900&family=Fraunces:opsz,wght@144,900&family=Inter:wght@400;500;600&family=Outfit:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,800;0,900;1,500;1,900&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#fcf7ee;--ink:#0d0d10;--nav:#15151b;--line:#2a2a33}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:Inter,system-ui,sans-serif;background:var(--nav);color:#ececf1;display:grid;grid-template-columns:320px 1fr;overflow:hidden}
+
+/* ---------- left nav ---------- */
+nav{overflow-y:auto;padding:14px 12px 24px;border-right:1px solid var(--line)}
+nav h1{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#8f8fa0;padding:8px 8px 14px}
+.item{display:grid;grid-template-columns:112px 1fr;gap:12px;align-items:center;width:100%;padding:8px;margin-bottom:4px;border-radius:12px;background:none;border:1px solid transparent;color:inherit;text-align:left;cursor:pointer;font:inherit}
+.item:hover{background:#1e1e27}
+.item.on{background:#242432;border-color:#3d3d56}
+.item:focus-visible{outline:2px solid #7c8cff;outline-offset:1px}
+.thumb{position:relative;width:112px;height:56px;background:var(--paper);border-radius:8px;overflow:hidden}
+.item b{display:block;font-size:13px;font-weight:600}
+.item b i{font-style:normal;color:#8f8fa0;font-weight:500;margin-right:6px}
+.item small{display:block;color:#8f8fa0;font-size:11.5px;margin-top:2px}
+
+/* ---------- stage ---------- */
+main{display:grid;grid-template-rows:1fr auto;min-width:0;min-height:0}
+.stage{position:relative;overflow:hidden;background:var(--paper);
+  background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,.07) 1px,transparent 0);background-size:26px 26px}
+.cap{position:absolute;left:22px;top:18px;font-size:12px;letter-spacing:.06em;color:#5b5b66;z-index:2}
+.cap b{color:#111;font-weight:600}
+.bar{display:flex;align-items:center;gap:12px;padding:12px 18px;background:var(--nav);border-top:1px solid var(--line);flex-wrap:wrap}
+.bar button,.bar select{background:#262633;color:#ececf1;border:1px solid #3a3a4c;border-radius:8px;padding:7px 12px;font:500 13px Inter,sans-serif;cursor:pointer}
+.bar button:hover{background:#30303f}
+.bar input[type=range]{flex:1;min-width:140px;accent-color:#7c8cff}
+.bar label{font-size:12.5px;color:#b5b5c3;display:flex;align-items:center;gap:6px;cursor:pointer}
+.bar .t{font:500 12px ui-monospace,Menlo,monospace;color:#9a9aab;min-width:92px;text-align:right}
+
+/* ---------- logo plumbing ---------- */
+.logo{position:absolute;left:50%;top:50%;width:max-content;display:flex;flex-direction:column;align-items:center;transform-origin:50% 50%;color:#0d0d10}
+svg{overflow:visible;display:block}
+svg *{transform-box:fill-box;transform-origin:50% 50%}
+.dr{stroke-dasharray:1 2}
+.word{white-space:nowrap;line-height:1.05}
+.c{display:inline-block}
+.m{display:inline-block;overflow:hidden;vertical-align:top;padding:.1em .03em .3em;margin:-.1em -.03em -.3em}
+
+.serif{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:60px;letter-spacing:-.01em;margin-top:6px}
+.geo{font-family:Outfit,sans-serif;font-weight:700;letter-spacing:-.02em}
+.f51{font-family:Fraunces,serif;font-weight:900;font-size:86px;letter-spacing:-.03em}
+.f52{font-family:Anton,sans-serif;font-size:108px;letter-spacing:-.005em}
+.f52 .c{transform-origin:50% 100%}
+.bars{display:flex;width:100%;margin-top:14px}
+.bars i{flex:1;height:16px;transform-origin:0 50%}
+.f54{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:84px;letter-spacing:-.02em}
+.f55{font-family:Chango,cursive;font-size:84px}
+.sq{display:flex;gap:24px;margin-top:22px}
+.sq i{width:15px;height:15px;display:block}
+.row{display:flex;align-items:baseline;white-space:nowrap;letter-spacing:-.04em}
+.thin{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:100px}
+.bold{font-family:'Playfair Display',serif;font-weight:900;font-size:78px}
+.line59{width:100%;height:5px;border-radius:5px;margin-top:10px;transform-origin:50% 50%;background:linear-gradient(90deg,#ff1f2d,#ff8a00,#ffd21a,#22b800,#00b5ff,#3b2bff,#9b30f0)}
+.wrap62{position:relative;padding:92px 78px}
+.it{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;font-size:84px;letter-spacing:-.02em;position:relative}
+.orb{position:absolute;inset:0;width:100%;height:100%}
+.cps{font-family:Caprasimo,serif;font-weight:400}
+.f30{font-family:'Playfair Display',serif;font-weight:800;font-size:112px;letter-spacing:-.06em;margin-top:-4px}
+.f33{font-family:'Playfair Display',serif;font-style:italic;font-weight:900;font-size:108px;letter-spacing:-.04em;position:relative;z-index:1}
+.w35{position:relative;font-family:Anton,sans-serif;font-size:140px;line-height:1;white-space:nowrap;color:#0d0d10}
+.w35 .top{clip-path:inset(0 0 47% 0)}
+.w35 .bot{position:absolute;left:0;top:0;clip-path:inset(53% 0 0 0);transform:translateY(6px) skewX(-3deg)}
+.w35 .rbn{position:absolute;left:-1%;right:-1%;top:calc(50% - 8px);height:16px}
+.ant{font-family:Anton,sans-serif;letter-spacing:.005em}
+.exo{font-family:'Exo 2',sans-serif;font-style:italic;font-weight:900;font-size:104px;letter-spacing:-.01em}
+.exo2{font-family:'Exo 2',sans-serif;font-weight:700;font-size:66px;line-height:.98;letter-spacing:.01em}
+.out{font-family:Outfit,sans-serif;font-weight:700;font-size:110px;letter-spacing:-.035em}
+.badge{border:7px solid #0d0d10;border-radius:26px;padding:18px 24px 20px;background:var(--paper)}
+.brow{display:flex;align-items:center;gap:18px}
+.dv{width:3px;height:150px;background:#0d0d10;display:block;transform-origin:50% 0}
+.bbar{display:flex;height:54px;margin-top:16px;border-radius:10px;overflow:hidden}
+.bbar i{flex:1;transform-origin:50% 100%}
+.stairs{display:flex;align-items:flex-end;width:100%}
+.stairs i{flex:1;transform-origin:50% 100%}
+.blk{background:#0d0d10;color:var(--paper);padding:8px 14px 12px;width:100%;display:flex;justify-content:center}
+.b18{display:flex;flex-direction:column;align-items:stretch}
+.band{display:flex;transform:skewX(-18deg);height:30px}
+.band i{flex:1;transform-origin:0 50%}
+.bng{font-family:Bungee,sans-serif;font-size:84px;line-height:.98}
+.col2{display:flex;flex-direction:column}
+.r1{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.stp{display:flex;align-items:flex-end;gap:5px}
+.stp i{width:24px;display:block;transform-origin:50% 100%}
+.bc{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:98px;letter-spacing:-.01em}
+.bcd{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:120px;letter-spacing:.005em}
+.orb{font-family:Orbitron,sans-serif;font-weight:700;font-size:54px;letter-spacing:.01em}
+.b8{display:flex;flex-direction:column;align-items:stretch}
+.bd{display:flex;height:28px}
+.bd i{flex:1;transform-origin:50% 50%}
+.w36{position:relative;width:560px;height:330px}
+.f64{font-family:'Playfair Display',serif;font-weight:800;font-size:96px;letter-spacing:-.05em;color:#111}
+
+@media (max-width:820px){
+  body{grid-template-columns:1fr;grid-template-rows:auto 1fr;}
+  nav{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;border-right:0;border-bottom:1px solid var(--line);padding:8px}
+  nav h1{display:none}
+  .item{width:auto;flex:0 0 auto;grid-template-columns:1fr;margin:0}
+  .item div:last-child{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav"><h1>Kosmographica · 16 reveals</h1></nav>
+
+<main>
+  <div class="stage" id="stage"><div class="cap" id="cap"></div></div>
+  <div class="bar">
+    <button id="play" title="Play / pause (Space)">Pause</button>
+    <button id="replay" title="Replay (R)">↺ Replay</button>
+    <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Timeline scrubber">
+    <span class="t" id="time">0.00 / 0.00s</span>
+    <label><input type="checkbox" id="loop"> Loop</label>
+    <select id="speed" aria-label="Speed">
+      <option value="0.25">0.25×</option><option value="0.5">0.5×</option>
+      <option value="1" selected>1×</option><option value="2">2×</option>
+    </select>
+    <button id="prev" title="Previous (↑)">↑</button>
+    <button id="next" title="Next (↓)">↓</button>
+  </div>
+</main>
+
+<script>
+/* =========================================================
+   Tiny "After Effects" toolkit on top of the Web Animations API
+   ========================================================= */
+const mk=h=>{const t=document.createElement('template');t.innerHTML=h.trim();return t.content.firstElementChild};
+const RB=['#ff1f2d','#ff8a00','#ffd21a','#22b800','#00b5ff','#3b2bff','#9b30f0'];
+const hasLinear=window.CSS&&CSS.supports&&CSS.supports('animation-timing-function','linear(0,1)');
+const SPR=hasLinear?(()=>{const n=56,p=[];for(let i=0;i<=n;i++){const t=i/n;p.push(i===n?1:+(1-Math.exp(-6*t)*Math.cos(t*Math.PI*5)).toFixed(4))}return `linear(${p.join(',')})`})():'cubic-bezier(.34,1.56,.64,1)';
+const E={out:'cubic-bezier(.16,1,.3,1)',io:'cubic-bezier(.65,0,.35,1)',back:'cubic-bezier(.34,1.56,.64,1)',in:'cubic-bezier(.7,0,.84,0)',spring:SPR};
+
+let anims=[];
+function an(el,kf,o={}){
+  if(!el)return;
+  const a=el.animate(kf,{duration:o.d||600,delay:o.t||0,easing:o.e||E.out,fill:'both'});
+  anims.push(a);return a;
+}
+const Q=(r,s)=>r.querySelector(s), QA=(r,s)=>[...r.querySelectorAll(s)];
+
+const G=(id,cols=RB,x1=0,y1=0,x2=1,y2=1,units='objectBoundingBox')=>
+ `<linearGradient id="${id}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" gradientUnits="${units}">${cols.map((c,i)=>`<stop offset="${cols.length>1?i/(cols.length-1):0}" stop-color="${c}"/>`).join('')}</linearGradient>`;
+
+function W(text,{cls='',mask=false,style=''}={}){
+  return `<div class="word ${cls}" style="${style}">`+[...text].map(ch=>mask?`<span class="m"><span class="c">${ch}</span></span>`:`<span class="c">${ch}</span>`).join('')+`</div>`;
+}
+const rise=(els,t0=0,gap=40,o={})=>els.forEach((c,i)=>an(c,[{opacity:0,transform:`translateY(${o.y??22}px)`,filter:'blur(6px)'},{opacity:1,transform:'none',filter:'blur(0px)'}],{d:o.d||700,t:t0+i*gap,e:o.e||E.out}));
+const maskRise=(els,t0=0,gap=35,d=800)=>els.forEach((c,i)=>an(c,[{transform:'translateY(115%)'},{transform:'translateY(0)'}],{d,t:t0+i*gap,e:E.out}));
+const draw=(el,t,d,e=E.io)=>an(el,[{strokeDashoffset:1,opacity:0},{opacity:1,offset:.03},{strokeDashoffset:0,opacity:1}],{d,t,e});
+
+const LOGOS=[];
+const add=(n,name,reveal,build,play)=>LOGOS.push({n,name,reveal,build,play});
+
+/* ---------- 49 Rainbow arc ---------- */
+add(49,'Rainbow Arc','Radial draw-on · letter rise',u=>{
+  const arcs=RB.map((c,i)=>{const r=128-i*18;return `<path class="arc dr" pathLength="1" d="M${-r} 0 A${r} ${r} 0 0 1 ${r} 0" fill="none" stroke="${c}" stroke-width="18"/>`}).join('');
+  return `<div class="logo"><svg width="300" height="144" viewBox="-150 -140 300 142">${arcs}</svg>${W('Kosmographica',{cls:'serif'})}</div>`;
+},r=>{
+  QA(r,'.arc').forEach((a,i)=>draw(a,i*120,950));
+  an(Q(r,'svg'),[{transform:'scale(1)'},{transform:'scale(1.05)'},{transform:'scale(1)'}],{d:600,t:1400,e:E.io});
+  rise(QA(r,'.c'),950,45);
+});
+
+/* ---------- 50 K with rainbow chevrons ---------- */
+add(50,'Chevron K','Slide-out chevrons · tracking in',u=>{
+  const w=11,dx=w*1.25,start=118+24.4;
+  const cols=RB.map((c,i)=>{const x=start+i*dx;return `<path class="cc" d="M${x} 0 L${x-56} 75 L${x} 150" fill="none" stroke="${c}" stroke-width="${w}" stroke-miterlimit="6"/>`}).join('');
+  return `<div class="logo"><svg width="260" height="150" viewBox="0 0 250 150">
+    <defs><clipPath id="${u}c"><rect width="250" height="150"/></clipPath></defs>
+    <g clip-path="url(#${u}c)">${cols}
+    <path class="bk" d="M118 0 L62 75 L118 150" fill="none" stroke="#0d0d10" stroke-width="28" stroke-miterlimit="6"/>
+    <rect class="stem" x="0" y="0" width="60" height="150" fill="#0d0d10" style="transform-origin:50% 100%"/></g></svg>
+    ${W('Kosmographica',{cls:'geo',style:'font-size:58px;margin-top:10px'})}</div>`;
+},r=>{
+  an(Q(r,'.stem'),[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:600,e:E.out});
+  an(Q(r,'.bk'),[{transform:'translateX(-60px)',opacity:0},{transform:'none',opacity:1}],{d:600,t:250});
+  QA(r,'.cc').forEach((c,i)=>an(c,[{transform:'translateX(-80px)',opacity:0},{transform:'none',opacity:1}],{d:800,t:550+i*90}));
+  an(Q(r,'.word'),[{letterSpacing:'.4em',opacity:0},{letterSpacing:'-.02em',opacity:1}],{d:1100,t:900});
+});
+
+/* ---------- 51 Swash wordmark ---------- */
+add(51,'Rainbow Swash','Wipe reveal · swoosh draw-on',u=>
+  `<div class="logo">${W('Kosmographica',{cls:'f51'})}
+   <svg width="600" height="118" viewBox="0 0 460 90" style="margin-top:-8px"><defs>${G(u+'s',RB,30,0,430,0,'userSpaceOnUse')}</defs>
+   <path class="sw dr" pathLength="1" d="M30 62 C20 22 90 18 150 44 C215 72 270 66 320 42 C365 20 420 22 425 50 C428 70 400 80 378 70" fill="none" stroke="url(#${u}s)" stroke-width="15" stroke-linecap="round"/></svg></div>`,
+r=>{
+  const w=Q(r,'.word');
+  an(w,[{clipPath:'inset(-15% 100% -25% 0)',transform:'translateX(-50px)'},{clipPath:'inset(-15% 0% -25% 0)',transform:'none'}],{d:1100,e:E.io});
+  QA(r,'.c').forEach((c,i)=>an(c,[{transform:'skewX(-14deg) translateY(10px)'},{transform:'none'}],{d:900,t:i*50}));
+  draw(Q(r,'.sw'),700,1300);
+});
+
+/* ---------- 52 Condensed slab ---------- */
+add(52,'Condensed Bars','Scale slam · color-bar wipe',u=>
+  `<div class="logo">${W('KOSMOGRAPHICA',{cls:'f52'})}<div class="bars">${RB.map(c=>`<i style="background:${c}"></i>`).join('')}</div></div>`,
+r=>{
+  QA(r,'.c').forEach((c,i)=>an(c,[{transform:'scaleY(0)',opacity:0},{transform:'scaleY(1.12)',opacity:1,offset:.7},{transform:'scaleY(1)',opacity:1}],{d:650,t:i*45,e:E.out}));
+  QA(r,'.bars i').forEach((b,i)=>an(b,[{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{d:500,t:700+i*80}));
+  an(Q(r,'.bars'),[{filter:'brightness(1)'},{filter:'brightness(1.35)'},{filter:'brightness(1)'}],{d:500,t:1400});
+});
+
+/* ---------- 53 Rainbow block house ---------- */
+add(53,'Block Mark','Shape build · unfold',u=>
+  `<div class="logo"><svg width="210" height="200" viewBox="0 0 220 210"><defs>${G(u+'a')}${G(u+'b',RB.slice(0,3),0,0,1,1)}</defs>
+   <path class="g1" style="transform-origin:0 100%" d="M104 72 L170 24 L216 52 V150 L150 210 H104Z" fill="url(#${u}a)"/>
+   <path class="b2" d="M216 120 V210 H140Z" fill="#0d0d10"/>
+   <path class="g2" style="transform-origin:50% 0" d="M52 6 L104 40 V76 H52Z" fill="url(#${u}b)"/>
+   <path class="b1" style="transform-origin:50% 100%" d="M0 210 V48 L52 6 V76 H104 V210 H66 V128 H52 V210Z" fill="#0d0d10"/></svg>
+   ${W('Kosmographica',{cls:'geo',mask:true,style:'font-size:56px;margin-top:10px;font-weight:600'})}</div>`,
+r=>{
+  an(Q(r,'.b1'),[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:700,e:E.out});
+  an(Q(r,'.g2'),[{transform:'scaleY(0)',opacity:0},{transform:'scaleY(1)',opacity:1}],{d:600,t:500});
+  an(Q(r,'.g1'),[{transform:'scale(0) rotate(-70deg)',opacity:0},{transform:'none',opacity:1}],{d:900,t:600,e:E.spring});
+  an(Q(r,'.b2'),[{transform:'translate(60px,60px)',opacity:0},{transform:'none',opacity:1}],{d:600,t:1100});
+  maskRise(QA(r,'.c'),1000);
+});
+
+/* ---------- 54 Light serif with spectrum ticks ---------- */
+add(54,'Spectrum Ticks','Center-out lines · blur-in tracking',u=>{
+  const H=[22,38,56,44,30,40,24];
+  const mkS=(top)=>`<svg width="240" height="60" viewBox="0 0 240 60">${RB.map((c,i)=>`<rect class="${top?'tu':'td'}" x="${14+i*34}" y="${top?60-H[i]:0}" width="3.4" height="${H[i]}" fill="${c}" style="transform-origin:50% ${top?'100%':'0%'}"/>`).join('')}</svg>`;
+  return `<div class="logo">${mkS(true)}${W('Kosmographica',{cls:'f54'})}${mkS(false)}</div>`;
+},r=>{
+  [...QA(r,'.tu'),...QA(r,'.td')].forEach((l,k)=>{const i=k%7;an(l,[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:700,t:Math.abs(i-3)*110+(k>6?60:0),e:E.out})});
+  an(Q(r,'.word'),[{opacity:0,letterSpacing:'.14em',filter:'blur(8px)'},{opacity:1,letterSpacing:'-.02em',filter:'blur(0)'}],{d:1200,t:500});
+});
+
+/* ---------- 55 Groovy ---------- */
+add(55,'Groovy Bounce','Drop · squash & stretch · hue ramp',u=>{
+  const t='Kosmographica';
+  return `<div class="logo"><div class="word f55">${[...t].map((ch,i)=>`<span class="c" style="color:hsl(${Math.round(i/(t.length-1)*285)} 95% 52%)">${ch}</span>`).join('')}</div></div>`;
+},r=>{
+  QA(r,'.c').forEach((c,i)=>{const s=i%2?1:-1;an(c,[
+    {transform:'translateY(-220px) scale(.6,1.5) rotate(-25deg)',opacity:0},
+    {transform:'translateY(0) scale(1.3,.7) rotate(0)',opacity:1,offset:.55},
+    {transform:'translateY(-14px) scale(.92,1.1) rotate(2deg)',opacity:1,offset:.78},
+    {transform:`translateY(${s*-4}px) rotate(${s*3}deg)`,opacity:1}],{d:1000,t:i*70,e:E.io})});
+});
+
+/* ---------- 56 Serif K with petals ---------- */
+add(56,'Petal K','Stroke build · bloom',u=>
+  `<div class="logo"><svg width="220" height="220" viewBox="0 0 220 220"><defs>
+   ${G(u+'p1',['#ff1f2d','#ff8a00','#ffd21a'],0,1,0,0)}${G(u+'p2',['#22b800','#00b5ff','#3b2bff'],0,0,0,1)}${G(u+'p3',['#3b2bff','#9b30f0','#ff3fa0'],0,0,1,1)}</defs>
+   <g fill="#0d0d10">
+    <rect class="stem" style="transform-origin:50% 0" x="62" y="22" width="30" height="176"/>
+    <rect class="sf" x="30" y="14" width="64" height="12"/><rect class="sf" x="30" y="194" width="64" height="12"/>
+    <path class="arm dr" pathLength="1" d="M92 118 L150 30" fill="none" stroke="#0d0d10" stroke-width="24"/><rect class="sf" x="128" y="14" width="76" height="12"/>
+    <path class="arm dr" pathLength="1" d="M104 100 L162 198" fill="none" stroke="#0d0d10" stroke-width="26"/><rect class="sf" x="136" y="194" width="74" height="12"/></g>
+   <path class="pt" style="transform-origin:90% 100%" d="M92 120 C70 90 74 50 100 34 C112 66 108 96 92 120Z" fill="url(#${u}p1)"/>
+   <path class="pt" style="transform-origin:90% 0%" d="M90 126 C72 140 72 170 92 190 C108 168 108 144 90 126Z" fill="url(#${u}p2)"/>
+   <path class="pt" style="transform-origin:0% 50%" d="M112 128 C124 120 146 130 150 150 C130 156 116 148 112 128Z" fill="url(#${u}p3)"/></svg>
+   ${W('Kosmographica',{cls:'serif',style:'font-size:52px;margin-top:2px'})}</div>`,
+r=>{
+  an(Q(r,'.stem'),[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:600});
+  QA(r,'.sf').forEach((s,i)=>an(s,[{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{d:450,t:350+i*120}));
+  QA(r,'.arm').forEach((a,i)=>draw(a,300+i*250,700,E.out));
+  QA(r,'.pt').forEach((p,i)=>an(p,[{transform:'scale(0) rotate(-40deg)',opacity:0},{transform:'none',opacity:1}],{d:1100,t:800+i*180,e:E.spring}));
+  rise(QA(r,'.c'),1300,40);
+});
+
+/* ---------- 57 Squares ---------- */
+add(57,'Pixel Dots','Mask rise · pop & wave',u=>
+  `<div class="logo">${W('Kosmographica',{cls:'geo',mask:true,style:'font-size:68px'})}<div class="sq">${RB.map(c=>`<i style="background:${c}"></i>`).join('')}</div></div>`,
+r=>{
+  maskRise(QA(r,'.c'),0,35);
+  const s=QA(r,'.sq i');
+  s.forEach((q,i)=>an(q,[{transform:'scale(0)'},{transform:'scale(1)'}],{d:900,t:550+i*80,e:E.spring}));
+  s.forEach((q,i)=>an(q,[{transform:'translateY(0)'},{transform:'translateY(-10px)'},{transform:'translateY(0)'}],{d:420,t:1500+i*70,e:E.io}));
+});
+
+/* ---------- 58 Ribbon S ---------- */
+add(58,'Ribbon','Ribbon unfurl · mask rise',u=>
+  `<div class="logo"><svg width="220" height="230" viewBox="-20 0 240 240"><defs>${G(u+'g',RB.slice(0,6).reverse().map((c,i,a)=>a[a.length-1-i]),0,20,0,215,'userSpaceOnUse')}</defs>
+   <path class="rb dr" pathLength="1" d="M150 24 L40 66 L150 132 L40 200" fill="none" stroke="url(#${u}g)" stroke-width="40" stroke-linejoin="miter" stroke-miterlimit="4"/></svg>
+   ${W('Kosmographica',{cls:'geo',mask:true,style:'font-size:52px;font-weight:500;margin-top:8px'})}</div>`,
+r=>{
+  draw(Q(r,'.rb'),0,1500);
+  an(Q(r,'svg'),[{transform:'rotate(-6deg)'},{transform:'rotate(0)'}],{d:1500,e:E.out});
+  maskRise(QA(r,'.c'),1000,35);
+});
+
+/* ---------- 59 Thin / bold ---------- */
+add(59,'Thin + Bold','Converge · underline sweep',u=>
+  `<div class="logo"><div class="row"><span class="thin">Kosmo</span><span class="bold">graphica</span></div><div class="line59"></div></div>`,
+r=>{
+  an(Q(r,'.thin'),[{transform:'translateX(-120px)',opacity:0,filter:'blur(10px)'},{transform:'none',opacity:1,filter:'blur(0)'}],{d:1000});
+  an(Q(r,'.bold'),[{transform:'translateX(120px)',opacity:0,filter:'blur(10px)'},{transform:'none',opacity:1,filter:'blur(0)'}],{d:1000});
+  an(Q(r,'.line59'),[{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{d:900,t:700,e:E.io});
+  an(Q(r,'.line59'),[{filter:'hue-rotate(0)'},{filter:'hue-rotate(40deg) saturate(1.4)'},{filter:'hue-rotate(0)'}],{d:700,t:1700,e:E.io});
+});
+
+/* ---------- 60 Swirl orb ---------- */
+add(60,'Swirl Orb','Spin-scale pop · swirl draw',u=>
+  `<div class="logo"><svg width="200" height="200" viewBox="0 0 200 200"><defs>${G(u+'o',['#ff1f2d','#ff8a00','#ffd21a','#22b800','#00b5ff','#3b2bff','#9b30f0'],.1,0,.9,1)}</defs>
+   <g class="spin"><circle cx="100" cy="100" r="92" fill="url(#${u}o)"/>
+   <path class="sh dr" pathLength="1" d="M100 14 C40 30 20 110 90 118 C150 124 150 60 100 62 C70 64 66 98 96 100" transform="translate(9 11)" fill="none" stroke="#2a10b0" stroke-opacity=".28" stroke-width="22" stroke-linecap="round"/>
+   <path class="sw dr" pathLength="1" d="M100 14 C40 30 20 110 90 118 C150 124 150 60 100 62 C70 64 66 98 96 100" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="20" stroke-linecap="round"/></g></svg>
+   ${W('Kosmographica',{cls:'geo',style:'font-size:52px;margin-top:10px'})}</div>`,
+r=>{
+  an(Q(r,'.spin'),[{transform:'scale(0) rotate(-270deg)',opacity:0},{transform:'scale(1) rotate(0)',opacity:1}],{d:1400,e:E.out});
+  draw(Q(r,'.sh'),500,1200,E.out);draw(Q(r,'.sw'),400,1200,E.out);
+  rise(QA(r,'.c'),1000,40);
+});
+
+/* ---------- 61 Layered K ---------- */
+add(61,'Echo K','Trail slide · layered stagger',u=>{
+  const L=RB.map((c,i)=>`<polygon class="ly" points="${i*20},34 ${i*20+56},10 ${i*20+56},150 ${i*20},176" fill="${c}" fill-opacity=".86" style="transform-origin:100% 50%"/>`).join('');
+  return `<div class="logo"><svg width="290" height="190" viewBox="0 0 290 190">${L}
+   <path class="bk" d="M268 6 L206 90 L268 174" fill="none" stroke="#0d0d10" stroke-width="30" stroke-miterlimit="6"/></svg>
+   ${W('Kosmographica',{cls:'geo',style:'font-size:54px;margin-top:12px'})}</div>`;
+},r=>{
+  an(Q(r,'.bk'),[{transform:'translateX(70px)',opacity:0},{transform:'none',opacity:1}],{d:700});
+  QA(r,'.ly').reverse().forEach((l,i)=>an(l,[{transform:'translateX(150px) scaleX(.4)',opacity:0},{transform:'none',opacity:1}],{d:900,t:500+i*90}));
+  rise(QA(r,'.c'),1000,35);
+});
+
+/* ---------- 62 Orbit ---------- */
+add(62,'Orbit','Orbit draw · focus pull',u=>
+  `<div class="logo"><div class="wrap62"><div class="word it">Kosmographica</div>
+   <svg class="orb" viewBox="0 0 600 220" preserveAspectRatio="none"><defs>${G(u+'e',RB,20,0,580,0,'userSpaceOnUse')}</defs>
+   <g transform="rotate(-9 300 110)">
+    <path class="e1" pathLength="1" d="M20 110 A280 100 0 1 1 580 110 A280 100 0 1 1 20 110" fill="none" stroke="url(#${u}e)" stroke-width="7" stroke-linecap="round" style="stroke-dasharray:.92 2;vector-effect:non-scaling-stroke"/>
+    <path class="e2" pathLength="1" d="M60 120 A240 80 0 1 0 540 120 A240 80 0 1 0 60 120" fill="none" stroke="url(#${u}e)" stroke-width="2" stroke-opacity=".6" style="stroke-dasharray:.5 2;vector-effect:non-scaling-stroke"/></g></svg></div></div>`,
+r=>{
+  an(Q(r,'.e1'),[{strokeDashoffset:.92,opacity:0},{opacity:1,offset:.05},{strokeDashoffset:0,opacity:1}],{d:1700,e:E.io});
+  an(Q(r,'.e2'),[{strokeDashoffset:.5,opacity:0},{opacity:1,offset:.05},{strokeDashoffset:0,opacity:1}],{d:1900,t:200,e:E.io});
+  an(Q(r,'.word'),[{opacity:0,filter:'blur(16px)',transform:'scale(1.18)'},{opacity:1,filter:'blur(0)',transform:'none'}],{d:1200,t:500});
+});
+
+/* ---------- 63 Tile K ---------- */
+add(63,'Tile K','Tile pop · spring rotation',u=>
+  `<div class="logo"><svg width="170" height="196" viewBox="0 0 200 230">
+   <rect class="st" x="0" y="0" width="56" height="96" fill="#0d0d10"/><rect class="st" x="0" y="138" width="56" height="92" fill="#0d0d10"/>
+   <rect class="tl" x="0" y="96" width="56" height="42" fill="#ffd21a"/>
+   <path class="tl" d="M60 0 H116 V56 C84 56 60 32 60 0Z" fill="#ff8a00"/>
+   <path class="tl" d="M122 0 H190 V68 C154 68 122 36 122 0Z" fill="#ff1f2d"/>
+   <path class="tl" d="M62 94 L128 74 L190 100 L124 126 L62 126Z" fill="#22b800"/>
+   <path class="tl" d="M124 134 H190 V204 C154 204 124 174 124 134Z" fill="#00b5ff"/>
+   <path class="tl" d="M62 150 H116 V230 C84 230 62 206 62 150Z" fill="#3b2bff"/>
+   <path class="tl" d="M122 214 H190 V230 H150 C134 230 122 224 122 214Z" fill="#9b30f0"/></svg>
+   ${W('Kosmographica',{cls:'geo',style:'font-size:46px;margin-top:10px;font-weight:500'})}</div>`,
+r=>{
+  QA(r,'.st').forEach((s,i)=>an(s,[{transform:`translateY(${i?60:-60}px)`,opacity:0},{transform:'none',opacity:1}],{d:600}));
+  [3,0,5,1,4,2,6].forEach((k,i)=>an(QA(r,'.tl')[k],[{transform:'scale(0) rotate(-90deg)',opacity:0},{transform:'none',opacity:1}],{d:900,t:350+i*110,e:E.spring}));
+  rise(QA(r,'.c'),1200,35);
+});
+
+/* ---------- 64 Color-sweep serif ---------- */
+add(64,'Color Sweep','Rise in black · spectrum wipe',u=>{
+  const t='Kosmographica';
+  return `<div class="logo"><div class="word f64">${[...t].map((ch,i)=>`<span class="c" data-col="${i?`hsl(${Math.round((i-1)/(t.length-2)*285)} 92% 50%)`:'#111'}">${ch}</span>`).join('')}</div></div>`;
+},r=>{
+  rise(QA(r,'.c'),0,55,{y:30,d:800});
+  QA(r,'.c').forEach((c,i)=>an(c,[{color:'#111'},{color:c.dataset.col}],{d:700,t:1100+i*85,e:E.io}));
+});
+
+/* =========================================================
+   Player UI
+   ========================================================= */
+/* =========================================================
+   Batch 28–36 · 70s stripe set (Cooper-style type = Caprasimo)
+   ========================================================= */
+const P70=['#e8190c','#ff6a00','#ffd500','#1ea446','#00a9ec','#0b5cc0','#7a2ea8'];
+const PAPER='#fcf7ee';
+const hard=(cols,dir='180deg')=>`linear-gradient(${dir},${cols.map((c,i)=>`${c} ${i/cols.length*100}% ${(i+1)/cols.length*100}%`).join(',')})`;
+
+/* ---------- 28 Rainbow runway ---------- */
+add(28,'Rainbow Runway','Stripe draw-on · spring title',u=>{
+  const X0=470,Yc=112,rin=18;
+  const p=P70.map((c,i)=>{const r=rin+(6-i)*14;return `<path class="st dr" pathLength="1" d="M0 ${Yc-r} H${X0} A${r} ${r} 0 0 1 ${X0+r} ${Yc} V${Yc+36}" fill="none" stroke="${c}" stroke-width="14.6"/>`}).join('');
+  return `<div class="logo">${W('Kosmographica',{cls:'cps',style:'font-size:86px;letter-spacing:-.02em;margin-bottom:6px'})}<svg width="580" height="150" viewBox="0 0 580 150">${p}</svg></div>`;
+},r=>{
+  QA(r,'.c').forEach((c,i)=>an(c,[{transform:'translateY(50px) scale(.6)',opacity:0},{transform:'none',opacity:1}],{d:900,t:i*45,e:E.spring}));
+  QA(r,'.st').forEach((s,i)=>draw(s,450+i*90,1200));
+});
+
+/* ---------- 29 Chevron K (slab) ---------- */
+add(29,'Slab K Chevrons','Build · stripes slide from behind',u=>{
+  const w=11,dx=w*1.414,bv=95,first=bv+32.5+dx/2;
+  const cols=P70.map((c,i)=>{const x=first+i*dx;return `<path class="cc" d="M${x+130} 0 L${x} 130 L${x+130} 260" fill="none" stroke="${c}" stroke-width="${w+.4}" stroke-miterlimit="6"/>`}).join('');
+  return `<div class="logo"><svg width="380" height="260" viewBox="0 0 380 260"><defs><clipPath id="${u}k"><rect width="380" height="260"/></clipPath></defs>
+   <g clip-path="url(#${u}k)">${cols}
+   <path class="bk" d="M${bv+130} 0 L${bv} 130 L${bv+130} 260" fill="none" stroke="#0d0d10" stroke-width="46" stroke-miterlimit="6"/>
+   <g fill="#0d0d10"><rect class="stem" style="transform-origin:50% 100%" x="26" y="0" width="74" height="260"/><rect class="sf" x="0" y="0" width="128" height="36"/><rect class="sf" x="0" y="224" width="128" height="36"/></g></g></svg>
+   ${W('Kosmographica',{cls:'cps',style:'font-size:56px;margin-top:6px'})}</div>`;
+},r=>{
+  an(Q(r,'.stem'),[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:600});
+  QA(r,'.sf').forEach((s,i)=>an(s,[{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{d:450,t:350+i*120}));
+  an(Q(r,'.bk'),[{transform:'translateX(-50px)',opacity:0},{transform:'none',opacity:1}],{d:600,t:300});
+  QA(r,'.cc').forEach((c,i)=>an(c,[{transform:'translateX(-90px)',opacity:0},{transform:'none',opacity:1}],{d:800,t:600+i*90}));
+  rise(QA(r,'.c'),1000,35);
+});
+
+/* ---------- 30 Bar over tight serif ---------- */
+add(30,'Spectrum Bar','Segment pop · mask rise',u=>
+  `<div class="logo"><svg width="450" height="46" viewBox="0 0 450 46" style="align-self:flex-end;margin-right:20px">${P70.map((c,i)=>`<rect class="sg" x="${i*64.3}" y="0" width="64.6" height="46" fill="${c}" style="transform-origin:50% 100%"/>`).join('')}</svg>
+   ${W('Kosmographica',{cls:'f30',mask:true})}</div>`,
+r=>{
+  QA(r,'.sg').forEach((s,i)=>an(s,[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:500,t:i*70,e:E.back}));
+  maskRise(QA(r,'.c'),450,32);
+});
+
+/* ---------- 31 Stacked caps + stripes ---------- */
+add(31,'Stacked Caps','Slam in · stripes wipe',u=>
+  `<div class="logo"><svg width="520" height="212" viewBox="0 0 490 200" style="font-family:Caprasimo,serif" fill="#0d0d10" stroke="#0d0d10" stroke-width="3" stroke-linejoin="round">
+   <text class="ln" x="4" y="90" font-size="122" textLength="376" lengthAdjust="spacingAndGlyphs" style="transform-origin:0 50%">KOSMO</text>
+   <text class="ln" x="4" y="196" font-size="122" textLength="380" lengthAdjust="spacingAndGlyphs" style="transform-origin:0 50%">GRAPHICA</text>
+   ${P70.map((c,i)=>`<rect class="sg" x="405" y="${i*28.6}" width="85" height="28.8" fill="${c}" stroke="none" style="transform-origin:100% 50%"/>`).join('')}</svg></div>`,
+r=>{
+  QA(r,'.ln').forEach((t,i)=>an(t,[{transform:'translateX(-120px) scaleX(.6)',opacity:0,filter:'blur(8px)'},{transform:'none',opacity:1,filter:'blur(0)'}],{d:800,t:i*180}));
+  QA(r,'.sg').forEach((s,i)=>an(s,[{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{d:500,t:500+i*80}));
+});
+
+/* ---------- 32 Fan dial ---------- */
+add(32,'Fan Dial','Fan open · spring',u=>{
+  const R=190,r=72,pt=(rr,a)=>`${(rr*Math.cos(a)).toFixed(2)} ${(-rr*Math.sin(a)).toFixed(2)}`;
+  const wd=P70.map((c,i)=>{const a0=Math.PI-i*Math.PI/7,a1=Math.PI-(i+1)*Math.PI/7;
+    return `<path class="wd" style="transform-box:view-box;transform-origin:200px 200px" d="M${pt(R,a0)} A${R} ${R} 0 0 1 ${pt(R,a1)} L${pt(r,a1)} A${r} ${r} 0 0 0 ${pt(r,a0)}Z" fill="${c}" stroke="${PAPER}" stroke-width="4" stroke-linejoin="round"/>`}).join('');
+  return `<div class="logo"><svg width="400" height="196" viewBox="-200 -200 400 196">${wd}</svg>${W('kosmographica',{cls:'cps',style:'font-size:84px;margin-top:-4px;letter-spacing:-.02em'})}</div>`;
+},r=>{
+  QA(r,'.wd').forEach((w,i)=>an(w,[{transform:'scale(.1) rotate(-75deg)',opacity:0},{transform:'none',opacity:1}],{d:1000,t:i*90,e:E.spring}));
+  rise(QA(r,'.c'),700,40,{y:30});
+});
+
+/* ---------- 33 Italic + speed stripes ---------- */
+add(33,'Speed Stripes','Slant slide · stripe sweep',u=>
+  `<div class="logo">${W('Kosmographica',{cls:'f33'})}<svg width="560" height="100" viewBox="0 0 520 100" style="margin-top:-4px">${P70.map((c,i)=>`<polygon class="sp" points="30,${i*13.6} 520,${i*13.6} 490,${i*13.6+11} 0,${i*13.6+11}" fill="${c}" style="transform-origin:0 50%"/>`).join('')}</svg></div>`,
+r=>{
+  QA(r,'.c').forEach((c,i)=>an(c,[{transform:'translateX(-60px) skewX(-25deg)',opacity:0},{transform:'none',opacity:1}],{d:800,t:i*45}));
+  QA(r,'.sp').forEach((s,i)=>an(s,[{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{d:800,t:350+i*90,e:E.io}));
+});
+
+/* ---------- 34 Rounded rings + K ---------- */
+add(34,'Ring K','Ring draw-on · K pop',u=>{
+  const rg=P70.map((c,i)=>{const ins=5.5+i*11;return `<rect class="rg dr" pathLength="1" x="${ins}" y="${ins}" width="${340-2*ins}" height="${250-2*ins}" rx="${Math.max(14,82-ins)}" fill="none" stroke="${c}" stroke-width="11.4"/>`}).join('');
+  return `<div class="logo"><svg width="340" height="250" viewBox="0 0 340 250">${rg}<text class="kk" x="170" y="171" text-anchor="middle" font-size="132" font-family="Caprasimo,serif" fill="#0d0d10">K</text></svg>
+   ${W('Kosmographica',{cls:'cps',style:'font-size:64px;margin-top:-14px;position:relative;letter-spacing:-.02em'})}</div>`;
+},r=>{
+  QA(r,'.rg').forEach((g,i)=>draw(g,i*130,1100));
+  an(Q(r,'.kk'),[{transform:'scale(0) rotate(-30deg)',opacity:0},{transform:'none',opacity:1}],{d:900,t:900,e:E.spring});
+  rise(QA(r,'.c'),1100,35);
+});
+
+/* ---------- 35 Glitch caps with band ---------- */
+add(35,'Split Band','Split slide · band flash',u=>
+  `<div class="logo"><div class="w35"><div class="top">KOSMOGRAPHICA</div><div class="bot">KOSMOGRAPHICA</div>
+   <div class="rbn" style="background:${hard(['#e8190c','#ff6a00','#ffd500','#1ea446','#00a9ec','#2a3bd0','#7a2ea8'])}"></div></div></div>`,
+r=>{
+  an(Q(r,'.top'),[{transform:'translateY(-70px)',opacity:0},{transform:'none',opacity:1}],{d:800});
+  an(Q(r,'.bot'),[{transform:'translateY(76px) skewX(-6deg)',opacity:0},{transform:'translateY(6px) skewX(-3deg)',opacity:1}],{d:800,t:150});
+  an(Q(r,'.rbn'),[{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{d:700,t:750,e:E.io});
+  an(Q(r,'.rbn'),[{filter:'brightness(1)'},{filter:'brightness(1.4) saturate(1.3)'},{filter:'brightness(1)'}],{d:500,t:1450});
+});
+
+/* ---------- 36 Corner rainbow ---------- */
+add(36,'Corner Sweep','Stripe sweep · mask rise',u=>{
+  const cx=110,cy=110,p=P70.map((c,i)=>{const r=100-i*14;return `<path class="st dr" pathLength="1" d="M560 ${cy-r} H${cx} A${r} ${r} 0 0 0 ${cx-r} ${cy} V330" fill="none" stroke="${c}" stroke-width="14.6"/>`}).join('');
+  return `<div class="logo"><div class="w36"><svg width="560" height="330" viewBox="0 0 560 330" style="position:absolute;left:0;top:0">${p}</svg>
+   <div style="position:absolute;left:112px;top:98px">${W('Kosmo',{cls:'cps',mask:true,style:'font-size:92px;line-height:.98;letter-spacing:-.02em'})}${W('graphica',{cls:'cps',mask:true,style:'font-size:92px;line-height:.98;letter-spacing:-.02em'})}</div></div></div>`;
+},r=>{
+  QA(r,'.st').forEach((s,i)=>draw(s,i*100,1300));
+  maskRise(QA(r,'.c'),800,40);
+});
+
+/* =========================================================
+   Batch 10–18
+   ========================================================= */
+const arms=(S,cy,H,dxs)=>{
+  let s='';
+  for(let j=0;j<4;j++)s+=`<polygon class="ar up" points="${S+j*dxs},${cy} ${S+(j+1)*dxs+.4},${cy} ${S+(j+1)*dxs+.4+H},${cy-H} ${S+j*dxs+H},${cy-H}" fill="${RB[j]}" style="transform-origin:0 100%"/>`;
+  for(let k=3;k<7;k++){const o=k-3;s+=`<polygon class="ar dn" points="${S+o*dxs},${cy} ${S+(o+1)*dxs+.4},${cy} ${S+(o+1)*dxs+.4+H},${cy+H} ${S+o*dxs+H},${cy+H}" fill="${RB[k]}" style="transform-origin:0 0"/>`}
+  return s;
+};
+const armAnim=r=>{
+  QA(r,'.ar.up').forEach((a,i)=>an(a,[{transform:'scale(0)',opacity:0},{transform:'none',opacity:1}],{d:700,t:500+i*90}));
+  QA(r,'.ar.dn').forEach((a,i)=>an(a,[{transform:'scale(0)',opacity:0},{transform:'none',opacity:1}],{d:700,t:800+i*90}));
+};
+
+/* ---------- 10 J·K stripes ---------- */
+add(10,'Hook & K','Stripe draw-on · arm fan-out',u=>{
+  const cxJ=18,Yc=215,top=72;
+  const J=RB.map((c,i)=>{const x=40+i*15.5,r=x-cxJ;return `<path class="st dr" pathLength="1" d="M${x} ${top} V${Yc} A${r} ${r} 0 0 1 ${cxJ} ${Yc+r} H0" fill="none" stroke="${c}" stroke-width="15.8"/>`}).join('');
+  return `<div class="logo" style="flex-direction:row;gap:4px"><svg width="372" height="276" viewBox="0 66 372 276">${J}${arms(146,184,112,26)}</svg>${W('KOSMOGRAPHICA',{cls:'ant',mask:true,style:'font-size:92px'})}</div>`;
+},r=>{
+  QA(r,'.st').forEach((s,i)=>draw(s,i*110,1200));
+  armAnim(r);
+  maskRise(QA(r,'.c'),900,30);
+});
+
+/* ---------- 11 Italic caps + speed lines ---------- */
+add(11,'Speed Caps','Slant slide · line sweep',u=>{
+  const L=P70.map((c,i)=>{const y=i*13,w=i<3?520:500;return `<polygon class="ln" points="0,${y} ${w},${y} ${w-8},${y+7} 0,${y+7}" fill="${[ '#e8190c','#ff6a00','#ffd500','#1ea446','#00a9ec','#0b5cc0','#7a2ea8'][i]}" style="transform-origin:0 50%"/>`}).join('')+
+   `<polygon class="ln" points="534,0 556,0 548,8 526,8" fill="#e8190c"/><polygon class="ln" points="530,13 548,13 541,21 523,21" fill="#ff6a00"/><polygon class="ln" points="524,39 536,39 531,46 519,46" fill="#1ea446"/>`;
+  return `<div class="logo">${W('KOSMOGRAPHICA',{cls:'exo'})}<svg width="570" height="92" viewBox="0 0 560 92" style="margin-top:-4px;align-self:flex-start">${L}</svg></div>`;
+},r=>{
+  QA(r,'.c').forEach((c,i)=>an(c,[{transform:'translateX(-80px) skewX(-20deg)',opacity:0},{transform:'none',opacity:1}],{d:700,t:i*40}));
+  QA(r,'.ln').forEach((l,i)=>an(l,[{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{d:700,t:300+i*70,e:E.io}));
+});
+
+/* ---------- 12 Badge ---------- */
+add(12,'Badge','Frame wipe · block build',u=>
+  `<div class="logo"><div class="badge"><div class="brow"><svg width="188" height="156" viewBox="0 0 188 156"><path class="kp" d="M0 0 H58 V60 L112 0 H180 L100 80 L184 156 H114 L58 100 V156 H0Z" fill="#0d0d10"/></svg><i class="dv"></i>
+   <div>${W('KOSMO',{cls:'ant',mask:true,style:'font-size:78px;line-height:.95'})}${W('GRAPHICA',{cls:'ant',mask:true,style:'font-size:78px;line-height:.95'})}</div></div>
+   <div class="bbar">${P70.map(c=>`<i style="background:${c}"></i>`).join('')}</div></div></div>`,
+r=>{
+  an(Q(r,'.badge'),[{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0% 0 0)'}],{d:900,e:E.io});
+  an(Q(r,'.kp'),[{transform:'scale(0)',opacity:0},{transform:'none',opacity:1}],{d:800,t:500,e:E.spring});
+  an(Q(r,'.dv'),[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:400,t:700});
+  maskRise(QA(r,'.c'),800,30);
+  QA(r,'.bbar i').forEach((b,i)=>an(b,[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:450,t:600+i*70,e:E.back}));
+});
+
+/* ---------- 13 Rainbow O's ---------- */
+add(13,'Rainbow O','Letter rise · O spin-pop',u=>{
+  const o=`<span class="c o"><svg width="1em" height="1em" viewBox="0 0 100 100" style="width:.64em;height:.64em;vertical-align:-.02em"><defs><clipPath id="${u}c"><circle cx="50" cy="50" r="38"/></clipPath></defs><circle cx="50" cy="50" r="46" fill="#0d0d10"/><g clip-path="url(#${u}c)">${P70.map((c,i)=>`<rect x="0" y="${12+i*11}" width="100" height="11.4" fill="${c}" style="transform-box:view-box"/>`).join('')}</g></svg></span>`;
+  return `<div class="logo"><div class="word out">${[...'kosmographica'].map(ch=>ch==='o'?o:`<span class="c">${ch}</span>`).join('')}</div></div>`;
+},r=>{
+  QA(r,'.c:not(.o)').forEach((c,i)=>an(c,[{opacity:0,transform:'translateY(30px)'},{opacity:1,transform:'none'}],{d:700,t:i*45}));
+  QA(r,'.c.o').forEach((c,i)=>an(c,[{transform:'scale(0) rotate(-360deg)',opacity:0},{transform:'none',opacity:1}],{d:1100,t:(i?4:1)*45+300,e:E.spring}));
+});
+
+/* ---------- 14 Staircase ---------- */
+add(14,'Staircase','Bars rise · label wipe',u=>
+  `<div class="logo"><div class="stairs">${P70.map((c,i)=>`<i style="background:${c};height:${[16,36,54,74,96,120,144][i]}px"></i>`).join('')}</div>
+   <div class="blk">${W('KOSMOGRAPHICA',{cls:'ant',mask:true,style:'font-size:76px;letter-spacing:.005em'})}</div></div>`,
+r=>{
+  QA(r,'.stairs i').forEach((b,i)=>an(b,[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:900,t:i*110,e:E.spring}));
+  an(Q(r,'.blk'),[{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],{d:700,t:700,e:E.io});
+  maskRise(QA(r,'.c'),1000,28);
+});
+
+/* ---------- 15 Arrow chevrons ---------- */
+add(15,'Arrow Chevrons','Chevron slide · mask rise',u=>{
+  const w=16,dx=w*1.28;
+  const ch=[...P70.map((c,i)=>c)].map((c,i)=>{const x=10+(6-i)*dx; return `<path class="cc" d="M${x} -10 L${x+80} 90 L${x} 190" fill="none" stroke="${RB[i]}" stroke-width="${w+.5}" stroke-miterlimit="6"/>`}).join('');
+  return `<div class="logo" style="flex-direction:row;gap:22px"><svg width="215" height="180" viewBox="0 0 215 180"><defs><clipPath id="${u}k"><rect width="215" height="180"/></clipPath></defs><g clip-path="url(#${u}k)" transform="translate(0 0)">${ch}</g></svg>
+   <div>${W('KOSMO',{cls:'exo2',mask:true})}${W('GRAPHICA',{cls:'exo2',mask:true})}</div></div>`;
+},r=>{
+  QA(r,'.cc').forEach((c,i)=>an(c,[{transform:'translateX(-90px)',opacity:0},{transform:'none',opacity:1}],{d:800,t:i*80}));
+  maskRise(QA(r,'.c'),600,30);
+});
+
+/* ---------- 16 Pill rings with label ---------- */
+add(16,'Pill Rings','Ring draw-on · label pop',u=>{
+  const rg=P70.map((c,i)=>{const ins=5.5+i*11;return `<rect class="rg dr" pathLength="1" x="${ins}" y="${ins}" width="${560-2*ins}" height="${240-2*ins}" rx="${Math.max(18,104-ins)}" fill="none" stroke="${c}" stroke-width="11.4"/>`}).join('');
+  return `<div class="logo"><svg width="560" height="240" viewBox="0 0 560 240" style="font-family:Anton,sans-serif">${rg}<text class="lb" x="280" y="152" text-anchor="middle" font-size="86" textLength="372" lengthAdjust="spacingAndGlyphs" fill="#0d0d10">KOSMOGRAPHICA</text></svg></div>`;
+},r=>{
+  QA(r,'.rg').forEach((g,i)=>draw(g,i*130,1200));
+  an(Q(r,'.lb'),[{transform:'scale(.5)',opacity:0,filter:'blur(8px)'},{transform:'none',opacity:1,filter:'blur(0)'}],{d:900,t:1000,e:E.spring});
+});
+
+/* ---------- 17 Slab K with diagonal rainbow ---------- */
+add(17,'Diagonal K','Stem build · arm fan-out',u=>
+  `<div class="logo"><svg width="364" height="262" viewBox="0 0 364 262"><rect class="stem" style="transform-origin:50% 100%" x="0" y="0" width="88" height="262" fill="#0d0d10"/>${arms(88,131,131,34)}</svg>
+   ${W('KOSMOGRAPHICA',{cls:'exo2',style:'font-size:52px;margin-top:10px;font-weight:800;letter-spacing:.01em'})}</div>`,
+r=>{
+  an(Q(r,'.stem'),[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:700});
+  armAnim(r);rise(QA(r,'.c'),1100,30);
+});
+
+/* ---------- 18 Banded italic ---------- */
+add(18,'Banded Italic','Band sweep · slam',u=>{
+  const band=`<div class="band">${P70.map(c=>`<i style="background:${c}"></i>`).join('')}</div>`;
+  return `<div class="logo"><div class="b18">${band}${W('KOSMOGRAPHICA',{cls:'exo',style:'margin:2px 0'})}${band.replace('class="band"','class="band b2"')}</div></div>`;
+},r=>{
+  QA(r,'.band').forEach((b,k)=>QA(b,'i').forEach((s,i)=>an(s,[{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{d:500,t:k*250+i*70,e:E.io})));
+  QA(r,'.c').forEach((c,i)=>an(c,[{transform:'scale(1.8,.2) translateY(30px)',opacity:0},{transform:'none',opacity:1}],{d:600,t:300+i*40,e:E.back}));
+});
+
+/* =========================================================
+   Decades sheet D01–D15 (1940s–1980s)
+   ========================================================= */
+const addD=(k,dec,name,reveal,build,play)=>{add(100+k,name,reveal,build,play);LOGOS[LOGOS.length-1].label='D'+String(k).padStart(2,'0')+' · '+dec};
+
+/* D01 · Beam tower */
+addD(1,'1940s','Beam Tower','Pillars rise · beam fan-out',u=>{
+  const beam=RB.map((c,i)=>`<polygon class="bm" points="108,${100+i*3.4} 108,${100+(i+1)*3.4+.3} 380,${(i+1)*21.4+.3} 380,${i*21.4}" fill="${c}" style="transform-origin:0 50%"/>`).join('');
+  return `<div class="logo"><svg width="420" height="234" viewBox="0 0 380 212" style="font-family:Anton,sans-serif">${beam}
+   <g fill="#0d0d10"><rect class="pl" x="0" y="40" width="22" height="172"/><rect class="pl" x="27" y="16" width="22" height="196"/>
+   <path class="kk" transform="translate(56 100)" d="M0 0H14V24L34 0H52L28 30L54 62H36L14 36V62H0Z"/>
+   <text class="wd" x="56" y="208" font-size="48" textLength="324" lengthAdjust="spacingAndGlyphs">KOSMOGRAPHICA</text></g></svg></div>`;
+},r=>{
+  QA(r,'.pl').forEach((p,i)=>an(p,[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:700,t:i*150,style:0,e:E.out}));
+  an(Q(r,'.kk'),[{transform:'translate(56px,100px) scale(0)',opacity:0},{transform:'translate(56px,100px) scale(1)',opacity:1}],{d:600,t:450,e:E.spring});
+  QA(r,'.bm').forEach((b,i)=>an(b,[{transform:'scaleX(0)',opacity:0},{transform:'none',opacity:1}],{d:900,t:800+i*80}));
+  an(Q(r,'.wd'),[{opacity:0,transform:'translateX(-30px)'},{opacity:1,transform:'none'}],{d:700,t:500});
+});
+
+/* D02 · Blocky stairs */
+addD(2,'1940s','Block Stairs','Pop-in letters · stair rise',u=>
+  `<div class="logo"><div class="col2"><div class="r1">${W('KOSMO',{cls:'bng'})}<div class="stp">${RB.map((c,i)=>`<i style="background:${c};height:${[34,48,62,76,92,108,126][i]}px"></i>`).join('')}</div></div>${W('GRAPHICA',{cls:'bng'})}</div></div>`,
+r=>{
+  QA(r,'.c').forEach((c,i)=>an(c,[{transform:'scale(0)',opacity:0},{transform:'none',opacity:1}],{d:600,t:i*55,e:E.spring}));
+  QA(r,'.stp i').forEach((b,i)=>an(b,[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:700,t:450+i*90,e:E.spring}));
+});
+
+/* D03 · Building */
+addD(3,'1940s','Deco Building','Roof wipe · stripe rise',u=>
+  `<div class="logo"><svg width="440" height="220" viewBox="0 0 420 200" style="font-family:Anton,sans-serif">
+   ${RB.map((c,i)=>`<rect class="sr" x="${34+i*10.6}" y="${84-i*9}" width="10.8" height="${90+i*9}" fill="${c}" style="transform-origin:50% 100%"/>`).join('')}
+   <g fill="#0d0d10"><path class="rf" d="M18 112 L108 26 V8 H136 V30 L420 84 V116 H108 V122 H18Z"/>
+   <rect class="rf" x="0" y="176" width="420" height="10"/><rect class="rf" x="16" y="166" width="100" height="10"/>
+   <text class="wd" x="112" y="166" font-size="64" textLength="306" lengthAdjust="spacingAndGlyphs">KOSMOGRAPHICA</text></g></svg></div>`,
+r=>{
+  QA(r,'.rf').forEach((p,i)=>an(p,[{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],{d:900,t:i*200,e:E.io}));
+  QA(r,'.sr').forEach((s,i)=>an(s,[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:600,t:500+i*80}));
+  an(Q(r,'.wd'),[{opacity:0,transform:'translateX(-40px)'},{opacity:1,transform:'none'}],{d:800,t:900});
+});
+
+/* D04 · Atom */
+addD(4,'1950s','Atom','Orbits draw · electrons pop',u=>
+  `<div class="logo" style="flex-direction:row;gap:6px"><svg width="200" height="220" viewBox="-100 -110 200 220"><g class="orb2">
+   ${[0,60,-60].map(a=>`<ellipse class="el dr" pathLength="1" rx="32" ry="92" transform="rotate(${a})" fill="none" stroke="#0d0d10" stroke-width="3"/>`).join('')}</g>
+   <circle class="nu" r="15" fill="#0d0d10"/>
+   ${[[66,-52,RB[5]],[-84,-22,RB[1]],[-74,48,RB[2]],[64,38,RB[4]],[2,92,RB[3]]].map(([x,y,c])=>`<circle class="eo" cx="${x}" cy="${y}" r="11" fill="${c}"/>`).join('')}</svg>
+   ${W('Kosmographica',{cls:'bc',mask:true})}</div>`,
+r=>{
+  QA(r,'.el').forEach((e,i)=>draw(e,i*200,1100));
+  an(Q(r,'.orb2'),[{transform:'rotate(-120deg)'},{transform:'rotate(0)'}],{d:1400,e:E.out});
+  an(Q(r,'.nu'),[{transform:'scale(0)'},{transform:'scale(1)'}],{d:600,t:300,e:E.spring});
+  QA(r,'.eo').forEach((c,i)=>an(c,[{transform:'scale(0)'},{transform:'scale(1)'}],{d:700,t:900+i*110,e:E.spring}));
+  maskRise(QA(r,'.c'),800,35);
+});
+
+/* D05 · Sawtooth */
+addD(5,'1950s','Sawtooth Wedges','Wedge slide · mask rise',u=>{
+  const s=RB.map((c,i)=>{const x=i*88;return `<polygon class="wg" points="${x},0 ${x+88},56 ${x},56" fill="${c}" style="transform-origin:0 50%"/><polygon class="wg" points="${x},140 ${x+88},84 ${x},84" fill="${c}" style="transform-origin:0 50%"/>`}).join('');
+  return `<div class="logo"><div style="position:relative;width:616px;height:140px"><svg width="616" height="140" viewBox="0 0 616 140">${s}</svg>
+   <div style="position:absolute;left:0;right:0;top:12px;text-align:center">${W('Kosmographica',{cls:'out',mask:true,style:'font-size:100px;font-weight:500;display:inline-block;letter-spacing:-.04em'})}</div></div></div>`;
+},r=>{
+  QA(r,'.wg').forEach((w,i)=>an(w,[{transform:'scaleX(0)',opacity:0},{transform:'none',opacity:1}],{d:600,t:Math.floor(i/2)*100,e:E.out}));
+  maskRise(QA(r,'.c'),500,32);
+});
+
+/* D06 · Star + swoosh */
+addD(6,'1950s','Star Swoosh','Swoosh draw-on · star pop',u=>{
+  const top=RB.map((c,i)=>`<path class="sw dr" pathLength="1" transform="translate(0 ${i*7})" d="M120 82 C220 14 420 -6 540 40 C556 52 530 70 490 66" fill="none" stroke="${c}" stroke-width="8"/>`).join('');
+  const bot=RB.map((c,i)=>`<path class="sw dr" pathLength="1" transform="translate(0 ${-i*6})" d="M30 118 C60 190 260 170 410 98" fill="none" stroke="${c}" stroke-width="7"/>`).join('');
+  return `<div class="logo"><div style="position:relative;width:580px;height:210px"><svg width="580" height="210" viewBox="0 0 580 210">${bot}${top}
+   <path class="star" d="M60 20 Q64 76 120 80 Q64 84 60 140 Q56 84 0 80 Q56 76 60 20Z" fill="#0d0d10" transform="translate(6 10)"/></svg>
+   <div style="position:absolute;left:120px;top:68px">${W('Kosmographica',{cls:'exo',style:'font-size:64px'})}</div></div></div>`;
+},r=>{
+  QA(r,'.sw').forEach((s,i)=>draw(s,(i%7)*70,1300,E.out));
+  an(Q(r,'.star'),[{transform:'translate(6px,10px) scale(0) rotate(-180deg)',opacity:0},{transform:'translate(6px,10px) scale(1) rotate(0)',opacity:1}],{d:900,e:E.spring});
+  rise(QA(r,'.c'),700,35);
+});
+
+/* D07 · Bullseye */
+addD(7,'1960s','Bullseye','Rings expand · mask rise',u=>
+  `<div class="logo" style="flex-direction:row;gap:14px"><svg width="190" height="190" viewBox="-95 -95 190 190">${RB.map((c,i)=>`<circle class="ci" r="${92-i*12}" fill="${c}"/>`).join('')}<circle class="ci" r="9" fill="${PAPER}"/></svg>
+   <div>${W('KOSMO',{cls:'out',mask:true,style:'font-size:76px;font-weight:600;line-height:.95;letter-spacing:-.02em'})}${W('GRAPHICA',{cls:'out',mask:true,style:'font-size:76px;font-weight:600;line-height:.95;letter-spacing:-.02em'})}</div></div>`,
+r=>{
+  QA(r,'.ci').forEach((c,i)=>an(c,[{transform:'scale(0)'},{transform:'scale(1)'}],{d:800,t:i*90,e:E.spring}));
+  maskRise(QA(r,'.c'),600,30);
+});
+
+/* D08 · Band frame */
+addD(8,'1960s','Band Frame','Segments wipe in from both sides',u=>
+  `<div class="logo"><div class="b8"><div class="bd">${RB.map(c=>`<i style="background:${c}"></i>`).join('')}</div>${W('KOSMOGRAPHICA',{cls:'bcd',style:'margin:6px 0'})}<div class="bd">${RB.map(c=>`<i style="background:${c}"></i>`).join('')}</div></div></div>`,
+r=>{
+  QA(r,'.bd').forEach((b,k)=>QA(b,'i').forEach((s,i)=>an(s,[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:500,t:(k?6-i:i)*70,e:E.out})));
+  an(Q(r,'.word'),[{clipPath:'inset(0 50% 0 50%)',opacity:0},{clipPath:'inset(0 0 0 0)',opacity:1}],{d:800,t:500,e:E.io});
+});
+
+/* D09 · Block K */
+addD(9,'1960s','Block K','Block build · stripe fan-out',u=>
+  `<div class="logo" style="flex-direction:row;gap:18px"><svg width="170" height="156" viewBox="0 0 170 156">
+   <rect class="bk" x="0" y="0" width="50" height="70" fill="#0d0d10"/><rect class="bk" x="0" y="78" width="50" height="78" fill="#0d0d10"/>${arms(56,78,78,20)}
+   <polygon class="bk" points="110,156 164,156 128,114" fill="#0d0d10"/></svg>${W('KOSMOGRAPHICA',{cls:'out',style:'font-size:46px;font-weight:500;letter-spacing:-.01em'})}</div>`,
+r=>{
+  QA(r,'.bk').forEach((b,i)=>an(b,[{transform:'scale(0)',opacity:0},{transform:'none',opacity:1}],{d:600,t:i*160,e:E.spring}));
+  armAnim(r);rise(QA(r,'.c'),900,28);
+});
+
+/* D10 · Rainbow loop */
+addD(10,'1970s','Rainbow Loop','Arch draw · stripes run out',u=>{
+  const arch=RB.map((c,i)=>{const r=96-i*13;return `<path class="ac dr" pathLength="1" d="M${108-r} 112 V100 A${r} ${r} 0 0 1 ${108+r} 100 V112" fill="none" stroke="${c}" stroke-width="13.6"/>`}).join('');
+  const bands=RB.map((c,i)=>`<rect class="bn" x="200" y="${60+i*13.4}" width="330" height="13.8" fill="${c}" style="transform-origin:0 50%"/>`).join('');
+  return `<div class="logo"><svg width="540" height="130" viewBox="0 0 540 130">${bands}${arch}</svg>${W('Kosmographica',{cls:'cps',style:'font-size:76px;letter-spacing:-.02em;margin-top:-6px'})}</div>`;
+},r=>{
+  QA(r,'.ac').forEach((a,i)=>draw(a,i*100,1000));
+  QA(r,'.bn').forEach((b,i)=>an(b,[{transform:'scaleX(0)'},{transform:'scaleX(1)'}],{d:700,t:700+i*70,e:E.out}));
+  QA(r,'.c').forEach((c,i)=>an(c,[{transform:'translateY(40px) scale(.6)',opacity:0},{transform:'none',opacity:1}],{d:900,t:800+i*40,e:E.spring}));
+});
+
+/* D11 · K runway */
+addD(11,'1970s','K Runway','Stripe draw · K pop',u=>{
+  const X0=330,Yc=36,p=RB.map((c,i)=>{const r=16+i*13;return `<path class="st dr" pathLength="1" d="M0 ${Yc+r} H${X0} A${r} ${r} 0 0 0 ${X0+r} ${Yc} V${Yc-22}" fill="none" stroke="${c}" stroke-width="13.8"/>`}).join('');
+  return `<div class="logo"><div style="display:flex;align-items:center;gap:0"><span class="cps kk11" style="font-size:190px;line-height:1;margin-right:-18px;position:relative;z-index:1">K</span><svg width="450" height="150" viewBox="0 0 450 150" style="margin-top:20px">${p}</svg></div>${W('Kosmographica',{cls:'cps',style:'font-size:56px;margin-top:-20px;letter-spacing:-.01em'})}</div>`;
+},r=>{
+  an(Q(r,'.kk11'),[{transform:'scale(0) rotate(-40deg)',opacity:0},{transform:'none',opacity:1}],{d:800,e:E.spring});
+  QA(r,'.st').forEach((s,i)=>draw(s,400+i*90,1200));
+  rise(QA(r,'.c'),1000,35);
+});
+
+/* D12 · Arch + condensed caps */
+addD(12,'1970s','Arch Caps','Arch draw · mask rise',u=>{
+  const a=RB.map((c,i)=>{const r=122-i*17;return `<path class="arc dr" pathLength="1" d="M${-r} 0 A${r} ${r} 0 0 1 ${r} 0" fill="none" stroke="${c}" stroke-width="17.4"/>`}).join('');
+  return `<div class="logo"><svg width="300" height="140" viewBox="-150 -140 300 142">${a}</svg>${W('KOSMOGRAPHICA',{cls:'ant',mask:true,style:'font-size:104px;margin-top:4px'})}</div>`;
+},r=>{
+  QA(r,'.arc').forEach((a,i)=>draw(a,i*110,1000));
+  maskRise(QA(r,'.c'),800,28);
+});
+
+/* D13 · 3D stairs */
+addD(13,'1980s','Isometric Steps','Columns rise · label slide',u=>{
+  const cols=RB.map((c,i)=>{const w=54,x=i*58,h=24+i*14,y=150-h;return `<g class="cl" style="transform-origin:50% 100%"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#0d0d10"/><polygon points="${x},${y} ${x+w},${y} ${x+w+16},${y-14} ${x+16},${y-14}" fill="${c}"/></g>`}).join('');
+  return `<div class="logo"><svg width="460" height="170" viewBox="0 0 460 170" style="margin-bottom:6px"><g transform="translate(0 16)">${cols}<polygon class="cl" points="${6*58+54},${150-108} ${6*58+70},${150-122} ${6*58+70},${150-14} ${6*58+54},${150}" fill="#0d0d10"/></g></svg>${W('KOSMOGRAPHICA',{cls:'bng',style:'font-size:44px;letter-spacing:.02em'})}</div>`;
+},r=>{
+  QA(r,'.cl').forEach((c,i)=>an(c,[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:700,t:i*100,e:E.back}));
+  QA(r,'.c').forEach((c,i)=>an(c,[{transform:'translateX(-30px)',opacity:0},{transform:'none',opacity:1}],{d:500,t:700+i*30}));
+});
+
+/* D14 · Slanted bands */
+addD(14,'1980s','Slant Bands','Parallelograms slide · title scan',u=>{
+  const sk=(c,x,y)=>`<polygon class="pg" points="${x+34},${y} ${x+98},${y} ${x+64},${y+46} ${x},${y+46}" fill="${c}"/>`;
+  const top=RB.slice(0,4).map((c,i)=>sk(c,60+i*66,0)).join(''),bot=RB.slice(3).map((c,i)=>sk(c,160+i*66,104)).join('');
+  return `<div class="logo"><div style="position:relative;width:560px;height:150px"><svg width="560" height="150" viewBox="0 0 560 150">${top}${bot}</svg>
+   <div style="position:absolute;left:0;right:0;top:46px;text-align:center">${W('KOSMOGRAPHICA',{cls:'orb',style:'display:inline-block'})}</div></div></div>`;
+},r=>{
+  QA(r,'.pg').forEach((p,i)=>an(p,[{transform:`translateX(${i<4?-120:120}px)`,opacity:0},{transform:'none',opacity:1}],{d:800,t:(i%4)*90}));
+  an(Q(r,'.word'),[{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],{d:700,t:500,e:E.io});
+});
+
+/* D15 · Sun, stairs, ramp */
+addD(15,'1980s','Sunrise Ramp','Sun rise · ramp stripes',u=>{
+  const ramp=RB.map((c,i)=>`<polygon class="rp" points="${190+i*34},168 ${224+i*34},168 ${224+i*34},${168-(i+1)*21} ${190+i*34},${168-i*21}" fill="${c}" style="transform-origin:50% 100%"/>`).join('');
+  return `<div class="logo"><svg width="440" height="190" viewBox="0 0 440 190"><circle class="sun" cx="64" cy="48" r="38" fill="#e8190c"/>${ramp}
+   <path class="stp2" d="M0 168 V138 H42 V108 H88 V84 H140 V110 H112 V138 H168 V168Z" fill="#0d0d10"/></svg>${W('KOSMOGRAPHICA',{cls:'orb',style:'font-size:30px;letter-spacing:.2em;margin-top:8px'})}</div>`;
+},r=>{
+  an(Q(r,'.sun'),[{transform:'translateY(60px) scale(.4)',opacity:0},{transform:'none',opacity:1}],{d:1000,e:E.out});
+  an(Q(r,'.stp2'),[{clipPath:'inset(100% 0 0 0)'},{clipPath:'inset(0 0 0 0)'}],{d:700,t:300});
+  QA(r,'.rp').forEach((p,i)=>an(p,[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],{d:600,t:500+i*90}));
+  rise(QA(r,'.c'),1100,22,{y:10});
+});
+
+LOGOS.sort((a,b)=>a.n-b.n);
+
+const nav=document.getElementById('nav'),stage=document.getElementById('stage'),cap=document.getElementById('cap');
+const playB=document.getElementById('play'),scrub=document.getElementById('scrub'),timeL=document.getElementById('time');
+const loopC=document.getElementById('loop'),speedS=document.getElementById('speed');
+let cur=0,total=1,playing=true,speed=1;
+
+function fit(el,box,wf,hf,max=2.4){
+  el.style.transform='none';
+  const w=el.offsetWidth,h=el.offsetHeight;
+  const s=Math.min(box.clientWidth*wf/w,box.clientHeight*hf/h,max);
+  el.style.transform=`translate(-50%,-50%) scale(${s})`;
+}
+nav.querySelector('h1').textContent=`Kosmographica · ${LOGOS.length} reveals`;
+const thumbs=[];
+LOGOS.forEach((L,i)=>{
+  const b=document.createElement('button');b.className='item';
+  b.innerHTML=`<div class="thumb"></div><div><b><i>${L.label||L.n}</i>${L.name}</b><small>${L.reveal}</small></div>`;
+  b.onclick=()=>show(i);nav.appendChild(b);
+  const th=b.querySelector('.thumb');
+  const el=mk(L.build('t'+L.n));th.appendChild(el);thumbs.push([el,th]);
+  anims=[];L.play(el);anims.forEach(a=>a.finish()); // thumbnail = final frame
+});
+anims=[];
+function fitThumbs(){thumbs.forEach(([el,th])=>fit(el,th,.86,.8,1))}
+
+function show(i){
+  cur=(i+LOGOS.length)%LOGOS.length;
+  const L=LOGOS[cur];
+  [...nav.querySelectorAll('.item')].forEach((b,k)=>b.classList.toggle('on',k===cur));
+  nav.querySelectorAll('.item')[cur].scrollIntoView({block:'nearest'});
+  stage.querySelectorAll('.logo').forEach(n=>n.remove());
+  const el=mk(L.build('s'+L.n));stage.appendChild(el);
+  fit(el,stage,.72,.62);
+  cap.innerHTML=`<b>${L.label||L.n}</b> · ${L.name} — ${L.reveal}`;
+  anims=[];L.play(el);
+  total=Math.max(1,...anims.map(a=>a.effect.getComputedTiming().endTime));
+  anims.forEach(a=>{a.playbackRate=speed});
+  playing=true;playB.textContent='Pause';
+}
+function pauseAll(){anims.forEach(a=>a.pause());playing=false;playB.textContent='Play'}
+playB.onclick=()=>{
+  if(playing){pauseAll();return}
+  const t=anims[0]?anims[0].currentTime:0;
+  if(t>=total-5){show(cur);return}
+  anims.forEach(a=>a.play());playing=true;playB.textContent='Pause';
+};
+document.getElementById('replay').onclick=()=>show(cur);
+document.getElementById('prev').onclick=()=>show(cur-1);
+document.getElementById('next').onclick=()=>show(cur+1);
+speedS.onchange=()=>{speed=+speedS.value;anims.forEach(a=>{a.playbackRate=speed})};
+scrub.oninput=()=>{pauseAll();const t=scrub.value/1000*total;anims.forEach(a=>{a.currentTime=t})};
+addEventListener('keydown',e=>{
+  if(e.target.matches('input,select'))return;
+  if(e.key==='ArrowDown'||e.key==='ArrowRight'){show(cur+1);e.preventDefault()}
+  else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){show(cur-1);e.preventDefault()}
+  else if(e.key==='r'||e.key==='R')show(cur);
+  else if(e.key===' '){playB.click();e.preventDefault()}
+});
+addEventListener('resize',()=>{fitThumbs();const el=stage.querySelector('.logo');if(el)fit(el,stage,.72,.62)});
+
+let loopWait=0;
+(function tick(){
+  const a=anims[0];
+  if(a){
+    const t=Math.min(a.currentTime||0,total);
+    if(playing)scrub.value=t/total*1000;
+    timeL.textContent=`${(t/1000).toFixed(2)} / ${(total/1000).toFixed(2)}s`;
+    if(playing&&t>=total-5){
+      if(loopC.checked){loopWait++;if(loopWait>70){loopWait=0;show(cur)}}
+      else{playing=false;playB.textContent='Replay'}
+    }else loopWait=0;
+  }
+  requestAnimationFrame(tick);
+})();
+
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>{fitThumbs();show(0)});
+if(document.fonts)document.fonts.addEventListener('loadingdone',()=>{fitThumbs();const el=stage.querySelector('.logo');if(el)fit(el,stage,.72,.62)});
+setTimeout(()=>{if(!anims.length){fitThumbs();show(0)}},2500);
+</script>
+</body>
+</html>

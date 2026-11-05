@@ -22,6 +22,18 @@
         "apps/web/public"
       ],
       "port": 8765
+    },
+    {
+      "name": "kosmo-logos",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8766",
+        "--directory",
+        "kosmographica-logos"
+      ],
+      "port": 8766
     }
   ]
 }
