@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dinosaurs</title>
+<link rel="stylesheet" href="kosmographica.css?v=15">
+<script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
+<style>
+  /* Layout only: type, colour and the "no boxes" rule come from kosmographica.css. */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  #navbar { display: none; }
+  #app { display: grid; grid-template-columns: 340px minmax(0, 1fr) 400px; height: 100vh; }
+  .col { min-width: 0; min-height: 0; display: flex; flex-direction: column; border-right: 1px solid var(--line); }
+  .col:last-child { border-right: 0; }
+  .lab { font-size: 11px; font-weight: 600; letter-spacing: .24em; text-transform: uppercase; color: var(--dim2); margin: 0 0 8px; }
+  .dim { color: var(--dim); }
+  .sci { font-style: italic; }
+
+  /* left: find and filter */
+  #find { padding: 24px 24px 14px; border-bottom: 1px solid var(--line); overflow-y: auto; max-height: 52%; flex: none; }
+  #find h1 { font-size: 22px; line-height: 1.2; letter-spacing: .14em; margin: 0 0 16px; }
+  #q { display: block; width: 100%; margin: 0 0 18px; }
+  .facet { margin: 0 0 16px; }
+  .opts { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+  .opts button { padding: 2px 0; font-size: 14px; line-height: 1.4; font-weight: 400; text-decoration: none; color: var(--dim); background: none; border: 0; border-bottom: 1px solid transparent; cursor: pointer; }
+  .opts button:hover { color: var(--text); }
+  .opts button.on { color: var(--mint); font-weight: 400; text-decoration: none; border-bottom-color: var(--mint); }
+  .opts small { color: var(--dim2); margin-left: 4px; font-size: 12px; }
+  .tog { display: flex; gap: 6px 20px; font-size: 13.5px; color: var(--dim); margin: 4px 0 0; flex-wrap: wrap; }
+  .tog label { cursor: pointer; display: flex; align-items: center; gap: 8px; line-height: 1.4; }
+  .tog input { margin: 0; width: 14px; height: 14px; accent-color: var(--mint); }
+  #scope { font-size: 13.5px; color: var(--mint); margin: -6px 0 16px; cursor: pointer; }
+  #bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--dim); }
+  #bar select { font-size: 13px; padding: 2px 0; }
+  #list { flex: 1; overflow-y: auto; position: relative; outline: none; }
+  #spacer { position: relative; width: 100%; }
+  .row { position: absolute; left: 0; right: 0; height: 54px; padding: 9px 24px 0; border-bottom: 1px solid var(--line); cursor: pointer; overflow: hidden; }
+  .row:hover .nm { color: var(--mint); }
+  .row.on { background: rgba(169,192,180,.07); box-shadow: inset 2px 0 0 var(--mint); }
+  .row .nm { font-size: 16px; line-height: 1.3; font-weight: 600; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row .nm i { font-style: normal; font-weight: 400; color: var(--dim); font-size: 13px; margin-left: 8px; }
+  .row .sub { font-size: 12.5px; line-height: 1.4; color: var(--dim); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row.inv .nm { color: var(--dim2); font-weight: 400; text-decoration: line-through; text-decoration-color: var(--line2); }
+  #none { padding: 24px; color: var(--dim); }
+
+  /* middle: model */
+  #stage { position: relative; flex: 1; min-height: 0; }
+  #stage canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+  #stage canvas:active { cursor: grabbing; }
+  #cap { position: absolute; left: 28px; right: 236px; top: 24px; pointer-events: none; }
+  #cap h2 { margin: 0 0 6px; line-height: 1.3; }
+  #cap .t { font-size: 14px; line-height: 1.4; color: var(--dim); }
+  #tools { position: absolute; right: 28px; top: 20px; display: flex; gap: 4px; }
+  #tools button { display: flex; align-items: center; justify-content: center; text-align: center; width: 36px; height: 36px; padding: 0; font-size: 17px; line-height: 1; font-weight: 400; text-decoration: none; border: 1px solid var(--line2); background: var(--bg); color: var(--dim); cursor: pointer; }
+  #tools button:hover { color: var(--text); }
+  #tools button.on { color: var(--mint); font-weight: 400; text-decoration: none; border-color: var(--mint); }
+  #credit { position: absolute; left: 28px; right: 28px; bottom: 38px; font-size: 12.5px; line-height: 1.5; color: var(--dim); display: none; }
+  #credit a { color: var(--dim); text-decoration: underline; text-decoration-color: var(--line2); text-underline-offset: 3px; }
+  #credit a:hover { color: var(--mint); }
+  #credit button { font-size: 12.5px; padding: 0 6px; color: var(--mint); }
+  #hint { position: absolute; left: 28px; bottom: 16px; font-size: 12.5px; color: var(--dim2); pointer-events: none; }
+  #nomodel { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; color: var(--dim); text-align: center; padding: 40px; pointer-events: none; }
+  #time { padding: 16px 28px 20px; border-top: 1px solid var(--line); }
+  #thead { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  #thead .lab { margin: 0; }
+  #thead button { font-size: 13px; padding: 0; color: var(--dim); }
+  #thead button:hover { color: var(--mint); }
+  #tl { position: relative; height: 134px; margin-top: 12px; overflow: hidden; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+  #tl.drag { cursor: grabbing; }
+  #tl .band { position: absolute; height: 22px; line-height: 22px; padding: 0 6px; border-right: 1px solid var(--bg); font-size: 12px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; pointer-events: none; }
+  #tl .band.r0 { font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+  #tl .span { position: absolute; top: 98px; height: 5px; min-width: 3px; background: var(--mint); pointer-events: none; }
+  #tl .base { position: absolute; left: 0; right: 0; top: 110px; border-top: 1px solid var(--line2); pointer-events: none; }
+  #tl .tk { position: absolute; top: 110px; height: 7px; border-left: 1px solid var(--line2); pointer-events: none; }
+  #tl .tk span { position: absolute; top: 10px; left: 0; transform: translateX(-50%); font-size: 12px; color: var(--dim2); white-space: nowrap; }
+
+  /* right: description */
+  #desc { overflow-x: hidden; overflow-wrap: anywhere; overflow-y: auto; padding: 24px 28px 56px; flex: 1; }
+  #desc h1 { font-size: clamp(24px, 2.2vw, 30px); overflow-wrap: anywhere; line-height: 1.2; letter-spacing: .02em; text-transform: none; font-style: italic; margin: 0 0 6px; }
+  #desc .au { color: var(--dim); font-size: 15px; }
+  #desc p { line-height: 1.6; margin: 0 0 10px; }
+  #desc .gen { font-size: 12.5px; color: var(--dim2); }
+  #desc h2 { margin: 32px 0 12px; }
+  #desc .lab { margin-bottom: 12px; }
+  .crumbs { font-size: 14px; line-height: 1.9; }
+  .crumbs a { color: var(--dim); cursor: pointer; text-decoration: none; }
+  .crumbs a:hover { color: var(--mint); }
+  .crumbs b { color: var(--dim2); font-weight: 400; margin: 0 2px; }
+  dl.facts { display: grid; grid-template-columns: 118px 1fr; margin: 0; font-size: 14.5px; }
+  dl.facts dt, dl.facts dd { margin: 0; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  dl.facts dt { color: var(--dim); }
+  #slot { height: 150px; width: 100%; border: 1px dashed var(--line2); display: flex; align-items: center; justify-content: center; color: var(--dim2); font-size: 13px; margin: 20px 0 0; }
+  #slot img { max-width: 100%; max-height: 100%; }
+  .sp { font-size: 14.5px; line-height: 1.8; }
+  .sp .x { color: var(--dim2); text-decoration: line-through; text-decoration-color: var(--line2); }
+  .ref { font-size: 13px; color: var(--dim); line-height: 1.5; }
+  #empty { padding: 40px 28px; color: var(--dim); }
+  @media (max-width: 1100px) { #app { grid-template-columns: 300px 1fr; } .col:last-child { display: none; } }
+</style>
+</head>
+<body>
+<div id="app">
+  <section class="col" aria-label="Find a dinosaur">
+    <div id="find">
+      <h1>Dinosaurs</h1>
+      <input id="q" type="search" placeholder="Search by name" autocomplete="off" aria-label="Search by name">
+      <div id="scope" hidden></div>
+      <div class="facet"><p class="lab">Group</p><div class="opts" id="f-group"></div></div>
+      <div class="facet"><p class="lab">Time</p><div class="opts" id="f-era"></div></div>
+      <div class="facet"><p class="lab">Diet</p><div class="opts" id="f-diet"></div></div>
+      <div class="facet"><p class="lab">Habitat</p><div class="opts" id="f-env"></div></div>
+      <div class="tog">
+        <label><input type="checkbox" id="t-form"> Trace and egg taxa</label>
+        <label><input type="checkbox" id="t-inv"> Invalid names</label>
+      </div>
+    </div>
+    <div id="bar"><span id="count"></span>
+      <select id="sort" aria-label="Sort">
+        <option value="az">A to Z</option><option value="old">Oldest first</option><option value="new">Youngest first</option><option value="occ">Most fossils</option>
+      </select>
+    </div>
+    <div id="list" tabindex="0" aria-label="Genera"><div id="spacer"></div></div>
+  </section>
+
+  <section class="col" aria-label="Model">
+    <div id="stage">
+      <div id="cap"><h2 id="cap-h">No selection</h2><div class="t" id="cap-t"></div></div>
+      <div id="tools">
+        <button id="b-spin" title="Auto spin" aria-label="Auto spin">&#8635;</button>
+        <button id="b-in" title="Zoom in" aria-label="Zoom in">+</button>
+        <button id="b-out" title="Zoom out" aria-label="Zoom out">&minus;</button>
+        <button id="b-wire" title="Wireframe" aria-label="Wireframe">#</button>
+        <button id="b-reset" title="Reset view" aria-label="Reset view">&#8634;</button>
+      </div>
+      <div id="nomodel"></div>
+      <div id="credit"></div>
+      <div id="hint">Drag to spin, scroll to zoom the model</div>
+    </div>
+    <div id="time">
+      <div id="thead"><p class="lab">Time range, Ma <span class="dim" id="time-t" style="letter-spacing:0;text-transform:none;font-weight:400"></span></p><button id="fit" title="Frame the selected genus">Fit to selection</button></div>
+      <div id="tl" aria-label="Time axis. Drag to pan, pinch or scroll to zoom."></div>
+    </div>
+    </div>
+  </section>
+
+  <section class="col" aria-label="Description"><div id="desc"><div id="empty">Choose a dinosaur from the list.</div></div></section>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmt = (n) => (n >= 100 ? Math.round(n) : Math.round(n * 10) / 10);
+const cap1 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/* ------------------------------------------------------------------ data */
+const GROUPS = ['Theropoda', 'Sauropodomorpha', 'Thyreophora', 'Ornithopoda', 'Ceratopsia', 'Pachycephalosauria'];
+const TEMPLATE = { Theropoda: 'rex', Sauropodomorpha: 'sauro', Thyreophora: 'steg', Ornithopoda: 'tri', Ceratopsia: 'tri', Pachycephalosauria: 'tri' };
+const ERAS = [
+  { k: 'Triassic', hi: 251.9, lo: 201.4 }, { k: 'Jurassic', hi: 201.4, lo: 145 }, { k: 'Cretaceous', hi: 145, lo: 66 },
+];
+const byId = new Map(); let genera = [], speciesBy = null, meta = null;
+const F = { q: '', group: null, era: null, diet: null, env: null, clade: null, form: false, inv: false, sort: 'az' };
+let view = [], sel = null;
+
+let MODELS = {};
+try { MODELS = await (await fetch('dinosaurs/models.json')).json(); } catch (e) { /* no downloaded models yet: templates only */ }
+const raw = await (await fetch('dinosaurs/dinosaurs.json')).json();
+meta = raw.meta;
+for (const t of raw.taxa) byId.set(t.id, t);
+for (const t of raw.taxa) {
+  if (t.r !== 'genus') continue;
+  const anc = []; let p = byId.get(t.p), guard = 0;
+  while (p && guard++ < 40) { anc.push(p.id); p = byId.get(p.p); }
+  t.anc = anc;
+  const names = anc.map((i) => byId.get(i).n);
+  t.group = GROUPS.find((g) => names.includes(g)) ?? 'Other';
+  t.diets = (t.diet || '').split(',').map((s) => s.trim()).filter(Boolean);
+  t.low = (t.n + ' ' + (t.cn || '')).toLowerCase();
+  genera.push(t);
+}
+
+const eraHit = (t, e) => t.ma && t.ma[1] < e.hi && t.ma[0] > e.lo;
+function passes(t, skip) {
+  if (!F.form && t.form) return false;
+  if (!F.inv && t.inv) return false;
+  if (skip !== 'q' && F.q && !t.low.includes(F.q)) return false;
+  if (skip !== 'group' && F.group && t.group !== F.group) return false;
+  if (skip !== 'era' && F.era && !eraHit(t, ERAS.find((e) => e.k === F.era))) return false;
+  if (skip !== 'diet' && F.diet && !t.diets.includes(F.diet)) return false;
+  if (skip !== 'env' && F.env && !(t.env || '').split(',').includes(F.env)) return false;
+  if (skip !== 'clade' && F.clade && !t.anc.includes(F.clade)) return false;
+  return true;
+}
+
+/* ---------------------------------------------------------- filter + list */
+function facet(id, key, values) {
+  const el = $(id), pool = genera.filter((t) => passes(t, key));
+  const count = (v) => pool.filter((t) =>
+    key === 'group' ? t.group === v : key === 'era' ? eraHit(t, ERAS.find((e) => e.k === v)) : key === 'diet' ? t.diets.includes(v) : (t.env || '').split(',').includes(v)).length;
+  el.innerHTML = values.map((v) => `<button data-k="${key}" data-v="${esc(v)}" class="${F[key] === v ? 'on' : ''}">${esc(v)}<small>${count(v).toLocaleString()}</small></button>`).join('');
+}
+const top = (fn, n) => { const c = {}; genera.forEach((t) => fn(t).forEach((v) => (c[v] = (c[v] || 0) + 1))); return Object.entries(c).sort((a, b) => b[1] - a[1]).slice(0, n).map((e) => e[0]); };
+const DIETS = top((t) => t.diets, 6), ENVS = top((t) => (t.env || '').split(',').filter(Boolean), 4);
+
+function apply() {
+  view = genera.filter((t) => passes(t));
+  const s = F.sort;
+  view.sort(s === 'az' ? (a, b) => a.n.localeCompare(b.n)
+    : s === 'old' ? (a, b) => (b.ma?.[0] ?? -1) - (a.ma?.[0] ?? -1)
+    : s === 'new' ? (a, b) => (a.ma?.[1] ?? 999) - (b.ma?.[1] ?? 999)
+    : (a, b) => (b.oc || 0) - (a.oc || 0));
+  facet('f-group', 'group', [...GROUPS, 'Other']); facet('f-era', 'era', ERAS.map((e) => e.k));
+  facet('f-diet', 'diet', DIETS); facet('f-env', 'env', ENVS);
+  const sc = $('scope');
+  sc.hidden = !F.clade; if (F.clade) sc.textContent = `Within ${byId.get(F.clade).n}  ×`;
+  $('count').textContent = `${view.length.toLocaleString()} of ${genera.length.toLocaleString()} genera`;
+  $('spacer').style.height = view.length * 54 + 'px';
+  $('list').scrollTop = 0; paint();
+  if (!view.length) $('spacer').innerHTML = '<div id="none">Nothing matches. Clear a filter to see more.</div>';
+}
+function rowHtml(t, i) {
+  const age = t.ma ? `${fmt(t.ma[0])}–${fmt(t.ma[1])} Ma` : 'age unknown';
+  const sub = [t.fam, age, t.diet].filter(Boolean).join(' · ');
+  return `<div class="row${sel === t ? ' on' : ''}${t.inv ? ' inv' : ''}" data-i="${i}" style="top:${i * 54}px"><div class="nm">${esc(t.n)}${t.cn ? `<i>${esc(t.cn)}</i>` : ''}</div><div class="sub">${esc(sub)}</div></div>`;
+}
+function paint() {
+  const L = $('list'), first = Math.max(0, Math.floor(L.scrollTop / 54) - 4), last = Math.min(view.length, first + Math.ceil(L.clientHeight / 54) + 9);
+  if (!view.length) return;
+  let h = ''; for (let i = first; i < last; i++) h += rowHtml(view[i], i);
+  $('spacer').innerHTML = h;
+}
+$('list').addEventListener('scroll', paint);
+$('list').addEventListener('click', (e) => { const r = e.target.closest('.row'); if (r) select(view[+r.dataset.i]); });
+$('list').addEventListener('keydown', (e) => {
+  if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return; e.preventDefault();
+  const i = Math.max(0, Math.min(view.length - 1, view.indexOf(sel) + (e.key === 'ArrowDown' ? 1 : -1)));
+  if (view[i]) { select(view[i]); const L = $('list'), y = i * 54; if (y < L.scrollTop) L.scrollTop = y; else if (y + 54 > L.scrollTop + L.clientHeight) L.scrollTop = y + 54 - L.clientHeight; }
+});
+$('find').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-k]'); if (!b) return;
+  const k = b.dataset.k; F[k] = F[k] === b.dataset.v ? null : b.dataset.v; apply();
+});
+$('q').addEventListener('input', (e) => { F.q = e.target.value.trim().toLowerCase(); apply(); });
+$('t-form').addEventListener('change', (e) => { F.form = e.target.checked; apply(); });
+$('t-inv').addEventListener('change', (e) => { F.inv = e.target.checked; apply(); });
+$('sort').addEventListener('change', (e) => { F.sort = e.target.value; apply(); });
+$('scope').addEventListener('click', () => { F.clade = null; apply(); });
+
+/* ----------------------------------------------------------------- detail */
+async function loadSpecies() {
+  if (speciesBy) return;
+  speciesBy = new Map();
+  for (const s of await (await fetch('dinosaurs/dinosaur-species.json')).json()) (speciesBy.get(s.p) ?? speciesBy.set(s.p, []).get(s.p)).push(s);
+}
+function blurb(t) {
+  const bits = [];
+  const kind = t.form ? 'a trace or egg taxon (a name for footprints, eggs or other traces rather than a body fossil)' : `${t.diet ? (/^[aeiou]/.test(t.diet) ? 'an ' : 'a ') + t.diet.replace(/, /g, '-eating ').replace(/(.*)/, '$1') : 'a'} dinosaur`;
+  bits.push(`<span class="sci">${esc(t.n)}</span> is ${kind}${t.fam ? ` in the family ${esc(t.fam)}` : ''}${t.cn ? `, commonly "${esc(t.cn)}"` : ''}.`);
+  if (t.ma) bits.push(`It is known from ${t.from === t.to || !t.to ? esc(t.from || 'an unrecorded interval') : `the ${esc(t.from)} to the ${esc(t.to)}`}, roughly ${fmt(t.ma[0])} to ${fmt(t.ma[1])} million years ago.`);
+  if (t.env) bits.push(`Its habitat is recorded as ${esc(t.env)}${t.hab ? `, ${esc(t.hab)}` : ''}.`);
+  if (t.oc) bits.push(`The Paleobiology Database holds ${t.oc.toLocaleString()} fossil occurrence${t.oc === 1 ? '' : 's'}.`);
+  if (t.inv) bits.push(`This name is currently treated as ${esc(t.inv)}.`);
+  return bits.join(' ');
+}
+async function select(t, fromHash) {
+  sel = t; if (!fromHash) history.replaceState(null, '', '#' + t.id); paint();
+  const crumbs = [...t.anc].reverse().filter((i) => !['Chordata', 'Reptilia', 'Vertebrata'].includes(byId.get(i).n))
+    .map((i) => `<a data-c="${i}" title="Show every genus in ${esc(byId.get(i).n)}">${esc(byId.get(i).n)}</a>`).join(' <b>›</b> ');
+  const rows = [
+    ['Rank', cap1(t.r)], ['Named by', t.a], ['Time', t.ma ? `${fmt(t.ma[0])}–${fmt(t.ma[1])} Ma` + (t.from ? ` (${t.from}${t.to && t.to !== t.from ? ' to ' + t.to : ''})` : '') : null],
+    ['Fossil records', t.oc != null ? t.oc.toLocaleString() : null], ['Diet', t.diet], ['Habitat', t.env], ['Life habit', t.hab], ['Locomotion', t.mot],
+    ['Reproduction', t.repro], ['Preserved as', t.body], ['Type specimen', t.tsp], ['Type body part', t.tpart], ['Status', t.inv ? cap1(t.inv) : 'Valid'],
+  ].filter((r) => r[1]).map((r) => `<dt>${r[0]}</dt><dd>${esc(r[1])}</dd>`).join('');
+  $('desc').innerHTML = `
+    <p class="lab">${esc(t.group)}${t.form ? ' · trace taxon' : ''}</p>
+    <h1>${esc(t.n)}</h1><div class="au">${esc(t.a || '')}${t.cn ? ` · ${esc(t.cn)}` : ''}</div>
+    <div id="slot">${t.img_url ? `<img src="${esc(t.img_url)}" alt="${esc(t.n)}">` : 'Image not added yet'}</div>
+    <h2>Description</h2>
+    ${t.desc ? `<p>${esc(t.desc)}</p>` : `<p>${blurb(t)}</p><p class="gen">Generated from Paleobiology Database fields. Add a written description under key ${t.id} in dinosaurs-overrides.json.</p>`}
+    <h2>Classification</h2><div class="crumbs">${crumbs || '<span class="dim">Unplaced</span>'}</div>
+    <h2>Facts</h2><dl class="facts">${rows}</dl>
+    <h2>Species <span id="sp-n"></span></h2><div class="sp" id="sp"><span class="dim">Loading…</span></div>
+    <h2>Source</h2><p class="ref">${esc(t.ref || 'No primary reference recorded.')}</p>
+    <p class="ref"><a href="https://paleobiodb.org/classic/basicTaxonInfo?taxon_no=${t.id}" target="_blank" rel="noopener">Open in the Paleobiology Database</a> · PBDB ${t.id} · CC BY 4.0</p>`;
+  $('desc').scrollTop = 0;
+  $('desc').querySelectorAll('[data-c]').forEach((a) => a.addEventListener('click', () => { F.clade = +a.dataset.c; apply(); }));
+  showTime(t); showModel(t);
+  await loadSpecies();
+  if (sel !== t) return;
+  const sp = (speciesBy.get(t.id) || []).sort((a, b) => a.n.localeCompare(b.n));
+  $('sp-n').textContent = sp.length ? `(${sp.length})` : '';
+  $('sp').innerHTML = sp.length ? sp.map((s) => `<span class="${s.inv ? 'x' : ''} sci" title="${esc((s.a || '') + (s.inv ? ' · ' + s.inv : ''))}">${esc(s.n.split(' ').slice(1).join(' ') || s.n)}</span>`).join(', ') : '<span class="dim">No species recorded.</span>';
+}
+
+/* ------------------------------------------------------------ time strip */
+// Pannable, zoomable axis: drag to pan, wheel / trackpad pinch / two-finger pinch to zoom, double-click to fit.
+// ICS chronostratigraphic chart (v2023). Rows: [name, older Ma, younger Ma].
+const GEO_ERAS = [['Paleozoic', 538.8, 251.9], ['Mesozoic', 251.9, 66], ['Cenozoic', 66, 0]];
+const PERIODS = [['Carboniferous', 358.9, 298.9, '#67a599'], ['Permian', 298.9, 251.9, '#f04028'], ['Triassic', 251.9, 201.4, '#812b92'], ['Jurassic', 201.4, 145, '#34b2c9'],
+  ['Cretaceous', 145, 66, '#7fc64e'], ['Paleogene', 66, 23.03, '#fd9a52'], ['Neogene', 23.03, 2.58, '#e6c619'], ['Quaternary', 2.58, 0, '#f9f97f']];
+const EPOCHS = [['Mississippian', 358.9, 323.2], ['Pennsylvanian', 323.2, 298.9], ['Cisuralian', 298.9, 273.01], ['Guadalupian', 273.01, 259.51], ['Lopingian', 259.51, 251.9],
+  ['Early Triassic', 251.9, 247.2], ['Middle Triassic', 247.2, 237], ['Late Triassic', 237, 201.4], ['Early Jurassic', 201.4, 174.7], ['Middle Jurassic', 174.7, 161.5], ['Late Jurassic', 161.5, 145],
+  ['Early Cretaceous', 145, 100.5], ['Late Cretaceous', 100.5, 66], ['Paleocene', 66, 56], ['Eocene', 56, 33.9], ['Oligocene', 33.9, 23.03], ['Miocene', 23.03, 5.333], ['Pliocene', 5.333, 2.58],
+  ['Pleistocene', 2.58, 0.0117], ['Holocene', 0.0117, 0]];
+const stages = (start, list) => { let hi = start; return list.map(([n, lo]) => { const row = [n, hi, lo]; hi = lo; return row; }); };
+const STAGES = [
+  ...stages(298.9, [['Asselian', 293.52], ['Sakmarian', 290.1], ['Artinskian', 283.5], ['Kungurian', 273.01], ['Roadian', 266.9], ['Wordian', 264.28], ['Capitanian', 259.51], ['Wuchiapingian', 254.14], ['Changhsingian', 251.9]]),
+  ...stages(251.9, [['Induan', 251.2], ['Olenekian', 247.2], ['Anisian', 242], ['Ladinian', 237], ['Carnian', 227], ['Norian', 208.5], ['Rhaetian', 201.4],
+    ['Hettangian', 199.5], ['Sinemurian', 192.9], ['Pliensbachian', 184.2], ['Toarcian', 174.7], ['Aalenian', 170.9], ['Bajocian', 168.2], ['Bathonian', 165.3], ['Callovian', 161.5],
+    ['Oxfordian', 154.8], ['Kimmeridgian', 149.2], ['Tithonian', 145], ['Berriasian', 139.8], ['Valanginian', 132.6], ['Hauterivian', 125.77], ['Barremian', 121.4], ['Aptian', 113],
+    ['Albian', 100.5], ['Cenomanian', 93.9], ['Turonian', 89.8], ['Coniacian', 86.3], ['Santonian', 83.6], ['Campanian', 72.1], ['Maastrichtian', 66],
+    ['Danian', 61.6], ['Selandian', 59.2], ['Thanetian', 56], ['Ypresian', 47.8], ['Lutetian', 41.2], ['Bartonian', 37.71], ['Priabonian', 33.9], ['Rupelian', 27.82], ['Chattian', 23.03],
+    ['Aquitanian', 20.44], ['Burdigalian', 15.98], ['Langhian', 13.82], ['Serravallian', 11.63], ['Tortonian', 7.246], ['Messinian', 5.333], ['Zanclean', 3.6], ['Piacenzian', 2.58],
+    ['Gelasian', 1.8], ['Calabrian', 0.774], ['Chibanian', 0.129], ['Late Pleistocene', 0.0117], ['Holocene', 0]]),
+];
+const LEVELS = [GEO_ERAS, PERIODS, EPOCHS, STAGES], ROW = 22;
+const tint = (ma) => { const p = PERIODS.find((q) => ma <= q[1] && ma >= q[2]); return p ? p[3] : '#8d8e91'; };
+const DOM = [300, 0], tl = $('tl');
+let tv = [252, 60]; // visible window in Ma: [older edge, younger edge]
+const tw = () => tl.clientWidth || 1;
+const xOf = (ma) => ((tv[0] - ma) / (tv[0] - tv[1])) * tw();
+function setView(a, span) {
+  span = Math.max(0.5, Math.min(DOM[0] - DOM[1], span));
+  a = Math.min(DOM[0], Math.max(DOM[1] + span, a)); tv = [a, a - span]; drawTime();
+}
+function drawTime() {
+  const w = tw(), span = tv[0] - tv[1]; let h = '<div class="base"></div>';
+  LEVELS.forEach((rows, lv) => {
+    for (const [n, hi, lo] of rows) {
+      const x0 = xOf(hi), x1 = xOf(lo); if (x1 < 0 || x0 > w || x1 - x0 < 1.5) continue;
+      const l = Math.max(0, x0), rr = Math.min(w, x1), c = lv === 0 ? '#8d8e91' : tint((hi + lo) / 2);
+      h += `<div class="band r${lv}" style="top:${lv * ROW}px;left:${l}px;width:${rr - l}px;background:${c}${lv === 0 ? '22' : lv === 1 ? '40' : lv === 2 ? '33' : '26'}">${n}</div>`;
+    }
+  });
+  const raw = span / 8, pow = Math.pow(10, Math.floor(Math.log10(raw))), step = [1, 2, 5, 10].find((m) => m * pow >= raw) * pow;
+  for (let v = Math.ceil(tv[1] / step) * step; v <= tv[0] + 1e-9; v += step)
+    h += `<div class="tk" style="left:${xOf(v)}px"><span>${+v.toFixed(2)}</span></div>`;
+  if (sel && sel.ma) {
+    const x0 = xOf(sel.ma[0]), x1 = xOf(sel.ma[1]);
+    if (x1 >= 0 && x0 <= w) { const l = Math.max(0, x0), r = Math.min(w, x1); h += `<div class="span" style="left:${l}px;width:${Math.max(3, r - l)}px"></div>`; }
+  }
+  tl.innerHTML = h;
+}
+function frame(t, onlyIfHidden) {
+  if (!t.ma) return;
+  if (onlyIfHidden && t.ma[0] <= tv[0] && t.ma[1] >= tv[1]) return;
+  const len = t.ma[0] - t.ma[1], pad = Math.max(8, len * 0.5);
+  setView(t.ma[0] + pad, len + pad * 2);
+}
+function showTime(t) {
+  $('time-t').textContent = t.ma ? `\u00b7 ${fmt(t.ma[0])} to ${fmt(t.ma[1])}${t.from ? ' \u00b7 ' + t.from + (t.to && t.to !== t.from ? ' to ' + t.to : '') : ''}` : '\u00b7 age unknown';
+  frame(t, true); drawTime();
+}
+const zoomAt = (px, f) => { const span = tv[0] - tv[1], ma = tv[0] - (px / tw()) * span, ns = span * f; setView(ma + (px / tw()) * Math.max(0.5, Math.min(DOM[0] - DOM[1], ns)), ns); };
+const ptrs = new Map(); let pan = null, pinch = null, tap = null;
+tl.addEventListener('pointerdown', (e) => {
+  tl.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, e.clientX); tl.classList.add('drag');
+  if (ptrs.size === 1) { pan = { x: e.clientX, a: tv[0] }; tap = { x: e.clientX, y: e.clientY - tl.getBoundingClientRect().top, moved: false }; } else tap = null;
+  if (ptrs.size === 2) { const [p, q] = [...ptrs.values()]; pinch = { d: Math.abs(p - q) || 1, m: (p + q) / 2 }; pan = null; }
+});
+tl.addEventListener('pointermove', (e) => {
+  if (!ptrs.has(e.pointerId)) return; ptrs.set(e.pointerId, e.clientX);
+  const rect = tl.getBoundingClientRect();
+  if (ptrs.size === 2 && pinch) {
+    const [p, q] = [...ptrs.values()], d = Math.abs(p - q) || 1, m = (p + q) / 2, span = tv[0] - tv[1], ns = Math.max(0.5, Math.min(DOM[0] - DOM[1], span * (pinch.d / d)));
+    const ma = tv[0] - ((pinch.m - rect.left) / tw()) * span; // the moment under the old midpoint stays under the new one
+    setView(ma + ((m - rect.left) / tw()) * ns, ns); pinch = { d, m };
+  } else if (pan) { if (tap && Math.abs(e.clientX - tap.x) > 4) tap.moved = true; setView(pan.a + ((e.clientX - pan.x) / tw()) * (tv[0] - tv[1]), tv[0] - tv[1]); }
+});
+const up = (e) => {
+  if (tap && !tap.moved && e.type === 'pointerup' && tap.y < LEVELS.length * ROW) {
+    const ma = tv[0] - (tap.x - tl.getBoundingClientRect().left) / tw() * (tv[0] - tv[1]), band = LEVELS[Math.floor(tap.y / ROW)].find((q) => ma <= q[1] && ma >= q[2]);
+    if (band) { const len = band[1] - band[2], pad = len * 0.06; setView(band[1] + pad, len + pad * 2); }
+  }
+  tap = null; ptrs.delete(e.pointerId); pinch = null; pan = ptrs.size === 1 ? { x: [...ptrs.values()][0], a: tv[0] } : null; if (!ptrs.size) tl.classList.remove('drag'); };
+tl.addEventListener('pointerup', up); tl.addEventListener('pointercancel', up);
+tl.addEventListener('wheel', (e) => {
+  e.preventDefault(); const px = e.clientX - tl.getBoundingClientRect().left;
+  if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && !e.ctrlKey) setView(tv[0] + (e.deltaX / tw()) * (tv[0] - tv[1]), tv[0] - tv[1]);
+  else zoomAt(px, Math.exp(e.deltaY * (e.ctrlKey ? 0.012 : 0.0015)));
+}, { passive: false });
+tl.addEventListener('dblclick', () => sel && frame(sel));
+$('fit').addEventListener('click', () => sel && frame(sel));
+new ResizeObserver(drawTime).observe(tl);
+
+/* ------------------------------------------------------------------ model */
+const stage = $('stage');
+const R = new THREE.WebGLRenderer({ antialias: true, alpha: true }); R.setPixelRatio(Math.min(2, devicePixelRatio));
+stage.insertBefore(R.domElement, stage.firstChild);
+const S = new THREE.Scene();
+S.add(new THREE.HemisphereLight(0xffffff, 0x4a4b4d, 1.0));
+const sun = new THREE.DirectionalLight(0xffffff, 1.1); sun.position.set(6, 12, 8); S.add(sun);
+const cam = new THREE.PerspectiveCamera(38, 1, 0.05, 800);
+const ctl = new OrbitControls(cam, R.domElement);
+ctl.enableDamping = true; ctl.autoRotate = true; ctl.autoRotateSpeed = 1.6; ctl.maxPolarAngle = Math.PI * 0.495;
+const grid = new THREE.GridHelper(120, 120, 0x56575a, 0x2a2b2d); grid.material.transparent = true; grid.material.opacity = .5; S.add(grid);
+let mdl = null, mat = null, size = 10, wire = false;
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+function build(kind, ghost) {
+  const g = new THREE.Group();
+  mat = new THREE.MeshPhongMaterial({ color: 0xa9c0b4, flatShading: true, shininess: 6, transparent: ghost, opacity: ghost ? .45 : 1, wireframe: wire });
+  const ell = (rx, ry, rz, x, y, z, rot) => { const s = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), mat); s.scale.set(rx, ry, rz); s.position.set(x, y, z); if (rot) s.rotation.z = rot; g.add(s); };
+  const seg = (a, b, r1, r2) => { a = V(...a); b = V(...b); const d = b.clone().sub(a), len = d.length(); const c = new THREE.Mesh(new THREE.CylinderGeometry(r2, r1, len, 10), mat); c.position.copy(a).add(b).multiplyScalar(.5); c.quaternion.setFromUnitVectors(V(0, 1, 0), d.normalize()); g.add(c); };
+  const chain = (p, r) => { for (let i = 0; i < p.length; i++) { ell(r[i], r[i], r[i], ...p[i]); if (i) seg(p[i - 1], p[i], r[i - 1], r[i]); } };
+  if (kind === 'rex') {
+    ell(2.3, 1.3, 1, 0, 3.2, 0, .1); chain([[1.8, 3.8, 0], [2.8, 4.6, 0], [3.7, 5, 0]], [.8, .55, .45]); ell(.95, .5, .45, 4.4, 5, 0, -.15);
+    chain([[-1.8, 3.2, 0], [-4, 3, 0], [-6.5, 2.6, 0], [-9, 2.2, 0]], [.9, .6, .35, .08]);
+    [-1, 1].forEach((s) => { const z = s * .75; chain([[.2, 2.6, z], [.7, 1.6, z], [0, .5, z]], [.6, .38, .22]); seg([0, .15, z], [.9, .15, z], .15, .12); chain([[1.9, 3, s * .6], [2.4, 2.4, s * .7]], [.15, .1]); });
+  } else if (kind === 'sauro') {
+    ell(2.8, 1.6, 1.3, 0, 5, 0); chain([[2.2, 5.8, 0], [3.6, 8.5, 0], [5, 11, 0], [6.2, 13.4, 0]], [.95, .7, .5, .35]); ell(.65, .35, .3, 6.9, 13.7, 0, -.2);
+    chain([[-2.5, 5, 0], [-6, 4.5, 0], [-10, 3, 0], [-13, 1.6, 0]], [1, .65, .3, .08]);
+    [[1.7, 5], [-1.7, 4.4]].forEach(([x, y]) => [-1, 1].forEach((s) => chain([[x, y, s], [x, 2.4, s * 1.05], [x, .25, s * 1.05]], [.6, .5, .45])));
+  } else if (kind === 'tri') {
+    ell(2.2, 1.3, 1.1, 0, 2.3, 0); ell(1.2, .8, .7, 2.9, 2.3, 0, -.1); ell(.25, 1.1, 1.1, 2.1, 3.1, 0, .4);
+    seg([3.6, 2.8, .45], [4.9, 3.6, .5], .15, .02); seg([3.6, 2.8, -.45], [4.9, 3.6, -.5], .15, .02); seg([4.1, 2.5, 0], [4.6, 3.1, 0], .12, .02);
+    chain([[-1.8, 2.2, 0], [-4, 1.8, 0]], [.7, .1]);
+    [1.4, -1.4].forEach((x) => [-1, 1].forEach((s) => chain([[x, 1.8, s * .9], [x + .1, .9, s], [x, .1, s]], [.5, .4, .3])));
+  } else {
+    ell(2.5, 1.2, .9, 0, 2.3, 0); chain([[2.2, 2, 0], [3.4, 1.5, 0]], [.55, .35]); ell(.6, .3, .28, 4, 1.35, 0, -.2);
+    chain([[-2, 2.3, 0], [-4.5, 2, 0], [-6.5, 2.6, 0]], [.8, .45, .1]);
+    for (let i = 0; i < 9; i++) { const x = 2 - i * .7, h = .6 + Math.sin(i / 8 * Math.PI) * .45; ell(.5, h, .07, x, 3.3 + h * .5, i % 2 ? .28 : -.28, .2); }
+    [[1.5, 1.6], [-1.2, 2]].forEach(([x, y]) => [-1, 1].forEach((s) => chain([[x, y, s * .8], [x, .9, s * .85], [x, .1, s * .85]], [.45, .35, .3])));
+  }
+  return g;
+}
+const loader = new GLTFLoader(); let mixer = null, loadTok = 0, mIdx = 0; const clock = new THREE.Clock();
+function frameObject(o, h) {
+  o.updateMatrixWorld(true);
+  const b = new THREE.Box3().setFromObject(o), sz = b.getSize(V(0, 0, 0)), c = b.getCenter(V(0, 0, 0));
+  size = Math.max(sz.x, sz.y, sz.z); ctl.target.set(0, sz.y * .45, 0); return { b, sz, c };
+}
+function applyWire() { if (!mdl) return; mdl.traverse((o) => { if (o.material) [].concat(o.material).forEach((m) => (m.wireframe = wire)); }); }
+function creditHtml(list, i) {
+  const m = list[i];
+  return `Model: <a href="${esc(m.source)}" target="_blank" rel="noopener">${esc(m.title)}</a> by <a href="${esc(m.authorUrl)}" target="_blank" rel="noopener">${esc(m.author)}</a> on Sketchfab, ${esc(m.license)}`
+    + (list.length > 1 ? ` <button data-m="${(i + 1) % list.length}" title="Next model">${i + 1} of ${list.length} \u203a</button>` : '');
+}
+function showModel(t, idx = 0) {
+  const my = ++loadTok; mIdx = idx;
+  if (mdl) { S.remove(mdl); mdl = null; } mixer = null;
+  const nm = $('nomodel'), cr = $('credit'); cr.style.display = 'none';
+  $('cap-h').innerHTML = `<span class="sci">${esc(t.n)}</span>`;
+  if (t.form) {
+    nm.style.display = 'flex'; nm.textContent = 'This is a name for traces or eggs, so there is no body to model.';
+    $('cap-t').textContent = 'No body model'; return;
+  }
+  nm.style.display = 'none';
+  const list = MODELS[t.id] || [];
+  if (list.length) {
+    $('cap-t').textContent = 'Loading model\u2026';
+    loader.load(list[idx].file, (g) => {
+      if (my !== loadTok) return;
+      const o = g.scene; frameObject(o); // measure, then scale to a common height and stand it on the grid
+      const b0 = new THREE.Box3().setFromObject(o), sz0 = b0.getSize(V(0, 0, 0)), k = 12 / Math.max(sz0.x, sz0.y, sz0.z);
+      o.scale.multiplyScalar(k); o.updateMatrixWorld(true);
+      const b1 = new THREE.Box3().setFromObject(o), c1 = b1.getCenter(V(0, 0, 0));
+      o.position.set(-c1.x, -b1.min.y, -c1.z); mdl = new THREE.Group(); mdl.add(o); S.add(mdl);
+      frameObject(mdl); resetView(); applyWire();
+      if (g.animations.length) { mixer = new THREE.AnimationMixer(o); mixer.clipAction(g.animations[0]).play(); }
+      $('cap-t').textContent = `${t.group === 'Other' ? 'Generic' : t.group} \u00b7 downloaded model \u00b7 not to scale${g.animations.length ? ' \u00b7 animated' : ''}`;
+      cr.innerHTML = creditHtml(list, idx); cr.style.display = 'block';
+      cr.querySelector('button[data-m]')?.addEventListener('click', (e) => showModel(t, +e.currentTarget.dataset.m));
+    }, undefined, () => { if (my === loadTok) { $('cap-t').textContent = 'Model failed to load, showing template'; showTemplate(t); } });
+    return;
+  }
+  showTemplate(t);
+}
+function showTemplate(t) {
+  const kind = TEMPLATE[t.group] ?? 'rex', ghost = t.group === 'Other' || t.group === 'Ornithopoda' || t.group === 'Pachycephalosauria';
+  mdl = build(kind, ghost); S.add(mdl);
+  const b = new THREE.Box3().setFromObject(mdl), sz = b.getSize(V(0, 0, 0)), c = b.getCenter(V(0, 0, 0));
+  size = Math.max(sz.x, sz.y, sz.z); ctl.target.set(0, c.y * .9, 0);
+  resetView(); applyWire();
+  if ($('cap-t').textContent !== 'Model failed to load, showing template')
+    $('cap-t').textContent = `${t.group === 'Other' ? 'Generic' : t.group} template \u00b7 not to scale${ghost ? ' \u00b7 placeholder shape' : ''}`;
+}
+function resetView() { cam.position.set(size * 1.1, size * .7 + 2, size * 1.35); ctl.minDistance = size * .5; ctl.maxDistance = size * 5; ctl.update(); }
+function fit() { const w = stage.clientWidth, h = stage.clientHeight; if (!w || !h) return; R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); }
+new ResizeObserver(fit).observe(stage);
+R.setAnimationLoop(() => { if (mixer) mixer.update(clock.getDelta()); ctl.update(); R.render(S, cam); });
+const tog = (id, on) => $(id).classList.toggle('on', on); tog('b-spin', true);
+$('b-spin').onclick = () => { ctl.autoRotate = !ctl.autoRotate; tog('b-spin', ctl.autoRotate); };
+$('b-wire').onclick = () => { wire = !wire; applyWire(); tog('b-wire', wire); };
+$('b-reset').onclick = resetView;
+const dolly = (f) => { const d = cam.position.clone().sub(ctl.target).multiplyScalar(f); cam.position.copy(ctl.target).add(d); };
+$('b-in').onclick = () => dolly(.8); $('b-out').onclick = () => dolly(1.25);
+$('desc').addEventListener('click', () => {});
+
+/* ------------------------------------------------------------------- boot */
+apply();
+const hash = +location.hash.slice(1);
+const start = (hash && genera.find((t) => t.id === hash)) || genera.find((t) => t.n === 'Tyrannosaurus') || view[0];
+if (start) { select(start, true); const i = view.indexOf(start); if (i > 3) $('list').scrollTop = (i - 3) * 54; paint(); }
+</script>
+</body>
+</html>
