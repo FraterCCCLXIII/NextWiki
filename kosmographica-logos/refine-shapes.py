@@ -545,7 +545,76 @@ for lid, (src, fn) in BUILD.items():
         comps[i] = {**c, 'd': d, 'b': [round(x0, 1), round(y0, 1), round(x1, 1), round(y1, 1)]}
     out[lid] = {**base, 'comps': comps}
     print('built', lid, 'shapes', len(made), 'IoU', min(rep), '-', max(rep))
-out['D10'] = put(out['D10'], snap_right_ends(out['D10']))
+
+
+def loop_D10():
+    """One continuous band per colour: straight feet, up and over the arch, a smooth bend, then flat stripes to the right.
+    Every boundary comes from the same centre and spacing, so the bands stay nested and share their edges."""
+    global STEP
+    from scipy.optimize import minimize
+    src = V1['D10']
+    colours, seen = [], set()
+    for c in sorted(cols(src), key=lambda c: c['b'][1]):
+        if c['f'] not in seen:
+            seen.add(c['f'])
+            colours.append(c['f'])
+    target = {f: unary_union([poly(c['d']) for c in cols(src) if c['f'] == f]) for f in colours}
+    X = float(np.median([c['b'][2] for c in cols(src) if c['b'][2] - c['b'][0] > 100]))
+    FOOT = 118.0
+
+    def boundary(j, p):
+        cx, cy, R0, ta, Y0, th, Q0, q = p
+        R, y, Q = R0 - j * ta, Y0 + j * th, Q0 + j * q
+        fy = y - Q
+        dist = R + Q
+        if R < 1 or Q < 0 or dist <= abs(fy - cy):
+            return None
+        fx = cx + math.sqrt(dist ** 2 - (fy - cy) ** 2)
+        tx, ty = cx + (fx - cx) * R / dist, cy + (fy - cy) * R / dist
+        sweep = (math.atan2(ty - cy, tx - cx) - math.pi) % (2 * math.pi)
+        return dict(R=R, Q=Q, y=y, fx=fx, tx=tx, ty=ty, left=cx - R, cy=cy, large=int(sweep > math.pi))
+
+    def band(i, p):
+        a, b = boundary(i, p), boundary(i + 1, p)
+        if not a or not b:
+            return None
+        d = f"M{a['left']:.2f} {FOOT}V{a['cy']:.2f}A{a['R']:.2f} {a['R']:.2f} 0 {a['large']} 1 {a['tx']:.2f} {a['ty']:.2f}"
+        if a['Q'] > 0.05:
+            d += f"A{a['Q']:.2f} {a['Q']:.2f} 0 0 0 {a['fx']:.2f} {a['y']:.2f}"
+        d += f"H{X:.2f}V{b['y']:.2f}H{b['fx']:.2f}"
+        if b['Q'] > 0.05:
+            d += f"A{b['Q']:.2f} {b['Q']:.2f} 0 0 1 {b['tx']:.2f} {b['ty']:.2f}"
+        d += f"A{b['R']:.2f} {b['R']:.2f} 0 {b['large']} 0 {b['left']:.2f} {b['cy']:.2f}V{FOOT}Z"
+        return d
+
+    def cost(p):
+        total = 0
+        for i, f in enumerate(colours):
+            d = band(i, p)
+            if d is None:
+                return 10
+            g = poly(d)
+            if not g.is_valid or g.is_empty:
+                return 10
+            t = target[f]
+            total += t.intersection(g).area / max(1, t.union(g).area)
+        return -total
+
+    keep, STEP = STEP, 1.5
+    start = np.array([98, 84, 75, 12, 52.5, 11.3, 0.5, 12], float)
+    res = minimize(cost, start, method='Nelder-Mead', options={'maxiter': 700, 'xatol': 0.03, 'fatol': 1e-4, 'initial_simplex': start + np.vstack([np.zeros(8), np.diag([3, 3, 3, .6, .6, .3, 1, 2.0])])})
+    STEP = keep
+    p = res.x
+    print('D10 params', np.round(p, 2).tolist(), 'mean IoU', round(-cost(p) / len(colours), 3))
+    new = []
+    for i, f in enumerate(colours):
+        d = band(i, p)
+        x0, y0, x1, y1 = poly(d).bounds
+        new.append({'f': f, 'k': 'col', 'd': d, 'b': [round(x0, 1), round(y0, 1), round(x1, 1), round(y1, 1)], 't': round(float(p[3]), 1), 'a': round(poly(d).area), 'h': 0})
+    return {**src, 'comps': new + [c for c in src['comps'] if c['k'] != 'col']}
+
+
+out['D10'] = loop_D10()
 out['42'] = pixels_42()
 out['D02'] = ramp_D02()
 open(os.path.join(HERE, 'refs/.refined.json'), 'w').write(json.dumps(out, separators=(',', ':')))

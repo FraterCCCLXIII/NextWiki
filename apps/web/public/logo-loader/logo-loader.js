@@ -155,6 +155,8 @@ const DEFAULT_REVEAL=['Traced logo','Colour wipe · word wipe',(r,C)=>{wipes(byX
 const JINGLES = {
   1: { file: "jingle-1.mp3", word: [2.15, 3.6] }, // music builds, then the word
   2: { file: "jingle-2.mp3", word: [0, 1.25] }, // the word first, then a synth swell
+  3: { file: "sound-1.mp3", word: [Infinity, Infinity] }, // jingle 1's music only, faded out before the word
+  4: { file: "sound-2.mp3", word: [Infinity, Infinity] }, // jingle 2's swell only, from after the word
 };
 const JINGLE_FADE = 0.3;
 

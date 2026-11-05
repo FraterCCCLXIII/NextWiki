@@ -117,7 +117,7 @@ const refined = JSON.parse(readFileSync(join(srcDir, "refs/.refined.json"), "utf
 /* Logo 10 kept two stray specks at the K's join. They read as white flecks on dark. */
 const withoutSpecks10 = (L) => ({ ...L, comps: L.comps.filter((c) => !(c.k === "ink" && c.b[0] < 150 && c.b[2] - c.b[0] < 15)) });
 /* Logos that need a stronger CRT glow than the default. */
-const CRT_STRENGTH = { 38: 2.5 };
+const CRT_STRENGTH = { 38: 1.5 };
 
 function logoFor(id, version) {
   if (refined[id]) return refined[id];
@@ -134,7 +134,7 @@ const sound = readFileSync(join(root, "tools/logo-sound.js"), "utf8");
 const runtime = readFileSync(join(root, "tools/logo-loader-runtime.js"), "utf8");
 
 mkdirSync(join(out, "audio"), { recursive: true });
-for (const n of [1, 2]) copyFileSync(join(srcDir, "audio", `jingle-${n}.mp3`), join(out, "audio", `jingle-${n}.mp3`));
+for (const f of ["jingle-1", "jingle-2", "sound-1", "sound-2"]) copyFileSync(join(srcDir, "audio", `${f}.mp3`), join(out, "audio", `${f}.mp3`));
 
 rmSync(join(out, "logos"), { recursive: true, force: true });
 mkdirSync(join(out, "logos"), { recursive: true });
