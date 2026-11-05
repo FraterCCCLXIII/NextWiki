@@ -114,7 +114,10 @@
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { loadEngines } from './engines.js';
 import { createSim, analyze, tuneAscent, planDock, ENGINES, WORLDS, elements, G0, completeStage, runAscent } from './ship-sim.js';
+// the engine table is shared with the Landing Lab; flight-data.json (served from the database) overrides the built-in rows
+try { const r = await fetch('flight-data.json', { cache: 'no-cache' }); if (r.ok) loadEngines((await r.json()).engines); } catch {}
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 

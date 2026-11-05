@@ -35,22 +35,15 @@
 // Conventions: SI.  th = angle of the body axis b = (sin th, cos th) from vertical.  Thrust
 // pushes along b rotated by the gimbal angle; the engine sits behind the centre of mass.
 
-import { ENGINES as SHIP_ENGINES, WORLDS, G0 } from './ship-sim.js';
+import { WORLDS, G0 } from './ship-sim.js';
+import { ENGINES, P0, loadEngines } from './engines.js';
+export { ENGINES };
 
-const DEG = Math.PI / 180, P0 = 101325;
+const DEG = Math.PI / 180;
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const hyp = Math.hypot;
 
 /* ---------------- engines ---------------- */
-const mk = e => { e.Ae = (e.thrustVac - e.thrustSL) / P0; return e; };
-export const ENGINES = {
-  'merlin-1d': SHIP_ENGINES['merlin-1d'],
-  'raptor-2': SHIP_ENGINES['raptor-2'],
-  'be-4': SHIP_ENGINES['be-4'],
-  'be-3pm': mk({ name: 'BE-3PM (deep throttle)', thrustSL: 490e3, thrustVac: 520e3, ispSL: 320, ispVac: 350, minThrottle: 0.2, prop: 'hydrolox' }),
-  'be-7': mk({ name: 'BE-7', thrustSL: 0, thrustVac: 44.5e3, ispSL: 0, ispVac: 453, minThrottle: 0.2, prop: 'hydrolox', vacOnly: true }),
-};
-
 /* ---------------- vehicles ----------------
    Public, approximate figures; the point is the right regime (can it hover? how big is the
    stopping distance?), not a certified model of any one stage.                              */
@@ -105,11 +98,12 @@ export const VEHICLES = {
   },
 };
 
-/** Replace the built-in engines and vehicles with rows from landing-data.json (served from the database).  Anything missing keeps its built-in value. */
-export function loadLandingData(d) {
+/** Apply flight-data.json (served from the database): engines go into the shared table, vehicles replace the built-in landing vehicles.
+ *  Anything missing keeps its built-in value, so a partial row is fine. */
+export function loadFlightData(d) {
   if (!d || typeof d !== 'object') return false;
-  for (const [k, e] of Object.entries(d.engines || {})) ENGINES[k] = mk({ ...ENGINES[k], ...e });
-  for (const [k, v] of Object.entries(d.vehicles || {})) VEHICLES[k] = { ...VEHICLES[k], ...v, target: { ...VEHICLES[k]?.target, ...v.target }, start: { ...VEHICLES[k]?.start, ...v.start }, spread: { ...VEHICLES[k]?.spread, ...v.spread } };
+  loadEngines(d.engines);
+  for (const [k, v] of Object.entries(d.landingVehicles || {})) VEHICLES[k] = { ...VEHICLES[k], ...v, target: { ...VEHICLES[k]?.target, ...v.target }, start: { ...VEHICLES[k]?.start, ...v.start }, spread: { ...VEHICLES[k]?.spread, ...v.spread } };
   return true;
 }
 

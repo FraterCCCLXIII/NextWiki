@@ -1,5 +1,5 @@
 {
-  "_comment": "Engines and vehicles for the Landing Lab. Approximate public figures; served from the database (kosmo_datasets key landing-data.json), edit the row to change them.",
+  "_comment": "Shared data for the Shipyard and the Landing Lab (approximate public figures). Served from the database as the dataset flight-data.json; edit the row to change them. engines: shared engine table. landingVehicles: the Landing Lab vehicles.",
   "engines": {
     "merlin-1d": {
       "name": "Merlin 1D",
@@ -12,6 +12,18 @@
       "ignitions": 5,
       "prop": "kerolox"
     },
+    "merlin-vac": {
+      "name": "Merlin 1D Vacuum",
+      "thrustSL": 0,
+      "thrustVac": 981000,
+      "ispSL": 0,
+      "ispVac": 348,
+      "mass": 500,
+      "minThrottle": 0.39,
+      "ignitions": 4,
+      "prop": "kerolox",
+      "vacOnly": true
+    },
     "raptor-2": {
       "name": "Raptor 2",
       "thrustSL": 2260000,
@@ -22,6 +34,18 @@
       "minThrottle": 0.4,
       "ignitions": 6,
       "prop": "methalox"
+    },
+    "raptor-vac": {
+      "name": "Raptor Vacuum",
+      "thrustSL": 0,
+      "thrustVac": 2500000,
+      "ispSL": 0,
+      "ispVac": 380,
+      "mass": 1700,
+      "minThrottle": 0.4,
+      "ignitions": 6,
+      "prop": "methalox",
+      "vacOnly": true
     },
     "be-4": {
       "name": "BE-4",
@@ -34,13 +58,119 @@
       "ignitions": 3,
       "prop": "methalox"
     },
+    "rs-25": {
+      "name": "RS-25",
+      "thrustSL": 1860000,
+      "thrustVac": 2279000,
+      "ispSL": 366,
+      "ispVac": 452,
+      "mass": 3527,
+      "minThrottle": 0.67,
+      "ignitions": 1,
+      "prop": "hydrolox"
+    },
+    "f-1": {
+      "name": "F-1",
+      "thrustSL": 6770000,
+      "thrustVac": 7770000,
+      "ispSL": 263,
+      "ispVac": 304,
+      "mass": 8400,
+      "minThrottle": 1,
+      "ignitions": 1,
+      "prop": "kerolox"
+    },
+    "j-2": {
+      "name": "J-2",
+      "thrustSL": 0,
+      "thrustVac": 1033000,
+      "ispSL": 0,
+      "ispVac": 421,
+      "mass": 1788,
+      "minThrottle": 0.8,
+      "ignitions": 3,
+      "prop": "hydrolox",
+      "vacOnly": true
+    },
+    "rl10": {
+      "name": "RL10",
+      "thrustSL": 0,
+      "thrustVac": 110000,
+      "ispSL": 0,
+      "ispVac": 465,
+      "mass": 190,
+      "minThrottle": 0.2,
+      "ignitions": 6,
+      "prop": "hydrolox",
+      "vacOnly": true
+    },
+    "rutherford": {
+      "name": "Rutherford",
+      "thrustSL": 24000,
+      "thrustVac": 26000,
+      "ispSL": 311,
+      "ispVac": 343,
+      "mass": 35,
+      "minThrottle": 0.5,
+      "ignitions": 1,
+      "prop": "kerolox"
+    },
+    "rutherford-vac": {
+      "name": "Rutherford Vacuum",
+      "thrustSL": 0,
+      "thrustVac": 25800,
+      "ispSL": 0,
+      "ispVac": 343,
+      "mass": 35,
+      "minThrottle": 0.5,
+      "ignitions": 2,
+      "prop": "kerolox",
+      "vacOnly": true
+    },
+    "aj10-oms": {
+      "name": "AJ10 OMS",
+      "thrustSL": 0,
+      "thrustVac": 26700,
+      "ispSL": 0,
+      "ispVac": 316,
+      "mass": 118,
+      "minThrottle": 0.98,
+      "ignitions": 1000,
+      "prop": "hypergolic",
+      "vacOnly": true
+    },
+    "draco-cluster": {
+      "name": "Draco cluster (4 kN)",
+      "thrustSL": 0,
+      "thrustVac": 4000,
+      "ispSL": 0,
+      "ispVac": 300,
+      "mass": 40,
+      "minThrottle": 0.05,
+      "ignitions": 1000,
+      "prop": "hypergolic",
+      "vacOnly": true
+    },
+    "solid-motor": {
+      "name": "Solid motor",
+      "thrustSL": 1200000,
+      "thrustVac": 1300000,
+      "ispSL": 242,
+      "ispVac": 262,
+      "mass": 800,
+      "minThrottle": 1,
+      "ignitions": 1,
+      "prop": "solid"
+    },
     "be-3pm": {
       "name": "BE-3PM (deep throttle)",
       "thrustSL": 490000,
       "thrustVac": 520000,
       "ispSL": 320,
       "ispVac": 350,
+      "mass": 450,
       "minThrottle": 0.2,
+      "ignitions": 6,
       "prop": "hydrolox"
     },
     "be-7": {
@@ -49,12 +179,14 @@
       "thrustVac": 44500,
       "ispSL": 0,
       "ispVac": 453,
+      "mass": 120,
       "minThrottle": 0.2,
+      "ignitions": 10,
       "prop": "hydrolox",
       "vacOnly": true
     }
   },
-  "vehicles": {
+  "landingVehicles": {
     "falcon9": {
       "name": "Falcon 9 booster -- drone ship",
       "world": "earth",
