@@ -75,6 +75,9 @@
     #detailCol { grid-column: auto; }
   }
   @media (max-width: 1240px) { #detail #close { margin-left: auto; } }
+  /* Embedded at /kosmo/tools/biology the atlas navbar is hidden, so the sticky columns
+     must not keep reserving its 80px: they would start below the grid's first line. */
+  html.embedded main > aside, html.embedded #detailCol { top: 16px; }
   @media (max-width: 430px) {
     .grid { grid-template-columns: 1fr; }
     .card { grid-template-columns: 72px 1fr; }
