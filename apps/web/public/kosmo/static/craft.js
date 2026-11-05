@@ -119,7 +119,7 @@
     const close = el('button', { type: 'button', title: 'Close', 'aria-label': 'Close the craft dock' }, '×');
     close.addEventListener('click', () => toggle(false));
     bar.append(tabs, follow, frameBtn, close);
-    frame = el('iframe', { title: 'Orbital Flight Deck', loading: 'lazy' });
+    frame = el('iframe', { title: 'Orbital Flight Deck' });   // src is set on first open, so no need for loading=lazy
     root.append(bar, frame, el('div', { class: 'kc-read' }));
     selectTabUi();
     document.body.append(btn, root);
