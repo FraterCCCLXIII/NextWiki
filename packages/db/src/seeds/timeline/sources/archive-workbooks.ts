@@ -98,23 +98,25 @@ const source: TimelineSource = {
       const sheetRejected = sheetLevel.some((s) => s.reason.startsWith("auto:") && !s.reason.includes("code or citation"));
       if (sheetRejected && !recovered.size) {
         skipped.push(...sheetLevel);
-        if (extra?.skipped.length) skipped.push({ ref: rel, reason: "wb-parse: no rows with a usable date" });
       } else {
         skipped.push(...sheetLevel.filter((s) => !s.reason.startsWith("auto:") || s.reason.includes("code or citation")));
-        if (sheetRejected) for (const s of extra?.skipped ?? []) if (!recovered.has(s.row)) rowLevel.push({ ref: s.ref, reason: s.reason });
+        if (sheetRejected) for (const s of extra?.skipped ?? []) if (!recovered.has(s.row) && s.reason !== "section/heading row") rowLevel.push({ ref: s.ref, reason: s.reason });
       }
       skipped.push(...rowLevel);
       // rows the stock pass never flagged (it started below its header) stay unlisted: they were never candidate rows
       void stockRows;
       records.push(...stockRecs);
       for (const r of recovered.values()) {
-        const { row: _row, ...rec } = r as TimelineRecord & { row: number };
+        const rec = { ...r } as TimelineRecord & { row?: number };
+        delete rec.row;
         records.push(rec);
       }
-      if (process.env.WB_LOG && extra) {
+      // optional detail log (one JSON line per dropped or recovered row): WB_LOG=/path/to/file pnpm db:seed:timeline --check ...
+      const logFile = Reflect.get(process.env, "WB_LOG") as string | undefined;
+      if (logFile && extra) {
         const lines = extra.skipped.filter((s) => s.text !== undefined).map((s) => JSON.stringify({ ref: s.ref, reason: s.reason, text: s.text }));
         const ok = [...recovered.values()].map((r) => JSON.stringify({ ref: `${rel}#${(r as TimelineRecord & { row: number }).row}`, ok: r.name, date: r.data?.date, start: r.start, end: r.end }));
-        fs.appendFileSync(process.env.WB_LOG, [...lines, ...ok].join("\n") + "\n");
+        fs.appendFileSync(logFile, [...lines, ...ok].join("\n") + "\n");
       }
       const where = `packages/db/data/archive-workbooks/${rel} (from ${label})`;
       for (let i = before; i < records.length; i++) records[i]!.sources = [where];

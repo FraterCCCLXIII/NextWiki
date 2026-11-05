@@ -19,6 +19,10 @@ import type { TimelineRecord } from "../types.js";
  */
 
 export interface WbParsed {
+  /** The cell is essentially just the date (no other words except fillers such as "c.", "reign of"). */
+  pure?: boolean;
+  /** Era of the (last) number, when known; lets a bare start inherit the era of its end column. */
+  era?: Era;
   start: number;
   end?: number;
   approx: boolean;
@@ -58,6 +62,9 @@ export function normalizeDateText(raw: string): string {
     .replace(/\bAD\b/g, "CE")
     .replace(/(\d)\s*(bce|bc)\b\.?/gi, "$1 BCE")
     .replace(/(\d)\s*(ce|ad)\b\.?/gi, "$1 CE");
+  // "4th / 3rd century", "3rd or 2nd century", "1st and 4th centuries": a span between two ordinals
+  t = t.replace(/(\d(?:st|nd|rd|th))\s*(?:\/|or|and)\s*(?=\d+(?:st|nd|rd|th))/gi, "$1-");
+  t = t.replace(/^BCE\s+(\d{1,6})\b(?!\s*-|\s*(?:BCE|CE))/, "$1 BCE");
   t = t.replace(/(?<!\d\s?)\bCE\s+(\d{1,4}(?:\s*-\s*\d{1,4})?)\b/g, "$1 CE");
   for (let i = 0; i < 3; i++) t = t.replace(/(\d),(\d{3})(?!\d)/g, "$1$2");
   t = t.replace(/\s+(?:to|through|thru)\s+(?=(?:c\.?\s*|ca\.?\s*|circa\s*)?-?\d)/gi, " - ");
@@ -107,26 +114,27 @@ export function eraFromText(raw: string): Era | null {
   return has.BCE !== has.CE ? (has.BCE ? "BCE" : "CE") : null;
 }
 
-function resolveAtom(a: Atom, t: string, ctx: Era | null, pure: boolean, paren: boolean): (WbParsed & { open?: boolean }) | null {
+function resolveAtom(a: Atom, t: string, ctx: Era | null, pure: boolean, paren: boolean, weak = false): (WbParsed & { open?: boolean }) | null {
   const m = a.m;
   if (a.kind === "cent") {
     const c1 = Number(m[1]);
     const c2 = Number(m[2] ?? m[1]);
     const era = eraOfTag(m[3]) ?? (m[2] && c1 > c2 ? "BCE" : ctx);
+    if (!m[3] && era === "BCE" && c1 < c2) return null;
     if (!era || c1 < 1 || c2 < 1 || c1 > 60 || c2 > 60) return null;
     const hi = Math.max(c1, c2);
     const lo = Math.min(c1, c2);
     const explicit = Boolean(m[3]);
     if (!explicit && !(pure || paren)) return null;
     return era === "BCE"
-      ? { start: bce(hi * 100), end: bce((lo - 1) * 100), approx: true, explicit }
-      : { start: (lo - 1) * 100 + 1, end: hi * 100, approx: true, explicit };
+      ? { start: bce(hi * 100), end: bce((lo - 1) * 100 + 1), approx: true, explicit, era }
+      : { start: (lo - 1) * 100 + 1, end: hi * 100, approx: true, explicit, era };
   }
   if (a.kind === "mill") {
     const n = Number(m[1]);
     const era = eraOfTag(m[2]) ?? ctx;
     if (!era || !m[2] && !(pure || paren)) return null;
-    return era === "BCE" ? { start: bce(n * 1000), end: bce((n - 1) * 1000 + 1), approx: true, explicit: Boolean(m[2]) } : { start: (n - 1) * 1000 + 1, end: n * 1000, approx: true, explicit: Boolean(m[2]) };
+    return era === "BCE" ? { start: bce(n * 1000), end: bce((n - 1) * 1000 + 1), approx: true, explicit: Boolean(m[2]), era } : { start: (n - 1) * 1000 + 1, end: n * 1000, approx: true, explicit: Boolean(m[2]), era };
   }
   if (a.kind === "dec") {
     const v = Number(m[1]);
@@ -137,11 +145,11 @@ function resolveAtom(a: Atom, t: string, ctx: Era | null, pure: boolean, paren: 
     if (era === "BCE") {
       const s = toYear(v + span, "BCE");
       const e = toYear(v, "BCE");
-      return s === null || e === null ? null : { start: s, end: e, approx: true, explicit: Boolean(tag) };
+      return s === null || e === null ? null : { start: s, end: e, approx: true, explicit: Boolean(tag), era };
     }
     const s = toYear(v, "CE");
     const e = toYear(v + span, "CE");
-    return s === null || e === null ? null : { start: s, end: e, approx: true, explicit: Boolean(tag) };
+    return s === null || e === null ? null : { start: s, end: e, approx: true, explicit: Boolean(tag), era };
   }
   // numeric
   const neg1 = Boolean(m[1]);
@@ -160,12 +168,12 @@ function resolveAtom(a: Atom, t: string, ctx: Era | null, pure: boolean, paren: 
     let y: number | null = null;
     if (ea) y = toYear(a1, ea);
     else if (neg1 && ok(a1) && a1 >= 1) y = fromHistorical(-a1);
-    else if (ctx) y = toYear(a1, ctx);
+    else if (ctx) y = weak && a1 < 100 ? null : toYear(a1, ctx);
     else if (a1 >= 1000 && a1 <= NOW_YEAR) y = a1;
     if (y === null) return null;
     const tail = t.slice(a.idx + a.len);
     const open = /^\s*(?:onward|onwards|→|->|and later|-\s*(?:present|now))/i.test(tail);
-    const r: WbParsed = { start: y, approx: false, explicit };
+    const r: WbParsed = { start: y, approx: false, explicit, era: y <= 0 ? "BCE" : "CE" };
     if (open && y > 0) r.end = NOW_YEAR;
     return r;
   }
@@ -181,20 +189,21 @@ function resolveAtom(a: Atom, t: string, ctx: Era | null, pure: boolean, paren: 
     eA = eB = "BCE";
   } else {
     const e = ctx ?? (a1 >= 1000 ? "CE" : null);
-    if (!e) return null;
+    // BCE ranges are written oldest first; an ascending bare pair under a BCE label is ambiguous, not a BCE range
+    if (!e || (e === "BCE" && a1 < b1)) return null;
     eA = eB = e;
   }
   const ya = toYear(a1, eA!);
   const yb = toYear(b1, eB!);
   if (ya === null || yb === null) return null;
-  return { start: Math.min(ya, yb), end: Math.max(ya, yb), approx: false, explicit };
+  return { start: Math.min(ya, yb), end: Math.max(ya, yb), approx: false, explicit, era: eB! };
 }
 
 /**
  * Parses one date cell. `ctx` is the era of the header/heading (null when unknown); `era` is the content of a separate era
  * column. Returns a failure code when the text has no usable date.
  */
-export function parseDateCell(raw: string, ctx: Era | null, era = ""): WbParsed | WbFail {
+export function parseDateCell(raw: string, ctx: Era | null, era = "", weak = false): WbParsed | WbFail {
   const base = cleanText(raw);
   if (!base || /^[-?.]+$/.test(base)) return "empty";
   if (/\b\d{4}-\d{2}-\d{2}\b|\d{1,2}:\d{2}:\d{2}/.test(base)) return "mangled";
@@ -209,31 +218,47 @@ export function parseDateCell(raw: string, ctx: Era | null, era = ""): WbParsed 
     .trim();
   const atoms = atomsOf(t);
   if (!atoms.length) return "unparseable";
-  const resolved: { r: WbParsed; a: Atom }[] = [];
+  const resolved: { r: WbParsed; a: Atom; qual: boolean; died: boolean }[] = [];
   let sawBare = false;
-  for (const a of atoms) {
+  for (let k = 0; k < atoms.length; k++) {
+    const a = atoms[k]!;
     const rest = (t.slice(0, a.idx) + " " + t.slice(a.idx + a.len)).replace(/\([^)]*\)/g, " ");
     const words = rest.toLowerCase().match(/[a-z]+/g) ?? [];
     const pure = words.every((w) => FILLER.has(w));
     const paren = t[a.idx - 1] === "(" || /\(\s*$/.test(t.slice(0, a.idx));
-    const r = resolveAtom(a, t, ctx, pure, paren);
-    if (r) resolved.push({ r, a });
+    let r = resolveAtom(a, t, ctx, pure, paren, weak);
+    if (!r) {
+      // "1920s-1930s CE", "3rd - 2nd c. BCE": a bare first half takes the era written after the second half
+      const nx = atoms[k + 1];
+      const joined = nx && /^\s*-\s*$/.test(t.slice(a.idx + a.len, nx.idx));
+      const nr = joined ? resolveAtom(nx, t, ctx, pure, paren, weak) : null;
+      if (nr?.era && nr.explicit) r = resolveAtom(a, t, nr.era, true, true);
+    }
+    const before = t.slice(Math.max(0, a.idx - 24), a.idx).toLowerCase();
+    const died = /(?:\bdied|\bdeath|\bd\.)\s*(?:c\.?\s*|around\s+)?$/.test(before);
+    const qual = /(?:\bafter|\bbefore|\bby|\buntil|\bpre-?|\bpost-?|\bprior to)\s*(?:c\.?\s*|around\s+)?$/.test(before);
+    if (r) resolved.push({ r: { ...r, pure }, a, qual: qual || died, died });
     else sawBare = true;
   }
-  if (!resolved.length) return sawBare ? "bare" : "unparseable";
-  const first = resolved[0]!;
+  const usable = resolved.filter((x) => !x.qual);
+  const lifespan =
+    resolved.length >= 2 && /\b(?:b\.|born)/i.test(t) && resolved.some((x) => x.died) && resolved.filter((x) => !x.died && !x.qual)[0] && resolved.find((x) => x.died);
+  if (!usable.length) return resolved.length ? "qualified" : sawBare ? "bare" : "unparseable";
+  const first = usable[0]!;
   const out: WbParsed = { ...first.r, approx: first.r.approx || approx };
   delete (out as { open?: boolean }).open;
-  const second = resolved[1];
-  if (
-    second &&
-    first.r.end === undefined &&
-    second.r.end === undefined &&
-    /\b(?:b\.|born)/i.test(t) &&
-    /\b(?:d\.|died|death)/i.test(t)
-  ) {
+  if (lifespan && first.r.end === undefined) {
+    const d = resolved.find((x) => x.died)!;
+    out.start = Math.min(first.r.start, d.r.start);
+    out.end = Math.max(first.r.start, d.r.start);
+    return out;
+  }
+  // "3rd c. BCE - 3rd c. CE": two atoms joined by a dash span from the first to the second
+  const second = usable[1];
+  if (second && /^\s*-\s*$/.test(t.slice(first.a.idx + first.a.len, second.a.idx))) {
     out.start = Math.min(first.r.start, second.r.start);
-    out.end = Math.max(first.r.start, second.r.start);
+    out.end = Math.max(first.r.end ?? first.r.start, second.r.end ?? second.r.start);
+    out.approx = out.approx || first.r.approx || second.r.approx;
   }
   return out;
 }
@@ -244,6 +269,8 @@ export function parseDateCell(raw: string, ctx: Era | null, era = ""): WbParsed 
 
 const DATE_HDR =
   /\b(?:dates?|years?|periods?|eras?|reign(?:ed)?|when|from|start(?:ed)?|began|founded|century|centuries|time|born|lived|floruit|flourished|age|epoch|bce|bc|ce|ad|birth|approx)\b/i;
+const DEATH_HDR = /\b(?:death|died|dies|fate|burial|buried)\b/i;
+const BIRTH_OK = /\b(?:birth|born|life|lived|lifespan|dates?|reign)\b/i;
 const END_HDR = /^(?:to|end|ended|until|died|death|d\.)\b/i;
 const NAME_HDR =
   /\b(?:name|names|event|events|title|figure|figures|person|people|character|characters|work|text|deity|god|king|ruler|emperor|battle|author|philosopher|saint|prophet|culture|civili[sz]ation|cult|religion|school|tradition|temple|site|topic|item|subject|sibyl|stage|dynasty|movement|council|empire)\b/i;
@@ -252,9 +279,9 @@ const SUMMARY_HDR = /\b(?:description|details?|key|notes?|significance|summary|e
 const REGION_HDR = /\b(?:region|location|place|country|area|where)\b/i;
 const TYPE_HDR = /^(?:type|kind|category|class)\b/i;
 const ERA_TOKEN = /^(?:BCE|BC|CE|AD|B\.C\.E?\.?|B\.C\.|C\.E\.|A\.D\.)$/i;
-const CODE = /^[A-Z]{1,4}-[A-Za-z0-9-]+$/;
+const CODE = /^(?:[A-Z]{1,4}-[A-Za-z0-9-]+|[A-Z]{1,3}\d{1,4})$/;
 const AUTHOR_YEAR = /\((?:[A-Z][\w.'’-]*(?:\s+(?:et al\.?|and|&|[A-Z][\w.'’-]*))*),?\s+(?:1[0-9]{3}|20[0-2][0-9])[a-z]?(?:[,;)]|\s*:)/;
-const NO_VALUE = /^(?:n\/?a|none|null|nan|unknown|tbd|-+|\?+)$/i;
+const NO_VALUE = /^(?:n\/?a|none|null|nan|unknown|tbd|-+|\?+|\[gpt error\].*)$/i;
 
 const norm = (s: string) => cleanText(s).toLowerCase();
 const trunc = (s: string, n: number) => (s.length > n ? s.slice(0, n - 1).trimEnd() + "…" : s);
@@ -296,6 +323,16 @@ interface Block {
   summary: number;
   region: number;
   type: number;
+  /** Columns of plain integers that mix negative (BCE) and positive (CE) values: "-300", "234". */
+  signed: Set<number>;
+}
+
+/** A plain integer in a signed-year column: negative is historical BCE, positive is CE. */
+function parseSigned(v: string): WbParsed | null {
+  if (!/^-?\d{1,5}$/.test(v)) return null;
+  const n = Number(v);
+  if (n === 0 || n > 2100 || n < -500000) return null;
+  return { start: n < 0 ? fromHistorical(n) : n, approx: false, explicit: true };
 }
 
 const cellOf = (row: string[], j: number) => (j >= 0 && j < row.length ? cleanText(row[j]) : "");
@@ -308,9 +345,9 @@ function isPlainLabel(c: string): boolean {
 function isHeaderRow(row: string[]): boolean {
   if (nonEmpty(row) < 2) return false;
   const cells = row.map((c) => cleanText(c)).filter(Boolean);
-  if (!cells.every((c) => c.length <= 90)) return false;
-  if (cells.some((c) => typeof parseDateCell(c, null) !== "string")) return false;
-  return cells.some((c) => DATE_HDR.test(c) && c.length <= 60);
+  // header labels are short and carry no digits ("fl. 4th century" is data, "Date (BCE)" is a header)
+  if (!cells.every((c) => c.length <= 70 && !/\d/.test(c))) return false;
+  return cells.some((c) => DATE_HDR.test(c));
 }
 
 /** Single-cell (or all-identical-cells) row: a heading or title. */
@@ -345,8 +382,16 @@ function planBlock(rows: string[][], b: Pick<Block, "headerRow" | "headers" | "s
   const data = rows.slice(b.start, b.end);
   if (data.length < 1) return null;
   const eraCol = eraColumns(rows, b.start, b.end, width);
+  const signed = new Set<number>();
+  for (let c = 0; c < width; c++) {
+    if (!DATE_HDR.test(b.headers[c] ?? "")) continue;
+    const vals = data.map((r) => cellOf(r, c)).filter(Boolean);
+    const ints = vals.filter((v) => /^-?\d{1,5}$/.test(v));
+    if (ints.length >= 8 && ints.length >= vals.length * 0.7 && ints.filter((v) => v.startsWith("-")).length >= 2 && ints.filter((v) => !v.startsWith("-")).length >= 2) signed.add(c);
+  }
 
   // score each column by how many of its non-empty cells parse as dates (walking headings for era context)
+  const named = (c: number) => DATE_HDR.test(b.headers[c] ?? "");
   const hits = new Array<number>(width).fill(0);
   const filled = new Array<number>(width).fill(0);
   const lenSum = new Array<number>(width).fill(0);
@@ -361,30 +406,40 @@ function planBlock(rows: string[][], b: Pick<Block, "headerRow" | "headers" | "s
     for (let c = 0; c < width; c++) {
       const v = cellOf(row, c);
       if (!v || eraCol[c]) continue;
-      const ctx = eraFromText(b.headers[c] ?? "") ?? sec ?? hdrCtx;
+      const hEra = DATE_HDR.test(b.headers[c] ?? "") ? eraFromText(b.headers[c] ?? "") ?? hdrCtx : null;
+      const ctx = hEra ?? (DATE_HDR.test(b.headers[c] ?? "") ? sec : null);
+      const weak = !hEra;
       const era = eraCol[c + 1] ? cellOf(row, c + 1) : "";
       if (c + 1 < width && eraCol[c + 1] && !pureNumber(v)) { /* value with its own text: era column ignored */ }
       filled[c]!++;
       lenSum[c]! += v.length;
-      if (typeof parseDateCell(v, ctx, pureNumber(v) ? era : "") !== "string") hits[c]!++;
+      const pd = signed.has(c) ? parseSigned(v) : null;
+      const pr = pd ?? parseDateCell(v, ctx, pureNumber(v) ? era : "", weak);
+      // in unlabelled columns only cells that are essentially a date count ("Unknown (c. 675 BCE)" is a note, not a date)
+      if (typeof pr !== "string" && (named(c) || pd || pr.pure)) hits[c]!++;
     }
   }
   const cols = [...Array(width).keys()].filter((c) => !eraCol[c]);
-  const named = (c: number) => DATE_HDR.test(b.headers[c] ?? "");
   const good = cols.filter((c) => {
     const f = filled[c]!;
     const h = hits[c]!;
     if (h < 2 && !(h >= 1 && data.length <= 3)) return false;
+    // a column that is only about death is not when the thing starts
+    if (DEATH_HDR.test(b.headers[c] ?? "") && !BIRTH_OK.test(b.headers[c] ?? "")) return false;
     if (named(c)) return h >= Math.max(2, f * 0.12);
     return h >= 3 && h >= f * 0.5 && lenSum[c]! / Math.max(f, 1) < 45;
   });
   if (!good.length) return null;
   good.sort((x, y) => Number(named(y)) - Number(named(x)) || hits[y]! - hits[x]! || x - y);
-  const primary = good[0]!;
-  // prefer an earlier named date column when it parses nearly as often (e.g. "Era/Year" before "Adjusted Year")
-  const dates = good;
+  let primary = good[0]!;
+  if (!named(primary)) {
+    // unlabelled date columns: the leftmost strong one is the start, the next one (within two columns) its end
+    const strong = good.filter((c) => hits[c]! >= hits[primary]! * 0.5).sort((x, y) => x - y);
+    primary = strong[0]!;
+  }
+  const dates = [primary, ...good.filter((c) => c !== primary)];
 
-  let fromEra = eraCol[primary + 1] ? primary + 1 : -1;
+  const fromEra = eraCol[primary + 1] ? primary + 1 : -1;
   let to = -1;
   let toEra = -1;
   if (fromEra >= 0) {
@@ -404,23 +459,61 @@ function planBlock(rows: string[][], b: Pick<Block, "headerRow" | "headers" | "s
       }
     }
   }
+  if (to < 0 && !named(primary)) {
+    for (let c = primary + 1; c <= Math.min(width - 1, primary + 3); c++) {
+      if (!eraCol[c] && !eraCol[c - 1] && good.includes(c) && !(b.headers[c] ?? "")) {
+        to = c;
+        break;
+      }
+    }
+  }
+  if (to < 0 && !named(primary)) {
+    // an unlabelled column of plain numbers just left of the date column is its start: "100 | | 400 CE"
+    for (let c = primary - 1; c >= Math.max(0, primary - 2); c--) {
+      if (eraCol[c] || (b.headers[c] ?? "") || dates.includes(c)) continue;
+      const pairs: [number, number, Era][] = [];
+      for (const r of data) {
+        const lv = cellOf(r, c);
+        const rv = parseDateCell(cellOf(r, primary), null);
+        if (pureNumber(lv) && /^\d{1,4}$/.test(lv) && typeof rv !== "string" && rv.era) pairs.push([Number(lv), rv.era === "BCE" ? 1 - rv.start : rv.start, rv.era]);
+      }
+      const vals = new Set(pairs.map((x) => x[0]));
+      const sequential = pairs.every((x, i) => i === 0 || x[0] - pairs[i - 1]![0] === 1);
+      // the start is not later than the end: bigger BCE magnitude, smaller CE one
+      const okp = pairs.filter(([l, rr, e]) => l >= 1 && l <= 2100 && (e === "BCE" ? l >= rr : l <= rr)).length;
+      if (pairs.length >= 3 && vals.size >= 3 && !sequential && okp >= pairs.length * 0.8) {
+        dates.unshift(c);
+        to = primary;
+        primary = c;
+        dates.splice(dates.indexOf(to), 1);
+        break;
+      }
+    }
+  }
+  if (to >= 0 && dates.includes(to)) dates.splice(dates.indexOf(to), 1);
   const used = new Set<number>([...dates, fromEra, to, toEra].filter((c) => c >= 0));
+  // fill is measured on the rows that carry something in the date column, so heading and note rows do not dilute it
+  const dated = data.filter((r) => cellOf(r, primary) && headingText(r) === null);
+  if (!dated.length) return null;
   const text = cols
     .filter((c) => !used.has(c))
     .map((c) => {
-      const vals = data.map((r) => cellOf(r, c)).filter(Boolean);
-      return { c, fill: vals.length / data.length, num: vals.filter((v) => pureNumber(v)).length / Math.max(vals.length, 1), len: vals.reduce((n, v) => n + v.length, 0) / Math.max(vals.length, 1) };
+      const vals = dated.map((r) => cellOf(r, c)).filter(Boolean);
+      return { c, fill: vals.length / dated.length, num: vals.filter((v) => pureNumber(v)).length / Math.max(vals.length, 1), len: vals.reduce((n, v) => n + v.length, 0) / Math.max(vals.length, 1) };
     })
     .filter((x) => x.fill >= 0.35 && x.num < 0.3 && x.len >= 2);
   const hdr = (c: number) => b.headers[c] ?? "";
   const names: number[] = [];
   for (const x of text.filter((x) => NAME_HDR_START.test(hdr(x.c)))) names.push(x.c);
   for (const x of text.filter((x) => NAME_HDR.test(hdr(x.c)) && !names.includes(x.c))) names.push(x.c);
-  for (const x of text) if (!names.includes(x.c)) names.push(x.c);
+  if (!names.length) {
+    const lead = text.find((x) => !SUMMARY_HDR.test(hdr(x.c)) && !REGION_HDR.test(hdr(x.c)));
+    if (lead) names.push(lead.c);
+  }
   const nameSet = new Set(names.slice(0, 3));
   const pick = (re: RegExp) => text.find((x) => re.test(hdr(x.c)) && !nameSet.has(x.c))?.c ?? -1;
   let summary = pick(SUMMARY_HDR);
-  if (summary < 0) summary = names[1] ?? -1;
+  if (summary < 0) summary = text.find((x) => !nameSet.has(x.c) && !REGION_HDR.test(hdr(x.c)) && !TYPE_HDR.test(hdr(x.c)))?.c ?? -1;
   return {
     ...b,
     dates,
@@ -428,6 +521,7 @@ function planBlock(rows: string[][], b: Pick<Block, "headerRow" | "headers" | "s
     to,
     toEra,
     ctx: hdrCtx,
+    signed,
     names: names.slice(0, 3),
     summary,
     region: pick(REGION_HDR),
@@ -475,10 +569,7 @@ export function recoverSheet(
     const hdrCtx = dateHdrEras.size === 1 ? [...dateHdrEras][0]! : null;
     void hdrCtxs;
     const blk = planBlock(rows, bnd, hdrCtx);
-    if (bnd.headerRow >= 0) {
-      const ref = bnd.headerRow;
-      skip(ref, "repeated header row", bnd.headers.join(" | "));
-    }
+    if (bnd.headerRow >= 0 && bnd !== bounds.find((x) => x.headerRow >= 0)) skip(bnd.headerRow, "repeated header row", bnd.headers.join(" | "));
     if (!blk) {
       for (let i = bnd.start; i < bnd.end; i++) {
         const h = headingText(rows[i]!);
@@ -507,28 +598,31 @@ export function recoverSheet(
         skip(i, "repeated header row", cellOf(row, 0));
         continue;
       }
-      const ctx = sec ?? blk.ctx;
-      let parsed: WbParsed | WbFail = "empty";
+            let parsed: WbParsed | WbFail = "empty";
       let dateText = "";
       for (const dc of blk.dates) {
         const v = cellOf(row, dc);
         if (!v) continue;
         const era = dc === blk.dates[0] && blk.fromEra >= 0 && pureNumber(v) ? cellOf(row, blk.fromEra) : "";
-        const cctx = eraFromText(blk.headers[dc] ?? "") ?? ctx;
-        const p = parseDateCell(v, cctx, era);
+        const named = DATE_HDR.test(blk.headers[dc] ?? "");
+        const hEra = named ? eraFromText(blk.headers[dc] ?? "") ?? blk.ctx : null;
+        const cctx = hEra ?? (named ? sec : null);
+        const weak = !hEra;
+        let p: WbParsed | WbFail = (blk.signed.has(dc) ? parseSigned(v) : null) ?? parseDateCell(v, cctx, era, weak);
+        const tv = dc === blk.dates[0] && blk.to >= 0 ? cellOf(row, blk.to) : "";
+        const te = tv ? (blk.toEra >= 0 && pureNumber(tv) ? cellOf(row, blk.toEra) || era : era) : "";
+        const q = tv ? parseDateCell(tv, cctx, te, weak) : "empty";
+        if (p === "bare" && typeof q !== "string" && q.era) {
+          // "1550 | | 1070 BCE": a bare start takes the era of its end, provided it is not later than the end
+          const p2 = parseDateCell(v, q.era, era);
+          if (typeof p2 !== "string" && p2.start <= q.start) p = p2;
+        }
         if (typeof p !== "string") {
           parsed = p;
           dateText = era ? `${v} ${era}` : v;
-          if (dc === blk.dates[0] && blk.to >= 0 && cellOf(row, blk.to) && p.end === undefined) {
-            const tv = cellOf(row, blk.to);
-            const te = blk.toEra >= 0 && pureNumber(tv) ? cellOf(row, blk.toEra) || era : era;
-            const q = parseDateCell(tv, cctx, te);
-            if (typeof q !== "string") {
-              const lo = Math.min(p.start, q.start);
-              const hi = Math.max(p.start, q.end ?? q.start);
-              parsed = { ...p, start: lo, end: hi };
-              dateText = `${dateText} - ${te ? `${tv} ${te}` : tv}`;
-            }
+          if (typeof q !== "string" && p.end === undefined) {
+            parsed = { ...p, start: Math.min(p.start, q.start), end: Math.max(p.start, q.end ?? q.start) };
+            dateText = `${dateText} - ${te && pureNumber(tv) ? `${tv} ${te}` : tv}`;
           }
           break;
         }

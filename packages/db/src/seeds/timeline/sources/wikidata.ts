@@ -1,6 +1,6 @@
+import { fileURLToPath, pathToFileURL } from "node:url";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import type { TimelineBundle, TimelineRecord, TimelineSource } from "../types.js";
 
 /**
@@ -283,12 +283,20 @@ const source: TimelineSource = {
       return { records: [], skipped };
     }
 
+    // items the richer Wars dataset (tools/timeline-wars) already carries under the same Q-id are left to it
+    const inWars = new Set<string>();
+    try {
+      const wars = (await import(pathToFileURL(fileURLToPath(new URL("../../../../../../tools/timeline-wars/index.mjs", import.meta.url))).href)) as { ROWS: { wikidata?: string }[] };
+      for (const r of wars.ROWS) if (r.wikidata) inWars.add(r.wikidata);
+    } catch { /* wars dataset not built: keep everything */ }
+
     const records: TimelineRecord[] = [];
     const seen = new Set<string>();
     for (const spec of QUERIES) {
       for (const row of cache.queries[spec.id] ?? []) {
         if (seen.has(row.id)) continue;
         seen.add(row.id);
+        if (inWars.has(row.id)) { skipped.push({ ref: `wikidata:${row.id}`, reason: "carried by the wars dataset" }); continue; }
         const ref = `wikidata:${row.id}`;
         if (!row.label || /^Q\d+$/.test(row.label)) {
           skipped.push({ ref, reason: "no English label" });

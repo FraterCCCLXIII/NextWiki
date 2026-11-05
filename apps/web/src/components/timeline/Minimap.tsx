@@ -60,17 +60,29 @@ export function Minimap({ items, view, plotW, onView }: { items: TLItem[]; view:
     ctx.strokeStyle = "rgba(169,192,180,0.9)"; ctx.lineWidth = 1.5; ctx.strokeRect(l + 0.5, 0.5, Math.max(r - l, 3), H - 15);
   }, [items, view, plotW]);
 
-  const move = (e: React.PointerEvent) => {
+  // grab offset (in minimap units) from the window's left edge, so gripping anywhere on it moves it without jumping or resizing
+  const grab = useRef(0);
+  const uAt = (e: React.PointerEvent) => {
     const rect = wrap.current!.getBoundingClientRect();
-    const u = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
-    const half = plotW / view.k / 2;
-    onView(fromU(u) - half);
+    return { u: Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width)), rect };
+  };
+  const start = (e: React.PointerEvent) => {
+    const { u, rect } = uAt(e);
+    const l = toU(view.x0), r = toU(view.x0 + plotW / view.k);
+    const slack = 8 / rect.width;
+    // on the window (or within a few px of its sides): hold it where it was grabbed; elsewhere: centre it on the click
+    grab.current = u >= l - slack && u <= r + slack ? u - l : (r - l) / 2;
+    move(e);
+  };
+  const move = (e: React.PointerEvent) => {
+    const { u } = uAt(e);
+    onView(fromU(Math.min(1, Math.max(0, u - grab.current))));
   };
   return (
     <div
       ref={wrap}
-      className="relative h-14 w-full cursor-pointer touch-none select-none border-t border-kosmo-line bg-kosmo-panel"
-      onPointerDown={(e) => { dragging.current = true; (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); move(e); }}
+      className="relative h-14 w-full cursor-grab active:cursor-grabbing touch-none select-none border-t border-kosmo-line bg-kosmo-panel"
+      onPointerDown={(e) => { dragging.current = true; (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); start(e); }}
       onPointerMove={(e) => dragging.current && move(e)}
       onPointerUp={() => (dragging.current = false)}
       aria-label="Overview. Drag to move through time."

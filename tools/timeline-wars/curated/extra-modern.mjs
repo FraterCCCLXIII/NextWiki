@@ -55,7 +55,7 @@ R("torch-1942","Operation Torch","campaign",1942,null,NAF,["United States","Brit
 R("kasserine-1943","Battle of Kasserine Pass","battle",1943,null,NAF,["United States","Germany"],"First major US-German clash.",{ll:[35.1,8.7],parent:"north-africa-campaign"});
 R("coral-sea-1942","Battle of the Coral Sea","naval-battle",1942,null,OC,["United States","Japan"],"First carrier-vs-carrier battle.",{ll:[-15.0,155.0],parent:"pacific-war"});
 R("guadalcanal-1942","Guadalcanal campaign","campaign",1942,1943,OC,["United States","Japan"],"Allied seizure of the Solomon Islands base.",{ll:[-9.6,160.2],parent:"pacific-war"});
-R("kokoda-1942","Kokoda Track campaign","campaign",1942,null,OC,["Australia","Japan"],"Defence of Port Moresby overland.",{ll:[-8.88,147.73],parent:"pacific-war"});
+R("kokoda-1942","Kokoda Track campaign","campaign",1942,null,OC,["Australia","Japan"],"Defence of Port Moresby overland.",{ll:[-8.88,147.73],parent:"new-guinea-campaign"});
 R("singapore-1942","Battle of Singapore","battle",1942,null,SEA,["Japan","Britain"],"Largest British surrender in history.",{ll:[1.35,103.82],parent:"pacific-war"});
 R("philippines-1941","Japanese invasion of the Philippines","campaign",1941,1942,SEA,["Japan","United States","Philippines"],"Bataan and Corregidor.",{parent:"pacific-war"});
 R("leyte-gulf-1944","Battle of Leyte Gulf","naval-battle",1944,null,SEA,["United States","Japan"],"Largest naval battle of WWII.",{ll:[11.0,126.0],parent:"pacific-war"});

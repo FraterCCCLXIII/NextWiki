@@ -45,6 +45,7 @@ const kindOf = (type: string | null, kind: string, hasEnd: boolean): TLKind => {
 export async function queryTimelineWindow(q: TimelineWindowQuery): Promise<TimelineWindow> {
   const win = Math.max(q.to - q.from, 1);
   const filters = [sql`${BASE}`, sql`e.time_start <= ${q.to}`, sql`coalesce(e.time_end, e.time_start) >= ${q.from}`];
+  if (q.datasets && !q.datasets.length) return { items: [], edges: [], matched: 0, total: 0 };
   if (q.datasets?.length) filters.push(sql`coalesce(e.data->>'dataset', 'kosmo-history') in (${sql.join(q.datasets.map((d) => sql`${d}`), sql`, `)})`);
   if (q.q) filters.push(sql`(e.name ilike ${"%" + q.q.replace(/[\\%_]/g, "\\$&") + "%"} or coalesce(e.summary,'') ilike ${"%" + q.q.replace(/[\\%_]/g, "\\$&") + "%"})`);
   const where = sql.join(filters, sql` and `);
@@ -106,6 +107,25 @@ export async function queryTimelineWindow(q: TimelineWindowQuery): Promise<Timel
   }
   const [{ count: total } = { count: 0 }] = rowsOf(await db.execute(sql`select count(*)::int as count from kosmo_entities e where ${BASE}`)) as { count: number }[];
   return { items, edges, matched: Number(matchedRaw), total: Number(total) };
+}
+
+/** Time extent (1st–99th percentile of starts, so a stray outlier does not stretch the fit) of the selected datasets. */
+export async function timelineExtent(datasets?: string[], q?: string): Promise<{ from: number; to: number; count: number } | null> {
+  if (datasets && !datasets.length) return null;
+  const filters = [sql`${BASE}`];
+  if (datasets?.length) filters.push(sql`coalesce(e.data->>'dataset', 'kosmo-history') in (${sql.join(datasets.map((d) => sql`${d}`), sql`, `)})`);
+  if (q) filters.push(sql`(e.name ilike ${"%" + q.replace(/[\\%_]/g, "\\$&") + "%"})`);
+  const [r] = rowsOf(
+    await db.execute(sql`
+      select count(*)::int as count, min(e.time_start) as lo, max(coalesce(e.time_end, e.time_start)) as hi,
+             percentile_cont(0.01) within group (order by e.time_start) as p1,
+             percentile_cont(0.99) within group (order by coalesce(e.time_end, e.time_start)) as p99
+      from kosmo_entities e where ${sql.join(filters, sql` and `)}`)
+  );
+  if (!r || !Number(r.count)) return null;
+  const n = Number(r.count);
+  const from = n > 200 ? Number(r.p1) : Number(r.lo), to = n > 200 ? Number(r.p99) : Number(r.hi);
+  return { from, to: to > from ? to : from + 1, count: n };
 }
 
 export async function timelineDatasets(): Promise<{ id: string; label: string; count: number }[]> {

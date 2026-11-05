@@ -10,6 +10,7 @@ import { GROUP as GAP_GROUP, ROWS as GAP_ROWS, EDGES as GAP_EDGES } from "./time
 import { GROUP as EOG_GROUP, ROWS as EOG_ROWS, LINKS as EOG_LINKS } from "./timeline-eog-extra.mjs";
 import { ASSIGNMENTS as LINEAGE_ASSIGNMENTS } from "./timeline-lineage-assignments.mjs";
 import { CITATIONS } from "./timeline-citations.mjs";
+import { ROWS as PE_ROWS, META as PE_META } from "./timeline-pantheon-extra.mjs";
 import { LINKS as SRC_LINKS } from "./timeline-links.mjs";
 import { bardiyaLane, regionFor } from "./timeline-normalize.mjs";
 import { GROUP as ST_GROUP, ROWS as ST_ROWS } from "./timeline-stupas.mjs";
@@ -261,6 +262,15 @@ function gapFill() {
   }
 }
 
+const PE_IDS = new Set(PE_ROWS.map(([n, , , lane]) => `pe-${slug(lane)}-${slug(n)}`));
+/** Extra deities for thin Pantheons lanes (tools/timeline-pantheon-extra.mjs), filed in the same group and lanes. */
+function pantheonExtra() {
+  for (const [n, s, e, lane, d, approx] of PE_ROWS) {
+    const m = PE_META[`${lane}|${n}`] ?? {};
+    add({ id: `pe-${slug(lane)}-${slug(n)}`, k: "deity", n, s: astro(s), e: e != null ? astro(e) : undefined, lane, grp: "Pantheons", d: trunc([d, m.attestation && `Date basis: ${m.attestation}`].filter(Boolean).join("\n\n"), 900), approx: approx || undefined, type: m.role, src: m.sources?.length ? m.sources : ["tools/timeline-pantheon-extra.mjs"] });
+  }
+}
+
 const EOG_IDS = new Set(EOG_ROWS.map((r) => r.id));
 /** Finer-grained Evolution of God rows (tools/timeline-eog-extra.mjs), each tied to its era row. */
 function eogExtra() {
@@ -301,13 +311,14 @@ function normalize() {
 // `--gapfill-only` re-applies just the curated rows to the existing timeline.json without touching the sibling repos.
 if (args.includes("--gapfill-only")) {
   const cur = JSON.parse(fs.readFileSync(out, "utf8"));
-  items.push(...cur.items.filter((i) => i.grp !== GAP_GROUP && i.grp !== GC_GROUP && i.grp !== ST_GROUP && !EOG_IDS.has(i.id)));
+  items.push(...cur.items.filter((i) => i.grp !== GAP_GROUP && i.grp !== GC_GROUP && i.grp !== ST_GROUP && !EOG_IDS.has(i.id) && !PE_IDS.has(i.id)));
   edges.push(...cur.edges);
   for (const i of items) seen.add(i.id);
   goldenChain();
   gapFill();
   stupas();
   eogExtra();
+  pantheonExtra();
   normalize();
   sourcedLinks();
   items.sort((a, b) => a.s - b.s);
@@ -317,7 +328,7 @@ if (args.includes("--gapfill-only")) {
 }
 
 console.log("Building timeline data from", root);
-for (const [name, fn] of [["time-thread-web", timeThread], ["master timeline", masterTimeline], ["Bardiya", bardiya], ["Sacred-Lineage", sacredLineage], ["Interpretatio-Universalis", mythographica], ["Golden Chain", goldenChain], ["gap-fill", gapFill], ["stupas", stupas], ["Evolution of God extra", eogExtra]]) {
+for (const [name, fn] of [["time-thread-web", timeThread], ["master timeline", masterTimeline], ["Bardiya", bardiya], ["Sacred-Lineage", sacredLineage], ["Interpretatio-Universalis", mythographica], ["Golden Chain", goldenChain], ["gap-fill", gapFill], ["stupas", stupas], ["Evolution of God extra", eogExtra], ["Pantheon extra", pantheonExtra]]) {
   try { fn(); } catch (e) { warn(`${name} failed: ${e.message}`); }
 }
 

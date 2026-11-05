@@ -82,8 +82,9 @@ export function createFlightStrip(host, opts = {}) {
   const clu = document.createElementNS(NS, 'svg'); clu.setAttribute('class', 'cluster'); clu.setAttribute('viewBox', '-1.25 -1.25 2.5 2.5'); right.appendChild(clu);
 
   // timeline: an arc that bows upward; points along it are looked up from sampled path lengths
-  const W = 1000, H = 110, svg = el('svg', { viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: 'none', tabindex: 0, role: 'slider', 'aria-label': 'Mission timeline' }, mid);
-  const d = `M 70,${H - 30} Q ${W / 2},${H - 120} ${W - 70},${H - 30}`;
+  let W = 1000, H = 110; const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: 'xMinYMin meet', tabindex: 0, role: 'slider', 'aria-label': 'Mission timeline' }, mid);
+  const arcD = () => `M 70,${H - 30} Q ${W / 2},${H - 120} ${W - 70},${H - 30}`;
+  const d = arcD();
   const base = el('path', { d, class: 'arc-base', fill: 'none', stroke: 'rgba(255,255,255,0.28)', 'stroke-width': 2 }, svg);
   const prog = el('path', { d, fill: 'none', stroke: '#fff', 'stroke-width': 3.2, 'stroke-linecap': 'round' }, svg);
   const marks = el('g', {}, svg), headTick = el('line', { stroke: '#7fe0a0', 'stroke-width': 2, opacity: 0.0 }, svg), cursor = el('g', {}, svg);
@@ -114,6 +115,16 @@ export function createFlightStrip(host, opts = {}) {
     // throttle arc around the cluster, like the one on the broadcast graphic: sweeps clockwise from the lower left
     const f = clamp(thr, 0, 1) * (on.size ? 1 : 0), a0 = 125 * Math.PI / 180, a1 = a0 + f * 1.5 * Math.PI, R = 1.12; clu.querySelector('.thr').setAttribute('d', f > 0.01 ? `M${(R * Math.cos(a0)).toFixed(3)},${(R * Math.sin(a0)).toFixed(3)} A${R},${R} 0 ${f * 1.5 > 1 ? 1 : 0} 1 ${(R * Math.cos(a1)).toFixed(3)},${(R * Math.sin(a1)).toFixed(3)}` : '');
   }
+
+  // the viewBox follows the strip's real pixel size (1 unit = 1 px) so dots and text are never stretched into ovals
+  const fit = () => {
+    const w = Math.round(mid.clientWidth), h = Math.max(60, Math.round(mid.clientHeight));
+    if (w < 100 || (w === W && h === H)) return;
+    W = w; H = h; svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const nd = arcD(); base.setAttribute('d', nd); prog.setAttribute('d', nd);
+    rebuildSamples(); api.update({});
+  };
+  if (typeof ResizeObserver !== 'undefined') new ResizeObserver(fit).observe(mid);
 
   const api = {
     update(u) {

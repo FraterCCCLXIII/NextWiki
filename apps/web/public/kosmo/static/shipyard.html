@@ -366,6 +366,8 @@ function buildPlanet(W) {
     atlas.scale.setScalar(W.R - 3);                         // the surface sits 3 m below the pad reference
     atlas.userData.lightDir?.copy(sun.position).normalize(); // same sun as the rest of the scene
     logDepth(atlas);
+    // the atlas draws a camera-facing glow quad (2.5 planet radii) for distant views; from orbit it slices through the sphere and shows as a hard-edged translucent band. The real-scale atmosphere shell replaces it here.
+    atlas.traverse(o => { if (o.isMesh && o.geometry?.type === 'PlaneGeometry') o.visible = false; });
     const ea = atlas.userData.earth;                          // Earth's extra shells, at real heights: clouds ~10 km, city lights and sun glint on the surface
     if (ea) { ea.clouds.scale.setScalar(1.0016); ea.lights.scale.setScalar(1.0002); ea.spec.scale.setScalar(1.0003); }
     const spin = new THREE.Group(), tilt = new THREE.Group(); tilt.rotation.x = Math.PI / 2; tilt.add(atlas); spin.add(tilt); g.add(spin);

@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { logger } from "@repo/logger";
-import { queryTimelineWindow, timelineAround, timelineDatasets } from "~/lib/kosmo/timeline-queries";
+import { timelineExtent, queryTimelineWindow, timelineAround, timelineDatasets } from "~/lib/kosmo/timeline-queries";
 
 export const dynamic = "force-dynamic";
 
@@ -23,12 +23,13 @@ export async function GET(request: NextRequest) {
       const r = await timelineAround(around);
       return r ? NextResponse.json(r, { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" } }) : NextResponse.json({ error: "Not found" }, { status: 404 });
     }
+    const datasets = p.has("datasets") ? p.get("datasets")!.split(",").filter(Boolean) : undefined;
+    const q = p.get("q")?.trim().slice(0, 80) || undefined;
+    if (p.get("extent")) return NextResponse.json({ extent: await timelineExtent(datasets, q) }, { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" } });
     const from = num(p.get("from"), -3600);
     const to = num(p.get("to"), 2100);
     if (!(to > from)) return NextResponse.json({ error: "to must exceed from" }, { status: 400 });
     const limit = Math.min(Math.max(Math.round(num(p.get("limit"), 3000)), 50), 8000);
-    const datasets = p.get("datasets")?.split(",").filter(Boolean);
-    const q = p.get("q")?.trim().slice(0, 80) || undefined;
     const win = await queryTimelineWindow({ from, to, limit, datasets, q });
     return NextResponse.json(win, { headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120" } });
   } catch (error) {

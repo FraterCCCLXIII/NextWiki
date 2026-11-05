@@ -35,6 +35,23 @@ export function TimelineApp() {
   const [showAllSets, setShowAllSets] = useState(false);
   const toggleGroup = (g: string) => setOff((s) => { const next = new Set(s); if (next.has(g)) next.delete(g); else next.add(g); return next; });
   const fromUrl = useRef<{ x0?: number; k?: number }>({});
+  const pendingOn = useRef<string[] | null>(null);
+  const autoFitKey = useRef("");
+  const fitToData = useCallback((datasets: string[] | undefined, text: string) => {
+    const params = new URLSearchParams({ extent: "1" });
+    if (datasets) params.set("datasets", datasets.join(","));
+    if (text.trim()) params.set("q", text.trim());
+    fetch(`/api/kosmo/timeline?${params}`)
+      .then((r) => (r.ok ? (r.json() as Promise<{ extent: { from: number; to: number } | null }>) : null))
+      .then((j) => {
+        const e = j?.extent;
+        if (!e) return;
+        const pad = Math.max((e.to - e.from) * 0.05, 5);
+        setWin(fitWindow(e.from - pad, e.to + pad, plotW.current));
+      })
+      .catch(() => undefined);
+  }, []);
+  const plotW = useRef(0);
 
   // dataset list; falls back to the static JSON when the database has no timeline rows yet
   const staticData = useRef<TLData | null>(null);
@@ -43,6 +60,11 @@ export function TimelineApp() {
       .then((r) => (r.ok ? (r.json() as Promise<{ datasets: { id: string; label: string; count: number }[] }>) : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then((m) => {
         if (!m.datasets.length) throw new Error("empty");
+        if (pendingOn.current) {
+          const on = new Set(pendingOn.current);
+          pendingOn.current = null;
+          setOff(new Set(m.datasets.filter((d) => !on.has(d.id)).map((d) => d.label)));
+        }
         setMeta(m.datasets);
       })
       .catch(() => {
@@ -67,7 +89,8 @@ export function TimelineApp() {
     if (v && VIEWS.some((x) => x.id === v)) setView(v);
     if (p.get("q")) setQ(p.get("q")!);
     if (p.get("sel")) setSelectedId(p.get("sel"));
-    if (p.get("off")) setOff(new Set(p.get("off")!.split("|")));
+    if (p.has("on")) pendingOn.current = p.get("on")!.split(",").filter(Boolean);
+    else if (p.get("off")) setOff(new Set(p.get("off")!.split("|")));
     if (p.get("links") === "1") setShowLinks(true);
     if (p.get("c")) setCompIdx(Number(p.get("c")) || 0);
     const x = Number(p.get("x")), k = Number(p.get("k"));
@@ -80,7 +103,8 @@ export function TimelineApp() {
       if (view !== "lanes") p.set("v", view);
       if (q) p.set("q", q);
       if (selectedId) p.set("sel", selectedId);
-      if (off.size) p.set("off", [...off].join("|"));
+      if (off.size && meta && off.size > meta.length / 2) p.set("on", meta.filter((m) => !off.has(m.label)).map((m) => m.id).join(","));
+      else if (off.size) p.set("off", [...off].join("|"));
       if (showLinks) p.set("links", "1");
       if (compIdx) p.set("c", String(compIdx));
       if (view === "lanes" || view === "branches") { p.set("x", String(Math.round(win.x0 * 10) / 10)); p.set("k", win.k.toPrecision(4)); }
@@ -88,7 +112,7 @@ export function TimelineApp() {
       window.history.replaceState(null, "", qs ? `?${qs}` : window.location.pathname);
     }, 300);
     return () => clearTimeout(t);
-  }, [view, q, selectedId, off, showLinks, compIdx, win]);
+  }, [view, q, selectedId, off, showLinks, compIdx, win, meta]);
 
   const items = data?.items;
   const byId = useMemo(() => new Map((items ?? []).map((i) => [i.id, i])), [items]);
@@ -109,6 +133,7 @@ export function TimelineApp() {
     return (data?.edges ?? []).filter((e) => ids.has(e.a) && ids.has(e.b));
   }, [filtered, data]);
 
+  plotW.current = plot.w;
   const onSize = useCallback((s: { w: number; h: number; labelW: number }) => setPlot((p) => (p.w === s.w && p.h === s.h && p.labelW === s.labelW ? p : s)), []);
 
   // first fit once the canvas has a width
@@ -142,6 +167,12 @@ export function TimelineApp() {
     const from = tl ? win.x0 - span * 0.3 : -320000;
     const to = tl ? win.x0 + span * 1.3 : 2200;
     const on = meta.filter((m) => !off.has(m.label)).map((m) => m.id);
+    if (!on.length) {
+      fetched.current = null;
+      setData({ version: 2, built: "", items: [], edges: [] });
+      setCounts({ matched: 0, total: 0 });
+      return;
+    }
     const key = `${tl}|${on.join(",")}|${q}`;
     const f = fetched.current;
     if (f && f.key === key) {
@@ -149,6 +180,7 @@ export function TimelineApp() {
       const ratio = (f.to - f.from) / (span * 1.6);
       if (win.x0 >= f.from && win.x0 + span <= f.to && ratio > 0.6 && ratio < 1.7) return;
     }
+    const keyChanged = !f || f.key !== key;
     const id = ++reqId.current;
     const t = setTimeout(() => {
       setLoading(true);
@@ -162,12 +194,17 @@ export function TimelineApp() {
           fetched.current = { from, to, key };
           setData({ version: 2, built: "", items: w.items, edges: w.edges });
           setCounts({ matched: w.matched, total: w.total });
+          // a dataset selection with nothing in view: jump to where its events are
+          if (tl && keyChanged && w.matched === 0 && autoFitKey.current !== key) {
+            autoFitKey.current = key;
+            fitToData(off.size ? on : undefined, q);
+          }
         })
         .catch((e: Error) => id === reqId.current && setError(e.message))
         .finally(() => id === reqId.current && setLoading(false));
     }, 220);
     return () => clearTimeout(t);
-  }, [meta, win, plot.w, view, off, q]);
+  }, [meta, win, plot.w, view, off, q, fitToData]);
 
   const zoomBy = (f: number) => {
     const cx = win.x0 + plot.w / win.k / 2;
@@ -233,6 +270,7 @@ export function TimelineApp() {
           <div className="flex items-center gap-1">
             <button className="h-8 w-8 rounded-md border border-kosmo-line2 text-lg leading-none text-kosmo-dim hover:text-kosmo-text" onClick={() => zoomBy(1 / 1.6)} aria-label="Zoom out">−</button>
             <button className="h-8 w-8 rounded-md border border-kosmo-line2 text-lg leading-none text-kosmo-dim hover:text-kosmo-text" onClick={() => zoomBy(1.6)} aria-label="Zoom in">+</button>
+            <button onClick={() => fitToData(meta && off.size ? meta.filter((m) => !off.has(m.label)).map((m) => m.id) : undefined, q)} title="Frame the time span of the selected datasets" className="h-8 rounded-md border border-kosmo-line2 px-2.5 text-[12px] text-kosmo-dim hover:text-kosmo-text">Fit data</button>
             {PRESETS.map((p) => (
               <button key={p.label} onClick={() => setWin(fitWindow(p.from, p.to, plot.w))} className="h-8 rounded-md border border-kosmo-line2 px-2.5 text-[12px] text-kosmo-dim hover:text-kosmo-text">{p.label}</button>
             ))}
