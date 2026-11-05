@@ -15,6 +15,7 @@ export const KOSMO_TOOLS: Record<
   chemistry: { file: "chemistry.html", title: "Chemistry", group: "atlas" },
   biology: { file: "biology.html", title: "Biology", group: "atlas" },
   contraption: { file: "contraption-sim.html", title: "Contraption simulator", group: "atlas" },
+  flight: { file: "flight/index.html", title: "Orbital Flight Deck", group: "atlas" },
 
   oracle: { file: "oracle/index.html", title: "Dark Factory", group: "oracle" },
   "oracle-abundance": { file: "oracle/abundance.html", title: "Abundance", group: "oracle" },

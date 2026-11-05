@@ -406,6 +406,7 @@
 </script>
   <link rel="stylesheet" href="kosmographica.css?v=15">
   <script src="atlas-nav.js" defer></script>
+  <script src="craft.js"></script>
   <script src="accordion.js" defer></script>
 </head>
 <body>
@@ -2677,7 +2678,7 @@ function updateScene() {
     if (L.update) L.update(L.obj);
   }
   const sp = toScene(SUN, focus, k); sunLight.position.set(sp[0], sp[1], sp[2]);
-  updateBlackHoles(k); updateCensus(k); updateDestModel(k); updateConstellation(k); updateVisible(k); courseMarker(k);
+  updateBlackHoles(k); updateCensus(k); updateDestModel(k); updateConstellation(k); updateVisible(k); courseMarker(k); window.KosmoCraft?.update(k);
   if (megaObj) {
     const mg = MEGAS[state.mega], cover = mg.width() / viewW;
     megaObj.visible = state.mega !== 'none' && cover > 1e-4 && cover < 1e8;
@@ -3166,6 +3167,8 @@ function animate(now) {
   autoFrameStep(dt); autoFrameCheck(now);
   renderFrame(dt);
 }
+// craft layer (craft.js): the Orbital Flight Deck dock, the shared craft state, its marker and the follow camera
+window.KosmoCraft?.init({ THREE, scene, P, SUN, layout, focus, toScene, toast, setFollow: f => { follow = f; }, setZoom: z => { state.zoom = clamp(z, 2.6, 27); sync('zoom', 2); } });
 requestAnimationFrame(animate);
 window.kosmo = { VIS, CONST, DM, autoFrame, frameStats, trail, renderFrame, quality, drawCube, drawTimeline, drawMinimap, updateHover, updateDrawer, stepDial, get travel() { return travel; }, renderer, scene, camera, updateScene, readout, nearestName, state, focus, layout, SYSTEMS, HOSTS, MOONS, DEST, bodyPos, systemFor, skyPack, get SKY_HOSTS() { return SKY_HOSTS; } };   // console access for debugging
 </script>
