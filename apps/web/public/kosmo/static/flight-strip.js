@@ -125,7 +125,7 @@ export function createFlightStrip(host, opts = {}) {
       const h = place(fh); headTick.setAttribute('x1', h.x); headTick.setAttribute('x2', h.x); headTick.setAttribute('y1', h.y - 7); headTick.setAttribute('y2', h.y + 7); headTick.setAttribute('opacity', S.head - S.t > 0.5 ? 0.9 : 0);
       // milestones: labels are laid out in up to three rows so neighbours never overlap; a label that still does not fit is dropped (the dot stays)
       marks.innerHTML = '';
-      const rows = [[], [], []], ROWY = [-15, -37, -59], CH = 10.5;
+      const rows = [[], [], [], []], ROWY = [-15, -37, -59, -81], CH = 10.5;
       const ms = [...S.milestones].sort((a, b) => a.t - b.t);
       for (const m of ms) {
         const mf = toF(m.t), p = place(mf), passed = m.t <= S.t + 1e-6, label = m.label.toUpperCase(), w = label.length * CH + 12;
