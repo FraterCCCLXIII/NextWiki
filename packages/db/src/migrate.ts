@@ -36,6 +36,10 @@ import { drizzle as drizzleNeon } from "drizzle-orm/neon-http";
 import { drizzle as drizzlePg } from "drizzle-orm/node-postgres";
 import pg from "pg";
 
+// The Neon HTTP driver cannot run multi-statement migration files, so migrations
+// use node-postgres unless MIGRATE_DRIVER=neon-http is set explicitly.
+const useNeonHttp = process.env.MIGRATE_DRIVER === "neon-http";
+
 // Create database connection locally instead of importing from index.ts
 const getDb = () => {
   const connectionString = process.env.DATABASE_URL;
@@ -49,8 +53,7 @@ const getDb = () => {
 
   // Create database client based on connection string
   if (
-    connectionString.includes("pooler.internal.neon") ||
-    connectionString.includes(".neon.tech")
+    useNeonHttp
   ) {
     const sql = neon(connectionString);
     return drizzleNeon(sql, { schema });
@@ -82,8 +85,7 @@ async function runMigrations(force = false) {
 
     try {
       if (
-        connectionString.includes("pooler.internal.neon") ||
-        connectionString.includes(".neon.tech")
+        useNeonHttp
       ) {
         console.log("Using Neon migrator...");
         migrationsResult = await migrateNeon(
