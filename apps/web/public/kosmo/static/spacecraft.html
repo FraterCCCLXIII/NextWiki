@@ -55,7 +55,7 @@
   html.embedded #panel, html.embedded #info { top: 16px; } html.embedded #help { top: 10px; }
   @media (max-width: 1180px) { #info { display: none; } #bar { max-width: calc(100vw - 380px); } }
 </style>
-<script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
+<script type="importmap">{ "imports": { "three": "./vendor/three-0.160.0/build/three.module.js", "three/addons/": "./vendor/three-0.160.0/examples/jsm/" } }</script>
   <link rel="stylesheet" href="kosmographica.css?v=15">
   <script src="atlas-nav.js" defer></script>
   <script src="accordion.js" defer></script>
@@ -96,7 +96,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { buildModel, useGlbModels, person, tierOf } from './vehicle-models.js';
 // optional real models (models/spacex/manifest.json): any file that is present replaces the procedural sketch of that vehicle; a missing file changes nothing
-let GLBM = null, GLB_MAP = {}; try { GLBM = await import('./vehicle-glb.js'); GLB_MAP = (await GLBM.loadManifest()).labs?.catalog || {}; const man = await GLBM.loadManifest(); await Promise.all([...new Set(Object.values(GLB_MAP))].map(id => man.engines?.[id] ? GLBM.preloadEngineModel(id) : GLBM.preloadVehicleModel(id))); useGlbModels(id => GLB_MAP[id] ? (man.engines?.[GLB_MAP[id]] ? GLBM.engineModel(GLB_MAP[id]) : GLBM.vehicleModel(GLB_MAP[id], { mode: 'full' })) : null); } catch { GLBM = null; }
+let GLBM = null, GLB_MAP = {}; try { GLBM = await import('./vehicle-glb.js'); GLB_MAP = (await GLBM.loadManifest()).labs?.catalog || {}; const man = await GLBM.loadManifest(); await Promise.all([...new Set(Object.values(GLB_MAP))].map(id => man.engines?.[id] ? GLBM.preloadEngineModel(id) : GLBM.preloadVehicleModel(id))); useGlbModels(id => GLB_MAP[id] ? (man.engines?.[GLB_MAP[id]] ? GLBM.engineModel(GLB_MAP[id]) : GLBM.vehicleModel(GLB_MAP[id], { mode: 'full', explode: true })) : null); } catch { GLBM = null; }
 const $ = id => document.getElementById(id);
 
 // ---- data ----
@@ -120,6 +120,7 @@ const view = $('view'), renderer = new THREE.WebGLRenderer({ antialias: true, pr
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); view.appendChild(renderer.domElement);
 const scene = new THREE.Scene(); scene.background = new THREE.Color(window.KOSMO_BG ? KOSMO_BG.pick(0x05070d) : 0x05070d);
 const camera = new THREE.PerspectiveCamera(40, 1, 0.05, 20000); camera.position.set(30, 20, 60);
+let frameH = 0, expExtra = 0;   // height of the tallest vehicle, and how much taller the exploded view currently makes the stack (applyExplode keeps the camera framing it)
 const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true;
 { try { const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; pm.dispose(); } catch { /* no environment: the loader-side metalness cap keeps models lit */ } }   // image-based light so metallic GLB materials are not black
 scene.add(new THREE.AmbientLight(0xffffff, 0.7)); scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x20242c, 0.6));
@@ -140,7 +141,7 @@ function clearStage() { for (const c of [...stage.children]) { stage.remove(c); 
 
 /* Lay the chosen vehicles in a row at true scale, each with a 1.8 m person, and frame them. */
 function showVehicles(list) {
-  clearStage();
+  clearStage(); frameH = 0;
   if (!list.length) return;
   let x = 0, maxH = 0; const gap0 = 0.0;
   const built = list.map(v => { const m = buildModel(v); const bb = m.userData.box, w = Math.max(bb.max.x - bb.min.x, bb.max.z - bb.min.z, 0.6), h = bb.max.y - bb.min.y; maxH = Math.max(maxH, h); return { v, m, w, h }; });
@@ -164,19 +165,29 @@ function showVehicles(list) {
   const halfH = maxH * 0.62 + 2, halfW = totalW / 2 + 3, dist = Math.max(halfH / Math.tan(vf / 2), halfW / Math.tan(hf / 2)) * 1.2 + halfW * 0.3;
   controls.target.set(0, maxH * 0.48, 0); camera.position.set(dist * 0.45, maxH * 0.55 + dist * 0.12, dist * 0.88);
   camera.near = Math.max(0.02, dist / 4000); camera.far = dist * 40; camera.updateProjectionMatrix(); controls.update();
+  frameH = maxH; expExtra = 0; applyExplode();   // frame the stack as it is exploded right now
 }
 const niceStep = t => { const p = 10 ** Math.floor(Math.log10(t)), f = t / p; return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * p; };
 function syncHuman() { for (const it of items) it.person.visible = $('human').checked; }
 
-/* Exploded view: stage groups slide up the stack, strap-on boosters slide outward. */
+/* Exploded view: stage groups slide up the stack, strap-on boosters slide outward. Procedural models and the real GLB models (vehicle-glb.js builds the same userData.stages /
+   .boosters / .top for them from the manifest's `explode` entry) both go through here; a model without stages (engines, stations, capsules) is left alone. */
 function applyExplode() {
-  const k = +$('explode').value;
+  const k = +$('explode').value; let extra = 0;
   for (const it of items) {
     const inner = it.m.userData.inner, top = inner.userData.top, stages = inner.userData.stages; if (!stages) continue;
     const step = k * (top || 10) * 0.07;
     for (const [n, g] of stages) g.position.y = n * step;
+    extra = Math.max(extra, (stages.size - 1) * step * (inner.scale.y || 1) * (it.m.scale.y || 1));
     for (const c of inner.children) if (c.userData.boosters) for (const b of c.children) { if (!b.userData.base) b.userData.base = b.position.clone(); const d = b.userData.dir || [0, 0]; b.position.set(b.userData.base.x + d[0] * k * (top || 10) * 0.12, b.userData.base.y, b.userData.base.z + d[1] * k * (top || 10) * 0.12); }
   }
+  // keep the stack in view: shift the camera up by half the added height and dolly out in proportion (the user's own orbit / zoom is kept)
+  if (frameH && Math.abs(extra - expExtra) > 1e-6) {
+    const prev = frameH + expExtra, next = frameH + extra, dy = (extra - expExtra) / 2;
+    controls.target.y += dy; camera.position.y += dy;
+    camera.position.sub(controls.target).multiplyScalar(next / prev).add(controls.target); controls.update();
+  }
+  expExtra = extra;
 }
 
 const tmp = new THREE.Vector3();

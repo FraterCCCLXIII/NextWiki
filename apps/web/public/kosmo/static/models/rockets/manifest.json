@@ -91,6 +91,219 @@
       "source": "https://sketchfab.com/3d-models/f3169091a0e84ce58452ab8efcdfc527",
       "sketchfabUid": "f3169091a0e84ce58452ab8efcdfc527",
       "file": "rockets/booster_18_b18.glb"
+    },
+    "ares-i": {
+      "title": "Ares 1 (A)",
+      "author": "NASA",
+      "license": "Public domain (NASA)",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "source": "https://science.nasa.gov/3d-resources/ares-1-a/",
+      "file": "rockets/ares1a.glb"
+    },
+    "jupiter-c": {
+      "title": "Explorer Jupiter-C Rocket",
+      "author": "NASA",
+      "license": "Public domain (NASA)",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "source": "https://science.nasa.gov/3d-resources/explorer-jupiter-c-rocket/",
+      "file": "rockets/jupiter-c.glb"
+    },
+    "redstone": {
+      "title": "Mercury-Redstone Launch Vehicle",
+      "author": "Stanley Creative",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/d1c09c4321e443cd956370dadabd04d9",
+      "sketchfabUid": "d1c09c4321e443cd956370dadabd04d9",
+      "file": "rockets/mercury-_redstone_launch_vehicle.glb"
+    },
+    "atlas-lv-3b": {
+      "title": "Atlas LV-3B Mercury",
+      "author": "Stanley Creative",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/5e0dd866821848c89232732e89d78444",
+      "sketchfabUid": "5e0dd866821848c89232732e89d78444",
+      "file": "rockets/atlas_lv-3b_mercury.glb"
+    },
+    "v-2": {
+      "title": "V-2 Rocket",
+      "author": "person",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/d09fc8ebe9c141a18704b478544191b8",
+      "sketchfabUid": "d09fc8ebe9c141a18704b478544191b8",
+      "file": "rockets/v-2_rocket.glb"
+    },
+    "energia": {
+      "title": "Energia Rocket (untextured)",
+      "author": "Soviet Model Magic",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/1e2e2fbf68d743c88a9b515c3bf42498",
+      "sketchfabUid": "1e2e2fbf68d743c88a9b515c3bf42498",
+      "file": "rockets/energia_rocket_untextured.glb"
+    },
+    "epsilon": {
+      "title": "JAXA Epsilon rocket",
+      "author": "rocket0314",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/2de4cbccbeae4e1581aea946f6f0302a",
+      "sketchfabUid": "2de4cbccbeae4e1581aea946f6f0302a",
+      "file": "rockets/jaxa_epsilon_rocket.glb"
+    },
+    "pslv": {
+      "title": "PSLV C40",
+      "author": "Neel3Dartist",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/c7066310704040a9bf0c86d7d21ab94f",
+      "sketchfabUid": "c7066310704040a9bf0c86d7d21ab94f",
+      "file": "rockets/pslv_c40.glb"
+    },
+    "lvm3": {
+      "title": "GSLV Mk3",
+      "author": "Jainesh Pathak",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/0426922358b4444f9887bcd551d3a5cb",
+      "sketchfabUid": "0426922358b4444f9887bcd551d3a5cb",
+      "file": "rockets/gslv_mk3.glb"
+    },
+    "long-march-5": {
+      "title": "Long March 5 rocket",
+      "author": "andertan",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/4da241732264439c9112e66ebc3e16e8",
+      "sketchfabUid": "4da241732264439c9112e66ebc3e16e8",
+      "file": "rockets/long_march_5_rocket.glb"
+    },
+    "terran-1": {
+      "title": "Relativity Space Terran 1",
+      "author": "Clarence365",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/b1a23b822e8a431babe584a3c4cae052",
+      "sketchfabUid": "b1a23b822e8a431babe584a3c4cae052",
+      "file": "rockets/relativity_space_terran_1.glb"
+    },
+    "neutron": {
+      "title": "Rocketlab Neutron Rocket",
+      "author": "Clarence365",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/ca4bbcb8e0ba4a128c78efa5d67524c3",
+      "sketchfabUid": "ca4bbcb8e0ba4a128c78efa5d67524c3",
+      "file": "rockets/rocketlab_neutron_rocket.glb"
+    },
+    "firefly-alpha": {
+      "title": "Firefly Alpha Rocket",
+      "author": "rocket0314",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/f745fd0a4173437db1de7f7581b5151f",
+      "sketchfabUid": "f745fd0a4173437db1de7f7581b5151f",
+      "file": "rockets/firefly_alpha_rocket.glb"
+    },
+    "falcon-9-full-thrust": {
+      "title": "Falcon 9 - SpaceX",
+      "author": "Stanley Creative",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/394f7cf52d124bbd9db69f24d1ff2f08",
+      "sketchfabUid": "394f7cf52d124bbd9db69f24d1ff2f08",
+      "file": "rockets/falcon_9_-_spacex.glb"
+    },
+    "soyuz-fg": {
+      "title": "Soyuz-FG",
+      "author": "Paculino",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/1320bf0fd1b242cd8cfda77d381a147f",
+      "sketchfabUid": "1320bf0fd1b242cd8cfda77d381a147f",
+      "file": "rockets/soyuz-fg.glb"
+    },
+    "h-iia": {
+      "title": "H-IIA Rocket",
+      "author": "MarioK",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/99a86c831c2a4b24bdd42365e382427e",
+      "sketchfabUid": "99a86c831c2a4b24bdd42365e382427e",
+      "file": "rockets/h-iia_rocket.glb"
+    },
+    "long-march-2f": {
+      "title": "LongMarch-2F Shenjian (converted from STL)",
+      "author": "长江学者AmethystY98 (AmethystY98)",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": "https://commons.wikimedia.org/wiki/File:LongMarch-2F_Shenjian.stl",
+      "file": "rockets/long_march_2f_shenjian.glb"
+    },
+    "safir": {
+      "title": "Safir Satellite Launch Vehicle",
+      "author": "JamesMartinCNS",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/2aaac85618694cf5ae0716ced86a398a",
+      "sketchfabUid": "2aaac85618694cf5ae0716ced86a398a",
+      "file": "rockets/safir_satellite_launch_vehicle.glb"
+    },
+    "proton-m": {
+      "title": "Proton-K with Zarya ISS module (stand-in for Proton-M)",
+      "author": "Soviet Model Magic",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/061a9d5aeb61497a872c1df0e741e906",
+      "sketchfabUid": "061a9d5aeb61497a872c1df0e741e906",
+      "file": "rockets/proton_k_with_zarya_iss_module.glb"
+    },
+    "ariane-5": {
+      "title": "Ariane 5",
+      "author": "Yanis",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/88a1de562245402da653bc1ae92b1b91",
+      "sketchfabUid": "88a1de562245402da653bc1ae92b1b91",
+      "file": "rockets/ariane_5_model.glb"
+    },
+    "titan-iv": {
+      "title": "Titan IV",
+      "author": "AllThingsSpace",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/0560341d278d4308b7a330ca4e75f1ae",
+      "sketchfabUid": "0560341d278d4308b7a330ca4e75f1ae",
+      "file": "rockets/titan_iv.glb"
+    },
+    "sea-dragon": {
+      "title": "Sea Dragon Rocket",
+      "author": "IkaetieIke",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/51431d5cf72b49c7a246c0d3dc48eeca",
+      "sketchfabUid": "51431d5cf72b49c7a246c0d3dc48eeca",
+      "file": "rockets/sea_dragon_rocket.glb"
+    },
+    "vega-c": {
+      "title": "Vega-C",
+      "author": "SethAlevy",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/8b74cf8d08bc419e966d7ede30c27bf6",
+      "sketchfabUid": "8b74cf8d08bc419e966d7ede30c27bf6",
+      "file": "rockets/vega-c.glb"
+    },
+    "starship-stack": {
+      "title": "Starship full stack (Super Heavy + Starship, merged by us)",
+      "author": "Sharpraptor",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/ee8644e6f8c94931b09d03b498be6fc6",
+      "sketchfabUid": "ee8644e6f8c94931b09d03b498be6fc6",
+      "file": "rockets/starship_stack_merged.glb"
     }
   }
 }

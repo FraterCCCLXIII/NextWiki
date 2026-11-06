@@ -48,7 +48,7 @@ async function init3() {
   T3 = { RoomEnvironment, fill, rim, THREE, renderer, scene, cam3, controls, composer, bloom, bokeh, sun, Sky, Water, normals, built: null, prev: null, pmrem: new THREE.PMREMGenerator(renderer) };
   // optional real models (models/spacex/manifest.json); every failure leaves the procedural vehicle in place
   try { const G = await import('./vehicle-glb.js'), man = await G.loadManifest(); T3.glbMap = man.labs?.landing || {}; await Promise.all([...[...new Set(Object.values(T3.glbMap))].map(id => G.preloadVehicleModel(id)), ...[...new Set(Object.values(G.ENGINE_GLB))].map(id => G.preloadEngineModel(id))]); T3.glb = G; } catch { T3.glb = null; }
-  const cred = document.createElement('div'); cred.style.cssText = 'position:absolute;left:12px;bottom:118px;z-index:3;font:11px system-ui,sans-serif;color:rgba(230,236,244,.8);text-shadow:0 1px 2px #000;display:none;pointer-events:auto;max-width:60%'; cred.className = 'glbcredit'; host.appendChild(cred); T3.cred = cred;
+  const cred = document.createElement('div'); cred.style.cssText = 'position:absolute;left:12px;bottom:118px;z-index:3;font:11px system-ui,sans-serif;color:rgba(230,236,244,.8);text-shadow:0 1px 2px #000;display:none;pointer-events:auto;max-width:60%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'; cred.className = 'glbcredit'; host.appendChild(cred); T3.cred = cred;
   const cs = document.createElement('style'); cs.textContent = '.glbcredit a{color:#9fd0ff}'; document.head.appendChild(cs);
   controls.addEventListener('start', () => { controls.userZoomed = true; }); addEventListener('resize', resize3); resize3(); return T3;
 }

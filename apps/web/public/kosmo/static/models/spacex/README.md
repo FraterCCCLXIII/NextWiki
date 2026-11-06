@@ -24,9 +24,12 @@ Falcon 9 model's leg and grid-fin nodes are found by name).
 ## How each model is used
 * **Falcon 9 Block 5** (`falcon9-block5`): modes `tank` (Shipyard: first-stage tank, engines and octaweb), `firstStage` (Landing Lab, with the interstage), `full` (catalogue, 70 m). The model's own
   legs (`Landing Leg*`) and grid fins (`Grid Fin Curve`) are removed and the lab's animated legs and fins are drawn instead, so nothing doubles up. Legs: 4, stowed -> deployed, 18 m span.
-* **Falcon Heavy**: one merged mesh, legs baked in stowed, no animation: catalogue display only.
+* **Falcon Heavy**: one merged mesh, legs baked in stowed, no animation: catalogue display only. Its exploded view (see below) splits the mesh into triangle islands and cuts the welded centre core.
 * **Starship legs deployed**: one merged mesh with deployed legs; mapped to the catalogue's "Starship HLS" (a legged lander). Current Earth-return Starship and Super Heavy have no legs (see `../SPACEX_GEAR.md`);
   do not use it for a catch.
+
+## Exploded view (`explode`)
+The catalogue's **explode** slider works for every vehicle in this manifest that has an optional `explode` block (Falcon 9, Falcon Heavy, Starship legs and the ten rocket models). The block lists `parts` (`stage: n` bottom to top, or `booster: true`, each matched by node-name regexes and/or by the bounding-box centre in metres of the normalised model), plus optional `split` (split merged meshes into triangle islands), `cut` planes and `axis`. `vehicleModel(id, { explode: true })` turns it into `userData.stages` / `userData.top` / a `boosters` group (the same structure the procedural models in `vehicle-models.js` have) and does nothing unless asked: the Shipyard and Landing Lab call `vehicleModel` without `explode`. Format, per-vehicle stage lists and doubts: `../rockets/README.md` ("Exploded view"). Falcon 9 stages: first stage with engines and legs, interstage with grid fins, second stage, fairing; Falcon Heavy: two side-core boosters plus centre core / interstage and second stage / fairing; Starship: engines and feet, tank section, nose.
 
 ## Rocket models
 Ten more models (Saturn V, Shuttle stack, SLS, Atlas V, Ariane 6, Vulcan, New Glenn, N1, Electron, Super Heavy B18) live in `../rockets/` and are wired through this same `manifest.json`: see `../rockets/README.md` for sizes, mapping and doubts.
@@ -35,7 +38,7 @@ The Starship (legs) model rendered very dark because its materials were metallic
 
 ## Adding another model
 1. Put `name.glb` here. 2. Add an entry under `vehicles` in `manifest.json`: `file`, `axis` (the model's long axis after loading: `y`, `x` or `z`), `noseSign`, `lengthM`, `diameterM`, `modes` (`hideNodes` = regexes on node names to drop, `refNode`
-to scale by a sub-part), `gear` (named groups of nodes the lab animates itself, e.g. `legs`, `gridFins`) and the attribution fields. 3. Map it under `labs.landing` (Landing Lab vehicle id), `labs.shipyard` or `labs.catalog` (catalogue id).
+to scale by a sub-part), `gear` (named groups of nodes the lab animates itself, e.g. `legs`, `gridFins`) and the attribution fields. 3. Optionally add an `explode` block (see above). 4. Map it under `labs.landing` (Landing Lab vehicle id), `labs.shipyard` or `labs.catalog` (catalogue id).
 
 ## Collection map (Sketchfab "spacex" by sunnychen753, 23 models, all by AllThingsSpace)
 Recommended (downloaded): Falcon 9 Block 5 for current boosters, Falcon Heavy, "SpaceX Starship-With landing legs deployed".

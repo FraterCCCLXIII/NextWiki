@@ -72,6 +72,40 @@
             "^Octaweb"
           ]
         }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "Fairing",
+            "stage": 3,
+            "nodes": [
+              "^Fairing"
+            ]
+          },
+          {
+            "name": "Second stage",
+            "stage": 2,
+            "nodes": [
+              "^Second Stage$"
+            ]
+          },
+          {
+            "name": "Interstage and grid fins",
+            "stage": 1,
+            "nodes": [
+              "^Interstage$",
+              "^Grid Fin Holders$",
+              "^Second Stage Detacher"
+            ]
+          },
+          {
+            "name": "First stage, engines and legs",
+            "stage": 0,
+            "nodes": [
+              "^First Stage$"
+            ]
+          }
+        ]
       }
     },
     "falcon-heavy": {
@@ -103,6 +137,58 @@
           "hideNodes": [],
           "note": "one merged mesh: legs cannot be separated or animated, so this is a static display model (never used for a landing)"
         }
+      },
+      "explode": {
+        "split": [
+          "^Object_2$"
+        ],
+        "cut": [
+          41,
+          52
+        ],
+        "parts": [
+          {
+            "name": "Side core +X",
+            "booster": true,
+            "x": [
+              2.5,
+              9
+            ]
+          },
+          {
+            "name": "Side core -X",
+            "booster": true,
+            "x": [
+              -9,
+              -2.5
+            ]
+          },
+          {
+            "name": "Payload fairing",
+            "stage": 2,
+            "y": [
+              52,
+              100
+            ]
+          },
+          {
+            "name": "Interstage and second stage",
+            "stage": 1,
+            "y": [
+              41,
+              52
+            ]
+          },
+          {
+            "name": "Centre core and engines",
+            "stage": 0,
+            "y": [
+              0,
+              41
+            ],
+            "cut": true
+          }
+        ]
       }
     },
     "starship-legs": {
@@ -132,7 +218,35 @@
           "note": "2017-2019 BFR/Starship design with deployed landing legs, baked into the mesh. Real Starship (flights since 2023) has no legs and lands on the tower arms; this is a historical/HLS-style display model only. Original 30 MB / 343k triangles, web copy 0.23 MB / 51k triangles (decimated with --soup)."
         }
       },
-      "maxMetalness": 0.5
+      "maxMetalness": 0.5,
+      "explode": {
+        "parts": [
+          {
+            "name": "Nose, header tank and forward flaps",
+            "stage": 2,
+            "y": [
+              37.5,
+              100
+            ]
+          },
+          {
+            "name": "Propellant tank section and aft flaps",
+            "stage": 1,
+            "y": [
+              7.4,
+              37.5
+            ]
+          },
+          {
+            "name": "Raptor engines, thrust structure and leg feet",
+            "stage": 0,
+            "y": [
+              0,
+              7.4
+            ]
+          }
+        ]
+      }
     },
     "saturn-v": {
       "title": "Apollo | Saturn V Launch Vehicle",
@@ -149,41 +263,103 @@
       "axis": "y",
       "noseSign": 1,
       "base": "nozzles",
-      "lengthM": 91,
+      "lengthM": 88.1,
       "diameterM": 10.1,
-      "note": "launch vehicle only, up to the Instrument Unit (91 m modelled; the real stages plus IU are ~85.6 m). No Apollo CSM, spacecraft/LM adapter or launch escape tower, which make up the rest of the 110.6 m",
+      "note": "launch vehicle only, up to the Instrument Unit (88.1 m modelled; the real stages plus IU are ~85.6 m). No Apollo CSM, spacecraft/LM adapter or launch escape tower, which make up the rest of the 110.6 m",
       "noFit": true,
       "assemble": [
         {
           "node": "^Interstage$",
           "move": [
             0,
-            0,
+            -1.0,
             20
+          ]
+        },
+        {
+          "node": "^S-II$",
+          "move": [
+            0,
+            -1.0,
+            0
           ]
         },
         {
           "node": "^S-II_Top$",
           "move": [
             0,
-            0,
+            -2.0,
             20
+          ]
+        },
+        {
+          "node": "^S-IVB$",
+          "move": [
+            0,
+            -2.0,
+            0
           ]
         },
         {
           "node": "^Instrument_Unit$",
           "move": [
             0,
-            0,
+            -2.9,
             20
           ]
         }
       ],
       "modes": {
         "full": {
-          "lengthM": 91,
-          "note": "S-IC, S-II, S-IVB and the Instrument Unit at 1:1; the author laid the interstage, the S-II/S-IVB skirt and the Instrument Unit out beside the stack and they are moved back onto it by `assemble`"
+          "lengthM": 88.1,
+          "note": "S-IC, S-II, S-IVB and the Instrument Unit at 1:1; the author laid the interstage, the S-II/S-IVB skirt and the Instrument Unit out beside the stack with ~1 m gaps between the stages: `assemble` moves them back onto the stack and closes the gaps"
         }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "Instrument Unit",
+            "stage": 5,
+            "nodes": [
+              "^Instrument_Unit$"
+            ]
+          },
+          {
+            "name": "S-IVB (with J-2)",
+            "stage": 4,
+            "nodes": [
+              "^S-IVB$"
+            ]
+          },
+          {
+            "name": "S-II / S-IVB interstage",
+            "stage": 3,
+            "nodes": [
+              "^S-II_Top$"
+            ]
+          },
+          {
+            "name": "S-II (with 5 J-2)",
+            "stage": 2,
+            "nodes": [
+              "^S-II$"
+            ]
+          },
+          {
+            "name": "Interstage (S-IC / S-II)",
+            "stage": 1,
+            "nodes": [
+              "^Interstage$"
+            ]
+          },
+          {
+            "name": "S-IC (with 5 F-1)",
+            "stage": 0,
+            "nodes": [
+              "^S-IC$"
+            ]
+          }
+        ]
       }
     },
     "space-shuttle-stack": {
@@ -209,6 +385,39 @@
           "lengthM": 56.1,
           "note": "full launch stack (orbiter, orange External Tank, two SRBs), not orbiter-only. Scaled so the whole stack is 56.1 m; the orbiter comes out ~12 % short of 37.2 m against the tank and boosters"
         }
+      },
+      "explode": {
+        "axis": [
+          7.03,
+          0
+        ],
+        "parts": [
+          {
+            "name": "External Tank",
+            "stage": 0,
+            "nodes": [
+              "^EFT_0$"
+            ]
+          },
+          {
+            "name": "Left SRB",
+            "booster": true,
+            "nodes": [
+              "^SRBL_1$"
+            ]
+          },
+          {
+            "name": "Right SRB",
+            "booster": true,
+            "nodes": [
+              "^SRBR_2$"
+            ]
+          },
+          {
+            "name": "Orbiter",
+            "booster": true
+          }
+        ]
       }
     },
     "sls-block-1": {
@@ -234,6 +443,64 @@
         "full": {
           "lengthM": 98
         }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "Right SRB",
+            "booster": true,
+            "nodes": [
+              "^SRB Booster_13$"
+            ]
+          },
+          {
+            "name": "Left SRB",
+            "booster": true,
+            "nodes": [
+              "^SRB Booster001_14$"
+            ]
+          },
+          {
+            "name": "Launch abort tower",
+            "stage": 4,
+            "nodes": [
+              "^Launch Abort Tower"
+            ]
+          },
+          {
+            "name": "Orion (service module, capsule, panels)",
+            "stage": 3,
+            "nodes": [
+              "^Orion",
+              "^Solar Panel",
+              "^Parachute",
+              "^Cylinder001_15$"
+            ]
+          },
+          {
+            "name": "Orion stage adapter",
+            "stage": 2,
+            "nodes": [
+              "^Fairing"
+            ]
+          },
+          {
+            "name": "ICPS (with RL10)",
+            "stage": 1,
+            "nodes": [
+              "^ICPS",
+              "^RL10"
+            ]
+          },
+          {
+            "name": "Core stage (with 4 RS-25)",
+            "stage": 0,
+            "nodes": [
+              "^First Stage",
+              "^RS25"
+            ]
+          }
+        ]
       }
     },
     "atlas-v": {
@@ -258,6 +525,133 @@
         "full": {
           "lengthM": 58.3
         }
+      },
+      "explode": {
+        "split": [
+          "^Object_"
+        ],
+        "parts": [
+          {
+            "name": "SRB 1",
+            "booster": true,
+            "r": [
+              2.4,
+              5
+            ],
+            "y": [
+              0,
+              20.1
+            ],
+            "x": [
+              -5,
+              0
+            ],
+            "z": [
+              -3,
+              0
+            ]
+          },
+          {
+            "name": "SRB 2",
+            "booster": true,
+            "r": [
+              2.4,
+              5
+            ],
+            "y": [
+              0,
+              20.1
+            ],
+            "x": [
+              -5,
+              0
+            ],
+            "z": [
+              0,
+              3
+            ]
+          },
+          {
+            "name": "SRB 3",
+            "booster": true,
+            "r": [
+              2.4,
+              5
+            ],
+            "y": [
+              0,
+              20.1
+            ],
+            "x": [
+              0,
+              5
+            ],
+            "z": [
+              0.8,
+              3
+            ]
+          },
+          {
+            "name": "SRB 4",
+            "booster": true,
+            "r": [
+              2.4,
+              5
+            ],
+            "y": [
+              0,
+              20.1
+            ],
+            "x": [
+              0,
+              5
+            ],
+            "z": [
+              -3,
+              -0.8
+            ]
+          },
+          {
+            "name": "SRB 5",
+            "booster": true,
+            "r": [
+              2.4,
+              5
+            ],
+            "y": [
+              0,
+              20.1
+            ],
+            "x": [
+              0,
+              5
+            ],
+            "z": [
+              -0.8,
+              0.8
+            ]
+          },
+          {
+            "name": "Payload fairing",
+            "stage": 2,
+            "y": [
+              36,
+              100
+            ]
+          },
+          {
+            "name": "Centaur adapter",
+            "stage": 1,
+            "y": [
+              31.8,
+              36
+            ]
+          },
+          {
+            "name": "Common Core Booster (RD-180)",
+            "stage": 0
+          }
+        ]
       }
     },
     "ariane-6": {
@@ -283,6 +677,61 @@
         "full": {
           "lengthM": 63
         }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "P120C 1",
+            "booster": true,
+            "nodes": [
+              "^Booster001_4$"
+            ]
+          },
+          {
+            "name": "P120C 2",
+            "booster": true,
+            "nodes": [
+              "^Booster002_8$"
+            ]
+          },
+          {
+            "name": "P120C 3",
+            "booster": true,
+            "nodes": [
+              "^Booster003_9$"
+            ]
+          },
+          {
+            "name": "P120C 4",
+            "booster": true,
+            "nodes": [
+              "^Booster_10$"
+            ]
+          },
+          {
+            "name": "Payload fairing",
+            "stage": 2,
+            "nodes": [
+              "^Fairing"
+            ]
+          },
+          {
+            "name": "Upper stage (Vinci)",
+            "stage": 1,
+            "nodes": [
+              "^Second Stage",
+              "^Engine Nozzle002"
+            ]
+          },
+          {
+            "name": "Core stage (Vulcain 2.1)",
+            "stage": 0,
+            "nodes": [
+              "^First Stage",
+              "^Engine Nozzle001"
+            ]
+          }
+        ]
       }
     },
     "vulcan-centaur": {
@@ -308,6 +757,75 @@
         "full": {
           "lengthM": 61.6
         }
+      },
+      "explode": {
+        "split": [
+          "^Object_([4-9]|1[01])$"
+        ],
+        "parts": [
+          {
+            "name": "GEM 63XL 1",
+            "booster": true,
+            "nodes": [
+              "^Booster001_0$"
+            ]
+          },
+          {
+            "name": "GEM 63XL 2",
+            "booster": true,
+            "nodes": [
+              "^Booster002_1$"
+            ]
+          },
+          {
+            "name": "GEM 63XL 3",
+            "booster": true,
+            "nodes": [
+              "^Booster003_2$"
+            ]
+          },
+          {
+            "name": "GEM 63XL 4",
+            "booster": true,
+            "nodes": [
+              "^Booster004_3$"
+            ]
+          },
+          {
+            "name": "GEM 63XL 5",
+            "booster": true,
+            "nodes": [
+              "^Booster005_4$"
+            ]
+          },
+          {
+            "name": "GEM 63XL 6",
+            "booster": true,
+            "nodes": [
+              "^Booster006_5$"
+            ]
+          },
+          {
+            "name": "Payload fairing",
+            "stage": 2,
+            "y": [
+              42.1,
+              100
+            ]
+          },
+          {
+            "name": "Centaur section and interstage",
+            "stage": 1,
+            "y": [
+              35.8,
+              42.1
+            ]
+          },
+          {
+            "name": "First stage (2 BE-4)",
+            "stage": 0
+          }
+        ]
       }
     },
     "new-glenn": {
@@ -327,7 +845,7 @@
       "base": "nozzles",
       "lengthM": 98,
       "diameterM": 7,
-      "note": "stylised; booster and upper stage come as two objects and are stacked here",
+      "note": "stylised; booster and upper stage come as two objects and are stacked for the full vehicle; the Landing Lab shows the booster only",
       "assemble": [
         {
           "node": "^Sphere_1$",
@@ -362,6 +880,35 @@
           "hideNodes": [],
           "note": "strakes and flaps are part of the single merged booster mesh and cannot be separated or animated: the Landing Lab skips its own for this model"
         }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "Second stage and fairing",
+            "stage": 2,
+            "nodes": [
+              "^Sphere_1$"
+            ]
+          },
+          {
+            "name": "Booster interstage and grid fins",
+            "stage": 1,
+            "nodes": [
+              "^Cylinder002_0$"
+            ],
+            "y": [
+              48,
+              100
+            ]
+          },
+          {
+            "name": "First stage (7 BE-4)",
+            "stage": 0,
+            "nodes": [
+              "^Cylinder002_0$"
+            ]
+          }
+        ]
       }
     },
     "n1": {
@@ -386,6 +933,64 @@
         "full": {
           "lengthM": 105
         }
+      },
+      "explode": {
+        "split": [
+          "^Object_"
+        ],
+        "cut": [
+          28,
+          50,
+          64,
+          92
+        ],
+        "parts": [
+          {
+            "name": "Launch escape tower",
+            "stage": 4,
+            "y": [
+              92,
+              200
+            ],
+            "cut": true
+          },
+          {
+            "name": "Block G / D, L3 lunar complex and shroud",
+            "stage": 3,
+            "y": [
+              64,
+              92
+            ],
+            "cut": true
+          },
+          {
+            "name": "Block V (third stage)",
+            "stage": 2,
+            "y": [
+              50,
+              64
+            ],
+            "cut": true
+          },
+          {
+            "name": "Block B (second stage)",
+            "stage": 1,
+            "y": [
+              28,
+              50
+            ],
+            "cut": true
+          },
+          {
+            "name": "Block A (first stage, 30 NK-15 engines)",
+            "stage": 0,
+            "y": [
+              0,
+              28
+            ],
+            "cut": true
+          }
+        ]
       }
     },
     "electron": {
@@ -421,6 +1026,31 @@
           "lengthM": 14.3,
           "note": "first stage only; y = 0 is its base, the Shipyard overrides the length and the diameter"
         }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "Fairing",
+            "stage": 2,
+            "nodes": [
+              "^Electron Fairing"
+            ]
+          },
+          {
+            "name": "Second stage",
+            "stage": 1,
+            "nodes": [
+              "^Electron Second Stage"
+            ]
+          },
+          {
+            "name": "First stage and Rutherford engines",
+            "stage": 0,
+            "nodes": [
+              "^Electron First Stage"
+            ]
+          }
+        ]
       }
     },
     "super-heavy-b18": {
@@ -468,7 +1098,1706 @@
       },
       "colorScale": 0.75,
       "metalness": 0.7,
-      "roughness": 0.4
+      "roughness": 0.4,
+      "explode": {
+        "split": [
+          "^Object_4$"
+        ],
+        "cut": [
+          38,
+          66.5
+        ],
+        "axis": [
+          0,
+          -0.71
+        ],
+        "parts": [
+          {
+            "name": "Grid fin +X",
+            "booster": true,
+            "x": [
+              2,
+              12
+            ],
+            "y": [
+              64,
+              67
+            ]
+          },
+          {
+            "name": "Grid fin -X",
+            "booster": true,
+            "x": [
+              -12,
+              -2
+            ],
+            "y": [
+              64,
+              67
+            ]
+          },
+          {
+            "name": "Grid fin +Z",
+            "booster": true,
+            "z": [
+              2,
+              12
+            ],
+            "y": [
+              64,
+              67
+            ]
+          },
+          {
+            "name": "Grid fin -Z",
+            "booster": true,
+            "z": [
+              -12,
+              -2
+            ],
+            "y": [
+              64,
+              67
+            ]
+          },
+          {
+            "name": "Hot-stage ring and forward dome",
+            "stage": 3,
+            "y": [
+              66.5,
+              100
+            ]
+          },
+          {
+            "name": "LOX tank",
+            "stage": 2,
+            "y": [
+              38,
+              66.5
+            ]
+          },
+          {
+            "name": "Raptor engines",
+            "stage": 0,
+            "y": [
+              0,
+              3.2
+            ]
+          },
+          {
+            "name": "Methane tank and engine bay",
+            "stage": 1,
+            "y": [
+              3.2,
+              38
+            ],
+            "cut": true
+          }
+        ]
+      }
+    },
+    "ares-i": {
+      "title": "Ares 1 (A)",
+      "author": "NASA",
+      "license": "Public domain (NASA)",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "source": "https://science.nasa.gov/3d-resources/ares-1-a/",
+      "file": "../rockets/ares1a.web.glb",
+      "fallbackFiles": [
+        "../rockets/ares1a.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 94,
+      "diameterM": 5.5,
+      "note": "Ares I-A rocket only (no Orion, abort tower or pad in the file), 9.73 m per unit, 94 m. The body measures about 5.9 m across in the file (real 5.5 m), not corrected. The four detached duplicate meshes outside the rotated root are hidden. Stage bands (63 m and 82 m) are approximate, not from drawings. The original is Draco-compressed (the web copy is not).",
+      "modes": {
+        "full": {
+          "lengthM": 94,
+          "hideNodes": [
+            "^group2_pCo$",
+            "^group3_pCo$",
+            "^pCone1_gro$",
+            "^pCone1_gr1$"
+          ]
+        }
+      },
+      "explode": {
+        "split": [
+          "^pCylinder1$"
+        ],
+        "cut": [
+          63,
+          82
+        ],
+        "cutMin": 6,
+        "parts": [
+          {
+            "name": "First stage (SRBs)",
+            "stage": 0,
+            "y": [
+              0,
+              63
+            ],
+            "cut": true
+          },
+          {
+            "name": "Upper stage",
+            "stage": 1,
+            "y": [
+              63,
+              82
+            ],
+            "cut": true
+          },
+          {
+            "name": "Abort system and Orion",
+            "stage": 2,
+            "y": [
+              82,
+              200
+            ],
+            "cut": true
+          }
+        ]
+      }
+    },
+    "jupiter-c": {
+      "title": "Explorer Jupiter-C Rocket",
+      "author": "NASA",
+      "license": "Public domain (NASA)",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "source": "https://science.nasa.gov/3d-resources/explorer-jupiter-c-rocket/",
+      "file": "../rockets/jupiter-c.web.glb",
+      "fallbackFiles": [
+        "../rockets/jupiter-c.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 21.2,
+      "diameterM": 1.83,
+      "note": "Rocket only (no satellite or pad in the file). 1.2135 m per unit, 21.2 m; body 1.83 m across (real 1.78 m). The original is Draco-compressed (the web copy is not). Stage bands are approximate.",
+      "modes": {
+        "full": {
+          "lengthM": 21.2
+        }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "Base section and fins",
+            "stage": 0,
+            "y": [
+              0,
+              3.1
+            ]
+          },
+          {
+            "name": "Booster body",
+            "stage": 1,
+            "y": [
+              3.1,
+              17.9
+            ]
+          },
+          {
+            "name": "Upper stage and nose",
+            "stage": 2,
+            "y": [
+              17.9,
+              40
+            ]
+          }
+        ]
+      }
+    },
+    "redstone": {
+      "title": "Mercury-Redstone Launch Vehicle",
+      "author": "Stanley Creative",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/d1c09c4321e443cd956370dadabd04d9",
+      "sketchfabUid": "d1c09c4321e443cd956370dadabd04d9",
+      "file": "../rockets/mercury-_redstone_launch_vehicle.web.glb",
+      "fallbackFiles": [
+        "../rockets/mercury-_redstone_launch_vehicle.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 25.4,
+      "diameterM": 1.78,
+      "note": "Mercury-Redstone stack: the file includes the Mercury capsule and the launch escape tower on the Redstone booster (not the NASA Redstone file). Booster 1.78 m across. Scaled 25.4 m, which is the file at 1:1 (no correction). Tank and engine detail is not checked.",
+      "modes": {
+        "full": {
+          "lengthM": 25.4
+        }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "Redstone booster (engine and fins)",
+            "stage": 0,
+            "nodes": [
+              "^Redstone_Booster",
+              "^Redstone_Engine",
+              "^Redstone_Fins"
+            ]
+          },
+          {
+            "name": "Adapter ring and Mercury capsule",
+            "stage": 1,
+            "nodes": [
+              "^Capsule_Ring",
+              "^Mercury_Capsule"
+            ]
+          },
+          {
+            "name": "Launch escape tower",
+            "stage": 2,
+            "nodes": [
+              "^Launch_Escape_Tower"
+            ]
+          }
+        ]
+      }
+    },
+    "atlas-lv-3b": {
+      "title": "Atlas LV-3B Mercury",
+      "author": "Stanley Creative",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/5e0dd866821848c89232732e89d78444",
+      "sketchfabUid": "5e0dd866821848c89232732e89d78444",
+      "file": "../rockets/atlas_lv-3b_mercury.web.glb",
+      "fallbackFiles": [
+        "../rockets/atlas_lv-3b_mercury.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 29,
+      "diameterM": 3.05,
+      "note": "Mercury-Atlas: sustainer with the XLR-105, two XLR-89 booster engines, Mercury capsule and launch escape tower (the file has all of them). Scaled to 29 m. The two booster pods are one merged node, so they move as one group in the exploded view (no sideways slide).",
+      "modes": {
+        "full": {
+          "lengthM": 29
+        }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "Booster pods (2 XLR-89)",
+            "booster": true,
+            "nodes": [
+              "^Atlas_Booster_Stage",
+              "^Rocketdyne_XLR-89"
+            ]
+          },
+          {
+            "name": "Mercury capsule and escape tower",
+            "stage": 1,
+            "nodes": [
+              "^Mercury_Capsule",
+              "^Mercury_Service_Module",
+              "^Service_Module_Lines",
+              "^Cylinder_Atlas_Escape_Tower",
+              "^Capsule_Ring"
+            ]
+          },
+          {
+            "name": "Sustainer (XLR-105)",
+            "stage": 0,
+            "nodes": [
+              "^Main_Stage",
+              "^Rocketdyne_XLR-105",
+              "^Vernier",
+              "^Exhaust",
+              "^Cylinder_01",
+              "^Body_Lines",
+              "^Some_Tube"
+            ]
+          }
+        ]
+      }
+    },
+    "v-2": {
+      "title": "V-2 Rocket",
+      "author": "person",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/d09fc8ebe9c141a18704b478544191b8",
+      "sketchfabUid": "d09fc8ebe9c141a18704b478544191b8",
+      "file": "../rockets/v-2_rocket.web.glb",
+      "fallbackFiles": [
+        "../rockets/v-2_rocket.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 14,
+      "diameterM": 1.65,
+      "note": "Untextured grey model with its tail fins. The file is 13.7 m long, scaled to 14 m (+2 %); the 1.65 m body matches the catalogue. The two explode sections (tail and body) are approximate.",
+      "modes": {
+        "full": {
+          "lengthM": 14
+        }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "Tail section and fins",
+            "stage": 0,
+            "nodes": [
+              "^Object_6$",
+              "^Object_8$",
+              "^Object_9$"
+            ]
+          },
+          {
+            "name": "Body and nose",
+            "stage": 1,
+            "nodes": [
+              "^Object_4$",
+              "^Object_5$"
+            ]
+          }
+        ]
+      }
+    },
+    "energia": {
+      "title": "Energia Rocket (untextured)",
+      "author": "Soviet Model Magic",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/1e2e2fbf68d743c88a9b515c3bf42498",
+      "sketchfabUid": "1e2e2fbf68d743c88a9b515c3bf42498",
+      "file": "../rockets/energia_rocket_untextured.web.glb",
+      "fallbackFiles": [
+        "../rockets/energia_rocket_untextured.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 58.8,
+      "diameterM": 7.9,
+      "note": "Energia core with four strap-on boosters and the engine nozzles only. No Buran orbiter and no Polyus payload are in the file (the core top is bare). Scaled to 58.8 m (file 57.9 units, +1.6 %); the core measures about 7.9 m across. Untextured.",
+      "modes": {
+        "full": {
+          "lengthM": 58.8
+        }
+      },
+      "explode": {
+        "axis": [
+          0,
+          0.96
+        ],
+        "parts": [
+          {
+            "name": "Booster A",
+            "booster": true,
+            "nodes": [
+              "^Object_30$"
+            ]
+          },
+          {
+            "name": "Booster B",
+            "booster": true,
+            "nodes": [
+              "^Object_58$"
+            ]
+          },
+          {
+            "name": "Booster C",
+            "booster": true,
+            "nodes": [
+              "^Object_86$"
+            ]
+          },
+          {
+            "name": "Booster D",
+            "booster": true,
+            "nodes": [
+              "^Object_113$"
+            ]
+          },
+          {
+            "name": "Core (with nozzles)",
+            "stage": 0,
+            "nodes": [
+              "^Object_114$"
+            ]
+          }
+        ]
+      }
+    },
+    "epsilon": {
+      "title": "JAXA Epsilon rocket",
+      "author": "rocket0314",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/2de4cbccbeae4e1581aea946f6f0302a",
+      "sketchfabUid": "2de4cbccbeae4e1581aea946f6f0302a",
+      "file": "../rockets/jaxa_epsilon_rocket.web.glb",
+      "fallbackFiles": [
+        "../rockets/jaxa_epsilon_rocket.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 24.4,
+      "diameterM": 2.6,
+      "note": "Three-section stack with a nozzle at the base. The file is 4.8 units tall, scaled to 24.4 m (5.07 m per unit). The body measures about 3.1 m across at this scale (catalogue 2.6 m), not corrected. Explode bands are approximate.",
+      "modes": {
+        "full": {
+          "lengthM": 24.4
+        }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "First stage (with nozzle)",
+            "stage": 0,
+            "y": [
+              0,
+              13.1
+            ]
+          },
+          {
+            "name": "Second stage",
+            "stage": 1,
+            "y": [
+              13.1,
+              18.2
+            ]
+          },
+          {
+            "name": "Upper section and nose",
+            "stage": 2,
+            "y": [
+              18.2,
+              40
+            ]
+          }
+        ]
+      }
+    },
+    "pslv": {
+      "title": "PSLV C40",
+      "author": "Neel3Dartist",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/c7066310704040a9bf0c86d7d21ab94f",
+      "sketchfabUid": "c7066310704040a9bf0c86d7d21ab94f",
+      "file": "../rockets/pslv_c40.web.glb",
+      "fallbackFiles": [
+        "../rockets/pslv_c40.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 44,
+      "diameterM": 2.8,
+      "note": "PSLV-XL with its six strap-on boosters (separate islands, shown as boosters in the exploded view). The core and upper stages are one merged mesh, so the three core sections (20 m and 40 m) are cut at approximate heights, not from drawings. Scaled to 44 m; the core measures about 3.0 to 3.3 m across and the strap-on ring about 5.4 m. The launch-pad lattice in the file is hidden.",
+      "modes": {
+        "full": {
+          "lengthM": 44,
+          "hideNodes": [
+            "^Plane001"
+          ]
+        }
+      },
+      "explode": {
+        "split": [
+          "^main_Pslv"
+        ],
+        "cut": [
+          20,
+          40
+        ],
+        "cutMin": 6,
+        "parts": [
+          {
+            "name": "Strap-on 1",
+            "booster": true,
+            "x": [
+              1.2,
+              3
+            ],
+            "z": [
+              -1,
+              1
+            ],
+            "y": [
+              0,
+              15
+            ]
+          },
+          {
+            "name": "Strap-on 2",
+            "booster": true,
+            "x": [
+              -2,
+              -0.9
+            ],
+            "z": [
+              0.9,
+              2
+            ],
+            "y": [
+              0,
+              15
+            ]
+          },
+          {
+            "name": "Strap-on 3",
+            "booster": true,
+            "x": [
+              -2.6,
+              -1.5
+            ],
+            "z": [
+              -0.6,
+              0.6
+            ],
+            "y": [
+              0,
+              15
+            ]
+          },
+          {
+            "name": "Strap-on 4",
+            "booster": true,
+            "x": [
+              -2,
+              -0.9
+            ],
+            "z": [
+              -2,
+              -0.9
+            ],
+            "y": [
+              0,
+              15
+            ]
+          },
+          {
+            "name": "Strap-on 5",
+            "booster": true,
+            "x": [
+              0.9,
+              2
+            ],
+            "z": [
+              -2,
+              -0.9
+            ],
+            "y": [
+              0,
+              15
+            ]
+          },
+          {
+            "name": "Strap-on 6",
+            "booster": true,
+            "x": [
+              0.9,
+              2
+            ],
+            "z": [
+              0.9,
+              2
+            ],
+            "y": [
+              0,
+              15
+            ]
+          },
+          {
+            "name": "Core, lower section",
+            "stage": 0,
+            "y": [
+              0,
+              20
+            ],
+            "cut": true
+          },
+          {
+            "name": "Core, middle section",
+            "stage": 1,
+            "y": [
+              20,
+              40
+            ],
+            "cut": true
+          },
+          {
+            "name": "Core, upper section",
+            "stage": 2,
+            "y": [
+              40,
+              60
+            ],
+            "cut": true
+          }
+        ]
+      }
+    },
+    "lvm3": {
+      "title": "GSLV Mk3",
+      "author": "Jainesh Pathak",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/0426922358b4444f9887bcd551d3a5cb",
+      "sketchfabUid": "0426922358b4444f9887bcd551d3a5cb",
+      "file": "../rockets/gslv_mk3.web.glb",
+      "fallbackFiles": [
+        "../rockets/gslv_mk3.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 43.5,
+      "diameterM": 4,
+      "widthScale": 0.87,
+      "note": "LVM3 (the renamed GSLV Mk III) with its two S200 solid boosters, shown as boosters in the exploded view. The core and fairing are one merged mesh, so the bands at 32 m and 40 m are approximate. Scaled to 43.5 m; the file core measured about 4.6 m across, squeezed 13 % (widthScale 0.87) to the catalogue 4 m.",
+      "modes": {
+        "full": {
+          "lengthM": 43.5
+        }
+      },
+      "explode": {
+        "split": [
+          "^Cylinder003_Booster"
+        ],
+        "cut": [
+          32,
+          40
+        ],
+        "cutMin": 6,
+        "parts": [
+          {
+            "name": "S200 booster +X",
+            "booster": true,
+            "x": [
+              1,
+              10
+            ],
+            "y": [
+              0,
+              45
+            ]
+          },
+          {
+            "name": "S200 booster -X",
+            "booster": true,
+            "x": [
+              -10,
+              -1
+            ],
+            "y": [
+              0,
+              45
+            ]
+          },
+          {
+            "name": "Core, lower section",
+            "stage": 0,
+            "y": [
+              0,
+              32
+            ],
+            "cut": true
+          },
+          {
+            "name": "Upper core and fairing",
+            "stage": 1,
+            "y": [
+              32,
+              40
+            ],
+            "cut": true
+          },
+          {
+            "name": "Nose",
+            "stage": 2,
+            "y": [
+              40,
+              60
+            ],
+            "cut": true
+          }
+        ]
+      }
+    },
+    "long-march-5": {
+      "title": "Long March 5 rocket",
+      "author": "andertan",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/4da241732264439c9112e66ebc3e16e8",
+      "sketchfabUid": "4da241732264439c9112e66ebc3e16e8",
+      "file": "../rockets/long_march_5_rocket.web.glb",
+      "fallbackFiles": [
+        "../rockets/long_march_5_rocket.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 56.97,
+      "diameterM": 5,
+      "note": "Long March 5 with its four boosters (split from the merged booster mesh by corner, shown as boosters in the exploded view), core and fairing. Scaled to 56.97 m. The core measures about 5.4 m across (catalogue 5 m), not corrected. The core / fairing split at 40 m is approximate.",
+      "modes": {
+        "full": {
+          "lengthM": 56.97
+        }
+      },
+      "explode": {
+        "split": [
+          "^Object_4$",
+          "^Object_10$"
+        ],
+        "parts": [
+          {
+            "name": "Booster +X +Z",
+            "booster": true,
+            "x": [
+              0.5,
+              6
+            ],
+            "z": [
+              0.5,
+              6
+            ]
+          },
+          {
+            "name": "Booster +X -Z",
+            "booster": true,
+            "x": [
+              0.5,
+              6
+            ],
+            "z": [
+              -6,
+              -0.5
+            ]
+          },
+          {
+            "name": "Booster -X +Z",
+            "booster": true,
+            "x": [
+              -6,
+              -0.5
+            ],
+            "z": [
+              0.5,
+              6
+            ]
+          },
+          {
+            "name": "Booster -X -Z",
+            "booster": true,
+            "x": [
+              -6,
+              -0.5
+            ],
+            "z": [
+              -6,
+              -0.5
+            ]
+          },
+          {
+            "name": "Core (lower stage)",
+            "stage": 0,
+            "nodes": [
+              "^Object_10$"
+            ],
+            "y": [
+              0,
+              40
+            ]
+          },
+          {
+            "name": "Upper stage and fairing",
+            "stage": 1,
+            "nodes": [
+              "^Object_10$"
+            ],
+            "y": [
+              40,
+              80
+            ]
+          }
+        ]
+      }
+    },
+    "terran-1": {
+      "title": "Relativity Space Terran 1",
+      "author": "Clarence365",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/b1a23b822e8a431babe584a3c4cae052",
+      "sketchfabUid": "b1a23b822e8a431babe584a3c4cae052",
+      "file": "../rockets/relativity_space_terran_1.web.glb",
+      "fallbackFiles": [
+        "../rockets/relativity_space_terran_1.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 33.5,
+      "diameterM": 2.25,
+      "widthScale": 0.82,
+      "note": "Terran 1 (3D-printed; its only flight in 2023 did not reach orbit). The file body is 2.75 m across at 33.5 m, squeezed 18 % (widthScale 0.82) to the catalogue 2.25 m. The explode bands (base, body, nose) are approximate.",
+      "modes": {
+        "full": {
+          "lengthM": 33.5
+        }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "Base section and engines",
+            "stage": 0,
+            "y": [
+              0,
+              5
+            ]
+          },
+          {
+            "name": "Tank section",
+            "stage": 1,
+            "y": [
+              5,
+              26.5
+            ]
+          },
+          {
+            "name": "Nose and fairing",
+            "stage": 2,
+            "y": [
+              26.5,
+              40
+            ]
+          }
+        ]
+      }
+    },
+    "neutron": {
+      "title": "Rocketlab Neutron Rocket",
+      "author": "Clarence365",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/ca4bbcb8e0ba4a128c78efa5d67524c3",
+      "sketchfabUid": "ca4bbcb8e0ba4a128c78efa5d67524c3",
+      "file": "../rockets/rocketlab_neutron_rocket.web.glb",
+      "fallbackFiles": [
+        "../rockets/rocketlab_neutron_rocket.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 43,
+      "diameterM": 7,
+      "note": "Early design: the file is a 43 m stack whose body measures about 6.1 m across (catalogue 7 m, not stretched sideways). Nine engine bells, a cargo fairing on top. The proportions and engine layout are the author’s, not the final Neutron. Explode bands are approximate.",
+      "modes": {
+        "full": {
+          "lengthM": 43
+        }
+      },
+      "explode": {
+        "split": [
+          "^Object_4$"
+        ],
+        "cut": [
+          22.4,
+          36.8
+        ],
+        "cutMin": 6,
+        "parts": [
+          {
+            "name": "First stage (nine engines)",
+            "stage": 0,
+            "y": [
+              0,
+              22.4
+            ],
+            "cut": true
+          },
+          {
+            "name": "Upper stage",
+            "stage": 1,
+            "y": [
+              22.4,
+              36.8
+            ],
+            "cut": true
+          },
+          {
+            "name": "Cargo fairing",
+            "stage": 2,
+            "y": [
+              36.8,
+              60
+            ],
+            "cut": true
+          }
+        ]
+      }
+    },
+    "firefly-alpha": {
+      "title": "Firefly Alpha Rocket",
+      "author": "rocket0314",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/f745fd0a4173437db1de7f7581b5151f",
+      "sketchfabUid": "f745fd0a4173437db1de7f7581b5151f",
+      "file": "../rockets/firefly_alpha_rocket.web.glb",
+      "fallbackFiles": [
+        "../rockets/firefly_alpha_rocket.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 29,
+      "diameterM": 1.8,
+      "note": "Firefly Alpha: first stage with nine engine bells, second stage, fairing. Scaled to 29 m; 1.81 m across (catalogue 1.8 m). Explode bands (y) are approximate.",
+      "modes": {
+        "full": {
+          "lengthM": 29
+        }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "First stage (engines)",
+            "stage": 0,
+            "y": [
+              0,
+              16.8
+            ]
+          },
+          {
+            "name": "Second stage",
+            "stage": 1,
+            "y": [
+              16.8,
+              25.3
+            ]
+          },
+          {
+            "name": "Fairing and nose",
+            "stage": 2,
+            "y": [
+              25.3,
+              40
+            ]
+          }
+        ]
+      }
+    },
+    "falcon-9-full-thrust": {
+      "title": "Falcon 9 - SpaceX",
+      "author": "Stanley Creative",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/394f7cf52d124bbd9db69f24d1ff2f08",
+      "sketchfabUid": "394f7cf52d124bbd9db69f24d1ff2f08",
+      "file": "../rockets/falcon_9_-_spacex.web.glb",
+      "fallbackFiles": [
+        "../rockets/falcon_9_-_spacex.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 70,
+      "diameterM": 3.66,
+      "note": "Falcon 9 Full Thrust (Stanley Creative). The file has its legs and fairing and is 59.3 m tall; scaled up to the catalogue 70 m (uniform, +18 %), which gives a body of about 3.6 m (real 3.66 m). The legs are deployed (out beyond the body, not stowed) and the grid fins are extended.",
+      "modes": {
+        "full": {
+          "lengthM": 70
+        }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "Interstage and grid fins",
+            "stage": 1,
+            "nodes": [
+              "^Interstage",
+              "^Grid_Fin"
+            ]
+          },
+          {
+            "name": "Second stage",
+            "stage": 2,
+            "nodes": [
+              "^Second_Stage",
+              "^Fairing"
+            ]
+          },
+          {
+            "name": "First stage, engines and legs",
+            "stage": 0,
+            "y": [
+              0,
+              41.6
+            ]
+          },
+          {
+            "name": "Second-stage engines",
+            "stage": 2,
+            "y": [
+              41.6,
+              60
+            ]
+          }
+        ]
+      }
+    },
+    "soyuz-fg": {
+      "title": "Soyuz-FG",
+      "author": "Paculino",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/1320bf0fd1b242cd8cfda77d381a147f",
+      "sketchfabUid": "1320bf0fd1b242cd8cfda77d381a147f",
+      "file": "../rockets/soyuz-fg.web.glb",
+      "fallbackFiles": [
+        "../rockets/soyuz-fg.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 49.5,
+      "diameterM": 10.3,
+      "note": "Soyuz-FG (no description in the source; 5k faces, low detail, accuracy not verified). APPROXIMATE STAND-IN for Soyuz-U (51.1 m), Soyuz-2.1a and Soyuz-2.1b (46.3 m each): the same Soyuz-FG model is used for those ids and is drawn at their catalogue heights (about 3 % longer for Soyuz-U, about 6 to 7 % shorter for Soyuz-2.1a and 2.1b), so it is not their exact geometry.",
+      "modes": {
+        "full": {
+          "lengthM": 49.5
+        }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "Strap-on boosters",
+            "booster": true,
+            "nodes": [
+              "^Object_4$",
+              "^Object_14$",
+              "^Object_16$"
+            ]
+          },
+          {
+            "name": "Core, first stage",
+            "stage": 0,
+            "nodes": [
+              "^Object_6$",
+              "^Object_12$"
+            ]
+          },
+          {
+            "name": "Upper stage",
+            "stage": 1,
+            "nodes": [
+              "^Object_8$",
+              "^Object_10$"
+            ]
+          },
+          {
+            "name": "Payload fairing and nose",
+            "stage": 2,
+            "nodes": [
+              "^Object_18$"
+            ]
+          }
+        ]
+      }
+    },
+    "h-iia": {
+      "title": "H-IIA Rocket",
+      "author": "MarioK",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/99a86c831c2a4b24bdd42365e382427e",
+      "sketchfabUid": "99a86c831c2a4b24bdd42365e382427e",
+      "file": "../rockets/h-iia_rocket.web.glb",
+      "fallbackFiles": [
+        "../rockets/h-iia_rocket.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 53,
+      "diameterM": 4,
+      "note": "Stylised toy-like model (exaggerated features, simple colours), variant not stated by the author. Drawn at the H-IIA 202 height (53 m). APPROXIMATE STAND-IN for H-II (49 m) and H-IIB (56.6 m) as well: those ids use this model at their own heights (about 7 % shorter for H-II, about 7 % longer for H-IIB).",
+      "modes": {
+        "full": {
+          "lengthM": 53
+        }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "Solid boosters (SRB-A)",
+            "booster": true,
+            "nodes": [
+              "^Booster"
+            ]
+          },
+          {
+            "name": "First stage (LE-7A core)",
+            "stage": 0,
+            "nodes": [
+              "^First_Stage",
+              "^Pipe"
+            ]
+          },
+          {
+            "name": "Second stage",
+            "stage": 1,
+            "nodes": [
+              "^Second_Stage"
+            ]
+          },
+          {
+            "name": "Payload fairing and payload",
+            "stage": 2,
+            "nodes": [
+              "^Payload"
+            ]
+          }
+        ]
+      }
+    },
+    "long-march-2f": {
+      "title": "LongMarch-2F Shenjian (converted from STL)",
+      "author": "长江学者AmethystY98 (AmethystY98)",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source": "https://commons.wikimedia.org/wiki/File:LongMarch-2F_Shenjian.stl",
+      "file": "../rockets/long_march_2f_shenjian.web.glb",
+      "fallbackFiles": [
+        "../rockets/long_march_2f_shenjian.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 58.34,
+      "diameterM": 3.35,
+      "note": "Converted by us from the Wikimedia Commons STL (CC BY-SA 4.0, ShareAlike: this derived copy is under the same licence; the STL is simple and untextured, with flat normals). Scaled to 58.34 m. Single merged mesh, so the exploded view is approximate.",
+      "modes": {
+        "full": {
+          "lengthM": 58.34
+        }
+      },
+      "explode": {
+        "split": [
+          "^LongMarch"
+        ],
+        "cut": [
+          30,
+          48
+        ],
+        "cutMin": 6,
+        "parts": [
+          {
+            "name": "Strap-on boosters (4)",
+            "booster": true,
+            "r": [
+              2.2,
+              8
+            ],
+            "y": [
+              0,
+              20
+            ]
+          },
+          {
+            "name": "Core, lower stage",
+            "stage": 0,
+            "y": [
+              0,
+              30
+            ],
+            "cut": true
+          },
+          {
+            "name": "Core, upper stage",
+            "stage": 1,
+            "y": [
+              30,
+              48
+            ],
+            "cut": true
+          },
+          {
+            "name": "Nose and escape tower",
+            "stage": 2,
+            "y": [
+              48,
+              70
+            ],
+            "cut": true
+          }
+        ]
+      }
+    },
+    "safir": {
+      "title": "Safir Satellite Launch Vehicle",
+      "author": "JamesMartinCNS",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/2aaac85618694cf5ae0716ced86a398a",
+      "sketchfabUid": "2aaac85618694cf5ae0716ced86a398a",
+      "file": "../rockets/safir_satellite_launch_vehicle.web.glb",
+      "fallbackFiles": [
+        "../rockets/safir_satellite_launch_vehicle.glb"
+      ],
+      "axis": "x",
+      "noseSign": -1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 22,
+      "diameterM": 1.25,
+      "note": "Low detail (5k faces, no description). Accuracy against the real Safir is unverified (fin count, nozzle and fairing are the author's). Drawn at its catalogue length (22 m).",
+      "modes": {
+        "full": {
+          "lengthM": 22
+        }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "First stage and fins",
+            "stage": 0,
+            "y": [
+              0,
+              10.5
+            ]
+          },
+          {
+            "name": "Second stage and nose",
+            "stage": 1,
+            "y": [
+              10.5,
+              30
+            ]
+          }
+        ]
+      }
+    },
+    "proton-m": {
+      "title": "Proton-K with Zarya ISS module (stand-in for Proton-M)",
+      "author": "Soviet Model Magic",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/061a9d5aeb61497a872c1df0e741e906",
+      "sketchfabUid": "061a9d5aeb61497a872c1df0e741e906",
+      "file": "../rockets/proton_k_with_zarya_iss_module.web.glb",
+      "fallbackFiles": [
+        "../rockets/proton_k_with_zarya_iss_module.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 58.2,
+      "diameterM": 7.4,
+      "note": "STAND-IN: this is the older Proton-K carrying the Zarya module, not the Proton-M (catalogue 58.2 m, 7.4 m). The Zarya payload is part of the file and is kept. Proportions and the booster layout are the author's, not checked against drawings.",
+      "modes": {
+        "full": {
+          "lengthM": 58.2
+        }
+      },
+      "explode": {
+        "split": [
+          "^Object_2$",
+          "^Object_3$"
+        ],
+        "cut": [
+          17.5,
+          36,
+          46
+        ],
+        "cutMin": 6,
+        "parts": [
+          {
+            "name": "First stage (with boosters, not split)",
+            "stage": 0,
+            "y": [
+              0,
+              17.5
+            ],
+            "cut": true
+          },
+          {
+            "name": "Second stage (band, approximate)",
+            "stage": 1,
+            "y": [
+              17.5,
+              36
+            ],
+            "cut": true
+          },
+          {
+            "name": "Upper stage (band, approximate)",
+            "stage": 2,
+            "y": [
+              36,
+              46
+            ],
+            "cut": true
+          },
+          {
+            "name": "Payload (Zarya) and nose",
+            "stage": 3,
+            "y": [
+              46,
+              70
+            ],
+            "cut": true
+          }
+        ]
+      }
+    },
+    "ariane-5": {
+      "title": "Ariane 5",
+      "author": "Yanis",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/88a1de562245402da653bc1ae92b1b91",
+      "sketchfabUid": "88a1de562245402da653bc1ae92b1b91",
+      "file": "../rockets/ariane_5_model.web.glb",
+      "fallbackFiles": [
+        "../rockets/ariane_5_model.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 50.5,
+      "diameterM": 5.4,
+      "note": "The author says the model is not 100 % accurate. Decimated to about 82k triangles for the web. Drawn at the catalogue ECA height (50.5 m).",
+      "modes": {
+        "full": {
+          "lengthM": 50.5
+        }
+      },
+      "explode": {
+        "split": [
+          "^Rocket_main"
+        ],
+        "cut": [
+          32,
+          42
+        ],
+        "cutMin": 6,
+        "parts": [
+          {
+            "name": "Solid booster A (P230)",
+            "booster": true,
+            "nodes": [
+              "^Rocket_sec_1"
+            ]
+          },
+          {
+            "name": "Solid booster B (P230)",
+            "booster": true,
+            "nodes": [
+              "^Rocket_sec_2"
+            ]
+          },
+          {
+            "name": "Core, main stage",
+            "stage": 0,
+            "nodes": [
+              "^Rocket_main"
+            ],
+            "y": [
+              0,
+              32
+            ],
+            "cut": true
+          },
+          {
+            "name": "Upper stage",
+            "stage": 1,
+            "nodes": [
+              "^Rocket_main"
+            ],
+            "y": [
+              32,
+              42
+            ],
+            "cut": true
+          },
+          {
+            "name": "Fairing",
+            "stage": 2,
+            "nodes": [
+              "^Rocket_main"
+            ],
+            "y": [
+              42,
+              60
+            ],
+            "cut": true
+          }
+        ]
+      }
+    },
+    "titan-iv": {
+      "title": "Titan IV",
+      "author": "AllThingsSpace",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/0560341d278d4308b7a330ca4e75f1ae",
+      "sketchfabUid": "0560341d278d4308b7a330ca4e75f1ae",
+      "file": "../rockets/titan_iv.web.glb",
+      "fallbackFiles": [
+        "../rockets/titan_iv.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 44,
+      "diameterM": 3.05,
+      "note": "Titan IV (IVB figures, 44 m). The file has an exploded-view arrangement of the vehicle beside the stack, and a second copy: the web copy is cropped to the assembled stack (all triangles on the far side of the stack are removed), and the specular-gloss material is converted to metal-rough. Accuracy of the parts is not checked.",
+      "modes": {
+        "full": {
+          "lengthM": 44
+        }
+      },
+      "explode": {
+        "split": [
+          "^Object_2$"
+        ],
+        "cut": [
+          30,
+          36
+        ],
+        "cutMin": 6,
+        "parts": [
+          {
+            "name": "Solid rocket motors (two SRMU)",
+            "booster": true,
+            "r": [
+              2.5,
+              9
+            ],
+            "y": [
+              0,
+              30
+            ]
+          },
+          {
+            "name": "Core stage",
+            "stage": 0,
+            "y": [
+              0,
+              30
+            ],
+            "cut": true
+          },
+          {
+            "name": "Upper stage (approximate band)",
+            "stage": 1,
+            "y": [
+              30,
+              36
+            ],
+            "cut": true
+          },
+          {
+            "name": "Nose (approximate band)",
+            "stage": 2,
+            "y": [
+              36,
+              50
+            ],
+            "cut": true
+          }
+        ]
+      }
+    },
+    "sea-dragon": {
+      "title": "Sea Dragon Rocket",
+      "author": "IkaetieIke",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/51431d5cf72b49c7a246c0d3dc48eeca",
+      "sketchfabUid": "51431d5cf72b49c7a246c0d3dc48eeca",
+      "file": "../rockets/sea_dragon_rocket.web.glb",
+      "fallbackFiles": [
+        "../rockets/sea_dragon_rocket.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 150,
+      "diameterM": 23,
+      "note": "CONCEPT (1962 Truax design, never built): the model is the author's 150 m two-stage concept, decimated to about 250k triangles for the web. Its own escape tower, which the author marks as incomplete, is hidden.",
+      "modes": {
+        "full": {
+          "lengthM": 150,
+          "hideNodes": [
+            "^crappy"
+          ]
+        }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "First stage",
+            "stage": 0,
+            "nodes": [
+              "^First_Stage"
+            ],
+            "y": [
+              0,
+              80
+            ]
+          },
+          {
+            "name": "Second stage and nose",
+            "stage": 1,
+            "nodes": [
+              "^Second_Stage"
+            ],
+            "y": [
+              80,
+              160
+            ]
+          }
+        ]
+      }
+    },
+    "vega-c": {
+      "title": "Vega-C",
+      "author": "SethAlevy",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/8b74cf8d08bc419e966d7ede30c27bf6",
+      "sketchfabUid": "8b74cf8d08bc419e966d7ede30c27bf6",
+      "file": "../rockets/vega-c.web.glb",
+      "fallbackFiles": [
+        "../rockets/vega-c.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 35,
+      "diameterM": 3.4,
+      "note": "Concept CAD inspired by Vega-C (the author says so), accuracy doubtful. Decimated with a topology-free simplifier to about 123k triangles, so some surfaces may be open. Drawn at 35 m.",
+      "modes": {
+        "full": {
+          "lengthM": 35
+        }
+      },
+      "explode": {
+        "split": [
+          "^Object_"
+        ],
+        "cut": [
+          13,
+          26
+        ],
+        "cutMin": 6,
+        "parts": [
+          {
+            "name": "First stage (approximate band)",
+            "stage": 0,
+            "y": [
+              0,
+              13
+            ],
+            "cut": true
+          },
+          {
+            "name": "Second and third stages (approximate band)",
+            "stage": 1,
+            "y": [
+              13,
+              26
+            ],
+            "cut": true
+          },
+          {
+            "name": "Upper stage and fairing (approximate band)",
+            "stage": 2,
+            "y": [
+              26,
+              40
+            ],
+            "cut": true
+          }
+        ]
+      }
+    },
+    "starship-stack": {
+      "title": "Starship full stack (Super Heavy + Starship, merged by us)",
+      "author": "Sharpraptor",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "source": "https://sketchfab.com/3d-models/ee8644e6f8c94931b09d03b498be6fc6",
+      "sketchfabUid": "ee8644e6f8c94931b09d03b498be6fc6",
+      "file": "../rockets/starship_stack_merged.web.glb",
+      "fallbackFiles": [
+        "../rockets/starship_stack_merged.glb"
+      ],
+      "axis": "y",
+      "noseSign": 1,
+      "base": "nozzles",
+      "modified": true,
+      "lengthM": 121,
+      "diameterM": 9,
+      "note": "CRUDE, LOW DETAIL. Two Sharpraptor models joined by us into one file (Super Heavy from https://sketchfab.com/3d-models/ee8644e6f8c94931b09d03b498be6fc6, Starship from https://sketchfab.com/3d-models/115c011815f347c8a30af2eaff4c9555; both CC BY 4.0): booster at the bottom (72.3 m, 9 m across), Starship on top with its base at the booster top (48.7 m, body 9 m, flaps about 22 m across). Neither part is checked against drawings; no hot-staging ring or interstage is modelled separately.",
+      "modes": {
+        "full": {
+          "lengthM": 121
+        }
+      },
+      "explode": {
+        "parts": [
+          {
+            "name": "Super Heavy booster",
+            "stage": 0,
+            "nodes": [
+              "^Super_Heavy_booster"
+            ]
+          },
+          {
+            "name": "Starship",
+            "stage": 1,
+            "nodes": [
+              "^Starship$"
+            ]
+          }
+        ]
+      }
     }
   },
   "labs": {
@@ -500,7 +2829,36 @@
       "new-glenn": "new-glenn",
       "n1": "n1",
       "electron": "electron",
-      "super-heavy-booster": "super-heavy-b18"
+      "super-heavy-booster": "super-heavy-b18",
+      "ares-i": "ares-i",
+      "jupiter-c": "jupiter-c",
+      "redstone": "redstone",
+      "atlas-lv-3b": "atlas-lv-3b",
+      "v-2": "v-2",
+      "energia": "energia",
+      "epsilon": "epsilon",
+      "pslv": "pslv",
+      "lvm3": "lvm3",
+      "long-march-5": "long-march-5",
+      "terran-1": "terran-1",
+      "neutron": "neutron",
+      "firefly-alpha": "firefly-alpha",
+      "falcon-9-full-thrust": "falcon-9-full-thrust",
+      "soyuz-fg": "soyuz-fg",
+      "soyuz-u": "soyuz-fg",
+      "soyuz-2-1a": "soyuz-fg",
+      "soyuz-2-1b": "soyuz-fg",
+      "h-iia": "h-iia",
+      "h-ii": "h-iia",
+      "h-iib": "h-iia",
+      "long-march-2f": "long-march-2f",
+      "safir": "safir",
+      "proton-m": "proton-m",
+      "ariane-5": "ariane-5",
+      "titan-iv": "titan-iv",
+      "sea-dragon": "sea-dragon",
+      "vega-c": "vega-c",
+      "starship": "starship-stack"
     }
   },
   "engines": {

@@ -141,7 +141,154 @@ export function vehicleModel(id, opts = {}) {
   if (!opts.diameter && entry.widthScale && entry.widthScale !== 1) wrap.scale.set(entry.widthScale, 1, entry.widthScale);
   wrap.userData = { glb: true, id, baseY: 0, length, scale: k, diameter: opts.diameter ?? entry.diameterM, attribution: attribution(entry), entry };
   if (entry.noFit) wrap.userData.fitAxis = null;   // the catalogue viewer must not stretch this model to the catalogue height (it is only part of the vehicle, or drawn to a different length)
+  // opts.explode: regroup the model for the catalogue's exploded-view slider (entry.explode, see below). Never done unless asked, so the labs get the untouched model.
+  if (opts.explode && entry.explode?.parts?.length) { try { buildExplode(wrap, rec, id, entry.explode); } catch (e) { console.warn('explode setup failed for ' + id, e); } }
   return wrap;
+}
+
+/* ---------------- exploded view ----------------
+ * entry.explode = { split?: [regex], parts: [ { name, stage: n | booster: true, nodes?: [regex], y?: [lo, hi], x?, z?, r?: [lo, hi] } ] }
+ * The model's meshes (and, for the nodes named in `split`, the connected triangle islands of a merged mesh) are the "items". Each item goes to the FIRST part whose conditions it meets:
+ * `ex.axis` [x, z] (default the origin) is where the vehicle's vertical axis is in that frame (the Shuttle's stack is not centred on its box); `ex.cut` [y, ...] and `ex.cutMin` cut tall one-piece islands into sections.
+ * `nodes` match the item's own node name or any ancestor's (same space/underscore rule as hideNodes); y / x / z / r (distance from the vertical axis) are metres in the normalised
+ * model frame (base at y = 0, centred on the axis) and are tested on the item's bounding-box centre. Items no part claims join the stage whose height range is nearest.
+ * stage parts become Groups in userData.stages (Map n -> Group, stage numbers renumbered 0..N-1 bottom to top; the page lifts stage n by n * step), every `booster: true` part (one per distinct
+ * name) becomes a child of a Group with userData.boosters = true, carrying userData.dir = [dx, dz] (unit vector, axis to the booster) and userData.base; userData.top = model height in metres.
+ * World transforms are kept (Object3D.attach), so with the sliders at 0 nothing moves. */
+const _v = new THREE.Vector3(), _b = new THREE.Box3();
+function nameChain(o, stop) { const a = []; for (; o && o !== stop; o = o.parent) if (o.name) a.push(o.name); return a; }
+
+/** Connected components of the triangles (vertices welded by position). Returns { count, tri: Int32Array island id per triangle, boxes: [Box3 in geometry space] }. */
+function islandsOf(geom) {
+  const pos = geom.attributes.position, n = pos.count, ix = geom.index ? geom.index.array : null, nt = ix ? ix.length / 3 : n / 3;
+  const par = new Int32Array(n); for (let i = 0; i < n; i++) par[i] = i;
+  const find = a => { while (par[a] !== a) { par[a] = par[par[a]]; a = par[a]; } return a; }, uni = (a, b) => { a = find(a); b = find(b); if (a !== b) par[a] = b; };
+  const seen = new Map();
+  for (let i = 0; i < n; i++) { const k = pos.getX(i) + ',' + pos.getY(i) + ',' + pos.getZ(i), j = seen.get(k); if (j === undefined) seen.set(k, i); else uni(i, j); }
+  const vi = (t, c) => ix ? ix[t * 3 + c] : t * 3 + c;
+  for (let t = 0; t < nt; t++) { uni(vi(t, 0), vi(t, 1)); uni(vi(t, 1), vi(t, 2)); }
+  const ids = new Map(), tri = new Int32Array(nt), boxes = [];
+  for (let t = 0; t < nt; t++) { const r = find(vi(t, 0)); let id = ids.get(r); if (id === undefined) { id = boxes.length; ids.set(r, id); boxes.push(new THREE.Box3()); }
+    tri[t] = id; for (let c = 0; c < 3; c++) boxes[id].expandByPoint(_v.fromBufferAttribute(pos, vi(t, c))); }
+  return { count: boxes.length, tri, boxes };
+}
+/** A new geometry holding only the triangles t with pick[t] === part (all attributes copied, vertices renumbered). */
+function subGeometry(geom, tri, part) {
+  const ix = geom.index ? geom.index.array : null, n = geom.attributes.position.count, map = new Int32Array(n).fill(-1), out = []; let nv = 0;
+  for (let t = 0; t < tri.length; t++) if (tri[t] === part) for (let c = 0; c < 3; c++) { const v = ix ? ix[t * 3 + c] : t * 3 + c; if (map[v] < 0) map[v] = nv++; out.push(map[v]); }
+  const g = new THREE.BufferGeometry();
+  for (const [name, a] of Object.entries(geom.attributes)) {   // the optimised files store attributes interleaved: copy the raw components into plain arrays
+    const src = a.isInterleavedBufferAttribute ? a.data.array : a.array, stride = a.isInterleavedBufferAttribute ? a.data.stride : a.itemSize, off = a.isInterleavedBufferAttribute ? a.offset : 0, arr = new src.constructor(nv * a.itemSize);
+    for (let v = 0; v < n; v++) if (map[v] >= 0) for (let c = 0; c < a.itemSize; c++) arr[map[v] * a.itemSize + c] = src[v * stride + off + c];
+    g.setAttribute(name, new THREE.BufferAttribute(arr, a.itemSize, a.normalized)); }
+  g.setIndex(new THREE.BufferAttribute(nv > 65535 ? new Uint32Array(out) : new Uint16Array(out), 1));
+  return g;
+}
+function ruleFor(parts, names, c, r) {
+  for (let i = 0; i < parts.length; i++) { const p = parts[i];
+    if (p.nodes && !names.some(n => matches(n, p.nodes))) continue;
+    if (p.y && !(c.y >= p.y[0] && c.y < p.y[1])) continue;
+    if (p.x && !(c.x >= p.x[0] && c.x < p.x[1])) continue;
+    if (p.z && !(c.z >= p.z[0] && c.z < p.z[1])) continue;
+    if (p.r && !(r >= p.r[0] && r < p.r[1])) continue;
+    return i; }
+  return -1;
+}
+/** Clip the triangles `tris` of `g` (vertex data decoded to floats) against the horizontal planes y = planes[i] of the normalised frame (matrix mw takes geometry space there).
+ *  Returns one Float32Array per band (planes.length + 1; interleaved vertex data of all attributes in Object.keys order, non-indexed triangles). Used to cut tall single-piece meshes into tank/stage sections. */
+function clipBands(g, tris, mw, planes) {
+  const names = Object.keys(g.attributes), attrs = names.map(n => g.attributes[n]), sizes = attrs.map(a => a.itemSize), W = sizes.reduce((x, y) => x + y, 0);
+  const po = sizes.slice(0, names.indexOf('position')).reduce((x, y) => x + y, 0), no = names.includes('normal') ? sizes.slice(0, names.indexOf('normal')).reduce((x, y) => x + y, 0) : -1, e = mw.elements, ix = g.index ? g.index.array : null;
+  const vert = v => { const o = new Float32Array(W); let k = 0; for (let i = 0; i < attrs.length; i++) { const a = attrs[i]; o[k++] = a.getX(v); if (sizes[i] > 1) o[k++] = a.getY(v); if (sizes[i] > 2) o[k++] = a.getZ(v); if (sizes[i] > 3) o[k++] = a.getW(v); } return o; };
+  const yOf = o => e[1] * o[po] + e[5] * o[po + 1] + e[9] * o[po + 2] + e[13];
+  const bands = planes.map(() => []).concat([[]]), emit = (b, poly) => { for (let i = 1; i + 1 < poly.length; i++) bands[b].push(poly[0], poly[i], poly[i + 1]); };
+  for (const t of tris) {
+    let poly = [0, 1, 2].map(c => vert(ix ? ix[t * 3 + c] : t * 3 + c)), done = false;
+    for (let b = 0; b < planes.length && !done; b++) {
+      const P = planes[b], lo = [], hi = [];
+      for (let i = 0; i < poly.length; i++) { const c = poly[i], n = poly[(i + 1) % poly.length], yc = yOf(c), yn = yOf(n);
+        (yc < P ? lo : hi).push(c);
+        if ((yc < P) !== (yn < P)) { const f = (P - yc) / (yn - yc), m = new Float32Array(W); for (let k = 0; k < W; k++) m[k] = c[k] + (n[k] - c[k]) * f; if (no >= 0) { const l = Math.hypot(m[no], m[no + 1], m[no + 2]) || 1; m[no] /= l; m[no + 1] /= l; m[no + 2] /= l; } lo.push(m); hi.push(m); } }
+      if (lo.length >= 3) emit(b, lo);
+      poly = hi; if (poly.length < 3) done = true;
+    }
+    if (!done) emit(planes.length, poly);
+  }
+  return bands.map(list => { const out = new Float32Array(list.length * W); list.forEach((v, i) => out.set(v, i * W)); return out; });
+}
+/** Float32 non-indexed geometry from clipBands output chunks (same attribute layout as `like`). */
+function geometryFromChunks(like, chunks) {
+  const names = Object.keys(like.attributes), sizes = names.map(n => like.attributes[n].itemSize), W = sizes.reduce((x, y) => x + y, 0), n = chunks.reduce((x, c) => x + c.length / W, 0), g = new THREE.BufferGeometry();
+  let off = 0; names.forEach((name, i) => { const arr = new Float32Array(n * sizes[i]); let v = 0; for (const c of chunks) for (let j = 0; j < c.length / W; j++, v++) for (let k = 0; k < sizes[i]; k++) arr[v * sizes[i] + k] = c[j * W + off + k]; g.setAttribute(name, new THREE.BufferAttribute(arr, sizes[i])); off += sizes[i]; });
+  return g;
+}
+const islandCache = new WeakMap();
+/** Items of the model with their centre in the normalised frame: [{ obj, names, c: Vector3, box, rule }]. Merged meshes named in ex.split are replaced by one mesh per rule (shared material), cached per vehicle.
+ *  Islands taller than ex.cutMin (default 6 m) that cross one of the ex.cut planes (metres of y) and whose centre falls in a part flagged `cut: true` are clipped into sections at those planes (open at the cut, so their material is drawn two-sided). */
+function explodeItems(wrap, rec, id, ex) {
+  wrap.updateMatrixWorld(true);
+  const sx = wrap.scale.x || 1, sz = wrap.scale.z || 1, ax = ex.axis || [0, 0], parts = ex.parts, items = [], meshes = [], planes = [...(ex.cut || [])].sort((p, q) => p - q), cutMin = ex.cutMin ?? 6;
+  wrap.traverse(o => { if (o.isMesh) meshes.push(o); });
+  const cache = rec.xcache ??= new Map(), mats = rec.xmat ??= new Map(); let si = 0;
+  const shift = c => { c.x = c.x / sx - ax[0]; c.z = c.z / sz - ax[1]; return c; }, centre = box => shift(box.getCenter(new THREE.Vector3()));
+  for (const m of meshes) {
+    const names = nameChain(m, wrap), doSplit = ex.split && matches(names[0] || '', ex.split) && !Array.isArray(m.material) && m.geometry.attributes.position && !m.geometry.groups?.length;
+    if (!doSplit) { items.push({ obj: m, names, c: centre(_b.setFromObject(m)), box: _b.clone(), rule: -1 }); continue; }
+    const key = id + '#' + (si++), g = m.geometry; let res = cache.get(key);
+    if (!res) {   // first time: find the islands, give each to a part by its centre (tall ones are cut into sections first), build one geometry per part
+      let isl = islandCache.get(g); if (!isl) islandCache.set(g, isl = islandsOf(g));
+      const mw = m.matrixWorld, rule = new Int32Array(isl.count), cutIsl = new Uint8Array(isl.count), pick = new Int32Array(isl.tri.length); res = [];
+      for (let i = 0; i < isl.count; i++) { _b.copy(isl.boxes[i]).applyMatrix4(mw);
+        const c = centre(_b), r0 = ex.probe ? i : ruleFor(parts, names, c, Math.hypot(c.x, c.z));
+        if (!ex.probe && parts[r0]?.cut && planes.some(P => _b.min.y < P && _b.max.y > P) && _b.max.y - _b.min.y > cutMin) { cutIsl[i] = 1; rule[i] = -2; continue; }
+        rule[i] = r0; }
+      for (let t = 0; t < pick.length; t++) pick[t] = cutIsl[isl.tri[t]] ? -2 : rule[isl.tri[t]];
+      for (const r of new Set(rule)) if (r !== -2) res.push({ rule: r, geometry: subGeometry(g, pick, r) });
+      if (cutIsl.some(Boolean)) {
+        const byIsl = new Map(); for (let t = 0; t < pick.length; t++) if (pick[t] === -2) { const i = isl.tri[t]; if (!byIsl.has(i)) byIsl.set(i, []); byIsl.get(i).push(t); }
+        const acc = new Map(), names2 = Object.keys(g.attributes), po = names2.slice(0, names2.indexOf('position')).reduce((q, n) => q + g.attributes[n].itemSize, 0), W = names2.reduce((q, n) => q + g.attributes[n].itemSize, 0);
+        for (const tris of byIsl.values()) for (const chunk of clipBands(g, tris, mw, planes)) {
+          if (!chunk.length) continue; _b.makeEmpty(); for (let j = 0; j < chunk.length; j += W) _b.expandByPoint(_v.set(chunk[j + po], chunk[j + po + 1], chunk[j + po + 2]).applyMatrix4(mw));
+          const c = centre(_b), r = ruleFor(parts, names, c, Math.hypot(c.x, c.z)); if (!acc.has(r)) acc.set(r, []); acc.get(r).push(chunk); }
+        for (const [r, chunks] of acc) res.push({ rule: r, geometry: geometryFromChunks(g, chunks), cut: true });
+      }
+      res.islands = isl.count; cache.set(key, res);
+    }
+    const par = m.parent; if (!par) continue;
+    for (const { rule, geometry, cut } of res) {
+      let material = m.material; if (cut) { if (!mats.has(material)) { const c = material.clone(); c.side = THREE.DoubleSide; mats.set(material, c); } material = mats.get(material); }
+      const mm = new THREE.Mesh(geometry, material); mm.name = m.name + '/part' + rule + (cut ? 'c' : ''); mm.matrix.copy(m.matrix); mm.matrix.decompose(mm.position, mm.quaternion, mm.scale);
+      mm.castShadow = m.castShadow; mm.receiveShadow = m.receiveShadow; mm.frustumCulled = true; par.add(mm); mm.updateMatrixWorld(true); items.push({ obj: mm, names, c: centre(_b.setFromObject(mm)), box: _b.clone(), rule, split: true }); }
+    m.removeFromParent();
+  }
+  return items;
+}
+function buildExplode(wrap, rec, id, ex) {
+  const parts = ex.parts, items = explodeItems(wrap, rec, id, ex);
+  for (const it of items) if (it.rule < 0) it.rule = ruleFor(parts, it.names, it.c, Math.hypot(it.c.x, it.c.z));
+  const stageNos = [...new Set(parts.filter(p => p.stage != null).map(p => p.stage))].sort((a, b) => a - b), slot = new Map(stageNos.map((s, i) => [s, i]));
+  // unclaimed items join the stage with the nearest height range
+  const rng = new Map(); for (const it of items) { const p = parts[it.rule]; if (p?.stage == null) continue; const r = rng.get(p.stage) ?? [1e9, -1e9]; r[0] = Math.min(r[0], it.c.y); r[1] = Math.max(r[1], it.c.y); rng.set(p.stage, r); }
+  const stageOf = it => { const p = parts[it.rule]; if (p?.stage != null) return p.stage; let best = stageNos[0], bd = 1e18; for (const [s, [lo, hi]] of rng) { const d = it.c.y < lo ? lo - it.c.y : it.c.y > hi ? it.c.y - hi : 0; if (d < bd) { bd = d; best = s; } } return best; };
+  const stages = new Map(), boosters = new Map(), boosterRoot = new THREE.Group(); boosterRoot.userData.boosters = true; boosterRoot.name = 'boosters'; wrap.add(boosterRoot);   // in the tree from the start so attach() sees the same parent transform (widthScale)
+  for (const it of items) {
+    const p = parts[it.rule];
+    if (p?.booster) { let b = boosters.get(p.name); if (!b) { b = { g: new THREE.Group(), n: 0, sum: new THREE.Vector3() }; b.g.name = p.name; boosters.set(p.name, b); boosterRoot.add(b.g); } b.g.attach(it.obj); b.sum.add(it.c); b.n++; }
+    else { const s = stageOf(it); let g = stages.get(s); if (!g) { g = new THREE.Group(); g.name = parts.find(q => q.stage === s)?.name || 'stage ' + s; g.userData.stage = slot.get(s); stages.set(s, g); wrap.add(g); } g.attach(it.obj); }
+  }
+  const map = new Map(); for (const s of stageNos) if (stages.has(s)) map.set(map.size, stages.get(s)); map.forEach((g, i) => { g.userData.stage = i; });
+  if (!boosters.size) wrap.remove(boosterRoot); else { for (const b of boosters.values()) { const c = b.sum.multiplyScalar(1 / b.n), l = Math.hypot(c.x, c.z); b.g.userData.dir = l > 0.05 ? [c.x / l, c.z / l] : [0, 0]; b.g.userData.base = b.g.position.clone(); } }
+  const top = new THREE.Box3().setFromObject(wrap).max.y;
+  Object.assign(wrap.userData, { stages: map, top, explode: true });
+}
+
+/** Development aid: the exploded-view items of a vehicle (before any rule is applied, split merged meshes at once) as plain rows, to author entry.explode.parts from.
+ *  explodeProbe('falcon-heavy', ['^Object_2$']) -> [{ name, path, y: [lo, hi], r, c: [x, y, z], tris }] in metres of the normalised frame. */
+export function explodeProbe(id, splitNodes = [], mode = 'full') {
+  const rec = loaded.get(id); if (!rec) return null;
+  const w = vehicleModel(id, { mode }); if (!w) return null;
+  const items = explodeItems(w, { xcache: new Map() }, id, { split: splitNodes, probe: true, parts: [{ name: 'all', stage: 0 }] });
+  return items.map(it => ({ name: it.obj.name, path: it.names.slice(1).reverse().join('>'), y: [+it.box.min.y.toFixed(2), +it.box.max.y.toFixed(2)], r: +Math.hypot(it.c.x, it.c.z).toFixed(2), c: [it.c.x, it.c.y, it.c.z].map(v => +v.toFixed(2)), tris: (it.obj.geometry.index?.count ?? it.obj.geometry.attributes.position.count) / 3 | 0, w: [+(it.box.max.x - it.box.min.x).toFixed(2), +(it.box.max.z - it.box.min.z).toFixed(2)] }));
 }
 
 /** A whole engine cluster for a stage of radius R0 (m): a centre engine + a ring (the labs' procedural layout), Super Heavy's 3 / 10 / 20 Raptors, or a single engine.
