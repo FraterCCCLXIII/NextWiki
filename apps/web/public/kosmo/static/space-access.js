@@ -14,10 +14,11 @@
 // the destination.
 
 import { G0, WORLDS } from './ship-sim.js';
+import { BODIES, CONST } from './worlds.js';
 
 const PI = Math.PI, TAU = 2 * PI;
-export const SUN_MU = 1.32712440018e20, AU = 1.495978707e11;
-export const MOON = { mu: 4.9028e12, R: 1737.4e3, a: 384400e3 };
+export const SUN_MU = CONST.GM_SUN, AU = CONST.AU;
+export const MOON = { mu: BODIES.moon.mu, R: BODIES.moon.radius, a: BODIES.moon.semiMajorAxis };
 const gSurf = W => W.mu / (W.R * W.R);
 
 /* ===================================================================== */

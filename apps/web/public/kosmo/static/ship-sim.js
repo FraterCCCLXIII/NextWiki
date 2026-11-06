@@ -26,10 +26,11 @@
 // To slow down, point the nose backwards (n = -v) and burn.
 
 import { UNITS } from './sim-physics.js';
-import { ENGINES } from './engines.js';
+import { ENGINES, resolveEngine, requireFlyable } from './engines.js';
+import { CONST, makeWorld } from './worlds.js';
 
 export const G0 = UNITS.g0;
-const TAU = Math.PI * 2, P0 = 101325, DEG = Math.PI / 180;
+const TAU = Math.PI * 2, P0 = CONST.P_SL, DEG = Math.PI / 180;
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const wrap = a => { a = (a + Math.PI) % TAU; if (a < 0) a += TAU; return a - Math.PI; };
 const wrap2 = a => { a %= TAU; return a < 0 ? a + TAU : a; };
@@ -40,22 +41,8 @@ const rot = (a, t) => [a[0] * Math.cos(t) - a[1] * Math.sin(t), a[0] * Math.sin(
 const ang = a => Math.atan2(a[1], a[0]);
 const fromAng = t => [Math.cos(t), Math.sin(t)];
 
-/* ---------------- worlds and atmospheres ---------------- */
-const EARTH_RHO = [[0, 1.225], [5e3, 0.7364], [10e3, 0.4135], [15e3, 0.1948], [20e3, 0.08891], [25e3, 0.04008], [30e3, 0.01841], [40e3, 0.003996], [50e3, 0.001027], [60e3, 3.097e-4], [70e3, 8.283e-5], [80e3, 1.846e-5], [90e3, 3.416e-6], [100e3, 5.604e-7], [120e3, 2.222e-8], [150e3, 2.076e-9], [200e3, 2.541e-10], [300e3, 1.916e-11], [500e3, 5.215e-13]];
-const EARTH_A = [[0, 340.3], [11e3, 295.1], [20e3, 295.1], [32e3, 303.2], [47e3, 329.8], [51e3, 329.8], [71e3, 314.1], [86e3, 284], [120e3, 340], [1e6, 1000]];
-function interp(tab, h, log) {
-  if (h <= tab[0][0]) return tab[0][1];
-  for (let i = 1; i < tab.length; i++) if (h <= tab[i][0]) {
-    const [h0, y0] = tab[i - 1], [h1, y1] = tab[i], f = (h - h0) / (h1 - h0);
-    return log ? Math.exp(Math.log(y0) + f * (Math.log(y1) - Math.log(y0))) : y0 + f * (y1 - y0);
-  }
-  return log ? 0 : tab[tab.length - 1][1];
-}
-export const WORLDS = {
-  earth: { id: 'earth', name: 'Earth', R: 6378137, mu: 3.986004418e14, w: 7.292115e-5, rho: h => h > 600e3 ? 0 : interp(EARTH_RHO, h, true), sound: h => interp(EARTH_A, h, false), gamma: 1.4, atmoTop: 150e3 },
-  moon: { id: 'moon', name: 'Moon', R: 1737400, mu: 4.9028e12, w: 2.6617e-6, rho: () => 0, sound: () => 300, gamma: 1.4, atmoTop: 0 },
-  mars: { id: 'mars', name: 'Mars', R: 3389500, mu: 4.28284e13, w: 7.0882e-5, rho: h => h > 120e3 ? 0 : 0.020 * Math.exp(-h / 11100), sound: () => 240, gamma: 1.29, atmoTop: 80e3 },
-};
+/* ---------------- worlds and atmospheres: the tables live in worlds.js (one source for all sims) ---------------- */
+export const WORLDS = { earth: makeWorld('earth'), moon: makeWorld('moon'), mars: makeWorld('mars') };
 const pressure = (W, h) => { const rho = W.rho(h); return rho * W.sound(h) ** 2 / W.gamma; };
 
 /* ---------------- engines ---------------- */
@@ -66,14 +53,15 @@ const DENSITY = { kerolox: 1030, methalox: 830, hydrolox: 360, hypergolic: 1200,
 /* ---------------- vehicle assembly ---------------- */
 /** Fill in every derived number for a stage definition. */
 export function completeStage(s, i = 0) {
-  const e = ENGINES[s.engine] || ENGINES['merlin-1d'], n = Math.max(1, s.count | 0 || 1), prop = s.prop ?? 0;
+  const where = `stage ${i + 1} "${s.name || ''}"`, engineId = resolveEngine(s.engine, where), e = requireFlyable(ENGINES[engineId], where);
+  const n = Math.max(1, s.count | 0 || 1), prop = s.prop ?? 0;
   const engineMass = n * e.mass, kit = s.landing?.mode === 'propulsive' ? 0.1 : s.landing?.mode === 'chute' ? 0.04 : 0;
   const bare = s.dry != null ? s.dry : engineMass + prop * STRUCT[e.prop] + 150 + (s.craft ? 400 : 0);
   const dry = bare * (1 + kit);
   const d = s.diameter ?? 3.7, vol = prop / DENSITY[e.prop] * 1.12;
   const length = s.length ?? Math.max(2, vol / (Math.PI * (d / 2) ** 2) + 2.5);
   return {
-    name: s.name || `Stage ${i + 1}`, engineId: s.engine, engine: e, count: n, prop, propMax: prop, dry, diameter: d, length,
+    name: s.name || `Stage ${i + 1}`, engineId, engine: e, count: n, prop, propMax: prop, dry, diameter: d, length,
     landing: { mode: 'none', reserve: 0, site: 'downrange', engines: 1, ...(s.landing || {}) },
     craft: s.craft ? { rcsThrust: 4000, rcsProp: 150, rcsIsp: 280, noseOffset: 2.0, cargo: 0, chuteArea: 0, ...s.craft } : null,
     ignitions: 0, firing: false, throttle: 0, active: n,

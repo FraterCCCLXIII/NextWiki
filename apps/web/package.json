@@ -13,7 +13,8 @@
     "rebuild-rendered-html": "NODE_ENV=development env-cmd -f .env tsx scripts/rebuildRenderedHtml.ts",
     "watch-css": "tailwindcss -i ./src/styles/globals.css -o ./public/output.css --watch",
     "clean": "rm -rf dist .next",
-    "fullclean": "rm -rf dist .next .turbo node_modules"
+    "fullclean": "rm -rf dist .next .turbo node_modules",
+    "test:kosmo": "node public/kosmo/static/run-tests.mjs"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.8.0",

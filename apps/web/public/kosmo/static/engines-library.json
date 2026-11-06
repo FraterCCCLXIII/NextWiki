@@ -1,0 +1,158 @@
+{
+  "_doc": "THE engine library: single source of truth for every rocket engine the Shipyard, the Landing Lab and the catalogue refer to. engines.js loads this file; flight-data.json (engines block) and the catalogue checks are generated from or validated against it. Format and how to add an engine: static/ENGINES.md. Units: thrust in N, Isp in s, mass in kg, minThrottle a fraction, ignitions = number of starts the sim allows (initial start plus restarts). null = not sourced (never guess). An engine with null ignitions or minThrottle is listed but flagged flyable:false and the sims refuse to fly it.",
+  "version": 1,
+  "engines": {
+    "merlin-1d": {
+      "id": "merlin-1d", "name": "Merlin 1D", "aliases": ["Merlin 1D"],
+      "propellants": "LOX/RP-1", "prop": "kerolox",
+      "thrustSL": 845000, "thrustVac": 914000, "ispSL": 282, "ispVac": 311, "mass": 470,
+      "minThrottle": 0.39, "ignitions": 5, "vacOnly": false, "gimbalDeg": null, "cycle": "gas-generator",
+      "source": "https://en.wikipedia.org/wiki/SpaceX_Merlin",
+      "notes": "Catalogue row engine-merlin. The article's infobox gives Isp 311 s for the vacuum figure; the 348 s figure belongs to the vacuum variant."
+    },
+    "merlin-vac": {
+      "id": "merlin-vac", "name": "Merlin 1D Vacuum", "aliases": ["Merlin 1D Vacuum"],
+      "propellants": "LOX/RP-1", "prop": "kerolox",
+      "thrustSL": 0, "thrustVac": 981000, "ispSL": 0, "ispVac": 348, "mass": 500,
+      "minThrottle": 0.39, "ignitions": 4, "vacOnly": true, "gimbalDeg": null, "cycle": "gas-generator",
+      "source": "https://en.wikipedia.org/wiki/SpaceX_Merlin",
+      "notes": "Catalogue row engine-merlin-1d-vacuum (981 kN, 348 s). Mass 500 kg and the throttle and start counts were carried over from the original table and are not re-sourced."
+    },
+    "raptor-2": {
+      "id": "raptor-2", "name": "Raptor 2", "aliases": ["Raptor", "Raptor 2"],
+      "propellants": "CH4/LOX", "prop": "methalox",
+      "thrustSL": 2260000, "thrustVac": 2500000, "ispSL": 347, "ispVac": 350, "mass": 1630,
+      "minThrottle": 0.4, "ignitions": 6, "vacOnly": false, "gimbalDeg": null, "cycle": "full-flow staged combustion",
+      "source": "https://en.wikipedia.org/wiki/SpaceX_Raptor",
+      "notes": "Changed in M0: ispSL 327 -> 347 and mass 1600 -> 1630. The article's versions table and SpaceX's 3 Aug 2024 post give 347 s sea level; 327 s is the older general figure. Dry mass 1,630 kg is the article's figure, as in the catalogue row. Not changed: thrustSL 2260 kN (article 2,256 kN), thrustVac 2500 kN (article 2,530 kN for Raptor 2) and ispVac 350 s (not stated for Raptor 2 in the article). Those three stay as they were so the sims do not move."
+    },
+    "raptor-vac": {
+      "id": "raptor-vac", "name": "Raptor Vacuum (RVac)", "aliases": ["Raptor Vacuum"],
+      "propellants": "CH4/LOX", "prop": "methalox",
+      "thrustSL": 0, "thrustVac": 2500000, "ispSL": 0, "ispVac": 380, "mass": 1700,
+      "minThrottle": 0.4, "ignitions": 6, "vacOnly": true, "gimbalDeg": null, "cycle": "full-flow staged combustion",
+      "source": "https://en.wikipedia.org/wiki/SpaceX_Raptor",
+      "notes": "Vacuum thrust is not version-specific in the article (2018 plan 1,900 kN; 2016 plan 3,285 kN); 2,500 kN carried over. Isp about 380 s (target). Mass 1700 kg and the start count were carried over and are not re-sourced."
+    },
+    "raptor-3": {
+      "id": "raptor-3", "name": "Raptor 3", "aliases": ["Raptor 3"],
+      "propellants": "CH4/LOX", "prop": "methalox",
+      "thrustSL": 2452000, "thrustVac": 2697000, "ispSL": 350, "ispVac": 350, "mass": 1525,
+      "minThrottle": 0.4, "ignitions": null, "vacOnly": false, "gimbalDeg": null, "cycle": "full-flow staged combustion",
+      "source": "https://en.wikipedia.org/wiki/SpaceX_Raptor",
+      "notes": "Added in M0 from the article (SpaceX Starship V3 announcement, 12 May 2026): 250 tf / 2,452 kN sea level, 275 tf / 2,697 kN vacuum (the article's Raptor 3 section says 2,700 kN), Isp 350 s, dry 1,525 kg. Minimum throttle 40 % is the article's Raptor figure. Start count not sourced, so flyable:false."
+    },
+    "be-4": {
+      "id": "be-4", "name": "BE-4", "aliases": ["BE-4"],
+      "propellants": "LOX/LCH4", "prop": "methalox",
+      "thrustSL": 2400000, "thrustVac": 2600000, "ispSL": 310, "ispVac": 335, "mass": 2000,
+      "minThrottle": 0.5, "ignitions": 3, "vacOnly": false, "gimbalDeg": 5, "cycle": "oxygen-rich staged combustion",
+      "source": "https://en.wikipedia.org/wiki/BE-4",
+      "notes": "CONFLICT NOT RESOLVED in M0: the article gives 2,460 kN (original) / 2,847 kN (improved) sea level, Isp 340 s with no condition, dry mass 5,400 kg and 40-100 % throttle. The sim values above are kept so the New Glenn landing does not move; review before changing. Gimbal and cycle are from the article."
+    },
+    "rs-25": {
+      "id": "rs-25", "name": "RS-25", "aliases": ["RS-25", "SSME"],
+      "propellants": "LOX/LH2", "prop": "hydrolox",
+      "thrustSL": 1860000, "thrustVac": 2279000, "ispSL": 366, "ispVac": 452, "mass": 3177,
+      "minThrottle": 0.67, "ignitions": null, "vacOnly": false, "gimbalDeg": 10.5, "cycle": "fuel-rich staged combustion",
+      "source": "https://en.wikipedia.org/wiki/RS-25",
+      "notes": "Added in M0 from the article. Dry mass 3,177 kg is the infobox figure (the body says about 3.5 t). Throttle 67-109 %. The article gives no start or restart count, so flyable:false. Not in any preset yet."
+    },
+    "f-1": {
+      "id": "f-1", "name": "F-1", "aliases": ["F-1"],
+      "propellants": "RP-1/LOX", "prop": "kerolox",
+      "thrustSL": 6770000, "thrustVac": 7770000, "ispSL": 263, "ispVac": 304, "mass": 8400,
+      "minThrottle": 1, "ignitions": 1, "vacOnly": false, "gimbalDeg": null, "cycle": "gas-generator",
+      "source": "https://en.wikipedia.org/wiki/Rocketdyne_F-1",
+      "notes": "Thrust, Isp and mass match the article. Fixed throttle and a single start were carried over (the article gives no restart count)."
+    },
+    "j-2": {
+      "id": "j-2", "name": "J-2", "aliases": ["J-2"],
+      "propellants": "LH2/LOX", "prop": "hydrolox",
+      "thrustSL": 0, "thrustVac": 1033000, "ispSL": 0, "ispVac": 421, "mass": 1788,
+      "minThrottle": 0.8, "ignitions": 3, "vacOnly": true, "gimbalDeg": null, "cycle": "gas-generator",
+      "source": "https://en.wikipedia.org/wiki/Rocketdyne_J-2",
+      "notes": "The original J-2 used on Saturn IB and V (S-II 5x, S-IVB 1x). Vacuum thrust 1,033.1 kN and Isp 421 s match the article. CONFLICT: the infobox gives mass 1,788.1 kg, the specifications table 1,438 kg; 1,788 kg kept. Ignition count is the article's 3 starts (helium supply); minThrottle carried over. The J-2S is a separate engine (see j-2s)."
+    },
+    "j-2s": {
+      "id": "j-2s", "name": "J-2S", "aliases": ["J-2S"],
+      "propellants": "LH2/LOX", "prop": "hydrolox",
+      "thrustSL": 0, "thrustVac": 1138500, "ispSL": 0, "ispVac": 436, "mass": 1400,
+      "minThrottle": null, "ignitions": null, "vacOnly": true, "gimbalDeg": null, "cycle": "tap-off",
+      "source": "https://en.wikipedia.org/wiki/Rocketdyne_J-2",
+      "notes": "Added in M0 (was catalogue row engine-j-2s only). Simplified, tap-off cycle, six pre-production engines test-fired, never flown. Vacuum thrust 1,138.5 kN and Isp 436 s from the article; 1,400 kg from its specifications table. Throttle and start count not sourced, so flyable:false. The Shipyard 3D model for the S-II and S-IVB J-2 engines is this engine (vehicle-glb.js maps j-2 to j-2s)."
+    },
+    "rl10": {
+      "id": "rl10", "name": "RL10", "aliases": ["RL10"],
+      "propellants": "LH2/LOX", "prop": "hydrolox",
+      "thrustSL": 0, "thrustVac": 110000, "ispSL": 0, "ispVac": 465, "mass": 190,
+      "minThrottle": 0.2, "ignitions": 6, "vacOnly": true, "gimbalDeg": null, "cycle": "expander",
+      "source": "https://en.wikipedia.org/wiki/Aerojet_Rocketdyne_RL10",
+      "notes": "Vacuum thrust 110 kN and Isp 465 s match the RL10B-2 in the article (110.1 kN, 465.5 s). CONFLICT: the article gives 301 kg dry for the B-2 and 170 kg for the A-4-2; 190 kg kept. Throttle and starts carried over and not re-sourced."
+    },
+    "rutherford": {
+      "id": "rutherford", "name": "Rutherford", "aliases": ["Rutherford"],
+      "propellants": "LOX/RP-1", "prop": "kerolox",
+      "thrustSL": 24000, "thrustVac": 26000, "ispSL": 311, "ispVac": 343, "mass": 35,
+      "minThrottle": 0.5, "ignitions": 1, "vacOnly": false, "gimbalDeg": null, "cycle": "electric-pump-fed",
+      "source": "https://en.wikipedia.org/wiki/Rutherford_(rocket_engine)",
+      "notes": "Isp 311 / 343 s and dry mass 35 kg match the article. Thrust: the article gives 24.9 kN sea level and 25.8 kN vacuum, the infobox 24/25 kN and 24/26 kN; the rounded library figures are kept. Throttle and start count carried over."
+    },
+    "rutherford-vac": {
+      "id": "rutherford-vac", "name": "Rutherford Vacuum", "aliases": ["Rutherford Vacuum"],
+      "propellants": "LOX/RP-1", "prop": "kerolox",
+      "thrustSL": 0, "thrustVac": 25800, "ispSL": 0, "ispVac": 343, "mass": 35,
+      "minThrottle": 0.5, "ignitions": 2, "vacOnly": true, "gimbalDeg": null, "cycle": "electric-pump-fed",
+      "source": "https://en.wikipedia.org/wiki/Rutherford_(rocket_engine)",
+      "notes": "Vacuum thrust 25.8 kN and Isp 343 s from the article. Start count carried over."
+    },
+    "nk-15": {
+      "id": "nk-15", "name": "NK-15", "aliases": ["NK-15"],
+      "propellants": "LOX/RG-1", "prop": "kerolox",
+      "thrustSL": 1526000, "thrustVac": 1544000, "ispSL": 297, "ispVac": 318, "mass": 1247,
+      "minThrottle": null, "ignitions": null, "vacOnly": false, "gimbalDeg": null, "cycle": "staged combustion",
+      "source": "https://en.wikipedia.org/wiki/NK-15",
+      "notes": "Added in M0 for the N1 first stage (30 engines). Thrust, Isp and dry mass from the article. Throttle and start count not sourced, so flyable:false. The article's propellant name is RG-1 (refined kerosene)."
+    },
+    "aj10-oms": {
+      "id": "aj10-oms", "name": "AJ10 OMS", "aliases": ["AJ10 OMS"],
+      "propellants": "NTO/MMH", "prop": "hypergolic",
+      "thrustSL": 0, "thrustVac": 26700, "ispSL": 0, "ispVac": 316, "mass": 118,
+      "minThrottle": 0.98, "ignitions": 1000, "vacOnly": true, "gimbalDeg": null, "cycle": null,
+      "source": null,
+      "notes": "Carried over from the original table; not re-sourced in M0."
+    },
+    "draco-cluster": {
+      "id": "draco-cluster", "name": "Draco cluster (4 kN)", "aliases": ["Draco cluster"],
+      "propellants": "NTO/MMH", "prop": "hypergolic",
+      "thrustSL": 0, "thrustVac": 4000, "ispSL": 0, "ispVac": 300, "mass": 40,
+      "minThrottle": 0.05, "ignitions": 1000, "vacOnly": true, "gimbalDeg": null, "cycle": null,
+      "source": null,
+      "notes": "Carried over from the original table; not re-sourced in M0."
+    },
+    "solid-motor": {
+      "id": "solid-motor", "name": "Solid motor", "aliases": ["Solid motor"],
+      "propellants": "solid (generic)", "prop": "solid",
+      "thrustSL": 1200000, "thrustVac": 1300000, "ispSL": 242, "ispVac": 262, "mass": 800,
+      "minThrottle": 1, "ignitions": 1, "vacOnly": false, "gimbalDeg": null, "cycle": null,
+      "source": null,
+      "notes": "Generic model, not a named motor. Carried over; not re-sourced. Thrust-time curve is gap G7."
+    },
+    "be-3pm": {
+      "id": "be-3pm", "name": "BE-3PM (deep throttle)", "aliases": ["BE-3PM"],
+      "propellants": "LOX/LH2", "prop": "hydrolox",
+      "thrustSL": 490000, "thrustVac": 520000, "ispSL": 320, "ispVac": 350, "mass": 450,
+      "minThrottle": 0.2, "ignitions": 6, "vacOnly": false, "gimbalDeg": null, "cycle": null,
+      "source": null,
+      "notes": "Used by the New Shepard booster in the Landing Lab. Carried over from the original table; not re-sourced in M0."
+    },
+    "be-7": {
+      "id": "be-7", "name": "BE-7", "aliases": ["BE-7"],
+      "propellants": "LOX/LH2", "prop": "hydrolox",
+      "thrustSL": 0, "thrustVac": 44500, "ispSL": 0, "ispVac": 453, "mass": 120,
+      "minThrottle": 0.2, "ignitions": 10, "vacOnly": true, "gimbalDeg": null, "cycle": null,
+      "source": null,
+      "notes": "Lunar lander class. Carried over from the original table; not re-sourced in M0."
+    }
+  }
+}

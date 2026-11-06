@@ -2,18 +2,22 @@
    Frame: J2000 equatorial (ICRF-aligned). Body-fixed frame: z = pole, x = prime meridian at W = 0.
    Angles in degrees; rates per Julian century (T) or per day (d = JD - 2451545.0). Radii in m, GM in m^3/s^2. */
 
+import { BODIES as W } from '../worlds.js';
+
 const D2R = Math.PI / 180;
 const JD2000 = 2451545.0;
 const DAY = 86400;
 
 // ra/dec: [value deg, rate deg/century]; W0 deg; Wd = prime-meridian rate deg/day (negative = retrograde).
 // periodic (Neptune only): pole and W corrections in N = 357.85 + 52.316 T (deg).
+// Radii and GM for earth, moon and mars come from worlds.js (a = IAU equatorial, c = IAU polar; Mars `a` is the IAU 3396.19 km,
+// not the 3389.5 km mean that the sims use as R).
 export const BODIES = {
   mercury: { name: 'Mercury', a: 2440530, c: 2438260, gm: 2.2031868551e13, J2: 6.0e-5, ra: [281.0103, -0.0328], dec: [61.4155, -0.0049], W0: 329.5988, Wd: 6.1385108 },
   venus:   { name: 'Venus',   a: 6051800, c: 6051800, gm: 3.24858592e14, J2: 4.458e-6, ra: [272.76, 0], dec: [67.16, 0], W0: 160.20, Wd: -1.4813688 },
-  earth:   { name: 'Earth',   a: 6378137, c: 6356752, gm: 3.986004418e14, J2: 1.08262668e-3, ra: [0, -0.641], dec: [90, -0.557], W0: 190.147, Wd: 360.9856235 },
-  moon:    { name: 'Moon',    a: 1737400, c: 1737400, gm: 4.9028001e12, J2: 2.032e-4, ra: [269.9949, 0.0031], dec: [66.5392, 0.0130], W0: 38.3213, Wd: 13.17635815 },
-  mars:    { name: 'Mars',    a: 3396190, c: 3376200, gm: 4.282837e13, J2: 1.96045e-3, ra: [317.68143, -0.1061], dec: [52.88650, -0.0609], W0: 176.630, Wd: 350.89198226 },
+  earth:   { name: 'Earth',   a: W.earth.radius, c: W.earth.polarRadius, gm: W.earth.mu, J2: W.earth.J2, ra: [0, -0.641], dec: [90, -0.557], W0: 190.147, Wd: 360.9856235 },
+  moon:    { name: 'Moon',    a: W.moon.radius, c: W.moon.polarRadius, gm: W.moon.mu, J2: W.moon.J2, ra: [269.9949, 0.0031], dec: [66.5392, 0.0130], W0: 38.3213, Wd: 13.17635815 },
+  mars:    { name: 'Mars',    a: W.mars.iauEquatorial, c: W.mars.polarRadius, gm: W.mars.mu, J2: W.mars.J2, ra: [317.68143, -0.1061], dec: [52.88650, -0.0609], W0: 176.630, Wd: 350.89198226 },
   jupiter: { name: 'Jupiter', a: 71492000, c: 66854000, gm: 1.26686534e17, J2: 1.4736e-2, ra: [268.056595, -0.006499], dec: [64.495303, 0.002413], W0: 284.95, Wd: 870.5366420 },
   saturn:  { name: 'Saturn',  a: 60268000, c: 54364000, gm: 3.79311879e16, J2: 1.6298e-2, ra: [40.589, -0.036], dec: [83.537, -0.004], W0: 38.90, Wd: 810.7939024 },
   uranus:  { name: 'Uranus',  a: 25559000, c: 24973000, gm: 5.793939e15, J2: 1.2e-2, ra: [257.311, 0], dec: [-15.175, 0], W0: 203.81, Wd: -501.1600928 },

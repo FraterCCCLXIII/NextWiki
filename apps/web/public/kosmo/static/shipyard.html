@@ -56,7 +56,7 @@
   html.embedded #build, html.embedded #hud, html.embedded #banner { top: 12px; }
   @media (max-width: 1100px) { #hud { display: none; } #bar { right: 14px; } }
 </style>
-<script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }</script>
+<script type="importmap">{ "imports": { "three": "./vendor/three-0.160.0/build/three.module.js", "three/addons/": "./vendor/three-0.160.0/examples/jsm/" } }</script>
   <link rel="stylesheet" href="kosmographica.css?v=15">
   <link rel="stylesheet" href="flight-ui.css?v=2">
   <script type="module" src="flight-rail.js?v=1"></script>
@@ -136,7 +136,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { loadEngines } from './engines.js';
+import { loadEngines, notFlyableReason } from './engines.js';
 import { telemetryHTML, createEventLog } from './flight-hud.js';
 import { createFlightStrip } from './flight-strip.js';
 import { createSim, analyze, tuneAscent, planDock, ENGINES, WORLDS, elements, G0, completeStage, runAscent } from './ship-sim.js';
@@ -203,7 +203,7 @@ function loadPreset(key) {
 }
 
 // ---------------- builder UI ----------------
-const ENG_OPTS = Object.entries(ENGINES).map(([k, e]) => `<option value="${k}">${esc(e.name)}</option>`).join('');
+const ENG_OPTS = Object.entries(ENGINES).filter(([, e]) => !notFlyableReason(e)).map(([k, e]) => `<option value="${k}">${esc(e.name)}</option>`).join('');
 $('preset').innerHTML = Object.entries(PRESETS).map(([k, p]) => `<option value="${k}">${esc(p.label)}</option>`).join('');
 $('preset').onchange = () => { stop(); loadPreset($('preset').value); };
 

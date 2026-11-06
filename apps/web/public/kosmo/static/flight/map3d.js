@@ -4,9 +4,12 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createModel, textures } from '../kosmo-models.js';
 import { PLANETS } from '../planet-data.js';
+import { BODIES } from '../worlds.js';
 
 const AU_ORBIT = { mercury: 0.387, venus: 0.723, earth: 1, mars: 1.524, jupiter: 5.203, saturn: 9.537, uranus: 19.19, neptune: 30.07 };
-const PLANET_R = { mercury: 2439.7e3, venus: 6051.8e3, earth: 6371e3, mars: 3389.5e3, jupiter: 71492e3, saturn: 60268e3, uranus: 25559e3, neptune: 24764e3, moon: 1737.4e3 };
+// Drawn radii must match the physics trace (body-centred metres on the sim radius), so the rocky bodies use worlds.js `radius`.
+// Earth is the equatorial 6378.137 km here, not the 6371 km mean the page used before: the trail starts on the surface.
+const PLANET_R = { mercury: BODIES.mercury.radius, venus: BODIES.venus.radius, earth: BODIES.earth.radius, mars: BODIES.mars.radius, jupiter: 71492e3, saturn: 60268e3, uranus: 25559e3, neptune: 24764e3, moon: BODIES.moon.radius };
 const AU = 149597870700, RE_KM = 6378;
 
 try {
@@ -90,7 +93,7 @@ function build(d) {
   } else {
     // takeoff / landing: the planet at the origin, the trail grows as the segment plays (sample.r is body-centred metres)
     const name = (phase === 'landing' ? hudText('target') : (hudText('mission').split(/→|->/)[0] || 'earth')).trim() || 'earth';
-    const R = PLANET_R[name] || PLANETS[name]?.R || 6371e3;
+    const R = PLANET_R[name] || PLANETS[name]?.R || BODIES.earth.radius;
     unit = R; extent = 1.5;
     body(name[0].toUpperCase() + name.slice(1), name === 'moon' ? 'moon' : 'planet', 1, new THREE.Vector3());
     camera.position.set(0, 1.4, 3.2);

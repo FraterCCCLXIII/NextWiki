@@ -43,7 +43,8 @@ All numeric values are SI. Use `null` for unknown; never guess. Optional fields 
 | `propellant` | main propellant combination |
 | `reusable` | `none`, `partial`, `full` |
 | `orbital` | `false` for suborbital-only vehicles (V-2, Redstone, New Shepard); omitted means orbital-capable |
-| `stages[]` | `{ name, engine, engines, thrust_kN_vac, isp_s_vac, propellant, dry_mass_kg, prop_mass_kg }` — enough for a delta-v calculation |
+| `stages[]` | `{ name, engine, engine_id, engines, thrust_kN_vac, isp_s_vac, propellant, dry_mass_kg, prop_mass_kg }` — enough for a delta-v calculation. `engine` is the catalogue name; `engine_id` links it to `static/engines-library.json` (see `static/ENGINES.md`): a library id, a list of ids for a mixed stage (`["raptor-2","raptor-vac"]`), or `null` when the library has no such engine (listed as unresolved by the validator) |
+| `engine_id` (engine rows) | the library id of the same engine, or `null` for a concept with no performance. Checked against the library: thrust, Isp and dry mass within 20 % |
 | `notes` | short human summary |
 | `source` | primary reference URL |
 | `model3d` | `{ "status": "none" \| "planned" \| "in_progress" \| "done", "path": null }`; omitted means `none` |

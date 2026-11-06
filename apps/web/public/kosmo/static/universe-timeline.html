@@ -427,7 +427,7 @@
   html.embedded #panel { top: calc(var(--tlh, 210px) + 22px); }
 </style>
 <script type="importmap">
-{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/", "topojson-client": "https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm" } }
+{ "imports": { "three": "./vendor/three-0.160.0/build/three.module.js", "three/addons/": "./vendor/three-0.160.0/examples/jsm/", "topojson-client": "https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm" } }
 </script>
   <link rel="stylesheet" href="kosmographica.css?v=15">
   <script src="atlas-nav.js" defer></script>
@@ -1169,7 +1169,7 @@ function fxPatch(sh, mat) {
   sh.uniforms.uTime = fxUTime; sh.uniforms.uTwinkle = fxUTwinkle; sh.uniforms.uMaxPx = fxUMaxPx; sh.uniforms.uRealLight = fxUReal; sh.uniforms.uExposure = fxUExposure; sh.uniforms.uRefDist = fxURef;
   sh.vertexShader = 'attribute float phase;\nuniform float uCosK;\nuniform float uGalK;\nuniform float uCosUnit;\nuniform vec3 uCosCentre;\nuniform float uTime;\nuniform float uTwinkle;\nuniform float uMaxPx;\nuniform float uRealLight;\nuniform float uExposure;\nuniform float uRefDist;\n' + sh.vertexShader
     .replace('#include <begin_vertex>', '#include <begin_vertex>\n if (uCosUnit > 0.0 && (uCosK != 1.0 || uGalK != 1.0)) { vec3 wp_ = uCosCentre + transformed * uCosUnit; float r_ = length(wp_); const float rg_ = 0.01; if (r_ > rg_) { float r1_ = rg_ * pow(min(r_, 1.0) / rg_, uGalK); float rf_ = r_ > 1.0 ? r1_ * pow(r_, uCosK) : r1_; wp_ *= rf_ / r_; } transformed = (wp_ - uCosCentre) / uCosUnit; }\n float tw_ = 1.0 + uTwinkle * (0.5 * sin(uTime * 2.7 + phase) + 0.3 * sin(uTime * 6.1 + phase * 3.7));')
-    .replace('#include <logdepthbuf_vertex>', 'gl_PointSize = min(gl_PointSize * (1.0 + 0.25 * (tw_ - 1.0)), uMaxPx);\n#ifdef USE_COLOR\n vColor *= clamp(0.65 + 0.35 * tw_, 0.2, 1.6);\n  if (uRealLight > 0.5) {\n   float flux = uRefDist / max(length(mvPosition.xyz), 1e-4); flux *= flux;   // inverse-square law, relative to a point at the reference distance (auto-exposure)\n   float seen = smoothstep(0.015, 0.16, flux * uExposure);                   // below the limiting flux a point fades out, so zooming out never piles up glare\n   vColor *= (0.3 + 0.7 * min(flux, 3.0)) * uExposure * seen;\n  }\n#endif\n#include <logdepthbuf_vertex>');
+    .replace('#include <logdepthbuf_vertex>', 'gl_PointSize = min(gl_PointSize * (1.0 + 0.25 * (tw_ - 1.0)), uMaxPx);\n#ifdef USE_COLOR\n vColor *= clamp(0.65 + 0.35 * tw_, 0.2, 1.6);\n  if (uRealLight > 0.5) {\n   float flux = uRefDist / max(length(mvPosition.xyz), 1e-4); flux *= flux;   // inverse-square law, relative to a point at the reference distance (auto-exposure)\n   float seen = smoothstep(0.004, 0.05, flux * uExposure);                   // below the limiting flux a point fades out, so zooming out never piles up glare\n   vColor *= (0.6 + 0.4 * min(flux, 1.5)) * uExposure * seen;                // bounded: a star swinging past the camera while you orbit must not flare\n  }\n  if (gl_PointSize < 2.0) { vColor *= max(gl_PointSize, 0.0) * 0.5; gl_PointSize = 2.0; }   // never sub-pixel: those shimmer in and out as the sky turns, so draw 2 px and keep the energy\n#endif\n#include <logdepthbuf_vertex>');
 }
 function fxRegister(m, baseSize) {
   m.userData.baseSize = baseSize; m.onBeforeCompile = sh => fxPatch(sh, m); fxMats.push(m);
@@ -1395,6 +1395,7 @@ function desiDetail(force) {
   DESI.refilled = false;
   const g = DESI.group, sc = g.scale.x, nd = DESI.nodes;
   if (!(sc > 0) || !nd) return;
+  camera.updateMatrixWorld();   // matrixWorldInverse otherwise lags a frame behind the orbit, which clips the cone's edge while dragging
   _dmat.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
   _dfrustum.setFromProjectionMatrix(_dmat);
   const h = view.clientHeight || 1, fovK = (h / 2) / Math.tan(camera.fov * Math.PI / 360), screenA = Math.PI * (h / 2) ** 2;
@@ -1405,9 +1406,11 @@ function desiDetail(force) {
     const first = nd.first[i], count = nd.count[i];
     if (first < covered) continue;                                   // inside a cell we already took whole
     _dsphere.center.set(g.position.x + nd.cx[i] * sc, g.position.y + nd.cy[i] * sc, g.position.z + nd.cz[i] * sc);
-    _dsphere.radius = nd.half[i] * sc * 1.7321;                       // cube -> bounding sphere
-    if (!_dfrustum.intersectsSphere(_dsphere)) continue;
     const dist = Math.max(1e-9, camPos.distanceTo(_dsphere.center));
+    _dsphere.radius = nd.half[i] * sc * 1.7321;                       // cube -> bounding sphere
+    const rCell = _dsphere.radius; _dsphere.radius += dist * 0.3;     // cull with a margin, so cells just off-screen are already loaded when the view turns
+    if (!_dfrustum.intersectsSphere(_dsphere)) continue;
+    _dsphere.radius = rCell;
     const px = _dsphere.radius / dist * fovK;                         // cell radius on screen, pixels
     const leaf = count <= DESI.leafMax || nd.depth[i] === DESI.maxDepth;
     if (!leaf && px > PX_MAX) continue;                               // big on screen: split so culling and budget are local
@@ -1435,7 +1438,7 @@ function desiDetail(force) {
     const first = DESI.ranges[r * 3], c = DESI.ranges[r * 3 + 1], area = DESI.ranges[r * 3 + 2];
     const take = Math.max(1, Math.round(Math.min(c, density * area) * f));   // even stride inside the cell
     for (let i = 0; i < take && k < DESI.cap; i++) {
-      const j = first + ((i * c / take) | 0);                         // samples every octant inside the cell
+      const j = first + (((i * 0.6180339887498949) % 1) * c | 0);       // golden-ratio sequence: a prefix is an even sample of the whole cell, so a changing budget adds or drops points instead of reshuffling them (no flicker)
       const x = src[4 * j], y = src[4 * j + 1], z = src[4 * j + 2], t = clamp((src[4 * j + 3] - z0) / dz, 0, 1), o = k * 3;
       pos[o] = x * inv; pos[o + 1] = z * inv; pos[o + 2] = -y * inv;   // galactic -> scene axes
       col[o] = 0.5 + 0.45 * t; col[o + 1] = 0.68 + 0.2 * t; col[o + 2] = 1.0 - 0.35 * t;   // blue near, warm far
@@ -1467,7 +1470,10 @@ async function loadDesi() {
     geo.setAttribute('position', new THREE.BufferAttribute(DESI.pos, 3));
     geo.setAttribute('color', new THREE.BufferAttribute(DESI.col, 3));
     geo.setDrawRange(0, 0);
-    DESI.pts = new THREE.Points(geo, new THREE.PointsMaterial({ size: 0.0015, vertexColors: true, transparent: true, opacity: 0.55, depthWrite: false }));
+    const dmat = new THREE.PointsMaterial({ size: 0.0015, vertexColors: true, transparent: true, opacity: 0.8, depthWrite: false, blending: THREE.AdditiveBlending });
+    dmat.onBeforeCompile = sh => { sh.vertexShader = sh.vertexShader.replace('#include <logdepthbuf_vertex>', 'if (gl_PointSize < 2.0) { vColor *= gl_PointSize * 0.5; gl_PointSize = 2.0; }   // no sub-pixel shimmer\n#include <logdepthbuf_vertex>'); };
+    DESI.pts = new THREE.Points(geo, dmat);
+    DESI.pts.userData.noThin = true;   // desiDetail owns this cloud's draw range; thinning it would draw stale buffer tail as ghost points
     DESI.pts.frustumCulled = false;   // the octree walk culls, cell by cell
     DESI.group.add(DESI.pts); desiDetail(true);
     const btn = levelBtns.querySelector('[data-key="desi"]'); if (btn) btn.disabled = false;
@@ -3472,7 +3478,7 @@ let last = performance.now(), frame = 0;
 const quality = { q: 1, ema: 16, cool: 0, burstUntil: 0, applied: -1 };
 function applyQuality(q) {
   quality.applied = q;
-  scene.traverse(o => { if (!o.isPoints || !o.geometry.attributes.position) return; const g = o.geometry; g.userData.n ||= g.attributes.position.count; g.setDrawRange(0, Math.max(1000, Math.floor(g.userData.n * q))); });
+  scene.traverse(o => { if (!o.isPoints || o.userData.noThin || !o.geometry.attributes.position) return; const g = o.geometry; g.userData.n ||= g.attributes.position.count; g.setDrawRange(0, Math.max(1000, Math.floor(g.userData.n * q))); });
 }
 function adaptQuality(ms, now) {
   quality.ema += (Math.min(ms, 200) - quality.ema) * 0.06; quality.cool -= ms;

@@ -27,9 +27,12 @@
 //
 // Units: the engine runs in geometric units G = c = 1 (lengths in metres); converters give SI.
 
+import { CONST } from './worlds.js';
+
 /* ---------------- constants ---------------- */
-export const C = 299792458, G = 6.6743e-11, HBAR = 1.054571817e-34, KB = 1.380649e-23;
-export const MSUN = 1.98847e30, LY = 9.4607304725808e15, YEAR = 3.15576e7, AU = 1.495978707e11;
+// C, G and AU come from worlds.js (the shared constant table); the rest are specific to this module.
+export const C = CONST.C, G = CONST.G, HBAR = 1.054571817e-34, KB = 1.380649e-23;
+export const MSUN = 1.98847e30, LY = 9.4607304725808e15, YEAR = 3.15576e7, AU = CONST.AU;
 export const PLANCK_L = Math.sqrt(HBAR * G / C ** 3);
 export const PLANCK_RHO = C ** 7 / (HBAR * G * G);          // Planck energy density, J/m^3
 export const GEO_TO_J = C ** 4 / G;                          // metres (geometric energy) -> joules

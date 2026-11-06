@@ -33,12 +33,14 @@
 // reported per kilogram (J/kg), because the particle mass is not a physical input.
 // The ion-wind (ionic) setup and the xenon engine run directly in SI (see EAD below).
 
+import { BODIES, CONST } from './worlds.js';
+
 export const UNITS = {
   mu0: 1.25663706212e-6,        // N/A^2 (CODATA 2018)
   e: 1.602176634e-19,           // C
   m_e: 9.1093837015e-31,        // kg
   u: 1.66053906660e-27,         // kg, atomic mass unit
-  g0: 9.80665,                  // m/s^2
+  g0: CONST.G0,                 // m/s^2 (worlds.js)
   ionName: 'Xe-131',
   ionMassU: 130.905082,         // u, xenon-131
   get ionMass() { return this.ionMassU * this.u; },   // kg
@@ -500,7 +502,7 @@ export function stepFall(f, dt, p /* {g, coupling, repulsive, alpha} */) {
 export const EAD = {
   EPS0: 8.854e-12,                 // F/m
   AIR_ION_MASS: 29 * 1.6605e-27,   // kg, air ion
-  RHO_SL: 1.225,                   // kg/m^3 at sea level
+  RHO_SL: CONST.RHO_AIR_SL,        // kg/m^3 at sea level (worlds.js)
   ROW_PITCH: 0.1,                  // m between emitter rows (sets disk area)
   SPARK_FIELD: 1.0e6,              // V/m average field where spark-over is flagged (rough)
   STAGE_MARGIN: 0.06,              // m between a collector and the next emitter
@@ -974,7 +976,7 @@ export function zeldovichShellCrossing(tab, A) {
 export const MEGA = {
   G: 6.67430e-11, c: 299792458, sigmaSB: 5.670374419e-8, kB: 1.380649e-23,
   Lsun: 3.828e26, Msun: 1.98847e30, Rsun: 6.957e8, AU: 1.495978707e11, pc: 3.0856775814913673e16,
-  Mearth: 5.9722e24, Rearth: 6.371e6, omegaEarth: 7.2921159e-5, g0: 9.80665, pAtm: 101325,
+  Mearth: 5.9722e24, Rearth: BODIES.earth.meanRadius, omegaEarth: 7.2921159e-5, g0: CONST.G0, pAtm: CONST.P_SL,
   Mmercury: 3.3011e23,
   // tensile strength (Pa), density (kg/m^3): specific strength sigma/rho in J/kg is what the structures need
   materials: {

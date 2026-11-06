@@ -4,10 +4,11 @@
 // so every leg reports its own Δv, propellant, and mass in / out.
 
 import * as IAU from './bodies-iau.js';
+import { BODIES as WB, CONST } from '../worlds.js';
 import { ENGINES, engineOf, sailAccel, electricThrust, AU } from './propulsion.js';
 export { ENGINES };
 
-const G0 = 9.80665, DAY = 86400, JD0 = 2440587.5, DEG = Math.PI / 180, EPS = 23.4392911 * DEG;
+const G0 = CONST.G0, DAY = 86400, JD0 = 2440587.5, DEG = Math.PI / 180, EPS = 23.4392911 * DEG;
 const SIM_BODIES = ['mercury', 'venus', 'earth', 'mars'];   // worlds the ascent/landing integrators know
 const DEFAULT_SITE = { earth: { lat: 28.5, lon: -80.6, elev: 0 }, mars: { lat: 18.4, lon: 77.5, elev: -2600 },
   mercury: { lat: 0, lon: 0, elev: 0 }, venus: { lat: 0, lon: 0, elev: 0 } };
@@ -71,11 +72,12 @@ function declination(id, jd, dir) {
 const ASCENT_LOSS = 1600;       // m/s gravity + drag allowance, surface to parking orbit (as in model.js launch allowance)
 const DESCENT_ALLOWANCE = 300;  // m/s above surface circular speed for powered descent (as in model.js)
 
+// mercury, venus, earth and mars come from worlds.js (rho = sea-level scale-height density used by flight/physics)
 export const BODIES = {
-  mercury: { mu: 2.20319e13, R: 2439700, rho: 0 },
-  venus:   { mu: 3.24859e14, R: 6051800, rho: 65 },
-  earth:   { mu: 3.986004418e14, R: 6378137, rho: 1.225 },
-  mars:    { mu: 4.28284e13, R: 3389500, rho: 0.02 },
+  mercury: { mu: WB.mercury.mu, R: WB.mercury.radius, rho: 0 },
+  venus:   { mu: WB.venus.mu, R: WB.venus.radius, rho: WB.venus.atmosphere.rho0 },
+  earth:   { mu: WB.earth.mu, R: WB.earth.radius, rho: WB.earth.atmosphere.scaleHeight.rho0 },
+  mars:    { mu: WB.mars.mu, R: WB.mars.radius, rho: WB.mars.atmosphere.rho0 },
   jupiter: { mu: 1.26686534e17, R: 69911000, rho: 0 },
   saturn:  { mu: 3.7931187e16, R: 58232000, rho: 0 },
   uranus:  { mu: 5.793939e15, R: 25362000, rho: 0 },

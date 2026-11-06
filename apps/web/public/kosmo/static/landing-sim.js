@@ -36,7 +36,7 @@
 // pushes along b rotated by the gimbal angle; the engine sits behind the centre of mass.
 
 import { WORLDS, G0, completeStage } from './ship-sim.js';
-import { ENGINES, P0, loadEngines } from './engines.js';
+import { ENGINES, P0, loadEngines, resolveEngine, requireFlyable } from './engines.js';
 export { ENGINES };
 
 const DEG = Math.PI / 180;
@@ -117,7 +117,7 @@ export function loadFlightData(d) {
  *  Mass, engine, diameter and length come from the stage; legs, fins and the start state are sized from them.  The caller registers it
  *  with `VEHICLES[id] = ...`. */
 export function vehicleFromStage(stage, worldId = 'earth') {
-  const s = completeStage(stage), eng = ENGINES[s.engineId] || ENGINES['merlin-1d'], W = WORLDS[worldId] || WORLDS.earth;
+  const s = completeStage(stage), eng = requireFlyable(ENGINES[s.engineId], `vehicleFromStage "${s.name}"`), W = WORLDS[worldId] || WORLDS.earth;
   const n = Math.max(1, Math.min(s.count, s.landing.engines || 1)), prop = Math.max(500, s.landing.reserve || 0.1 * s.prop), dry = s.dry;
   const g = W.mu / W.R ** 2, m = dry + prop, aMax = n * eng.thrustVac / m, v0 = 170, stop = v0 * v0 / (2 * Math.max(0.35 * (aMax - g), 1));
   const earth = W.id === 'earth', L = s.length, D = s.diameter;
@@ -140,7 +140,7 @@ export function resolveVehicle(cfg = {}) {
   const v = { ...base, ...(cfg.override || {}) };
   v.id = cfg.vehicle || 'falcon9';
   v.target = { ...base.target, ...(cfg.override?.target || {}) };
-  v.eng = ENGINES[v.engine];
+  v.eng = requireFlyable(ENGINES[resolveEngine(v.engine, `vehicle "${v.id}"`)], `vehicle "${v.id}"`);
   v.W = WORLDS[v.world];
   v.inertia = (m) => m * v.length * v.length / 12;
   v.sideArea = v.diameter * v.length; v.refArea = Math.PI * (v.diameter / 2) ** 2;
@@ -621,7 +621,7 @@ export function createLanding(cfg = {}) {
     s.vx += ax * dt; s.vy += ay * dt; s.x += s.vx * dt; s.y += s.vy * dt;
     s.om += thetaDD * dt; s.th += s.om * dt;
     s.t += dt;
-    s.q = A.q; s.gload = hyp(ax, ay + g) / 9.80665; peakQ = Math.max(peakQ, A.q); peakG = Math.max(peakG, s.gload);
+    s.q = A.q; s.gload = hyp(ax, ay + g) / G0; peakQ = Math.max(peakQ, A.q); peakG = Math.max(peakG, s.gload);
 
     // engine cut-off when the vehicle has stopped just above the pad (an engine that cannot throttle down would only lift it off again)
     if (E.on && s.t >= E.startAt && s.vy > -0.4 && s.y - v.yf > 0.15 && s.y - v.yf < 3 && eng.minThrottle * v.engines * thrustAt(v, 0) > s.m * g * 0.98) {
