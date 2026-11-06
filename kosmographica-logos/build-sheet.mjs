@@ -5,7 +5,6 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { jingleFor } from "../tools/logo-jingles.mjs";
 
 const dir = dirname(fileURLToPath(import.meta.url));
 
@@ -70,7 +69,6 @@ return {LOGOS,mk,layout:typeof layoutWords==='function'?layoutWords:null,take(){
 })()};`
 ).join("\n");
 
-const jingles = Object.fromEntries(Object.values(numbers).map((id) => [id, jingleFor(id)]));
 const sound = readFileSync(join(dir, "../tools/logo-sound.js"), "utf8");
 const legend = VERSIONS.map((v) => `<span><b>${v.key}</b> ${v.title}</span>`).join("");
 
@@ -104,10 +102,10 @@ figcaption span{font-size:10px;color:#6d6d78}
 <script>
 const V={};
 ${sound}
-const JINGLE=${JSON.stringify(jingles)},player=createJinglePlayer('audio/'),soundBox=document.getElementById('sound');
+const nextSound=createSoundShuffle('kosmo-sheet-sound-bag',KOSMO_SOUNDS),player=createJinglePlayer('audio/'),soundBox=document.getElementById('sound');
 try{soundBox.checked=localStorage.getItem('kosmo-logo-sound')!=='0'}catch{}
 soundBox.addEventListener('change',()=>{try{localStorage.setItem('kosmo-logo-sound',soundBox.checked?'1':'0')}catch{};if(!soundBox.checked)player.mute()});
-const ring=fig=>{if(soundBox.checked)player.play(JINGLE[fig.dataset.id]||1).catch(()=>{})};
+const ring=fig=>{if(soundBox.checked)player.play(nextSound()).catch(()=>{})};
 ${runtimes}
 const find=(v,id)=>V[v].api.LOGOS.find(L=>String(L.n)===id||(typeof L.n==='number'&&L.n>100&&'D'+String(L.n-100).padStart(2,'0')===id));
 let uid=0;

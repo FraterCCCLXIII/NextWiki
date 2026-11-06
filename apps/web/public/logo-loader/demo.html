@@ -38,7 +38,7 @@
   let inst;
   function run() {
     if (inst) inst.destroy();
-    inst = KosmoLogoLoader.mount(box, { id: pick.value || undefined, onReady: (id) => { label.textContent = "logo " + id; } });
+    inst = KosmoLogoLoader.mount(box, { id: pick.value || undefined, onReady: (id) => { label.textContent = "logo " + id + " · " + inst.soundName; } });
   }
   crt.checked = KosmoLogoLoader.getCrt();
   crt.onchange = () => KosmoLogoLoader.setCrt(crt.checked);

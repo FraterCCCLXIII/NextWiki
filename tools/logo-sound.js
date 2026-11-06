@@ -1,12 +1,27 @@
 /* Jingle playback shared by the loader and the logo sheet.
    Rule: the music may be faded or dropped, but the spoken "Kosmographica" is never cut or faded.
    `word` is the protected stretch of each file in seconds, including a small margin. */
+const NO_WORD = [Infinity, Infinity];
 const JINGLES = {
-  1: { file: "jingle-1.mp3", word: [2.15, 3.6] }, // music builds, then the word
-  2: { file: "jingle-2.mp3", word: [0, 1.25] }, // the word first, then a synth swell
-  3: { file: "sound-1.mp3", word: [Infinity, Infinity] }, // jingle 1's music only, faded out before the word
-  4: { file: "sound-2.mp3", word: [Infinity, Infinity] }, // jingle 2's swell only, from after the word
+  1: { file: "jingle-1.mp3", name: "Kosmographica jingle 1", word: [2.15, 3.6] }, // music builds, then the word
+  2: { file: "jingle-2.mp3", name: "Kosmographica jingle 2", word: [0, 1.25] }, // the word first, then a synth swell
+  3: { file: "sound-1.mp3", name: "Jingle 1 music only", word: NO_WORD },
+  4: { file: "sound-2.mp3", name: "Jingle 2 swell only", word: NO_WORD },
+  5: { file: "boot-screen-chime.mp3", name: "Boot Screen Chime", word: NO_WORD },
+  6: { file: "boot-screen-logo.mp3", name: "Boot Screen Logo", word: NO_WORD },
+  7: { file: "bright-major-sting.mp3", name: "Bright Major Sting", word: NO_WORD },
+  8: { file: "bright-startup.mp3", name: "Bright Startup", word: NO_WORD },
+  9: { file: "console-startup.mp3", name: "Console Startup", word: NO_WORD },
+  10: { file: "digital-chime.mp3", name: "Digital Chime", word: NO_WORD },
+  11: { file: "magical-entrance.mp3", name: "Magical Entrance", word: NO_WORD },
+  12: { file: "soft-major-arp.mp3", name: "Soft Major Arp", word: NO_WORD },
+  13: { file: "system-ready.mp3", name: "System Ready", word: NO_WORD },
+  14: { file: "warm-corporate-jingle.mp3", name: "Warm Corporate Jingle", word: NO_WORD },
+  15: { file: "warm-felted-piano.mp3", name: "Warm Felted Piano", word: NO_WORD },
 };
+/* Every sound with no voice in it, so it suits any brand. */
+const MUSIC_SOUNDS = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+const KOSMO_SOUNDS = [1, 2, 3, 4, ...MUSIC_SOUNDS];
 const JINGLE_FADE = 0.3;
 
 function createJinglePlayer(base) {
@@ -72,4 +87,22 @@ function createJinglePlayer(base) {
     cur = null;
   };
   return { load, play, release, mute, unlock: () => { const c = getCtx(); if (c) c.resume().catch(() => {}); }, info: () => (cur && ctx ? { n: cur.n, pos: ctx.currentTime - cur.at } : null) };
+}
+
+/* Shuffled turns: every sound plays once, in random order, before any repeats. */
+function createSoundShuffle(key, ids) {
+  return () => {
+    let bag = [];
+    try { bag = JSON.parse(localStorage.getItem(key) || "[]").filter((x) => ids.includes(x)); } catch { bag = []; }
+    if (!bag.length) {
+      bag = [...ids];
+      for (let i = bag.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [bag[i], bag[j]] = [bag[j], bag[i]];
+      }
+    }
+    const id = bag.pop();
+    try { localStorage.setItem(key, JSON.stringify(bag)); } catch { /* still plays, just without memory */ }
+    return id;
+  };
 }

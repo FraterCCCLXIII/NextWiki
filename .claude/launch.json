@@ -34,6 +34,18 @@
         "kosmographica-logos"
       ],
       "port": 8766
+    },
+    {
+      "name": "spaceradio-logos",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8767",
+        "--directory",
+        "spaceradio-logos"
+      ],
+      "port": 8767
     }
   ]
 }

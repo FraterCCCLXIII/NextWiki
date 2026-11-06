@@ -33,6 +33,7 @@ function nextId(ids) {
 const crtDefault = () => get(KEYS.crt) !== "0";
 const soundDefault = () => get(KEYS.sound) !== "0";
 const player = createJinglePlayer(BASE + "audio/");
+const nextSound = createSoundShuffle("kosmo-logo-sound-bag", KOSMO_SOUNDS);
 const ICON_ON = '<path d="M3 9v6h4l5 4V5L7 9H3z"/><path d="M15 8.5a5 5 0 0 1 0 7M17.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>';
 const ICON_OFF = '<path d="M3 9v6h4l5 4V5L7 9H3z"/><path d="M16 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>';
 
@@ -145,7 +146,8 @@ function mount(el, opts) {
     const id = o.id && ids.includes(String(o.id)) ? String(o.id) : nextId(ids);
     const L = await loadLogo(id);
     if (dead) return;
-    inst.jingle = (m.jingles && m.jingles[id]) || 1;
+    inst.jingle = nextSound();
+    inst.soundName = JINGLES[inst.jingle].name;
     // give the jingle a moment to arrive so it starts with the reveal, but never hold the logo back for it
     if (soundOn()) await Promise.race([player.load(inst.jingle).catch(() => {}), new Promise((r) => setTimeout(r, 400))]);
     if (dead) return;

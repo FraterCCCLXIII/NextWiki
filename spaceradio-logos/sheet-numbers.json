@@ -1,0 +1,3152 @@
+{
+ "total": 156,
+ "sheets": {
+  "12": {
+   "title": "Black and white",
+   "file": "refs/12.webp",
+   "count": 40
+  },
+  "13": {
+   "title": "Colour",
+   "file": "refs/13.webp",
+   "count": 36
+  },
+  "14": {
+   "title": "Decades",
+   "file": "refs/14.webp",
+   "count": 48
+  },
+  "15": {
+   "title": "Colour, set 2",
+   "file": "refs/15.webp",
+   "count": 16
+  },
+  "16": {
+   "title": "Colour, set 3",
+   "file": "refs/16.webp",
+   "count": 16
+  }
+ },
+ "logos": {
+  "1": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 1,
+   "row": 1,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    11,
+    88,
+    236,
+    173
+   ],
+   "mode": "bw",
+   "iou": 0.9682,
+   "colourErrorDE": 7.49,
+   "parts": 26,
+   "exactGeometryParts": 1
+  },
+  "2": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 2,
+   "row": 1,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    261,
+    64,
+    439,
+    187
+   ],
+   "mode": "bw",
+   "iou": 0.9587,
+   "colourErrorDE": 8.2,
+   "parts": 18,
+   "exactGeometryParts": 0
+  },
+  "3": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 3,
+   "row": 1,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    459,
+    94,
+    663,
+    162
+   ],
+   "mode": "bw",
+   "iou": 0.9448,
+   "colourErrorDE": 11.33,
+   "parts": 15,
+   "exactGeometryParts": 0
+  },
+  "4": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 4,
+   "row": 1,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    675,
+    99,
+    895,
+    150
+   ],
+   "mode": "bw",
+   "iou": 0.9529,
+   "colourErrorDE": 9.62,
+   "parts": 7,
+   "exactGeometryParts": 0
+  },
+  "5": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 5,
+   "row": 1,
+   "col": 5,
+   "decade": null,
+   "cropBoxInSheet": [
+    909,
+    82,
+    1116,
+    173
+   ],
+   "mode": "bw",
+   "iou": 0.9693,
+   "colourErrorDE": 6.75,
+   "parts": 12,
+   "exactGeometryParts": 2
+  },
+  "6": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 6,
+   "row": 2,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    7,
+    271,
+    222,
+    334
+   ],
+   "mode": "bw",
+   "iou": 0.9805,
+   "colourErrorDE": 6.76,
+   "parts": 2,
+   "exactGeometryParts": 0
+  },
+  "7": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 7,
+   "row": 2,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    235,
+    273,
+    450,
+    323
+   ],
+   "mode": "bw",
+   "iou": 0.9584,
+   "colourErrorDE": 9.38,
+   "parts": 13,
+   "exactGeometryParts": 0
+  },
+  "8": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 8,
+   "row": 2,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    472,
+    253,
+    651,
+    349
+   ],
+   "mode": "bw",
+   "iou": 0.9817,
+   "colourErrorDE": 6.55,
+   "parts": 21,
+   "exactGeometryParts": 0
+  },
+  "9": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 9,
+   "row": 2,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    675,
+    270,
+    890,
+    328
+   ],
+   "mode": "bw",
+   "iou": 0.9616,
+   "colourErrorDE": 8.2,
+   "parts": 12,
+   "exactGeometryParts": 0
+  },
+  "10": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 10,
+   "row": 2,
+   "col": 5,
+   "decade": null,
+   "cropBoxInSheet": [
+    899,
+    264,
+    1119,
+    332
+   ],
+   "mode": "bw",
+   "iou": 0.9705,
+   "colourErrorDE": 7.34,
+   "parts": 2,
+   "exactGeometryParts": 0
+  },
+  "11": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 11,
+   "row": 3,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    13,
+    431,
+    215,
+    532
+   ],
+   "mode": "bw",
+   "iou": 0.9876,
+   "colourErrorDE": 6.21,
+   "parts": 12,
+   "exactGeometryParts": 1
+  },
+  "12": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 12,
+   "row": 3,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    255,
+    416,
+    417,
+    541
+   ],
+   "mode": "bw",
+   "iou": 0.9864,
+   "colourErrorDE": 6.18,
+   "parts": 11,
+   "exactGeometryParts": 1
+  },
+  "13": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 13,
+   "row": 3,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    442,
+    451,
+    679,
+    502
+   ],
+   "mode": "bw",
+   "iou": 0.9431,
+   "colourErrorDE": 11.43,
+   "parts": 96,
+   "exactGeometryParts": 0
+  },
+  "14": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 14,
+   "row": 3,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    682,
+    425,
+    892,
+    529
+   ],
+   "mode": "bw",
+   "iou": 0.9732,
+   "colourErrorDE": 6.44,
+   "parts": 16,
+   "exactGeometryParts": 5
+  },
+  "15": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 15,
+   "row": 3,
+   "col": 5,
+   "decade": null,
+   "cropBoxInSheet": [
+    903,
+    443,
+    1116,
+    517
+   ],
+   "mode": "bw",
+   "iou": 0.972,
+   "colourErrorDE": 7.93,
+   "parts": 31,
+   "exactGeometryParts": 4
+  },
+  "16": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 16,
+   "row": 4,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    2,
+    628,
+    225,
+    708
+   ],
+   "mode": "bw",
+   "iou": 0.9454,
+   "colourErrorDE": 9.27,
+   "parts": 12,
+   "exactGeometryParts": 0
+  },
+  "17": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 17,
+   "row": 4,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    239,
+    636,
+    438,
+    699
+   ],
+   "mode": "bw",
+   "iou": 0.8782,
+   "colourErrorDE": 15.33,
+   "parts": 12,
+   "exactGeometryParts": 2
+  },
+  "18": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 18,
+   "row": 4,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    468,
+    577,
+    654,
+    763
+   ],
+   "mode": "bw",
+   "iou": 0.9461,
+   "colourErrorDE": 9.67,
+   "parts": 47,
+   "exactGeometryParts": 1
+  },
+  "19": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 19,
+   "row": 4,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    684,
+    614,
+    881,
+    730
+   ],
+   "mode": "bw",
+   "iou": 0.987,
+   "colourErrorDE": 6.36,
+   "parts": 12,
+   "exactGeometryParts": 0
+  },
+  "20": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 20,
+   "row": 4,
+   "col": 5,
+   "decade": null,
+   "cropBoxInSheet": [
+    925,
+    599,
+    1099,
+    748
+   ],
+   "mode": "bw",
+   "iou": 0.9852,
+   "colourErrorDE": 6.44,
+   "parts": 14,
+   "exactGeometryParts": 0
+  },
+  "21": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 21,
+   "row": 5,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    12,
+    826,
+    224,
+    890
+   ],
+   "mode": "bw",
+   "iou": 0.9612,
+   "colourErrorDE": 8.22,
+   "parts": 11,
+   "exactGeometryParts": 0
+  },
+  "22": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 22,
+   "row": 5,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    231,
+    819,
+    447,
+    892
+   ],
+   "mode": "bw",
+   "iou": 0.954,
+   "colourErrorDE": 9.5,
+   "parts": 17,
+   "exactGeometryParts": 0
+  },
+  "23": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 23,
+   "row": 5,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    464,
+    803,
+    658,
+    919
+   ],
+   "mode": "bw",
+   "iou": 0.9626,
+   "colourErrorDE": 8.14,
+   "parts": 12,
+   "exactGeometryParts": 1
+  },
+  "24": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 24,
+   "row": 5,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    694,
+    788,
+    866,
+    922
+   ],
+   "mode": "bw",
+   "iou": 0.9483,
+   "colourErrorDE": 9.88,
+   "parts": 18,
+   "exactGeometryParts": 0
+  },
+  "25": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 25,
+   "row": 5,
+   "col": 5,
+   "decade": null,
+   "cropBoxInSheet": [
+    889,
+    825,
+    1122,
+    890
+   ],
+   "mode": "bw",
+   "iou": 0.9822,
+   "colourErrorDE": 6.43,
+   "parts": 17,
+   "exactGeometryParts": 0
+  },
+  "26": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 26,
+   "row": 6,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    37,
+    960,
+    185,
+    1094
+   ],
+   "mode": "bw",
+   "iou": 0.9662,
+   "colourErrorDE": 8.45,
+   "parts": 25,
+   "exactGeometryParts": 0
+  },
+  "27": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 27,
+   "row": 6,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    213,
+    1001,
+    453,
+    1054
+   ],
+   "mode": "bw",
+   "iou": 0.9328,
+   "colourErrorDE": 11.33,
+   "parts": 11,
+   "exactGeometryParts": 1
+  },
+  "28": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 28,
+   "row": 6,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    459,
+    974,
+    645,
+    1076
+   ],
+   "mode": "bw",
+   "iou": 0.9781,
+   "colourErrorDE": 6.57,
+   "parts": 11,
+   "exactGeometryParts": 0
+  },
+  "29": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 29,
+   "row": 6,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    667,
+    971,
+    890,
+    1078
+   ],
+   "mode": "bw",
+   "iou": 0.9541,
+   "colourErrorDE": 9.3,
+   "parts": 10,
+   "exactGeometryParts": 0
+  },
+  "30": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 30,
+   "row": 6,
+   "col": 5,
+   "decade": null,
+   "cropBoxInSheet": [
+    894,
+    970,
+    1119,
+    1084
+   ],
+   "mode": "bw",
+   "iou": 0.9791,
+   "colourErrorDE": 6.51,
+   "parts": 11,
+   "exactGeometryParts": 1
+  },
+  "31": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 31,
+   "row": 7,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    6,
+    1150,
+    216,
+    1224
+   ],
+   "mode": "bw",
+   "iou": 0.9689,
+   "colourErrorDE": 7.75,
+   "parts": 20,
+   "exactGeometryParts": 0
+  },
+  "32": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 32,
+   "row": 7,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    244,
+    1143,
+    424,
+    1238
+   ],
+   "mode": "bw",
+   "iou": 0.9847,
+   "colourErrorDE": 6.37,
+   "parts": 8,
+   "exactGeometryParts": 0
+  },
+  "33": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 33,
+   "row": 7,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    445,
+    1156,
+    654,
+    1222
+   ],
+   "mode": "bw",
+   "iou": 0.9738,
+   "colourErrorDE": 6.79,
+   "parts": 11,
+   "exactGeometryParts": 0
+  },
+  "34": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 34,
+   "row": 7,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    667,
+    1172,
+    890,
+    1202
+   ],
+   "mode": "bw",
+   "iou": 0.9091,
+   "colourErrorDE": 13.85,
+   "parts": 10,
+   "exactGeometryParts": 0
+  },
+  "35": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 35,
+   "row": 7,
+   "col": 5,
+   "decade": null,
+   "cropBoxInSheet": [
+    895,
+    1158,
+    1122,
+    1217
+   ],
+   "mode": "bw",
+   "iou": 0.979,
+   "colourErrorDE": 6.75,
+   "parts": 19,
+   "exactGeometryParts": 0
+  },
+  "36": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 36,
+   "row": 8,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    2,
+    1298,
+    221,
+    1361
+   ],
+   "mode": "bw",
+   "iou": 0.971,
+   "colourErrorDE": 8.89,
+   "parts": 11,
+   "exactGeometryParts": 0
+  },
+  "37": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 37,
+   "row": 8,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    227,
+    1306,
+    447,
+    1353
+   ],
+   "mode": "bw",
+   "iou": 0.9686,
+   "colourErrorDE": 8.47,
+   "parts": 11,
+   "exactGeometryParts": 0
+  },
+  "38": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 38,
+   "row": 8,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    466,
+    1289,
+    657,
+    1370
+   ],
+   "mode": "bw",
+   "iou": 0.9647,
+   "colourErrorDE": 7.92,
+   "parts": 11,
+   "exactGeometryParts": 0
+  },
+  "39": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 39,
+   "row": 8,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    671,
+    1292,
+    896,
+    1364
+   ],
+   "mode": "bw",
+   "iou": 0.949,
+   "colourErrorDE": 11.01,
+   "parts": 24,
+   "exactGeometryParts": 0
+  },
+  "40": {
+   "sheet": "12",
+   "sheetFile": "refs/12.webp",
+   "sheetTitle": "Black and white",
+   "position": 40,
+   "row": 8,
+   "col": 5,
+   "decade": null,
+   "cropBoxInSheet": [
+    906,
+    1307,
+    1117,
+    1354
+   ],
+   "mode": "bw",
+   "iou": 0.9649,
+   "colourErrorDE": 8.31,
+   "parts": 11,
+   "exactGeometryParts": 0
+  },
+  "41": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 1,
+   "row": 1,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    17,
+    67,
+    209,
+    246
+   ],
+   "mode": "grad",
+   "iou": 0.9644,
+   "colourErrorDE": 13.55,
+   "parts": 71,
+   "exactGeometryParts": 0
+  },
+  "42": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 2,
+   "row": 1,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    213,
+    75,
+    398,
+    246
+   ],
+   "mode": "flat",
+   "iou": 0.9742,
+   "colourErrorDE": 8.94,
+   "parts": 29,
+   "exactGeometryParts": 0
+  },
+  "43": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 3,
+   "row": 1,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    411,
+    68,
+    592,
+    243
+   ],
+   "mode": "flat",
+   "iou": 0.9789,
+   "colourErrorDE": 5.79,
+   "parts": 29,
+   "exactGeometryParts": 0
+  },
+  "44": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 4,
+   "row": 1,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    605,
+    81,
+    793,
+    243
+   ],
+   "mode": "flat",
+   "iou": 0.9689,
+   "colourErrorDE": 8.66,
+   "parts": 46,
+   "exactGeometryParts": 4
+  },
+  "45": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 5,
+   "row": 1,
+   "col": 5,
+   "decade": null,
+   "cropBoxInSheet": [
+    799,
+    77,
+    990,
+    242
+   ],
+   "mode": "flat",
+   "iou": 0.9745,
+   "colourErrorDE": 6.5,
+   "parts": 27,
+   "exactGeometryParts": 0
+  },
+  "46": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 6,
+   "row": 1,
+   "col": 6,
+   "decade": null,
+   "cropBoxInSheet": [
+    995,
+    94,
+    1194,
+    230
+   ],
+   "mode": "flat",
+   "iou": 0.9803,
+   "colourErrorDE": 7.17,
+   "parts": 17,
+   "exactGeometryParts": 0
+  },
+  "47": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 7,
+   "row": 2,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    7,
+    295,
+    197,
+    483
+   ],
+   "mode": "flat",
+   "iou": 0.9847,
+   "colourErrorDE": 3.96,
+   "parts": 26,
+   "exactGeometryParts": 0
+  },
+  "48": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 8,
+   "row": 2,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    210,
+    285,
+    394,
+    485
+   ],
+   "mode": "flat",
+   "iou": 0.9592,
+   "colourErrorDE": 11.08,
+   "parts": 16,
+   "exactGeometryParts": 0
+  },
+  "49": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 9,
+   "row": 2,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    403,
+    313,
+    595,
+    474
+   ],
+   "mode": "flat",
+   "iou": 0.9871,
+   "colourErrorDE": 4.34,
+   "parts": 13,
+   "exactGeometryParts": 0
+  },
+  "50": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 10,
+   "row": 2,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    603,
+    302,
+    789,
+    481
+   ],
+   "mode": "flat",
+   "iou": 0.9905,
+   "colourErrorDE": 3.04,
+   "parts": 26,
+   "exactGeometryParts": 0
+  },
+  "51": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 11,
+   "row": 2,
+   "col": 5,
+   "decade": null,
+   "cropBoxInSheet": [
+    805,
+    299,
+    991,
+    478
+   ],
+   "mode": "flat",
+   "iou": 0.9831,
+   "colourErrorDE": 6.82,
+   "parts": 15,
+   "exactGeometryParts": 1
+  },
+  "52": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 12,
+   "row": 2,
+   "col": 6,
+   "decade": null,
+   "cropBoxInSheet": [
+    1003,
+    300,
+    1194,
+    483
+   ],
+   "mode": "flat",
+   "iou": 0.9853,
+   "colourErrorDE": 4.02,
+   "parts": 26,
+   "exactGeometryParts": 1
+  },
+  "53": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 13,
+   "row": 3,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    3,
+    528,
+    198,
+    671
+   ],
+   "mode": "flat",
+   "iou": 0.9663,
+   "colourErrorDE": 8.78,
+   "parts": 28,
+   "exactGeometryParts": 0
+  },
+  "54": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 14,
+   "row": 3,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    201,
+    555,
+    409,
+    659
+   ],
+   "mode": "flat",
+   "iou": 0.9833,
+   "colourErrorDE": 5.93,
+   "parts": 22,
+   "exactGeometryParts": 0
+  },
+  "55": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 15,
+   "row": 3,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    411,
+    517,
+    591,
+    692
+   ],
+   "mode": "flat",
+   "iou": 0.9684,
+   "colourErrorDE": 9.41,
+   "parts": 27,
+   "exactGeometryParts": 0
+  },
+  "56": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 16,
+   "row": 3,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    606,
+    545,
+    784,
+    694
+   ],
+   "mode": "flat",
+   "iou": 0.9844,
+   "colourErrorDE": 3.86,
+   "parts": 25,
+   "exactGeometryParts": 0
+  },
+  "57": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 17,
+   "row": 3,
+   "col": 5,
+   "decade": null,
+   "cropBoxInSheet": [
+    795,
+    529,
+    995,
+    678
+   ],
+   "mode": "flat",
+   "iou": 0.9841,
+   "colourErrorDE": 5.87,
+   "parts": 14,
+   "exactGeometryParts": 0
+  },
+  "58": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 18,
+   "row": 3,
+   "col": 6,
+   "decade": null,
+   "cropBoxInSheet": [
+    1007,
+    521,
+    1190,
+    691
+   ],
+   "mode": "flat",
+   "iou": 0.9745,
+   "colourErrorDE": 7.23,
+   "parts": 29,
+   "exactGeometryParts": 0
+  },
+  "59": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 19,
+   "row": 4,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    11,
+    725,
+    199,
+    879
+   ],
+   "mode": "flat",
+   "iou": 0.9903,
+   "colourErrorDE": 3.62,
+   "parts": 13,
+   "exactGeometryParts": 0
+  },
+  "60": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 20,
+   "row": 4,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    202,
+    742,
+    405,
+    861
+   ],
+   "mode": "flat",
+   "iou": 0.9735,
+   "colourErrorDE": 5.75,
+   "parts": 25,
+   "exactGeometryParts": 0
+  },
+  "61": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 21,
+   "row": 4,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    413,
+    726,
+    592,
+    886
+   ],
+   "mode": "flat",
+   "iou": 0.9794,
+   "colourErrorDE": 5.72,
+   "parts": 27,
+   "exactGeometryParts": 0
+  },
+  "62": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 22,
+   "row": 4,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    608,
+    723,
+    790,
+    868
+   ],
+   "mode": "flat",
+   "iou": 0.9822,
+   "colourErrorDE": 5.94,
+   "parts": 16,
+   "exactGeometryParts": 1
+  },
+  "63": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 23,
+   "row": 4,
+   "col": 5,
+   "decade": null,
+   "cropBoxInSheet": [
+    806,
+    718,
+    985,
+    882
+   ],
+   "mode": "flat",
+   "iou": 0.9817,
+   "colourErrorDE": 3.74,
+   "parts": 15,
+   "exactGeometryParts": 4
+  },
+  "64": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 24,
+   "row": 4,
+   "col": 6,
+   "decade": null,
+   "cropBoxInSheet": [
+    1006,
+    716,
+    1193,
+    886
+   ],
+   "mode": "flat",
+   "iou": 0.9601,
+   "colourErrorDE": 11.07,
+   "parts": 29,
+   "exactGeometryParts": 0
+  },
+  "65": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 25,
+   "row": 5,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    8,
+    924,
+    201,
+    1060
+   ],
+   "mode": "flat",
+   "iou": 0.9607,
+   "colourErrorDE": 8.25,
+   "parts": 14,
+   "exactGeometryParts": 0
+  },
+  "66": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 26,
+   "row": 5,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    216,
+    916,
+    393,
+    1078
+   ],
+   "mode": "flat",
+   "iou": 0.9732,
+   "colourErrorDE": 5.49,
+   "parts": 28,
+   "exactGeometryParts": 4
+  },
+  "67": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 27,
+   "row": 5,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    412,
+    941,
+    591,
+    1063
+   ],
+   "mode": "grad",
+   "iou": 0.9808,
+   "colourErrorDE": 9.02,
+   "parts": 42,
+   "exactGeometryParts": 0
+  },
+  "68": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 28,
+   "row": 5,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    605,
+    918,
+    782,
+    1081
+   ],
+   "mode": "flat",
+   "iou": 0.9871,
+   "colourErrorDE": 3.52,
+   "parts": 13,
+   "exactGeometryParts": 0
+  },
+  "69": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 29,
+   "row": 5,
+   "col": 5,
+   "decade": null,
+   "cropBoxInSheet": [
+    802,
+    939,
+    981,
+    1076
+   ],
+   "mode": "flat",
+   "iou": 0.9707,
+   "colourErrorDE": 7.57,
+   "parts": 43,
+   "exactGeometryParts": 4
+  },
+  "70": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 30,
+   "row": 5,
+   "col": 6,
+   "decade": null,
+   "cropBoxInSheet": [
+    996,
+    935,
+    1191,
+    1067
+   ],
+   "mode": "flat",
+   "iou": 0.9747,
+   "colourErrorDE": 9.42,
+   "parts": 14,
+   "exactGeometryParts": 0
+  },
+  "71": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 31,
+   "row": 6,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    8,
+    1104,
+    204,
+    1276
+   ],
+   "mode": "flat",
+   "iou": 0.9692,
+   "colourErrorDE": 6.67,
+   "parts": 12,
+   "exactGeometryParts": 0
+  },
+  "72": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 32,
+   "row": 6,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    209,
+    1109,
+    388,
+    1280
+   ],
+   "mode": "flat",
+   "iou": 0.986,
+   "colourErrorDE": 3.51,
+   "parts": 25,
+   "exactGeometryParts": 0
+  },
+  "73": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 33,
+   "row": 6,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    401,
+    1103,
+    584,
+    1289
+   ],
+   "mode": "flat",
+   "iou": 0.9622,
+   "colourErrorDE": 9.77,
+   "parts": 27,
+   "exactGeometryParts": 0
+  },
+  "74": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 34,
+   "row": 6,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    587,
+    1163,
+    794,
+    1239
+   ],
+   "mode": "flat",
+   "iou": 0.9691,
+   "colourErrorDE": 6.62,
+   "parts": 12,
+   "exactGeometryParts": 2
+  },
+  "75": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 35,
+   "row": 6,
+   "col": 5,
+   "decade": null,
+   "cropBoxInSheet": [
+    797,
+    1119,
+    981,
+    1281
+   ],
+   "mode": "flat",
+   "iou": 0.9865,
+   "colourErrorDE": 4.4,
+   "parts": 15,
+   "exactGeometryParts": 0
+  },
+  "76": {
+   "sheet": "13",
+   "sheetFile": "refs/13.webp",
+   "sheetTitle": "Colour",
+   "position": 36,
+   "row": 6,
+   "col": 6,
+   "decade": null,
+   "cropBoxInSheet": [
+    995,
+    1101,
+    1188,
+    1287
+   ],
+   "mode": "flat",
+   "iou": 0.9744,
+   "colourErrorDE": 7.13,
+   "parts": 40,
+   "exactGeometryParts": 2
+  },
+  "77": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 1,
+   "row": 1,
+   "col": 1,
+   "decade": "1950s",
+   "cropBoxInSheet": [
+    109,
+    43,
+    297,
+    202
+   ],
+   "mode": "flat",
+   "iou": 0.974,
+   "colourErrorDE": 13.26,
+   "parts": 31,
+   "exactGeometryParts": 0
+  },
+  "78": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 2,
+   "row": 1,
+   "col": 2,
+   "decade": "1950s",
+   "cropBoxInSheet": [
+    293,
+    48,
+    469,
+    196
+   ],
+   "mode": "flat",
+   "iou": 0.9802,
+   "colourErrorDE": 8.17,
+   "parts": 23,
+   "exactGeometryParts": 0
+  },
+  "79": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 3,
+   "row": 1,
+   "col": 3,
+   "decade": "1950s",
+   "cropBoxInSheet": [
+    458,
+    51,
+    649,
+    199
+   ],
+   "mode": "flat",
+   "iou": 0.9685,
+   "colourErrorDE": 8.44,
+   "parts": 58,
+   "exactGeometryParts": 0
+  },
+  "80": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 4,
+   "row": 1,
+   "col": 4,
+   "decade": "1950s",
+   "cropBoxInSheet": [
+    637,
+    57,
+    829,
+    195
+   ],
+   "mode": "flat",
+   "iou": 0.9707,
+   "colourErrorDE": 12.79,
+   "parts": 28,
+   "exactGeometryParts": 0
+  },
+  "81": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 5,
+   "row": 1,
+   "col": 5,
+   "decade": "1950s",
+   "cropBoxInSheet": [
+    822,
+    55,
+    1024,
+    197
+   ],
+   "mode": "flat",
+   "iou": 0.964,
+   "colourErrorDE": 8.78,
+   "parts": 50,
+   "exactGeometryParts": 0
+  },
+  "82": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 6,
+   "row": 1,
+   "col": 6,
+   "decade": "1950s",
+   "cropBoxInSheet": [
+    1021,
+    42,
+    1190,
+    202
+   ],
+   "mode": "flat",
+   "iou": 0.9456,
+   "colourErrorDE": 11.03,
+   "parts": 53,
+   "exactGeometryParts": 0
+  },
+  "83": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 7,
+   "row": 2,
+   "col": 1,
+   "decade": "1960s",
+   "cropBoxInSheet": [
+    120,
+    228,
+    291,
+    385
+   ],
+   "mode": "grad",
+   "iou": 0.9559,
+   "colourErrorDE": 12.86,
+   "parts": 66,
+   "exactGeometryParts": 0
+  },
+  "84": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 8,
+   "row": 2,
+   "col": 2,
+   "decade": "1960s",
+   "cropBoxInSheet": [
+    293,
+    235,
+    464,
+    381
+   ],
+   "mode": "flat",
+   "iou": 0.9665,
+   "colourErrorDE": 10.57,
+   "parts": 27,
+   "exactGeometryParts": 0
+  },
+  "85": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 9,
+   "row": 2,
+   "col": 3,
+   "decade": "1960s",
+   "cropBoxInSheet": [
+    470,
+    241,
+    640,
+    380
+   ],
+   "mode": "flat",
+   "iou": 0.9696,
+   "colourErrorDE": 10.39,
+   "parts": 28,
+   "exactGeometryParts": 2
+  },
+  "86": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 10,
+   "row": 2,
+   "col": 4,
+   "decade": "1960s",
+   "cropBoxInSheet": [
+    642,
+    239,
+    825,
+    376
+   ],
+   "mode": "flat",
+   "iou": 0.97,
+   "colourErrorDE": 9.4,
+   "parts": 48,
+   "exactGeometryParts": 1
+  },
+  "87": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 11,
+   "row": 2,
+   "col": 5,
+   "decade": "1960s",
+   "cropBoxInSheet": [
+    826,
+    241,
+    1012,
+    377
+   ],
+   "mode": "flat",
+   "iou": 0.9697,
+   "colourErrorDE": 8.37,
+   "parts": 27,
+   "exactGeometryParts": 0
+  },
+  "88": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 12,
+   "row": 2,
+   "col": 6,
+   "decade": "1960s",
+   "cropBoxInSheet": [
+    1011,
+    250,
+    1193,
+    375
+   ],
+   "mode": "flat",
+   "iou": 0.9709,
+   "colourErrorDE": 9.21,
+   "parts": 36,
+   "exactGeometryParts": 0
+  },
+  "89": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 13,
+   "row": 3,
+   "col": 1,
+   "decade": "1970s",
+   "cropBoxInSheet": [
+    108,
+    417,
+    310,
+    562
+   ],
+   "mode": "flat",
+   "iou": 0.976,
+   "colourErrorDE": 7.19,
+   "parts": 28,
+   "exactGeometryParts": 0
+  },
+  "90": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 14,
+   "row": 3,
+   "col": 2,
+   "decade": "1970s",
+   "cropBoxInSheet": [
+    311,
+    418,
+    466,
+    561
+   ],
+   "mode": "flat",
+   "iou": 0.9585,
+   "colourErrorDE": 7.85,
+   "parts": 41,
+   "exactGeometryParts": 2
+  },
+  "91": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 15,
+   "row": 3,
+   "col": 3,
+   "decade": "1970s",
+   "cropBoxInSheet": [
+    462,
+    425,
+    652,
+    568
+   ],
+   "mode": "flat",
+   "iou": 0.9701,
+   "colourErrorDE": 9.13,
+   "parts": 31,
+   "exactGeometryParts": 1
+  },
+  "92": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 16,
+   "row": 3,
+   "col": 4,
+   "decade": "1970s",
+   "cropBoxInSheet": [
+    649,
+    405,
+    835,
+    561
+   ],
+   "mode": "flat",
+   "iou": 0.9726,
+   "colourErrorDE": 10.54,
+   "parts": 25,
+   "exactGeometryParts": 1
+  },
+  "93": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 17,
+   "row": 3,
+   "col": 5,
+   "decade": "1970s",
+   "cropBoxInSheet": [
+    833,
+    402,
+    1002,
+    564
+   ],
+   "mode": "flat",
+   "iou": 0.9685,
+   "colourErrorDE": 10.88,
+   "parts": 20,
+   "exactGeometryParts": 1
+  },
+  "94": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 18,
+   "row": 3,
+   "col": 6,
+   "decade": "1970s",
+   "cropBoxInSheet": [
+    1008,
+    420,
+    1192,
+    562
+   ],
+   "mode": "grad",
+   "iou": 0.9734,
+   "colourErrorDE": 11.21,
+   "parts": 49,
+   "exactGeometryParts": 0
+  },
+  "95": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 19,
+   "row": 4,
+   "col": 1,
+   "decade": "1980s",
+   "cropBoxInSheet": [
+    108,
+    582,
+    299,
+    736
+   ],
+   "mode": "grad",
+   "iou": 0.9573,
+   "colourErrorDE": 20.03,
+   "parts": 122,
+   "exactGeometryParts": 0
+  },
+  "96": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 20,
+   "row": 4,
+   "col": 2,
+   "decade": "1980s",
+   "cropBoxInSheet": [
+    288,
+    606,
+    460,
+    736
+   ],
+   "mode": "grad",
+   "iou": 0.9717,
+   "colourErrorDE": 14.04,
+   "parts": 71,
+   "exactGeometryParts": 0
+  },
+  "97": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 21,
+   "row": 4,
+   "col": 3,
+   "decade": "1980s",
+   "cropBoxInSheet": [
+    455,
+    587,
+    661,
+    733
+   ],
+   "mode": "grad",
+   "iou": 0.9183,
+   "colourErrorDE": 13.29,
+   "parts": 95,
+   "exactGeometryParts": 0
+  },
+  "98": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 22,
+   "row": 4,
+   "col": 4,
+   "decade": "1980s",
+   "cropBoxInSheet": [
+    647,
+    578,
+    831,
+    741
+   ],
+   "mode": "grad",
+   "iou": 0.9849,
+   "colourErrorDE": 15.93,
+   "parts": 61,
+   "exactGeometryParts": 0
+  },
+  "99": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 23,
+   "row": 4,
+   "col": 5,
+   "decade": "1980s",
+   "cropBoxInSheet": [
+    823,
+    583,
+    1012,
+    737
+   ],
+   "mode": "grad",
+   "iou": 0.9257,
+   "colourErrorDE": 17.65,
+   "parts": 50,
+   "exactGeometryParts": 0
+  },
+  "100": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 24,
+   "row": 4,
+   "col": 6,
+   "decade": "1980s",
+   "cropBoxInSheet": [
+    1008,
+    594,
+    1199,
+    730
+   ],
+   "mode": "grad",
+   "iou": 0.9523,
+   "colourErrorDE": 11.2,
+   "parts": 70,
+   "exactGeometryParts": 0
+  },
+  "101": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 25,
+   "row": 5,
+   "col": 1,
+   "decade": "1990s",
+   "cropBoxInSheet": [
+    108,
+    766,
+    300,
+    889
+   ],
+   "mode": "grad",
+   "iou": 0.9479,
+   "colourErrorDE": 23.41,
+   "parts": 58,
+   "exactGeometryParts": 0
+  },
+  "102": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 26,
+   "row": 5,
+   "col": 2,
+   "decade": "1990s",
+   "cropBoxInSheet": [
+    295,
+    756,
+    472,
+    896
+   ],
+   "mode": "grad",
+   "iou": 0.987,
+   "colourErrorDE": 12.5,
+   "parts": 99,
+   "exactGeometryParts": 0
+  },
+  "103": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 27,
+   "row": 5,
+   "col": 3,
+   "decade": "1990s",
+   "cropBoxInSheet": [
+    462,
+    760,
+    656,
+    892
+   ],
+   "mode": "grad",
+   "iou": 0.9771,
+   "colourErrorDE": 14.9,
+   "parts": 78,
+   "exactGeometryParts": 0
+  },
+  "104": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 28,
+   "row": 5,
+   "col": 4,
+   "decade": "1990s",
+   "cropBoxInSheet": [
+    655,
+    758,
+    824,
+    897
+   ],
+   "mode": "flat",
+   "iou": 0.9601,
+   "colourErrorDE": 11.72,
+   "parts": 31,
+   "exactGeometryParts": 0
+  },
+  "105": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 29,
+   "row": 5,
+   "col": 5,
+   "decade": "1990s",
+   "cropBoxInSheet": [
+    828,
+    768,
+    1007,
+    892
+   ],
+   "mode": "grad",
+   "iou": 0.977,
+   "colourErrorDE": 16.78,
+   "parts": 37,
+   "exactGeometryParts": 0
+  },
+  "106": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 30,
+   "row": 5,
+   "col": 6,
+   "decade": "1990s",
+   "cropBoxInSheet": [
+    1012,
+    763,
+    1197,
+    889
+   ],
+   "mode": "flat",
+   "iou": 0.955,
+   "colourErrorDE": 12.51,
+   "parts": 65,
+   "exactGeometryParts": 0
+  },
+  "107": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 31,
+   "row": 6,
+   "col": 1,
+   "decade": "2000s",
+   "cropBoxInSheet": [
+    108,
+    918,
+    294,
+    1026
+   ],
+   "mode": "grad",
+   "iou": 0.9217,
+   "colourErrorDE": 19.54,
+   "parts": 81,
+   "exactGeometryParts": 0
+  },
+  "108": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 32,
+   "row": 6,
+   "col": 2,
+   "decade": "2000s",
+   "cropBoxInSheet": [
+    288,
+    913,
+    474,
+    1022
+   ],
+   "mode": "grad",
+   "iou": 0.9314,
+   "colourErrorDE": 12.65,
+   "parts": 87,
+   "exactGeometryParts": 0
+  },
+  "109": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 33,
+   "row": 6,
+   "col": 3,
+   "decade": "2000s",
+   "cropBoxInSheet": [
+    468,
+    913,
+    644,
+    1031
+   ],
+   "mode": "grad",
+   "iou": 0.971,
+   "colourErrorDE": 16.87,
+   "parts": 49,
+   "exactGeometryParts": 0
+  },
+  "110": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 34,
+   "row": 6,
+   "col": 4,
+   "decade": "2000s",
+   "cropBoxInSheet": [
+    643,
+    911,
+    825,
+    1029
+   ],
+   "mode": "grad",
+   "iou": 0.9344,
+   "colourErrorDE": 13.74,
+   "parts": 43,
+   "exactGeometryParts": 0
+  },
+  "111": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 35,
+   "row": 6,
+   "col": 5,
+   "decade": "2000s",
+   "cropBoxInSheet": [
+    825,
+    916,
+    1001,
+    1031
+   ],
+   "mode": "grad",
+   "iou": 0.9685,
+   "colourErrorDE": 11.65,
+   "parts": 35,
+   "exactGeometryParts": 0
+  },
+  "112": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 36,
+   "row": 6,
+   "col": 6,
+   "decade": "2000s",
+   "cropBoxInSheet": [
+    1005,
+    913,
+    1193,
+    1031
+   ],
+   "mode": "grad",
+   "iou": 0.9687,
+   "colourErrorDE": 13.94,
+   "parts": 58,
+   "exactGeometryParts": 0
+  },
+  "113": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 37,
+   "row": 7,
+   "col": 1,
+   "decade": "2010s",
+   "cropBoxInSheet": [
+    120,
+    1048,
+    275,
+    1160
+   ],
+   "mode": "flat",
+   "iou": 0.9501,
+   "colourErrorDE": 11.03,
+   "parts": 26,
+   "exactGeometryParts": 0
+  },
+  "114": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 38,
+   "row": 7,
+   "col": 2,
+   "decade": "2010s",
+   "cropBoxInSheet": [
+    297,
+    1047,
+    456,
+    1158
+   ],
+   "mode": "flat",
+   "iou": 0.9571,
+   "colourErrorDE": 9.41,
+   "parts": 30,
+   "exactGeometryParts": 0
+  },
+  "115": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 39,
+   "row": 7,
+   "col": 3,
+   "decade": "2010s",
+   "cropBoxInSheet": [
+    477,
+    1056,
+    628,
+    1158
+   ],
+   "mode": "flat",
+   "iou": 0.9489,
+   "colourErrorDE": 10.2,
+   "parts": 22,
+   "exactGeometryParts": 0
+  },
+  "116": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 40,
+   "row": 7,
+   "col": 4,
+   "decade": "2010s",
+   "cropBoxInSheet": [
+    647,
+    1075,
+    828,
+    1154
+   ],
+   "mode": "flat",
+   "iou": 0.8973,
+   "colourErrorDE": 18.47,
+   "parts": 30,
+   "exactGeometryParts": 0
+  },
+  "117": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 41,
+   "row": 7,
+   "col": 5,
+   "decade": "2010s",
+   "cropBoxInSheet": [
+    845,
+    1049,
+    998,
+    1160
+   ],
+   "mode": "flat",
+   "iou": 0.9686,
+   "colourErrorDE": 11.13,
+   "parts": 30,
+   "exactGeometryParts": 0
+  },
+  "118": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 42,
+   "row": 7,
+   "col": 6,
+   "decade": "2010s",
+   "cropBoxInSheet": [
+    1022,
+    1051,
+    1183,
+    1162
+   ],
+   "mode": "flat",
+   "iou": 0.9419,
+   "colourErrorDE": 15.38,
+   "parts": 34,
+   "exactGeometryParts": 0
+  },
+  "119": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 43,
+   "row": 8,
+   "col": 1,
+   "decade": "2020s",
+   "cropBoxInSheet": [
+    108,
+    1180,
+    281,
+    1306
+   ],
+   "mode": "grad",
+   "iou": 0.9654,
+   "colourErrorDE": 17.87,
+   "parts": 32,
+   "exactGeometryParts": 0
+  },
+  "120": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 44,
+   "row": 8,
+   "col": 2,
+   "decade": "2020s",
+   "cropBoxInSheet": [
+    280,
+    1175,
+    465,
+    1306
+   ],
+   "mode": "grad",
+   "iou": 0.9587,
+   "colourErrorDE": 14.68,
+   "parts": 48,
+   "exactGeometryParts": 0
+  },
+  "121": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 45,
+   "row": 8,
+   "col": 3,
+   "decade": "2020s",
+   "cropBoxInSheet": [
+    474,
+    1174,
+    629,
+    1306
+   ],
+   "mode": "grad",
+   "iou": 0.9598,
+   "colourErrorDE": 18.37,
+   "parts": 61,
+   "exactGeometryParts": 0
+  },
+  "122": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 46,
+   "row": 8,
+   "col": 4,
+   "decade": "2020s",
+   "cropBoxInSheet": [
+    631,
+    1178,
+    831,
+    1298
+   ],
+   "mode": "grad",
+   "iou": 0.9691,
+   "colourErrorDE": 11.68,
+   "parts": 74,
+   "exactGeometryParts": 0
+  },
+  "123": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 47,
+   "row": 8,
+   "col": 5,
+   "decade": "2020s",
+   "cropBoxInSheet": [
+    841,
+    1178,
+    1005,
+    1303
+   ],
+   "mode": "grad",
+   "iou": 0.9491,
+   "colourErrorDE": 10.78,
+   "parts": 30,
+   "exactGeometryParts": 0
+  },
+  "124": {
+   "sheet": "14",
+   "sheetFile": "refs/14.webp",
+   "sheetTitle": "Decades",
+   "position": 48,
+   "row": 8,
+   "col": 6,
+   "decade": "2020s",
+   "cropBoxInSheet": [
+    1015,
+    1191,
+    1189,
+    1306
+   ],
+   "mode": "grad",
+   "iou": 0.9744,
+   "colourErrorDE": 13.25,
+   "parts": 33,
+   "exactGeometryParts": 0
+  },
+  "125": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 1,
+   "row": 1,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    3,
+    82,
+    308,
+    311
+   ],
+   "mode": "flat",
+   "iou": 0.9777,
+   "colourErrorDE": 7.31,
+   "parts": 31,
+   "exactGeometryParts": 2
+  },
+  "126": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 2,
+   "row": 1,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    309,
+    108,
+    630,
+    313
+   ],
+   "mode": "grad",
+   "iou": 0.9605,
+   "colourErrorDE": 11.98,
+   "parts": 122,
+   "exactGeometryParts": 0
+  },
+  "127": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 3,
+   "row": 1,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    632,
+    82,
+    937,
+    316
+   ],
+   "mode": "flat",
+   "iou": 0.9687,
+   "colourErrorDE": 8.16,
+   "parts": 51,
+   "exactGeometryParts": 3
+  },
+  "128": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 4,
+   "row": 1,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    939,
+    78,
+    1252,
+    319
+   ],
+   "mode": "flat",
+   "iou": 0.9804,
+   "colourErrorDE": 5.78,
+   "parts": 35,
+   "exactGeometryParts": 4
+  },
+  "129": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 5,
+   "row": 2,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    8,
+    396,
+    306,
+    625
+   ],
+   "mode": "flat",
+   "iou": 0.9827,
+   "colourErrorDE": 6.91,
+   "parts": 31,
+   "exactGeometryParts": 1
+  },
+  "130": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 6,
+   "row": 2,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    300,
+    399,
+    640,
+    626
+   ],
+   "mode": "flat",
+   "iou": 0.989,
+   "colourErrorDE": 8.59,
+   "parts": 28,
+   "exactGeometryParts": 4
+  },
+  "131": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 7,
+   "row": 2,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    629,
+    400,
+    939,
+    616
+   ],
+   "mode": "flat",
+   "iou": 0.9257,
+   "colourErrorDE": 15.13,
+   "parts": 65,
+   "exactGeometryParts": 1
+  },
+  "132": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 8,
+   "row": 2,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    944,
+    400,
+    1249,
+    620
+   ],
+   "mode": "grad",
+   "iou": 0.9682,
+   "colourErrorDE": 11.12,
+   "parts": 106,
+   "exactGeometryParts": 0
+  },
+  "133": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 9,
+   "row": 3,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    0,
+    726,
+    315,
+    895
+   ],
+   "mode": "flat",
+   "iou": 0.9691,
+   "colourErrorDE": 8.31,
+   "parts": 33,
+   "exactGeometryParts": 0
+  },
+  "134": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 10,
+   "row": 3,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    312,
+    707,
+    618,
+    903
+   ],
+   "mode": "flat",
+   "iou": 0.9732,
+   "colourErrorDE": 9.11,
+   "parts": 35,
+   "exactGeometryParts": 1
+  },
+  "135": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 11,
+   "row": 3,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    625,
+    694,
+    923,
+    900
+   ],
+   "mode": "flat",
+   "iou": 0.977,
+   "colourErrorDE": 7.96,
+   "parts": 29,
+   "exactGeometryParts": 3
+  },
+  "136": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 12,
+   "row": 3,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    923,
+    747,
+    1254,
+    889
+   ],
+   "mode": "flat",
+   "iou": 0.9768,
+   "colourErrorDE": 5.46,
+   "parts": 43,
+   "exactGeometryParts": 0
+  },
+  "137": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 13,
+   "row": 4,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    3,
+    1002,
+    306,
+    1223
+   ],
+   "mode": "grad",
+   "iou": 0.8943,
+   "colourErrorDE": 9.7,
+   "parts": 79,
+   "exactGeometryParts": 0
+  },
+  "138": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 14,
+   "row": 4,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    312,
+    1018,
+    624,
+    1223
+   ],
+   "mode": "flat",
+   "iou": 0.9774,
+   "colourErrorDE": 7.82,
+   "parts": 42,
+   "exactGeometryParts": 1
+  },
+  "139": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 15,
+   "row": 4,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    620,
+    1001,
+    947,
+    1218
+   ],
+   "mode": "flat",
+   "iou": 0.9776,
+   "colourErrorDE": 12.18,
+   "parts": 67,
+   "exactGeometryParts": 0
+  },
+  "140": {
+   "sheet": "15",
+   "sheetFile": "refs/15.webp",
+   "sheetTitle": "Colour, set 2",
+   "position": 16,
+   "row": 4,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    943,
+    988,
+    1253,
+    1230
+   ],
+   "mode": "flat",
+   "iou": 0.9711,
+   "colourErrorDE": 9.01,
+   "parts": 46,
+   "exactGeometryParts": 0
+  },
+  "141": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 1,
+   "row": 1,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    8,
+    123,
+    314,
+    256
+   ],
+   "mode": "flat",
+   "iou": 0.9782,
+   "colourErrorDE": 5.17,
+   "parts": 17,
+   "exactGeometryParts": 4
+  },
+  "142": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 2,
+   "row": 1,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    331,
+    67,
+    622,
+    292
+   ],
+   "mode": "flat",
+   "iou": 0.9775,
+   "colourErrorDE": 7.71,
+   "parts": 13,
+   "exactGeometryParts": 1
+  },
+  "143": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 3,
+   "row": 1,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    640,
+    71,
+    929,
+    277
+   ],
+   "mode": "flat",
+   "iou": 0.9836,
+   "colourErrorDE": 6.06,
+   "parts": 17,
+   "exactGeometryParts": 1
+  },
+  "144": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 4,
+   "row": 1,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    952,
+    82,
+    1240,
+    302
+   ],
+   "mode": "flat",
+   "iou": 0.9883,
+   "colourErrorDE": 3.74,
+   "parts": 21,
+   "exactGeometryParts": 0
+  },
+  "145": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 5,
+   "row": 2,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    17,
+    366,
+    312,
+    612
+   ],
+   "mode": "flat",
+   "iou": 0.979,
+   "colourErrorDE": 4.45,
+   "parts": 13,
+   "exactGeometryParts": 0
+  },
+  "146": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 6,
+   "row": 2,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    330,
+    361,
+    613,
+    616
+   ],
+   "mode": "flat",
+   "iou": 0.9828,
+   "colourErrorDE": 5.18,
+   "parts": 16,
+   "exactGeometryParts": 1
+  },
+  "147": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 7,
+   "row": 2,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    628,
+    381,
+    931,
+    616
+   ],
+   "mode": "flat",
+   "iou": 0.9848,
+   "colourErrorDE": 4.55,
+   "parts": 30,
+   "exactGeometryParts": 0
+  },
+  "148": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 8,
+   "row": 2,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    935,
+    429,
+    1254,
+    597
+   ],
+   "mode": "flat",
+   "iou": 0.9867,
+   "colourErrorDE": 4.21,
+   "parts": 20,
+   "exactGeometryParts": 0
+  },
+  "149": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 9,
+   "row": 3,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    4,
+    708,
+    319,
+    875
+   ],
+   "mode": "flat",
+   "iou": 0.9843,
+   "colourErrorDE": 7.3,
+   "parts": 14,
+   "exactGeometryParts": 0
+  },
+  "150": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 10,
+   "row": 3,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    321,
+    694,
+    615,
+    915
+   ],
+   "mode": "flat",
+   "iou": 0.9734,
+   "colourErrorDE": 6.39,
+   "parts": 20,
+   "exactGeometryParts": 1
+  },
+  "151": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 11,
+   "row": 3,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    641,
+    668,
+    928,
+    933
+   ],
+   "mode": "flat",
+   "iou": 0.9801,
+   "colourErrorDE": 6.09,
+   "parts": 13,
+   "exactGeometryParts": 0
+  },
+  "152": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 12,
+   "row": 3,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    929,
+    706,
+    1254,
+    905
+   ],
+   "mode": "flat",
+   "iou": 0.9882,
+   "colourErrorDE": 3.82,
+   "parts": 14,
+   "exactGeometryParts": 0
+  },
+  "153": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 13,
+   "row": 4,
+   "col": 1,
+   "decade": null,
+   "cropBoxInSheet": [
+    9,
+    1029,
+    311,
+    1198
+   ],
+   "mode": "flat",
+   "iou": 0.9845,
+   "colourErrorDE": 4.51,
+   "parts": 24,
+   "exactGeometryParts": 0
+  },
+  "154": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 14,
+   "row": 4,
+   "col": 2,
+   "decade": null,
+   "cropBoxInSheet": [
+    316,
+    1023,
+    625,
+    1201
+   ],
+   "mode": "flat",
+   "iou": 0.9843,
+   "colourErrorDE": 5.94,
+   "parts": 22,
+   "exactGeometryParts": 0
+  },
+  "155": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 15,
+   "row": 4,
+   "col": 3,
+   "decade": null,
+   "cropBoxInSheet": [
+    630,
+    996,
+    934,
+    1210
+   ],
+   "mode": "flat",
+   "iou": 0.977,
+   "colourErrorDE": 7.09,
+   "parts": 13,
+   "exactGeometryParts": 0
+  },
+  "156": {
+   "sheet": "16",
+   "sheetFile": "refs/16.webp",
+   "sheetTitle": "Colour, set 3",
+   "position": 16,
+   "row": 4,
+   "col": 4,
+   "decade": null,
+   "cropBoxInSheet": [
+    951,
+    984,
+    1248,
+    1212
+   ],
+   "mode": "flat",
+   "iou": 0.9883,
+   "colourErrorDE": 4.31,
+   "parts": 13,
+   "exactGeometryParts": 0
+  }
+ }
+}
