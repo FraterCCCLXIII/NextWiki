@@ -156,10 +156,16 @@ function reactorPart(spec, name) {
 function boomPart(spec, name = 'Reactor boom') {
   return { name: `${name}, ${spec.dims.l.toFixed(0)} m`, kind: 'truss', dataQuality: 'derived', source: spec.source, dims: spec.dims, mass: spec.mass, volume: { pressurised: null, habitable: null }, crew: 0, power: { gen: 0, load: 0 }, heat: { rejectCapacity: null }, truss: spec, ports: [hinge('aft', 'passive', [0, 0, 0], [0, -1, 0]), hinge('fore', 'active', [0, spec.dims.l, 0], [0, 1, 0])] };
 }
-function radiatorPart(spec, name = 'Radiator wing') {
-  /* one part per side: perSide panels side by side across the wing's width */
-  const w = spec.panelW * spec.perSide * 1.05;
-  return { name: `${name}, ${(spec.areaM2 / 2).toFixed(0)} m2`, kind: 'radiator', dataQuality: 'derived', source: spec.source, dims: { l: spec.panelL, d: w }, mass: spec.mass / 2, volume: { pressurised: null, habitable: null }, crew: 0, power: { gen: 0, load: 100 }, heat: { rejectCapacity: spec.heatW / 2 }, radiator: { ...spec, panels: spec.perSide }, stowed: { l: spec.panelL / 8, d: w }, ports: [hinge('root', 'passive', [0, 0, 0], [0, -1, 0])] };
+function radiatorPart(spec, name = 'Radiator wing', { wings = 2, layout = 'row' } = {}) {
+  /* one part per wing, carrying `panels` of the spec's panels. `layout` 'row' hangs them end to end
+     (the wing is long and one panel wide, like the ISS HRS); 'side' hangs them side by side. The QA
+     pass moved the default from 'side' to 'row': a 16 m wide wing on a 7 m node crossed the airlock
+     and the PMA beside it, and a 185 m slab on the colony hub crossed the ring. Mass is the spec's
+     share, so the pinned hull masses do not move. */
+  const panels = spec.panels / wings, w = spec.panelW * 1.05;
+  const l = layout === 'row' ? spec.panelL * panels : spec.panelL, d = layout === 'row' ? w : w * panels;
+  const rad = layout === 'row' ? { ...spec, panels: 1, panelL: l, perSide: panels } : { ...spec, panels };
+  return { name: `${name}, ${(spec.areaM2 / wings).toFixed(0)} m2`, kind: 'radiator', dataQuality: 'derived', source: spec.source, dims: { l, d }, mass: spec.mass / wings, volume: { pressurised: null, habitable: null }, crew: 0, power: { gen: 0, load: 200 / wings }, heat: { rejectCapacity: spec.heatW / wings }, radiator: rad, layout, standoff: 0.6, stowed: { l: l / 8, d }, ports: [hinge('root', 'passive', [0, 0, 0], [0, -1, 0])] };
 }
 function rtgPart(spec) {
   return { name: `MMRTG-class radioisotope generator, ${spec.powerW.toFixed(0)} We EOL`, kind: 'rtg', dataQuality: 'derived', source: spec.source, dims: spec.dims, mass: spec.mass, volume: { pressurised: null, habitable: null }, crew: 0, power: spec.power, heat: spec.heat, ports: [hinge('root', 'passive', [0, 0, 0], [0, -1, 0])] };
@@ -361,7 +367,10 @@ export function hullV4(cls) {
     const shelterItem = inv.items.find((i) => i.spec?.primitive === 'storm-shelter');
     /* where things live */
     const labItems = [...by('life support').filter((i) => i !== ghItem), ...by('crew fittings'), shelterItem, ...by('gas storage'), ...by('water storage')].filter(Boolean);
-    const lab = absorb('module-destiny', labItems, ' (ECLSS, quarters, shelter)');
+    const lab0 = absorb('module-destiny', labItems, ' (ECLSS, quarters, shelter)');
+    /* QA pass: the radiators hang on the lab's flanks at mid-length, not on the node's fore cone, where
+       a wing wider than 2.8 m crossed the airlock and the PMA on the node's radial berths */
+    const lab = { ...lab0, ports: [...lab0.ports, { ...hinge('mount-5', 'active', [0, lab0.dims.l / 2, lab0.dims.d / 2], [0, 0, 1]), clock: [0, 1, 0] }, { ...hinge('mount-6', 'active', [0, lab0.dims.l / 2, -lab0.dims.d / 2], [0, 0, -1]), clock: [0, 1, 0] }] };
     const storesItems = [...by('consumables'), ...by('spares')];
     const stores = storesModules(storesItems, id === 'seed' ? { d: 6.6, maxL: 12 } : { d: 4.4, maxL: 9 });
     const bayItems = [...by('power').filter((i) => i !== reactorItem), ...by('GNC'), ...by('comms'), ...by('RCS'), ...by('MMOD').filter((i) => !/dust/.test(i.item)), ...by('thermal').filter((i) => i !== radItem)];
@@ -387,7 +396,7 @@ export function hullV4(cls) {
       { a: 'node.port', b: 'bay.aft' }, { a: 'node.nadir', b: 'airlock.root' }, { a: 'node.zenith', b: 'pma.root' },
       { a: 'node.spinhub', b: 'bearing.aft' }, { a: 'bearing.hub', b: 'ring.hub' }, { a: 'bearing.dock', b: 'stage.fore' },
       { a: 'node.mount-7', b: 'boom.aft' }, { a: 'boom.fore', b: 'reactor.root' },
-      { a: 'node.mount-5', b: 'radA.root' }, { a: 'node.mount-6', b: 'radB.root' }
+      { a: 'lab.mount-5', b: 'radA.root' }, { a: 'lab.mount-6', b: 'radB.root' }
     );
     return { root: 'node', parts, mates, mount: { name: 'collar', port: 'fore' }, inventory: inv, ring: ringFull };
   }
@@ -414,19 +423,35 @@ export function hullV4(cls) {
     const ring = { ...ring0, mass: ring0.mass + ringItems.reduce((s, i) => s + i.kg, 0), inventory: ringItems.map((i) => ({ item: i.item, kg: i.kg, m3: i.m3 ?? null, source: i.source })), power: { gen: 0, load: ring0.power.load + ringItems.reduce((s, i) => s + (i.W ?? 0), 0) } };
     const stores = [];
     const bay = systemsBay([...by('power').filter((i) => i !== reactorItem), ...by('GNC'), ...by('comms'), ...by('RCS'), ...by('MMOD').filter((i) => !/dust/.test(i.item)), ...by('thermal').filter((i) => i !== radItem)], { d: 6, kind: 'systems-module', name: 'Systems module (CMGs, PMAD, batteries, comms, RCS, bumpers)' });
-    bay.ports = cbm(bay.dims.l, false); // first body of the aft spindle: a chain module (aft active, fore passive)
+    /* first body of the aft spindle: a chain module (aft active, fore passive). QA pass: it also carries
+       the utilities that used to hang on the despun hub inside the ring's plane -- the two reactor booms
+       at +-x and eight radiator vanes at 45 degree stations -- all of them aft of the ring tube by more
+       than the audit margin, where a 60 m boom and an 88 m vane clear a 34.5 m tube. */
+    const bayL = bay.dims.l, bayR = bay.dims.d / 2, nVanes = 16, stations = 2, perStation = nVanes / stations;
+    const vaneW = radItem.spec.panelW * 1.05;
+    /* two stations of eight one-panel vanes at 45 degree steps (none at +-x, where the booms are), the
+       first aft of the ring tube and its margin, the second a panel further aft; booms between them */
+    const aftOfRing = ring0.ring.D / 2 + 1.2 + 0.02 * ring0.ring.R - 9.5;
+    const stationY = Array.from({ length: stations }, (_, j) => Math.max(aftOfRing, 1) + vaneW / 2 + j * (vaneW + 5.0));
+    const boomY = Math.min(bayL - 4, stationY[0] + vaneW / 2 + 2.5); // the 3 m boom sits in the 5 m gap between the two vane stations
+    bay.ports = [
+      ...cbm(bayL, false),
+      { ...hinge('mount-a', 'active', [bayR, boomY, 0], [1, 0, 0]), clock: [0, 1, 0] }, { ...hinge('mount-b', 'active', [-bayR, boomY, 0], [-1, 0, 0]), clock: [0, 1, 0] },
+      ...Array.from({ length: nVanes }, (_, k) => { const a = (Math.PI / 8) + ((k % perStation) * Math.PI) / 4; return { ...hinge(`vane-${k}`, 'active', [Math.cos(a) * bayR, stationY[Math.floor(k / perStation)], Math.sin(a) * bayR], [Math.cos(a), 0, Math.sin(a)]), clock: [0, 1, 0] }; })
+    ];
     /* two reactors share the load: each half the power on its own boom */
     const half = reactorSpec({ powerWe: reactorItem.spec.powerWe / 2 });
     const reactorA = reactorPart(half), reactorB = reactorPart(half);
     const boomA = boomPart(trussSpec({ lengthM: Math.max(60, half.dims.l * 2.5), widthM: 3, axialLoadN: half.mass * 0.5 })), boomB = boomPart(trussSpec({ lengthM: Math.max(60, half.dims.l * 2.5), widthM: 3, axialLoadN: half.mass * 0.5 }));
-    const radA = radiatorPart(radItem.spec), radB = radiatorPart(radItem.spec);
+    /* sixteen one-panel vanes, each 88 m long and 23 m along the spindle, on the bay's two stations */
+    const vanes = Array.from({ length: 16 }, (_, k) => ({ as: `rad${k}`, part: radiatorPart(radItem.spec, 'Radiator vane', { wings: 16, layout: 'side' }) }));
     const dust = dustShieldPart(inv.items.find((i) => /dust/.test(i.item)).spec, 12);
     const parts = [
       { as: 'ring', part: ring }, { as: 'despin', part: despin }, { as: 'despinAft', part: despinAft },
       { as: 'dust', part: dust }, { as: 'collar', part: 'thrust-collar' },
       { as: 'bay', part: bay }, { as: 'airlock', part: 'airlock-quest' }, { as: 'pma', part: 'pma' },
       { as: 'boomA', part: boomA }, { as: 'boomB', part: boomB }, { as: 'reactorA', part: reactorA }, { as: 'reactorB', part: reactorB },
-      { as: 'radA', part: radA }, { as: 'radB', part: radB },
+      ...vanes,
       ...stores
     ];
     /* the despun hub's `fore` is a hinge; the sail collar wants a CBM, so the hub carries a collar-root adapter: the dust shield's CBM chain starts at an adapter ring */
@@ -439,8 +464,8 @@ export function hullV4(cls) {
       { a: 'ring.hub', b: 'despin.root' }, { a: 'ring.hub-aft', b: 'despinAft.root' },
       { a: 'despin.fore', b: 'adapter.root' }, { a: 'adapter.fore', b: 'dust.aft' }, { a: 'dust.fore', b: 'collar.aft' },
       { a: 'despin.berth-1', b: 'pma.root' }, { a: 'despin.berth-2', b: 'airlock.root' },
-      { a: 'despin.mount-a', b: 'boomA.aft' }, { a: 'boomA.fore', b: 'reactorA.root' }, { a: 'despin.mount-b', b: 'boomB.aft' }, { a: 'boomB.fore', b: 'reactorB.root' },
-      { a: 'despin.mount-c', b: 'radA.root' }, { a: 'despin.mount-d', b: 'radB.root' },
+      { a: 'bay.mount-a', b: 'boomA.aft' }, { a: 'boomA.fore', b: 'reactorA.root' }, { a: 'bay.mount-b', b: 'boomB.aft' }, { a: 'boomB.fore', b: 'reactorB.root' },
+      ...vanes.map((v, k) => ({ a: `bay.vane-${k}`, b: `${v.as}.root` })),
       { a: 'despinAft.fore', b: 'adapterAft.root' }, { a: 'adapterAft.fore', b: 'bay.aft' }
     ];
     /* stores spindle: bay (radial-genders: aft passive, fore active) then the CBM chain of stores and the braking stage */

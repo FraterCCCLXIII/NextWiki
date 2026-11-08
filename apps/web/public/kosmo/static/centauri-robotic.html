@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
+<script src="kosmo-scrollfade.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centauri Fleet: v5 robotic</title>
+<style>
+  :root { --bg: #0d0d0d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --good: #7fe0a0; --bad: #ff8a8a; --line: rgba(140,170,220,0.14); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+  #navbar { position: sticky; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: rgba(13,13,13,0.94); }
+  #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 20px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 13px; color: #fff; opacity: 0.8; margin-top: 2px; }
+  #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.16em; font-size: 14px; text-transform: uppercase; }
+  #menu a { color: rgba(255,255,255,0.72); text-decoration: none; white-space: nowrap; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+  main { max-width: 1180px; margin: 0 auto; padding: 8px 20px 90px; }
+  h1 { font-weight: 500; font-size: 32px; margin: 18px 0 4px; }
+  h2 { font-weight: 500; font-size: 21px; margin: 38px 0 6px; border-top: 1px solid var(--line); padding-top: 22px; }
+  h3 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 18px 0 6px; font-weight: 500; }
+  p, li { color: #c3d0e2; max-width: 86ch; } .dim { color: var(--muted); } .small { font-size: 13px; }
+  .verdict { border: 1px solid var(--line); border-left: 3px solid var(--accent2); border-radius: 8px; padding: 10px 14px; background: rgba(18,22,30,0.55); margin: 14px 0; }
+  .verdict b { color: #fff; } .verdict.ok { border-left-color: var(--good); } .verdict.no { border-left-color: var(--bad); }
+  input, select, button { background: rgba(26,26,26,0.85); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 8px; padding: 4px 8px; font: inherit; max-width: 100%; }
+  button { cursor: pointer; } button.on { border-color: var(--accent); color: #fff; }
+  label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 1px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px 16px; margin: 10px 0; align-items: flex-end; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; margin: 8px 0; font-variant-numeric: tabular-nums; }
+  th, td { padding: 4px 10px 4px 0; text-align: right; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 400; } th:first-child, td:first-child { text-align: left; }
+  td.l, th.l { text-align: left; } .tw { overflow-x: auto; }
+  .ok { color: var(--good); } .no { color: var(--bad); } .warn { color: var(--accent2); } .acc { color: var(--accent); }
+  code { background: rgba(255,255,255,0.07); border-radius: 4px; padding: 0 5px; font-size: 13px; }
+  a { color: var(--accent); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(168px, 1fr)); gap: 8px; margin: 14px 0 6px; }
+  .stat { border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; background: rgba(18,22,30,0.55); }
+  .stat span { display: block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .stat b { display: block; font-size: 19px; font-weight: 500; color: #fff; margin: 2px 0 1px; font-variant-numeric: tabular-nums; }
+  .stat i { font-style: normal; font-size: 11.5px; color: #93a3ba; }
+  tr.best td { background: rgba(127,195,255,0.07); } tr.rej td { color: #93a3ba; }
+  #viewwrap { position: relative; height: 620px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: radial-gradient(ellipse at 50% 40%, #11161f 0%, #05070d 70%); }
+  #view { position: absolute; inset: 0; } #view canvas { display: block; }
+  #labels { position: absolute; inset: 0; pointer-events: none; }
+  .lbl { position: absolute; transform: translate(-50%, 0); font-size: 11px; color: #cfe3ff; text-shadow: 0 1px 2px #000; white-space: nowrap; text-align: center; }
+  .lbl b { display: block; font-size: 12px; color: #fff; font-weight: 500; } .lbl span { color: #9fb6d6; }
+  #caption { position: absolute; left: 14px; bottom: 12px; font-size: 12.5px; color: #cfe3ff; text-shadow: 0 1px 3px #000; max-width: 70%; }
+  #caption b { color: #fff; font-weight: 500; }
+  #hud { position: absolute; right: 12px; top: 12px; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; max-width: 60%; }
+  #hud button { font-size: 12px; padding: 3px 8px; }
+  pre.diagram { font-size: 12px; line-height: 1.35; color: #b9c8de; background: rgba(18,22,30,0.55); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; }
+  @media (max-width: 760px) { #menu { display: none; } main { padding: 8px 14px 60px; } #viewwrap { height: 420px; } }
+</style>
+<script type="importmap">{ "imports": { "three": "./vendor/three-0.160.0/build/three.module.js", "three/addons/": "./vendor/three-0.160.0/examples/jsm/" } }</script>
+<link rel="stylesheet" href="kosmographica.css?v=15">
+<script src="atlas-nav.js" defer></script>
+</head>
+<body>
+<div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
+  <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="centauri-lab.html">Centauri Fleet</a><a href="centauri-robotic.html" class="here">v5 robotic</a></nav><span></span></div>
+<main>
+  <h1 class="serif">Centauri Fleet: v5, the ship that flies itself</h1>
+  <div class="dim">The crewed classes rebuilt around an AI swarm and a robot workforce. The ship pilots itself; a small human
+    cadre sleeps in cyclic torpor and is woken by tiered triggers; an observation deck lets the awake watch telepresence into
+    the robots and scrub through everything the swarm recorded. Every number below is measured from the placed parts in
+    <code>parts/robotic.js</code>; the argument is in <code>CENTAURI-ROBOTIC.md</code>.</div>
+
+  <div class="verdict" id="verdict">&mdash;</div>
+
+  <div class="row" id="controls">
+    <div><label>Class</label><select id="cls"><option value="habitat">Crewed habitat &middot; 100 t</option><option value="seed">Colony seed &middot; 1,000 t</option><option value="colony">Full colony &middot; 10,000 t</option></select></div>
+    <div><label>Version</label><select id="ver"></select></div>
+    <div><label>View</label><select id="view3">
+      <option value="overview">whole ship</option><option value="hangar">hangar and robots</option><option value="ring">torpor ring and shelter</option><option value="deck">observation deck</option><option value="drive">drive and rails</option><option value="gallery">robot gallery, true scale</option>
+    </select></div>
+    <div><label>Radiators</label><input type="range" id="unfold" min="0" max="1" step="0.01" value="1" style="width:120px"></div>
+    <div><label>&nbsp;</label><button id="shotBtn" title="save this view as a PNG">PNG</button></div>
+  </div>
+
+  <div id="viewwrap"><div id="view"></div><div id="labels"></div><div id="caption"></div>
+    <div id="hud"><button data-layer="person" class="on">1.8 m person</button><button data-layer="robots" class="on">robots</button><button data-layer="rails" class="on">rails</button><button data-layer="racks" class="on">compute racks</button><button data-layer="radiators" class="on">radiators</button><button data-layer="detail" class="on">detail</button><button data-layer="livery">livery</button><button data-layer="cutaway">cutaway</button><button data-layer="labels" class="on">labels</button></div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <h2 class="serif">1 &middot; Before and after</h2>
+  <p>The three crewed classes in every version, measured by the same solver. The v2 and v3 columns show the ships as
+    pinned <em>and</em> with the consumables and life support their own crews would need under the laws v5 uses, because a
+    ship that forgot to eat is not a fair baseline.</p>
+  <div class="tw"><table id="compare"></table></div>
+
+  <h2 class="serif">2 &middot; The trade study</h2>
+  <p>Six routes scored one to five against a weighted rubric. The uncrewed ship scores highest and the study says so: the
+    recommendation is the best route that meets the requirement the crewed classes exist for, that adults arrive alive and
+    able to act; the one that beats it is built as the hedge.</p>
+  <div class="tw"><table id="trade"></table></div>
+  <p class="small dim" id="tradeNote"></p>
+
+  <h2 class="serif">3 &middot; The robots</h2>
+  <p>The inventory for the selected ship, every row a placed part with a flown analogue. Counts come from the hull: crawlers
+    per metre of rail, inspectors per square metre of hull, humanoids per module and per ten sleepers.</p>
+  <div class="tw"><table id="robots"></table></div>
+
+  <h2 class="serif">4 &middot; The hangar, the lock, the cockpits, the deck</h2>
+  <div class="tw"><table id="rooms"></table></div>
+
+  <h2 class="serif">5 &middot; The swarm</h2>
+  <div class="tw"><table id="swarm"></table></div>
+  <h3>The recorded-data pipeline</h3>
+  <pre class="diagram" id="pipeline"></pre>
+
+  <h2 class="serif">6 &middot; Who wakes whom</h2>
+  <div class="tw"><table id="tiers"></table></div>
+  <h3>Shared-autonomy modes</h3>
+  <div class="tw"><table id="modes"></table></div>
+
+  <h2 class="serif">7 &middot; What the parts weigh</h2>
+  <div class="tw"><table id="parts"></table></div>
+
+  <h2 class="serif">Sources and assumptions</h2>
+  <p class="small dim" id="sources"></p>
+</main>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { boostTrackpadZoom } from './zoom-boost.js';
+import { buildCentauriModel } from './parts/centauri-models.js';
+import { createSpaceLighting, enableShadows } from './space-lighting.js';
+import { buildRoboticModel, buildRobotGallery } from './parts/robotic-models.js';
+import { person } from './vehicle-models.js';
+import { addHumanDetail } from './parts/detail-pass.js';
+import { applyRenderMode } from './render-modes.js';
+import { measure, VARIANTS } from './parts/fleet.js';
+import { FLEET_VERSIONS } from './parts/fleet-versions.js';
+import {
+  measureRobotic, DESIGNS, designById, baselineBudget, scoreOptions, recommend, RUBRIC, REQUIREMENT,
+  WAKE_TIERS, AUTONOMY_MODES, ROBOTS, TORPOR, COCKPIT, OBS_DECK, HANGAR, NETWORK, DATA, COMPUTE_NODE, CONSENSUS, SHIELD, ECLSS, netPerPersonDayKg, awakeFraction
+} from './parts/robotic.js';
+import { formatMass, formatLength } from './parts/parts.js';
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const kW = (w) => (w >= 1e6 ? `${(w / 1e6).toFixed(2)} MW` : w >= 1e3 ? `${(w / 1e3).toFixed(1)} kW` : `${Math.round(w)} W`);
+const pb = (tb) => (tb >= 1000 ? `${(tb / 1000).toFixed(1)} PB` : `${tb.toFixed(0)} TB`);
+const n0 = (v) => Math.round(v).toLocaleString('en-US');
+
+const VERSIONS = {
+  habitat: [['habitat', 'v1 sail'], ['habitat-spin', 'v2 1 g ring, 24 crew'], ['habitat-dfd', 'v3 direct fusion'], ['habitat-v5', 'v5 robotic, 6 sleepers']],
+  seed: [['seed', 'v1 sail'], ['seed-spin', 'v2 1 g ring, 110 crew'], ['seed-daedalus', 'v3 Daedalus'], ['seed-v5', 'v5 robotic, 12 sleepers + bank'], ['seed-v5-auto', 'v5 uncrewed, bank only']],
+  colony: [['colony', 'v1 sail'], ['colony-spin', 'v2 1 g ring, 1,000 crew'], ['colony-pulse', 'v3 fusion pulse'], ['colony-v5-cadre', 'v5 robotic, 60 cadre + 10,000-line bank'], ['colony-v5', 'v5 robotic, 1,000 sleepers']]
+};
+const isV5 = (id) => !!designById(id);
+
+/* ---- scene ---- */
+const view = $('view'), renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); view.appendChild(renderer.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x05070c);
+const camera = new THREE.PerspectiveCamera(38, 1, 0.05, 50000);
+const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.zoomSpeed = 1.6; boostTrackpadZoom(controls, renderer.domElement, { pinchGain: 0.25, scrollGain: 0.009, maxStep: 0.8 });
+/* the shared photoreal rig (space-lighting.js): procedural Sun + Earth-limb PMREM, shadow-casting key, Earth-blue fill, rim, ACES + sRGB */
+const rig = createSpaceLighting(renderer, scene, { exposure: 1.0 });
+const stage = new THREE.Group(); scene.add(stage);
+let model = null, labelItems = [], personMesh = null;
+
+function resize() { const w = view.clientWidth, h = view.clientHeight; renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+addEventListener('resize', resize); resize();
+function clearStage() { for (const c of [...stage.children]) { stage.remove(c); c.traverse((o) => o.geometry?.dispose()); } $('labels').innerHTML = ''; labelItems = []; model = null; personMesh = null; }
+
+/* Frame a box with the camera from a direction: the distance is whichever of the bounding sphere and
+   the projected width needs more, so a long line-up and a round ring both fill the view. */
+function frame(box, dir = new THREE.Vector3(1.4, 0.8, 1.9), pad = 1.18) {
+  const size = box.getSize(new THREE.Vector3()), centre = box.getCenter(new THREE.Vector3());
+  const d = dir.clone().normalize();
+  const vfov = (camera.fov * Math.PI) / 360, hfov = Math.atan(Math.tan(vfov) * camera.aspect);
+  /* extent of the box across the view: project the half-size onto the camera's right and up axes */
+  const up = Math.abs(d.y) > 0.95 ? new THREE.Vector3(0, 0, 1) : new THREE.Vector3(0, 1, 0);
+  const right = new THREE.Vector3().crossVectors(up, d).normalize(), camUp = new THREE.Vector3().crossVectors(d, right).normalize();
+  const half = size.clone().multiplyScalar(0.5);
+  const w = Math.abs(half.x * right.x) + Math.abs(half.y * right.y) + Math.abs(half.z * right.z);
+  const h = Math.abs(half.x * camUp.x) + Math.abs(half.y * camUp.y) + Math.abs(half.z * camUp.z);
+  const depth = Math.abs(half.x * d.x) + Math.abs(half.y * d.y) + Math.abs(half.z * d.z);
+  const dist = Math.max(w / Math.tan(hfov), h / Math.tan(vfov)) * pad + depth;
+  camera.position.copy(centre).add(d.multiplyScalar(Math.max(dist, 0.5)));
+  camera.near = Math.max(0.02, dist / 3000); camera.far = dist * 60 + 1000; camera.updateProjectionMatrix();
+  controls.target.copy(centre); controls.update();
+}
+/* The world direction of a placed part's local axis, so a view can look into a cutaway. */
+function partAxis(kind, local = new THREE.Vector3(1, 0, 0)) {
+  let out = null;
+  model.traverse((o) => { if (!out && o.userData?.kind === kind) { o.updateMatrixWorld(true); out = local.clone().transformDirection(o.matrixWorld); } });
+  return out;
+}
+function boxOf(obj) { obj.updateMatrixWorld(true); return new THREE.Box3().setFromObject(obj); }
+function partBox(pred) {
+  const b = new THREE.Box3(); let any = false;
+  model.traverse((o) => { if (o.userData?.partName && pred(o.userData)) { b.expandByObject(o); any = true; } });
+  return any ? b : null;
+}
+
+const layerState = { person: true, robots: true, rails: true, racks: true, radiators: true, detail: true, livery: false, cutaway: false, labels: true };
+function applyLayers() {
+  if (model?.userData.layers) for (const [k, g] of Object.entries(model.userData.layers)) g.visible = layerState[k] !== false;
+  if (model?.userData.detailGroup) model.userData.detailGroup.visible = layerState.detail !== false;
+  if (model?.userData.setCutaway) model.userData.setCutaway(!!layerState.cutaway);
+  if (model?.userData.livery) applyRenderMode(model, 'studio', { livery: !!layerState.livery });
+  if (personMesh) personMesh.visible = layerState.person;
+  $('labels').style.display = layerState.labels ? '' : 'none';
+  for (const b of document.querySelectorAll('#hud button')) b.classList.toggle('on', layerState[b.dataset.layer] !== false);
+}
+
+function showShip(id) {
+  clearStage();
+  model = isV5(id) ? buildRoboticModel(id) : buildCentauriModel(id);
+  addHumanDetail(model, { registration: model.userData.livery?.registration });
+  const wrap = new THREE.Group(); wrap.add(model); stage.add(wrap);
+  enableShadows(model);
+  const b = boxOf(wrap);
+  { const sz = b.getSize(new THREE.Vector3()); rig.fit(Math.max(sz.x, sz.y, sz.z), b.getCenter(new THREE.Vector3())); }
+  personMesh = person(); personMesh.position.set(b.min.x - 1.2, b.min.y, (b.min.z + b.max.z) / 2); personMesh.userData.person = true; stage.add(personMesh);
+  const m = model.userData.measure;
+  if (m) {
+    const nameOf = { 'robot-hangar': 'robot hangar', 'fab-bay': 'fabrication bay', 'obs-deck': 'observation deck', 'torpor-ring': 'torpor ring and shelter', 'seed-vault': 'seed vault', stores: 'consumables tank', 'arrival-kit': 'arrival kit', drive: 'drive', 'reactor-fsp': 'reactor', 'robot-lock': 'robot lock', 'rail-network': 'hull rails' };
+    model.traverse((o) => { const k = o.userData?.kind; if (k && nameOf[k] && !labelItems.some((l) => l.kind === k)) labelItems.push({ obj: o, kind: k, text: nameOf[k] }); });
+  }
+  $('caption').innerHTML = `<b>${esc(labelFor(id))}</b><br>${esc(model.userData.label ?? '')}`;
+  applyLayers();
+  applyView();
+}
+
+function showGallery() {
+  clearStage();
+  model = buildRobotGallery(person);
+  stage.add(model); enableShadows(model);
+  { const b = boxOf(model), sz = b.getSize(new THREE.Vector3()); rig.fit(Math.max(sz.x, sz.y, sz.z), b.getCenter(new THREE.Vector3())); }
+  for (const it of model.userData.items) labelItems.push({ pos: new THREE.Vector3(it.x, -0.25, 0), text: `${it.name.split(' (')[0]}`, sub: `${it.massKg} kg · ${it.heightM.toFixed(2)} m` });
+  $('caption').innerHTML = `<b>Robot classes at true scale</b><br>${Object.keys(ROBOTS).length} classes beside the 1.8 m person; masses and envelopes from the catalogue in parts/robotic.js`;
+  frame(boxOf(model), new THREE.Vector3(0.12, 0.3, 1), 1.04);
+  applyLayers();
+}
+
+function labelFor(id) { const list = Object.values(VERSIONS).flat().find((v) => v[0] === id); return list ? list[1] : id; }
+
+function applyView() {
+  const v = $('view3').value;
+  if (!model || v === 'gallery') return;
+  const all = boxOf(stage);
+  const pick = (kinds, dir, pad) => { const b = partBox((u) => kinds.includes(u.kind)); if (b) frame(b, dir, pad); else frame(all); };
+  const into = (kind, tilt) => { const ax = partAxis(kind, new THREE.Vector3(0, 0, 1)) ?? new THREE.Vector3(1, 0, 1); const along = partAxis(kind, new THREE.Vector3(0, 1, 0)) ?? new THREE.Vector3(0, 1, 0); return ax.clone().add(along.multiplyScalar(tilt)).add(new THREE.Vector3(0, 0.15, 0)); };
+  if (v === 'overview') frame(all, new THREE.Vector3(1.4, 0.7, 1.9), 1.02);
+  else if (v === 'hangar') pick(['robot-hangar', 'robot-lock'], into('robot-hangar', 0.55), 1.12);
+  else if (v === 'ring') { const n = partAxis('torpor-ring', new THREE.Vector3(0, -1, 0)) ?? new THREE.Vector3(0, 1, 0); const side = partAxis('torpor-ring', new THREE.Vector3(1, 0, 0.3)) ?? new THREE.Vector3(1, 0, 0); pick(['torpor-ring'], n.multiplyScalar(1.3).add(side.multiplyScalar(0.5)), 1.04); }
+  else if (v === 'deck') pick(['obs-deck'], into('obs-deck', 0.5), 1.15);
+  else if (v === 'drive') pick(['drive'], new THREE.Vector3(1.5, 0.5, 1.6), 1.05);
+  else if (v === 'low') {
+    /* the attachment review's view: low along the fab bay's skin at its racks, lock and tank mounts */
+    const along = partAxis('fab-bay', new THREE.Vector3(0, 1, 0)) ?? new THREE.Vector3(0, 1, 0), side = partAxis('fab-bay', new THREE.Vector3(1, 0, 0.3)) ?? new THREE.Vector3(1, 0, 0);
+    pick(['fab-bay', 'compute-rack', 'robot-lock'], along.multiplyScalar(0.9).add(side.multiplyScalar(0.5)).add(new THREE.Vector3(0, 0.12, 0)), 0.9);
+  }
+}
+
+function updateLabels() {
+  const w = view.clientWidth, h = view.clientHeight;
+  const box = $('labels');
+  if (box.children.length !== labelItems.length) { box.innerHTML = labelItems.map((l) => `<div class="lbl"><b>${esc(l.text)}</b>${l.sub ? `<span>${esc(l.sub)}</span>` : ''}</div>`).join(''); }
+  labelItems.forEach((l, i) => {
+    const p = l.pos ? l.pos.clone() : boxOf(l.obj).getCenter(new THREE.Vector3());
+    if (l.obj) { const b = boxOf(l.obj); p.y = b.max.y; }
+    p.project(camera);
+    const el = box.children[i];
+    const vis = p.z < 1 && Math.abs(p.x) < 1.1 && Math.abs(p.y) < 1.1;
+    el.style.display = vis ? '' : 'none';
+    el.style.left = `${((p.x + 1) / 2) * w}px`; el.style.top = `${((1 - p.y) / 2) * h - 34}px`;
+  });
+}
+
+let raf = 0;
+function tick() { controls.update(); renderer.render(scene, camera); updateLabels(); raf = requestAnimationFrame(tick); }
+tick();
+
+/* ---- the tables ---- */
+function fillVersions() {
+  const cls = $('cls').value;
+  $('ver').innerHTML = VERSIONS[cls].map(([id, name]) => `<option value="${id}">${esc(name)}</option>`).join('');
+  $('ver').value = VERSIONS[cls].find(([id]) => isV5(id))[0];
+}
+
+function renderTables(id) {
+  const v5 = isV5(id);
+  const m = v5 ? measureRobotic(id) : measure(id);
+  const trip = m.propulsion?.tripYears ?? null;
+  $('verdict').className = `verdict ${m.verdict.ok ? 'ok' : 'no'}`;
+  $('verdict').innerHTML = `<b>${esc(labelFor(id))}</b>: ${esc(m.verdict.text)}`;
+
+  const stats = v5 ? [
+    ['Vehicle, wet', formatMass(m.massKg), `${m.summary.partCount} placed parts`],
+    ['Hull, dry', formatMass(m.hullKg), `${formatMass(m.propulsion.propKg)} of ${m.propulsion.drive.store === 'magazine' ? 'pulse units' : 'propellant'}`],
+    ['Crossing', `${trip.toFixed(1)} yr`, `${(m.propulsion.beta * 100).toFixed(1)} % c, ${(m.propulsion.boostS / 3.156e7).toFixed(1)} yr boost, ${m.propulsion.drive.engines ?? 1} engine${(m.propulsion.drive.engines ?? 1) > 1 ? 's' : ''}`],
+    ['Humans', `${m.humans.humans}`, m.humans.humans ? `${m.humans.awakeAvg.toFixed(1)} awake on average, ${m.humans.cockpits} cockpits` : 'uncrewed by design'],
+    ['Robots', `${m.robots.count}`, `${formatMass(m.robots.massKg)} + ${formatMass(m.spares.totalKg)} spares and feedstock`],
+    ['Swarm', `${m.swarm.nodes} nodes`, `survives ${m.swarm.faultsTolerated} liars, ${pb(m.swarm.logicalTB)} recorded`],
+    ['Consumables', formatMass(m.humans.consumablesKg), m.humans.humans ? `${netPerPersonDayKg().toFixed(2)} kg/awake-day, x${TORPOR.metabolicFraction} asleep` : '-'],
+    ['Power', kW(m.genW), `for ${kW(m.loadW)} of load`],
+    ['Dose', m.humans.humans ? `${m.humans.doseSv.toFixed(1)} Sv` : '-', m.humans.humans ? `behind 50 g/cm2; limit ${SHIELD.careerLimitSv} Sv` : 'robots are rad-hard']
+  ] : [
+    ['Vehicle', formatMass(m.massKg), `${m.summary.partCount} parts`],
+    ['Crew', `${m.summary.crew}`, 'as the catalogue parts count it'],
+    [m.propulsion ? 'Crossing' : 'Sail', m.propulsion ? (m.propulsion.closes ? `${m.propulsion.tripYears.toFixed(0)} yr` : 'no route') : formatLength(m.sail.dims.d), m.propulsion ? `${(m.propulsion.beta * 100).toPrecision(2)} % c` : 'beam-rider'],
+    ['Pressurised', `${n0(m.summary.volumes.pressurised)} m3`, ''],
+    ['Power', kW(m.summary.power.gen), `for ${kW(m.summary.power.load)} of load (solar wings: nothing between stars)`],
+    ['Life support', 'none modelled', 'CENTAURI-AUDIT.md F6']
+  ];
+  $('stats').innerHTML = stats.map(([k, v, sub]) => `<div class="stat"><span>${esc(k)}</span><b>${esc(v)}</b><i>${esc(sub)}</i></div>`).join('');
+
+  /* compare */
+  const rows = [];
+  for (const cls of ['habitat', 'seed', 'colony']) {
+    for (const [vid, name] of VERSIONS[cls]) {
+      const mm = isV5(vid) ? measureRobotic(vid) : measure(vid);
+      const tripV = mm.propulsion?.tripYears;
+      const crew = isV5(vid) ? mm.humans.humans : (VARIANTS.find((x) => x.id === vid)?.crew ?? (cls === 'colony' ? 1000 : cls === 'seed' ? 110 : 24));
+      const years = isV5(vid) ? tripV : (measureRobotic(VERSIONS[cls].find(([x]) => isV5(x))[0]).propulsion.tripYears);
+      const honest = isV5(vid) ? 0 : crew * netPerPersonDayKg() * years * 365.25 * 1.2 + crew * ECLSS.kgPerPerson * ECLSS.strings;
+      const hull = isV5(vid) ? mm.hullKg : (mm.propulsion ? mm.propulsion.hullKg : mm.massKg - (mm.sail?.mass ?? 0));
+      rows.push(`<tr class="${vid === id ? 'best' : ''}"><td class="l">${esc(cls)}</td><td class="l">${esc(name)}</td><td>${crew}</td>
+        <td>${formatMass(hull)}</td><td>${honest ? `<span class="warn">+${formatMass(honest)}</span>` : '<span class="ok">in the hull</span>'}</td>
+        <td>${n0(mm.summary.volumes.pressurised)} m3</td><td>${formatMass(mm.massKg)}</td>
+        <td>${mm.propulsion ? (mm.propulsion.closes ? `${tripV.toFixed(0)} yr` : '<span class="no">no route</span>') : '<span class="dim">beam</span>'}</td>
+        <td>${isV5(vid) ? mm.robots.count : '-'}</td></tr>`);
+    }
+  }
+  $('compare').innerHTML = `<tr><th class="l">Class</th><th class="l">Version</th><th>People</th><th>Hull (no sail, no drive)</th><th>Food and ECLSS they forgot</th><th>Pressurised</th><th>Vehicle</th><th>Crossing</th><th>Robots</th></tr>${rows.join('')}`;
+
+  /* trade */
+  const ranked = scoreOptions(), rec = recommend();
+  $('trade').innerHTML = `<tr><th class="l">Option</th>${RUBRIC.map((r) => `<th title="${esc(r.name)}">${esc(r.id)}<br><span class="dim">${(r.weight * 100).toFixed(0)} %</span></th>`).join('')}<th>Score</th><th>Meets requirement</th><th class="l">Verdict</th></tr>` +
+    ranked.map((o) => `<tr class="${o.id === rec.pick.id ? 'best' : o.meetsRequirement ? '' : 'rej'}"><td class="l"><b>${o.id}</b> ${esc(o.name)}</td>${RUBRIC.map((r) => `<td>${o.scores[r.id]}</td>`).join('')}<td><b>${o.total.toFixed(2)}</b></td><td class="${o.meetsRequirement ? 'ok' : 'no'}">${o.meetsRequirement ? 'yes' : 'no'}</td><td class="l small">${esc(o.why)}</td></tr>`).join('');
+  $('tradeNote').textContent = `Requirement: ${REQUIREMENT.name}. Recommended: option ${rec.pick.id}. ${rec.beatenBy.map((o) => `Option ${o.id} scores ${o.total.toFixed(2)} against ${rec.pick.total.toFixed(2)} and is built as the hedge (seed-v5-auto).`).join(' ')} Rubric columns: ${RUBRIC.map((r) => `${r.id} = ${r.name}`).join('; ')}.`;
+
+  /* robots */
+  if (v5) {
+    $('robots').innerHTML = `<tr><th class="l">Robot</th><th>Count</th><th>Each</th><th>Fleet</th><th>Average draw</th><th>Reach</th><th class="l">Domain</th><th class="l">Role and analogue</th></tr>` +
+      m.fleet.rows.map((r) => `<tr><td class="l">${esc(r.name)}</td><td>${r.count}</td><td>${formatMass(r.eachKg)}</td><td>${formatMass(r.massKg)}</td><td>${kW(r.avgW)}</td><td>${r.reachM ? `${r.reachM} m` : '-'}</td><td class="l">${r.domain.toUpperCase()}</td><td class="l small dim">${esc(r.role)}. <i>${esc(r.source)}</i></td></tr>`).join('') +
+      `<tr><th class="l">Total</th><th>${m.fleet.total}</th><th></th><th>${formatMass(m.fleet.massKg)}</th><th>${kW(m.fleet.avgW)}</th><th colspan="3" class="l">${m.spares.failures.toFixed(0)} expected failures over ${trip.toFixed(0)} yr at ${(40000).toLocaleString()} h MTBF; ${formatMass(m.spares.printedKg)} printed from ${formatMass(m.spares.feedstockKg)} feedstock, ${formatMass(m.spares.stockedKg + m.spares.standbyKg)} stocked (${(m.spares.spareRatio * 100).toFixed(0)} % of the mobile fleet)</th></tr>`;
+    const H = m.hangar, h = m.humans, obs = m.solved.nodes.find((x) => x.part.kind === 'obs-deck')?.part;
+    $('rooms').innerHTML = `<tr><th class="l">Space</th><th>Size</th><th>Mass</th><th class="l">What is in it</th></tr>` + [
+      ['Robot hangar', `${H.hangarL.toFixed(1)} m x ${H.hangarD.toFixed(1)} m, ${H.hangarM3.toFixed(0)} m3`, formatMass(m.solved.nodes.find((x) => x.part.kind === 'robot-hangar').part.mass), `${H.humanoids} standing cradles (1.0 x 0.9 m wall, 2.1 m tall, charger, data umbilical, thermal plate) in ${H.rowsPerSide} row${H.rowsPerSide > 1 ? 's' : ''} a side, ${H.flyers} free-flyer docks, ${H.maint} maintenance stations with bench, parts carousel and end-effector store, ${H.quar} quarantine bay${H.quar > 1 ? 's' : ''} with its own door, tool store, ${H.aisle} m aisle`],
+      ['Robot lock', `${HANGAR.lockM3} m3, hatch ${H.lock.w} x ${H.lock.h} m`, formatMass(HANGAR.lockKg), `interlocked inner and outer doors; a crouching humanoid needs ${H.door.w} x ${H.door.h} m, a crawler 1.2 x 0.9 m; rail heads either side; EVA handrails from the lock to the rails`],
+      ['Telepresence cockpits', `${h.cockpits} x ${COCKPIT.deckM2} m2 at 1 g`, formatMass(h.cockpitsKg), `one per two awake people plus a spare: seat with microgravity restraint option, HMD, two force-feedback arm exoskeletons, haptic gloves, pedals, ${kW(COCKPIT.powerW)} each in use; in the shielded shelter beside the pods (${COCKPIT.source})`],
+      ['Torpor bay and shelter', m.ring ? `${m.ring.shelterLengthM.toFixed(0)} m of ring, ${m.ring.shelterShellM2.toFixed(0)} m2 of shell` : '-', m.ring ? formatMass(m.ring.shieldKg) : '-', m.ring ? `${h.pods} pods (${TORPOR.podDeckM2} m2, ${TORPOR.podKg} kg, ${TORPOR.podPowerW} W each) behind ${SHIELD.arealKgM2} kg/m2 of water-equivalent; the cockpits and the awake quarters share the shield` : 'no sleepers'],
+      ['Observation deck', obs ? `${obs.dims.l.toFixed(1)} m module, ${obs.volume.pressurised.toFixed(0)} m3` : '-', obs ? formatMass(obs.mass) : '-', obs ? `${obs.obs.pods} immersion pods (${OBS_DECK.podKg} kg: reclined restraint, HMD, hand tracking, seat-scale haptics), ${OBS_DECK.wallM2} m2 wall display, data theatre with the time-scrubbable record, ${pb(obs.obs.archiveTB)} vault (${formatMass(obs.obs.archiveKg)}), two cupola domes; one spoke from the shelter` : 'no humans to observe']
+    ].map(([k, s, mass, what]) => `<tr><td class="l">${esc(k)}</td><td>${esc(s)}</td><td>${esc(mass)}</td><td class="l small">${esc(what)}</td></tr>`).join('');
+    const sw = m.swarm;
+    $('swarm').innerHTML = `<tr><th class="l">Quantity</th><th>Value</th><th class="l">Law</th></tr>` + [
+      ['Compute nodes', `${sw.nodes}`, `max(7, robots/12 + modules); each ${COMPUTE_NODE.massKg} kg, ${COMPUTE_NODE.powerW} W, ${COMPUTE_NODE.tops} TOPS hardened in ${COMPUTE_NODE.lanes} lanes, ${COMPUTE_NODE.storageTB} TB`],
+      ['Byzantine faults tolerated', `${sw.faultsTolerated}`, `n >= 3f + 1 (${CONSENSUS.source}); quorum ${sw.quorum}`],
+      ['Racks', `${m.solved.nodes.filter((x) => x.part.kind === 'compute-rack').length}`, 'on the outside of at least two modules; losing the biggest rack leaves a working swarm'],
+      ['Recorded rate', `${sw.rateMbps.toFixed(0)} Mbit/s`, `${DATA.cameraMbps} Mbit/s per camera x ${DATA.camerasPerRobot} per mobile robot at its duty cycle, ${DATA.robotMbps} Mbit/s per robot log, ${DATA.hullSensorKbps} kbit/s per hull sensor at ${DATA.hullSensorsPerM2}/m2`],
+      ['Full-rate record', pb(sw.fullTB), `${DATA.fullRateDays} days at ${sw.tbPerDay.toFixed(1)} TB/day`],
+      ['Summary record', pb(sw.summaryTB), `${(DATA.summaryShare * 100).toFixed(0)} % of the rate for the whole crossing: keyframes, events, every decision with its inputs`],
+      ['Stored', pb(sw.storedTB), `${DATA.replicas} replicas; ${pb(sw.onNodesTB)} on the nodes’ own flash, ${pb(sw.archiveTB)} in the deck’s vault at ${DATA.archiveTBPerKg} TB/kg`],
+      ['Network', `${NETWORK.spineGbps} Gbit/s spine`, `${NETWORK.spineRings} optical rings, ${sw.cells} Wi-Fi 6E / 60 GHz cells, optical and UHF mesh outside; ${NETWORK.inShipLatencyMs} ms in-ship, force feedback needs < ${NETWORK.hapticLimitMs} ms, supervisory control < ${NETWORK.supervisedLimitS} s`],
+      ['Earth', `${NETWORK.earthRoundTripYears.toFixed(2)} yr round trip`, 'no control loop closes; the ship reports and nobody at home can answer in time']
+    ].map(([k, v, law]) => `<tr><td class="l">${esc(k)}</td><td>${esc(v)}</td><td class="l small dim">${esc(law)}</td></tr>`).join('');
+    $('pipeline').textContent = pipeline(m);
+  } else {
+    $('robots').innerHTML = `<tr><td class="l dim">No robots in ${esc(labelFor(id))}: pick a v5 version.</td></tr>`;
+    $('rooms').innerHTML = ''; $('swarm').innerHTML = ''; $('pipeline').textContent = '';
+  }
+
+  $('tiers').innerHTML = `<tr><th class="l">Tier</th><th class="l">Who is woken</th><th>Lead time</th><th class="l">Triggers</th><th class="l">What the swarm must report</th></tr>` +
+    WAKE_TIERS.map((t) => `<tr><td class="l"><b>${t.tier}</b> ${esc(t.name)}</td><td class="l">${esc(t.who)}</td><td>${t.leadH ? `${t.leadH} h` : 'none'}</td><td class="l small">${esc(t.examples)}</td><td class="l small dim">${esc(t.report)}</td></tr>`).join('');
+  $('modes').innerHTML = `<tr><th class="l">Mode</th><th class="l">Latency</th><th class="l">Who</th><th class="l">Used for</th><th class="l">Interlock</th></tr>` +
+    AUTONOMY_MODES.map((a) => `<tr><td class="l">${esc(a.mode)}</td><td class="l">${esc(a.latencyMs)}</td><td class="l">${esc(a.who)}</td><td class="l small">${esc(a.use)}</td><td class="l small dim">${esc(a.interlock)}</td></tr>`).join('');
+
+  /* parts: one row per kind for the big fleets */
+  const byKind = new Map();
+  for (const n of m.solved.nodes) { const k = n.part.kind === 'robot' ? `robot: ${n.part.robot}` : n.part.kind; const e = byKind.get(k) ?? { count: 0, mass: 0, example: n.part }; e.count += 1; e.mass += n.part.mass ?? 0; byKind.set(k, e); }
+  $('parts').innerHTML = `<tr><th class="l">Kind</th><th>Count</th><th>Mass</th><th class="l">Example</th><th class="l">Source</th></tr>` +
+    [...byKind.entries()].sort((a, b) => b[1].mass - a[1].mass).map(([k, e]) => `<tr><td class="l">${esc(k)}</td><td>${e.count}</td><td>${formatMass(e.mass)}</td><td class="l small">${esc(e.example.name)}</td><td class="l small dim">${esc(e.example.source ?? '')}${e.example.dataQuality === 'derived' ? ' <span class="warn">(derived)</span>' : ''}</td></tr>`).join('') +
+    `<tr><th class="l">Total</th><th>${m.summary.partCount}</th><th>${formatMass(m.massKg)}</th><th colspan="2" class="l">${m.solved.mates.length} mates</th></tr>`;
+
+  $('sources').textContent = `Humans: NASA BVAD 2018 per-person figures, ISS WRS and OGS closure, SpaceWorks torpor (NIAC 2014-2018), NASA/TP-2013-217375 and MSL-RAD for dose. Robots: ${Object.values(ROBOTS).map((r) => r.source.split(';')[0]).join('; ')}. Swarm: RAD750, HPSC, Ingenuity, CADRE, Starling, Proba-3; Castro and Liskov PBFT; Kontur-2 and METERON for telepresence latency. Drives and the rocket equation as CENTAURI-PROPULSION.md. Everything derived says so on its row.`;
+}
+
+function pipeline(m) {
+  const sw = m.swarm;
+  return [
+    ` robots (${m.fleet.total}) ──cameras ${DATA.camerasPerRobot}x${DATA.cameraMbps} Mb/s, logs ${DATA.robotMbps} Mb/s──┐`,
+    ` hull sensors (${Math.round(m.coverage.hullM2 * DATA.hullSensorsPerM2)}) ──${DATA.hullSensorKbps} kb/s each───────────────┤`,
+    ` drive, ring, ECLSS telemetry ────────────────────────────┤`,
+    ` scouts (${m.fleet.counts.scout ?? 0}) ──optical/UHF mesh──────────────────────────┘`,
+    `                                                          │ ${sw.rateMbps.toFixed(0)} Mbit/s`,
+    `                                                          ▼`,
+    `   ┌────────────── ${NETWORK.spineGbps} Gbit/s optical spine, ${NETWORK.spineRings} rings, ${sw.cells} radio cells ──────────────┐`,
+    `   │  ${sw.nodes} hardened compute nodes in ${m.solved.nodes.filter((x) => x.part.kind === 'compute-rack').length} racks: world model, consensus (f = ${sw.faultsTolerated}), planners  │`,
+    `   └──────┬──────────────────────────┬───────────────────────────────┬──────┘`,
+    `          │ full rate, ${DATA.fullRateDays} d           │ ${(DATA.summaryShare * 100).toFixed(0)} % summary, ${m.propulsion.tripYears.toFixed(0)} yr           │ decisions + dissent, forever`,
+    `          ▼                          ▼                               ▼`,
+    `   node flash ${pb(sw.onNodesTB)}  ──▶  deck vault ${pb(sw.archiveTB)} (${DATA.replicas} replicas)  ◀──  every vote, every veto`,
+    `                                     │`,
+    `                                     ▼`,
+    `   observation deck: ${m.solved.nodes.find((x) => x.part.kind === 'obs-deck')?.part.obs.pods ?? 0} immersion pods, ${OBS_DECK.wallM2} m2 wall, data theatre`,
+    `     scrub any moment ◀──▶ 3-D reconstruction of ship and surroundings ◀──▶ annotate, review, sign off`,
+    `                                     │ < ${NETWORK.hapticLimitMs} ms`,
+    `                                     ▼`,
+    `   telepresence cockpits (${m.humans.cockpits}) ──▶ pilot any humanoid, flyer or crawler; AI interlocks every move`,
+    `   Earth: ${NETWORK.earthRoundTripYears.toFixed(1)} yr round trip ── reports out, nothing piloted in`
+  ].join('\n');
+}
+
+/* ---- wiring ---- */
+function current() { return $('ver').value; }
+function refresh() {
+  const id = current();
+  if ($('view3').value === 'gallery') showGallery(); else showShip(id);
+  renderTables(id);
+}
+$('cls').addEventListener('change', () => { fillVersions(); refresh(); });
+$('ver').addEventListener('change', refresh);
+$('view3').addEventListener('change', () => { if ($('view3').value === 'gallery') showGallery(); else if (model?.userData.items) showShip(current()); else applyView(); });
+$('unfold').addEventListener('input', () => model?.userData.setDeploy?.(+$('unfold').value));
+for (const b of document.querySelectorAll('#hud button')) b.addEventListener('click', () => { layerState[b.dataset.layer] = !layerState[b.dataset.layer]; applyLayers(); });
+
+/* PNG: download, or, with ?shot=<name>, post to a local receiver so a script can collect views. */
+async function snapshot(name) {
+  renderer.render(scene, camera);
+  const url = renderer.domElement.toDataURL('image/png');
+  const q = new URLSearchParams(location.search);
+  if (q.get('shot') || q.get('shots')) {
+    try { await fetch(`http://127.0.0.1:${q.get('rx') ?? '8771'}/shot?name=${encodeURIComponent((q.get('dir') ? `${q.get('dir')}/` : '') + name)}`, { method: 'POST', body: url }); document.title = `shot ${name} sent`; } catch (e) { document.title = `shot ${name} failed`; }
+  } else { const a = document.createElement('a'); a.href = url; a.download = `${name}.png`; a.click(); }
+}
+$('shotBtn').addEventListener('click', () => snapshot(`${current()}-${$('view3').value}`));
+
+/* URL state: ?cls=seed&ver=seed-v5&view=hangar&shot=name&layers=robots,rails */
+{
+  const q = new URLSearchParams(location.search);
+  if (q.get('cls') && VERSIONS[q.get('cls')]) $('cls').value = q.get('cls');
+  fillVersions();
+  if (q.get('ver') && [...$('ver').options].some((o) => o.value === q.get('ver'))) $('ver').value = q.get('ver');
+  if (q.get('view')) $('view3').value = q.get('view');
+  if (q.get('off')) for (const k of q.get('off').split(',')) layerState[k] = false;
+  if (q.get('on')) for (const k of q.get('on').split(',')) layerState[k] = true;
+  refresh();
+  if (q.get('shot')) setTimeout(() => snapshot(q.get('shot')), 1500);
+  /* ?shots=all&views=overview,hangar,ring,deck,drive renders every v5 ship in every view and posts the PNGs */
+  if (q.get('shots')) {
+    const ids = q.get('shots') === 'all' ? DESIGNS.map((d) => d.id) : q.get('shots').split(',');
+    const views = (q.get('views') ?? 'overview,hangar,ring,deck,drive').split(',');
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    (async () => {
+      for (const id of ids) {
+        $('cls').value = designById(id).base; fillVersions(); $('ver').value = id;
+        for (const v of views) {
+          if (v === 'ring' && !designById(id).ring) continue;
+          if (v === 'deck' && designById(id).humans === 0) continue;
+          $('view3').value = v; refresh(); await wait(700);
+          renderer.render(scene, camera); await snapshot(`${id}-${v}`);
+        }
+      }
+      document.title = 'shots done';
+      try { await fetch(`http://127.0.0.1:${q.get('rx') ?? '8771'}/done`, { method: 'POST' }); } catch (e) { /* no receiver */ }
+    })();
+  }
+}
+</script>
+</body>
+</html>

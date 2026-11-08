@@ -19,6 +19,7 @@ import {
   AREA_PER_CREW_M2, COMFORT_RPM, ZONE_SHARE
 } from './parts/centrifuge.js';
 import { FLEET_VERSIONS, V1_IDS, V2_IDS, V3_IDS, V4_IDS } from './parts/fleet-versions.js';
+import { RECUTS, pinned } from './parts/fleet-recuts.js';
 import {
   FLASHER, SECTOR, LAMBDA_FOLD, LAMBDA_TWIST, SHOULDER, flasherRadius, deploy, faces, creases,
   maekawa, kawasakiResidual, solveShoulder, twistAt, buckleAt, stowedSpan, stowedEnvelope,
@@ -236,7 +237,7 @@ ok(Math.hypot(spinPma[0], spinPma[2]) < 0.05, 'its berth moves onto the spin axi
 // re-written by accident; a deliberate change re-cuts the version (see CENTAURI-VERSIONS.md).
 ok(V1_IDS.length === CLASSES.length && V2_IDS.length === VARIANTS.length, 'both versions pin every class they claim');
 for (const id of V1_IDS) {
-  const p = FLEET_VERSIONS.v1.classes[id], m = allMeasures[id];
+  const p = pinned(FLEET_VERSIONS.v1.classes[id], id), m = allMeasures[id];
   near(m.massKg, p.massKg, 1e-9, `v1 ${id}: mass is pinned`);
   near(m.sail.dims.d, p.sailD, 1e-9, `v1 ${id}: sail is pinned`);
   near(m.geometry.clearanceM, p.clearanceM, 1e-6, `v1 ${id}: sail clearance is pinned`);
@@ -244,7 +245,7 @@ for (const id of V1_IDS) {
   ok(p.cgHull.every((c, i) => Math.abs(c - m.geometry.cgHull[i]) < 1e-9), `v1 ${id}: the CG is pinned`);
 }
 for (const id of V2_IDS) {
-  const p = FLEET_VERSIONS.v2.variants[id], m = allMeasures[id];
+  const p = pinned(FLEET_VERSIONS.v2.variants[id], id), m = allMeasures[id];
   ok(FLEET_VERSIONS.v2.variants[id].base === byId(id).base, `${id}: the version records its base class`);
   near(m.massKg, p.massKg, 1e-9, `v2 ${id}: mass is pinned`);
   near(m.sail.dims.d, p.sailD, 1e-9, `v2 ${id}: sail is pinned`);
@@ -363,7 +364,7 @@ for (const c of PROPELLED) {
   near(s.diameter_m, m.propulsion.dims.d, 1e-9, `${c.id}: the catalogue diameter is the drive module's tank envelope`);
   ok(s.source.startsWith('http') && s.notes.includes('CENTAURI-PROPULSION.md'), `${c.id}: the entry cites its drive and its note`);
   ok(s.model3d?.status === 'done' && s.status === 'concept' && s.built === false, `${c.id}: an unbuilt concept with a built catalogue model`);
-  const p = FLEET_VERSIONS.v3.driven[c.id];
+  const p = pinned(FLEET_VERSIONS.v3.driven[c.id], c.id);
   ok(!!p && p.base === c.base && p.drive === c.drive, `v3 ${c.id}: the version records the hull and the drive`);
   near(m.massKg, p.massKg, 1e-9, `v3 ${c.id}: mass is pinned`);
   near(m.propulsion.hullKg, p.hullKg, 1e-9, `v3 ${c.id}: the hull mass is pinned`);
@@ -410,7 +411,7 @@ near(sailFoldedFootprint(10).w, stowedSpan(flasherRadius(10)), 1e-12, 'the footp
 near(sailSquareSide(4), 2, 1e-12, 'the equal-area square side is still what the beam trade uses');
 {
   const packed = accordionAngles(0, 8), flat = accordionAngles(1, 8);
-  ok(packed.every((a, i) => Math.abs(Math.abs(a) - Math.PI) < 1e-12 && Math.sign(a) === (i % 2 ? -1 : 1)), 'a wing packs flat with alternating hinges');
+  ok(packed[0] === 0 && packed.slice(1).every((a, i) => Math.abs(Math.abs(a) - Math.PI) < 1e-12 && Math.sign(a) === (i % 2 ? -1 : 1)), 'a wing packs flat with alternating hinges, the root panel staying on its mount');
   ok(flat.every((a) => a === 0), 'a wing deploys flat');
   near(accordionFootprint(34, 8), 4.25, 1e-12, 'an ISS-class wing stows to 4.25 m of its 34 m');
 }
@@ -507,7 +508,7 @@ ok(v4['habitat-v4'].massKg > 5 * 1e5 && v4['colony-v4'].massKg > 5e7, 'a six-cre
 ok(v4['capsule-v4'].massKg < 3 * 1e4, 'the 30-day capsule stays a Dragon-class stack');
 ok(V4_IDS.length === REALISM.length, 'v4 pins every realism-pass class');
 for (const c of REALISM) {
-  const p = FLEET_VERSIONS.v4.realism[c.id], m = v4[c.id], r = m.inventory;
+  const p = pinned(FLEET_VERSIONS.v4.realism[c.id], c.id), m = v4[c.id], r = m.inventory;
   ok(!!p && p.base === c.base && p.crew === r.crew, `v4 ${c.id}: the version records the base class and crew`);
   near(m.massKg, p.massKg, 1e-9, `v4 ${c.id}: mass is pinned`);
   near(r.hullKg, p.hullKg, 1e-9, `v4 ${c.id}: hull mass is pinned`);
@@ -523,5 +524,15 @@ for (const c of REALISM) {
   near(s.diameter_m, m.sail.dims.d, 1e-9, `${c.id}: the catalogue diameter is the measured sail`);
   ok(s.notes.includes('CENTAURI-INVENTORY.md') && s.model3d?.status === 'done', `${c.id}: the entry cites the inventory and has a model`);
 }
+
+/* ---------- the QA re-cuts ---------- */
+// A pin never changes silently: fleet-recuts.js lists every pinned number a geometry fix moved, with the
+// value it had and why. v1 and v3 reproduce their pins exactly.
+for (const [id, r] of Object.entries(RECUTS)) {
+  ok(r.why.length > 40 && Object.keys(r.fields).length > 0, `${id}: the re-cut says why and what moved`);
+  ok(!['v1', 'v3'].includes(r.version), `${id}: v1 and v3 are not re-cut`);
+  for (const [k, v] of Object.entries(r.fields)) ok(v.was !== v.now, `${id}.${k}: a re-cut records a change`);
+}
+ok(!V1_IDS.some((id) => RECUTS[id]) && !V3_IDS.some((id) => RECUTS[id]), 'no v1 or v3 ship is re-cut');
 
 console.log(`centauri fleet: ${checks} checks pass`);

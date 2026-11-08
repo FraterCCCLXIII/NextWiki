@@ -175,6 +175,17 @@ everything it pushes including the canister, iterated to the fixed point.
 node-side face pointing back into the node, so the v2 habitat-spin and seed-spin PMAs berth inside the
 node. v2 is pinned and left as recorded (the audit lists it); the v4 bearing docks on its far face.
 
+## QA re-cuts (2026-11-08)
+
+The geometry audit (`CENTAURI-QA.md`) moved hardpoints, bearing planes and layouts, and nine ships'
+pinned numbers followed. The pins above are untouched; `parts/fleet-recuts.js` records every moved
+field with the value it had, the value it has and why, and the checks compare against `pinned()`, the
+pin with its re-cut applied. v1 and v3 reproduce their pins exactly. Re-cut: habitat-spin and seed-spin
+(mast and mass, the bearing's ring and dock planes), instrument-v4 (mast, the HGA off the fore face),
+colony-v4 (mast 98.6 -> 22.9 m, part count 20 -> 34: the radiators and reactor booms left the ring
+plane for the aft spindle), and all five v5 designs (hangar and fab-bay lengths, the reactor boom, the
+rail stations). Regenerate the record with `node centauri-recut.mjs --json`.
+
 ## Open items
 
 - Neither the v1 colony nor the v2 colony-spin carries a docking port; the v4 colony berths a PMA and

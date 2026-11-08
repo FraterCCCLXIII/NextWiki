@@ -74,51 +74,41 @@ export function addSurfaceDetail(root, { on = true, minFraction = 0.04 } = {}) {
   const seams = [];
   let parts = 0;
 
+  /* QA pass: a candidate is a mesh whose GEOMETRY says it is a cylinder -- CylinderGeometry with equal
+     radii, or a hull-segment barrel -- read through its own transform. The bounding-box inference that
+     stood here hooped the 16U box bus, the grid fins, the leg struts and the pusher-plate magazine (at
+     the wrong centre), which is exactly the "rings at weird angles" a reviewer sees. Instanced meshes,
+     glazing, film and anything under the detail layer are left alone. */
+  const _rq = new THREE.Quaternion(), _rp = new THREE.Vector3(), _rs = new THREE.Vector3();
   root.traverse((o) => {
-    if (!o.isMesh || o.userData.detail) return;
+    if (!o.isMesh || o.isInstancedMesh || o.userData.detail) return;
     const mat = Array.isArray(o.material) ? o.material[0] : o.material;
     if (!mat || (mat.transparent && (mat.opacity ?? 1) < 0.85)) return;   // film and glazing: no rivets
-    if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
-    if (!o.geometry.boundingBox) return;
-    const bb = new THREE.Box3().copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld);   // this mesh only, not its children
-    const s = bb.getSize(new THREE.Vector3());
-    const dims = [s.x, s.y, s.z];
-    if (!Number.isFinite(dims[0] + dims[1] + dims[2])) return;
-    if (Math.max(...dims) < span * minFraction) return;                   // greebles and fasteners
-
-    // Axis of revolution: the long span, with the other two within a quarter of each other. A spar
-    // or a plate fails this and gets nothing -- that is the whole point of the test.
-    let axis = 0;
-    if (dims[1] > dims[axis]) axis = 1;
-    if (dims[2] > dims[axis]) axis = 2;
-    const lat = [0, 1, 2].filter((i) => i !== axis);
-    const l0 = dims[lat[0]], l1 = dims[lat[1]];
-    if (Math.abs(l0 - l1) > Math.max(l0, l1) * 0.25) return;
-
-    const c = bb.getCenter(new THREE.Vector3());
-    /* Read the radius off the vertices, not off the box: a booster's box spans its fins, so the box
-       radius would draw the ring frames nine metres out in the air. The profile also rejects parts
-       whose surface sits at many radii at once (fins, struts, a conical adapter). */
-    const prof = radialProfile(o, c, lat);
-    if (!prof) return;
-    const radius = prof.median;
-    if (radius < span * 0.004) return;                                    // too thin to carry a seam
-    if (dims[axis] < radius * 1.2) return;                                // a disc or a sphere, not a body
-    if (prof.p90 > radius * 1.25) return;                                 // fins or a cone, not a body
-
-    const eA = AXES[axis];
-    const eU = AXES[lat[0]];
-    const eV = AXES[lat[1]];
+    const P = o.geometry?.parameters;
+    if (!P || o.geometry.type !== 'CylinderGeometry') return;
+    const rT = P.radiusTop ?? 0, rB = P.radiusBottom ?? 0;
+    if (Math.abs(rT - rB) > Math.max(rT, rB) * 0.1 || (P.thetaLength ?? Math.PI * 2) < Math.PI * 1.9) return; // cones and part shells: no seams
+    o.matrixWorld.decompose(_rp, _rq, _rs);
+    const radius = Math.max(rT, rB) * Math.max(_rs.x, _rs.z), length = P.height * _rs.y;
+    if (!Number.isFinite(radius + length) || radius < span * 0.004 || radius < 0.25) return;   // too thin to carry a seam
+    if (length < radius * 1.2) return;                                  // a disc, not a body
+    if (Math.max(2 * radius, length) < span * minFraction) return;      // greebles and fasteners
+    const eA = new THREE.Vector3(0, 1, 0).applyQuaternion(_rq).normalize();
+    const eU = new THREE.Vector3(1, 0, 0).applyQuaternion(_rq).normalize();
+    const eV = new THREE.Vector3().crossVectors(eA, eU).normalize();
     const qt = new THREE.Quaternion().setFromUnitVectors(TORUS_AXIS, eA);
-    const minA = bb.min.getComponent(axis), midA = c.getComponent(axis);
+    /* the geometry's own centre along its axis (the builders translate barrels to base at y = 0) */
+    if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
+    const gb = o.geometry.boundingBox;
+    const c = new THREE.Vector3((gb.min.x + gb.max.x) / 2, (gb.min.y + gb.max.y) / 2, (gb.min.z + gb.max.z) / 2).applyMatrix4(o.matrixWorld);
 
     const rivetR = Math.min(Math.max(radius * 0.01, span * 0.0007), span * 0.0016);
     const seamT = rivetR * 0.55;
     const count = Math.max(8, Math.min(40, Math.round((2 * Math.PI * radius) / (rivetR * 9))));
-    const fractions = dims[axis] < radius * 1.6 ? [0.5] : [0.25, 0.5, 0.75];
+    const fractions = length < radius * 1.6 ? [0.5] : [0.25, 0.5, 0.75];
 
     for (const f of fractions) {
-      const along = minA + dims[axis] * f - midA;
+      const along = (f - 0.5) * length;
       const seamP = c.clone().addScaledVector(eA, along);
       if (!Number.isFinite(seamP.x + seamP.y + seamP.z)) continue;
       seams.push({ p: seamP, q: qt, r: radius, t: seamT });

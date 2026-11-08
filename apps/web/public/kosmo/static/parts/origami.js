@@ -37,11 +37,14 @@ export function sailFoldedFootprint(areaM2) {
 }
 
 /** Hinge angles for a pleated strip of `segments` panels: 1 is flat, 0 is the pack. The sign
- *  alternates so the panels zig-zag instead of all folding one way. */
+ *  alternates so the panels zig-zag instead of all folding one way. Hinge 0 is the root attachment
+ *  and does not fold: the first panel stays on its mount and the others stack onto it, outward. (Until
+ *  the QA pass the root hinge folded too, which laid every half-deployed wing back over the module it
+ *  hung from -- the sweep check in parts/geometry-audit.js is what caught it.) */
 export function accordionAngles(k, segments) {
   const t = Math.min(1, Math.max(0, k));
   const n = Math.max(0, Math.round(segments));
-  return Array.from({ length: n }, (_, i) => (i % 2 ? -1 : 1) * Math.PI * Math.pow(1 - t, 1 + 0.12 * i));
+  return Array.from({ length: n }, (_, i) => (i === 0 ? 0 : (i % 2 ? 1 : -1) * Math.PI * Math.pow(1 - t, 1 + 0.12 * (i - 1))));
 }
 
 /** Length of the folded strip: one panel deep, whatever the deployed length. */
