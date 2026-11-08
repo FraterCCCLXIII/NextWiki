@@ -578,3 +578,8 @@ export function buildCentauriModel(id) {
     : `hull ${span(hullSpan)}${m.geometry.mastLenM > 0 ? ` · mast ${span(m.geometry.mastLenM)}` : ' · hub-mounted'} · sail ${span(2 * flasherRadius(trueSide * trueSide))} flasher${ratio > 1.02 ? ` · drawn 1:${Math.round(ratio)}` : ' · true size'}${inv && inv.crew ? ` · ${inv.crew} crew x ${(inv.days / 365.25).toFixed(0)} yr` : ''}`;
   return g;
 }
+
+/* The part builders, for other model files (parts/robotic-models.js draws the v5 ships with these and
+   adds its own kinds; its colour-keyed helpers live in primitives/legacy.js); nothing here changes
+   what buildCentauriModel draws. */
+export { centauriPart, addPortRing, BUILDERS, span };

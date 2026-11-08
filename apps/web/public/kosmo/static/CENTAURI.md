@@ -29,7 +29,12 @@ the atlas **Lab** group.
 | `centauri-view.js` | The lab's 3D viewer: ACES, PMREM room environment, three-point light, render-mode switch, instanced rivets, sail unfold, screenshots. |
 | `centauri-fleet.test.mjs` | 988 node checks (698 + 290 for v4). Run by `run-tests.mjs`, or `node public/kosmo/static/centauri-fleet.test.mjs`. |
 | `centauri-primitives.test.mjs` | 155 node checks, one block per primitive and the inventory laws. |
-| `centauri-shots/` | Screenshots of every v4 class (and a v1 and a v3 for comparison) from the lab viewer. |
+| `centauri-shots/` | Screenshots of every v4 class (and a v1 and a v3 for comparison) from the lab viewer; `centauri-shots/robotic/` holds the v5 renders. |
+| `parts/robotic.js` | v5, the robotic / minimal-crew versions: the trade study, the human laws (consumables, torpor, ECLSS, shielding), the robot catalogue and fleet law, the swarm (compute, consensus, network, recorded data), the wake-up tiers, and the five v5 builds. No DOM. Documented in `CENTAURI-ROBOTIC.md`. |
+| `parts/fleet-versions-v5.js` | The pinned v5 designs, checked by `centauri-robotic.test.mjs`; v1-v4 pins stay in `fleet-versions.js`. |
+| `parts/robotic-models.js` | The v5 CAD: hangar, torpor ring, observation deck, fab bay, vault, rails, racks, and a builder per robot class, drawn beside the 1.8 m person. Imports three and the builders above. |
+| `centauri-robotic.html` | The v5 page: class and version selector (v1-v3 beside v5), the ship views and the robot gallery, the trade study, inventory, swarm and wake-up tables. |
+| `centauri-robotic.test.mjs` | The v5 checks: mass closure, consumables from crew-days, spare ratio, hull coverage, no overlaps, crossing closure, pins. |
 
 ## The catalogue models
 
