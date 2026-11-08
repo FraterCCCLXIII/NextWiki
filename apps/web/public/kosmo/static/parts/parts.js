@@ -162,12 +162,14 @@ export const PARTS = {
       { id: 'nadir', type: 'cbm', gender: 'active', at: [0, 3.6, -2.2], axis: [0, 0, -1], clock: [0, 1, 0] },
       /* utility hardpoints on the end cones, clear of the four radial berths: radiators on the
          zenith/nadir pair, trusses or arrays on the +-x pair, a spin bearing at the aft face */
-      { id: 'mount-1', type: 'hinge-1d', gender: 'active', at: [1.9, 6.4, 0], axis: [1, 0, 0], clock: [0, 1, 0] },
-      { id: 'mount-2', type: 'hinge-1d', gender: 'active', at: [-1.9, 6.4, 0], axis: [-1, 0, 0], clock: [0, 1, 0] },
-      { id: 'mount-5', type: 'hinge-1d', gender: 'active', at: [0, 6.4, 1.9], axis: [0, 0, 1], clock: [0, 1, 0] },
-      { id: 'mount-6', type: 'hinge-1d', gender: 'active', at: [0, 6.4, -1.9], axis: [0, 0, -1], clock: [0, 1, 0] },
-      { id: 'mount-7', type: 'hinge-1d', gender: 'active', at: [1.9, 0.8, 0], axis: [1, 0, 0], clock: [0, 1, 0] },
-      { id: 'mount-8', type: 'hinge-1d', gender: 'active', at: [-1.9, 0.8, 0], axis: [-1, 0, 0], clock: [0, 1, 0] },
+      /* QA pass: every hardpoint sits ON the 2.2 m hull (they were 0.3 m inside it), and the aft pair
+         stands at y = 2.9 so a boom there clears the bola or ring sweeping under the aft face */
+      { id: 'mount-1', type: 'hinge-1d', gender: 'active', at: [2.2, 6.4, 0], axis: [1, 0, 0], clock: [0, 1, 0] },
+      { id: 'mount-2', type: 'hinge-1d', gender: 'active', at: [-2.2, 6.4, 0], axis: [-1, 0, 0], clock: [0, 1, 0] },
+      { id: 'mount-5', type: 'hinge-1d', gender: 'active', at: [0, 6.4, 2.2], axis: [0, 0, 1], clock: [0, 1, 0] },
+      { id: 'mount-6', type: 'hinge-1d', gender: 'active', at: [0, 6.4, -2.2], axis: [0, 0, -1], clock: [0, 1, 0] },
+      { id: 'mount-7', type: 'hinge-1d', gender: 'active', at: [2.2, 2.9, 0], axis: [1, 0, 0], clock: [0, 1, 0] },
+      { id: 'mount-8', type: 'hinge-1d', gender: 'active', at: [-2.2, 2.9, 0], axis: [-1, 0, 0], clock: [0, 1, 0] },
       { id: 'spinhub', type: 'hinge-1d', gender: 'active', at: [0, 0, 0], axis: [0, -1, 0] }
     ]
   },
@@ -240,8 +242,10 @@ export const PARTS = {
       { id: 'fore', type: 'paf-937', gender: 'active', at: [0, 0.7, 0], axis: [0, 1, 0] },
       { id: 'sailmount', type: 'hinge-1d', gender: 'active', at: [0, 0.7, 0], axis: [0, 1, 0] },
       { id: 'rtg', type: 'hinge-1d', gender: 'active', at: [1.05, 0.35, 0], axis: [1, 0, 0], clock: [0, 1, 0] },
-      { id: 'hga', type: 'hinge-1d', gender: 'active', at: [-0.5, 0.7, 0], axis: [0, 1, 0] },
-      { id: 'bay', type: 'hinge-1d', gender: 'active', at: [-1.05, 0.35, 0], axis: [-1, 0, 0], clock: [0, 1, 0] }
+      /* QA pass: the 2.1 m HGA on the fore face had the sail mast running through its dish; it now hangs
+         on the -x side opposite the RTG, gimballed, where New Horizons' own 2.1 m dish sits on the bus */
+      { id: 'hga', type: 'hinge-1d', gender: 'active', at: [-1.05, 0.35, 0], axis: [-1, 0, 0], clock: [0, 1, 0] },
+      { id: 'bay', type: 'hinge-1d', gender: 'active', at: [0, 0, 0], axis: [0, -1, 0], clock: [1, 0, 0] }
     ]
   },
   'lander-aero': {
@@ -336,10 +340,12 @@ export const PARTS = {
       { id: 'nadir', type: 'cbm', gender: 'active', at: [0, 2.75, -2.3], axis: [0, 0, -1], clock: [0, 1, 0] },
       /* mounts 3-5 are this lab's extension of the prototype's two hinge mounts: the habitat needs
          two arrays and two radiators, and a radiator cannot hang off a hatch. */
-      { id: 'mount-1', type: 'hinge-1d', gender: 'active', at: [1.9, 4.4, 0], axis: [1, 0, 0], clock: [0, 1, 0] },
-      { id: 'mount-2', type: 'hinge-1d', gender: 'active', at: [-1.9, 4.4, 0], axis: [-1, 0, 0], clock: [0, 1, 0] },
-      { id: 'mount-3', type: 'hinge-1d', gender: 'active', at: [1.9, 1.1, 0], axis: [1, 0, 0], clock: [0, 1, 0] },
-      { id: 'mount-4', type: 'hinge-1d', gender: 'active', at: [-1.9, 1.1, 0], axis: [-1, 0, 0], clock: [0, 1, 0] },
+      /* QA pass: the hardpoints sit ON the 2.3 m hull; they were 0.4 m inside it, which rooted the
+         array yokes in the pressure shell. Symmetric in x, so the pinned v1 centres of mass hold. */
+      { id: 'mount-1', type: 'hinge-1d', gender: 'active', at: [2.3, 4.4, 0], axis: [1, 0, 0], clock: [0, 1, 0] },
+      { id: 'mount-2', type: 'hinge-1d', gender: 'active', at: [-2.3, 4.4, 0], axis: [-1, 0, 0], clock: [0, 1, 0] },
+      { id: 'mount-3', type: 'hinge-1d', gender: 'active', at: [2.3, 1.1, 0], axis: [1, 0, 0], clock: [0, 1, 0] },
+      { id: 'mount-4', type: 'hinge-1d', gender: 'active', at: [-2.3, 1.1, 0], axis: [-1, 0, 0], clock: [0, 1, 0] },
       /* Radiators hang on the zenith/nadir pair, not beside the arrays: a 6.1 m wide radiator on the
          same +-x hinge as an 11 m wide wing sits inside the wing's swept plane. */
       { id: 'mount-5', type: 'hinge-1d', gender: 'active', at: [0, 2.75, 2.3], axis: [0, 0, 1], clock: [0, 1, 0] },
@@ -359,6 +365,8 @@ export const PARTS = {
     power: { gen: 0, load: 250 },
     heat: { rejectCapacity: 7500 },
     stowed: { l: 1.2, d: 2.4 },
+    /* the hinge, manifold and flex lines stand the first panel 0.6 m off the mount (ISS PVR/TRRJ class) */
+    standoff: 0.6,
     ports: [{ id: 'root', type: 'hinge-1d', gender: 'passive', at: [0, 0, 0], axis: [0, -1, 0] }]
   },
   'array-saw': {
@@ -371,6 +379,9 @@ export const PARTS = {
     power: { gen: 31000, load: 0 },
     heat: { rejectCapacity: null },
     stowed: { l: 4.6, d: 0.6 },
+    /* SADA, yoke and blanket box stand the first panel 1.2 m off the mount, so a wing rolled to track
+       the Sun clears the module beside its hinge (ISS: the SAW rides on the SARJ and a beta gimbal) */
+    standoff: 1.2,
     ports: [{ id: 'root', type: 'hinge-1d', gender: 'passive', at: [0, 0, 0], axis: [0, -1, 0] }]
   },
   'bus-6u': {
@@ -597,11 +608,12 @@ export const PARTS = {
     heat: { rejectCapacity: null },
     ports: [
       { id: 'aft', type: 'hinge-1d', gender: 'passive', at: [0, 0, 0], axis: [0, -1, 0] },
-      { id: 'hub', type: 'hinge-1d', gender: 'passive', at: [0, 0, 0], axis: [0, 1, 0] },
-      /* Crew dock on the despun side of the bearing, on the spin axis: the berth adds no imbalance to
-         the ring and the passengers never cross a rotating joint. CBM inward, because it carries the
-         habitat's PMA, whose far end is the IDSS ring a visiting vehicle sees. */
-      { id: 'dock', type: 'cbm', gender: 'active', at: [0, 0, 0], axis: [0, -1, 0] }
+      /* QA pass: the ring turns on the drum's mid-plane and the crew dock is on the FAR face, on the
+         spin axis, pointing away from the node. Both used to sit at the node face pointing back into
+         it, which berthed the v2 PMA inside the node (CENTAURI-AUDIT.md). The v4 bearing already had
+         this layout; v2 and v5 now share it, and no pinned mass or sail moves. */
+      { id: 'hub', type: 'hinge-1d', gender: 'passive', at: [0, 0.5, 0], axis: [0, 1, 0] },
+      { id: 'dock', type: 'cbm', gender: 'active', at: [0, 1.0, 0], axis: [0, 1, 0] }
     ]
   },
   /* The capsule's sail stage: an IDSS ring that docks to the capsule's nose and carries the mast. It

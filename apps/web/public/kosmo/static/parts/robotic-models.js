@@ -502,7 +502,7 @@ function railsCAD(p) {
   const g = new THREE.Group(), n = p.rails ?? 4, prof = p.profile ?? [{ y0: 0, y1: p.dims.l, r: p.dims.d / 2 }];
   const railR = 0.06;
   for (let k = 0; k < n; k += 1) {
-    const a = (k / n) * Math.PI * 2;
+    const a = (k / n) * Math.PI * 2 + (p.azimuth0 ?? 0);
     const c = Math.cos(a), s = Math.sin(a);
     for (let i = 0; i < prof.length; i += 1) {
       const seg = prof[i];

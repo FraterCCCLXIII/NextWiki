@@ -22,6 +22,7 @@
    No DOM: imported by the viewer, the docs generator and the node checks. */
 
 import { PARTS, PORT_TYPES, cargoPart, drivePart, formatMass } from './parts.js';
+import { trussSpec } from './primitives/spec.js';
 import { ringFor, DECK, AREAL_MASS, POWER as RING_POWER, COMFORT_RPM } from './centrifuge.js';
 import { DRIVES, planFor, R_CAP, ROUTE_LY, LY, C as C_LIGHT } from './propulsion.js';
 import { solveAssembly, summarize, checkAssembly } from './assembly.js';
@@ -395,6 +396,7 @@ export const HANGAR = {
   quarantineM3: 10, quarantineKg: 400, robotsPerQuarantineBay: 50,
   toolStoreM3: 6, toolStoreKg: 300, toolsPerRobotKg: 4,
   lockM3: 8, lockKg: 1500, lockHatch: { w: 1.2, h: 2.2 }, robotDoor: { w: 1.0, h: 2.0 }, aisleM: 1.2, circulation: 1.25,
+  cradlePitchM: 1.0, dockPitchM: 0.5,
   source: 'ISS Quest airlock (6.1 t, 34 m3, 1.0 m hatch) scaled to an unpressurised-robot lock; ISS crew quarters (2.1 m3 each) for the cradle envelope; Robonaut 2 and Astrobee docking/charging stations on ISS'
 };
 
@@ -409,12 +411,14 @@ export const SEED_VAULT = { lines: 1000, kgPerLine: 4, baseKg: 3000, volumeM3: 6
 
 /* Rails: four longitudinal rails along the stack at 6 kg/m each (an aluminium rail with power and
    data bus), two rail heads at the hangar, and the crawlers that ride them. */
-export const RAILS = { count: 4, kgPerM: 6, headKg: 120, standoffM: 0.35, crawlersPerM: 1 / 60, source: 'ISS Mobile Transporter rail on the ITS truss; derived areal figures' };
+/* QA pass: the rails run at the 45 degree stations, between the racks, the lock, the reactor boom and the
+   radiators that all sit on +-x and +-z; at 0/90 they ran straight through them. */
+export const RAILS = { count: 4, kgPerM: 6, headKg: 120, standoffM: 0.35, crawlersPerM: 1 / 60, azimuth0: Math.PI / 4, source: 'ISS Mobile Transporter rail on the ITS truss; derived areal figures' };
 
 /* Power: a fission unit sized at 150 kg/kWe for sub-megawatt loads (NASA Fission Surface Power
    request, 2022: 40 kWe in under 6 t), more conservative than the 13 kg/kWe the colony’s MW units
    use; the reactor has its own heat-pipe radiator. The hotel load it feeds is summed from the parts. */
-export const REACTOR_FSP = { kgPerKWe: 150, baseKg: 1200, margin: 1.3, source: 'NASA Fission Surface Power (2022 RFP): 40 kWe, < 6 t, 10 yr; Kilopower KRUSTY (2018): 1-10 kWe, 1.5 t' };
+export const REACTOR_FSP = { kgPerKWe: 150, baseKg: 1200, margin: 1.3, boomM: 12, source: 'NASA Fission Surface Power (2022 RFP): 40 kWe, < 6 t, 10 yr; Kilopower KRUSTY (2018): 1-10 kWe, 1.5 t' };
 function reactorPart(kWe) {
   const kg = REACTOR_FSP.baseKg + REACTOR_FSP.kgPerKWe * kWe;
   const l = 4 + 0.03 * kWe, d = 2.2 + 0.006 * kWe;
@@ -651,31 +655,46 @@ export function roboticAssembly(id) {
        both walls in rows; with a wide hangar the rows double up on each side. */
     let hangarD = MODULE_D;
     if (hangarM3 / (Math.PI * (MODULE_D / 2) ** 2) > 12) hangarD = Math.min(8.4, Math.sqrt((4 * hangarM3) / (Math.PI * 14)));
-    const hangarL = Math.max(2.5, hangarM3 / (Math.PI * (hangarD / 2) ** 2));
-    const cradlePorts = [];
+    /* QA pass: the cradles are STANDING cradles -- a robot stands radially on the wall, feet out, head
+       toward the axis -- at the 1.0 m wall pitch the cradle volume law already assumes (the first cut laid
+       the robots along the axis at 0.7 m, so an 11-robot hangar had them inside each other). The hangar is
+       as long as its cradle rows need, if that is more than its volume gives. */
     const rowsPerSide = hangarD > 6 ? 2 : 1;
+    const cradlePitch = HANGAR.cradlePitchM;
     const perRow = Math.ceil(humanoids / (2 * rowsPerSide));
+    const dockCols = Math.max(1, Math.floor((Math.max(2.5, hangarM3 / (Math.PI * (hangarD / 2) ** 2)) - 1.0) / HANGAR.dockPitchM));
+    const dockRows = Math.ceil(flyers / dockCols);
+    const hangarL = Math.max(2.5, hangarM3 / (Math.PI * (hangarD / 2) ** 2), perRow * cradlePitch + 1.0, Math.ceil(flyers / Math.max(1, dockRows)) * HANGAR.dockPitchM + 1.0);
+    const cradlePorts = [];
     for (let i = 0; i < humanoids; i += 1) {
       const side = i % 2 ? -1 : 1, row = Math.floor(i / 2) % rowsPerSide, k = Math.floor(i / (2 * rowsPerSide));
-      const y = 0.9 + (k + 0.5) * ((hangarL - 1.8) / Math.max(perRow, 1));
-      const z = rowsPerSide === 1 ? 0.35 * side : (row ? 1 : -1) * hangarD * 0.22;
-      cradlePorts.push({ id: `cradle-${i}`, type: 'hardpoint', gender: 'active', at: [side * (hangarD / 2 - 1.0), y - 0.85, z], axis: [0, 1, 0], clock: [side, 0, 0] });
+      const y = 0.5 + (k + 0.5) * cradlePitch;
+      /* each row stands on the wall at its own azimuth (+-25 degrees off the side axis when two rows share a side) */
+      const th = rowsPerSide === 1 ? 0 : (row ? 1 : -1) * (25 * Math.PI) / 180, rw = hangarD / 2 - 0.08;
+      const ux = side * Math.cos(th), uz = Math.sin(th);
+      cradlePorts.push({ id: `cradle-${i}`, type: 'hardpoint', gender: 'active', interior: true, at: [ux * rw, y, uz * rw], axis: [-ux, 0, -uz], clock: [0, 1, 0] });
     }
+    /* free-flyer docks on the floor (-z), 0.5 m cubes in rows along the hangar */
     for (let i = 0; i < flyers; i += 1) {
-      const y = 0.8 + ((i + 0.5) / flyers) * (hangarL - 1.6);
-      cradlePorts.push({ id: `dock-${i}`, type: 'hardpoint', gender: 'active', at: [0, y - 0.16, -(hangarD / 2 - 0.45)], axis: [0, 1, 0], clock: [0, 0, 1] });
+      const col = i % dockCols, row = Math.floor(i / dockCols);
+      const y = 0.5 + (col + 0.5) * HANGAR.dockPitchM;
+      const x = (row - (dockRows - 1) / 2) * HANGAR.dockPitchM;
+      cradlePorts.push({ id: `dock-${i}`, type: 'hardpoint', gender: 'active', interior: true, at: [x, y, -(hangarD / 2 - 0.3)], axis: [0, 0, 1], clock: [0, 1, 0] });
     }
     const hangar = moduleShell('robot-hangar', `Robot hangar: ${humanoids} cradles, ${flyers} docks, ${maint} maintenance, ${quar} quarantine, lock`, hangarM3, {
       d: hangarD, extraKg: hangarFitKg, habitable: 0.3, loadW: humanoids * 60 + flyers * 20 + 500,
       source: HANGAR.source,
       ports: [
         ...cradlePorts,
-        { id: 'arm', type: 'hardpoint', gender: 'active', at: [hangarD / 2, hangarL * 0.15, 0], axis: [1, 0, 0], clock: [0, 1, 0] },
+        /* the Dextre on the zenith face, where nothing else of the hangar's is mounted (racks are on +-x, the lock on nadir) */
+        { id: 'arm', type: 'hardpoint', gender: 'active', at: [0, hangarL * 0.15, hangarD / 2], axis: [0, 0, 1], clock: [0, 1, 0] },
         { id: 'railhub', type: 'hardpoint', gender: 'active', at: [0, 0, 0], axis: [0, 1, 0] },
         { id: 'lock', type: 'hardpoint', gender: 'active', at: [0, hangarL * 0.8, -hangarD / 2], axis: [0, 0, -1], clock: [0, 1, 0] }
       ],
       extra: { hangar: { humanoids, flyers, maint, quar, hangarM3, hangarL, hangarD, rowsPerSide, lock: HANGAR.lockHatch, door: HANGAR.robotDoor, aisle: HANGAR.aisleM } }
     });
+    /* the shell is sized by volume; the cradle rows may need it longer, so the envelope follows the rows */
+    hangar.dims.l = hangarL; hangar.ports.find((q) => q.id === 'fore').at = [0, hangarL, 0]; for (const q of hangar.ports) if (/^(rack-|util)/.test(q.id)) q.at[1] = hangarL * 0.5;
     chainIds.push(add('hangar', hangar));
     /* The robot lock on the hangar's nadir face: an unpressurised-robot airlock with a 1.2 x 2.2 m
        outer hatch, interlocked doors, and the rail heads either side of it. */
@@ -690,14 +709,19 @@ export function roboticAssembly(id) {
     /* The fabrication bay: cells, bench, feedstock and stocked spares. */
     const cells = n['fab-cell'] ?? 1;
     const fabM3 = (cells * FAB.cellM3 + FAB.benchM3 + spares.feedstockKg / FAB.feedstockDensity + (spares.stockedKg + spares.standbyKg) / FAB.spareDensity) * 1.3;
+    const fabL = Math.max(2.5, fabM3 / (Math.PI * (MODULE_D / 2) ** 2), Math.ceil(cells / 2) * 1.3 + 1.0);
     const fab = moduleShell('fab-bay', `Fabrication bay: ${cells} cells, ${formatMass(spares.feedstockKg)} feedstock, ${formatMass(spares.stockedKg + spares.standbyKg)} spares`, fabM3, {
       extraKg: FAB.benchKg + spares.feedstockKg + spares.stockedKg + spares.standbyKg, habitable: 0.3, loadW: 200, source: FAB.source,
-      ports: Array.from({ length: cells }, (_, i) => ({ id: `cell-${i}`, type: 'hardpoint', gender: 'active', at: [(i % 2 ? -1 : 1) * (MODULE_D / 2 - 0.8), 0.6 + Math.floor(i / 2) * 2.2, 0], axis: [0, 1, 0], clock: [1, 0, 0] })),
+      /* QA pass: the cells stand radially on the walls (a 2 m cell along the axis poked out of a 2.5 m bay) */
+      ports: Array.from({ length: cells }, (_, i) => { const side = i % 2 ? -1 : 1; return { id: `cell-${i}`, type: 'hardpoint', gender: 'active', interior: true, at: [side * (MODULE_D / 2 - 0.08), 0.75 + Math.floor(i / 2) * 1.3, 0], axis: [-side, 0, 0], clock: [0, 1, 0] }; }),
       extra: { fab: { cells, feedstockKg: spares.feedstockKg, stockedKg: spares.stockedKg, standbyKg: spares.standbyKg } }
     });
+    fab.dims.l = fabL; fab.ports.find((q) => q.id === 'fore').at = [0, fabL, 0]; for (const q of fab.ports) if (/^(rack-|util)/.test(q.id)) q.at[1] = fabL * 0.5;
     chainIds.push(add('fab', fab));
 
-    /* The observation deck, when there are humans to use it. */
+    /* The observation deck, when there are humans to use it: next to the labs and the ring's bearing (QA pass:
+       it used to sit beyond the hangar and the fab bay, 75 m from the ring on the colony), so the awake watch
+       floats from the spoke to the deck without crossing the robot bays. */
     if (design.humans > 0) {
       const podsN = Math.max(OBS_DECK.minimumPods, Math.ceil(h.awakeAvg * OBS_DECK.podShare) + OBS_DECK.visitorPods);
       const obsM3 = podsN * OBS_DECK.podM3 * 2 + OBS_DECK.theatreM3 + swarm.archiveKg / 400 + 20;
@@ -707,7 +731,8 @@ export function roboticAssembly(id) {
         extraKg: obsKg, habitable: 0.7, loadW: obsW, source: OBS_DECK.source,
         extra: { obs: { pods: podsN, wallM2: OBS_DECK.wallM2, archiveTB: swarm.archiveTB, archiveKg: swarm.archiveKg } }
       });
-      chainIds.push(add('obs', obs));
+      add('obs', obs);
+      chainIds.splice(chainIds.indexOf('hangar'), 0, 'obs');
     }
 
     /* The seed vault. */
@@ -741,7 +766,10 @@ export function roboticAssembly(id) {
 
     /* Radiators on the node's zenith/nadir pair; no solar wings between stars. */
     add('radA', 'radiator-pvr'); add('radB', 'radiator-pvr');
-    mates.push({ a: 'node.mount-5', b: 'radA.root' }, { a: 'node.mount-6', b: 'radB.root' });
+    /* on the colony the 10 m despun hub sits under the node's aft face, so the radiators take the +-x
+       hinges higher up the node; the other designs keep the zenith/nadir pair */
+    const radMounts = design.base === 'colony' ? ['mount-1', 'mount-2'] : ['mount-5', 'mount-6'];
+    mates.push({ a: `node.${radMounts[0]}`, b: 'radA.root' }, { a: `node.${radMounts[1]}`, b: 'radB.root' });
 
     /* The ring on its bearing, and the berth on the bearing's despun face. The colony's ring turns on
        the 4 MN despun hub instead, with the two MW reactors on the hub's mounts, as in v2. */
@@ -808,8 +836,12 @@ export function roboticAssembly(id) {
     const loadW = summarize(solveAssembly({ root: 'node', parts, mates }).nodes).power.load;
     if (design.base !== 'colony') {
       const kWe = Math.ceil((loadW * REACTOR_FSP.margin) / 1000 / 10) * 10;
+      /* QA pass: the fission unit stands off the pressurised fab bay on a boom, as every surface-power
+         and nuclear-electric concept does (shadow shield plus distance), instead of being bolted to it */
+      const boom = trussSpec({ lengthM: REACTOR_FSP.boomM, widthM: 1.0, axialLoadN: (REACTOR_FSP.baseKg + REACTOR_FSP.kgPerKWe * kWe) * 0.5, name: 'reactor boom' });
+      add('reactorBoom', { name: `Reactor boom, ${boom.dims.l.toFixed(0)} m`, kind: 'truss', dataQuality: 'derived', source: boom.source, dims: boom.dims, mass: boom.mass, volume: { pressurised: null, habitable: null }, crew: 0, power: { gen: 0, load: 0 }, heat: { rejectCapacity: null }, truss: boom, ports: [{ id: 'aft', type: 'hardpoint', gender: 'passive', at: [0, 0, 0], axis: [0, -1, 0] }, { id: 'fore', type: 'hardpoint', gender: 'active', at: [0, boom.dims.l, 0], axis: [0, 1, 0] }] });
       add('reactor', reactorPart(kWe));
-      mates.push({ a: 'fab.util', b: 'reactor.root' });
+      mates.push({ a: 'fab.util', b: 'reactorBoom.aft' }, { a: 'reactorBoom.fore', b: 'reactor.root' });
     }
 
     /* Solve the hull once to learn the stack's profile, size the drive from its mass, then hang the
@@ -837,7 +869,7 @@ export function roboticAssembly(id) {
     const crawlers = n['crawler-rail'] ?? 0;
     const eras = n['arm-era'] ?? 0;
     const carPort = (id, i, count, offset) => {
-      const a = ((i % RAILS.count) / RAILS.count) * Math.PI * 2 + offset;
+      const a = ((i % RAILS.count) / RAILS.count) * Math.PI * 2 + offset + RAILS.azimuth0;
       const y = ((Math.floor(i / RAILS.count) + 0.5) / Math.max(1, Math.ceil(count / RAILS.count))) * railLen;
       const rr = radiusAt(y);
       return { id, type: 'hardpoint', gender: 'active', at: [Math.cos(a) * rr, y, Math.sin(a) * rr], axis: [Math.cos(a), 0, Math.sin(a)], clock: [0, 1, 0] };
@@ -846,7 +878,7 @@ export function roboticAssembly(id) {
       name: `Hull rails: ${RAILS.count} x ${railLen.toFixed(0)} m, ${crawlers} crawlers${eras ? `, ${eras} long arms` : ''}`, kind: 'rail-network', dataQuality: 'derived', source: RAILS.source,
       dims: { l: railLen, d: 2 * Math.max(...profile.map((s) => s.r)) }, mass: RAILS.count * railLen * RAILS.kgPerM,
       volume: { pressurised: null, habitable: null }, crew: 0, power: { gen: 0, load: 0 }, heat: { rejectCapacity: null },
-      rails: RAILS.count, crawlers, eras, reachM: ROBOTS['crawler-rail'].reachM, profile,
+      rails: RAILS.count, azimuth0: RAILS.azimuth0, crawlers, eras, reachM: ROBOTS['crawler-rail'].reachM, profile,
       ports: [
         { id: 'root', type: 'hardpoint', gender: 'passive', at: [0, 0, 0], axis: [0, -1, 0] },
         ...Array.from({ length: crawlers }, (_, i) => carPort(`car-${i}`, i, crawlers, 0)),

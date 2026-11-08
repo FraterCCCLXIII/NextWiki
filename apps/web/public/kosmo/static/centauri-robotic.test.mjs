@@ -19,6 +19,7 @@ import {
   COCKPIT, OBS_DECK, WAKE_TIERS, AUTONOMY_MODES, HANGAR, RAILS, humansFor, torporRingFor, BOOST_CAP_YEARS, enginesFor, clusteredDrive
 } from './parts/robotic.js';
 import { FLEET_VERSIONS_V5, V5_PINNED_IDS } from './parts/fleet-versions-v5.js';
+import { pinned } from './parts/fleet-recuts.js';
 
 let checks = 0;
 const ok = (cond, message) => { assert.ok(cond, message); checks += 1; };
@@ -94,7 +95,7 @@ ok(V5_IDS.length === 5 && V5_PINNED_IDS.length === 5 && V5_IDS.every((id) => V5_
 const M = Object.fromEntries(V5_IDS.map((id) => [id, measureRobotic(id)]));
 const PIN = FLEET_VERSIONS_V5.designs;
 for (const id of V5_IDS) {
-  const m = M[id], d = designById(id), p = PIN[id];
+  const m = M[id], d = designById(id), p = pinned(PIN[id], id);
   const n = m.def.parts.length;
   ok(m.structural.length === 0, `${id}: the assembly solves with no structural fault (${m.structural[0]?.message ?? 'ok'})`);
   ok(m.summary.partCount === n && m.solved.mates.length === n - 1, `${id}: every one of ${n} parts is placed and the mate graph is a tree`);
@@ -105,6 +106,7 @@ for (const id of V5_IDS) {
   ok(m.solved.nodes.filter((x) => x.part.kind === 'compute-rack').length >= 3, `${id}: the compute is in at least three racks, not one core`);
   ok(m.geometry.offAxisM < 0.05, `${id}: the CG is on the thrust line (${(m.geometry.offAxisM * 1000).toFixed(1)} mm)`);
   ok(m.genW >= m.loadW, `${id}: the reactor covers the hotel load (${(m.genW / 1e3).toFixed(0)} kWe for ${(m.loadW / 1e3).toFixed(0)} kW)`);
+  if (d.base !== 'colony') { const rb = m.solved.nodes.find((x) => x.name === 'reactorBoom'); ok(rb && rb.part.dims.l >= 10 && m.solved.nodes.find((x) => x.part.kind === 'reactor-fsp').parent === 'reactorBoom', `${id}: the fission unit stands on a ${rb?.part.dims.l.toFixed(0)} m boom, not on the pressure shell`); }
 
   /* pins */
   ok(p.base === d.base && p.drive === d.drive && p.humans === d.humans, `v5 ${id}: the pin records the base, the drive and the cadre`);
@@ -165,8 +167,20 @@ for (const id of V5_IDS) {
   const inHangar = robots.filter((x) => x.parent === 'hangar' && /^(cradle|dock)-/.test(x.viaPort));
   ok(inHangar.length === hp.hangar.humanoids + hp.hangar.flyers, `${id}: ${inHangar.length} robots are in cradles and docks`);
   for (const x of inHangar) {
-    const rel = [x.world.position[0] - hangar.world.position[0], x.world.position[1] - hangar.world.position[1], x.world.position[2] - hangar.world.position[2]];
-    ok(Math.hypot(rel[0], rel[2]) + x.part.dims.d / 2 <= hp.dims.d / 2 + 1e-6 && rel[1] >= -1e-6 && rel[1] + x.part.dims.l <= hp.dims.l + 1e-6, `${id}: ${x.name} is inside the hangar envelope`);
+    /* the robots stand radially in their cradles (QA pass), so the test is on the solved envelope: every
+       corner of the robot's box is inside the hangar's length and under its radius (a cradle's wall face
+       may touch the shell) */
+    const b = summarize([x]).bounds, hy = hangar.world.position[1];
+    const q = x.world.quaternion, rot = (v) => { const [qx, qy, qz, qw] = q; const t = [2 * (qy * v[2] - qz * v[1]), 2 * (qz * v[0] - qx * v[2]), 2 * (qx * v[1] - qy * v[0])]; return [v[0] + qw * t[0] + qy * t[2] - qz * t[1], v[1] + qw * t[1] + qz * t[0] - qx * t[2], v[2] + qw * t[2] + qx * t[1] - qy * t[0]]; };
+    const rr = x.part.dims.d / 2, corners = [];
+    for (const cx of [-rr, rr]) for (const cy of [0, x.part.dims.l]) for (const cz of [-rr, rr]) { const w = rot([cx, cy, cz]); corners.push([w[0] + x.world.position[0], w[2] + x.world.position[2]]); }
+    ok(b.min[1] >= hy - 1e-6 && b.max[1] <= hy + hp.dims.l + 1e-6 && corners.every(([cx, cz]) => Math.hypot(cx, cz) <= hp.dims.d / 2 + 0.12), `${id}: ${x.name} is inside the hangar envelope`);
+  }
+  /* and no two of them share volume: the cradle pitch is at least a robot's width */
+  for (let i = 0; i < inHangar.length; i += 1) for (let j = i + 1; j < inHangar.length; j += 1) {
+    const a = summarize([inHangar[i]]).bounds, c = summarize([inHangar[j]]).bounds;
+    const sep = [0, 1, 2].some((k) => a.max[k] <= c.min[k] + 1e-6 || c.max[k] <= a.min[k] + 1e-6);
+    ok(sep, `${id}: ${inHangar[i].name} and ${inHangar[j].name} do not share volume`);
   }
   const envelope = inHangar.reduce((s, x) => s + x.part.dims.l * x.part.dims.d ** 2, 0);
   ok(envelope < hp.volume.pressurised * 0.5, `${id}: the garaged robots take under half the hangar’s ${hp.volume.pressurised.toFixed(0)} m3`);
@@ -231,7 +245,7 @@ for (const id of V5_IDS) {
     ok(cur.world.position[1] >= prev.world.position[1] + prev.part.dims.l - 1e-6, `${id}: ${cur.name} starts where ${prev.name} ends (no overlap)`);
   }
   /* side-mounted parts do not reach into the axial parts they hang on */
-  for (const x of m.solved.nodes.filter((q) => ['compute-rack', 'scout-rack', 'reactor-fsp', 'robot-lock'].includes(q.part.kind))) {
+  for (const x of m.solved.nodes.filter((q) => ['compute-rack', 'scout-rack', 'reactor-fsp', 'robot-lock'].includes(q.part.kind) && q.parent !== 'reactorBoom')) {
     const host = m.solved.nodes.find((q) => q.name === x.parent);
     ok(Math.hypot(x.world.position[0] - host.world.position[0], x.world.position[2] - host.world.position[2]) >= host.part.dims.d / 2 - 1e-6, `${id}: ${x.name} sits on the outside of ${host.name}`);
   }
@@ -254,7 +268,7 @@ ok(M['habitat-v5'].propulsion.closes && !measure('habitat-dfd').propulsion.close
 /* ---------- v5 does not touch v1-v4 ---------- */
 ok(PARTS['thrust-collar'].ports.find((q) => q.id === 'fore').type === 'hinge-1d', 'the catalogue collar keeps its hinge: v5 retypes a copy');
 ok(centrifugePart(ringFor({ crew: 24, rpm: 4 })).ports[0].gender === 'active', 'the catalogue ring keeps its active hub: v5 flips a copy for the colony');
-near(measure('habitat-spin').massKg, FLEET_VERSIONS.v2.variants['habitat-spin'].massKg, 1e-9, 'v2 habitat-spin still measures to its pin after v5 is loaded');
+near(measure('habitat-spin').massKg, pinned(FLEET_VERSIONS.v2.variants['habitat-spin'], 'habitat-spin').massKg, 1e-9, 'v2 habitat-spin still measures to its pin (with its documented re-cut) after v5 is loaded');
 near(measure('seed-daedalus').massKg, FLEET_VERSIONS.v3.driven['seed-daedalus'].massKg, 1e-9, 'v3 seed-daedalus still measures to its pin after v5 is loaded');
 ok(Object.keys(FLEET_VERSIONS).join(',').indexOf('v5') === -1, 'the v5 pins live in their own file');
 {
