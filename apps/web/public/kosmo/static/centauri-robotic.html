@@ -126,8 +126,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { boostTrackpadZoom } from './zoom-boost.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { buildCentauriModel } from './parts/centauri-models.js';
+import { createSpaceLighting, enableShadows } from './space-lighting.js';
 import { buildRoboticModel, buildRobotGallery } from './parts/robotic-models.js';
 import { person } from './vehicle-models.js';
 import { addHumanDetail } from './parts/detail-pass.js';
@@ -156,15 +156,11 @@ const isV5 = (id) => !!designById(id);
 /* ---- scene ---- */
 const view = $('view'), renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); view.appendChild(renderer.domElement);
-renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.95; renderer.outputColorSpace = THREE.SRGBColorSpace;
-const scene = new THREE.Scene();
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x05070c);
 const camera = new THREE.PerspectiveCamera(38, 1, 0.05, 50000);
 const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.zoomSpeed = 1.6; boostTrackpadZoom(controls, renderer.domElement, { pinchGain: 0.25, scrollGain: 0.009, maxStep: 0.8 });
-{ try { const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; pm.dispose(); } catch { /* unlit fallback */ } }
-scene.add(new THREE.AmbientLight(0xffffff, 0.55)); scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x20242c, 0.6));
-const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(40, 80, 60); scene.add(key);
-const fill = new THREE.DirectionalLight(0x9fd3ff, 0.8); fill.position.set(-50, 20, -40); scene.add(fill);
-const rim = new THREE.DirectionalLight(0xffd9a0, 0.6); rim.position.set(0, -40, -80); scene.add(rim);
+/* the shared photoreal rig (space-lighting.js): procedural Sun + Earth-limb PMREM, shadow-casting key, Earth-blue fill, rim, ACES + sRGB */
+const rig = createSpaceLighting(renderer, scene, { exposure: 1.0 });
 const stage = new THREE.Group(); scene.add(stage);
 let model = null, labelItems = [], personMesh = null;
 
@@ -219,7 +215,9 @@ function showShip(id) {
   model = isV5(id) ? buildRoboticModel(id) : buildCentauriModel(id);
   addHumanDetail(model, { registration: model.userData.livery?.registration });
   const wrap = new THREE.Group(); wrap.add(model); stage.add(wrap);
+  enableShadows(model);
   const b = boxOf(wrap);
+  { const sz = b.getSize(new THREE.Vector3()); rig.fit(Math.max(sz.x, sz.y, sz.z), b.getCenter(new THREE.Vector3())); }
   personMesh = person(); personMesh.position.set(b.min.x - 1.2, b.min.y, (b.min.z + b.max.z) / 2); personMesh.userData.person = true; stage.add(personMesh);
   const m = model.userData.measure;
   if (m) {
@@ -234,7 +232,8 @@ function showShip(id) {
 function showGallery() {
   clearStage();
   model = buildRobotGallery(person);
-  stage.add(model);
+  stage.add(model); enableShadows(model);
+  { const b = boxOf(model), sz = b.getSize(new THREE.Vector3()); rig.fit(Math.max(sz.x, sz.y, sz.z), b.getCenter(new THREE.Vector3())); }
   for (const it of model.userData.items) labelItems.push({ pos: new THREE.Vector3(it.x, -0.25, 0), text: `${it.name.split(' (')[0]}`, sub: `${it.massKg} kg · ${it.heightM.toFixed(2)} m` });
   $('caption').innerHTML = `<b>Robot classes at true scale</b><br>${Object.keys(ROBOTS).length} classes beside the 1.8 m person; masses and envelopes from the catalogue in parts/robotic.js`;
   frame(boxOf(model), new THREE.Vector3(0.12, 0.3, 1), 1.04);
@@ -254,6 +253,11 @@ function applyView() {
   else if (v === 'ring') { const n = partAxis('torpor-ring', new THREE.Vector3(0, -1, 0)) ?? new THREE.Vector3(0, 1, 0); const side = partAxis('torpor-ring', new THREE.Vector3(1, 0, 0.3)) ?? new THREE.Vector3(1, 0, 0); pick(['torpor-ring'], n.multiplyScalar(1.3).add(side.multiplyScalar(0.5)), 1.04); }
   else if (v === 'deck') pick(['obs-deck'], into('obs-deck', 0.5), 1.15);
   else if (v === 'drive') pick(['drive'], new THREE.Vector3(1.5, 0.5, 1.6), 1.05);
+  else if (v === 'low') {
+    /* the attachment review's view: low along the fab bay's skin at its racks, lock and tank mounts */
+    const along = partAxis('fab-bay', new THREE.Vector3(0, 1, 0)) ?? new THREE.Vector3(0, 1, 0), side = partAxis('fab-bay', new THREE.Vector3(1, 0, 0.3)) ?? new THREE.Vector3(1, 0, 0);
+    pick(['fab-bay', 'compute-rack', 'robot-lock'], along.multiplyScalar(0.9).add(side.multiplyScalar(0.5)).add(new THREE.Vector3(0, 0.12, 0)), 0.9);
+  }
 }
 
 function updateLabels() {

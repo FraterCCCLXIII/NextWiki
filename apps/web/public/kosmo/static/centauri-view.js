@@ -11,8 +11,8 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { buildCentauriModel } from './parts/centauri-models.js';
+import { createSpaceLighting, enableShadows } from './space-lighting.js';
 import { RENDER_MODES, applyRenderMode, tickRenderModes } from './render-modes.js';
 import { addSurfaceDetail } from './surface-detail.js';
 import { boostTrackpadZoom } from './zoom-boost.js';
@@ -23,19 +23,13 @@ export function createCentauriView({ host, modeSelect, rivetsBox, detailBox, liv
   const player = { playing: false, loop: false, speed: 1, direction: 'deploy', baseMs: 6000, architecture: null, jettison: 0, lastId: null };
   const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: false });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.9;
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
   host.appendChild(renderer.domElement);
-  const scene = new THREE.Scene(); scene.background = new THREE.Color(0x070a10);
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(0x05070c);
   const camera = new THREE.PerspectiveCamera(38, 1, 0.01, 1e7);
   const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.zoomSpeed = 2.4;
   boostTrackpadZoom(controls, renderer.domElement, { pinchGain: 0.25, scrollGain: 0.009, maxStep: 0.8 });
-  try { const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.5; pm.dispose(); } catch { /* no environment */ }
-  scene.add(new THREE.HemisphereLight(0xcfe0ff, 0x151a22, 0.35));
-  const key = new THREE.DirectionalLight(0xfff1dc, 2.8); scene.add(key);
-  const front = new THREE.DirectionalLight(0xdfe8ff, 0.9); scene.add(front);
-  const fill = new THREE.DirectionalLight(0x9fc8ff, 0.8); scene.add(fill);
-  const rim = new THREE.DirectionalLight(0xffffff, 1.6); scene.add(rim);
+  /* the shared photoreal rig: procedural Sun + Earth-limb PMREM, shadow-casting key, Earth-blue fill, rim, ACES + sRGB */
+  const rig = createSpaceLighting(renderer, scene, { exposure: 1.0 });
   const stage = new THREE.Group(); scene.add(stage);
   let model = null, detail = null, human = null, ground = null, figure = null, spanM = 10;
 
@@ -74,16 +68,17 @@ export function createCentauriView({ host, modeSelect, rivetsBox, detailBox, liv
     human = spanM > 0.5 ? addHumanDetail(model, { registration: model.userData.livery?.registration }) : null;
     if (human) human.visible = detailBox?.checked ?? true;
     model.userData.setCutaway?.(!!cutawayBox?.checked);
+    enableShadows(model); if (human) enableShadows(human); if (detail) enableShadows(detail);
     const R = Math.max(spanM * 0.9, 1.5);
     ground = new THREE.Group();
     ground.add(new THREE.GridHelper(R * 2, Math.max(8, Math.round((R * 2) / niceStep(R / 5))), 0x33425c, 0x1a2230));
-    const disc = new THREE.Mesh(new THREE.CircleGeometry(R, 72).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x0a0e16 })); disc.position.y = -0.01; ground.add(disc);
+    const disc = new THREE.Mesh(new THREE.CircleGeometry(R, 72).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x0a0e16, roughness: 1, metalness: 0 })); disc.position.y = -0.01; disc.receiveShadow = true; ground.add(disc);
     stage.add(ground);
     /* the person stands beside the hull -- or beside the film, when a true-size film is the bigger of the two (the wafer) */
     const filmR = model.userData.sail && model.userData.sail.ratio < 1.02 ? model.userData.sail.drawn.R : 0;
     if (person && spanM < 400) { figure = personFigure(); figure.position.set(-Math.max(size.x / 2, filmR) - Math.max(0.6, spanM * 0.04), 0, size.z / 2 * 0.6); stage.add(figure); }
     const dist = spanM * 1.9;
-    key.position.set(dist, dist * 1.1, dist * 0.8); fill.position.set(-dist, dist * 0.4, dist * 0.6); front.position.set(dist * 0.3, dist * 0.5, dist * 1.4); rim.position.set(-dist * 0.4, dist * 0.8, -dist);
+    rig.fit(spanM, new THREE.Vector3(0, size.y * 0.5, 0));
     controls.target.set(0, size.y * 0.5, 0);
     camera.position.set(dist * 0.55, size.y * 0.55 + dist * 0.28, dist * 0.85);
     camera.near = Math.max(0.005, dist / 5000); camera.far = dist * 400; camera.updateProjectionMatrix(); controls.update();
@@ -181,6 +176,21 @@ export function createCentauriView({ host, modeSelect, rivetsBox, detailBox, liv
         model.traverse((o) => { if (!pick && o.userData?.kind && (opts.kind ? o.userData.kind === opts.kind : /module|node|hangar|capsule|bus|lander|ring|centrifuge/.test(o.userData.kind))) pick = o; });
         if (pick) { const b = new THREE.Box3().setFromObject(pick); target = b.getCenter(new THREE.Vector3()); const s = b.getSize(new THREE.Vector3()); place(new THREE.Vector3(0.7, 0.35, 0.65), Math.max(s.x, s.y, s.z) * (opts.k ?? 1.6), target); }
         else place(new THREE.Vector3(0.7, 0.35, 0.65), R * 0.6);
+      } else if (name === 'low') {
+        /* a low view along the hull at a mounted block: the eye just above the skin, looking across the mounts
+           (the attachment review's view: undersides, standoffs and contact shadows are what it shows) */
+        let pick = null;
+        model.traverse((o) => { if (!pick && o.userData?.kind && (opts.kind ? o.userData.kind === opts.kind : /module|node|hangar|bay|bus|capsule|despin|systems/.test(o.userData.kind))) pick = o; });
+        const b = pick ? new THREE.Box3().setFromObject(pick) : box, t = b.getCenter(new THREE.Vector3()), s = b.getSize(new THREE.Vector3());
+        /* on a sail ship the film plane caps the hull: the eye goes to the aft side so it is never looking down through the film */
+        const long = s.y >= Math.max(s.x, s.z) ? new THREE.Vector3(0, model.userData.sail ? -1 : 1, 0) : s.x >= s.z ? new THREE.Vector3(1, 0, 0) : new THREE.Vector3(0, 0, 1);
+        const across = long.y ? new THREE.Vector3(1, 0, 0.35) : new THREE.Vector3(0.35, 1, 0);
+        /* look at the skin, not the axis: the target is pushed to the near side of the body, the eye sits beyond the
+           body's end so the whole mounted face is in frame at a grazing angle */
+        const r = Math.min(s.x, s.y, s.z) * 0.5;
+        t.addScaledVector(across.clone().normalize(), r * 0.8);
+        const dir = long.clone().multiplyScalar(1.0).add(across.clone().normalize().multiplyScalar(0.75)).normalize();
+        place(dir, Math.max(s.x, s.y, s.z) * (opts.k ?? 1.25), t, 32);
       } else if (name === 'section') { model.userData.setCutaway?.(true); place(new THREE.Vector3(0.2, 0.9, 0.4), R * 1.4); }
       else if (name === 'ring') { let pick = null; model.traverse((o) => { if (!pick && o.userData?.kind && /centrifuge|habitat-ring|torpor-ring|spin-bola/.test(o.userData.kind)) pick = o; }); if (pick) { const b = new THREE.Box3().setFromObject(pick); const s = b.getSize(new THREE.Vector3()); place(new THREE.Vector3(0.5, 0.75, 0.45), Math.max(s.x, s.z) * 1.1, b.getCenter(new THREE.Vector3())); } else place(new THREE.Vector3(0.5, 0.75, 0.45), R * 1.4); }
       camera.near = Math.max(0.005, camera.position.distanceTo(controls.target) / 5000); camera.far = camera.position.distanceTo(controls.target) * 400; camera.updateProjectionMatrix();
