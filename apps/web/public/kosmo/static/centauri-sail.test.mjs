@@ -20,6 +20,7 @@ import {
   selfIntersections, foldClosure, insideDrum, readout, trianglesIntersect
 } from './parts/sail-mechanics.js';
 import { filmTemperatureK } from './parts/primitives/spec.js';
+import { shapesOf, sdf } from './parts/geometry-audit.js';
 
 let checks = 0;
 const ok = (cond, message) => { assert.ok(cond, message); checks += 1; };
@@ -160,6 +161,36 @@ for (const cls of sailClasses) {
   /* readout */
   const r = readout(T, 0.5, { coarse: true });
   ok(r.stage && Number.isFinite(r.timeS) && Number.isFinite(r.deployedAreaM2), `${tag}: the readout is complete at k = 0.5`);
+
+  /* the mechanism against the hull it is mounted on, at every quarter of the deployment: no film panel, tip or line end
+     inside a hull body (the canister and the mast carry the drum and are exempt), and the drum itself clear of everything
+     but what it stands on. The drawn mechanism is used (the true film wraps its drum thousands of times), in the sail
+     node's world frame; the drum is true size. */
+  {
+    const sailNode = m.solved.nodes.find((n) => n.part.kind === 'sail');
+    const rot = (q, v) => { const [x, y, z, w] = q; const tx = 2 * (y * v[2] - z * v[1]), ty = 2 * (z * v[0] - x * v[2]), tz = 2 * (x * v[1] - y * v[0]); return [v[0] + w * tx + (y * tz - z * ty), v[1] + w * ty + (z * tx - x * tz), v[2] + w * tz + (x * ty - y * tx)]; };
+    const toWorld = (f, p) => { const r2 = rot(f.quaternion, p); return [r2[0] + f.position[0], r2[1] + f.position[1], r2[2] + f.position[2]]; };
+    const toLocal = (f, p) => rot([-f.quaternion[0], -f.quaternion[1], -f.quaternion[2], f.quaternion[3]], [p[0] - f.position[0], p[1] - f.position[1], p[2] - f.position[2]]);
+    const hull = m.solved.nodes.filter((n) => !['sail', 'sail-canister', 'mast'].includes(n.part.kind)).flatMap((n) => shapesOf(n.part).map((shape) => ({ n, shape })));
+    const depthIn = (pWorld) => { let worst = 0, who = null; for (const h of hull) { const d = -sdf(h.shape, toLocal(h.n.world, pWorld)); if (d > worst) { worst = d; who = h.n.name; } } return { worst, who }; };
+    const tol = Math.max(0.02, 0.002 * D.R);
+    for (const k of [0, 0.25, 0.5, 0.75, 1]) {
+      const g = D.geometry(k);
+      let worst = { worst: 0, who: null }, n = 0;
+      const step = Math.max(1, Math.floor(g.panels.length / 400));
+      for (let i = 0; i < g.panels.length; i += step) for (const v of g.panels[i].v) { const d = depthIn(toWorld(sailNode.world, v)); if (d.worst > worst.worst) worst = d; n += 1; }
+      for (const t of g.hardware.tips) { const d = depthIn(toWorld(sailNode.world, t.p)); if (d.worst > worst.worst) worst = d; }
+      for (const L of g.lines) for (const e of [L.a, L.b]) { const d = depthIn(toWorld(sailNode.world, e)); if (d.worst > worst.worst) worst = d; }
+      ok(worst.worst <= tol, `${tag}: at k = ${k} no film panel, tip or line end is inside the hull (${n} points; worst ${worst.worst.toFixed(3)} m in ${worst.who ?? 'nothing'})`);
+    }
+    /* the drum: a cylinder of the true canister below the film plane */
+    if (D.architecture !== 'starchip-disc') {
+      const drum = D.drum; let worst = { worst: 0, who: null };
+      for (let i = 0; i < 48; i += 1) for (const y of [0, -drum.l / 2, -drum.l]) { const a = (i / 48) * Math.PI * 2; const d = depthIn(toWorld(sailNode.world, [Math.cos(a) * drum.r, y, Math.sin(a) * drum.r])); if (d.worst > worst.worst) worst = d; }
+      ok(worst.worst <= Math.max(0.05, 0.02 * drum.r), `${tag}: the drum stands clear of the hull (worst ${worst.worst.toFixed(3)} m in ${worst.who ?? 'nothing'})`);
+      ok(T.pack.fits, `${tag}: the true film pack fits its drum (${(T.pack.volumeM3).toPrecision(3)} of ${(T.pack.annulusM3).toPrecision(3)} m3)`);
+    }
+  }
 }
 
 /* ---------- the boom architecture on a class, through the override ---------- */

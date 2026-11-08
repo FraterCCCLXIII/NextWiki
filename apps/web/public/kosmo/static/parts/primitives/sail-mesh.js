@@ -115,11 +115,16 @@ export function sailMechanismMesh(mech, { trueMech = null, ratio = 1, skins = {}
       const latch = box(Math.max(r * 0.08, 1e-4), Math.max(l * 0.06, 1e-4), Math.max(r * 0.12, 1e-4), S.latch); latch.position.set(0, l * 0.95, 0); hinge.add(latch);
       drumGroup.add(hinge); parts.doors.push(hinge);
     }
-    /* hub gimbal: two rings on crossed axes under the drum, the load path to the mast */
-    const gim = new THREE.Group();
+    /* hub gimbal: two rings on crossed axes under the drum, the load path to the mast. The outer ring is carried on a
+       bearing housing bolted to the drum's bottom plate; the inner ring turns on two trunnions inside it; a mast-root
+       flange below closes the load path to the hardpoint (CENTAURI-ATTACH.md: the rings hung in the air) */
+    const gim = new THREE.Group(), gy = Math.max(r * 0.12, 1e-4);
+    const housing = cyl(r * 0.62, gy, S.gimbal, { seg: 32 }); housing.position.y = -l - gy; drumGroup.add(housing);
     gim.add(ringXZ(r * 0.6, Math.max(r * 0.05, 1e-4), S.gimbal, 0));
     const inner = tor(r * 0.45, Math.max(r * 0.045, 1e-4), S.gimbal); inner.rotation.x = Math.PI / 2; inner.rotation.z = Math.PI / 2; gim.add(inner);
-    gim.position.y = -l - Math.max(r * 0.12, 1e-4);
+    for (const sx of [-1, 1]) { const trunnion = cyl(Math.max(r * 0.04, 1e-4), r * 0.16, S.core, { seg: 10 }); trunnion.rotation.z = Math.PI / 2; trunnion.position.set(sx * r * 0.52, 0, 0); gim.add(trunnion); }
+    const flange = cyl(r * 0.5, Math.max(r * 0.04, 1e-4), S.gimbal, { seg: 32 }); flange.position.y = -Math.max(r * 0.09, 1e-4); gim.add(flange);
+    gim.position.y = -l - gy;
     hardware.add(gim); parts.gimbal = gim;
     /* a few reel-drive motors on the top ring */
     for (let k = 0; k < Math.min(N, 6); k += 1) { const a = (k / N) * TAU; const mot = cyl(Math.max(r * 0.06, 1e-4), Math.max(l * 0.08, 1e-4), S.core, { seg: 10 }); put(mot, Math.cos(a) * r * 0.8, -l * 0.1, Math.sin(a) * r * 0.8); drumGroup.add(mot); }
@@ -139,6 +144,7 @@ export function sailMechanismMesh(mech, { trueMech = null, ratio = 1, skins = {}
     tg.add(sph(tipR, S.tip));
     const vane = new THREE.Group(); const plate = box(R * 0.05, Math.max(R * 0.001, tiny), R * 0.025, S.vane); plate.position.x = R * 0.03; vane.add(plate); vane.position.y = tipR; tg.add(vane);
     tg.add(navLights([{ p: [0, tipR * 1.6, 0], kind: i % 2 ? 'navRed' : 'navGreen', r: tipR * 0.45 }]));
+    tg.traverse((o) => { if (o.isMesh) o.userData.tethered = true; });   // held by the film and its tie-lines, not by the drum
     film.add(tg); parts.tips.push(tg); parts.vanes.push(vane);   // tips travel with the film (and with a jettison)
   }
   /* booms and spools (boom-square) */
@@ -194,7 +200,8 @@ export function sailMechanismMesh(mech, { trueMech = null, ratio = 1, skins = {}
     if (Hk.spools) Hk.spools.forEach((s, i) => { const sp = parts.spools[i]; if (sp) sp.roll.scale.set(Math.max(s.radiusM, 1e-6), 1, Math.max(s.radiusM, 1e-6)); });
     if (Hk.tray && parts.tray) { parts.tray.position.y = Hk.tray.y; parts.tray.visible = Hk.tray.present; }
     if (parts.gimbal) parts.gimbal.rotation.z = Hk.gimbalRad;
-    if (parts.reelRing) parts.reelRing.rotation.y = (g.extensionM / Math.max(drum.rCore, 1e-6)) % TAU;
+    /* the reel turns about its own axis, which after ringXZ's rotation.x is local z (rotation.y tilted it 22 degrees off the hub) */
+    if (parts.reelRing) parts.reelRing.rotation.z = (g.extensionM / Math.max(drum.rCore, 1e-6)) % TAU;
     /* lines. A cord that runs along a strip is the strip (not drawn). A tie-line or halyard is stowed along the
        film until the pleats open; once out it is drawn straight, with a small free-floating wobble while slack --
        there is no gravity to hang a catenary in. */
