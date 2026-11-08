@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
+<script src="kosmo-scrollfade.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Centauri Fleet</title>
+<style>
+  :root { --bg: #0d0d0d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --accent2: #ffb86b; --good: #7fe0a0; --bad: #ff8a8a; --line: rgba(140,170,220,0.14); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+  #navbar { position: sticky; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: rgba(13,13,13,0.94); }
+  #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 20px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 13px; color: #fff; opacity: 0.8; margin-top: 2px; }
+  #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.16em; font-size: 14px; text-transform: uppercase; }
+  #menu a { color: rgba(255,255,255,0.72); text-decoration: none; white-space: nowrap; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+  main { max-width: 1180px; margin: 0 auto; padding: 8px 20px 90px; }
+  h1 { font-weight: 500; font-size: 32px; margin: 18px 0 4px; }
+  h2 { font-weight: 500; font-size: 21px; margin: 38px 0 6px; border-top: 1px solid var(--line); padding-top: 22px; }
+  h3 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 18px 0 6px; font-weight: 500; }
+  p, li { color: #c3d0e2; max-width: 82ch; } .dim { color: var(--muted); } .small { font-size: 13px; }
+  .verdict { border: 1px solid var(--line); border-left: 3px solid var(--accent2); border-radius: 8px; padding: 10px 14px; background: rgba(18,22,30,0.55); margin: 14px 0; }
+  .verdict b { color: #fff; } .verdict.ok { border-left-color: var(--good); } .verdict.no { border-left-color: var(--bad); }
+  input, select { background: rgba(26,26,26,0.85); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 8px; padding: 4px 8px; font: inherit; max-width: 100%; }
+  input[type=number] { width: 7.5em; } label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 1px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px 16px; margin: 10px 0; align-items: flex-end; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; margin: 8px 0; font-variant-numeric: tabular-nums; }
+  th, td { padding: 4px 10px 4px 0; text-align: right; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 400; } th:first-child, td:first-child { text-align: left; }
+  td.l, th.l { text-align: left; }
+  .tw { overflow-x: auto; }
+  .ok { color: var(--good); } .no { color: var(--bad); } .warn { color: var(--accent2); } .acc { color: var(--accent); }
+  code { background: rgba(255,255,255,0.07); border-radius: 4px; padding: 0 5px; font-size: 13px; }
+  a { color: var(--accent); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(168px, 1fr)); gap: 8px; margin: 14px 0 6px; }
+  .stat { border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; background: rgba(18,22,30,0.55); }
+  .stat span { display: block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .stat b { display: block; font-size: 19px; font-weight: 500; color: #fff; margin: 2px 0 1px; font-variant-numeric: tabular-nums; }
+  .stat i { font-style: normal; font-size: 11.5px; color: #93a3ba; }
+  tr.best td { background: rgba(127,195,255,0.07); }
+  ul.checks { list-style: none; padding: 0; margin: 8px 0; }
+  ul.checks li { padding: 4px 0 4px 20px; position: relative; font-size: 13.5px; border-bottom: 1px solid var(--line); }
+  ul.checks li:before { position: absolute; left: 0; }
+  ul.checks li.err:before { content: "\2717"; color: var(--bad); }
+  ul.checks li.warn:before { content: "\26A0"; color: var(--accent2); }
+  ul.checks li.info:before { content: "\00B7"; color: var(--muted); }
+  svg.ruler { width: 100%; height: auto; display: block; margin: 10px 0 4px; }
+  @media (max-width: 760px) { #menu { display: none; } main { padding: 8px 14px 60px; } }
+</style>
+  <link rel="stylesheet" href="kosmographica.css?v=15">
+  <script src="atlas-nav.js" defer></script>
+</head>
+<body>
+<div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
+  <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="centauri-lab.html" class="here">Centauri Fleet</a></nav><span></span></div>
+<main>
+  <h1 class="serif">Centauri Fleet</h1>
+  <div class="dim">Eight payloads, 4.37 light years, rebuilt from parts: real modules, buses, arrays, radiators and
+    interfaces, a sail sized by its areal density, and a driver sized by photon momentum. Everything below is measured
+    from those parts, not typed in from a concept table.</div>
+
+  <div class="verdict" id="verdict">&mdash;</div>
+
+  <div class="row" id="controls">
+    <div><label>Craft class</label><select id="cls"></select></div>
+    <div><label>Sail areal density</label><select id="areal">
+      <option value="0.00034">100 nm silicon nitride (0.34 g/m&sup2;)</option>
+      <option value="0.00233">1 &micro;m aluminium (2.33 g/m&sup2;)</option>
+    </select></div>
+    <div><label>Boost time (s)</label><input type="number" id="tboost" min="1" step="1"></div>
+    <div><label>Cruise speed (c)</label><input type="number" id="beta" min="0.01" max="0.5" step="0.01"></div>
+    <div><label>Laser wavelength (&micro;m)</label><input type="number" id="lambda" min="0.2" max="12" step="0.01"></div>
+    <div><label>Sail reflectivity</label><input type="number" id="eta" min="0.1" max="1" step="0.01"></div>
+    <div><label>Collector limit (K)</label><input type="number" id="thermal" min="300" max="900" step="10"></div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <h2 class="serif">1 &middot; What the parts weigh</h2>
+  <p>The class is an assembly, not a shape. Each row below is a real part or a stated derived law; the mass is their
+    sum, and the mates are solved from ports, so moving one part moves everything above it.</p>
+  <div class="tw"><table id="parts"></table></div>
+  <p class="small dim" id="partsNote"></p>
+
+  <h2 class="serif">2 &middot; The sail, and why size is not payload</h2>
+  <p>The sail dominates the geometry. Its diameter is <code>2 &radic;(m / (&pi; &sigma;))</code>, so it grows as the
+    square root of mass while the drawn hull grows hardly at all. Below the log ruler, the module or capsule is a few
+    metres, the sail is kilometres, and the collector for the driver is larger again.</p>
+  <div id="ruler"></div>
+  <div class="tw"><table id="sailTable"></table></div>
+
+  <h2 class="serif">3 &middot; The driver: photon momentum, not energy</h2>
+  <p>A laser sail gets <code>F = 2P&eta; / (c(1+&beta;))</code>: at rest two photon momenta per unit energy, and less as
+    it runs away from the beam. Time to a target speed therefore fixes the power, and the table's energy column does not
+    fix it at all. That is why the measured peak laser is several times the published figure for the same boost.</p>
+  <div class="tw"><table id="drive"></table></div>
+
+  <h2 class="serif">4 &middot; The station, and its orbit</h2>
+  <p>The station has to make the laser power, radiate what it does not emit, and put the beam on a sail that is receding.
+    Collector mass falls as the square of the solar distance, but the radiator is set by laser power and does not care
+    where it is, and the aperture is set by range and sail size. The trade below scans solar distance and aperture and
+    reports the lightest feasible station &mdash; that is what &ldquo;optimal orbit&rdquo; means here.</p>
+  <div class="tw"><table id="orbits"></table></div>
+  <p class="small" id="orbitNote"></p>
+
+  <h2 class="serif">5 &middot; What the checks say</h2>
+  <ul class="checks" id="checks"></ul>
+
+  <h2 class="serif">6 &middot; The eight, side by side</h2>
+  <p>Same parts, same physics, same station model. A class closes when the beam can be focused on its sail and the
+    station stays inside the buildability caps; the cells say which constraint failed when it does not.</p>
+  <div class="tw"><table id="fleet"></table></div>
+
+  <h2 class="serif">Sources and assumptions</h2>
+  <p class="small dim">Parts and their figures carry a source in <code>static/parts/parts.js</code>: Columbus (NASA),
+    Kibo (JAXA), the ISS SAW array (NASA, 31 kW / 1,090 kg), the PVR radiator (NASA CR-19940020352, 7.5 kW / 93 m&sup2;),
+    RUAG PAF ratings, IDSS and CBM interfaces. The sail law is Lubin's <i>A Roadmap to Interstellar Flight</i> (sail mass
+    equal to payload, 100 nm silicon nitride). Station assumptions are named constants in
+    <code>static/parts/beam.js</code>: 50&nbsp;% wall-plug laser, 30&nbsp;% PV, 1 kg/m&sup2; collector, 8.8 kg/m&sup2; of
+    radiator rejecting 4.2 kW/m&sup2; at 450 K, 5 kg/m&sup2; of phased-array aperture, a 100 km aperture cap and a
+    1,000 km&sup2; structure cap. The source table is SpaceRadio's <code>centauri-fleet/fleet.mjs</code>, reproduced
+    unchanged in <code>static/parts/fleet.js</code> so the comparison cannot drift.</p>
+</main>
+<script type="module">
+import { measure, measureFleet, CLASSES, ROUTE_LY, COAST_YR } from './parts/fleet.js';
+import { fmtPower, fmtEnergy, fmtLength, fmtArea, fmtMass, apertureForCoupling, EARTH_ORBITS } from './parts/beam.js';
+import { SAIL_AREAL } from './parts/parts.js';
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const num = (v, d = 3) => (Math.abs(v) >= 1000 || (Math.abs(v) < 0.01 && v !== 0) ? v.toExponential(2) : v.toFixed(d));
+
+function fmtDuration(s) {
+  if (s >= 86400 * 300) return `${num(s / (365.25 * 86400), 2)} yr`;
+  if (s >= 86400 * 1.5) return `${num(s / 86400, 2)} d`;
+  if (s >= 5400) return `${num(s / 3600, 2)} h`;
+  if (s >= 90) return `${num(s / 60, 1)} min`;
+  return `${num(s, 1)} s`;
+}
+
+$('cls').innerHTML = CLASSES.map((c) => `<option value="${c.id}">${esc(c.name)} &middot; ${esc(c.payloadLabel)}</option>`).join('');
+$('cls').value = 'wafer';
+$('tboost').value = CLASSES[0].boostS;
+$('beta').value = 0.1;
+$('lambda').value = 1.06;
+$('eta').value = 0.9;
+$('thermal').value = 500;
+
+let lastClass = null;
+
+function options() {
+  return {
+    arealKgM2: Number($('areal').value),
+    tBoost: Math.max(1, Number($('tboost').value) || 600),
+    betaTarget: Math.min(0.5, Math.max(0.001, Number($('beta').value) || 0.1)),
+    lambda: Math.max(0.2, Number($('lambda').value) || 1.06) * 1e-6,
+    etaSail: Math.min(1, Math.max(0.1, Number($('eta').value) || 0.9)),
+    thermalLimitK: Math.max(300, Number($('thermal').value) || 500)
+  };
+}
+
+function ruler(items) {
+  const W = 900, H = 132, pad = 54, y = 96, lo = -3, hi = 9;
+  const X = (v) => pad + ((Math.log10(Math.max(v, 1e-3)) - lo) / (hi - lo)) * (W - 2 * pad);
+  let s = `<svg class="ruler" viewBox="0 0 ${W} ${H}" role="img" aria-label="True-size ruler">`;
+  for (let e = lo; e <= hi; e += 1) {
+    const x = X(10 ** e);
+    s += `<line x1="${x.toFixed(1)}" y1="${y}" x2="${x.toFixed(1)}" y2="${y + 6}" stroke="rgba(140,170,220,.3)"/>`;
+    s += `<text x="${x.toFixed(1)}" y="${y + 20}" fill="#8a9bb8" font-size="9" text-anchor="middle">${fmtLength(10 ** e)}</text>`;
+  }
+  s += `<line x1="${pad}" y1="${y}" x2="${W - pad}" y2="${y}" stroke="rgba(140,170,220,.5)"/>`;
+  items.forEach((it, i) => {
+    const x = X(it.value);
+    const top = 30 + (i % 2) * 26;
+    s += `<line x1="${x.toFixed(1)}" y1="${top + 5}" x2="${x.toFixed(1)}" y2="${y}" stroke="${it.color}" stroke-width="1.2"/>`;
+    s += `<circle cx="${x.toFixed(1)}" cy="${y}" r="3" fill="${it.color}"/>`;
+    s += `<text x="${x.toFixed(1)}" y="${top}" fill="${it.color}" font-size="10" text-anchor="middle">${esc(it.label)}</text>`;
+  });
+  return s + '</svg>';
+}
+
+function render() {
+  const o = options();
+  const id = $('cls').value;
+  if (id !== lastClass) { $('tboost').value = Math.round(CLASSES.find((c) => c.id === id).boostS); lastClass = id; }
+  const opts = options();
+  const m = measure(id, opts);
+  const best = m.trade.best;
+  const s = m.summary;
+  const sailD = m.sail.dims.d;
+  const hull = Math.max(0, ...m.solved.nodes.filter((n) => n.part.kind !== 'sail').map((n) => n.part.dims.l));
+  const rangeM = 1.5e6 + m.travelM;
+  const neededD = apertureForCoupling({ lambda: opts.lambda, rangeM, sailD, coupling: 0.9 });
+
+  $('verdict').className = `verdict ${m.trade.hasFeasible ? 'ok' : 'no'}`;
+  $('verdict').innerHTML = `<b>${esc(m.cls.name)}</b> &middot; ${esc(m.cls.payloadLabel)} to ${(opts.betaTarget * 100).toFixed(0)}&nbsp;% c in ${esc(fmtDuration(opts.tBoost))}: ${esc(m.verdict.text)}`;
+
+  $('stats').innerHTML = [
+    ['Vehicle mass', fmtMass(m.massKg), `${s.partCount} parts, ${s.crew} crew`],
+    ['Sail', fmtLength(sailD), `${fmtArea(m.sail.sail.areaM2)} at ${(opts.arealKgM2 * 1000).toFixed(2)} g/m\u00b2`],
+    ['Laser at the sail', fmtPower(m.powerW), `over ${esc(fmtDuration(opts.tBoost))}`],
+    ['Beam energy', fmtEnergy(m.energyJ), `${num(m.energyJ / Math.max(m.kineticJ, 1e-30), 3)}x the kinetic energy`],
+    ['Aperture for 0.9', fmtLength(neededD), `${m.trade.hasFeasible ? 'inside' : 'outside'} the 100 km cap`],
+    ['Station', fmtMass(best.totalMass), `${esc(best.orbit.name)}`]
+  ].map(([k, v, sub]) => `<div class="stat"><span>${k}</span><b>${v}</b><i>${sub}</i></div>`).join('');
+
+  $('parts').innerHTML = `<tr><th class="l">Part</th><th class="l">Kind</th><th>Mass</th><th>Length</th><th>Diameter</th><th class="l">Source</th></tr>` +
+    m.solved.nodes.map((n) => {
+      const p = n.part;
+      return `<tr><td class="l">${esc(n.name)} &middot; ${esc(p.name)}</td><td class="l dim">${esc(p.kind)}</td>
+        <td>${p.mass == null ? '<span class="warn">unknown</span>' : fmtMass(p.mass)}</td>
+        <td>${fmtLength(p.dims.l)}</td><td>${fmtLength(p.dims.d)}</td>
+        <td class="l dim small">${esc(p.source ?? '')}${p.dataQuality === 'derived' ? ' <span class="warn">(derived)</span>' : ''}</td></tr>`;
+    }).join('') +
+    `<tr><th class="l">Total</th><th class="l"></th><th>${fmtMass(m.massKg)}</th><th>${fmtLength(m.summary.bounds.height)}</th><th>${fmtLength(m.summary.bounds.span)}</th><th class="l dim small">${m.def.parts.length} parts, ${m.solved.mates.length} mates</th></tr>`;
+
+  $('partsNote').textContent = `Deployed bounds ${fmtLength(m.summary.bounds.size[0])} x ${fmtLength(m.summary.bounds.height)} x ${fmtLength(m.summary.bounds.size[2])}; centre of mass ${fmtLength(Math.hypot(...m.summary.cg))} from the root port. Launch packaging is not checked here: at these sail sizes the vehicle is assembled in orbit, which is itself a finding.`;
+
+  $('sailTable').innerHTML = `<tr><th class="l">Quantity</th><th>Value</th><th class="l">Law</th></tr>` +
+    [
+      ['Payload (source table)', fmtMass(m.cls.payloadKg), 'the table\u2019s own figure'],
+      ['Sail mass', fmtMass(m.sail.mass), 'sail mass = payload mass (Lubin)'],
+      ['Sail areal density', `${(opts.arealKgM2 * 1000).toFixed(2)} g/m\u00b2`, '100 nm SiN or 1 \u00b5m Al'],
+      ['Sail diameter', fmtLength(sailD), 'd = 2 sqrt(m / (pi sigma))'],
+      ['Sail area', fmtArea(m.sail.sail.areaM2), 'pi (d/2)^2'],
+      ['Sail diameter / hull length', `${num(sailD / Math.max(hull, 1e-3), 3)}x`, 'the sail grows as sqrt(m); the hull does not'],
+      ['Collector span (best orbit)', fmtLength(Math.sqrt(best.collectorAreaM2)), 'square collector of that area'],
+      ['Transmit aperture', fmtLength(best.apertureM), 'the trade\u2019s optimum'],
+      ['Spot diameter at the sail', fmtLength(sailD / Math.sqrt(Math.max(best.coupling, 1e-12))), 'for the coupling the trade chose']
+    ].map(([k, v, law]) => `<tr><td class="l">${k}</td><td>${v}</td><td class="l dim small">${law}</td></tr>`).join('');
+
+  $('ruler').innerHTML = ruler([      { label: 'hull ' + fmtLength(hull), value: Math.max(hull, 1e-3), color: '#7fc3ff' },
+    { label: 'sail ' + fmtLength(sailD), value: sailD, color: '#ffb86b' },
+    { label: 'collector ' + fmtLength(Math.sqrt(best.collectorAreaM2)), value: Math.sqrt(best.collectorAreaM2), color: '#7fe0a0' },
+    { label: 'aperture ' + fmtLength(best.apertureM), value: best.apertureM, color: '#d9a7ff' }
+  ]);
+
+  $('drive').innerHTML = `<tr><th class="l">Quantity</th><th>Source table</th><th>Measured</th><th class="l">Why</th></tr>` +
+    [
+      ['Peak laser', fmtPower(m.cls.peakW), fmtPower(m.powerW), `${num(m.ratios.power, 2)}x the table; momentum needs 2P/c`],
+      ['Beam energy', fmtEnergy(m.cls.energyJ), fmtEnergy(m.energyJ), `${num(m.ratios.energy, 2)}x the table`],
+      ['Boost time', fmtDuration(m.cls.boostS), fmtDuration(opts.tBoost), 'the table\u2019s own figure, used as the target'],
+      ['Vehicle mass', 'payload only', fmtMass(m.massKg), 'sail, bus, modules and cargo included'],
+      ['Kinetic energy at cruise', '\u2014', fmtEnergy(m.kineticJ), '(gamma - 1) m c^2'],
+      ['Sail at the end of boost', '\u2014', fmtLength(m.travelM), 'distance the beam must still reach'],
+      ['Aperture for 90 % coupling', '\u2014', fmtLength(neededD), '1.22 lambda L / (R sqrt(0.9))']
+    ].map(([k, a, b, why]) => `<tr><td class="l">${k}</td><td class="dim">${a}</td><td>${b}</td><td class="l dim small">${why}</td></tr>`).join('');
+
+  const earthIds = new Set(EARTH_ORBITS.map((x) => x.id));
+  const helio = m.trade.rows.filter((r) => !earthIds.has(r.orbit.id));
+  const earth = m.trade.rows.filter((r) => earthIds.has(r.orbit.id));
+  const rows = [...helio.slice(0, 5), ...earth];
+  $('orbits').innerHTML = `<tr><th class="l">Orbit</th><th>r (AU)</th><th>Collector T</th><th>Flux</th><th>Collector</th><th>Radiator</th><th>Aperture</th><th>Coupling</th><th>Station</th><th class="l">Verdict</th></tr>` +
+    rows.map((r) => {
+      const isBest = r === best;
+      const why = r.feasible ? (isBest ? 'lightest station that closes' : 'closes, heavier') : r.reasons[0];
+      return `<tr class="${isBest ? 'best' : ''}"><td class="l">${esc(r.orbit.name)}</td>
+        <td>${r.orbit.rAu.toFixed(2)}</td><td>${Math.round(r.thermalK)} K</td><td>${(r.flux / 1000).toFixed(1)} kW/m\u00b2</td>
+        <td>${fmtArea(r.collectorAreaM2)}</td><td>${fmtArea(r.radiatorAreaM2)}</td><td>${fmtLength(r.apertureM)}</td>
+        <td>${(Math.min(r.coupling, 1) * 100).toFixed(r.coupling < 0.01 ? 3 : 1)} %</td><td>${fmtMass(r.totalMass)}</td>
+        <td class="l ${r.feasible ? (isBest ? 'ok' : 'dim') : 'no'}">${esc(why)}</td></tr>`;
+    }).join('');
+
+  $('orbitNote').innerHTML = m.trade.hasFeasible
+    ? `The optimum is <b>${esc(best.orbit.name)}</b> at ${best.orbit.rAu.toFixed(2)} AU: ${fmtArea(best.collectorAreaM2)} of collector, ${fmtArea(best.radiatorAreaM2)} of radiator, a ${fmtLength(best.apertureM)} aperture and ${fmtMass(best.totalMass)} of station. It sits at the thermal limit, not at the closest orbit the Sun allows, because the radiator is sized by laser power (${fmtPower(best.pLaser)} at the aperture) and is the same everywhere; only the collector shrinks with $1/r^2$. A sail staged at that station also has to be delivered there, which this model does not charge for.`
+    : `No orbit in the trade closes. The binding constraint is <b>${esc(best.reasons[0] ?? 'unknown')}</b>: a ${fmtLength(2 * neededD)} aperture would be needed to put 90 % of the beam on a ${fmtLength(sailD)} sail at ${fmtLength(rangeM)}, and the aperture cap here is 100 km. Shorten the boost (the sail travels less while it is being pushed) or grow the sail, and this number moves in the right direction.`;
+
+  const items = [];
+  for (const c of m.structural) items.push(['err', `${c.code}: ${c.message}`]);
+  for (const c of m.loads) items.push(['warn', `${c.code}: ${c.message} &mdash; an in-orbit mate, not a launch interface`]);
+  items.push(['info', `Sail area ${fmtArea(m.sail.sail.areaM2)} for ${fmtMass(m.sail.mass)} of film: ${num(m.sail.sail.areaM2 / Math.max(m.sail.mass, 1e-12), 0)} m\u00b2/kg`]);
+  items.push(['info', `The beam spends ${fmtEnergy(m.energyJ)} to put ${fmtEnergy(m.kineticJ)} into the vehicle (${(100 * m.kineticJ / Math.max(m.energyJ, 1e-30)).toFixed(1)} % coupling into motion at most).`]);
+  if (m.ratios.power > 1.5) items.push(['warn', `The source table's peak laser is ${num(m.ratios.power, 2)}x below what this boost needs from photon momentum.`]);
+  if (m.summary.power.margin < 0) items.push(['warn', `On-board power: ${fmtPower(m.summary.power.gen)} generated against ${fmtPower(m.summary.power.load)} of load.`]);
+  $('checks').innerHTML = items.map(([k, t]) => `<li class="${k}">${t}</li>`).join('');
+
+  /* Each class keeps its own tabulated boost time: only the shared physics inputs (speed, wavelength,
+     reflectivity, sail areal density, thermal limit) apply across the fleet. */
+  const fleet = measureFleet({ ...opts, tBoost: undefined });
+  $('fleet').innerHTML = `<tr><th class="l">Class</th><th>Payload</th><th>Vehicle</th><th>Sail</th><th>Laser</th><th>Table laser</th><th>Aperture</th><th>Station</th><th>Best orbit</th><th class="l">Verdict</th></tr>` +
+    fleet.rows.map((r) => {
+      if (r.error) return `<tr><td class="l">${esc(r.cls.name)}</td><td colspan="9" class="l no">${esc(r.error.message)}</td></tr>`;
+      const b = r.trade.best;
+      const ap = apertureForCoupling({ lambda: opts.lambda, rangeM: 1.5e6 + r.travelM, sailD: r.sail.dims.d, coupling: 0.9 });
+      return `<tr class="${r.cls.id === id ? 'best' : ''}"><td class="l">${esc(r.cls.name)}</td><td>${esc(r.cls.payloadLabel)}</td>
+        <td>${fmtMass(r.massKg)}</td><td>${fmtLength(r.sail.dims.d)}</td><td>${fmtPower(r.powerW)}</td><td class="dim">${fmtPower(r.cls.peakW)}</td>
+        <td>${fmtLength(ap)}</td><td>${r.trade.hasFeasible ? fmtMass(b.totalMass) : '\u2014'}</td><td class="l dim">${r.trade.hasFeasible ? esc(b.orbit.name) : '\u2014'}</td>
+        <td class="l ${r.trade.hasFeasible ? 'ok' : 'no'}">${r.trade.hasFeasible ? 'closes' : esc(b.reasons[0] ?? 'does not close')}</td></tr>`;
+    }).join('');
+}
+
+let timer = 0;
+const schedule = () => { clearTimeout(timer); timer = setTimeout(render, 90); };
+for (const el of ['cls', 'areal', 'tboost', 'beta', 'lambda', 'eta', 'thermal']) {
+  $(el).addEventListener('input', schedule);
+  $(el).addEventListener('change', schedule);
+}
+render();
+</script>
+</body>
+</html>

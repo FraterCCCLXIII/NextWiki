@@ -39,6 +39,7 @@
       { href: "flight-lab.html", label: "Flight Lab" },
       { href: "warp-lab.html", label: "Warp Drive" },
       { href: "space-access.html", label: "Space Access" },
+      { href: "centauri-lab.html", label: "Centauri" },
       { href: "oracle/index.html", label: "Oracle" }
     ] }
   ];

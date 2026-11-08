@@ -1540,6 +1540,139 @@
   "file": "experimental.json"
  },
  {
+  "id": "centauri-wafer",
+  "name": "Centauri wafer probe",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-smallsat",
+  "name": "Centauri small satellite",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-instrument",
+  "name": "Centauri instrument probe",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-lander",
+  "name": "Centauri robotic lander",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-capsule",
+  "name": "Centauri crewed capsule",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-habitat",
+  "name": "Centauri crewed habitat",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-seed",
+  "name": "Centauri colony seed",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-colony",
+  "name": "Centauri full colony",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-habitat-spin",
+  "name": "Centauri crewed habitat, 1 g ring",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-seed-spin",
+  "name": "Centauri colony seed, 1 g ring",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-colony-spin",
+  "name": "Centauri full colony, 1 g ring",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-wafer-pellet",
+  "name": "Centauri wafer probe, pellet beam",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-smallsat-pellet",
+  "name": "Centauri small satellite, pellet beam",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-instrument-ion",
+  "name": "Centauri instrument probe, ion",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-lander-ntr",
+  "name": "Centauri robotic lander, NTR",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-capsule-orion",
+  "name": "Centauri crewed capsule, Orion",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-habitat-dfd",
+  "name": "Centauri crewed habitat, fusion",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-seed-daedalus",
+  "name": "Centauri colony seed, Daedalus fusion",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-colony-pulse",
+  "name": "Centauri full colony, fusion pulse",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
   "id": "engine-merlin",
   "name": "Merlin 1D (sea level)",
   "category": "engine",

@@ -1,0 +1,151 @@
+# Centauri Fleet lab
+
+`centauri-lab.html` rebuilds the eight laser-sail craft classes from SpaceRadio's
+`centauri-fleet/fleet.mjs` as assemblies of real parts, measures them, and sizes the power station
+and laser that would drive them. The source page draws concept geometry scaled by the log of
+payload; this lab derives geometry from parts and checks the physics.
+
+Route: `/kosmo/tools/centauri` (slug `centauri` in `src/lib/kosmo/tools.ts`). The nav entry sits in
+the atlas **Lab** group.
+
+## Files
+
+| File | What it is |
+|---|---|
+| `centauri-lab.html` | The page: class picker, measured readouts, assembly roll-up, log size ruler, driver table, orbit trade, checks, fleet table. |
+| `parts/parts.js` | The catalogue: port types, real and derived parts, the sail law, formatting. No DOM. |
+| `parts/assembly.js` | The mate solver, `summarize()` and `checkAssembly()`. No DOM. |
+| `parts/beam.js` | Laser-sail dynamics, diffraction and coupling, station sizing, the orbit trade. No DOM. |
+| `parts/fleet.js` | The eight assemblies, the source table verbatim, `measure()` and `measureFleet()`. No DOM. |
+| `parts/origami.js` | The fold law: the sail's five hinges and six panels, the stowed footprint, the pleated-strip law for wings and radiators. No DOM. |
+| `parts/centrifuge.js` | The spin-ring laws: radius from gravity and rpm, deck area from crew, the rpm/radius trade and the deck layout. No DOM. |
+| `parts/fleet-versions.js` | The pinned v1 fleet and v2 ring variants, compared against `measure()` by the checks, so a published ship cannot be re-written by accident. No DOM. |
+| `parts/centauri-models.js` | The catalogue CAD: one builder per part kind, a mating ring at every structural port, and the foldable film, all placed from the solver. Imports three. |
+| `centauri-fleet.test.mjs` | 354 node checks. Run by `run-tests.mjs`, or `node public/kosmo/static/centauri-fleet.test.mjs`. |
+
+## The catalogue models
+
+`parts/centauri-models.js` draws the same solved assemblies the lab measures, so the catalogue's
+models cannot drift from the lab's numbers (`centauri-fleet.test.mjs` fails if `ships.json` does).
+Every part kind has its own builder — pressure shell with external racks, MLI bands and handrails
+for a module; six berths on a node; a four-rail cage with six bays for a 6U deployer; tanks, engine
+bell, lockers and hatch on a lander; torus deck with 64 window strips, six spokes and a pressurised
+hub for the 1 g ring — and every CBM, IDSS and PAF mating plane gets a ring, so the berthing
+compartments are visible rather than implied.
+
+Two scales are printed on each label. The hull is always true size. The sail is true size while
+that stays readable (a wafer's 1.71 m square next to the 1.8 m person) and otherwise 3 hull spans
+(and never under 5 m), with the ratio stated — a colony's film is 171 km on a side against a 112 m
+ring, and drawing that at true size would leave nothing but a sail.
+
+## Sail placement
+
+The film is measured against the craft it pushes, not drawn where it looks tidy. `measure()` returns
+`geometry`: how far the film plane stands ahead of the tallest structure (`clearanceM`), how far the
+centre of pressure sits from the hull's centre of mass (`offAxisM`), the hull's CG, and the mast
+length. Six of the eight classes hang their sail on a derived deployable mast (`mastPart`, 1.5 kg
+deployer plus 0.6 kg/m of CFRP longeron lattice) with a length of 1.15 x the hull's height along the
+thrust axis, so the film clears every structure by 15 %; the wafer has no mast because a 1 g chip
+cannot deploy one and rides at the centre of its own film.
+
+The stack classes (habitat, seed) reach the axial port through a `thrust-collar`, which spreads the
+mast's 105 kN to 4 MN into a CBM ring rather than a point; the colony reaches it through a
+`despin-hub`, because a 4.0 rpm ring cannot carry a sail without spinning it. The capsule's sail is a
+`sail-stage`: an IDSS ring docked to the capsule's nose, jettisoned at the end of the boost, so the
+crew can undock on arrival. The habitat and seed gain a `pma` (CBM to IDSS) on a node berth, since
+the sail has the axial port. Arrays hang on the node's +-x hinge pair and radiators on its
+zenith/nadir pair: an 11 m wing and a 6.1 m radiator on the same +-x pair share a plane, and the
+radiator ends up inside the wing. The colony's 2 MW hotel load is met by two 1.1 MWe reactor modules
+on the despun hub — the 62 kW of blankets never could.
+
+The node checks hold the invariants: film plane ahead of every structure, no part straddling the
+plane, centre of pressure within 0.5 m of the CG, and the reactor, despin hub, sail stage and PMA
+present where the design needs them.
+
+## Versions, and the spin rings (v2)
+
+All three version sets are pinned in `parts/fleet-versions.js` and documented in `CENTAURI-VERSIONS.md`
+and `CENTAURI-PROPULSION.md`:
+v1 is the eight classes above, frozen; v2 is the three crewed classes with a spin ring sized from
+the crew (`parts/centrifuge.js`, `centrifugePart` in `parts/parts.js`). 1 g at 4 rpm fixes the deck
+radius at 55.9 m; the tube then grows until the decks hold 30 m2 per person, which gives 843 m2 for
+24 crew, 4,214 m2 for 110 and 32,870 m2 for 1,000, at 409 t, 1.55 kt and 9.51 kt of ring. The ring
+turns on a `spin-bearing` (habitat, seed) or the colony's `despin-hub`, so the sail, mast, arrays and
+radiators stay de-spun, and the catalogue carries the three variants as `centauri-*-spin` with the
+same built-from-the-assembly models. The lab page measures the eight v1 classes; the variants are
+measured by the same `measure()` and checked against their pinned numbers.
+
+## Drives instead of sails (v3)
+
+The same eight hulls also fly without a film. `parts/propulsion.js` holds seven flown or studied
+drives -- pellet beam, NEXT-C ion, NERVA, Orion, direct fusion, Daedalus and the Dyson fusion pulse --
+with their exhaust velocity, thrust, engine mass and tank fraction, and sizes one drive per class with
+the relativistic rocket equation at a 20:1 mass-ratio cap. The sail and mast come off, the drive
+module goes on the same axial mount and carries its own propellant, and because the module's mass is
+part of the ship the hull is measured first and the drive sized from it, not the other way round.
+Four of the eight close the 4.37 ly route inside a century: both beamed-pellet classes (no propellant
+at all), the Daedalus seed at 9.85 % c in 46 years and the Dyson colony at 8.96 % c in 76. The ion,
+nuclear-thermal, fission-pulse and direct-fusion versions are reported as inner-system ships, which
+is what their mass ratios say they are; the lab prints that verdict instead of a bigger number. The
+full table, the drive sources and the reasoning per class are in `CENTAURI-PROPULSION.md`.
+
+## The fold
+
+The sail stows as a hexagonal rotational flasher (`parts/flasher.js`, documented in
+`CENTAURI-FLASHER.md`): a six-sided hub, six pinwheel gores, a shoulder ring and an outer hexagon.
+Deployment is one parameter in two stages — the hub winds by 60° against a rim that does not turn,
+which forces each gore out of plane into the twisted star, and then every radius scales with the
+square root of the deployment parameter for the radial expansion. The shoulder radius is not drawn
+by eye: it is solved so Kawasaki's condition holds at every interior vertex, and the mountain/valley
+assignment follows Maekawa, so the pattern folds flat by construction. `lambda` is the projected
+area fraction, the stage boundaries (0.178 for the end of rotation) are the published figures', and
+the pack is 1/sqrt(lambda) of the span across — 6.2:1, with the sail part's `stowed` envelope now
+derived from that law instead of asserted. The viewer's **sail** slider drives `setDeploy(k)`
+directly and **▶ unfold** sweeps it, so the deployment can be watched; the solar wings and radiators
+fold on the same control (an eight-panel pleated strip: 34 m to 4.25 m for an ISS-class wing, 15.2 m
+to 1.9 m for a radiator).
+
+The catalogue and solver are ported from the SpaceRadio prototype (`centauri-fleet/parts.mjs`,
+documented in its `REALISM.md`), with two changes: generated parts (a sail sized from its payload,
+a cargo can sized from its mass) can be placed without registering them, and the node catalogue has
+five hinge mounts so a habitat can carry two arrays and two radiators.
+
+## What the physics says
+
+Laser-sail thrust is `F = 2 P eta / (c (1 + beta))` — momentum, not energy. With
+`k = 2 eta P / (m c^2)` the motion has a closed form:
+
+```
+beta(t) = ((1 + k t)^2 - 1) / ((1 + k t)^2 + 1)
+x(t)    = (c/k) [ k t - 2 (atan(1 + k t) - pi/4) ]      (series for k t < 1e-3)
+t(beta) = [ sqrt((1+beta)/(1-beta)) - 1 ] / k
+```
+
+At the table's own boost times this gives:
+
+* the 1 g wafer (2 g with its sail) needs **17.6 GW** for 600 s, against the table's 2.5 GW — the
+  factor is `2/(1+beta)` and the sail's own mass, and 17.6 GW agrees with Lubin's 20 GW array;
+* every class is 3–7× short in peak power and in energy, by the same argument;
+* a multi-year boost is a beam problem before it is a power problem: the sail is 0.03–2.5 ly away
+  by the end, and the aperture needed is `1.22 lambda L / (R sqrt(eta))`. Only the wafer's
+  ten-minute boost fits inside a 100 km aperture; the rest need hundreds to thousands of km of
+  aperture, which is why the lab reports them as not closing.
+
+The station is sized from the power that must arrive at the sail: coupling (`1.22 lambda L / D`),
+50 % wall-plug laser, 30 % PV at 0.9 packing, 1 kg/m² of collector, radiators rejecting
+4.2 kW/m² at 450 K, 5 kg/m² of phased-array aperture. The orbit trade scans solar distance and
+aperture for minimum station mass. The optimum lands at the **collector thermal limit** (~0.32 AU
+for 500 K), not at the closest orbit: collector mass falls as `1/r²`, but the radiator is set by
+laser power and is identical everywhere, and it dominates for every class above the smallsat.
+
+## Conventions
+
+* SI everywhere; +Y is a part's axis; the origin is on its **aft datum**; a port's `axis` points out
+  of the part, so an aft port is `[0,-1,0]`.
+* A stack part is passive at the aft face and active at the fore face, so a lower part's `fore`
+  mates an upper part's `aft`. Modules and nodes keep their CBM genders from the catalogue.
+* `null` means unverified, never zero. Derived parts say which law produced their mass.
+* Launch packaging is **not** checked (`fairing: null`): at these sail sizes the vehicle is
+  assembled in orbit, which the page states rather than hides.
+* Interface overloads are reported as warnings, not faults: a 1,194 mm clampband rated at 8 t
+  carrying a 17 t capsule and sail is a real finding about the launch interface, not a bad mate.

@@ -17,6 +17,7 @@
               (used by the explode slider), c = colour from C.
 */
 import * as THREE from 'three';
+import { buildCentauriModel } from './parts/centauri-models.js';   // the solved Centauri assemblies, drawn as CAD
 
 export const C = { white: 0xe9edf2, off: 0xd2d7de, black: 0x1c1e22, orange: 0xc4642a, grey: 0x9aa3ad, dark: 0x4a4f57, steel: 0xc3c8cf, gold: 0xc9a24b, red: 0xb5352d, blue: 0x2a4f8f, green: 0x5c7547, panel: 0x1d2c55, tan: 0xd6b88a, cream: 0xe6dcc3 };
 
@@ -215,6 +216,29 @@ export const SPECS = {
   curiosity: () => rover({ w: 2.8, l: 3.0, wr: 0.25, arm: true }),
   'spirit-mer-a': () => rover({ w: 2.3, l: 1.6, wr: 0.13, c: C.gold }),
   'opportunity-mer-b': () => rover({ w: 2.3, l: 1.6, wr: 0.13, c: C.gold }),
+
+  /* the eight Centauri classes: the measured assembly, at true size (see parts/fleet.js) */
+  'centauri-wafer': () => buildCentauriModel('wafer'),
+  'centauri-smallsat': () => buildCentauriModel('smallsat'),
+  'centauri-instrument': () => buildCentauriModel('instrument'),
+  'centauri-lander': () => buildCentauriModel('lander'),
+  'centauri-capsule': () => buildCentauriModel('capsule'),
+  'centauri-habitat': () => buildCentauriModel('habitat'),
+  'centauri-seed': () => buildCentauriModel('seed'),
+  'centauri-colony': () => buildCentauriModel('colony'),
+  /* v2: the crewed classes with a 1 g spin ring (see CENTAURI-VERSIONS.md) */
+  'centauri-habitat-spin': () => buildCentauriModel('habitat-spin'),
+  'centauri-seed-spin': () => buildCentauriModel('seed-spin'),
+  'centauri-colony-spin': () => buildCentauriModel('colony-spin'),
+  /* v3: the same hulls flown by their own engines (see CENTAURI-PROPULSION.md) */
+  'centauri-wafer-pellet': () => buildCentauriModel('wafer-pellet'),
+  'centauri-smallsat-pellet': () => buildCentauriModel('smallsat-pellet'),
+  'centauri-instrument-ion': () => buildCentauriModel('instrument-ion'),
+  'centauri-lander-ntr': () => buildCentauriModel('lander-ntr'),
+  'centauri-capsule-orion': () => buildCentauriModel('capsule-orion'),
+  'centauri-habitat-dfd': () => buildCentauriModel('habitat-dfd'),
+  'centauri-seed-daedalus': () => buildCentauriModel('seed-daedalus'),
+  'centauri-colony-pulse': () => buildCentauriModel('colony-pulse'),
 };
 
 function voyager() {
@@ -283,7 +307,7 @@ export function buildModel(v) {
   }
   g.updateMatrixWorld(true);
   const bb = new THREE.Box3().setFromObject(g); g.position.y -= bb.min.y;   // stand on the ground plane
-  const wrap = new THREE.Group(); wrap.add(g); wrap.userData = { tier, inner: g, box: new THREE.Box3().setFromObject(wrap), glb: real ? real.userData.id : null };
+  const wrap = new THREE.Group(); wrap.add(g); wrap.userData = { tier, inner: g, box: new THREE.Box3().setFromObject(wrap), glb: real ? real.userData.id : null, label: g.userData?.label ?? null, setDeploy: g.userData?.setDeploy ?? null };
   return wrap;
 }
 
