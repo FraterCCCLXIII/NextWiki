@@ -26,7 +26,10 @@ the atlas **Lab** group.
 | `parts/primitives/mesh.js` | The geometry side of the library: lathes, hull segments, torus decks, instanced trusses, deployables, dishes, bells, grid fins, legs, hatches, port rings. Imports three. |
 | `parts/inventory.js` | The mission laws: consumables and ECLSS from crew x days and closure, delta-v budget, sail systems (canister, beacons, vanes, film temperature), and `inventoryFor()` which sizes a whole ship's systems. No DOM. |
 | `parts/fleet-v4.js` | v4, the realism pass: eight assemblies composed from the catalogue, the primitives and the inventory laws, with `assemblyV4()` and the `rollupV4()` the checks hold. No DOM. |
-| `centauri-view.js` | The lab's 3D viewer: ACES, PMREM room environment, three-point light, render-mode switch, instanced rivets, sail unfold, screenshots. |
+| `parts/sail-mechanics.js` | The sail mechanism: per-class architecture (StarChip disc, IKAROS spin square, reeled gores, four-boom square), the stage machine on the unfold parameter, rigid-origami film geometry at every k, pack, spin, tension, sag, deployment time, trim authority. No DOM, no three. See `CENTAURI-SAIL.md`. |
+| `parts/primitives/sail-mesh.js` | The mechanism as geometry: film buffer rewritten per k, drum with doors and reels, booms, spools, tips, vanes, tie-lines, gimbal, dispenser tray. Hardware skins come from `materials.js`; the film has its own physical material. Imports three. |
+| `centauri-sail.test.mjs` | The sail mechanism checks: area conservation, no self-intersection, fold closure, pack in the drum, monotone extension, deployment time, lines, retraction, trim authority, spin momentum. |
+| `centauri-view.js` | The lab's 3D viewer: ACES, PMREM room environment, three-point light, render-mode switch, instanced rivets, sail unfold, the mechanism player (play / loop / speed / deploy-retract-cut-away, readout, frame sail), screenshots. |
 | `centauri-fleet.test.mjs` | 988 node checks (698 + 290 for v4). Run by `run-tests.mjs`, or `node public/kosmo/static/centauri-fleet.test.mjs`. |
 | `centauri-primitives.test.mjs` | 155 node checks, one block per primitive and the inventory laws. |
 | `centauri-shots/` | Screenshots of every v4 class (and a v1 and a v3 for comparison) from the lab viewer. |
