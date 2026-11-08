@@ -26,6 +26,8 @@ import {
   accordionStrip, radiatorMesh, solarArrayMesh, dishMesh, bellMesh, rcsQuadMesh, gridFinMesh, landingLegMesh, hatchMesh, portRingMesh, navLights, copvClusterMesh
 } from './primitives/mesh.js';
 import { haackProfile, domeProfile, bellSpec } from './primitives/spec.js';
+import { mechanismsFor } from './sail-mechanics.js';
+import { sailMechanismMesh } from './primitives/sail-mesh.js';
 
 const Y = new THREE.Vector3(0, 1, 0);
 
@@ -525,15 +527,25 @@ function sailFilm(side, opts = {}) {
 const span = (v) => { const n = (x) => String(Number(x.toPrecision(3))); if (v >= 1000) return `${n(v / 1000)} km`; if (v >= 1) return `${n(v)} m`; return `${n(v * 100)} cm`; };
 
 /** Build one class from its solved assembly. Returns a Group with the viewer's hooks:
- *  fitAxis null (true size), label, setDeploy, and a two-stage explode map. */
-export function buildCentauriModel(id) {
+ *  fitAxis null (true size), label, setDeploy, and a two-stage explode map.
+ *  `opts.sailArchitecture` overrides the class's sail mechanism (parts/sail-mechanics.js);
+ *  `opts.sailMechanism: false` draws the old flasher film instead. */
+export function buildCentauriModel(id, opts = {}) {
   const m = measure(id, {});
+  const useMech = opts.sailMechanism !== false && m.solved.nodes.some((n) => n.part.kind === 'sail');
   const g = new THREE.Group(), hullStage = new THREE.Group(), sailStage = new THREE.Group();
   hullStage.userData.stage = 0; sailStage.userData.stage = 1; g.add(hullStage, sailStage);
   const deployers = [], box3 = new THREE.Box3();
   for (const n of m.solved.nodes) {
     const p = n.part;
     if (p.kind === 'sail') continue;
+    if (p.kind === 'sail-canister' && useMech) {
+      /* the mechanism draws the drum itself (doors, core, reels); keep its envelope in the hull span */
+      const r = p.dims.d / 2, y0 = n.world.position[1];
+      box3.expandByPoint(new THREE.Vector3(n.world.position[0] - r, y0, n.world.position[2] - r));
+      box3.expandByPoint(new THREE.Vector3(n.world.position[0] + r, y0 + p.dims.l, n.world.position[2] + r));
+      continue;
+    }
     const built = centauriPart(p);
     for (const port of p.ports ?? []) addPortRing(built.group, port);
     const frame = new THREE.Group();
@@ -548,9 +560,14 @@ export function buildCentauriModel(id) {
   const trueSide = sailNode ? sailSquareSide(sailNode.part.sail.areaM2) : 0;
   const drawnSide = sailNode ? Math.min(trueSide, Math.max(3 * hullSpan, 5)) : 0;
   const ratio = sailNode ? trueSide / drawnSide : 1;
-  let film = null;
+  let film = null, sailInfo = null;
   if (sailNode) {
-    film = sailFilm(drawnSide, { detail: ratio < 2 });
+    if (useMech) {
+      const mm = mechanismsFor(m, { hullSpan, architecture: opts.sailArchitecture ?? null, segCap: opts.sailSegCap ?? 400 });
+      const sm = sailMechanismMesh(mm.drawn, { trueMech: mm.true, ratio: mm.ratio, iridescent: !!opts.iridescent });
+      film = sm.group;
+      sailInfo = { architecture: mm.architecture, why: mm.choice.why, boomClosure: mm.choice.boomClosure, mechanism: mm.true, drawn: mm.drawn, ratio: mm.ratio, readout: sm.readout, setJettison: sm.setJettison, canRefold: mm.true.canRefold, retract: mm.true.retract };
+    } else film = sailFilm(drawnSide, { detail: ratio < 2 });
     film.position.fromArray(sailNode.world.position);
     const q = new THREE.Quaternion().fromArray(sailNode.world.quaternion);
     const normal = new THREE.Vector3(0, 1, 0).applyQuaternion(q).normalize();
@@ -570,11 +587,14 @@ export function buildCentauriModel(id) {
   g.userData.fitAxis = null; g.userData.top = hullSpan;
   g.userData.stages = new Map([[0, hullStage], [1, sailStage]]);
   g.userData.setDeploy = setDeploy;
+  g.userData.setJettison = sailInfo?.setJettison ?? null;
+  g.userData.sail = sailInfo;
   g.userData.measure = m;
   const pc = m.propulsion ? m.propulsion.beta * 100 : 0;
   const inv = m.inventory;
+  const sailWord = sailInfo ? `${span(2 * sailInfo.mechanism.R)} ${sailInfo.architecture}` : `${span(2 * flasherRadius(trueSide * trueSide))} flasher`;
   g.userData.label = m.propulsion
     ? `stack ${span(hullSpan)} · ${m.propulsion.drive.short} · ${pc >= 1 ? pc.toFixed(1) : pc.toPrecision(2)} % c · ${m.propulsion.closes ? `${m.propulsion.tripYears.toFixed(0)} yr` : 'no route'}`
-    : `hull ${span(hullSpan)}${m.geometry.mastLenM > 0 ? ` · mast ${span(m.geometry.mastLenM)}` : ' · hub-mounted'} · sail ${span(2 * flasherRadius(trueSide * trueSide))} flasher${ratio > 1.02 ? ` · drawn 1:${Math.round(ratio)}` : ' · true size'}${inv && inv.crew ? ` · ${inv.crew} crew x ${(inv.days / 365.25).toFixed(0)} yr` : ''}`;
+    : `hull ${span(hullSpan)}${m.geometry.mastLenM > 0 ? ` · mast ${span(m.geometry.mastLenM)}` : ' · hub-mounted'} · sail ${sailWord}${ratio > 1.02 ? ` · drawn 1:${Math.round(ratio)}` : ' · true size'}${inv && inv.crew ? ` · ${inv.crew} crew x ${(inv.days / 365.25).toFixed(0)} yr` : ''}`;
   return g;
 }

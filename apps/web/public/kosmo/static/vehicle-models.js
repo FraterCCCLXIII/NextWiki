@@ -316,7 +316,7 @@ export function buildModel(v) {
   }
   g.updateMatrixWorld(true);
   const bb = new THREE.Box3().setFromObject(g); g.position.y -= bb.min.y;   // stand on the ground plane
-  const wrap = new THREE.Group(); wrap.add(g); wrap.userData = { tier, inner: g, box: new THREE.Box3().setFromObject(wrap), glb: real ? real.userData.id : null, label: g.userData?.label ?? null, setDeploy: g.userData?.setDeploy ?? null };
+  const wrap = new THREE.Group(); wrap.add(g); wrap.userData = { tier, inner: g, box: new THREE.Box3().setFromObject(wrap), glb: real ? real.userData.id : null, label: g.userData?.label ?? null, setDeploy: g.userData?.setDeploy ?? null, setJettison: g.userData?.setJettison ?? null, sail: g.userData?.sail ?? null };
   return wrap;
 }
 
