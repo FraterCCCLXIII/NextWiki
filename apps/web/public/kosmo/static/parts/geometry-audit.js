@@ -183,6 +183,54 @@ function hullSegmentShapes(r, l, endH, scale = 1) {
   return out;
 }
 
+/**
+ * A drive's radiator panels, as centauri-models.js draws them and this audit tests them: `count` panels
+ * (four, or eight when four cannot carry the area within the store's length) hung along the store, each
+ * no longer than 0.46 of the store and no wider than 1.8 store radii, so none reaches past the engine bay
+ * into the plume. Returns [{ az, yc, rIn, rOut, pWid, pLen, thick, areaM2 }] in the drive's frame; the sum
+ * of areas is the law's area, or `shortfall` says what the hull could not carry.
+ */
+export function driveRadiatorPanels(p) {
+  const rad = p.radiator, L = Math.max(p.dims?.l ?? 1, 0.05);
+  const store = p.store ?? { kind: 'tank', l: L, d: p.dims?.d ?? 1 };
+  const frameL = Math.max(p.frame?.l ?? 0, 0), bayL = Math.max(p.bayL ?? 0, 0);
+  const rS = Math.max(store.d / 2, 0.02), storeL = Math.max(Math.min(store.l || L, L - frameL - bayL), 0.04);
+  if (!rad || !(rad.areaM2 > 0.02) || storeL <= 0.1 || p.driveKind === 'beamed') return [];
+  const maxLen = 0.46 * storeL, maxWid = rS * 1.8;
+  const count = rad.areaM2 / 4 / maxLen > maxWid ? 8 : 4;
+  const per = rad.areaM2 / count;
+  let pLen = Math.min(rad.lengthM, maxLen), pWid = Math.max(per / Math.max(pLen, 1e-6), 0.3);
+  if (pWid > maxWid) { pWid = maxWid; pLen = Math.min(per / pWid, maxLen); }
+  /* eight panels stand at the 0/90/180/270 stations: the hull rails and their crawlers ride the 45 degree ones */
+  const out = [], stations = count === 8 ? [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2] : [0, Math.PI];
+  for (const az of stations) for (const k of [-1, 1]) {
+    const yc = frameL + storeL / 2 + k * (pLen / 2 + storeL * 0.03);
+    out.push({ az, yc, rIn: rS * 1.02, rOut: rS * 1.02 + pWid, pWid, pLen, thick: Math.max(pWid * 0.012, 0.006), areaM2: pWid * pLen });
+  }
+  out.shortfall = Math.max(0, rad.areaM2 - out.reduce((s, q) => s + q.areaM2, 0));
+  return out;
+}
+
+/** The exhaust envelope aft of a drive or braking stage: a cone from the exit plane along the thrust axis, in the
+ *  part's frame. `exitR` is the pusher plate or engine-bay radius, `half` the plume half-angle (15 degrees: a
+ *  vacuum nozzle's plume core; the pusher plate's debris cone is wider but shadowed by the plate itself). */
+export function plumeOf(part) {
+  const p = part, L = Math.max(p.dims?.l ?? 0, 0.05);
+  if (p.kind === 'drive' && p.store && p.driveKind !== 'beamed') {
+    const rS = Math.max(p.store.d / 2, 0.02);
+    return { apex: [0, L, 0], dir: [0, 1, 0], exitR: p.store.kind === 'magazine' ? Math.max((p.plateD ?? p.dims.d) / 2, rS) : rS * 0.94, half: Math.PI / 12 };
+  }
+  if (p.kind === 'trim-stage' && p.stage) return { apex: [0, 0, 0], dir: [0, -1, 0], exitR: Math.max((p.stage.engine?.dims?.d ?? p.dims.d * 0.5) / 2, 0.02), half: Math.PI / 12 };
+  return null;
+}
+/** Depth of a point (part frame) inside the plume cone: positive inside. */
+export function plumeDepth(plume, q) {
+  const d = sub(q, plume.apex), along = dot(d, plume.dir);
+  if (along < 0) return -Infinity;
+  const radial = len(sub(d, mul(plume.dir, along)));
+  return plume.exitR + along * Math.tan(plume.half) - radial;
+}
+
 /** The static body (or bodies) a placed part occupies, in its own frame. */
 export function shapesOf(part) {
   const p = part, d = p.dims?.d ?? 0, l = p.dims?.l ?? 0, r = Math.max(d / 2, 1e-4);
@@ -206,6 +254,8 @@ export function shapesOf(part) {
   if (p.kind === 'airlock') return [...hullSegmentShapes(r, l * 0.6, Math.min(0.65, l * 0.06)), { type: 'cyl', r: r * 0.6, y0: l * 0.58, y1: l }];
   if (p.kind === 'crew-capsule') return [{ type: 'cyl', r, y0: 0, y1: 0.14 * l }, { type: 'cyl', r: r * 0.75, y0: 0.14 * l, y1: 0.68 * l }, { type: 'cyl', r: r * 0.5, y0: 0.68 * l, y1: l }];
   if (p.kind === 'lander-aero') return [{ type: 'cyl', r, y0: 0, y1: l - 2.4 }, { type: 'cyl', r: r * 0.7, y0: l - 2.4, y1: l }];
+  /* the v1 lander's envelope is its leg span; its body (centauri-models landerCAD) is the octagon at d / 2.7 */
+  if (p.kind === 'lander') return [{ type: 'cyl', r: r / 1.35, y0: 0, y1: l }];
   if (p.kind === 'trim-stage' && p.stage) {
     const tankL = Math.min(p.stage.tank.dims.l, l);
     return [{ type: 'cyl', r, y0: l - tankL, y1: l }, { type: 'cyl', r: r * 0.7, y0: 0, y1: l - tankL }];
@@ -219,15 +269,10 @@ export function shapesOf(part) {
     out.push({ type: 'cyl', r: rS, y0: frameL, y1: frameL + storeL });
     if (p.store.kind === 'magazine') { const plateT = Math.max(d * 0.025, 0.02); out.push({ type: 'cyl', r: Math.max((p.plateD ?? d) / 2, rS), y0: L - plateT, y1: L }); out.push({ type: 'cyl', r: rS * 0.5, y0: frameL + storeL, y1: L - plateT }); }
     else out.push({ type: 'cyl', r: rS * 0.94, y0: frameL + storeL, y1: L });
-    /* the drive's radiator panels, as centauri-models.js driveCAD lays them: two per side along the store */
-    const rad = p.radiator;
-    if (rad && rad.areaM2 > 0.02 && storeL > 0.1) {
-      const half = rad.areaM2 / 4; let pLen = Math.min(rad.lengthM, 0.46 * storeL); let pWid = Math.max(half / Math.max(pLen, 1e-6), 0.3);
-      if (pWid > rS * 1.8) { pWid = rS * 1.8; pLen = half / pWid; }
-      for (const sgn of [-1, 1]) for (const k of [-1, 1]) {
-        const yc = frameL + storeL / 2 + k * (pLen / 2 + storeL * 0.03), xIn = sgn * rS * 1.02, xOut = sgn * (rS * 1.02 + pWid);
-        out.push({ type: 'obb', c: [(xIn + xOut) / 2, yc, 0], ax: [[1, 0, 0], [0, 1, 0], [0, 0, 1]], h: [pWid / 2, pLen / 2, Math.max(pWid * 0.006, 0.01)], radiator: true });
-      }
+    /* the drive's radiator panels, as centauri-models.js driveCAD lays them (the one layout, driveRadiatorPanels) */
+    for (const pn of driveRadiatorPanels(p)) {
+      const c = Math.cos(pn.az), s = Math.sin(pn.az), xm = (pn.rIn + pn.rOut) / 2;
+      out.push({ type: 'obb', c: [c * xm, pn.yc, s * xm], ax: [[c, 0, s], [0, 1, 0], [-s, 0, c]], h: [pn.pWid / 2, pn.pLen / 2, Math.max(pn.thick / 2, 0.01)], radiator: true });
     }
     return out;
   }
@@ -389,6 +434,27 @@ export function auditSolved(id, m, opts = {}) {
     for (const ob of ownBodies) for (const pb of parentBodies) for (const s of samples(ob.shape, 160)) best = Math.min(best, sdf(pb.shape, toLocal(pb.frame, toWorld(ob.frame, s))));
     const allow = 0.05 + 0.03 * Math.max(smallestOf(B.shape), 1);
     if (best > allow && !RINGS.has(P.part.kind) && P.part.kind !== 'spin-bola' && P.part.kind !== 'rail-network') push('error', 'floating', [B.name, P.name], `${B.name} (${B.kind}) floats ${best.toFixed(2)} m clear of its parent ${P.name}`, best);
+  }
+
+  /* (f) the plume: nothing of the ship, at any deployable pose, inside the exhaust cone of a drive or braking stage;
+     the drive's own body is exempt (its plate and bay define the cone), everything else is tested by its surface samples */
+  for (const n of nodes) {
+    const plume = plumeOf(n.part);
+    if (!plume) continue;
+    let worst = null;
+    const test = (B, shape, k = null, roll = null) => { for (const pt of samples(shape, 120)) { const q = toLocal(n.world, toWorld(B.frame ?? B.world, pt)); const d = plumeDepth(plume, q); if (d > 0.05 && (!worst || d > worst.depth)) worst = { depth: d, name: B.name, kind: B.kind, k, roll }; } };
+    for (const B of bodies) { if (B.name === n.name) continue; test(B, B.shape); }
+    for (const D of nodes.filter((x) => x.part.kind === 'solar-array' || x.part.kind === 'radiator')) for (const k of DEPLOY_FRACTIONS) for (const roll of (D.part.kind === 'solar-array' ? ROLL_ANGLES : [0])) for (const plate of deployablePlates(D.part, k, roll)) test({ name: D.name, kind: D.part.kind, frame: D.world }, plate, k, roll);
+    if (worst) push('error', 'plume-impingement', [n.name, worst.name], `${worst.name} (${worst.kind}) stands ${worst.depth.toFixed(1)} m inside the exhaust cone of ${n.name}${worst.k != null ? ` at fold ${worst.k}, roll ${Math.round((worst.roll * 180) / Math.PI)} deg` : ''}`, worst.depth);
+    /* a drive's own radiators must not reach past its exit plane into the plume either */
+    for (const pn of driveRadiatorPanels(n.part)) { const aftEnd = pn.yc + pn.pLen / 2; if (aftEnd > plume.apex[1] + 1e-6 && plume.dir[1] > 0) push('error', 'plume-impingement', [n.name], `${n.name}'s radiator panel reaches ${(aftEnd - plume.apex[1]).toFixed(1)} m past its exit plane`, aftEnd - plume.apex[1]); }
+  }
+  /* (h) booms end on something: a truss or mast whose far port is unmated carries nothing */
+  for (const n of nodes.filter((x) => x.part.kind === 'truss' || x.part.kind === 'mast')) {
+    const far = n.part.ports.find((q) => /^(fore|sailmount|tip)$/.test(q.id));
+    const used = far && solved.mates.some((mt) => (mt.a.name === n.name && mt.a.port === far.id) || (mt.b.name === n.name && mt.b.port === far.id));
+    const sailOnIt = n.part.kind === 'mast' && nodes.some((x) => x.part.kind === 'sail');
+    if (far && !used && !sailOnIt) push('error', 'boom-open-end', [n.name], `${n.name} (${n.part.kind}) ends in nothing: its ${far.id} port carries no part`, n.part.dims.l);
   }
 
   /* (g) scale sanity */

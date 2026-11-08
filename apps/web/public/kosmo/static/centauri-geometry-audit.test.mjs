@@ -12,7 +12,7 @@
 
 import assert from 'node:assert/strict';
 import { register } from 'node:module';
-import { auditFleet, ALL_SHIP_IDS, SHIP_IDS, deployablePlates, shapesOf, sdf, samples } from './parts/geometry-audit.js';
+import { auditFleet, ALL_SHIP_IDS, SHIP_IDS, deployablePlates, shapesOf, sdf, samples, driveRadiatorPanels, plumeOf, plumeDepth, measureAny as measureAnyShip } from './parts/geometry-audit.js';
 import { accordionAngles } from './parts/origami.js';
 import { summarize } from './parts/assembly.js';
 import { hasThree } from './three-node-resolver.mjs';
@@ -44,7 +44,18 @@ ok(audit.ships.length === 32 && ALL_SHIP_IDS.length === 32, 'thirty-two ships: 8
 for (const s of audit.ships) {
   const errors = s.findings.filter((f) => f.severity === 'error');
   ok(errors.length === 0, `${s.id} (${s.version}): no geometry errors (${errors.map((f) => `${f.code}: ${f.parts.join('/')}`).join('; ') || 'clean'})`);
-  for (const code of ['interpenetration', 'deployable-sweep', 'ring-clearance', 'ring-tilt', 'ring-offset', 'mate-gap', 'mate-normal', 'hardpoint-buried', 'floating', 'giant-slab', 'module-too-thin']) ok(!s.findings.some((f) => f.code === code), `${s.id}: no ${code}`);
+  for (const code of ['interpenetration', 'deployable-sweep', 'ring-clearance', 'ring-tilt', 'ring-offset', 'mate-gap', 'mate-normal', 'hardpoint-buried', 'floating', 'giant-slab', 'module-too-thin', 'plume-impingement', 'boom-open-end']) ok(!s.findings.some((f) => f.code === code), `${s.id}: no ${code}`);
+}
+/* the plume law itself, and the drive radiator layout the drawing and the audit share */
+{
+  const drive = measureAnyShip('colony-v5').solved.nodes.find((n) => n.part.kind === 'drive').part;
+  const plume = plumeOf(drive);
+  ok(plume && plume.dir[1] === 1 && plume.exitR >= drive.store.d / 2, 'a magazine drive\u2019s plume opens from its pusher plate aft');
+  ok(plumeDepth(plume, [0, drive.dims.l + 10, 0]) > plume.exitR && plumeDepth(plume, [0, drive.dims.l - 1, 0]) === -Infinity && plumeDepth(plume, [plume.exitR + 100, drive.dims.l + 1, 0]) < 0, 'inside the cone is positive, forward of the exit plane is never in it, far outside is negative');
+  const panels = driveRadiatorPanels(drive);
+  ok(panels.length === 8 && panels.every((q) => q.yc + q.pLen / 2 <= drive.dims.l + 1e-9 && q.pWid <= drive.store.d * 0.9 + 1e-9), `the colony\u2019s 91,000 m2 of drive radiator is eight panels along the store, none past the exit plane (${panels.length})`);
+  near(panels.reduce((s, q) => s + q.areaM2, 0) + panels.shortfall, drive.radiator.areaM2, 1e-9, 'the panels carry the law\u2019s area or state the shortfall');
+  ok(panels.every((q) => Math.abs(Math.sin(2 * q.az)) < 1e-9), 'eight panels stand at the 0/90/180/270 stations, clear of the 45 degree hull rails');
 }
 ok(audit.summary.errors === 0, `the fleet audits clean (${audit.summary.errors} errors, ${audit.summary.warns} warnings)`);
 ok(audit.summary.warns <= 3 && Object.keys(audit.summary.byCode).every((c) => c === 'module-too-fat'), 'the only warnings are the v1 seed cargo can, which v1 pins as published');
@@ -62,6 +73,7 @@ if (!hasThree()) {
   const { liveryPlan, LIVERIES, PALETTE, gridFor, cellFor, classOf, liveryFor, PAINTABLE, THERMAL } = await import('./parts/primitives/livery.js');
   const { torusDeckMesh, solarArrayMesh, radiatorMesh } = await import('./parts/primitives/mesh.js');
   const { measureAny } = await import('./parts/geometry-audit.js');
+  const { auditModelMeshes } = await import('./centauri-mesh-audit.js');
 
   /* real sizes, stated once */
   near(DETAIL.handrail.d, 0.038, 1e-9, 'handrail tube is 38 mm'); near(DETAIL.handrail.standoff, 0.055, 1e-9, 'handrail standoff is 55 mm');
@@ -144,6 +156,33 @@ if (!hasThree()) {
     const driveNode = m.solved.nodes.find((n) => n.part.kind === 'drive' && n.part.radiator?.areaM2 > 0);
     const radAllow = driveNode ? 2 * driveNode.part.store.d * 1.4 : 0;
     ok(hs.x <= (summaryHull.size[0] + radAllow + 3) * 1.3 && hs.z <= (summaryHull.size[2] + radAllow + 3) * 1.3 && hs.y <= (summaryHull.size[1] + 3) * 1.3, `${id}: the drawn hull is no bigger than the solved envelope (${hs.x.toFixed(0)} x ${hs.y.toFixed(0)} x ${hs.z.toFixed(0)} m against ${summaryHull.size.map((v) => v.toFixed(0)).join(' x ')})`);
+
+    /* the attachment audit (centauri-mesh-audit.js): every drawn fitting touches its part or a chain of fittings that does,
+       no flat box sits tangent to a curved skin with a slit under it, nothing of one part reaches inside another, every
+       side-mounted part's drawn mount reaches its parent, the sail hardware hangs on the drum */
+    const ma = auditModelMeshes(g, m);
+    for (const code of ['fitting-floating', 'underside-gap', 'fitting-poke', 'part-unseated']) ok(!ma.findings.some((f) => f.code === code), `${id}: no ${code} (${ma.findings.filter((f) => f.code === code).map((f) => f.message.slice(0, 90)).join('; ') || 'clean'})`);
+    ok(ma.meshes > 5, `${id}: the mesh audit saw the model (${ma.meshes} meshes in ${ma.frames} frames)`);
+    /* sail hardware rings: every torus in the mechanism (the gimbal's outer ring, the drum rings, the reel) is concentric with the
+       thrust axis and perpendicular to it, except the gimbal's inner ring, which is on the crossed axis by design */
+    if (g.userData.sail && g.userData.sail.architecture !== 'starchip-disc') {   // the released disc has no drum and no rings
+      const film = g.userData.stages.get(1); film.updateMatrixWorld(true);
+      const filmFrame = film.children[0];
+      const normal = new THREE.Vector3(0, 1, 0).transformDirection(filmFrame.matrixWorld), origin = new THREE.Vector3().setFromMatrixPosition(filmFrame.matrixWorld);
+      let rings = 0, off = 0;
+      film.traverse((o) => {
+        if (!o.isMesh || o.geometry.type !== 'TorusGeometry' || o.userData.tethered) return;
+        o.updateWorldMatrix(true, false);
+        const axis = new THREE.Vector3(0, 0, 1).transformDirection(o.matrixWorld), c = new THREE.Vector3().setFromMatrixPosition(o.matrixWorld);
+        const tilt = Math.acos(Math.min(1, Math.abs(axis.dot(normal)))) * 180 / Math.PI;
+        const radial = c.clone().sub(origin).projectOnPlane(normal).length();
+        rings += 1;
+        /* the gimbal trims the drum by 0.02 rad at k = 1 (mechanism gimbalRad), so its rings may tilt that much; anything more is a seating error */
+        if (tilt > 0.02 * 180 / Math.PI + 0.5) off += 1;
+        if (radial > Math.max(0.01, 0.01 * o.geometry.parameters.radius)) off += 1;
+      });
+      ok(rings >= 4 && off === 0, `${id}: the sail's ${rings} rings seat concentric and square on the hub (${off} off)`);
+    }
 
     /* the human-scale detail layer */
     const det = addHumanDetail(g, { registration: g.userData.livery.registration }), c = det.userData.counts;
