@@ -50,6 +50,7 @@
   #info a { color: var(--accent); }
   #bar { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 4; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: calc(100vw - 720px); text-shadow: 0 1px 6px #000; font-size: 14px; color: #c3d0e2; }
   #bar label { display: flex; align-items: center; gap: 6px; } #bar button { margin: 0; padding: 3px 10px; }
+  #bar select { width: auto; padding: 2px 6px; }
   #help { position: absolute; left: 50%; top: 66px; transform: translateX(-50%); z-index: 4; color: var(--muted); font-size: 13px; text-shadow: 0 1px 6px #000; }
   kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); }
   html.embedded #panel, html.embedded #info { top: 16px; } html.embedded #help { top: 10px; }
@@ -81,12 +82,15 @@
   <div id="list"></div>
 </div>
 <div id="info"></div>
-<div id="help">drag · rotate &nbsp; wheel · zoom &nbsp; right-drag · pan &nbsp; <kbd>↑</kbd><kbd>↓</kbd> step through the list</div>
+<div id="help">drag · rotate &nbsp; wheel / pinch · zoom &nbsp; right-drag · pan &nbsp; <kbd>↑</kbd><kbd>↓</kbd> step through the list</div>
 <div id="bar">
   <button id="add">+ add to lineup</button><button id="clear">clear lineup</button>
   <label>explode <input type="range" id="explode" min="0" max="1" step="0.01" value="0"></label>
+  <label>sail <input type="range" id="unfold" min="0" max="1" step="0.01" value="1"></label><button id="unfoldplay" title="sweep the sail fold from the stowed pack to flat">▶ unfold</button>
   <label><input type="checkbox" id="spin" checked> spin</label>
   <label><input type="checkbox" id="human" checked> 1.8 m person</label>
+  <label>render <select id="render"></select></label>
+  <label title="ring frames and rivets on the largest skins, instanced"><input type="checkbox" id="rivets" checked> rivets</label>
   <button id="glb">export .glb</button>
 </div>
 <script type="module">
@@ -95,6 +99,9 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { buildModel, useGlbModels, person, tierOf } from './vehicle-models.js';
+import { boostTrackpadZoom } from './zoom-boost.js';
+import { RENDER_MODES, applyRenderMode, tickRenderModes } from './render-modes.js';
+import { addSurfaceDetail } from './surface-detail.js';
 // optional real models (models/spacex/manifest.json): any file that is present replaces the procedural sketch of that vehicle; a missing file changes nothing
 let GLBM = null, GLB_MAP = {}; try { GLBM = await import('./vehicle-glb.js'); GLB_MAP = (await GLBM.loadManifest()).labs?.catalog || {}; const man = await GLBM.loadManifest(); await Promise.all([...new Set(Object.values(GLB_MAP))].map(id => man.engines?.[id] ? GLBM.preloadEngineModel(id) : GLBM.preloadVehicleModel(id))); useGlbModels(id => GLB_MAP[id] ? (man.engines?.[GLB_MAP[id]] ? GLBM.engineModel(GLB_MAP[id]) : GLBM.vehicleModel(GLB_MAP[id], { mode: 'full', explode: true })) : null); } catch { GLBM = null; }
 const $ = id => document.getElementById(id);
@@ -118,10 +125,20 @@ async function loadData() {
 // ---- scene ----
 const view = $('view'), renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: false });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); view.appendChild(renderer.domElement);
+/* ACES with a little exposure is what keeps a white booster and a black engine bell on the same
+   page without clipping; the atlas viewer uses the same curve. */
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.95;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
 const scene = new THREE.Scene(); scene.background = new THREE.Color(window.KOSMO_BG ? KOSMO_BG.pick(0x05070d) : 0x05070d);
 const camera = new THREE.PerspectiveCamera(40, 1, 0.05, 20000); camera.position.set(30, 20, 60);
 let frameH = 0, expExtra = 0;   // height of the tallest vehicle, and how much taller the exploded view currently makes the stack (applyExplode keeps the camera framing it)
 const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true;
+/* Zoom. A trackpad pinch arrives as ctrl+wheel events with single-digit deltas and OrbitControls'
+   stock 0.95^delta dolly turns a whole pinch into a few per cent of distance. boostTrackpadZoom
+   replaces that handler with an exponential dolly on its own pinch gain; zoomSpeed raises the
+   two-finger touch pinch (which OrbitControls handles itself) to match. */
+controls.zoomSpeed = 2.6;
+boostTrackpadZoom(controls, renderer.domElement, { pinchGain: 0.06, scrollGain: 0.007, maxStep: 0.45 });
 { try { const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; pm.dispose(); } catch { /* no environment: the loader-side metalness cap keeps models lit */ } }   // image-based light so metallic GLB materials are not black
 scene.add(new THREE.AmbientLight(0xffffff, 0.7)); scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x20242c, 0.6));
 const key = new THREE.DirectionalLight(0xffffff, 2.0); key.position.set(40, 80, 60); scene.add(key); const fill = new THREE.DirectionalLight(0x9fd3ff, 0.7); fill.position.set(-50, 20, -40); scene.add(fill);
@@ -149,7 +166,7 @@ function showVehicles(list) {
   for (const b of built) {
     b.m.position.x = x + b.w / 2; x += b.w + gap; stage.add(b.m);
     const p = person(); p.position.x = b.m.position.x - b.w / 2 - 0.9 - (b.v.category === 'space_station' ? b.w * 0.1 : 0); p.userData.person = true; stage.add(p);
-    const el = document.createElement('div'); el.className = 'lbl'; el.innerHTML = `<b>${esc(b.v.name)}</b><span>${b.h >= 10 ? b.h.toFixed(1) : b.h.toFixed(2)} m</span>`; $('labels').appendChild(el);
+    const el = document.createElement('div'); el.className = 'lbl'; el.innerHTML = `<b>${esc(b.v.name)}</b><span>${esc(b.m.userData.label ?? `${b.h >= 10 ? b.h.toFixed(1) : b.h.toFixed(2)} m`)}</span>`; $('labels').appendChild(el);
     items.push({ ...b, el, person: p });
   }
   { const cr = $('glbcredit'); if (cr) { const h = GLBM ? GLBM.attributionHTML(built.map(b => b.m.userData.glb).filter(Boolean)) : ''; cr.innerHTML = h; cr.style.display = h ? '' : 'none'; } }
@@ -160,7 +177,7 @@ function showVehicles(list) {
   const grid = new THREE.GridHelper(R * 2, Math.max(8, Math.round(R * 2 / niceStep(R / 5))), 0x3a4a66, 0x1d2536); ground.add(grid);
   const ring = new THREE.Mesh(new THREE.CircleGeometry(R, 64).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x0a0e18, transparent: true, opacity: 0.55 })); ring.position.y = -0.02; ground.add(ring);
   stage.add(ground);
-  syncHuman(); applyExplode();
+  syncHuman(); applyExplode(); applyDeploy(); applyMode(); applyDetail();
   const freeW = Math.max(300, view.clientWidth - $('panel').offsetWidth - ($('info').offsetParent ? $('info').offsetWidth : 0) - 40), vf = camera.fov * Math.PI / 180, hf = 2 * Math.atan(Math.tan(vf / 2) * freeW / view.clientHeight);
   const halfH = maxH * 0.62 + 2, halfW = totalW / 2 + 3, dist = Math.max(halfH / Math.tan(vf / 2), halfW / Math.tan(hf / 2)) * 1.2 + halfW * 0.3;
   controls.target.set(0, maxH * 0.48, 0); camera.position.set(dist * 0.45, maxH * 0.55 + dist * 0.12, dist * 0.88);
@@ -192,8 +209,9 @@ function applyExplode() {
 
 const tmp = new THREE.Vector3();
 function frame() {
-  requestAnimationFrame(frame); controls.update();
+  requestAnimationFrame(frame); controls.update(); tickRenderModes(performance.now());
   if ($('spin').checked) for (const it of items) it.m.rotation.y += 0.004;
+  if (unfoldTween) { const k = Math.min(1, (performance.now() - unfoldTween.t0) / 2800); $('unfold').value = k; applyDeploy(); if (k >= 1) unfoldTween = null; }
   const w = view.clientWidth, h = view.clientHeight;
   for (const it of items) { tmp.set(it.m.position.x, it.h, it.m.position.z).project(camera); const on = tmp.z < 1; it.el.style.display = on ? '' : 'none'; it.el.style.left = ((tmp.x + 1) / 2 * w) + 'px'; it.el.style.top = ((1 - tmp.y) / 2 * h - 6) + 'px'; }
   renderer.render(scene, camera);
@@ -229,7 +247,26 @@ function select(id, fromHash) {
 function syncPin() { $('add').textContent = pinned.includes(cur) ? '− remove from lineup' : '+ add to lineup'; $('clear').disabled = !pinned.length; $('clear').textContent = pinned.length ? `clear lineup (${pinned.length})` : 'clear lineup'; }
 $('add').onclick = () => { if (!cur) return; pinned = pinned.includes(cur) ? pinned.filter(i => i !== cur) : [...pinned, cur]; showVehicles(display()); syncPin(); };
 $('clear').onclick = () => { pinned = []; if (cur) showVehicles(display()); syncPin(); };
+/* Sail unfold: a model can expose setDeploy(k), where k = 1 is the film flat out and k = 0 is the
+   pleat pack. The slider drives it, the button sweeps it so the fold can be watched. */
+let unfoldTween = null;
+function applyDeploy() { const k = +$('unfold').value; for (const it of items) it.m.userData.setDeploy?.(k); }
+/* Look only: the assembly, the measures and the deployment are the same geometry in every mode, and
+   `studio` restores each mesh's own material, so switching back is exact. Detail is instanced and
+   grouped per model, so the toggle costs one visibility flag. */
+function applyMode() { for (const it of items) applyRenderMode(it.m, $('render').value); }
+function applyDetail() {
+  const on = $('rivets').checked;
+  for (const it of items) {
+    if (!it.detail) it.detail = addSurfaceDetail(it.m, { on });
+    it.detail.visible = on;
+  }
+}
+$('render').innerHTML = RENDER_MODES.map((m) => `<option value="${m.id}">${m.name}</option>`).join('');
+$('render').onchange = applyMode; $('rivets').onchange = applyDetail;
 $('explode').oninput = applyExplode; $('human').onchange = syncHuman;
+$('unfold').oninput = () => { unfoldTween = null; applyDeploy(); };
+$('unfoldplay').onclick = () => { $('unfold').value = 0; applyDeploy(); unfoldTween = { t0: performance.now() }; };
 document.addEventListener('keydown', e => {
   if (e.target.matches('input,select')) return;
   if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { const i = shown.findIndex(v => v.id === cur), n = shown[Math.max(0, Math.min(shown.length - 1, i + (e.key === 'ArrowDown' ? 1 : -1)))]; if (n) { select(n.id); e.preventDefault(); } }
