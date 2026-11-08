@@ -301,8 +301,7 @@ function stencilTexture(text, fg = '#1a1c20', bg = '#f0f0ec') {
   g.fillStyle = fg; g.font = 'bold 88px "Helvetica Neue", Arial, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
   g.fillText(text, 256, 68);
   g.fillStyle = fg; g.fillRect(16, 10, 480, 4); g.fillRect(16, 114, 480, 4);
-  /* the plate's top face reads u along -x from outside, so the canvas is flipped to read left to right */
-  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; t.wrapS = THREE.RepeatWrapping; t.repeat.x = -1; t.offset.x = 1;
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
   stencilCache.set(k, t);
   return t;
 }
@@ -310,10 +309,16 @@ function stencilTexture(text, fg = '#1a1c20', bg = '#f0f0ec') {
 export function nameplate(pose, text, { w = DETAIL.nameplate.w, h = DETAIL.nameplate.h, fg, bg } = {}) {
   const tex = stencilTexture(text, fg, bg);
   const mat = tex ? new THREE.MeshStandardMaterial({ map: tex, metalness: 0.2, roughness: 0.6 }) : surface('offwhite');
-  const m = new THREE.Mesh(new THREE.BoxGeometry(w, 0.01, h), mat);
-  m.position.fromArray(offset(pose, 0, 0.005, 0)); m.quaternion.copy(pose.q);
-  m.userData.detail = true; m.userData.tag = 'nameplate';
-  return m;
+  /* a plane whose own +z is the pose normal and whose +x runs along the hull axis: a proper rotation,
+     so the lettering reads from outside (a box's top face read mirrored) */
+  const g = new THREE.Group();
+  const back = new THREE.Mesh(new THREE.BoxGeometry(w, 0.012, h), surface('offwhite')); back.position.y = 0.006; g.add(back);
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+  face.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0)));
+  face.position.y = 0.0125; g.add(face);
+  g.position.fromArray(pose.p); g.quaternion.copy(pose.q);
+  g.userData.detail = true; g.userData.tag = 'nameplate'; back.userData.detail = true; face.userData.detail = true;
+  return g;
 }
 
 /* ------------------------------------------------------------------ *

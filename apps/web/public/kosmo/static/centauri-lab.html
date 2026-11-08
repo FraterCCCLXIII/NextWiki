@@ -399,7 +399,10 @@ render();
           $('cutaway').checked = v === 'section'; view.model?.userData.setCutaway?.(v === 'section');
           view.setView(v); view.render(); await wait(350); view.render();
           const png = view.screenshot();
-          try { await fetch(`http://127.0.0.1:${rx}/shot?name=${encodeURIComponent(`${dir}/${id}-${v}`)}`, { method: 'POST', body: png }); } catch (e) { console.warn('shot failed', e); }
+          /* dir=qa/auto files each ship under its version */
+          const ver = CLASSES.some((c) => c.id === id) ? 'v1' : VARIANTS.some((c) => c.id === id) ? 'v2' : PROPELLED.some((c) => c.id === id) ? 'v3' : 'v4';
+          const dirOf = dir === 'qa/auto' ? `qa/${ver}` : dir;
+          try { await fetch(`http://127.0.0.1:${rx}/shot?name=${encodeURIComponent(`${dirOf}/${id}-${v}`)}`, { method: 'POST', body: png }); } catch (e) { console.warn('shot failed', e); }
         }
       }
       document.title = 'shots done';
