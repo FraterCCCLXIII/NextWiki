@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { KOSMO_SCROLL_EVENT } from "~/components/layout/ScrollFeather";
 import { kosmoRouteForUrl } from "~/lib/kosmo/tools";
 import { LogoLoader } from "~/components/ui/LogoLoader";
@@ -26,6 +26,8 @@ export function EmbedFrame({ src, title }: EmbedFrameProps) {
   const attachedDoc = useRef<Document | null>(null);
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const queryKey = searchParams?.toString() ?? "";
 
   // The embedded page scrolls inside the iframe (same origin): tell the header feather when it does.
   const attachScroll = (doc: Document) => {
@@ -85,7 +87,7 @@ export function EmbedFrame({ src, title }: EmbedFrameProps) {
     params.delete("a");
     params.delete("go");
     const qs = params.toString();
-    const base = qs ? `${src}?${qs}` : src;
+    const base = qs ? `${src}${src.includes("?") ? "&" : "?"}${qs}` : src;
     setFrameSrc(
       addr?.startsWith("KA1~")
         ? `${base}#a=${encodeURIComponent(addr)}`
@@ -93,7 +95,7 @@ export function EmbedFrame({ src, title }: EmbedFrameProps) {
           ? `${base}#go=${encodeURIComponent(goTo)}`
           : `${base}${window.location.hash}`
     );
-  }, [src]);
+  }, [src, queryKey]);
 
   // Messages from the embedded page:
   //  - the atlas posts its camera state as a cosmic address; keep it in this page's URL (?a=...) so a view can be shared and reopened

@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { NAV_GROUPS, isNavActive, type NavGroup } from "~/lib/kosmo/nav";
 import { useScrollFade } from "~/lib/hooks/use-scroll-fade";
 
 function NavGroupSection({ group, hueBase }: { group: NavGroup; hueBase: number }) {
   const pathname = usePathname() ?? "";
-  const hasActive = group.pages.some((p) => isNavActive(pathname, p));
+  const search = useSearchParams();
+  const hasActive = group.pages.some((p) => isNavActive(pathname, p, search));
   const [open, setOpen] = useState(true);
   const panelId = `kosmo-nav-${group.name.toLowerCase()}`;
 
@@ -35,17 +36,22 @@ function NavGroupSection({ group, hueBase }: { group: NavGroup; hueBase: number 
         className="m-0 mt-1 flex list-none flex-col gap-0.5 p-0"
       >
         {group.pages.map((page, i) => {
-          const active = isNavActive(pathname, page);
+          const active = isNavActive(pathname, page, search);
           const hue = (hueBase + i * 47) % 360; // every word gets its own colour gradient
+          const newSection = page.section && page.section !== group.pages[i - 1]?.section;
           return (
             <li key={page.href}>
+              {newSection && (
+                <p className="mb-1 mt-3 text-[11px] uppercase tracking-[0.2em] text-kosmo-dim2">{page.section}</p>
+              )}
               <Link
                 href={page.href}
                 aria-current={active ? "page" : undefined}
                 style={{ "--h": hue } as React.CSSProperties}
-                className="kosmo-navword -mx-2 block rounded px-2 py-1 text-base text-kosmo-text"
+                className="kosmo-navword -mx-2 flex items-baseline justify-between gap-3 rounded px-2 py-1 text-base text-kosmo-text"
               >
-                {page.label}
+                <span>{page.label}</span>
+                {page.meta && <small className="text-[11px] tracking-wide text-kosmo-dim2">{page.meta}</small>}
               </Link>
             </li>
           );
