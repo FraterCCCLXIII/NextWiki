@@ -14,8 +14,8 @@
 
 import * as THREE from 'three';
 import { measureRobotic, ROBOTS, designById } from './robotic.js';
-import { centauriPart, addPortRing, BUILDERS, span, hubContextFor, setCutaway } from './centauri-models.js';
-import { torusDeckMesh } from './primitives/mesh.js';
+import { centauriPart, addPortRing, BUILDERS, span, hubContextFor, mountContextFor, setCutaway, freeAzimuths } from './centauri-models.js';
+import { torusDeckMesh, onCylinder, saddleMesh, seatedBlock, palletMesh, cradledCylinder, shellPanel, standoffPlate } from './primitives/mesh.js';
 import { liveryFor } from './primitives/livery.js';
 import { CO, mat, mesh, cyl, box, tor, sph, put, rod, ringXZ } from './primitives/legacy.js';
 
@@ -272,10 +272,6 @@ function cutawayShell(L, r, open, colour = CO.mli) {
     band.position.y = (L * i) / (bands + 1);
     g.add(band);
   }
-  for (const a of [Math.PI * 0.75, Math.PI * 1.25]) {
-    const rail = rod(g, [Math.cos(a) * r * 1.03, L * 0.2, Math.sin(a) * r * 1.03], [Math.cos(a) * r * 1.03, L * 0.8, Math.sin(a) * r * 1.03], r * 0.015, CO.metal);
-    rail.userData.handrail = true;
-  }
   return g;
 }
 
@@ -291,13 +287,20 @@ function hangarCAD(p) {
     if (/^cradle-/.test(port.id)) {
       const [x, y, z] = port.at, side = Math.sign(x) || 1;
       const frame = new THREE.Group();
-      const back = rbox(0.06, 2.0, 0.7, RC.dark, M.dark); put(back, side * 0.32, 1.0, 0); frame.add(back);
-      for (const yy of [0.3, 1.7]) { const clamp = rbox(0.5, 0.05, 0.6, RC.dark, M.dark); put(clamp, side * 0.08, yy, 0); frame.add(clamp); }
-      const charger = rbox(0.18, 0.3, 0.3, RC.gold, M.gold); put(charger, side * 0.36, 0.5, 0.45); frame.add(charger);
-      const led = rbox(0.02, 0.04, 0.1, RC.screen, M.screen); put(led, side * 0.26, 0.62, 0.45); frame.add(led);
-      rod(frame, [side * 0.3, 0.5, 0.45], [side * 0.1, 0.9, 0.1], 0.015, RC.warn, { seg: 6 });
-      const plate = rbox(0.04, 1.2, 0.5, RC.deck, M.white); put(plate, side * 0.3, 1.1, -0.3); frame.add(plate);
+      /* the cradle hugs the wall: its back plate on the skin (the port is 8 cm inside it), clamps round the robot inboard, the
+         charger and its umbilical on the back plate (the first cut put these outside the hull) */
+      /* in the frame +y is the robot's height off the wall; the back plate stands behind the robot (local +x), the clamps
+         round it, the charger and umbilical on the plate, all inside the hull */
+      void side;
+      const back = rbox(0.06, 2.0, 0.7, RC.dark, M.dark); put(back, 0.32, 1.0, 0); frame.add(back);
+      for (const yy of [0.3, 1.7]) { const clamp = rbox(0.5, 0.05, 0.6, RC.dark, M.dark); put(clamp, 0.08, yy, 0); frame.add(clamp); }
+      const charger = rbox(0.18, 0.3, 0.3, RC.gold, M.gold); put(charger, 0.26, 0.5, 0.45); frame.add(charger);
+      const led = rbox(0.02, 0.04, 0.1, RC.screen, M.screen); put(led, 0.16, 0.62, 0.45); frame.add(led);
+      rod(frame, [0.2, 0.5, 0.45], [0.05, 0.9, 0.1], 0.015, RC.warn, { seg: 6 });
+      const plate = rbox(0.04, 1.2, 0.5, RC.deck, M.white); put(plate, 0.3, 1.1, -0.3); frame.add(plate);
+      /* the robot stands along the port axis (radially inward from the wall), so the frame does too */
       frame.position.set(x, y, z);
+      frame.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(...port.axis).normalize());
       g.add(frame);
     } else if (/^dock-/.test(port.id)) {
       const [x, y, z] = port.at;
@@ -318,26 +321,39 @@ function hangarCAD(p) {
   markInterior(g, interiorFrom);
   /* two external garage doors on the -x face, framed, with hinge bars and warning stripes */
   for (let i = 0; i < 2; i += 1) {
-    const y = L * (0.3 + 0.4 * i);
-    const door = rbox(0.08, Math.min(2.4, L * 0.3), 1.6, CO.hatch, M.white); put(door, -r * 1.02, y, 0); g.add(door);
-    const frame = rbox(0.1, Math.min(2.6, L * 0.32), 1.8, CO.metal, M.dark); put(frame, -r * 1.01, y, 0); g.add(frame);
-    const stripe = rbox(0.1, 0.08, 1.6, RC.warn, M.white); put(stripe, -r * 1.06, y + Math.min(1.1, L * 0.14), 0); g.add(stripe);
-    rod(g, [-r * 1.06, y - 1, 0.9], [-r * 1.06, y + 1, 0.9], 0.03, CO.metal);
+    const y = L * (0.3 + 0.4 * i), h = Math.min(2.4, L * 0.3), arc = 1.6 / r;
+    /* the door and its frame are shell sectors at the skin (a flat door on a round hull would gape at its edges), the hinge bar
+       on standoff brackets at the door's edge; CylinderGeometry's theta runs from +z, so -x is theta = -pi/2 */
+    g.add(shellPanel({ r: r * 1.012, h, a0: -Math.PI / 2 - arc / 2, arc, y: y - h / 2, kind: 'hatch' }));
+    g.add(shellPanel({ r: r * 1.006, h: h * 1.08, a0: -Math.PI / 2 - arc * 0.56, arc: arc * 1.12, y: y - h * 0.54, kind: 'grey' }));
+    g.add(shellPanel({ r: r * 1.02, h: 0.08, a0: -Math.PI / 2 - arc / 2, arc, y: y + h * 0.42, kind: 'accent' }));
+    const za = Math.sin(arc / 2) * r * 1.03, xa = -Math.cos(arc / 2) * r * 1.03;
+    rod(g, [xa * 1.04, y - 1, za], [xa * 1.04, y + 1, za], 0.03, CO.metal);
+    for (const dy of [-0.9, 0.9]) rod(g, [xa, y + dy, za], [xa * 1.04, y + dy, za], 0.025, CO.metal, { seg: 6 });
   }
-  /* rail heads: two blocks at the aft ring where the crawlers pick up power and data (outside, at the rails' 45 degree stations) */
-  for (const s of [-1, 1]) { const head = rbox(0.5, 0.6, 0.8, RC.dark, M.dark); put(head, s * r * 0.75, 0.35, -r * 0.75); g.add(head); const lamp = rbox(0.1, 0.1, 0.1, RC.screen, M.screen); put(lamp, s * r * 0.75, 0.7, -r * 0.75); g.add(lamp); }
+  /* rail heads: two seated blocks at the aft ring where the crawlers pick up power and data (at the rails' 45 degree stations) */
+  for (const s of [-1, 1]) {
+    const head = seatedBlock({ r, w: 0.5, h: 0.6, l: 0.8, kind: 'dark', stub: true }); onCylinder(head, r, Math.atan2(-1, s), 0.6); g.add(head);
+    const lamp = rbox(0.1, 0.1, 0.1, RC.screen, M.screen); lamp.position.set(0, head.userData.height + 0.05, 0.25); head.add(lamp);
+  }
   return { group: g };
 }
 
 /* The robot lock: a box with its outer hatch framed at 1.2 x 2.2 m, a pressure indicator, grab bars. */
-function lockCAD(p) {
+function lockCAD(p, ctx = {}) {
   const g = new THREE.Group(), L = p.dims.l, w = p.dims.d;
-  g.add(put(rbox(w, L * 0.9, w, CO.mli, M.white), 0, L * 0.45, 0));
+  /* the lock stands on a saddle cut to the hangar's skin; its box, hatch and frame stack from the saddle's top */
+  const foot = saddleMesh({ r: ctx.seatR ?? null, w: w * 1.1, l: w * 1.1, kind: 'grey' }); foot.rotation.y = ctx.seatRot ?? 0; g.add(foot);
+  const y0 = foot.userData.top;
+  const body = rbox(w, L * 0.9 - y0, w, CO.mli, M.white); put(body, 0, y0 + (L * 0.9 - y0) / 2, 0); body.userData.seated = true; g.add(body);
   const hatch = rbox(p.hatch?.w ?? 1.2, 0.08, p.hatch?.h ?? 2.2, CO.hatch, M.white); put(hatch, 0, L * 0.92, 0); g.add(hatch);
   const frame = rbox((p.hatch?.w ?? 1.2) + 0.2, 0.06, (p.hatch?.h ?? 2.2) + 0.2, CO.metal, M.dark); put(frame, 0, L * 0.9, 0); g.add(frame);
-  const light = rbox(0.12, 0.06, 0.12, RC.screen, M.screen); put(light, w * 0.4, L * 0.96, w * 0.4); g.add(light);
-  for (const s of [-1, 1]) rod(g, [s * w * 0.45, L * 0.2, w * 0.52], [s * w * 0.45, L * 0.8, w * 0.52], 0.02, CO.metal);
-  g.add(ringXZ(w * 0.52, 0.03, CO.metal, 0.05));
+  const light = rbox(0.12, 0.06, 0.12, RC.screen, M.screen); put(light, w * 0.4, L * 0.9 + 0.03, w * 0.4); g.add(light);
+  for (const s of [-1, 1]) {
+    rod(g, [s * w * 0.45, L * 0.2, w * 0.56], [s * w * 0.45, L * 0.8, w * 0.56], 0.02, CO.metal);
+    for (const y of [L * 0.22, L * 0.78]) rod(g, [s * w * 0.45, y, w * 0.49], [s * w * 0.45, y, w * 0.56], 0.015, CO.metal, { seg: 6 });
+  }
+  g.add(ringXZ(w * 0.52, 0.03, CO.metal, y0 + 0.05));
   return { group: g };
 }
 
@@ -347,12 +363,10 @@ function fabCAD(p) {
   const L = p.dims.l, r = p.dims.d / 2;
   const g = cutawayShell(L, r, Math.PI * 0.6, CO.shell);
   const interiorFrom = g.children.length;
-  for (let i = 0; i < 2; i += 1) {
-    const drum = cyl(r * 0.22, L * 0.35, CO.tank, { seg: 18, mat: M.white }); put(drum, -r * 0.9, L * (0.2 + i * 0.45), (i ? 1 : -1) * r * 0.55); g.add(drum);
-    g.add(put(ringXZ(r * 0.225, 0.02, CO.gold, L * (0.2 + i * 0.45) + L * 0.17), -r * 0.9, 0, (i ? 1 : -1) * r * 0.55));
-  }
-  const pallet = rbox(0.6, L * 0.4, r * 0.8, RC.dark, M.dark); put(pallet, -r * 1.05, L * 0.5, 0); g.add(pallet);
-  for (let i = 0; i < 5; i += 1) { const crate = rbox(0.5, L * 0.07, r * 0.7, RC.white, M.white); put(crate, -r * 1.05, L * 0.32 + i * L * 0.085, 0); g.add(crate); }
+  /* two feedstock drums cradled on the -x flank, the spares pallet between them: saddles, cradle blocks and straps on the skin */
+  const az = freeAzimuths(p, 3);
+  for (let i = 0; i < 2; i += 1) { const drum = cradledCylinder({ r, tankR: r * 0.22, tankL: L * 0.35, kind: 'tank' }); onCylinder(drum, r, az[1 + i] ?? az[0], L * (0.2 + i * 0.45) + L * 0.175); g.add(drum); }
+  const pal = palletMesh({ r, w: Math.min(r * 0.8, 1.8), l: L * 0.4, h: Math.min(0.6, r * 0.25), boxes: 4 }); onCylinder(pal, r, az[0], L * 0.5); g.add(pal);
   const vent = cyl(r * 0.08, r * 0.5, RC.dark, { seg: 10, mat: M.dark }); put(vent, 0, L * 0.85, r * 0.95, Math.PI / 2); g.add(vent);
   const bench = rbox(0.8, 0.9, 2.4, RC.white, M.white); put(bench, -r * 0.5, L * 0.5, r * 0.4); g.add(bench);
   bench.userData.cutaway = 'cut'; bench.visible = false;
@@ -387,6 +401,8 @@ function obsCAD(p) {
   for (const s of [-1, 1]) {
     const dome = mesh(new THREE.SphereGeometry(r * 0.32, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), RC.glass, M.glass);
     put(dome, 0, L * (0.5 + s * 0.25), r * 0.95, Math.PI / 2); g.add(dome);
+    /* the cupola stands on a collar that reaches down into the shell, so its ring does not float over the curve */
+    const collar = cyl(r * 0.33, r * 0.14, CO.metal, { seg: 32 }); put(collar, 0, L * (0.5 + s * 0.25), r * 0.84, Math.PI / 2); g.add(collar);
     g.add(put(ringXZ(r * 0.32, r * 0.025, CO.metal, 0), 0, L * (0.5 + s * 0.25), r * 0.95, Math.PI / 2));
     for (let k = 0; k < 6; k += 1) { const a = (k / 6) * Math.PI * 2; rod(g, [Math.cos(a) * r * 0.31, L * (0.5 + s * 0.25), r * 0.96], [Math.cos(a) * r * 0.05, L * (0.5 + s * 0.25), r * 0.95 + r * 0.31], r * 0.01, CO.metal, { seg: 5 }); }
   }
@@ -404,9 +420,10 @@ function vaultCAD(p) {
   const interiorFrom = g.children.length;
   for (let i = 0; i < 4; i += 1) { const dewar = cyl(0.45, 1.6, CO.tank, { seg: 18, mat: M.white }); put(dewar, -r * 0.45, 0.4 + Math.floor(i / 2) * (L * 0.45), (i % 2 ? 1 : -1) * r * 0.5); g.add(dewar); g.add(put(ringXZ(0.46, 0.03, CO.gold, 1.5), -r * 0.45, 0.4 + Math.floor(i / 2) * (L * 0.45), (i % 2 ? 1 : -1) * r * 0.5)); }
   markInterior(g, interiorFrom);
-  const rad = rbox(L * 0.6, 0.04, r * 0.9, CO.rad, { metal: 0.3, rough: 0.55 }); put(rad, 0, L * 0.5, -r * 1.3, 0, 0, Math.PI / 2); g.add(rad);
-  rod(g, [0, L * 0.5, -r], [0, L * 0.5, -r * 1.3], 0.05, CO.metal);
-  const cooler = rbox(0.6, 0.6, 0.5, RC.dark, M.dark); put(cooler, 0, L * 0.5, -r * 1.05); g.add(cooler);
+  /* the cryocooler sits on a saddle; its radiator stands off on a plate whose four feet reach the curved skin */
+  const cooler = seatedBlock({ r, w: 0.6, h: 0.6, l: 0.5, kind: 'dark' }); onCylinder(cooler, r, -Math.PI / 2, L * 0.5); g.add(cooler);
+  const stand = standoffPlate({ r, w: r * 0.9, l: L * 0.6, standoff: r * 0.28, kind: 'grey' }); onCylinder(stand, r, -Math.PI / 2, L * 0.5); g.add(stand);
+  const rad = rbox(r * 0.9, 0.04, L * 0.6, CO.rad, { metal: 0.3, rough: 0.55 }); rad.position.y = stand.userData.top + 0.02; rad.userData.seated = true; stand.add(rad);
   return { group: g };
 }
 
@@ -490,13 +507,19 @@ function torporRingCAD(p, ctx = {}) {
 
 /* A structural tank in the thrust path (consumables) or a palletised kit: tank with domes and bands,
    or a ribbed frame carrying crates on its outside. */
-function storesCAD(p) {
+function storesCAD(p, ctx = {}) {
   const g = new THREE.Group(), L = p.dims.l, r = p.dims.d / 2, dome = Math.min(r * 0.5, L * 0.12);
+  /* a tank on a module's flank stands on a saddle cut to the module; in the stack it sits on its ring */
+  if (ctx.seatR) { const foot = saddleMesh({ r: ctx.seatR, w: Math.min(r * 1.2, ctx.seatR * 1.5), l: Math.min(r * 1.2, ctx.seatR * 1.5), kind: 'grey' }); foot.rotation.y = ctx.seatRot ?? 0; g.add(foot); }
   g.add(put(cyl(r, L - 2 * dome, CO.tank, { seg: 36 }), 0, dome, 0));
   g.add(put(cyl(r * 0.5, dome, CO.tank, { r2: r, seg: 36 }), 0, 0, 0));
   g.add(put(cyl(r, dome, CO.tank, { r2: r * 0.5, seg: 36 }), 0, L - dome, 0));
   for (let i = 1; i <= 4; i += 1) g.add(ringXZ(r * 1.005, Math.max(r * 0.02, 0.03), CO.gold, dome + ((L - 2 * dome) * i) / 5));
-  for (let i = 0; i < 4; i += 1) { const a = (i / 4) * Math.PI * 2 + Math.PI / 4; rod(g, [Math.cos(a) * r * 1.02, dome, Math.sin(a) * r * 1.02], [Math.cos(a) * r * 1.02, L - dome, Math.sin(a) * r * 1.02], Math.max(r * 0.012, 0.02), CO.metal, { seg: 5 }); }
+  for (let i = 0; i < 4; i += 1) {
+    const a = (i / 4) * Math.PI * 2 + Math.PI / 4, lr = Math.max(r * 0.012, 0.02);
+    rod(g, [Math.cos(a) * (r + lr), dome, Math.sin(a) * (r + lr)], [Math.cos(a) * (r + lr), L - dome, Math.sin(a) * (r + lr)], lr, CO.metal, { seg: 5 });
+    for (let k = 0; k <= 3; k += 1) { const c = box(lr * 3, lr * 2.6, lr * 2.6, CO.dark); put(c, Math.cos(a) * (r + lr * 0.8), dome + ((L - 2 * dome) * k) / 3, Math.sin(a) * (r + lr * 0.8), 0, -a, 0); g.add(c); }
+  }
   const hatch = cyl(Math.min(r * 0.3, 0.6), 0.1, CO.hatch, { seg: 18 }); put(hatch, 0, L * 0.5, r * 0.98, Math.PI / 2); g.add(hatch);
   return { group: g };
 }
@@ -512,9 +535,10 @@ function kitCAD(p) {
   for (let k = 0; k < 8; k += 1) { const a = (k / 8) * Math.PI * 2; rod(g, [Math.cos(a) * r * 0.98, 0, Math.sin(a) * r * 0.98], [Math.cos(a) * r * 0.98, L, Math.sin(a) * r * 0.98], Math.max(r * 0.012, 0.02), CO.metal, { seg: 6 }); }
   for (let i = 0; i < rings; i += 1) {
     for (let k = 0; k < 8; k += 1) {
-      const a = (k / 8) * Math.PI * 2 + Math.PI / 8, y = (L * (i + 0.5)) / rings;
+      /* each crate is strapped to a longitudinal rod of the frame, its outer face just inside the rod line */
+      const a = (k / 8) * Math.PI * 2, y = (L * (i + 0.5)) / rings;
       const crate = box(r * 0.5, (L / rings) * 0.8, r * 0.45, k % 3 ? CO.shell : CO.mli);
-      put(crate, Math.cos(a) * r * 0.72, y, Math.sin(a) * r * 0.72, 0, -a, 0); g.add(crate);
+      put(crate, Math.cos(a) * r * 0.74, y, Math.sin(a) * r * 0.74, 0, -a, 0); g.add(crate);
     }
   }
   return { group: g };
@@ -546,25 +570,35 @@ function railsCAD(p) {
 }
 
 /* A compute rack: a dark box with radiator fins on three faces, a cable stub into the module, a lamp. */
-function rackCAD(p) {
+function rackCAD(p, ctx = {}) {
   const g = new THREE.Group(), L = p.dims.l, w = p.dims.d, k = p.nodes ?? 1;
-  const body = rbox(w, L, w * 0.8, RC.dark, M.dark); put(body, 0, L / 2, 0); g.add(body);
+  /* the rack stands on a saddle cut to its module; the fins hang on a spine from its back, the shield on its face */
+  const foot = saddleMesh({ r: ctx.seatR ?? null, w: w * 1.15, l: w * 0.95, kind: 'grey' }); foot.rotation.y = ctx.seatRot ?? 0; g.add(foot);
+  const y0 = foot.userData.top;
+  const body = rbox(w, L - y0, w * 0.8, RC.dark, M.dark); put(body, 0, y0 + (L - y0) / 2, 0); body.userData.seated = true; g.add(body);
+  const spine = rbox(w * 0.12, L * 0.9, 0.05 + 5 * 0.07 + 0.02, CO.metal, M.dark); put(spine, 0, L / 2, -w * 0.4 - (0.05 + 5 * 0.07 + 0.02) / 2); g.add(spine);
   for (let i = 0; i < 6; i += 1) { const fin = rbox(w * 1.1, L * 0.9, 0.015, RC.deck, M.white); put(fin, 0, L / 2, -w * 0.4 - 0.05 - i * 0.07); g.add(fin); }
   for (let i = 0; i < Math.min(k, 8); i += 1) { const led = rbox(0.03, 0.03, 0.02, RC.screen, M.screen); put(led, -w * 0.4 + i * (w * 0.8 / 8), L * 0.9, w * 0.41); g.add(led); }
-  g.add(ringXZ(w * 0.25, 0.02, CO.gold, 0.01));
-  const shield = rbox(w * 1.05, L * 1.05, 0.04, RC.shield, M.shield); put(shield, 0, L / 2, w * 0.42); g.add(shield);
+  g.add(ringXZ(w * 0.25, 0.02, CO.gold, y0 + 0.01));
+  const shield = rbox(w * 1.05, L * 1.05 - y0, 0.04, RC.shield, M.shield); put(shield, 0, y0 + (L * 1.05 - y0) / 2, w * 0.42); g.add(shield);
   return { group: g };
 }
 
 /* The scout rack: a dispenser block with a bay per scout, doors ajar, a 6U body visible in each. */
-function scoutRackCAD(p) {
+function scoutRackCAD(p, ctx = {}) {
   const g = new THREE.Group(), L = p.dims.l, w = p.dims.d, n = p.scouts ?? 4, cols = Math.min(n, 4), rows = Math.ceil(n / cols);
-  const body = rbox(w, L, Math.max(0.5, rows * 0.4), RC.dark, M.dark); put(body, 0, L / 2, 0); g.add(body);
+  const depth = Math.max(0.5, rows * 0.4);
+  const foot = saddleMesh({ r: ctx.seatR ?? null, w: w * 1.1, l: depth * 1.1, kind: 'grey' }); foot.rotation.y = ctx.seatRot ?? 0; g.add(foot);
+  const y0 = foot.userData.top;
+  const body = rbox(w, L - y0, depth, RC.dark, M.dark); put(body, 0, y0 + (L - y0) / 2, 0); body.userData.seated = true; g.add(body);
   for (let i = 0; i < n; i += 1) {
     const cx = (i % cols - (cols - 1) / 2) * (w / cols), cz = (Math.floor(i / cols) - (rows - 1) / 2) * 0.4;
     const bay = rbox(w / cols * 0.8, L * 0.8, 0.3, RC.lens, M.lens); put(bay, cx, L / 2, cz); g.add(bay);
     const sat = rbox(0.22, 0.34, 0.1, RC.gold, M.gold); put(sat, cx, L / 2, cz + 0.05); g.add(sat);
+    /* the door swings on a hinge bar at the bay's edge, so it hangs from the body */
     const door = rbox(w / cols * 0.8, L * 0.8, 0.02, CO.hatch, M.white); put(door, cx + (w / cols) * 0.38, L / 2, cz + 0.18, 0, 1.1, 0); g.add(door);
+    rod(g, [cx + (w / cols) * 0.4, L * 0.1, cz + depth / 2 - 0.01], [cx + (w / cols) * 0.4, L * 0.9, cz + depth / 2 - 0.01], 0.015, CO.metal, { seg: 6 });
+    rod(g, [cx + (w / cols) * 0.4, L / 2, cz + depth / 2 - 0.01], [cx + (w / cols) * 0.38 + Math.sin(1.1) * 0.0, L / 2, cz + 0.18], 0.012, CO.metal, { seg: 6 });
   }
   return { group: g };
 }
@@ -609,7 +643,7 @@ export function buildRoboticModel(id) {
   const box3 = new THREE.Box3();
   for (const n of m.solved.nodes) {
     const p = n.part;
-    const built = roboticPart(p, hubContextFor(m.solved, n.name));
+    const built = roboticPart(p, { ...hubContextFor(m.solved, n.name), ...mountContextFor(m.solved, n.name) });
     for (const port of p.ports ?? []) addPortRing(built.group, port);
     const frame = new THREE.Group();
     frame.position.fromArray(n.world.position);

@@ -244,7 +244,9 @@ export function patternFor(livery, kind, grid) {
   const rule = livery.rules[kind] ?? livery.rules.default ?? 'blocks';
   /* an end cone or a short collar (one row of cells) wears the primary colour with a trim tape, not a shrunken pattern */
   if (grid.M < 2 && rule !== 'hazard' && rule !== 'stripes') return 'solid';
-  if ((rule === 'checker' || rule === 'checkerBand' || rule === 'chevronBands') && grid.M < 3) return 'blocks';
+  /* a checker band is one or two rows of squares round the body; a full checker or chevron needs three */
+  if ((rule === 'checker' || rule === 'chevronBands') && grid.M < 3) return 'blocks';
+  if (rule === 'checkerBand' && grid.M < 2) return 'blocks';
   return rule;
 }
 
