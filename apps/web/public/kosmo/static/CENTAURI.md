@@ -20,8 +20,16 @@ the atlas **Lab** group.
 | `parts/origami.js` | The fold law: the sail's five hinges and six panels, the stowed footprint, the pleated-strip law for wings and radiators. No DOM. |
 | `parts/centrifuge.js` | The spin-ring laws: radius from gravity and rpm, deck area from crew, the rpm/radius trade and the deck layout. No DOM. |
 | `parts/fleet-versions.js` | The pinned v1 fleet and v2 ring variants, compared against `measure()` by the checks, so a published ship cannot be re-written by accident. No DOM. |
-| `parts/centauri-models.js` | The catalogue CAD: one builder per part kind, a mating ring at every structural port, and the foldable film, all placed from the solver. Imports three. |
-| `centauri-fleet.test.mjs` | 698 node checks. Run by `run-tests.mjs`, or `node public/kosmo/static/centauri-fleet.test.mjs`. |
+| `parts/centauri-models.js` | The catalogue CAD: one builder per part kind, each a composition of the primitives, a mating ring at every structural port, and the foldable film, all placed from the solver. Imports three. |
+| `parts/primitives/spec.js` | The parametric component library, numbers only: tanks, hulls, trusses, radiators, reactors, bells, legs, fins, shields, dishes, CMGs, sail canisters, each sized from physical inputs with mass, volume, mates and a source. No DOM, no three. See `CENTAURI-PRIMITIVES.md`. |
+| `parts/primitives/materials.js` | PBR presets with procedural colour / roughness / normal maps (painted steel, stainless, TPS tiles, MLI, cells, radiator ribs, lit glazing). Imports three. |
+| `parts/primitives/mesh.js` | The geometry side of the library: lathes, hull segments, torus decks, instanced trusses, deployables, dishes, bells, grid fins, legs, hatches, port rings. Imports three. |
+| `parts/inventory.js` | The mission laws: consumables and ECLSS from crew x days and closure, delta-v budget, sail systems (canister, beacons, vanes, film temperature), and `inventoryFor()` which sizes a whole ship's systems. No DOM. |
+| `parts/fleet-v4.js` | v4, the realism pass: eight assemblies composed from the catalogue, the primitives and the inventory laws, with `assemblyV4()` and the `rollupV4()` the checks hold. No DOM. |
+| `centauri-view.js` | The lab's 3D viewer: ACES, PMREM room environment, three-point light, render-mode switch, instanced rivets, sail unfold, screenshots. |
+| `centauri-fleet.test.mjs` | 988 node checks (698 + 290 for v4). Run by `run-tests.mjs`, or `node public/kosmo/static/centauri-fleet.test.mjs`. |
+| `centauri-primitives.test.mjs` | 155 node checks, one block per primitive and the inventory laws. |
+| `centauri-shots/` | Screenshots of every v4 class (and a v1 and a v3 for comparison) from the lab viewer. |
 
 ## The catalogue models
 
@@ -92,6 +100,20 @@ at all), the Daedalus seed at 9.85 % c in 46 years and the Dyson colony at 8.96 
 nuclear-thermal, fission-pulse and direct-fusion versions are reported as inner-system ships, which
 is what their mass ratios say they are; the lab prints that verdict instead of a bigger number. The
 full table, the drive sources and the reasoning per class are in `CENTAURI-PROPULSION.md`.
+
+## The realism pass (v4)
+
+The audit's F6 said it plainly: nothing in v1-v3 has life support, shielding, attitude control or
+comms. v4 (`parts/fleet-v4.js`) re-cuts every class from a stated mission and sizes what it needs from
+NASA's per-person-day rates, flown hardware masses and the primitive library, so a six-crew fifty-year
+habitat comes out at 1.09 kt with 206 t of consumables in six stores modules, a 1 g bola, a 25 kWe
+reactor on a boom, CMGs, an airlock, a bow dust shield and a braking stage with a magsail; the
+thousand-person colony at 165 kt with its farm and stores under the living decks of a 34.5 m ring.
+Every item is written down with its source in `CENTAURI-INVENTORY.md`, the master list of component
+types in `CENTAURI-COMPONENT-INVENTORY.md`, and the checks hold consumables against crew x days,
+volume per person, stores volume, power margin, mass closure, every item placed, no interpenetration,
+the stow volume, the delta-v budget and the film's thermal limit. v1-v3 are untouched; the lab's class
+picker and the viewer carry all four versions.
 
 ## The fold
 

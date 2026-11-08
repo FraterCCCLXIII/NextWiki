@@ -1,413 +1,589 @@
 [
-  {
-    "id": "centauri-wafer",
-    "name": "Centauri wafer probe",
-    "aliases": [
-      "StarChip",
-      "wafer-scale probe"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": 0,
-    "diameter_m": 1.93515430661,
-    "mass_kg": 0.002,
-    "notes": "1 g wafer (1 mm across) on a 2.94 m² sail at 0.34 g/m²: sail mass equal to payload, so 1.94 m across. Rebuilt as an assembly of a real part and the sail law, and measured in the Centauri lab (kosmo/static/centauri-lab.html). Needs 17.6 GW at the sail for 0.1 c in 600 s, which fits a 10 km aperture; it is the only class of the eight that closes. Rebuilt with an axial sail mount: the film stands on a 0 m deployable mast, clear of the structure by 0 m (see CENTAURI-CAD-REVIEW.md).",
-    "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-smallsat",
-    "name": "Centauri small satellite",
-    "aliases": [
-      "10 kg laser-sail probe"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": 0,
-    "diameter_m": 193.515430661,
-    "mass_kg": 27.1486,
-    "notes": "A 6U bus and dispenser (25 kg with its sail) on a 194 m sail. Measured peak laser 1.52 TW against the concept table's 175 GW; the beam would need a 16.7 km aperture and the station 2,326 km² of radiator, so this class does not close inside the buildability caps. Rebuilt with an axial sail mount: the film stands on a 1 m deployable mast, clear of the structure by 1 m (see CENTAURI-CAD-REVIEW.md).",
-    "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-instrument",
-    "name": "Centauri instrument probe",
-    "aliases": [
-      "100 kg laser-sail probe"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": 0,
-    "diameter_m": 611.949523278,
-    "mass_kg": 252.328,
-    "notes": "150 kg bus with a 100 kg instrument on a 612 m sail. 501 GW at the sail, a 161 km aperture for 90 % coupling: the beam, not the power, is what fails. Rebuilt with an axial sail mount: the film stands on a 1 m deployable mast, clear of the structure by 1 m (see CENTAURI-CAD-REVIEW.md).",
-    "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-lander",
-    "name": "Centauri robotic lander",
-    "aliases": [
-      "1 t laser-sail lander"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": 0,
-    "diameter_m": 1935.15430661,
-    "mass_kg": 1623.225,
-    "notes": "1 t lander structure with four legs and 1,000 kg of payload on a 1.94 km sail. 271 GW at the sail; the 1,194 mm clampband at the launch interface is rated at 8 t and carries 17 t, which the lab reports as a warning. Rebuilt with an axial sail mount: the film stands on a 3 m deployable mast, clear of the structure by 3 m (see CENTAURI-CAD-REVIEW.md).",
-    "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-capsule",
-    "name": "Centauri crewed capsule",
-    "aliases": [
-      "10 t laser-sail capsule"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": 4,
-    "diameter_m": 6119.49523278,
-    "mass_kg": 20427.71,
-    "notes": "A 4 m capsule, trunk and 12 t of cargo on a 6.12 km sail, 4 crew. 1.67 TW at the sail and a 386 km aperture: four metres of crew capsule pushed by a sail six kilometres across. Rebuilt with an axial sail mount: the film stands on a 10 m deployable mast, clear of the structure by 10 m (see CENTAURI-CAD-REVIEW.md).",
-    "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-habitat",
-    "name": "Centauri crewed habitat",
-    "aliases": [
-      "100 t laser-sail habitat"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": null,
-    "diameter_m": 19351.5430661,
-    "mass_kg": 211659.951552,
-    "notes": "Columbus-class laboratory, node, two array wings and two PVR radiators, with a cargo can, on a 19.4 km sail. 17.4 TW at the sail; the collector alone would be 16,115 km², above the 1,000 km² structure cap. Rebuilt with an axial sail mount: the film stands on a 37 m deployable mast, clear of the structure by 37 m (see CENTAURI-CAD-REVIEW.md).",
-    "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-seed",
-    "name": "Centauri colony seed",
-    "aliases": [
-      "1,000 t laser-sail seed"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": null,
-    "diameter_m": 61194.9523278,
-    "mass_kg": 2006764.90452,
-    "notes": "Modules, machinery and cargo totalling 2 kt on a 61 km sail. 112 TW at the sail, a 58 km aperture and 62,164 km² of collector; the concept table claims 16 TW and does not price the beam. Rebuilt with an axial sail mount: the film stands on a 212 m deployable mast, clear of the structure by 212 m (see CENTAURI-CAD-REVIEW.md).",
-    "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-colony",
-    "name": "Centauri full colony",
-    "aliases": [
-      "10,000 t laser-sail colony"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": null,
-    "diameter_m": 193515.430661,
-    "mass_kg": 20036051.3,
-    "notes": "A 1 g rotating habitat ring, 100 t modules and 18 kt of cargo on a 194 km sail. 668 TW at the sail against the table's 94 TW; 372,340 km² of collector is the binding failure, and the model is at true size, so the sail is the whole silhouette. Rebuilt with an axial sail mount: the film stands on a 23 m deployable mast, clear of the structure by 21 m (see CENTAURI-CAD-REVIEW.md).",
-    "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-habitat-spin",
-    "name": "Centauri crewed habitat, 1 g ring",
-    "aliases": [
-      "crewed habitat with a spin ring",
-      "rotating-ring variant"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": 24,
-    "diameter_m": 19351.543066116297,
-    "mass_kg": 622749.1401127144,
-    "notes": "v2 of the habitat: the v1 hull and sail with a 55.9 m spin ring at 4 rpm (1 g at the deck) for 24 crew -- 1 deck of 843 m2, 1 living and 0 working, 35 m2 per person. The ring adds 409 t of structure, so the vehicle measures 623 t against v1's 212 t; the sail is unchanged because the sail law sizes the film to the payload. The berth sits on the spin axis, on the despun side of the bearing. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-VERSIONS.md).",
-    "source": "https://www.nasa.gov/wp-content/uploads/2012/01/179225main_iss_poster_back.pdf",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-seed-spin",
-    "name": "Centauri colony seed, 1 g ring",
-    "aliases": [
-      "colony seed with a spin ring",
-      "rotating-ring variant"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": 110,
-    "diameter_m": 61194.952327765866,
-    "mass_kg": 3558552.123574333,
-    "notes": "v2 of the seed: the v1 hull and sail with a 55.9 m spin ring at 4 rpm (1 g at the deck) for 110 crew -- 2 decks of 4,214 m2, 1 living and 1 working, 38 m2 per person. The ring adds 1,550 t of structure, so the vehicle measures 3,559 t against v1's 2,007 t; the sail is unchanged because the sail law sizes the film to the payload. The berth sits on the spin axis, on the despun side of the bearing. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-VERSIONS.md).",
-    "source": "https://www.nasa.gov/wp-content/uploads/2012/01/179225main_iss_poster_back.pdf",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-colony-spin",
-    "name": "Centauri full colony, 1 g ring",
-    "aliases": [
-      "full colony with a spin ring",
-      "rotating-ring variant"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": 1000,
-    "diameter_m": 193515.43066116297,
-    "mass_kg": 19544341.232618794,
-    "notes": "v2 of the colony: the v1 hull and sail with a 55.9 m spin ring at 4 rpm (1 g at the deck) for 1000 crew -- 6 decks of 32,870 m2, 3 living and 3 working, 33 m2 per person. The ring adds 9,508 t of structure, so the vehicle measures 19,544 t against v1's 20,036 t; the sail is unchanged because the sail law sizes the film to the payload. The berth sits on the spin axis, on the despun side of the bearing. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-VERSIONS.md).",
-    "source": "https://www.nasa.gov/wp-content/uploads/2012/01/179225main_iss_poster_back.pdf",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-wafer-pellet",
-    "name": "Centauri wafer probe, pellet beam",
-    "aliases": [
-      "wafer probe with a pellet beam",
-      "no-sail variant"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": null,
-    "diameter_m": 0.4,
-    "mass_kg": 0.0015,
-    "notes": "v3 of the wafer: the same hull with the sail and mast off and a beamed pellet stream bolted through a 0 kg thrust frame to a rigid hardpoint where the mast root was. Beamed pellet propulsion (magnetised pellet accelerator, NASA NIAC pellet-beam study): momentum arrives as a pellet stream, so there is no sail to diffract and no onboard propellant. The a 0 m x 0 m tank at 0 kg/m3. At a 1:1 mass ratio (the pellet stream is the propellant and joins in flight) the ship measures 0.0000015 t and reaches 10 % c, a 43.7-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
-    "source": "https://en.wikipedia.org/wiki/Beam-powered_propulsion",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-smallsat-pellet",
-    "name": "Centauri small satellite, pellet beam",
-    "aliases": [
-      "small satellite with a pellet beam",
-      "no-sail variant"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": null,
-    "diameter_m": 0.986484829732188,
-    "mass_kg": 15.0005,
-    "notes": "v3 of the smallsat: the same hull with the sail and mast off and a beamed pellet stream bolted through a 0 kg thrust frame to a rigid hardpoint where the mast root was. Beamed pellet propulsion (magnetised pellet accelerator, NASA NIAC pellet-beam study): momentum arrives as a pellet stream, so there is no sail to diffract and no onboard propellant. The a 0 m x 0 m tank at 0 kg/m3. At a 1:1 mass ratio (the pellet stream is the propellant and joins in flight) the ship measures 0.015 t and reaches 10 % c, a 43.7-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
-    "source": "https://en.wikipedia.org/wiki/Beam-powered_propulsion",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-instrument-ion",
-    "name": "Centauri instrument probe, ion",
-    "aliases": [
-      "instrument probe with a ion",
-      "no-sail variant"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": null,
-    "diameter_m": 2.187015270312025,
-    "mass_kg": 34079.99999999997,
-    "notes": "v3 of the instrument: the same hull with the sail and mast off and a solar-electric ion (next-c class) bolted through a 50 kg thrust frame to a rigid hardpoint where the mast root was. NASA NEXT-C gridded ion thruster: 236 mN at 4.5 kW, Isp 4190 s (flight unit, DART). The a 2.19 m x 6.56 m tank at 1400 kg/m3, and 0.0214 m2 of radiator on four panels rejects 0.00242 MW of jet heat at 1000 K. At a 16:1 mass ratio the ship measures 34.1 t wet (31.9 t of propellant) and reaches 0.038 % c, a 11800-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
-    "source": "https://en.wikipedia.org/wiki/Ion_thruster",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-lander-ntr",
-    "name": "Centauri robotic lander, NTR",
-    "aliases": [
-      "robotic lander with a NTR",
-      "no-sail variant"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": null,
-    "diameter_m": 11.94662932013956,
-    "mass_kg": 548186.0465116279,
-    "notes": "v3 of the lander: the same hull with the sail and mast off and a nuclear thermal (nerva class) bolted through a 666 kg thrust frame to a rigid hardpoint where the mast root was. NERVA NRX/XE: 333 kN at Isp 900 s, 10.5 t engine (liquid hydrogen). The a 11.9 m x 71.7 m tank at 70 kg/m3, and 259 m2 of radiator on four panels rejects 29.4 MW of jet heat at 1000 K. At a 20:1 mass ratio the ship measures 548 t wet (521 t of propellant) and reaches 0.00882 % c, a 49500-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
-    "source": "https://en.wikipedia.org/wiki/NERVA",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-capsule-orion",
-    "name": "Centauri crewed capsule, Orion",
-    "aliases": [
-      "crewed capsule with an Orion",
-      "no-sail variant"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": null,
-    "diameter_m": 12.71471387940117,
-    "mass_kg": 1032258.0645161291,
-    "notes": "v3 of the capsule: the same hull with the sail and mast off and a fission-pulse (orion class) bolted through a 2000 kg thrust frame to a rigid hardpoint where the mast root was. Project Orion: 4,000 s class fission pulse units, thrust averaged over the pulse train. The a 8.77 m x 17.5 m magazine of 6538 150 kg pulse units at 1000 kg/m3, and 86.4 m2 of radiator on four panels rejects 9.8 MW of jet heat at 1000 K. At a 20:1 mass ratio the ship measures 1030 t wet (981 t of propellant) and reaches 0.0392 % c, a 11200-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
-    "source": "https://en.wikipedia.org/wiki/Project_Orion_(nuclear_propulsion)",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-habitat-dfd",
-    "name": "Centauri crewed habitat, fusion",
-    "aliases": [
-      "crewed habitat with a fusion",
-      "no-sail variant"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": null,
-    "diameter_m": 20.556777092089302,
-    "mass_kg": 3989870.9677419355,
-    "notes": "v3 of the habitat: the same hull with the sail and mast off and a direct fusion drive bolted through a 50 kg thrust frame to a rigid hardpoint where the mast root was. Princeton PFRC direct fusion drive study: 1-10 N per MW, Isp 10,000 s, D-He3. The a 20.6 m x 123 m tank at 100 kg/m3, and 8.65 m2 of radiator on four panels rejects 0.981 MW of jet heat at 1000 K. At a 20:1 mass ratio the ship measures 3990 t wet (3790 t of propellant) and reaches 0.098 % c, a 4640-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
-    "source": "https://en.wikipedia.org/wiki/Direct_Fusion_Drive",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-seed-daedalus",
-    "name": "Centauri colony seed, Daedalus fusion",
-    "aliases": [
-      "colony seed with a Daedalus fusion",
-      "no-sail variant"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": null,
-    "diameter_m": 35.69039804279453,
-    "mass_kg": 34246322.58064517,
-    "notes": "v3 of the seed: the same hull with the sail and mast off and a inertial-fusion pulse (daedalus class) bolted through a 15000 kg thrust frame to a rigid hardpoint where the mast root was. Project Daedalus (BIS, 1978): D-He3 inertial-confinement pellets, 10,000 km/s exhaust, two stages. The a 24.6 m x 148 m magazine of 0 null kg pulse units at 500 kg/m3, and 6540 m2 of radiator on four panels rejects 742 MW of jet heat at 1000 K. At a 20:1 mass ratio the ship measures 34200 t wet (32500 t of propellant) and reaches 9.85 % c, a 46.5-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
-    "source": "https://en.wikipedia.org/wiki/Project_Daedalus",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
-  },
-  {
-    "id": "centauri-colony-pulse",
-    "name": "Centauri full colony, fusion pulse",
-    "aliases": [
-      "full colony with a fusion pulse",
-      "no-sail variant"
-    ],
-    "category": "original",
-    "status": "concept",
-    "built": false,
-    "manufacturer": "Kosmographica (parts-and-physics rebuild)",
-    "crew_capacity": null,
-    "diameter_m": 95.30078063124841,
-    "mass_kg": 326001161.2903226,
-    "notes": "v3 of the colony: the same hull with the sail and mast off and a fusion-pulse (dyson class) bolted through a 10000 kg thrust frame to a rigid hardpoint where the mast root was. Freeman Dyson, Interstellar Transport (1968): fusion pulse units, 3 % c exhaust, 10 Mt-class ships. The a 65.7 m x 197 m magazine of 619402 500 kg pulse units at 500 kg/m3, and 3970 m2 of radiator on four panels rejects 450 MW of jet heat at 1000 K. At a 20:1 mass ratio the ship measures 326000 t wet (310000 t of propellant) and reaches 8.96 % c, a 76.5-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
-    "source": "https://en.wikipedia.org/wiki/Nuclear_pulse_propulsion",
-    "data_quality": "draft",
-    "model3d": {
-      "status": "done",
-      "path": null
-    }
+ {
+  "id": "centauri-wafer",
+  "name": "Centauri wafer probe",
+  "aliases": [
+   "StarChip",
+   "wafer-scale probe"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": 0,
+  "diameter_m": 1.93515430661,
+  "mass_kg": 0.002,
+  "notes": "1 g wafer (1 mm across) on a 2.94 m² sail at 0.34 g/m²: sail mass equal to payload, so 1.94 m across. Rebuilt as an assembly of a real part and the sail law, and measured in the Centauri lab (kosmo/static/centauri-lab.html). Needs 17.6 GW at the sail for 0.1 c in 600 s, which fits a 10 km aperture; it is the only class of the eight that closes. Rebuilt with an axial sail mount: the film stands on a 0 m deployable mast, clear of the structure by 0 m (see CENTAURI-CAD-REVIEW.md).",
+  "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
   }
+ },
+ {
+  "id": "centauri-smallsat",
+  "name": "Centauri small satellite",
+  "aliases": [
+   "10 kg laser-sail probe"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": 0,
+  "diameter_m": 193.515430661,
+  "mass_kg": 27.1486,
+  "notes": "A 6U bus and dispenser (25 kg with its sail) on a 194 m sail. Measured peak laser 1.52 TW against the concept table's 175 GW; the beam would need a 16.7 km aperture and the station 2,326 km² of radiator, so this class does not close inside the buildability caps. Rebuilt with an axial sail mount: the film stands on a 1 m deployable mast, clear of the structure by 1 m (see CENTAURI-CAD-REVIEW.md).",
+  "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-instrument",
+  "name": "Centauri instrument probe",
+  "aliases": [
+   "100 kg laser-sail probe"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": 0,
+  "diameter_m": 611.949523278,
+  "mass_kg": 252.328,
+  "notes": "150 kg bus with a 100 kg instrument on a 612 m sail. 501 GW at the sail, a 161 km aperture for 90 % coupling: the beam, not the power, is what fails. Rebuilt with an axial sail mount: the film stands on a 1 m deployable mast, clear of the structure by 1 m (see CENTAURI-CAD-REVIEW.md).",
+  "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-lander",
+  "name": "Centauri robotic lander",
+  "aliases": [
+   "1 t laser-sail lander"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": 0,
+  "diameter_m": 1935.15430661,
+  "mass_kg": 1623.225,
+  "notes": "1 t lander structure with four legs and 1,000 kg of payload on a 1.94 km sail. 271 GW at the sail; the 1,194 mm clampband at the launch interface is rated at 8 t and carries 17 t, which the lab reports as a warning. Rebuilt with an axial sail mount: the film stands on a 3 m deployable mast, clear of the structure by 3 m (see CENTAURI-CAD-REVIEW.md).",
+  "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-capsule",
+  "name": "Centauri crewed capsule",
+  "aliases": [
+   "10 t laser-sail capsule"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": 4,
+  "diameter_m": 6119.49523278,
+  "mass_kg": 20427.71,
+  "notes": "A 4 m capsule, trunk and 12 t of cargo on a 6.12 km sail, 4 crew. 1.67 TW at the sail and a 386 km aperture: four metres of crew capsule pushed by a sail six kilometres across. Rebuilt with an axial sail mount: the film stands on a 10 m deployable mast, clear of the structure by 10 m (see CENTAURI-CAD-REVIEW.md).",
+  "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-habitat",
+  "name": "Centauri crewed habitat",
+  "aliases": [
+   "100 t laser-sail habitat"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 19351.5430661,
+  "mass_kg": 211659.951552,
+  "notes": "Columbus-class laboratory, node, two array wings and two PVR radiators, with a cargo can, on a 19.4 km sail. 17.4 TW at the sail; the collector alone would be 16,115 km², above the 1,000 km² structure cap. Rebuilt with an axial sail mount: the film stands on a 37 m deployable mast, clear of the structure by 37 m (see CENTAURI-CAD-REVIEW.md).",
+  "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-seed",
+  "name": "Centauri colony seed",
+  "aliases": [
+   "1,000 t laser-sail seed"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 61194.9523278,
+  "mass_kg": 2006764.90452,
+  "notes": "Modules, machinery and cargo totalling 2 kt on a 61 km sail. 112 TW at the sail, a 58 km aperture and 62,164 km² of collector; the concept table claims 16 TW and does not price the beam. Rebuilt with an axial sail mount: the film stands on a 212 m deployable mast, clear of the structure by 212 m (see CENTAURI-CAD-REVIEW.md).",
+  "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-colony",
+  "name": "Centauri full colony",
+  "aliases": [
+   "10,000 t laser-sail colony"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 193515.430661,
+  "mass_kg": 20036051.3,
+  "notes": "A 1 g rotating habitat ring, 100 t modules and 18 kt of cargo on a 194 km sail. 668 TW at the sail against the table's 94 TW; 372,340 km² of collector is the binding failure, and the model is at true size, so the sail is the whole silhouette. Rebuilt with an axial sail mount: the film stands on a 23 m deployable mast, clear of the structure by 21 m (see CENTAURI-CAD-REVIEW.md).",
+  "source": "https://en.wikipedia.org/wiki/Breakthrough_Starshot",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-habitat-spin",
+  "name": "Centauri crewed habitat, 1 g ring",
+  "aliases": [
+   "crewed habitat with a spin ring",
+   "rotating-ring variant"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": 24,
+  "diameter_m": 19351.543066116297,
+  "mass_kg": 622749.1401127144,
+  "notes": "v2 of the habitat: the v1 hull and sail with a 55.9 m spin ring at 4 rpm (1 g at the deck) for 24 crew -- 1 deck of 843 m2, 1 living and 0 working, 35 m2 per person. The ring adds 409 t of structure, so the vehicle measures 623 t against v1's 212 t; the sail is unchanged because the sail law sizes the film to the payload. The berth sits on the spin axis, on the despun side of the bearing. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-VERSIONS.md).",
+  "source": "https://www.nasa.gov/wp-content/uploads/2012/01/179225main_iss_poster_back.pdf",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-seed-spin",
+  "name": "Centauri colony seed, 1 g ring",
+  "aliases": [
+   "colony seed with a spin ring",
+   "rotating-ring variant"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": 110,
+  "diameter_m": 61194.952327765866,
+  "mass_kg": 3558552.123574333,
+  "notes": "v2 of the seed: the v1 hull and sail with a 55.9 m spin ring at 4 rpm (1 g at the deck) for 110 crew -- 2 decks of 4,214 m2, 1 living and 1 working, 38 m2 per person. The ring adds 1,550 t of structure, so the vehicle measures 3,559 t against v1's 2,007 t; the sail is unchanged because the sail law sizes the film to the payload. The berth sits on the spin axis, on the despun side of the bearing. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-VERSIONS.md).",
+  "source": "https://www.nasa.gov/wp-content/uploads/2012/01/179225main_iss_poster_back.pdf",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-colony-spin",
+  "name": "Centauri full colony, 1 g ring",
+  "aliases": [
+   "full colony with a spin ring",
+   "rotating-ring variant"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": 1000,
+  "diameter_m": 193515.43066116297,
+  "mass_kg": 19544341.232618794,
+  "notes": "v2 of the colony: the v1 hull and sail with a 55.9 m spin ring at 4 rpm (1 g at the deck) for 1000 crew -- 6 decks of 32,870 m2, 3 living and 3 working, 33 m2 per person. The ring adds 9,508 t of structure, so the vehicle measures 19,544 t against v1's 20,036 t; the sail is unchanged because the sail law sizes the film to the payload. The berth sits on the spin axis, on the despun side of the bearing. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-VERSIONS.md).",
+  "source": "https://www.nasa.gov/wp-content/uploads/2012/01/179225main_iss_poster_back.pdf",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-wafer-pellet",
+  "name": "Centauri wafer probe, pellet beam",
+  "aliases": [
+   "wafer probe with a pellet beam",
+   "no-sail variant"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 0.4,
+  "mass_kg": 0.0015,
+  "notes": "v3 of the wafer: the same hull with the sail and mast off and a beamed pellet stream bolted through a 0 kg thrust frame to a rigid hardpoint where the mast root was. Beamed pellet propulsion (magnetised pellet accelerator, NASA NIAC pellet-beam study): momentum arrives as a pellet stream, so there is no sail to diffract and no onboard propellant. The a 0 m x 0 m tank at 0 kg/m3. At a 1:1 mass ratio (the pellet stream is the propellant and joins in flight) the ship measures 0.0000015 t and reaches 10 % c, a 43.7-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
+  "source": "https://en.wikipedia.org/wiki/Beam-powered_propulsion",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-smallsat-pellet",
+  "name": "Centauri small satellite, pellet beam",
+  "aliases": [
+   "small satellite with a pellet beam",
+   "no-sail variant"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 0.986484829732188,
+  "mass_kg": 15.0005,
+  "notes": "v3 of the smallsat: the same hull with the sail and mast off and a beamed pellet stream bolted through a 0 kg thrust frame to a rigid hardpoint where the mast root was. Beamed pellet propulsion (magnetised pellet accelerator, NASA NIAC pellet-beam study): momentum arrives as a pellet stream, so there is no sail to diffract and no onboard propellant. The a 0 m x 0 m tank at 0 kg/m3. At a 1:1 mass ratio (the pellet stream is the propellant and joins in flight) the ship measures 0.015 t and reaches 10 % c, a 43.7-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
+  "source": "https://en.wikipedia.org/wiki/Beam-powered_propulsion",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-instrument-ion",
+  "name": "Centauri instrument probe, ion",
+  "aliases": [
+   "instrument probe with a ion",
+   "no-sail variant"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 2.187015270312025,
+  "mass_kg": 34079.99999999997,
+  "notes": "v3 of the instrument: the same hull with the sail and mast off and a solar-electric ion (next-c class) bolted through a 50 kg thrust frame to a rigid hardpoint where the mast root was. NASA NEXT-C gridded ion thruster: 236 mN at 4.5 kW, Isp 4190 s (flight unit, DART). The a 2.19 m x 6.56 m tank at 1400 kg/m3, and 0.0214 m2 of radiator on four panels rejects 0.00242 MW of jet heat at 1000 K. At a 16:1 mass ratio the ship measures 34.1 t wet (31.9 t of propellant) and reaches 0.038 % c, a 11800-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
+  "source": "https://en.wikipedia.org/wiki/Ion_thruster",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-lander-ntr",
+  "name": "Centauri robotic lander, NTR",
+  "aliases": [
+   "robotic lander with a NTR",
+   "no-sail variant"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 11.94662932013956,
+  "mass_kg": 548186.0465116279,
+  "notes": "v3 of the lander: the same hull with the sail and mast off and a nuclear thermal (nerva class) bolted through a 666 kg thrust frame to a rigid hardpoint where the mast root was. NERVA NRX/XE: 333 kN at Isp 900 s, 10.5 t engine (liquid hydrogen). The a 11.9 m x 71.7 m tank at 70 kg/m3, and 259 m2 of radiator on four panels rejects 29.4 MW of jet heat at 1000 K. At a 20:1 mass ratio the ship measures 548 t wet (521 t of propellant) and reaches 0.00882 % c, a 49500-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
+  "source": "https://en.wikipedia.org/wiki/NERVA",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-capsule-orion",
+  "name": "Centauri crewed capsule, Orion",
+  "aliases": [
+   "crewed capsule with an Orion",
+   "no-sail variant"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 12.71471387940117,
+  "mass_kg": 1032258.0645161291,
+  "notes": "v3 of the capsule: the same hull with the sail and mast off and a fission-pulse (orion class) bolted through a 2000 kg thrust frame to a rigid hardpoint where the mast root was. Project Orion: 4,000 s class fission pulse units, thrust averaged over the pulse train. The a 8.77 m x 17.5 m magazine of 6538 150 kg pulse units at 1000 kg/m3, and 86.4 m2 of radiator on four panels rejects 9.8 MW of jet heat at 1000 K. At a 20:1 mass ratio the ship measures 1030 t wet (981 t of propellant) and reaches 0.0392 % c, a 11200-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
+  "source": "https://en.wikipedia.org/wiki/Project_Orion_(nuclear_propulsion)",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-habitat-dfd",
+  "name": "Centauri crewed habitat, fusion",
+  "aliases": [
+   "crewed habitat with a fusion",
+   "no-sail variant"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 20.556777092089302,
+  "mass_kg": 3989870.9677419355,
+  "notes": "v3 of the habitat: the same hull with the sail and mast off and a direct fusion drive bolted through a 50 kg thrust frame to a rigid hardpoint where the mast root was. Princeton PFRC direct fusion drive study: 1-10 N per MW, Isp 10,000 s, D-He3. The a 20.6 m x 123 m tank at 100 kg/m3, and 8.65 m2 of radiator on four panels rejects 0.981 MW of jet heat at 1000 K. At a 20:1 mass ratio the ship measures 3990 t wet (3790 t of propellant) and reaches 0.098 % c, a 4640-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
+  "source": "https://en.wikipedia.org/wiki/Direct_Fusion_Drive",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-seed-daedalus",
+  "name": "Centauri colony seed, Daedalus fusion",
+  "aliases": [
+   "colony seed with a Daedalus fusion",
+   "no-sail variant"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 35.69039804279453,
+  "mass_kg": 34246322.58064517,
+  "notes": "v3 of the seed: the same hull with the sail and mast off and a inertial-fusion pulse (daedalus class) bolted through a 15000 kg thrust frame to a rigid hardpoint where the mast root was. Project Daedalus (BIS, 1978): D-He3 inertial-confinement pellets, 10,000 km/s exhaust, two stages. The a 24.6 m x 148 m magazine of 0 null kg pulse units at 500 kg/m3, and 6540 m2 of radiator on four panels rejects 742 MW of jet heat at 1000 K. At a 20:1 mass ratio the ship measures 34200 t wet (32500 t of propellant) and reaches 9.85 % c, a 46.5-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
+  "source": "https://en.wikipedia.org/wiki/Project_Daedalus",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-colony-pulse",
+  "name": "Centauri full colony, fusion pulse",
+  "aliases": [
+   "full colony with a fusion pulse",
+   "no-sail variant"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 95.30078063124841,
+  "mass_kg": 326001161.2903226,
+  "notes": "v3 of the colony: the same hull with the sail and mast off and a fusion-pulse (dyson class) bolted through a 10000 kg thrust frame to a rigid hardpoint where the mast root was. Freeman Dyson, Interstellar Transport (1968): fusion pulse units, 3 % c exhaust, 10 Mt-class ships. The a 65.7 m x 197 m magazine of 619402 500 kg pulse units at 500 kg/m3, and 3970 m2 of radiator on four panels rejects 450 MW of jet heat at 1000 K. At a 20:1 mass ratio the ship measures 326000 t wet (310000 t of propellant) and reaches 8.96 % c, a 76.5-year crossing of 4.37 ly. Modelled from the measured assembly and pinned in parts/fleet-versions.js (see CENTAURI-PROPULSION.md).",
+  "source": "https://en.wikipedia.org/wiki/Nuclear_pulse_propulsion",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-wafer-v4",
+  "name": "Centauri wafer probe, realism pass",
+  "aliases": [
+   "wafer v4",
+   "realism pass"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 1.9959592666183807,
+  "mass_kg": 0.002127659574446643,
+  "notes": "v4 of the wafer: flyby probe, 44-year cruise. The hull measures 1.06 g and the film, sized to everything it pushes, 1.06 g on a 2 m sail -- 2.1x the source table's 1 g payload, which is what a full inventory costs. Every item is sized from a stated law with its source (CENTAURI-INVENTORY.md) and pinned in parts/fleet-versions.js (CENTAURI-VERSIONS.md, v4).",
+  "source": "https://breakthroughinitiatives.org/initiative/3",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-smallsat-v4",
+  "name": "Centauri small satellite, realism pass",
+  "aliases": [
+   "smallsat v4",
+   "realism pass"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 420.01605040962505,
+  "mass_kg": 96.02643112161553,
+  "notes": "v4 of the smallsat: flyby free-flyer, 44-year cruise, cold-gas trim. The hull measures 39.4 kg and the film, sized to everything it pushes, 47.1 kg on a 420 m sail -- 9.6x the source table's 10 kg payload, which is what a full inventory costs. Every item is sized from a stated law with its source (CENTAURI-INVENTORY.md) and pinned in parts/fleet-versions.js (CENTAURI-VERSIONS.md, v4).",
+  "source": "https://www.planetarysystemscorp.com/product/mark-ii-motorized-lightband/",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-instrument-v4",
+  "name": "Centauri instrument probe, realism pass",
+  "aliases": [
+   "instrument v4",
+   "realism pass"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 1578.910631474929,
+  "mass_kg": 1333.1357183234504,
+  "notes": "v4 of the instrument: flyby probe, MMRTG, hydrazine trim. The hull measures 590 kg and the film, sized to everything it pushes, 666 kg on a 1.58 km sail -- 13.3x the source table's 100 kg payload, which is what a full inventory costs. Every item is sized from a stated law with its source (CENTAURI-INVENTORY.md) and pinned in parts/fleet-versions.js (CENTAURI-VERSIONS.md, v4).",
+  "source": "https://www.nasa.gov/mission/new-horizons/",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-lander-v4",
+  "name": "Centauri robotic lander, realism pass",
+  "aliases": [
+   "lander v4",
+   "realism pass"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": null,
+  "diameter_m": 5196.315762560484,
+  "mass_kg": 14422.479040301374,
+  "notes": "v4 of the lander: stops (magsail), aerobrakes and lands. The hull measures 6.49 t and the film, sized to everything it pushes, 7.21 t on a 5.2 km sail -- 14.4x the source table's 1 t payload, which is what a full inventory costs. Every item is sized from a stated law with its source (CENTAURI-INVENTORY.md) and pinned in parts/fleet-versions.js (CENTAURI-VERSIONS.md, v4).",
+  "source": "https://www.spacex.com/vehicles/starship/",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-capsule-v4",
+  "name": "Centauri crewed capsule, realism pass",
+  "aliases": [
+   "capsule v4",
+   "realism pass"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": 4,
+  "diameter_m": 6418.352419027441,
+  "mass_kg": 22002.811878393793,
+  "notes": "v4 of the capsule: 4 crew x 30 d destination taxi, open-loop ECLSS in the capsule. 4 crew for 30 days: 0 mg of consumables, 2 m3 of pressurised volume per person, 4 kW generated against 2 kW of load. The hull measures 9.92 t and the film, sized to everything it pushes, 11 t on a 6.42 km sail -- 2.2x the source table's 10 t payload, which is what a full inventory costs. Every item is sized from a stated law with its source (CENTAURI-INVENTORY.md) and pinned in parts/fleet-versions.js (CENTAURI-VERSIONS.md, v4).",
+  "source": "https://www.spacex.com/vehicles/dragon/",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-habitat-v4",
+  "name": "Centauri crewed habitat, realism pass",
+  "aliases": [
+   "habitat v4",
+   "realism pass"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": 6,
+  "diameter_m": 45236.177966259376,
+  "mass_kg": 1092933.1819528148,
+  "notes": "v4 of the habitat: 6 crew x 50 yr, 98 % water / 75 % O2 closure, stored food, 1 g bola. 6 crew for 50 years: 206 t of consumables, 68 m3 of pressurised volume per person, 26 kW generated against 20 kW of load. The hull measures 498 t and the film, sized to everything it pushes, 546 t on a 45.2 km sail -- 10.9x the source table's 100 t payload, which is what a full inventory costs. Every item is sized from a stated law with its source (CENTAURI-INVENTORY.md) and pinned in parts/fleet-versions.js (CENTAURI-VERSIONS.md, v4).",
+  "source": "https://ntrs.nasa.gov/citations/20150018938",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-seed-v4",
+  "name": "Centauri colony seed, realism pass",
+  "aliases": [
+   "seed v4",
+   "realism pass"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": 20,
+  "diameter_m": 91013.48216040629,
+  "mass_kg": 4424179.8755845465,
+  "notes": "v4 of the seed: 20 crew x 50 yr, half-diet greenhouse in a 1 g ring. 20 crew for 50 years: 428 t of consumables, 153 m3 of pressurised volume per person, 304 kW generated against 237 kW of load. The hull measures 2.02 kt and the film, sized to everything it pushes, 2.21 kt on a 91 km sail -- 4.4x the source table's 1000 t payload, which is what a full inventory costs. Every item is sized from a stated law with its source (CENTAURI-INVENTORY.md) and pinned in parts/fleet-versions.js (CENTAURI-VERSIONS.md, v4).",
+  "source": "https://ntrs.nasa.gov/citations/20150018938",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ },
+ {
+  "id": "centauri-colony-v4",
+  "name": "Centauri full colony, realism pass",
+  "aliases": [
+   "colony v4",
+   "realism pass"
+  ],
+  "category": "original",
+  "status": "concept",
+  "built": false,
+  "manufacturer": "Kosmographica (parts-and-physics rebuild)",
+  "crew_capacity": 1000,
+  "diameter_m": 554972.172232535,
+  "mass_kg": 164527065.31338108,
+  "notes": "v4 of the colony: 1,000 crew x 50 yr, world-ship closure, farm decks in a 1 g ring. 1000 crew for 50 years: 7.83 kt of consumables, 257 m3 of pressurised volume per person, 23938 kW generated against 19464 kW of load. The hull measures 76.7 kt and the film, sized to everything it pushes, 82.2 kt on a 555 km sail -- 16.5x the source table's 10000 t payload, which is what a full inventory costs. Every item is sized from a stated law with its source (CENTAURI-INVENTORY.md) and pinned in parts/fleet-versions.js (CENTAURI-VERSIONS.md, v4).",
+  "source": "https://ntrs.nasa.gov/citations/20150018938",
+  "data_quality": "draft",
+  "model3d": {
+   "status": "done",
+   "path": null
+  }
+ }
 ]

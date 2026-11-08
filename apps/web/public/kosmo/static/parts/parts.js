@@ -85,6 +85,14 @@ export const PORT_TYPES = {
     source: 'Derived rigid interface: bolted thrust frame, >= 1 kg of frame per 500 N of thrust',
     note: 'Rigid, moment-carrying structural interface. Not a flown connector, and not a hinge: it has no deployed or stowed pose.'
   },
+  /* v4: the smallsat leaves its 6U dispenser (rated 14 kg, carrying 24) for a motorised lightband,
+     which is what a 20 kg class free-flyer with a deployable actually separates on. */
+  'lightband-12': {
+    family: 'stack', mateD: 0.298, passD: null, symmetry: 0, androgynous: false,
+    crew: false, maxMass: 450, maxBendingNm: null,
+    source: 'Planetary Systems Corp. Mark II Motorized Lightband, 11.732 in (298 mm) bolt circle; payload capability to the 450 kg class (draft figure)',
+    note: 'Motorised clampband separation system, 11.7 inch bolt circle.'
+  },
   fluid: { family: 'service', mateD: null, passD: null, symmetry: 0, androgynous: false, crew: false, maxMass: null, maxBendingNm: null, source: null, note: 'Quick-disconnect, no structural role.' },
   power: { family: 'service', mateD: null, passD: null, symmetry: 0, androgynous: false, crew: false, maxMass: null, maxBendingNm: null, source: null, note: 'Bus connector, no structural role.' },
   data: { family: 'service', mateD: null, passD: null, symmetry: 0, androgynous: false, crew: false, maxMass: null, maxBendingNm: null, source: null, note: 'Data connector, no structural role.' }
@@ -125,8 +133,8 @@ export const PARTS = {
     name: 'Destiny-class US laboratory', kind: 'pressurised-module', dataQuality: 'checked',
     source: 'https://ntrs.nasa.gov/api/citations/20140012748/downloads/20140012748.pdf',
     dims: { l: 8.5, d: 4.2 },
-    mass: null,
-    volume: { pressurised: null, habitable: null },
+    mass: 14515, // launch mass, STS-98 press kit (14,515 kg); 106 m3 pressurised
+    volume: { pressurised: 106, habitable: null },
     crew: 0,
     power: { gen: 0, load: null },
     heat: { rejectCapacity: null },
@@ -134,6 +142,167 @@ export const PARTS = {
       { id: 'aft', type: 'cbm', gender: 'active', at: [0, 0, 0], axis: [0, -1, 0] },
       { id: 'fore', type: 'cbm', gender: 'passive', at: [0, 8.5, 0], axis: [0, 1, 0] }
     ]
+  },
+  /* ---- v4 realism pass: checked ISS hardware the crewed classes are built from ---- */
+  'node-harmony': {
+    name: 'Harmony-class node (Node 2)', kind: 'node', dataQuality: 'checked',
+    source: 'NASA STS-120 press kit: Node 2 Harmony 14,288 kg at launch, 7.2 m x 4.4 m, 75.5 m3; six CBM berths',
+    dims: { l: 7.2, d: 4.4 },
+    mass: 14288,
+    volume: { pressurised: 75.5, habitable: 40 },
+    crew: 0,
+    power: { gen: 0, load: 1500 },
+    heat: { rejectCapacity: null },
+    ports: [
+      { id: 'aft', type: 'cbm', gender: 'active', at: [0, 0, 0], axis: [0, -1, 0] },
+      { id: 'fore', type: 'cbm', gender: 'passive', at: [0, 7.2, 0], axis: [0, 1, 0] },
+      { id: 'port', type: 'cbm', gender: 'active', at: [-2.2, 3.6, 0], axis: [-1, 0, 0], clock: [0, 1, 0] },
+      { id: 'starboard', type: 'cbm', gender: 'active', at: [2.2, 3.6, 0], axis: [1, 0, 0], clock: [0, 1, 0] },
+      { id: 'zenith', type: 'cbm', gender: 'active', at: [0, 3.6, 2.2], axis: [0, 0, 1], clock: [0, 1, 0] },
+      { id: 'nadir', type: 'cbm', gender: 'active', at: [0, 3.6, -2.2], axis: [0, 0, -1], clock: [0, 1, 0] },
+      /* utility hardpoints on the end cones, clear of the four radial berths: radiators on the
+         zenith/nadir pair, trusses or arrays on the +-x pair, a spin bearing at the aft face */
+      { id: 'mount-1', type: 'hinge-1d', gender: 'active', at: [1.9, 6.4, 0], axis: [1, 0, 0], clock: [0, 1, 0] },
+      { id: 'mount-2', type: 'hinge-1d', gender: 'active', at: [-1.9, 6.4, 0], axis: [-1, 0, 0], clock: [0, 1, 0] },
+      { id: 'mount-5', type: 'hinge-1d', gender: 'active', at: [0, 6.4, 1.9], axis: [0, 0, 1], clock: [0, 1, 0] },
+      { id: 'mount-6', type: 'hinge-1d', gender: 'active', at: [0, 6.4, -1.9], axis: [0, 0, -1], clock: [0, 1, 0] },
+      { id: 'mount-7', type: 'hinge-1d', gender: 'active', at: [1.9, 0.8, 0], axis: [1, 0, 0], clock: [0, 1, 0] },
+      { id: 'mount-8', type: 'hinge-1d', gender: 'active', at: [-1.9, 0.8, 0], axis: [-1, 0, 0], clock: [0, 1, 0] },
+      { id: 'spinhub', type: 'hinge-1d', gender: 'active', at: [0, 0, 0], axis: [0, -1, 0] }
+    ]
+  },
+  'airlock-quest': {
+    name: 'Quest-class joint airlock', kind: 'airlock', dataQuality: 'checked',
+    source: 'NASA STS-104 press kit: Quest airlock 6,064 kg, 5.5 m x 4.0 m, 34 m3; equipment lock and crew lock, four HPGTs',
+    dims: { l: 5.5, d: 4.0 },
+    mass: 6064,
+    volume: { pressurised: 34, habitable: 10 },
+    crew: 0,
+    power: { gen: 0, load: 1200 },
+    heat: { rejectCapacity: null },
+    ports: [{ id: 'root', type: 'cbm', gender: 'passive', at: [0, 0, 0], axis: [0, -1, 0] }]
+  },
+  'adapter-lightband': {
+    name: '11.7 in motorised lightband on a 937 mm cone', kind: 'adapter', dataQuality: 'draft',
+    source: 'Planetary Systems Corp. MLB 11.732 in (3.3 kg) on a 937 mm adapter cone (12 kg class)',
+    dims: { l: 0.35, d: 0.937 },
+    mass: 15.3,
+    volume: { pressurised: null, habitable: null },
+    crew: 0,
+    power: { gen: 0, load: 0 },
+    heat: { rejectCapacity: null },
+    ports: [
+      { id: 'aft', type: 'paf-937', gender: 'passive', at: [0, 0, 0], axis: [0, -1, 0] },
+      { id: 'fore', type: 'lightband-12', gender: 'active', at: [0, 0.35, 0], axis: [0, 1, 0] }
+    ]
+  },
+  'bus-16u': {
+    name: '16U free-flyer bus', kind: 'bus', dataQuality: 'derived',
+    source: 'Derived: 16U (0.23 x 0.24 x 0.45 m) structure 4.5 kg, avionics 2.5, radio + laser terminal 1.2, RHU-fed RTG 2.2 (5 We), star tracker + IMU 0.8, harness/thermal 1.8, instrument 3.0 = 16 kg',
+    dims: { l: 0.45, d: 0.33 },
+    mass: 16,
+    volume: { pressurised: null, habitable: null },
+    crew: 0,
+    power: { gen: 5, load: 4 },
+    heat: { rejectCapacity: 8 },
+    inventory: [
+      { item: 'structure and deployable rails', kg: 4.5, source: '16U Al frame class' },
+      { item: 'flight computer and avionics (redundant)', kg: 2.5, source: 'cubesat avionics stack class' },
+      { item: 'UHF/X radio and 0.1 m laser terminal', kg: 1.2, source: 'DSOC-scaled optical terminal' },
+      { item: 'radioisotope power source, 5 We', kg: 2.2, source: 'GPHS-derived small RTG at 2.3 We/kg' },
+      { item: 'star tracker, IMU, sun sensors', kg: 0.8, source: 'ST-200 class star tracker 0.25 kg' },
+      { item: 'harness, thermal control, MLI', kg: 1.8, source: 'derived' },
+      { item: 'imaging and spectrometer instrument', kg: 3.0, source: 'Ralph-class scaled' }
+    ],
+    ports: [
+      { id: 'aft', type: 'lightband-12', gender: 'passive', at: [0, 0, 0], axis: [0, -1, 0] },
+      { id: 'hub', type: 'hinge-1d', gender: 'active', at: [0, 0.45, 0], axis: [0, 1, 0] }
+    ]
+  },
+  'bus-probe': {
+    name: 'Deep-space probe bus (New Horizons class)', kind: 'bus', dataQuality: 'derived',
+    source: 'Derived from New Horizons (478 kg incl. 30 kg instruments, 57 kg RTG, 77 kg hydrazine): bus structure 80 kg, instruments 30, avionics 35, thermal 20, harness 25 = 190 kg; RTG, HGA, RCS and propellant are separate parts',
+    dims: { l: 0.7, d: 2.1 },
+    mass: 190,
+    volume: { pressurised: null, habitable: null },
+    crew: 0,
+    power: { gen: 0, load: 150 },
+    heat: { rejectCapacity: 300 },
+    inventory: [
+      { item: 'primary structure (Al honeycomb box, triangular)', kg: 80, source: 'New Horizons bus' },
+      { item: 'instrument suite (imager, spectrometers, dust counter, plasma)', kg: 30, source: 'New Horizons 30 kg payload' },
+      { item: 'avionics: C&DH, star trackers x2, IMU, sun sensors', kg: 35, source: 'New Horizons' },
+      { item: 'thermal: MLI tent, louvers, heaters', kg: 20, source: 'New Horizons thermos design' },
+      { item: 'harness and separation electronics', kg: 25, source: 'derived' }
+    ],
+    ports: [
+      { id: 'aft', type: 'paf-937', gender: 'passive', at: [0, 0, 0], axis: [0, -1, 0] },
+      { id: 'fore', type: 'paf-937', gender: 'active', at: [0, 0.7, 0], axis: [0, 1, 0] },
+      { id: 'sailmount', type: 'hinge-1d', gender: 'active', at: [0, 0.7, 0], axis: [0, 1, 0] },
+      { id: 'rtg', type: 'hinge-1d', gender: 'active', at: [1.05, 0.35, 0], axis: [1, 0, 0], clock: [0, 1, 0] },
+      { id: 'hga', type: 'hinge-1d', gender: 'active', at: [-0.5, 0.7, 0], axis: [0, 1, 0] },
+      { id: 'bay', type: 'hinge-1d', gender: 'active', at: [-1.05, 0.35, 0], axis: [-1, 0, 0], clock: [0, 1, 0] }
+    ]
+  },
+  'lander-aero': {
+    name: 'Aero-capable robotic lander, 1 t class', kind: 'lander-aero', dataQuality: 'derived',
+    source: 'Derived: 2.4 m stainless cylinder, 6.5 m with a Haack nose; 304L shell 1.5 mm (0.5 t), four header tanks, two 10 kN throttling engines (Starship-era design language scaled to a 1 t payload); TPS, legs, grid fins and propellant are separate parts',
+    dims: { l: 6.5, d: 2.4 },
+    mass: 1150,
+    volume: { pressurised: null, habitable: null },
+    crew: 0,
+    power: { gen: 0, load: 300 },
+    heat: { rejectCapacity: 600 },
+    inventory: [
+      { item: '304L stainless primary structure, 1.5 mm', kg: 480, source: 'hoop + buckling gauge, Starship-derived' },
+      { item: 'Haack nose fairing and bulkheads', kg: 90, source: 'fairingSpec, 12 kg/m2' },
+      { item: 'two 10 kN throttling methalox engines', kg: 110, source: 'bellSpec T/W 40' },
+      { item: 'four header tanks and feed', kg: 70, source: 'tankSpec' },
+      { item: 'science payload (1 t class instruments, sampler, mast)', kg: 250, source: 'the class payload, stated' },
+      { item: 'avionics, radar altimeter, lidar, cameras', kg: 60, source: 'MSL-derived TDS' },
+      { item: 'harness and thermal', kg: 90, source: 'derived' }
+    ],
+    ports: [
+      { id: 'aft', type: 'paf-1575', gender: 'passive', at: [0, 0, 0], axis: [0, -1, 0] },
+      { id: 'fore', type: 'paf-1575', gender: 'active', at: [0, 6.5, 0], axis: [0, 1, 0] },
+      { id: 'sailmount', type: 'hinge-1d', gender: 'active', at: [0, 6.5, 0], axis: [0, 1, 0] },
+      { id: 'legmount', type: 'hinge-1d', gender: 'active', at: [0, 0.3, 0], axis: [0, -1, 0] },
+      { id: 'finmount', type: 'hinge-1d', gender: 'active', at: [0, 4.3, 0], axis: [0, 1, 0] }
+    ]
+  },
+  'capsule-tps': {
+    name: 'Crewed capsule, TPS and ogive nose (Dragon 2 class)', kind: 'crew-capsule', dataQuality: 'checked',
+    source: 'SpaceX Crew Dragon: 4.0 m dia, 8.1 m with trunk, capsule ~7,700 kg dry (NASA CCP), 9.3 m3 pressurised, PICA-X heat shield, nose cone over an IDSS/NDS port, 16 Draco thrusters',
+    dims: { l: 4.9, d: 4.0 },
+    mass: 7700,
+    volume: { pressurised: 9.3, habitable: 7 },
+    crew: 4,
+    power: { gen: 0, load: 1500 },
+    heat: { rejectCapacity: 1500 },
+    inventory: [
+      { item: 'pressure vessel and primary structure', kg: 2400, source: 'Dragon 2 class' },
+      { item: 'PICA-X heat shield (12.6 m2 at 15 kg/m2) and backshell TPS', kg: 600, source: 'tpsSpec ablator + quilt' },
+      { item: 'nose cone with hinge and IDSS/NDS active docking system', kg: 520, source: 'NDS 341 kg + cone' },
+      { item: 'ECLSS (4 crew x 30 d, open loop), seats, displays', kg: 900, source: 'Dragon 2 class' },
+      { item: '16 Draco RCS thrusters, tanks, 1,400 kg NTO/MMH', kg: 1900, source: 'Dragon 2 propellant load' },
+      { item: 'avionics, batteries, parachutes (4 mains + 2 drogues)', kg: 880, source: 'parachuteSpec 3.5 %' },
+      { item: 'windows x4, hatch, crew provisions 30 d', kg: 500, source: 'windowSpec, hatchSpec, 0.3 kg/pd' }
+    ],
+    ports: [
+      ...stackPorts(4.9, { sail: false }),
+      { id: 'dock', type: 'idss-1200', gender: 'passive', at: [0, 4.9, 0], axis: [0, 1, 0] }
+    ]
+  },
+  'trunk-solar': {
+    name: 'Trunk with solar skin and radiators (Dragon 2 class)', kind: 'service-module', dataQuality: 'checked',
+    source: 'SpaceX Crew Dragon trunk: 3.7 m x 4.0 m, ~1,800 kg with body-mounted arrays (~4 kW) and radiators',
+    dims: { l: 3.7, d: 4.0 },
+    mass: 1800,
+    volume: { pressurised: null, habitable: null },
+    crew: 0,
+    power: { gen: 4000, load: 100 },
+    heat: { rejectCapacity: 3000 },
+    ports: stackPorts(3.7, { sail: false })
   },
   'module-kibo': {
     name: 'Kibo pressurised module', kind: 'pressurised-module', dataQuality: 'checked',
@@ -571,7 +740,13 @@ export function centrifugePart(ring, opts = {}) {
     crew: ring.crew,
     power: { gen: 0, load: ring.power },
     heat: { rejectCapacity: ring.power * 1.2 },
-    ports: [{ id: 'hub', type: 'hinge-1d', gender: 'active', at: [0, 0, 0], axis: [0, 1, 0] }]
+    ring,
+    /* v4 adds an aft hub so a stores spindle and braking stage can hang below the ring while the
+       sail spindle stands above it; v1-v3 only ever mate `hub`, so their pins do not move. */
+    ports: [
+      { id: 'hub', type: 'hinge-1d', gender: 'active', at: [0, 0, 0], axis: [0, 1, 0] },
+      { id: 'hub-aft', type: 'hinge-1d', gender: 'active', at: [0, 0, 0], axis: [0, -1, 0] }
+    ]
   };
 }
 

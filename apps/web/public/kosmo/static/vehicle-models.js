@@ -239,6 +239,15 @@ export const SPECS = {
   'centauri-habitat-dfd': () => buildCentauriModel('habitat-dfd'),
   'centauri-seed-daedalus': () => buildCentauriModel('seed-daedalus'),
   'centauri-colony-pulse': () => buildCentauriModel('colony-pulse'),
+  /* v4: the realism pass, every class with its full systems inventory (see CENTAURI-INVENTORY.md) */
+  'centauri-wafer-v4': () => buildCentauriModel('wafer-v4'),
+  'centauri-smallsat-v4': () => buildCentauriModel('smallsat-v4'),
+  'centauri-instrument-v4': () => buildCentauriModel('instrument-v4'),
+  'centauri-lander-v4': () => buildCentauriModel('lander-v4'),
+  'centauri-capsule-v4': () => buildCentauriModel('capsule-v4'),
+  'centauri-habitat-v4': () => buildCentauriModel('habitat-v4'),
+  'centauri-seed-v4': () => buildCentauriModel('seed-v4'),
+  'centauri-colony-v4': () => buildCentauriModel('colony-v4'),
 };
 
 function voyager() {

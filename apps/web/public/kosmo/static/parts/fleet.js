@@ -18,6 +18,7 @@ import { PARTS, PORT_TYPES, SAIL_AREAL, cargoPart, sail, mastPart, centrifugePar
 import { ringFor } from './centrifuge.js';
 import { DRIVES, DRIVE_FOR, planFor, R_CAP } from './propulsion.js';
 import { solveAssembly, summarize, checkAssembly } from './assembly.js';
+import { REALISM, assemblyV4, rollupV4 } from './fleet-v4.js';
 import {
   CRUISE_C, requiredPowerFor, kineticEnergy, travelAtBoost, orbitTrade, fmtPower, fmtEnergy, fmtLength, fmtArea
 } from './beam.js';
@@ -83,10 +84,15 @@ export const PROPELLED = Object.entries(DRIVE_FOR).map(([baseId, driveId]) => {
   };
 });
 
+/* v4: the realism pass (parts/fleet-v4.js) -- every class re-cut from a stated mission with a full
+   systems inventory, pinned separately so v1-v3 stand as published. */
+export { REALISM };
+
 export function byId(id) {
   return CLASSES.find((c) => c.id === id)
     ?? VARIANTS.find((c) => c.id === id)
     ?? PROPELLED.find((c) => c.id === id)
+    ?? REALISM.find((c) => c.id === id)
     ?? null;
 }
 
@@ -330,6 +336,7 @@ function propelledAssembly(cls) {
 export function assemblyFor(cls, opts = {}) {
   const arealKgM2 = opts.arealKgM2 ?? SAIL_AREAL['sin-100nm'];
   if (cls.drive) return propelledAssembly(cls);
+  if (cls.version === 4) return assemblyV4(cls, { arealKgM2 });
   const spec = cls.base ? variantHull(cls) : hullFor(cls, cls.payloadKg);
   const sailPart = sail(spec.payloadKg ?? cls.payloadKg, { arealKgM2 });
 
@@ -412,7 +419,8 @@ export function measure(id, opts = {}) {
   /* Sail placement, measured rather than assumed: how far the film plane stands ahead of the tallest
      structure, and how far the centre of pressure sits from the centre of mass. Both were wrong while
      every film hung off a side hinge at the hull's fore face, and both are invariants the checks hold. */
-  const hullSummary = summarize(solved.nodes.filter((n) => n.part.kind !== 'sail' && n.part.kind !== 'mast'));
+  const sailHardware = new Set(['sail', 'mast', 'sail-canister']);
+  const hullSummary = summarize(solved.nodes.filter((n) => !sailHardware.has(n.part.kind)));
   const sailAt = sailNode?.world.position ?? [0, 0, 0];
   const geometry = {
     sailAt,
@@ -433,13 +441,16 @@ export function measure(id, opts = {}) {
   const structural = checks.filter((c) => c.code !== 'port-overload');
   const loads = checks.filter((c) => c.code === 'port-overload');
 
+  /* v4 carries a systems inventory; the roll-up is what the inventory checks and the lab's section 7 read */
+  const inventory = cls.version === 4 ? rollupV4(def, solved, summary) : null;
+
   return {
-    cls, def, solved, summary, sail: sailPart, geometry,
+    cls, def, solved, summary, sail: sailPart, geometry, inventory,
     mission: { betaTarget, tBoost, etaSail, lambda, thermalLimitK, arealKgM2 },
     massKg, powerW, energyJ, travelM, kineticJ: kineticEnergy(massKg, betaTarget),
     trade, structural, loads,
     table: { peakW: cls.peakW, energyJ: cls.energyJ, boostS: cls.boostS, costUsd: cls.costUsd },
-    ratios: { power: powerW / cls.peakW, energy: energyJ / cls.energyJ },
+    ratios: { power: cls.peakW ? powerW / cls.peakW : null, energy: cls.energyJ ? energyJ / cls.energyJ : null, payload: massKg / cls.payloadKg },
     verdict: verdictFor({ massKg, powerW, energyJ, trade, sail: sailPart, structural })
   };
 }

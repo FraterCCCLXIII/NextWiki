@@ -1,6 +1,6 @@
 # Centauri fleet -- versions
 
-Three versions of the fleet exist, and all three are pinned. `parts/fleet-versions.js` holds the
+Four versions of the fleet exist, and all four are pinned. `parts/fleet-versions.js` holds the
 numbers; `centauri-fleet.test.mjs` measures the fleet and fails if a part's mass, a mate, a mast or a
 sail moves away from them. A version is therefore either reproduced exactly or re-cut on purpose -- a
 published ship cannot be re-written by a later edit to the catalogue.
@@ -10,6 +10,7 @@ published ship cannot be re-written by a later edit to the catalogue.
 | v1 | The parts-and-physics rebuild of the source table: real catalogue parts, an axial mast, a square sail sized from the payload, a despun hub on the colony. | 8 |
 | v2 | The three crewed classes with a spin ring sized from the crew, giving 1 g in the living and working quarters. | 3 |
 | v3 | The same eight classes flown by their own engines: sail and mast off, a drive stage bolted to a rigid hardpoint, with a propellant store, an engine bay or pusher plate, and radiators sized from the heat it rejects. | 8 |
+| v4 | The realism pass: every class re-cut from a stated mission (crew x days, stop or fly by, closure) with a full systems inventory -- life support and consumables, stores, shielding, fission or radioisotope power, radiators, CMGs, comms, RCS, a trim/braking stage, a magsail where the ship stops, and the sail's canister, hub drive, beacons and vanes. | 8 |
 
 Everything below is measured by `measure()` in `parts/fleet.js` (see `CENTAURI.md` for the lab and
 `CENTAURI-CAD-REVIEW.md` for the placement review that v1 closes with).
@@ -144,10 +145,40 @@ from bulk density and a stated length/diameter ratio with 8 % ullage, the frame 
 thrust (50 kg floor), the radiator from a stated share of jet power rejected at 1000 K two-sided, and
 a pusher plate 1.45x the magazine's diameter on eight shock absorbers for a pulse drive.
 
+## v4 -- the realism pass (2026-11-08)
+
+v1-v3 are left exactly as pinned. v4 is a new set of eight assemblies (`parts/fleet-v4.js`) built from
+the same solver and the same catalogue, plus new catalogue rows with checked figures (Harmony 14,288 kg,
+Destiny 14,515 kg, Quest 6,064 kg, a Crew Dragon-class capsule with TPS and nose cone, a trunk with solar
+skin, an 11.7 in lightband, a 16U bus, a New Horizons-class bus, a 2.4 m stainless aero lander) and
+the primitive library (`parts/primitives/`, `CENTAURI-PRIMITIVES.md`). Every item is sized from a law
+with a source (`parts/inventory.js`, `CENTAURI-INVENTORY.md`). The pins are mass, hull mass, film
+mass, sail, mast, clearance, part count, consumables, pressurised volume and power.
+
+| Class | v1 mass | v4 mass | v1 sail | v4 sail | What the mission is | Why it moved |
+| --- | --- | --- | --- | --- | --- | --- |
+| wafer | 2.00 g | 2.13 g | 1.94 m | 2.00 m | 1 g StarChip, flyby | the chip's budget is itemised; hub ring, rim patches and vanes add 6 % |
+| smallsat | 27.1 kg | 96 kg | 194 m | 420 m | 16U free-flyer on a lightband, RTG, flyby | the 6U overload is gone; bay, trim stage, canister and a film sized to all of it |
+| instrument | 252 kg | 1.33 t | 612 m | 1.58 km | New Horizons class, MMRTG, flyby | an RTG (no sunlight), a 2.1 m HGA, hydrazine, bow shield, and the film to push them |
+| lander | 1.62 t | 14.4 t | 1.94 km | 5.2 km | aero lander that stops and lands 250 kg | the v1 lander shipped no payload; TPS, grid fins, legs, landing and braking propellant, magsail |
+| capsule | 20.4 t | 22.0 t | 6.12 km | 6.42 km | 4 crew x 30 d taxi | Dragon figures replace the draft row; the class is named for what it is |
+| habitat | 212 t | 1.09 kt | 19.4 km | 45.2 km | 6 crew x 50 yr, bola | 206 t of consumables, stores modules, ECLSS, reactor, braking stage; 24 crew x nothing became 6 crew x fifty years |
+| seed | 2.01 kt | 4.42 kt | 61.2 km | 91 km | 20 crew x 50 yr, greenhouse ring | 110 crew with no life support became 20 with a farm and 428 t of stores |
+| colony | 20.0 kt | 165 kt | 194 km | 555 km | 1,000 crew x 50 yr, world ship | farm and stores decks triple the ring; 7.8 kt of consumables, 11 kt of spares, two 12 MWe reactors, a 20 kt braking stage |
+
+Two laws changed for v4 only. The **mast** is a truss sized from the sail thrust it carries (audit F8),
+standing the film 15 % clear of the structure forward of its mount rather than of the whole hull (the
+v1 law would have bought the colony a 900 m mast for its aft spindle). The **film** is sized to
+everything it pushes including the canister, iterated to the fixed point.
+
+**A v2 finding uncovered by the v4 overlap check.** The v2 spin bearing's `dock` port sits on its
+node-side face pointing back into the node, so the v2 habitat-spin and seed-spin PMAs berth inside the
+node. v2 is pinned and left as recorded (the audit lists it); the v4 bearing docks on its far face.
+
 ## Open items
 
-- Neither the colony nor the colony-spin carries a docking port: v1 never had one, and the crew
-  would arrive through the despun hub. A berth on the hub's fore face is the obvious next part.
+- Neither the v1 colony nor the v2 colony-spin carries a docking port; the v4 colony berths a PMA and
+  an airlock on its despun hub.
 - The ring's life support, air and water are fed through rotary unions in the bearing; the 757 kW
   hotel load of the colony ring is inside the 2 MW the two reactors generate, but nothing in the
   model yet sizes the unions or the coolant loop.

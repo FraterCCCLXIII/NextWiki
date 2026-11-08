@@ -40,6 +40,26 @@ The re-cut moved every v3 mass, since a thrust frame and a denser store are mass
 have. Both v3 tables in `CENTAURI-PROPULSION.md` were regenerated from `measure()` and the pins in
 `parts/fleet-versions.js` were re-cut with them. The verdicts did not move: four of the eight close.
 
+## 0b. Closed in v4, the realism pass (2026-11-08)
+
+v4 does not re-cut v1-v3; it adds eight assemblies (`parts/fleet-v4.js`, `CENTAURI-INVENTORY.md`) in
+which the open findings below are closed for the v4 ships:
+
+| finding | v4 |
+| --- | --- |
+| F6 no life support, shielding, attitude control or comms | ECLSS, consumables for crew x days at a stated closure, storm shelter, Whipple and bow dust shields, CMGs/wheels, HGA and laser terminal, RCS, a trim/braking stage from a delta-v budget, a magsail where the ship stops -- every item sized by `parts/inventory.js` and placed in a part |
+| F8 film and mast from unrelated laws | the mast is a truss sized from the sail thrust it carries (`trussSpec`), 58 kg for 548 kN on the habitat, 36 t for 33 MN on the colony |
+| F9 the node is understated | v4 uses Harmony at its launch mass (14,288 kg); Destiny carries 14,515 kg; Quest 6,064 kg |
+| F10 cargo cans wider than the stack | stores are chained 4.4 m (habitat) or 6.6 m Skylab-diameter (seed) modules of a stated volume, and the colony's stores are decks inside its ring |
+| smallsat on an overloaded 6U dispenser | an 11.7 in motorised lightband rated to the 450 kg class |
+| lander with no payload | 250 kg of instruments, TPS, grid fins, legs, landing propellant, a braking stage and a magsail |
+| capsule crew with no consumables | named as the 4 crew x 30 day taxi it is, with Dragon's figures |
+| bearing rating | the bearing carries thrust, imbalance and spin-up torque, not the ring's weight (a spinning ring is self-supporting in hoop tension); the colony hub scales as sqrt(ring mass) |
+
+**New finding (v2, pinned, left as recorded).** The v2 spin bearing's `dock` port faces back into the
+node, so the habitat-spin and seed-spin PMAs sit inside the node. Found by the v4 interpenetration
+check; the v4 bearing docks on its far face.
+
 ## Fleet-wide findings
 
 ### F1. Every drive hangs on a deployable hinge -- BLOCKER (fixed, §0)

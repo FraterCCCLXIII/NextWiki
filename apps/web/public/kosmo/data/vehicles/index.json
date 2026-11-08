@@ -1673,6 +1673,62 @@
   "file": "ships.json"
  },
  {
+  "id": "centauri-wafer-v4",
+  "name": "Centauri wafer probe, realism pass",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-smallsat-v4",
+  "name": "Centauri small satellite, realism pass",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-instrument-v4",
+  "name": "Centauri instrument probe, realism pass",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-lander-v4",
+  "name": "Centauri robotic lander, realism pass",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-capsule-v4",
+  "name": "Centauri crewed capsule, realism pass",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-habitat-v4",
+  "name": "Centauri crewed habitat, realism pass",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-seed-v4",
+  "name": "Centauri colony seed, realism pass",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
+  "id": "centauri-colony-v4",
+  "name": "Centauri full colony, realism pass",
+  "category": "original",
+  "status": "concept",
+  "file": "ships.json"
+ },
+ {
   "id": "engine-merlin",
   "name": "Merlin 1D (sea level)",
   "category": "engine",

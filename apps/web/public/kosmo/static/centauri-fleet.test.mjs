@@ -6,7 +6,10 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { PARTS, PORT_TYPES, SAIL_AREAL, sailDiameter, sail, spinRadius } from './parts/parts.js';
 import { solveAssembly, summarize, checkAssembly } from './parts/assembly.js';
-import { CLASSES, VARIANTS, PROPELLED, assemblyFor, measure, measureFleet, byId } from './parts/fleet.js';
+import { CLASSES, VARIANTS, PROPELLED, REALISM, assemblyFor, measure, measureFleet, byId } from './parts/fleet.js';
+import { MISSIONS, hullV4 } from './parts/fleet-v4.js';
+import { consumablesFor, CLOSURE, deltaVBudget, VOLUME_PER_PERSON_M3 } from './parts/inventory.js';
+import { G0 as G0_PRIM } from './parts/primitives/spec.js';
 import {
   DRIVES, DRIVE_FOR, planFor, massRatioFor, betaForMassRatio, R_CAP,
   frameMassFor, storeFor, radiatorFor, STORE_ULLAGE, RADIATOR_FLUX
@@ -15,7 +18,7 @@ import {
   ringFor, ringTrade, deckLayout, radiusFor, rpmFor, decksFor, omega,
   AREA_PER_CREW_M2, COMFORT_RPM, ZONE_SHARE
 } from './parts/centrifuge.js';
-import { FLEET_VERSIONS, V1_IDS, V2_IDS, V3_IDS } from './parts/fleet-versions.js';
+import { FLEET_VERSIONS, V1_IDS, V2_IDS, V3_IDS, V4_IDS } from './parts/fleet-versions.js';
 import {
   FLASHER, SECTOR, LAMBDA_FOLD, LAMBDA_TWIST, SHOULDER, flasherRadius, deploy, faces, creases,
   maekawa, kawasakiResidual, solveShoulder, twistAt, buckleAt, stowedSpan, stowedEnvelope,
@@ -173,7 +176,7 @@ ok(byId('wafer').name === 'Wafer probe' && byId('nope') === null, 'the class loo
 // headline figures must be the measured ones: if the lab's physics changes, this fails rather than
 // letting the catalogue drift.
 const ships = JSON.parse(readFileSync(new URL('../data/vehicles/ships.json', import.meta.url), 'utf8'));
-ok(ships.length === CLASSES.length + VARIANTS.length + PROPELLED.length, 'ships.json holds the eight classes, the three v2 ring variants and the eight v3 driven ships');
+ok(ships.length === CLASSES.length + VARIANTS.length + PROPELLED.length + REALISM.length, 'ships.json holds the eight classes, the three v2 ring variants, the eight v3 driven ships and the eight v4 realism-pass ships');
 for (const cls of CLASSES) {
   const v = ships.find((s) => s.id === `centauri-${cls.id}`);
   ok(!!v, `ships.json carries ${cls.id}`);
@@ -410,6 +413,115 @@ near(sailSquareSide(4), 2, 1e-12, 'the equal-area square side is still what the 
   ok(packed.every((a, i) => Math.abs(Math.abs(a) - Math.PI) < 1e-12 && Math.sign(a) === (i % 2 ? -1 : 1)), 'a wing packs flat with alternating hinges');
   ok(flat.every((a) => a === 0), 'a wing deploys flat');
   near(accordionFootprint(34, 8), 4.25, 1e-12, 'an ISS-class wing stows to 4.25 m of its 34 m');
+}
+
+/* ---------- v4: the realism pass ---------- */
+// Every class re-cut from a stated mission with a full systems inventory (parts/fleet-v4.js,
+// parts/inventory.js, CENTAURI-INVENTORY.md). The checks hold the inventory to its laws: consumables
+// against crew x days, pressurised volume per person, mass closure, every inventory item placed in
+// a part, the stow volume, the delta-v budget, the film's thermal limit, and the pins.
+ok(REALISM.length === 8 && REALISM.every((c) => c.version === 4 && MISSIONS[c.base]), 'v4 re-cuts all eight classes from a stated mission');
+const v4 = Object.fromEntries(REALISM.map((c) => [c.id, measure(c.id)]));
+const aabb = (n) => { const b = summarize([n]).bounds; return { min: b.min, max: b.max, vol: b.size[0] * b.size[1] * b.size[2] }; };
+const ringKinds = new Set(['centrifuge', 'spin-bola', 'habitat-ring', 'sail', 'mast', 'despin-hub', 'spin-bearing', 'radiator', 'truss', 'landing-gear', 'grid-fins']);
+for (const c of REALISM) {
+  const m = v4[c.id], r = m.inventory, M = c.mission, def = m.def;
+  ok(m.structural.length === 0, `${c.id}: the assembly closes with no structural fault (${m.structural[0]?.message ?? 'ok'})`);
+  ok(m.summary.partCount === def.parts.length && m.solved.mates.length === def.parts.length - 1, `${c.id}: every part is placed and the mate graph is a tree`);
+  ok(!!r && r.mission === M, `${c.id}: the measurement carries the inventory roll-up`);
+  near(m.massKg, m.solved.nodes.reduce((s, n) => s + n.part.mass, 0), 1e-12, `${c.id}: the vehicle mass is the sum of its parts (mass closure)`);
+  ok(m.geometry.offAxisM < 0.5, `${c.id}: the centre of pressure stays on the thrust line (${m.geometry.offAxisM.toFixed(3)} m)`);
+  ok(Number.isFinite(m.ratios.payload) && m.ratios.payload >= 1, `${c.id}: the sized ship is ${m.ratios.payload.toFixed(1)}x the source table's payload, and the lab says so`);
+  /* the film: Lubin's law against everything it pushes, canister included */
+  near(r.filmKg, r.hullKg + (m.geometry.hubbed ? 0 : r.systemsKg), 1e-6, `${c.id}: the film weighs what it pushes (hull plus sail systems${m.geometry.hubbed ? ', absorbed into the chip' : ''})`);
+  near(m.sail.dims.d, sailDiameter(r.filmKg), 1e-9, `${c.id}: the sail diameter follows from that film mass`);
+  ok(r.film && Number.isFinite(r.film.tempK), `${c.id}: the film temperature under the boost flux is measured`);
+  if (c.base === 'wafer') ok(r.film.tempK < r.film.limitK * 1.05, `${c.id}: the Starshot flux puts the film within 5 % of its 1000 K limit (${r.film.tempK.toFixed(0)} K): the known constraint`);
+  else ok(r.film.ok, `${c.id}: the film stays under ${r.film.limitK} K (${r.film.tempK.toFixed(0)} K)`);
+  /* stow and deploy */
+  ok(r.stow.fits, `${c.id}: the stowed film (${r.stow.filmM3.toExponential(2)} m3) fits its canister (${r.stow.canisterM3.toExponential(2)} m3)`);
+  const canister = m.solved.nodes.find((n) => n.part.kind === 'sail-canister');
+  if (canister) {
+    const lo = canister.world.position[1];
+    ok(lo >= m.geometry.hullTopY - 1e-9, `${c.id}: the canister (stowed state) stands clear of every structure (${(lo - m.geometry.hullTopY).toFixed(2)} m)`);
+    ok(m.geometry.clearanceM > 0, `${c.id}: the deployed film plane is ahead of every structure (${m.geometry.clearanceM.toFixed(2)} m)`);
+    ok(canister.part.inventory.some((i) => /canister/.test(i.item)) && canister.part.inventory.some((i) => /vane/.test(i.item)), `${c.id}: the canister part carries the deployer and the trim vanes`);
+  } else ok(c.base === 'wafer' && m.geometry.hubbed, `${c.id}: only the wafer is hub-mounted without a canister`);
+  /* no interpenetration: unmated pairs of solid bodies may not overlap by more than 5 % of the smaller box */
+  const solids = m.solved.nodes.filter((n) => !ringKinds.has(n.part.kind));
+  const mated = new Set(m.solved.mates.map((mt) => `${mt.a.name}|${mt.b.name}`));
+  const overlaps = [];
+  for (let i = 0; i < solids.length; i += 1) for (let j = i + 1; j < solids.length; j += 1) {
+    const A = solids[i], B = solids[j];
+    if (mated.has(`${A.name}|${B.name}`) || mated.has(`${B.name}|${A.name}`)) continue;
+    const a = aabb(A), b = aabb(B);
+    const ix = Math.max(0, Math.min(a.max[0], b.max[0]) - Math.max(a.min[0], b.min[0]));
+    const iy = Math.max(0, Math.min(a.max[1], b.max[1]) - Math.max(a.min[1], b.min[1]));
+    const iz = Math.max(0, Math.min(a.max[2], b.max[2]) - Math.max(a.min[2], b.min[2]));
+    const v = ix * iy * iz, small = Math.min(a.vol, b.vol);
+    if (small > 0 && v > 0.05 * small) overlaps.push(`${A.name}/${B.name} ${(100 * v / small).toFixed(0)} %`);
+  }
+  ok(overlaps.length === 0, `${c.id}: no two unmated bodies interpenetrate (${overlaps.join(', ') || 'none'})`);
+  /* every inventory item the laws produced is placed in some part */
+  if (r.mission.crew > 0 || def.inventory) {
+    const placed = new Set(m.solved.nodes.flatMap((n) => (n.part.inventory ?? []).map((i) => i.item)));
+    const missing = (def.inventory?.items ?? []).filter((i) => !placed.has(i.item) && !/^trim|^spares|magsail|^fission reactor|^hotel-load|^bow dust|^MMRTG|^high-gain|^laser comm/.test(i.item) && !['propulsion'].includes(i.group) && ![...placed].some((p) => p.startsWith(i.item.split(',')[0])));
+    ok(missing.length === 0, `${c.id}: every inventory item is placed in a part (${missing.map((i) => i.item).join(', ') || 'all placed'})`);
+    const stageNode = m.solved.nodes.find((n) => n.part.kind === 'trim-stage');
+    if (def.inventory) {
+      ok(!!stageNode && stageNode.part.propellantKg > 0, `${c.id}: a trim/braking stage with propellant is on the hull`);
+      ok(m.solved.nodes.some((n) => (n.part.inventory ?? []).some((i) => /RCS quads/.test(i.item))), `${c.id}: RCS quads are placed`);
+      ok(m.solved.nodes.some((n) => (n.part.inventory ?? []).some((i) => /dust shield/.test(i.item))) || m.solved.nodes.some((n) => n.part.kind === 'dust-shield'), `${c.id}: a bow dust shield is placed`);
+      if (M.stop) ok(stageNode.part.inventory.some((i) => /magsail/.test(i.item)), `${c.id}: a ship that stops carries its magsail on the braking stage`);
+      /* the delta-v budget closes on what the stage actually pushes: the hull after the film, mast and canister are gone */
+      const dv = deltaVBudget({ years: M.years, stop: M.stop });
+      const pushed = r.hullKg - stageNode.part.propellantKg;
+      const needKg = pushed * (Math.exp(dv.totalMs / (M.isp * G0_PRIM)) - 1);
+      ok(stageNode.part.propellantKg >= needKg * 0.85, `${c.id}: the stage's ${Math.round(stageNode.part.propellantKg)} kg of propellant covers ${dv.totalMs} m/s on the ${Math.round(pushed)} kg it pushes (needs ${Math.round(needKg)} kg)`);
+    }
+  }
+  /* the crewed classes: life support against the people */
+  if (M.crew > 0 && def.inventory) {
+    const law = consumablesFor({ crew: M.crew, days: M.days, closure: CLOSURE[M.closure], pressurisedM3: def.inventory.mission.pressurisedM3 });
+    near(r.consumablesKg, law.mass, 1e-9, `${c.id}: consumables are the law's answer for ${M.crew} crew x ${Math.round(M.days)} days (${Math.round(law.mass / 1e3)} t)`);
+    ok(r.consumablesKg >= M.crew * M.days * 1.2 * (1 - CLOSURE[M.closure].food), `${c.id}: at least the packaged food for every person-day is aboard`);
+    ok(r.pressurisedPerPerson >= (M.days > 365 ? VOLUME_PER_PERSON_M3.permanent : VOLUME_PER_PERSON_M3.long), `${c.id}: ${r.pressurisedPerPerson.toFixed(0)} m3 of pressurised volume per person`);
+    ok(r.storesM3 >= r.storesNeededM3, `${c.id}: the stores modules hold the consumables (${r.storesM3.toFixed(0)} m3 for ${r.storesNeededM3.toFixed(0)} m3)`);
+    ok(r.powerGenW >= r.powerLoadW, `${c.id}: power generated (${(r.powerGenW / 1e3).toFixed(0)} kW) covers the load (${(r.powerLoadW / 1e3).toFixed(0)} kW)`);
+    ok(m.solved.nodes.some((n) => n.part.kind === 'reactor'), `${c.id}: a fission reactor, because there is no sunlight on this route`);
+    ok(m.solved.nodes.some((n) => n.part.kind === 'radiator'), `${c.id}: radiators reject the hotel load`);
+    ok(m.solved.nodes.some((n) => n.part.kind === 'airlock') && m.solved.nodes.some((n) => n.part.kind === 'pma'), `${c.id}: an EVA airlock and a docking port`);
+    ok(m.solved.nodes.some((n) => ['centrifuge', 'spin-bola'].includes(n.part.kind)), `${c.id}: 1 g for a crew that lives aboard for decades`);
+    ok(m.solved.nodes.some((n) => (n.part.inventory ?? []).some((i) => /storm shelter/.test(i.item))), `${c.id}: a storm shelter is aboard`);
+    const ring = r.ring;
+    if (ring?.rimSpeed) ok(Math.abs(ring.rimSpeed ** 2 / (ring.R ?? 55.9) - 9.80665) < 0.05, `${c.id}: the ring gives 1 g at its radius`);
+  }
+  if (c.base === 'capsule') ok(m.solved.nodes.find((n) => n.part.kind === 'crew-capsule').part.inventory.some((i) => /PICA/.test(i.item)), 'capsule-v4: the capsule carries a heat shield and TPS');
+  if (c.base === 'lander') {
+    ok(m.solved.nodes.some((n) => n.part.kind === 'landing-gear') && m.solved.nodes.some((n) => n.part.kind === 'grid-fins'), 'lander-v4: landing legs and grid fins for an atmosphere');
+    ok(m.solved.nodes.find((n) => n.part.kind === 'lander-aero').part.inventory.some((i) => /TPS tiles/.test(i.item)), 'lander-v4: TPS tiles on the windward side and nose');
+    ok(def.landing && def.landing.propKg > 0, 'lander-v4: the landing burn has its own propellant');
+  }
+}
+ok(v4['habitat-v4'].massKg > 5 * 1e5 && v4['colony-v4'].massKg > 5e7, 'a six-crew fifty-year ship is hundreds of tonnes and a thousand-crew world ship tens of kilotonnes: the table payloads were an order of magnitude light');
+ok(v4['capsule-v4'].massKg < 3 * 1e4, 'the 30-day capsule stays a Dragon-class stack');
+ok(V4_IDS.length === REALISM.length, 'v4 pins every realism-pass class');
+for (const c of REALISM) {
+  const p = FLEET_VERSIONS.v4.realism[c.id], m = v4[c.id], r = m.inventory;
+  ok(!!p && p.base === c.base && p.crew === r.crew, `v4 ${c.id}: the version records the base class and crew`);
+  near(m.massKg, p.massKg, 1e-9, `v4 ${c.id}: mass is pinned`);
+  near(r.hullKg, p.hullKg, 1e-9, `v4 ${c.id}: hull mass is pinned`);
+  near(m.sail.dims.d, p.sailD, 1e-9, `v4 ${c.id}: sail is pinned`);
+  near(m.geometry.mastLenM, p.mastLenM, 1e-9, `v4 ${c.id}: mast is pinned`);
+  near(r.consumablesKg, p.consumablesKg, 1e-9, `v4 ${c.id}: consumables are pinned`);
+  near(r.pressurisedM3, p.pressurisedM3, 1e-9, `v4 ${c.id}: pressurised volume is pinned`);
+  ok(m.summary.partCount === p.partCount, `v4 ${c.id}: the part count is pinned (${p.partCount})`);
+  const s = ships.find((x) => x.id === `centauri-${c.id}`);
+  ok(!!s, `ships.json carries ${c.id}`);
+  if (!s) continue;
+  near(s.mass_kg, m.massKg, 1e-9, `${c.id}: the catalogue mass is the measured mass`);
+  near(s.diameter_m, m.sail.dims.d, 1e-9, `${c.id}: the catalogue diameter is the measured sail`);
+  ok(s.notes.includes('CENTAURI-INVENTORY.md') && s.model3d?.status === 'done', `${c.id}: the entry cites the inventory and has a model`);
 }
 
 console.log(`centauri fleet: ${checks} checks pass`);
