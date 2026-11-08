@@ -22,6 +22,11 @@ the atlas **Lab** group.
 | `parts/fleet-versions.js` | The pinned v1 fleet and v2 ring variants, compared against `measure()` by the checks, so a published ship cannot be re-written by accident. No DOM. |
 | `parts/centauri-models.js` | The catalogue CAD: one builder per part kind, a mating ring at every structural port, and the foldable film, all placed from the solver. Imports three. |
 | `centauri-fleet.test.mjs` | 698 node checks. Run by `run-tests.mjs`, or `node public/kosmo/static/centauri-fleet.test.mjs`. |
+| `parts/robotic.js` | v5, the robotic / minimal-crew versions: the trade study, the human laws (consumables, torpor, ECLSS, shielding), the robot catalogue and fleet law, the swarm (compute, consensus, network, recorded data), the wake-up tiers, and the five v5 builds. No DOM. Documented in `CENTAURI-ROBOTIC.md`. |
+| `parts/fleet-versions-v5.js` | The pinned v5 designs, checked by `centauri-robotic.test.mjs`; v1-v4 pins stay in `fleet-versions.js`. |
+| `parts/robotic-models.js` | The v5 CAD: hangar, torpor ring, observation deck, fab bay, vault, rails, racks, and a builder per robot class, drawn beside the 1.8 m person. Imports three and the builders above. |
+| `centauri-robotic.html` | The v5 page: class and version selector (v1-v3 beside v5), the ship views and the robot gallery, the trade study, inventory, swarm and wake-up tables. |
+| `centauri-robotic.test.mjs` | The v5 checks: mass closure, consumables from crew-days, spare ratio, hull coverage, no overlaps, crossing closure, pins. |
 
 ## The catalogue models
 
