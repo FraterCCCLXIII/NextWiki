@@ -922,3 +922,7 @@ export function buildCentauriModel(id) {
     : `hull ${span(hullSpan)}${m.geometry.mastLenM > 0 ? ` · mast ${span(m.geometry.mastLenM)}` : ' · hub-mounted'} · sail ${span(2 * flasherRadius(trueSide * trueSide))} flasher${ratio > 1.02 ? ` · drawn 1:${Math.round(ratio)}` : ' · true size'}`;
   return g;
 }
+
+/* The part builders and the primitives, for other model files (parts/robotic-models.js draws the v5
+   ships with these and adds its own kinds); nothing here changes what buildCentauriModel draws. */
+export { centauriPart, addPortRing, BUILDERS, CO, mat, mesh, cyl, box, tor, sph, put, rod, ringXZ, span };
