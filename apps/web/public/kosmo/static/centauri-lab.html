@@ -56,6 +56,9 @@
   #viewbar input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #eaf3ff; border: 2px solid #7fc3ff; }
   #viewbar button { background: rgba(26,26,26,0.85); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 8px; padding: 4px 10px; font: inherit; font-size: 13px; cursor: pointer; } #viewbar button:hover { border-color: var(--accent); }
   #viewlabel { position: absolute; left: 14px; bottom: 10px; font-size: 13px; color: #dbe5f3; text-shadow: 0 1px 6px #000; pointer-events: none; } #viewlabel b { color: #fff; display: block; font-weight: 500; } #viewlabel span { color: var(--accent2); font-variant-numeric: tabular-nums; }
+  #sailreadout { position: absolute; right: 14px; top: 10px; max-width: 46%; font-size: 12px; line-height: 1.45; color: #dbe5f3; text-shadow: 0 1px 6px #000; pointer-events: none; font-variant-numeric: tabular-nums; text-align: right; }
+  #sailreadout b { color: var(--accent); font-weight: 500; } #sailreadout .st { color: var(--accent2); } #sailreadout .dim { color: var(--muted); }
+  .sailbar { margin-top: 0; } .sailbar select { max-width: 15em; }
   .inv tr.grp td { color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px; padding-top: 10px; }
   @media (max-width: 760px) { #menu { display: none; } main { padding: 8px 14px 60px; } }
 </style>
@@ -81,11 +84,19 @@
     <label><input type="checkbox" id="detail" checked> detail</label>
     <label><input type="checkbox" id="livery"> livery</label>
     <label><input type="checkbox" id="cutaway"> cutaway</label>
-    <label>Sail <input type="range" id="unfold" min="0" max="1" step="0.01" value="1"></label><button id="unfoldplay" title="sweep the fold">&#9654; unfold</button>
+    <label>Sail <input type="range" id="unfold" min="0" max="1" step="0.001" value="1"></label><button id="unfoldplay" title="sweep the fold">&#9654; unfold</button>
     <label><input type="checkbox" id="spin"> spin</label>
     <button id="shot" title="save a PNG of the view">screenshot</button>
   </div>
-  <div id="view3d"><div id="viewlabel"></div></div>
+  <div id="viewbar" class="sailbar">
+    <label>Mechanism <select id="sailArch"><option value="">class default</option><option value="reeled-gore">reeled gores (refoldable, spin)</option><option value="spin-square">IKAROS spin square (one-shot)</option><option value="boom-square">four-boom square (TRAC / lattice)</option><option value="starchip-disc">StarChip disc (released)</option></select></label>
+    <label>Path <select id="sailDir"><option value="deploy">deploy</option><option value="retract">retract</option><option value="jettison">cut-away</option></select></label>
+    <button id="sailPlay" title="play / pause the mechanism">&#9654; play</button>
+    <label><input type="checkbox" id="sailLoop"> loop</label>
+    <label>Speed <select id="sailSpeed"><option value="0.25">0.25x</option><option value="0.5">0.5x</option><option value="1" selected>1x</option><option value="2">2x</option><option value="4">4x</option></select></label>
+    <button id="fitSail" title="frame the film">frame sail</button><button id="fitHull" title="frame the hull">frame hull</button>
+  </div>
+  <div id="view3d"><div id="viewlabel"></div><div id="sailreadout"></div></div>
   <p class="small dim">The model is the solved assembly the tables below measure, drawn at true size with a 1.8 m person; the film is
     drawn down where it would otherwise fill the frame and the label says by how much. Every surface is a primitive from
     <code>parts/primitives/</code> with its PBR preset; the render menu swaps the look without touching the geometry.</p>
@@ -182,16 +193,40 @@ $('cls').innerHTML = `<optgroup label="v1 -- sail classes">${CLASSES.map((c) => 
 $('cls').value = 'habitat-v4';
 /* the viewer shows every version, the v3 drives included; the tables below follow the sail classes */
 $('viewId').innerHTML = [['v1 -- sail', CLASSES], ['v2 -- spin rings', VARIANTS], ['v3 -- drives', PROPELLED], ['v4 -- realism pass', REALISM]].map(([l, list]) => `<optgroup label="${l}">${list.map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join('')}</optgroup>`).join('');
-const view = createCentauriView({ host: $('view3d'), modeSelect: $('render'), rivetsBox: $('rivets'), detailBox: $('detail'), liveryBox: $('livery'), cutawayBox: $('cutaway'), unfoldRange: $('unfold'), spinBox: $('spin') });
+/* the sail mechanism readout: state, k, extension, film area deployed, tension, spin, time (the TRUE sail's numbers) */
+const fmtS = (s) => (s >= 86400 * 1.5 ? `${(s / 86400).toFixed(1)} d` : s >= 5400 ? `${(s / 3600).toFixed(1)} h` : s >= 90 ? `${(s / 60).toFixed(1)} min` : `${s.toFixed(0)} s`);
+function sailReadout(k, r) {
+  const el = $('sailreadout');
+  if (!r) { el.innerHTML = ''; return; }
+  const j = r.jettison;
+  const lines = r.lines.filter((l) => l.state === 'taut').length;
+  el.innerHTML = `<b>${esc(r.architecture)}</b> <span class="dim">${r.canRefold ? 'refoldable' : 'one-shot'} · ${r.direction}${r.drawnRatio > 1.02 ? ` · film drawn 1:${Math.round(r.drawnRatio)}` : ''}</span><br>`
+    + (j && r.direction === 'jettison'
+      ? `<span class="st">cut-away</span> · separation ${fmtLength(j.separationM)} at ${j.dvMs} m/s · ${fmtS(j.seconds)}<br><span class="dim">cut: ${esc(j.cut.join(', '))}</span>`
+      : `<span class="st">${esc(r.stageName)}</span><br>k ${k.toFixed(3)} · t ${fmtS(r.timeS)} of ${fmtS(r.totalS)}<br>`
+        + `${r.boomCompressionN != null ? 'boom' : 'strip'} ${fmtLength(r.extensionM)} · film ${fmtArea(r.deployedAreaM2)} of ${fmtArea(r.areaM2)}<br>`
+        + `tension ${r.tensionN >= 1e3 ? `${(r.tensionN / 1e3).toPrecision(3)} kN` : `${r.tensionN.toPrecision(3)} N`}${r.boomCompressionN != null ? ` · boom ${(r.boomCompressionN).toPrecision(3)} N` : ''}${r.rpm != null ? ` · ${r.rpm >= 1 ? r.rpm.toFixed(1) : r.rpm.toPrecision(2)} rpm` : ''}`
+        + `${r.sagM > 0 ? ` · dish ${fmtLength(r.sagM)}` : ''} · lines ${lines}/${r.lines.length} taut`);
+}
+const view = createCentauriView({ host: $('view3d'), modeSelect: $('render'), rivetsBox: $('rivets'), detailBox: $('detail'), liveryBox: $('livery'), cutawayBox: $('cutaway'), unfoldRange: $('unfold'), spinBox: $('spin'), onDeploy: sailReadout });
 function showModel(id) {
   $('viewId').value = id;
   const u = view.show(id);
   const c = SAIL_CLASSES.find((x) => x.id === id) ?? PROPELLED.find((x) => x.id === id);
-  $('viewlabel').innerHTML = `<b>${esc(c?.name ?? id)}</b><span>${esc(u.label ?? '')}</span>`;
+  $('viewlabel').innerHTML = `<b>${esc(c?.name ?? id)}</b><span>${esc(u.label ?? '')}</span>${u.sail ? `<span class="dim" style="display:block;max-width:60ch;color:#93a3ba">${esc(u.sail.why)}</span>` : ''}`;
+  $('sailDir').querySelector('[value=retract]').textContent = u.sail && !u.sail.canRefold ? 'retract (cannot: one-shot)' : 'retract';
   location.hash = id;
 }
 $('viewId').addEventListener('change', () => showModel($('viewId').value));
 $('unfoldplay').onclick = () => view.unfold();
+$('sailPlay').onclick = () => { if (view.playing) { view.pause(); $('sailPlay').innerHTML = '&#9654; play'; } else { view.play(); $('sailPlay').innerHTML = '&#10074;&#10074; pause'; } };
+$('sailLoop').onchange = () => view.setLoop($('sailLoop').checked);
+$('sailSpeed').onchange = () => view.setSpeed($('sailSpeed').value);
+$('sailDir').onchange = () => view.setDirection($('sailDir').value);
+$('sailArch').onchange = () => { view.setSailArchitecture($('sailArch').value || null); showModel($('viewId').value); };
+$('fitSail').onclick = () => view.fitSail();
+$('fitHull').onclick = () => view.fitHull();
+setInterval(() => { if (!view.playing && $('sailPlay').innerHTML.includes('pause')) $('sailPlay').innerHTML = '&#9654; play'; }, 400);
 $('shot').onclick = () => { const a = document.createElement('a'); a.href = view.screenshot(); a.download = `centauri-${$('viewId').value}.png`; a.click(); };
 window.centauriView = view; window.showCentauri = showModel;
 $('tboost').value = CLASSES[0].boostS;

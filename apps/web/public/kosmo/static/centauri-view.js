@@ -18,7 +18,9 @@ import { addSurfaceDetail } from './surface-detail.js';
 import { boostTrackpadZoom } from './zoom-boost.js';
 import { addHumanDetail } from './parts/detail-pass.js';
 
-export function createCentauriView({ host, modeSelect, rivetsBox, detailBox, liveryBox, cutawayBox, unfoldRange, spinBox, person = true }) {
+export function createCentauriView({ host, modeSelect, rivetsBox, detailBox, liveryBox, cutawayBox, unfoldRange, spinBox, person = true, onDeploy = null }) {
+  /* the sail mechanism player: direction deploy / retract / jettison, speed in multiples of the base sweep, loop */
+  const player = { playing: false, loop: false, speed: 1, direction: 'deploy', baseMs: 6000, architecture: null, jettison: 0, lastId: null };
   const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: false });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.9;
@@ -52,7 +54,8 @@ export function createCentauriView({ host, modeSelect, rivetsBox, detailBox, liv
 
   function show(id) {
     clear();
-    model = buildCentauriModel(id);
+    player.lastId = id; player.jettison = 0;
+    model = buildCentauriModel(id, { sailArchitecture: player.architecture });
     /* the catalogue poses the craft film-on to its camera; here the thrust axis stands on the grid */
     model.rotation.set(0, 0, 0);
     model.updateMatrixWorld(true);
@@ -76,12 +79,15 @@ export function createCentauriView({ host, modeSelect, rivetsBox, detailBox, liv
     ground.add(new THREE.GridHelper(R * 2, Math.max(8, Math.round((R * 2) / niceStep(R / 5))), 0x33425c, 0x1a2230));
     const disc = new THREE.Mesh(new THREE.CircleGeometry(R, 72).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x0a0e16 })); disc.position.y = -0.01; ground.add(disc);
     stage.add(ground);
-    if (person && spanM < 400) { figure = personFigure(); figure.position.set(-size.x / 2 - Math.max(0.6, spanM * 0.04), 0, size.z / 2 * 0.6); stage.add(figure); }
+    /* the person stands beside the hull -- or beside the film, when a true-size film is the bigger of the two (the wafer) */
+    const filmR = model.userData.sail && model.userData.sail.ratio < 1.02 ? model.userData.sail.drawn.R : 0;
+    if (person && spanM < 400) { figure = personFigure(); figure.position.set(-Math.max(size.x / 2, filmR) - Math.max(0.6, spanM * 0.04), 0, size.z / 2 * 0.6); stage.add(figure); }
     const dist = spanM * 1.9;
     key.position.set(dist, dist * 1.1, dist * 0.8); fill.position.set(-dist, dist * 0.4, dist * 0.6); front.position.set(dist * 0.3, dist * 0.5, dist * 1.4); rim.position.set(-dist * 0.4, dist * 0.8, -dist);
     controls.target.set(0, size.y * 0.5, 0);
     camera.position.set(dist * 0.55, size.y * 0.55 + dist * 0.28, dist * 0.85);
     camera.near = Math.max(0.005, dist / 5000); camera.far = dist * 400; camera.updateProjectionMatrix(); controls.update();
+    home = { pos: camera.position.clone(), target: controls.target.clone(), near: camera.near, far: camera.far };
     applyMode(); applyDeploy();
     return model.userData;
   }
@@ -89,7 +95,30 @@ export function createCentauriView({ host, modeSelect, rivetsBox, detailBox, liv
   function applyMode() { if (model) applyRenderMode(model, modeSelect?.value ?? 'studio', { livery: !!liveryBox?.checked }); }
   function applyHuman() { if (human) human.visible = !!detailBox?.checked; }
   function applyCutaway() { model?.userData.setCutaway?.(!!cutawayBox?.checked); }
-  function applyDeploy() { model?.userData.setDeploy?.(Number(unfoldRange?.value ?? 1)); }
+  function applyDeploy() {
+    if (!model) return;
+    const k = Number(unfoldRange?.value ?? 1);
+    if (player.direction === 'jettison' && model.userData.setJettison) { model.userData.setDeploy?.(1); model.userData.setJettison(k); player.jettison = k; }
+    else { model.userData.setJettison?.(0); model.userData.setDeploy?.(k); }
+    if (onDeploy) onDeploy(k, model.userData.sail ? { ...model.userData.sail.readout(k), direction: player.direction, jettison: player.direction === 'jettison' ? model.userData.sail.mechanism.jettison(k) : null } : null);
+  }
+  /** Frame the deployed film rather than the hull. */
+  function fitSail() {
+    if (!model) return;
+    const film = model.userData.stages.get(1); film.updateMatrixWorld(true);
+    /* box the visible meshes only: a released dispenser tray or a cut-away film is not what to frame */
+    const bb = new THREE.Box3();
+    film.traverse((o) => { if (o.isMesh && o.visible && o.parent?.visible !== false) { let vis = true; for (let p = o; p; p = p.parent) if (p.visible === false) { vis = false; break; } if (vis) bb.expandByObject(o); } });
+    if (!Number.isFinite(bb.min.x)) return;
+    const size = bb.getSize(new THREE.Vector3()), centre = bb.getCenter(new THREE.Vector3());
+    const d = Math.max(size.x, size.y, size.z) * 1.15;
+    controls.target.copy(centre);
+    camera.position.set(centre.x + d * 0.55, centre.y + d * 0.5, centre.z + d * 0.85);
+    camera.near = Math.max(0.005, d / 5000); camera.far = d * 400; camera.updateProjectionMatrix(); controls.update();
+  }
+  /** Frame the hull again (the framing show() chose). */
+  let home = null;
+  function fitHull() { if (!home) return; camera.position.copy(home.pos); controls.target.copy(home.target); camera.near = home.near; camera.far = home.far; camera.updateProjectionMatrix(); controls.update(); }
   function applyDetail() { if (detail) detail.visible = !!rivetsBox?.checked; }
   if (modeSelect) { modeSelect.innerHTML = RENDER_MODES.map((m) => `<option value="${m.id}">${m.name}</option>`).join(''); modeSelect.addEventListener('change', applyMode); }
   rivetsBox?.addEventListener('change', applyDetail);
@@ -98,11 +127,24 @@ export function createCentauriView({ host, modeSelect, rivetsBox, detailBox, liv
   cutawayBox?.addEventListener('change', applyCutaway);
   unfoldRange?.addEventListener('input', applyDeploy);
 
-  let unfoldTween = null;
+  let unfoldTween = null, lastNow = null, pingDir = 1;
   function frame(now) {
     requestAnimationFrame(frame); controls.update(); tickRenderModes(now);
     if (spinBox?.checked && model) model.rotation.y += 0.003;
     if (unfoldTween && unfoldRange) { const k = Math.min(1, (now - unfoldTween) / 2800); unfoldRange.value = k; applyDeploy(); if (k >= 1) unfoldTween = null; }
+    if (player.playing && unfoldRange && lastNow != null) {
+      /* k advances at speed x the base sweep; retract runs k down; loop ping-pongs (or, for a one-shot mechanism, restarts) */
+      const dk = ((now - lastNow) / player.baseMs) * player.speed;
+      const dir = player.direction === 'retract' ? -1 : 1;
+      let k = Number(unfoldRange.value) + dk * dir * pingDir;
+      if (k > 1 || k < 0) {
+        if (!player.loop) { k = Math.min(1, Math.max(0, k)); player.playing = false; }
+        else if (model?.userData.sail && !model.userData.sail.canRefold && player.direction === 'deploy') k = k > 1 ? 0 : 1;   // one-shot: start again
+        else { pingDir *= -1; k = Math.min(1, Math.max(0, k)); }
+      }
+      unfoldRange.value = k; applyDeploy();
+    }
+    lastNow = now;
     renderer.render(scene, camera);
   }
   requestAnimationFrame(frame);
@@ -110,6 +152,16 @@ export function createCentauriView({ host, modeSelect, rivetsBox, detailBox, liv
   return {
     show, setMode: (id) => { if (modeSelect) modeSelect.value = id; applyMode(); },
     unfold: () => { if (unfoldRange) { unfoldRange.value = 0; applyDeploy(); unfoldTween = performance.now(); } },
+    /* the mechanism player */
+    play: () => { player.playing = true; pingDir = 1; unfoldTween = null; if (unfoldRange && player.direction === 'deploy' && Number(unfoldRange.value) >= 1) unfoldRange.value = 0; if (unfoldRange && player.direction === 'retract' && Number(unfoldRange.value) <= 0) unfoldRange.value = 1; if (unfoldRange && player.direction === 'jettison' && Number(unfoldRange.value) >= 1) unfoldRange.value = 0; },
+    pause: () => { player.playing = false; },
+    get playing() { return player.playing; },
+    setLoop: (v) => { player.loop = !!v; },
+    setSpeed: (v) => { player.speed = Math.max(0.05, Number(v) || 1); },
+    setDirection: (d) => { player.direction = ['deploy', 'retract', 'jettison'].includes(d) ? d : 'deploy'; applyDeploy(); },
+    setSailArchitecture: (a) => { player.architecture = a || null; if (player.lastId) show(player.lastId); },
+    fitSail, fitHull, applyDeploy,
+    readout: () => (model?.userData.sail ? model.userData.sail.readout(Number(unfoldRange?.value ?? 1)) : null),
     screenshot: () => renderer.domElement.toDataURL('image/png'),
     orbit: (az, el, k = 1) => { const d = camera.position.distanceTo(controls.target) * k; camera.position.set(controls.target.x + d * Math.cos(el) * Math.sin(az), controls.target.y + d * Math.sin(el), controls.target.z + d * Math.cos(el) * Math.cos(az)); controls.update(); },
     /* named views for the QA screenshots: overview, plan (from +y), side (orthographic-like, far and narrow), close-ups on a part kind, a section */
