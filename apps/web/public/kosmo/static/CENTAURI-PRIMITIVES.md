@@ -8,6 +8,9 @@ shipyard can share. It is split so the numbers run in node and the geometry runs
 | `spec.js` | pure functions: physical inputs -> envelope, mass, volume, mates, source | no | `centauri-primitives.test.mjs` (155 checks) |
 | `materials.js` | PBR presets with procedural colour / roughness / normal maps, cached by kind and repeat | yes (falls back to colours without a DOM) | by use in every model |
 | `mesh.js` | builders: a spec (or its numbers) -> a THREE.Group in the part frame; instanced where parts repeat | yes | by use; the catalogue models build every kind |
+| `detail.js` | human-scale fittings at real sizes, instanced | yes | `centauri-geometry-audit.test.mjs` |
+| `livery.js` | palette, class liveries, procedural paint at each mesh's cell grid | yes (plain colours without a DOM) | `centauri-geometry-audit.test.mjs` |
+| `legacy.js` | the colour-keyed helpers v5's models were written with, tagged with surface kinds | yes | by use in `robotic-models.js` |
 
 The master list of what the fleet needs and which primitive builds each row is
 `CENTAURI-COMPONENT-INVENTORY.md`; the per-ship sizing is `CENTAURI-INVENTORY.md`.
@@ -108,6 +111,39 @@ Builders (each returns a Group in the part frame):
 `tankMesh(spec)`, `fairingMesh(spec)`, `hullSegmentMesh({ d, l, endKind, skin, windows, racks, hatchSide, raceway, bands })`, `torusDeckMesh({ R, D, decks, arc, windows, spokes, skin })`, `trussMesh({ lengthM, widthM, bays, kind, section })`, `accordionStrip(len, width, thick, segments, kind, angles)`, `radiatorMesh({ panelL, panelW, panels, angles })`, `solarArrayMesh({ L, W, angles })`, `dishMesh({ d, fD })`, `bellMesh(spec)`, `rcsQuadMesh({ d })`, `gridFinMesh({ finW, finH, finT, count, R, y })`, `landingLegMesh({ count, R0, hingeH, spanM, footY })` (with `userData.update(k)`), `hatchMesh(d)`, `portRingMesh(d)`, `navLights(points)`, `copvClusterMesh({ d, count })`.
 
 Deployables return `{ group, setDeploy(k) }`; everything else a Group.
+
+## detail.js -- human-scale fittings (QA pass)
+
+Real sizes, stated once in `DETAIL` with their sources, and builders that return INSTANCES (prototype,
+surface kind, pose) which `buildDetailMeshes()` merges into one InstancedMesh per prototype and surface:
+
+- `DETAIL.bolt` M10 hex 17 mm AF; `rivet` 6 mm at 150 mm; `handrail` 38 mm tube, 55 mm standoff, 0.6 / 1.2 m;
+  `ladder` 280 mm pitch, 400 mm wide, cage above 2.2 m; `footRestraint`, `tether` 60 mm D-ring; `cable` 30 mm,
+  P-clamps at 0.6 m; `hatch` cbm 1.27 m square, idss 0.8 m, dragon 0.8 x 1.0 m, airlock 1.0 m, orion;
+  `window` cupola 0.8 m, iss 0.51 m, dragon 0.3 m; `panel`, `vent`, `fillPort`, `nameplate`, `target`, `mmod`.
+- Poses on surfaces: `frameOn(normal, along)`, `cylSurface(r).at(theta, y, standoff)` and `.end(...)`,
+  `torusSurface(R, tube).at(phi, psi, standoff)`.
+- Builders: `boltCircle(pose, r, count)`, `boltsFor(d, portType)` (CBM 16, IDSS 12, PAF-1575 120), `rivetRow`,
+  `rivetLine`, `handrail(pose, length, out, 'z'|'x')`, `ladder(surf, theta, y0, y1)`, `footRestraint`,
+  `tetherRing`, `cableRun`, `hatch(spec, pose)` (door, frame, seal, hinges, handle, bolts), `windowPort(d, pose)`
+  (frame, bolts, glazing), `accessPanel`, `vent`, `fillPort`, `dockingTarget`, `mmodPatch`, `nameplate(pose, text)`.
+- `glazingMaterial()` is a `MeshPhysicalMaterial` with transmission in the browser (the lit preset in node).
+
+`parts/detail-pass.js` (`addHumanDetail(model, { registration })`) decides density and placement per part
+kind and tags the group `userData.detail`; the viewers toggle it as the "detail" layer.
+
+## livery.js -- paint as a library (QA pass)
+
+- `PALETTE` signal red, orange, sunflower, cobalt, mint, teal, warm white, black, grey, cream, navy, ochre, coral.
+- `LIVERIES` one per class, each `{ name, primary, secondary, accent, trim, checker: [a, b], hazard: [a, b],
+  registration, number, rules: { kind: pattern, default } }`; `liveryFor(id)` resolves any version's id to its class.
+- `PATTERNS` checker, checkerBand, blocks, chevronBands, hazard, stripes, roll, solid, none.
+- `cellFor(d)` = clamp(pi d / 8, 0.35, 6); `gridFor(geometry)` the (N round, M along) grid from the geometry's
+  real circumference and length (cylinder, lathe, torus, sphere, box, capsule), capped at 160 round.
+- `liveryTextures(pattern, N, M, livery, seed, stencil)` paints colour, roughness and normal maps at the cell grid
+  (per-cell tint, dirt, streaks, seams, stencils); `applyLivery(root, livery, on)` swaps materials on `PAINTABLE`
+  surfaces (white, offwhite, stainless, tank) and never on `THERMAL` ones; `liveryPlan(root, livery)` is the
+  DOM-free plan the checks verify.
 
 ## How a class is composed
 

@@ -868,9 +868,9 @@ export function roboticAssembly(id) {
     const radiusAt = (y) => (profile.find((s) => y >= s.y0 && y <= s.y1) ?? profile[profile.length - 1]).r;
     const crawlers = n['crawler-rail'] ?? 0;
     const eras = n['arm-era'] ?? 0;
-    const carPort = (id, i, count, offset) => {
+    const carPort = (id, i, count, offset, yShift = 0) => {
       const a = ((i % RAILS.count) / RAILS.count) * Math.PI * 2 + offset + RAILS.azimuth0;
-      const y = ((Math.floor(i / RAILS.count) + 0.5) / Math.max(1, Math.ceil(count / RAILS.count))) * railLen;
+      const y = Math.min(railLen - 2, ((Math.floor(i / RAILS.count) + 0.5) / Math.max(1, Math.ceil(count / RAILS.count))) * railLen + yShift);
       const rr = radiusAt(y);
       return { id, type: 'hardpoint', gender: 'active', at: [Math.cos(a) * rr, y, Math.sin(a) * rr], axis: [Math.cos(a), 0, Math.sin(a)], clock: [0, 1, 0] };
     };
@@ -882,7 +882,8 @@ export function roboticAssembly(id) {
       ports: [
         { id: 'root', type: 'hardpoint', gender: 'passive', at: [0, 0, 0], axis: [0, -1, 0] },
         ...Array.from({ length: crawlers }, (_, i) => carPort(`car-${i}`, i, crawlers, 0)),
-        ...Array.from({ length: eras }, (_, i) => carPort(`era-${i}`, i, eras, Math.PI / RAILS.count))
+        /* the long arms ride the same 45 degree rails as the crawlers (QA pass: at the 0/90 stations they ran through the drive's radiator panels) */
+        ...Array.from({ length: eras }, (_, i) => carPort(`era-${i}`, i, eras, 0, railLen * 0.12))
       ]
     };
     add('rails', rails);

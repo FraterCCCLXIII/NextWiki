@@ -19,9 +19,11 @@
    Pure functions plus one animation hook (`tickRenderModes`), no DOM, so node can exercise it. */
 
 import * as THREE from 'three';
+import { applyLivery } from './parts/primitives/livery.js';
 
 export const RENDER_MODES = [
   { id: 'studio', name: 'Studio (PBR)' },
+  { id: 'livery', name: 'Livery (painted PBR)' },
   { id: 'clay', name: 'Matte clay' },
   { id: 'metal', name: 'Polished metal' },
   { id: 'toon', name: 'Cel shading' },
@@ -122,17 +124,21 @@ function materialFor(id) {
  * restores it exactly and any mode can be switched for another. Surface-detail overlays (rivets,
  * seams) are left alone: they carry `userData.detail` and belong to the detail toggle.
  */
-export function applyRenderMode(root, id) {
+export function applyRenderMode(root, id, { livery = false } = {}) {
   const mode = RENDER_MODES.some((m) => m.id === id) ? id : 'studio';
+  /* paint comes off before any mode is applied and goes back on for 'livery', or for 'studio' with the
+     livery layer on, so the plain surfaces are always what the other modes remember */
+  if (root.userData.livery) applyLivery(root, root.userData.livery, false);
   root.traverse((o) => {
     if (!o.isMesh || o.userData.detail) return;
-    if (mode === 'studio') {
+    if (mode === 'studio' || mode === 'livery') {
       if (o.userData.origMat) o.material = o.userData.origMat;
       return;
     }
     if (!o.userData.origMat) o.userData.origMat = o.material;
     o.material = materialFor(mode);
   });
+  if ((mode === 'livery' || (mode === 'studio' && livery)) && root.userData.livery) applyLivery(root, root.userData.livery, true);
 }
 
 /** Advance the hologram's scanline. Cheap to call every frame: it does nothing when unused. */

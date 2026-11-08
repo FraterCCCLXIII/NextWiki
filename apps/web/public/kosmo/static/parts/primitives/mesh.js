@@ -88,9 +88,13 @@ export function fairingMesh(spec, kind = 'white') {
  * count along the barrel; `o.racks` the number of external equipment racks.
  */
 export function hullSegmentMesh({ d, l, endKind = 'cone', skin = 'white', windows = 2, racks = 4, hatchSide = false, raceway = true, bands = 3 }) {
-  const g = new THREE.Group(), r = d / 2, endH = endKind === 'dome' ? r * 0.707 : Math.min(0.65, l * 0.1), barrelL = Math.max(0, l - 2 * endH);
+  const g = new THREE.Group(), r = d / 2;
+  /* 'cone' is the ISS end cone (0.55 r over 0.65 m); 'dome' the sqrt-2 ellipsoid; 'round' a shallow blended
+     dome (0.3 r high) for the chunky rounded module the livery references draw, with a flat mating face */
+  const endH = endKind === 'dome' ? r * 0.707 : endKind === 'round' ? Math.min(r * 0.3, l * 0.12) : Math.min(0.65, l * 0.1), barrelL = Math.max(0, l - 2 * endH);
   g.add(put(cyl(r, barrelL, skin, { seg: 48 }), 0, endH, 0));
-  const endProfile = endKind === 'dome' ? domeProfile(r, endH, 10) : [[r, 0], [r * 0.55, endH]];
+  const endProfile = endKind === 'dome' ? domeProfile(r, endH, 10) : endKind === 'round' ? [...domeProfile(r, endH, 8).filter(([x]) => x > r * 0.62), [r * 0.62, endH]] : [[r, 0], [r * 0.55, endH]];
+  g.userData.hull = { r, l, endH, barrelL, endKind };
   const top = lathe(endProfile, skin, { seg: 48 }); top.position.y = l - endH; g.add(top);
   const bottom = lathe(endProfile, skin, { seg: 48 }); bottom.rotation.x = Math.PI; bottom.position.y = endH; g.add(bottom);
   g.add(ringXZ(r * 0.99, Math.max(r * 0.025, 0.02), 'grey', endH + 0.03), ringXZ(r * 0.99, Math.max(r * 0.025, 0.02), 'grey', l - endH - 0.03));
@@ -117,30 +121,47 @@ export function hullSegmentMesh({ d, l, endKind = 'cone', skin = 'white', window
 }
 
 /** A torus deck from torusDeckSpec or ring numbers: shell (with an optional cutaway arc), instanced windows, spokes, hub. */
-export function torusDeckMesh({ R, D, decks = 1, arc = Math.PI * 2 * (5 / 6), windows = null, spokes = 6, skin = 'white' }) {
+export function torusDeckMesh({ R, D, decks = 1, arc = Math.PI * 2 * (5 / 6), windows = null, spokes = 6, skin = 'white', hubR = null, hubL = null }) {
   const g = new THREE.Group(), tube = D / 2;
+  /* The full shell, and a cutaway shell (the `arc`) with its decks: the viewer's cutaway toggle swaps them
+     through userData.cutaway; the ship is drawn whole by default. (The QA pass: a ring with a sixth missing
+     read as an incomplete mesh.) */
   const shellFrame = new THREE.Group(); shellFrame.rotation.x = -Math.PI / 2;
-  shellFrame.add(new THREE.Mesh(new THREE.TorusGeometry(R, tube, 24, Math.max(96, Math.round(R * 2)), arc), surface(skin, { repeat: [Math.max(4, Math.round(R / 2)), Math.max(2, Math.round(D / 2))] })));
+  const segs = Math.max(96, Math.round(R * 2)), rep = [Math.max(4, Math.round(R / 2)), Math.max(2, Math.round(D / 2))];
+  const full = new THREE.Mesh(new THREE.TorusGeometry(R, tube, 24, segs), surface(skin, { repeat: rep })); full.userData.cutaway = 'full'; shellFrame.add(full);
+  const cut = new THREE.Mesh(new THREE.TorusGeometry(R, tube, 24, segs, arc), surface(skin, { repeat: rep })); cut.userData.cutaway = 'cut'; cut.visible = false; shellFrame.add(cut);
   g.add(shellFrame);
   for (let i = 0; i < decks; i += 1) {
     const floor = new THREE.Mesh(new THREE.RingGeometry(R - tube * 0.82, R + tube * 0.82, 128, 1, 0, arc), surface(i % 2 ? 'cell' : 'radiator', { repeat: [8, 1] }));
-    floor.rotation.x = -Math.PI / 2; floor.position.y = -tube + 1.8 + i * 3; g.add(floor);
+    floor.rotation.x = -Math.PI / 2; floor.position.y = -tube + 1.8 + i * 3; floor.userData.cutaway = 'cut'; floor.visible = false; g.add(floor);
   }
   const nW = windows ?? Math.max(24, Math.round(2 * Math.PI * R / 4));
   const win = new THREE.BoxGeometry(Math.min(tube * 0.5, 1.6), Math.min(tube * 0.25, 0.8), tube * 0.05);
   const list = [];
   for (let i = 0; i < nW; i += 1) {
-    const a = (i / nW) * arc; if (a > arc) break;
+    const a = (i / nW) * Math.PI * 2;
     const q = new THREE.Quaternion().setFromAxisAngle(Y, -a);
     for (let k = 0; k < decks; k += 1) list.push({ p: [Math.cos(a) * (R + tube * 0.9), -tube + 1.8 + k * 3 + 0.9, Math.sin(a) * (R + tube * 0.9)], q });
   }
   g.add(instances(win, 'glass', list));
+  /* The hub is the collar the ring turns on: it sits round the bearing or despun hub it is mated to (hubR is
+     that body's radius), and the spokes run from the collar to the tube's inner wall, not from a drawn drum
+     of arbitrary size to the tube's centreline. */
+  const rc = hubR ?? Math.max(tube * 0.5, 0.6), collarT = Math.max(0.25, Math.min(0.9, rc * 0.12)), collarL = hubL ?? Math.max(1.0, Math.min(tube * 0.8, rc * 0.8));
+  /* a spoke is a pressurised transit tube with a lift: 1.5 m across at the least, up to 3 m on a fat ring */
+  const spokeR = Math.max(0.75, Math.min(tube * 0.35, 1.5));
   for (let i = 0; i < spokes; i += 1) {
-    const a = (i / spokes) * Math.PI * 2;
-    rod(g, [Math.cos(a) * Math.max(tube * 0.9, 0.4), 0, Math.sin(a) * Math.max(tube * 0.9, 0.4)], [Math.cos(a) * R, 0, Math.sin(a) * R], Math.max(tube * 0.06, 0.08), 'white', { seg: 12 });
+    const a = (i / spokes) * Math.PI * 2, c = Math.cos(a), sn = Math.sin(a);
+    const r0 = rc + collarT, r1 = R - tube * 0.98;
+    rod(g, [c * r0, 0, sn * r0], [c * r1, 0, sn * r1], spokeR, 'white', { seg: 12 });
+    /* a spoke is a pressurised tube with a lift: its foot flares into the collar, its head into the deck */
+    const foot = cyl(spokeR * 1.6, Math.max(spokeR * 2, 0.4), 'grey', { seg: 12 }); foot.position.set(c * r0, 0, sn * r0); foot.quaternion.setFromUnitVectors(Y, new THREE.Vector3(c, 0, sn)); g.add(foot);
+    const head = cyl(spokeR * 1.4, Math.max(spokeR * 2, 0.4), 'grey', { seg: 12 }); head.position.set(c * (r1 - Math.max(spokeR * 2, 0.4)), 0, sn * (r1 - Math.max(spokeR * 2, 0.4))); head.quaternion.setFromUnitVectors(Y, new THREE.Vector3(c, 0, sn)); g.add(head);
   }
-  g.add(put(cyl(tube * 0.85, tube * 1.1, 'white', { seg: 32 }), 0, -tube * 0.55, 0));
-  g.add(ringXZ(tube * 0.6, Math.max(tube * 0.03, 0.02), 'grey', tube * 0.55));
+  const collar = new THREE.Mesh(new THREE.CylinderGeometry(rc + collarT, rc + collarT, collarL, 48, 1, true), surface('white', { repeat: [8, 1] })); g.add(collar);
+  g.add(ringXZ(rc + collarT, Math.max(collarT * 0.4, 0.05), 'grey', collarL / 2), ringXZ(rc + collarT, Math.max(collarT * 0.4, 0.05), 'grey', -collarL / 2));
+  g.add(ringXZ(rc + collarT * 0.5, Math.max(collarT * 0.3, 0.04), 'gold', collarL / 2 + collarT * 0.2), ringXZ(rc + collarT * 0.5, Math.max(collarT * 0.3, 0.04), 'gold', -collarL / 2 - collarT * 0.2));
+  g.userData.ring = { R, tube, hubR: rc, collarT, collarL, spokes, decks };
   return g;
 }
 
@@ -188,25 +209,34 @@ export function accordionStrip(len, width, thick, segments, kind, angles) {
 }
 
 /** A radiator wing: `panels` pleated strips side by side, a fluid-loop manifold and edge booms. */
-export function radiatorMesh({ panelL, panelW, panels = 1, angles, thick = null }) {
-  const g = new THREE.Group(), t = thick ?? Math.max(panelW * 0.012, 0.03), W = panelW * panels * 1.05;
-  const manifold = box(W, Math.max(t * 4, 0.12), Math.max(t * 4, 0.12), 'grey'); put(manifold, 0, 0.15, 0); g.add(manifold);
+export function radiatorMesh({ panelL, panelW, panels = 1, angles, thick = null, standoff = 0.6 }) {
+  const g = new THREE.Group(), t = thick ?? Math.max(panelW * 0.012, 0.03), W = panelW * panels * 1.05, s0 = Math.max(standoff, 0.3);
+  /* the root: a hinge bracket on the hardpoint, the rotary fluid joint, and the manifold the panels hang
+     from at the standoff, so the first panel stands clear of the hull it is mounted on */
+  const bracket = box(Math.min(W * 0.3, 1.2), s0 * 0.5, Math.min(W * 0.3, 1.2) * 0.6, 'grey'); put(bracket, 0, s0 * 0.25, 0); g.add(bracket);
+  const joint = cyl(Math.min(W * 0.12, 0.45), s0 * 0.45, 'stainless', { seg: 20 }); put(joint, 0, s0 * 0.5, 0); g.add(joint);
+  const manifold = box(W, Math.max(t * 4, 0.12), Math.max(t * 4, 0.12), 'grey'); put(manifold, 0, s0 - 0.05, 0); g.add(manifold);
+  for (const sx of [-1, 1]) rod(g, [sx * Math.min(W * 0.12, 0.4), s0 * 0.5, 0], [sx * W * 0.45, s0 - 0.05, 0], Math.max(t, 0.03), 'grey');
   const deployers = [];
   for (let i = 0; i < panels; i += 1) {
     const strip = accordionStrip(panelL, panelW, t, 8, 'radiator', angles);
-    strip.group.position.set((i - (panels - 1) / 2) * panelW * 1.05, 0.3, 0); g.add(strip.group); deployers.push(strip.setDeploy);
-    for (const s of [-1, 1]) rod(g, [(i - (panels - 1) / 2) * panelW * 1.05 + s * panelW * 0.49, 0.3, 0], [(i - (panels - 1) / 2) * panelW * 1.05 + s * panelW * 0.49, panelL + 0.3, 0], Math.max(panelW * 0.006, 0.02), 'dark');
+    strip.group.position.set((i - (panels - 1) / 2) * panelW * 1.05, s0, 0); g.add(strip.group); deployers.push(strip.setDeploy);
+    for (const s of [-1, 1]) rod(g, [(i - (panels - 1) / 2) * panelW * 1.05 + s * panelW * 0.49, s0, 0], [(i - (panels - 1) / 2) * panelW * 1.05 + s * panelW * 0.49, panelL + s0, 0], Math.max(panelW * 0.006, 0.02), 'dark');
   }
   return { group: g, setDeploy: (k) => deployers.forEach((d) => d(k)) };
 }
 
 /** A solar array wing: blanket box, SADA gimbal, pleated blanket of cells, edge booms. */
-export function solarArrayMesh({ L, W, angles }) {
-  const g = new THREE.Group();
-  const boxg = box(W * 0.32, 0.7, 1.1, 'grey'); put(boxg, 0, 0.35, 0); g.add(boxg);
-  const gimbal = tor(W * 0.1, W * 0.02, 'chrome'); put(gimbal, 0, 0.35, 0, Math.PI / 2); g.add(gimbal);
-  const blanket = accordionStrip(L, W, Math.max(W * 0.0035, 0.02), 8, 'cell', angles); blanket.group.position.set(0, 0.7, 0); g.add(blanket.group);
-  rod(g, [W * 0.5, 0.7, 0], [W * 0.5, L + 0.7, 0], Math.max(W * 0.006, 0.02), 'grey'); rod(g, [-W * 0.5, 0.7, 0], [-W * 0.5, L + 0.7, 0], Math.max(W * 0.004, 0.015), 'grey');
+export function solarArrayMesh({ L, W, angles, standoff = 1.2 }) {
+  const g = new THREE.Group(), s0 = Math.max(standoff, 0.7);
+  /* the SADA on the hardpoint, a short lattice yoke, the beta gimbal and the blanket box at the standoff */
+  const sada = cyl(Math.min(W * 0.06, 0.35), s0 * 0.25, 'stainless', { seg: 24 }); g.add(sada);
+  g.add(ringXZ(Math.min(W * 0.06, 0.35) * 1.02, Math.min(W * 0.012, 0.05), 'gold', s0 * 0.12));
+  const yoke = trussMesh({ lengthM: s0 * 0.45, widthM: Math.min(W * 0.08, 0.5), bays: 2, kind: 'grey' }); yoke.position.y = s0 * 0.25; g.add(yoke);
+  const gimbal = tor(Math.min(W * 0.1, 0.6), Math.min(W * 0.02, 0.1), 'chrome'); put(gimbal, 0, s0 * 0.72, 0, Math.PI / 2); g.add(gimbal);
+  const boxg = box(W * 0.32, s0 * 0.28, 1.1, 'grey'); put(boxg, 0, s0 * 0.86, 0); g.add(boxg);
+  const blanket = accordionStrip(L, W, Math.max(W * 0.0035, 0.02), 8, 'cell', angles); blanket.group.position.set(0, s0, 0); g.add(blanket.group);
+  rod(g, [W * 0.5, s0, 0], [W * 0.5, L + s0, 0], Math.max(W * 0.006, 0.02), 'grey'); rod(g, [-W * 0.5, s0, 0], [-W * 0.5, L + s0, 0], Math.max(W * 0.004, 0.015), 'grey');
   return { group: g, setDeploy: blanket.setDeploy };
 }
 

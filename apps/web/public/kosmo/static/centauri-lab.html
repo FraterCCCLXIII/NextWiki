@@ -78,6 +78,9 @@
     <label>Model <select id="viewId"></select></label>
     <label>Render <select id="render"></select></label>
     <label><input type="checkbox" id="rivets" checked> rivets</label>
+    <label><input type="checkbox" id="detail" checked> detail</label>
+    <label><input type="checkbox" id="livery"> livery</label>
+    <label><input type="checkbox" id="cutaway"> cutaway</label>
     <label>Sail <input type="range" id="unfold" min="0" max="1" step="0.01" value="1"></label><button id="unfoldplay" title="sweep the fold">&#9654; unfold</button>
     <label><input type="checkbox" id="spin"> spin</label>
     <button id="shot" title="save a PNG of the view">screenshot</button>
@@ -179,7 +182,7 @@ $('cls').innerHTML = `<optgroup label="v1 -- sail classes">${CLASSES.map((c) => 
 $('cls').value = 'habitat-v4';
 /* the viewer shows every version, the v3 drives included; the tables below follow the sail classes */
 $('viewId').innerHTML = [['v1 -- sail', CLASSES], ['v2 -- spin rings', VARIANTS], ['v3 -- drives', PROPELLED], ['v4 -- realism pass', REALISM]].map(([l, list]) => `<optgroup label="${l}">${list.map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join('')}</optgroup>`).join('');
-const view = createCentauriView({ host: $('view3d'), modeSelect: $('render'), rivetsBox: $('rivets'), unfoldRange: $('unfold'), spinBox: $('spin') });
+const view = createCentauriView({ host: $('view3d'), modeSelect: $('render'), rivetsBox: $('rivets'), detailBox: $('detail'), liveryBox: $('livery'), cutawayBox: $('cutaway'), unfoldRange: $('unfold'), spinBox: $('spin') });
 function showModel(id) {
   $('viewId').value = id;
   const u = view.show(id);
@@ -376,6 +379,34 @@ for (const el of ['cls', 'areal', 'tboost', 'beta', 'lambda', 'eta', 'thermal'])
 }
 render();
 { const want = location.hash.slice(1); if (want && SAIL_CLASSES.concat(PROPELLED).some((c) => c.id === want)) { if (SAIL_CLASSES.some((c) => c.id === want)) { $('cls').value = want; render(); } else showModel(want); } else showModel($('cls').value); }
+
+/* QA screenshots: ?shots=<ids|all>&views=overview,plan,side,close,section,ring&rx=<port>&livery=1&dir=qa/v4
+   renders every view of every ship and POSTs each PNG to the local receiver (centauri-shots-receiver.mjs). */
+{
+  const q = new URLSearchParams(location.search);
+  if (q.get('shots')) {
+    const ids = q.get('shots') === 'all' ? [...CLASSES, ...VARIANTS, ...PROPELLED, ...REALISM].map((c) => c.id) : q.get('shots').split(',');
+    const views = (q.get('views') ?? 'overview,plan,side,close,section,ring').split(',');
+    const rx = q.get('rx') ?? '8774', dir = q.get('dir') ?? 'qa';
+    if (q.get('livery')) { $('livery').checked = true; $('render').value = 'livery'; }
+    if (q.get('mode')) $('render').value = q.get('mode');
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    (async () => {
+      for (const id of ids) {
+        showModel(id); await wait(900);
+        for (const v of views) {
+          if (v === 'ring' && !/habitat|seed|colony/.test(id)) continue;
+          $('cutaway').checked = v === 'section'; view.model?.userData.setCutaway?.(v === 'section');
+          view.setView(v); view.render(); await wait(350); view.render();
+          const png = view.screenshot();
+          try { await fetch(`http://127.0.0.1:${rx}/shot?name=${encodeURIComponent(`${dir}/${id}-${v}`)}`, { method: 'POST', body: png }); } catch (e) { console.warn('shot failed', e); }
+        }
+      }
+      document.title = 'shots done';
+      try { await fetch(`http://127.0.0.1:${rx}/done`, { method: 'POST' }); } catch (e) { /* no receiver */ }
+    })();
+  }
+}
 </script>
 </body>
 </html>

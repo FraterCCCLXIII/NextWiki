@@ -14,7 +14,9 @@
 
 import * as THREE from 'three';
 import { measureRobotic, ROBOTS, designById } from './robotic.js';
-import { centauriPart, addPortRing, BUILDERS, span } from './centauri-models.js';
+import { centauriPart, addPortRing, BUILDERS, span, hubContextFor, setCutaway } from './centauri-models.js';
+import { torusDeckMesh } from './primitives/mesh.js';
+import { liveryFor } from './primitives/livery.js';
 import { CO, mat, mesh, cyl, box, tor, sph, put, rod, ringXZ } from './primitives/legacy.js';
 
 const RC = { white: 0xf2f4f7, dark: 0x2b2f36, blue: 0x3a9bff, gold: 0xd8b25a, lens: 0x16212e, glass: 0x27435f, warn: 0xc4642a, deck: 0xe4e0d6, shield: 0x5f6670, screen: 0x7fc3ff, pod: 0xdfe6ee };
@@ -151,11 +153,12 @@ function dextre(h, w) {
 function era(l, d) {
   const g = new THREE.Group(), r = d * 0.5;
   g.add(put(cyl(r * 0.9, l * 0.05, RC.gold, { seg: 14, mat: M.gold }), 0, 0, 0));
-  rod(g, [0, l * 0.05, 0], [l * 0.12, l * 0.5, 0], r * 0.5, RC.white, { mat: M.white, seg: 12 });
-  put(sph(r * 0.8, RC.dark, { mat: M.dark, seg: 14 }), l * 0.12, l * 0.5, 0); g.add(g.children[g.children.length - 1]);
-  rod(g, [l * 0.12, l * 0.5, 0], [0, l * 0.95, 0], r * 0.45, RC.white, { mat: M.white, seg: 12 });
+  /* drawn in its stowed, nearly straight pose: the elbow cranks 3 % of the length, inside the 0.8 m envelope the rails were sized for */
+  rod(g, [0, l * 0.05, 0], [l * 0.03, l * 0.5, 0], r * 0.5, RC.white, { mat: M.white, seg: 12 });
+  put(sph(r * 0.8, RC.dark, { mat: M.dark, seg: 14 }), l * 0.03, l * 0.5, 0); g.add(g.children[g.children.length - 1]);
+  rod(g, [l * 0.03, l * 0.5, 0], [0, l * 0.95, 0], r * 0.45, RC.white, { mat: M.white, seg: 12 });
   g.add(put(cyl(r * 0.8, l * 0.05, RC.gold, { seg: 14, mat: M.gold }), 0, l * 0.95, 0));
-  for (const y of [l * 0.25, l * 0.75]) { const cam = rbox(r * 0.5, r * 0.4, r * 0.4, RC.lens, M.lens); put(cam, l * 0.06 * (y < l / 2 ? 1 : 1), y, r * 0.7); g.add(cam); }
+  for (const y of [l * 0.25, l * 0.75]) { const cam = rbox(r * 0.5, r * 0.4, r * 0.4, RC.lens, M.lens); put(cam, l * 0.015, y, r * 0.7); g.add(cam); }
   return g;
 }
 
@@ -245,17 +248,28 @@ function robotCAD(p) {
 function cutawayShell(L, r, open, colour = CO.mli) {
   const g = new THREE.Group();
   const arc = Math.PI * 2 - open;
+  /* QA pass: the module is drawn whole -- a closed shell with rounded ends -- and the wedge that shows the
+     interior only appears under the viewer's cutaway toggle (userData.cutaway 'full' / 'cut') */
+  const full = new THREE.Group(); full.userData.cutaway = 'full';
+  const whole = mesh(new THREE.CylinderGeometry(r, r, L - 2 * Math.min(r * 0.3, L * 0.12), 48, 1, true), colour, { metal: 0.18, rough: 0.5 }); whole.position.y = L / 2; full.add(whole);
+  const endH = Math.min(r * 0.3, L * 0.12);
+  for (const [y, flip] of [[endH, true], [L - endH, false]]) {
+    const cap = mesh(new THREE.LatheGeometry([new THREE.Vector2(r * 0.62, endH), new THREE.Vector2(r * 0.84, endH * 0.75), new THREE.Vector2(r * 0.96, endH * 0.4), new THREE.Vector2(r, 0)].map((v) => v), 48), colour, { metal: 0.18, rough: 0.5 });
+    if (flip) cap.rotation.x = Math.PI; cap.position.y = y; full.add(cap);
+  }
+  g.add(full);
   const shell = mesh(new THREE.CylinderGeometry(r, r, L, 48, 1, true, open / 2, arc), colour, { metal: 0.18, rough: 0.5 });
-  shell.position.y = L / 2;
+  shell.position.y = L / 2; shell.userData.cutaway = 'cut'; shell.visible = false;
   g.add(shell);
   const deck = mesh(new THREE.BoxGeometry(r * 1.7, L * 0.98, 0.04), RC.deck, { metal: 0.2, rough: 0.7 });
-  deck.position.set(0, L / 2, -r * 0.55);
+  deck.position.set(0, L / 2, -r * 0.55); deck.userData.cutaway = 'cut'; deck.visible = false;
   g.add(deck);
-  for (let i = 1; i < Math.max(2, Math.round(L / 1.5)); i += 1) { const rib = mesh(new THREE.BoxGeometry(r * 1.7, 0.04, 0.08), CO.metal, { metal: 0.5 }); rib.position.set(0, (L * i) / Math.max(2, Math.round(L / 1.5)), -r * 0.52); g.add(rib); }
+  for (let i = 1; i < Math.max(2, Math.round(L / 1.5)); i += 1) { const rib = mesh(new THREE.BoxGeometry(r * 1.7, 0.04, 0.08), CO.metal, { metal: 0.5 }); rib.position.set(0, (L * i) / Math.max(2, Math.round(L / 1.5)), -r * 0.52); rib.userData.cutaway = 'cut'; rib.visible = false; g.add(rib); }
   g.add(ringXZ(r, Math.max(r * 0.03, 0.02), CO.metal, 0.05), ringXZ(r, Math.max(r * 0.03, 0.02), CO.metal, L - 0.05));
-  for (let i = 1; i <= Math.max(1, Math.round(L / 2.3)); i += 1) {
-    const band = mesh(new THREE.CylinderGeometry(r * 1.012, r * 1.012, L * 0.03, 48, 1, true, open / 2, arc), CO.gold, { metal: 0.5 });
-    band.position.y = (L * i) / (Math.max(1, Math.round(L / 2.3)) + 1);
+  const bands = Math.min(6, Math.max(1, Math.round(L / 2.3)));
+  for (let i = 1; i <= bands; i += 1) {
+    const band = mesh(new THREE.CylinderGeometry(r * 1.012, r * 1.012, Math.min(L * 0.03, 0.25), 48, 1, true), CO.gold, { metal: 0.5 });
+    band.position.y = (L * i) / (bands + 1);
     g.add(band);
   }
   for (const a of [Math.PI * 0.75, Math.PI * 1.25]) {
@@ -268,9 +282,11 @@ function cutawayShell(L, r, open, colour = CO.mli) {
 /* The hangar: cutaway shell, a cradle frame with its charger block and umbilical at every cradle
    port, a dock plate at every dock port, maintenance benches, the quarantine bay's own door, the tool
    store, two external garage doors with their frames, the rail heads at the aft ring. */
+function markInterior(g, from) { for (let i = from; i < g.children.length; i += 1) { const c = g.children[i]; if (c.userData.cutaway) continue; c.traverse((o) => { if (o !== c && o.userData.cutaway) return; }); c.userData.cutaway = 'cut'; c.visible = false; } }
 function hangarCAD(p) {
   const L = p.dims.l, r = p.dims.d / 2, H = p.hangar ?? {};
   const g = cutawayShell(L, r, Math.PI * 0.75);
+  const interiorFrom = g.children.length;
   for (const port of p.ports) {
     if (/^cradle-/.test(port.id)) {
       const [x, y, z] = port.at, side = Math.sign(x) || 1;
@@ -299,6 +315,7 @@ function hangarCAD(p) {
   const qdoor = rbox(0.04, 2.0, 1.0, RC.dark, M.dark); put(qdoor, -r * 0.25, L - 1.3, -r * 0.5); g.add(qdoor);
   const tools = rbox(0.5, 1.8, 0.6, RC.dark, M.dark); put(tools, -r * 0.6, 1.2, r * 0.6); g.add(tools);
   for (let i = 0; i < 6; i += 1) { const t = rbox(0.08, 0.3, 0.08, RC.gold, M.gold); put(t, -r * 0.6 + 0.2, 0.6 + i * 0.25, r * 0.6 + (i % 2 ? 0.15 : -0.15)); g.add(t); }
+  markInterior(g, interiorFrom);
   /* two external garage doors on the -x face, framed, with hinge bars and warning stripes */
   for (let i = 0; i < 2; i += 1) {
     const y = L * (0.3 + 0.4 * i);
@@ -307,7 +324,7 @@ function hangarCAD(p) {
     const stripe = rbox(0.1, 0.08, 1.6, RC.warn, M.white); put(stripe, -r * 1.06, y + Math.min(1.1, L * 0.14), 0); g.add(stripe);
     rod(g, [-r * 1.06, y - 1, 0.9], [-r * 1.06, y + 1, 0.9], 0.03, CO.metal);
   }
-  /* rail heads: two blocks at the aft ring where the crawlers pick up power and data */
+  /* rail heads: two blocks at the aft ring where the crawlers pick up power and data (outside, at the rails' 45 degree stations) */
   for (const s of [-1, 1]) { const head = rbox(0.5, 0.6, 0.8, RC.dark, M.dark); put(head, s * r * 0.75, 0.35, -r * 0.75); g.add(head); const lamp = rbox(0.1, 0.1, 0.1, RC.screen, M.screen); put(lamp, s * r * 0.75, 0.7, -r * 0.75); g.add(lamp); }
   return { group: g };
 }
@@ -329,6 +346,7 @@ function lockCAD(p) {
 function fabCAD(p) {
   const L = p.dims.l, r = p.dims.d / 2;
   const g = cutawayShell(L, r, Math.PI * 0.6, CO.shell);
+  const interiorFrom = g.children.length;
   for (let i = 0; i < 2; i += 1) {
     const drum = cyl(r * 0.22, L * 0.35, CO.tank, { seg: 18, mat: M.white }); put(drum, -r * 0.9, L * (0.2 + i * 0.45), (i ? 1 : -1) * r * 0.55); g.add(drum);
     g.add(put(ringXZ(r * 0.225, 0.02, CO.gold, L * (0.2 + i * 0.45) + L * 0.17), -r * 0.9, 0, (i ? 1 : -1) * r * 0.55));
@@ -337,6 +355,7 @@ function fabCAD(p) {
   for (let i = 0; i < 5; i += 1) { const crate = rbox(0.5, L * 0.07, r * 0.7, RC.white, M.white); put(crate, -r * 1.05, L * 0.32 + i * L * 0.085, 0); g.add(crate); }
   const vent = cyl(r * 0.08, r * 0.5, RC.dark, { seg: 10, mat: M.dark }); put(vent, 0, L * 0.85, r * 0.95, Math.PI / 2); g.add(vent);
   const bench = rbox(0.8, 0.9, 2.4, RC.white, M.white); put(bench, -r * 0.5, L * 0.5, r * 0.4); g.add(bench);
+  bench.userData.cutaway = 'cut'; bench.visible = false;
   return { group: g };
 }
 
@@ -345,6 +364,7 @@ function fabCAD(p) {
 function obsCAD(p) {
   const L = p.dims.l, r = p.dims.d / 2, O = p.obs ?? { pods: 3 };
   const g = cutawayShell(L, r, Math.PI * 0.7, CO.shell);
+  const interiorFrom = g.children.length;
   const n = Math.min(O.pods, Math.max(2, Math.floor((L - 1.5) / 1.1)));
   for (let i = 0; i < n; i += 1) {
     const y = 0.9 + i * ((L - 1.8) / Math.max(n - 1, 1));
@@ -363,6 +383,7 @@ function obsCAD(p) {
   wall.position.y = L / 2; g.add(wall);
   const console = rbox(1.2, 0.9, 0.5, RC.dark, M.dark); put(console, -r * 0.5, L * 0.5, -r * 0.55); g.add(console);
   for (let i = 0; i < 3; i += 1) { const rack = rbox(0.5, 1.8, 0.6, RC.dark, M.dark); put(rack, -r * 0.65, 1.1, -r * 0.1 + i * 0.7); g.add(rack); const led = rbox(0.02, 1.4, 0.05, RC.screen, M.screen); put(led, -r * 0.39, 1.1, -r * 0.1 + i * 0.7); g.add(led); }
+  markInterior(g, interiorFrom);
   for (const s of [-1, 1]) {
     const dome = mesh(new THREE.SphereGeometry(r * 0.32, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), RC.glass, M.glass);
     put(dome, 0, L * (0.5 + s * 0.25), r * 0.95, Math.PI / 2); g.add(dome);
@@ -377,10 +398,12 @@ function vaultCAD(p) {
   const L = p.dims.l, r = p.dims.d / 2;
   const g = cutawayShell(L, r, Math.PI * 0.55, RC.shield);
   for (let i = 0; i < 4; i += 1) {
-    const band = mesh(new THREE.CylinderGeometry(r * 1.04, r * 1.04, L * 0.12, 48, 1, true, Math.PI * 0.275, Math.PI * 1.45), RC.dark, M.shield);
+    const band = mesh(new THREE.CylinderGeometry(r * 1.04, r * 1.04, L * 0.12, 48, 1, true), RC.dark, M.shield);
     band.position.y = L * (0.15 + i * 0.23); g.add(band);
   }
+  const interiorFrom = g.children.length;
   for (let i = 0; i < 4; i += 1) { const dewar = cyl(0.45, 1.6, CO.tank, { seg: 18, mat: M.white }); put(dewar, -r * 0.45, 0.4 + Math.floor(i / 2) * (L * 0.45), (i % 2 ? 1 : -1) * r * 0.5); g.add(dewar); g.add(put(ringXZ(0.46, 0.03, CO.gold, 1.5), -r * 0.45, 0.4 + Math.floor(i / 2) * (L * 0.45), (i % 2 ? 1 : -1) * r * 0.5)); }
+  markInterior(g, interiorFrom);
   const rad = rbox(L * 0.6, 0.04, r * 0.9, CO.rad, { metal: 0.3, rough: 0.55 }); put(rad, 0, L * 0.5, -r * 1.3, 0, 0, Math.PI / 2); g.add(rad);
   rod(g, [0, L * 0.5, -r], [0, L * 0.5, -r * 1.3], 0.05, CO.metal);
   const cooler = rbox(0.6, 0.6, 0.5, RC.dark, M.dark); put(cooler, 0, L * 0.5, -r * 1.05); g.add(cooler);
@@ -391,11 +414,17 @@ function vaultCAD(p) {
    it, the deck as an opaque annulus, the pods and the cockpits on it inside the shelter, the shelter
    itself as an opaque dark band of shell (the 500 kg/m2 of water-equivalent) over its stretch of the
    ring, six spokes and the hub. The ring lies in its own xz plane with +y the spin axis. */
-function torporRingCAD(p) {
+function torporRingCAD(p, ctx = {}) {
   const g = new THREE.Group();
   const D = Math.max(p.dims.l ?? 3, 1), tube = D / 2;
   const R = Math.max(((p.dims.d ?? 40) - D) / 2, tube);
   const ring = p.ring ?? {};
+  /* QA pass: the ring is drawn as a closed pressure shell on a collar round its bearing, with proper spokes
+     (torusDeckMesh); the translucent draft shell and the pods behind it appear under the cutaway toggle */
+  const deckMesh = torusDeckMesh({ R, D, decks: Math.max(1, Math.floor((D - 1.2) / 3)), arc: Math.PI * 2 * (5 / 6), spokes: 6, hubR: ctx.hubD ? ctx.hubD / 2 + 0.1 : null, hubL: ctx.hubL ?? null });
+  for (const c of [...deckMesh.children]) if (c.userData.cutaway === 'cut' || (c.isMesh && c.geometry.type === 'RingGeometry')) deckMesh.remove(c);
+  g.add(deckMesh);
+  const interiorFrom = g.children.length;
   const shellFrame = new THREE.Group();
   shellFrame.rotation.x = -Math.PI / 2;
   shellFrame.add(mesh(new THREE.TorusGeometry(R, tube, 18, 128), CO.shell, { metal: 0.25, rough: 0.5, alpha: 0.32 }));
@@ -455,13 +484,7 @@ function torporRingCAD(p) {
     const a = Math.PI * 1.25 + (i / Math.max(awake, 1)) * Math.min(0.6, awake * 0.9 / R);
     const bunk = rbox(2.0, 0.5, 0.9, RC.white, M.white); bunk.position.set(Math.cos(a) * R, deckY + 0.3, Math.sin(a) * R); bunk.rotation.y = -a; g.add(bunk);
   }
-  /* spokes and hub */
-  for (let i = 0; i < 6; i += 1) {
-    const a = (i / 6) * Math.PI * 2 + Math.PI / 6;
-    rod(g, [Math.cos(a) * Math.max(tube * 0.9, 0.4), 0, Math.sin(a) * Math.max(tube * 0.9, 0.4)], [Math.cos(a) * R, 0, Math.sin(a) * R], Math.max(tube * 0.06, 0.1), CO.metal);
-  }
-  g.add(put(cyl(tube * 0.85, tube * 1.1, CO.shell, { seg: 24 }), 0, -tube * 0.55, 0));
-  g.add(ringXZ(tube * 0.55, Math.max(tube * 0.03, 0.02), CO.metal, tube * 0.55));
+  markInterior(g, interiorFrom);
   return { group: g };
 }
 
@@ -562,9 +585,9 @@ const V5_BUILDERS = {
   'reactor-fsp': (p) => BUILDERS.reactor(p)
 };
 
-function roboticPart(p) {
+export function roboticPart(p, ctx = {}) {
   const build = V5_BUILDERS[p.kind];
-  return build ? build(p) : centauriPart(p);
+  return build ? build(p, ctx) : centauriPart(p, ctx);
 }
 
 /* ------------------------------------------------------------------ *
@@ -586,7 +609,7 @@ export function buildRoboticModel(id) {
   const box3 = new THREE.Box3();
   for (const n of m.solved.nodes) {
     const p = n.part;
-    const built = roboticPart(p);
+    const built = roboticPart(p, hubContextFor(m.solved, n.name));
     for (const port of p.ports ?? []) addPortRing(built.group, port);
     const frame = new THREE.Group();
     frame.position.fromArray(n.world.position);
@@ -594,6 +617,7 @@ export function buildRoboticModel(id) {
     frame.add(built.group);
     frame.userData.partName = n.name;
     frame.userData.kind = p.kind;
+    frame.userData.part = p;
     const host = p.kind === 'robot' ? layers.robots : p.kind === 'rail-network' ? layers.rails : ['compute-rack', 'scout-rack'].includes(p.kind) ? layers.racks : p.kind === 'radiator' ? layers.radiators : hullStage;
     host.add(frame);
     if (built.setDeploy) deployers.push(built.setDeploy);
@@ -618,6 +642,8 @@ export function buildRoboticModel(id) {
   g.userData.top = hullSpan;
   g.userData.stages = new Map([[0, hullStage]]);
   g.userData.setDeploy = setDeploy;
+  g.userData.setCutaway = (on) => setCutaway(g, on);
+  g.userData.livery = liveryFor(id);
   g.userData.layers = layers;
   g.userData.measure = m;
   g.userData.label = `stack ${span(hullSpan)} · ${m.propulsion.drive.short} · ${pc.toFixed(1)} % c · ${m.propulsion.tripYears.toFixed(0)} yr · ${m.robots.count} robots${m.humans.humans ? ` · ${m.humans.humans} sleepers, ${Math.ceil(m.humans.awakeAvg)} awake` : ' · uncrewed'}`;

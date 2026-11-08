@@ -80,7 +80,7 @@
   </div>
 
   <div id="viewwrap"><div id="view"></div><div id="labels"></div><div id="caption"></div>
-    <div id="hud"><button data-layer="person" class="on">1.8 m person</button><button data-layer="robots" class="on">robots</button><button data-layer="rails" class="on">rails</button><button data-layer="racks" class="on">compute racks</button><button data-layer="radiators" class="on">radiators</button><button data-layer="labels" class="on">labels</button></div>
+    <div id="hud"><button data-layer="person" class="on">1.8 m person</button><button data-layer="robots" class="on">robots</button><button data-layer="rails" class="on">rails</button><button data-layer="racks" class="on">compute racks</button><button data-layer="radiators" class="on">radiators</button><button data-layer="detail" class="on">detail</button><button data-layer="livery">livery</button><button data-layer="cutaway">cutaway</button><button data-layer="labels" class="on">labels</button></div>
   </div>
 
   <div class="stats" id="stats"></div>
@@ -129,6 +129,8 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { buildCentauriModel } from './parts/centauri-models.js';
 import { buildRoboticModel, buildRobotGallery } from './parts/robotic-models.js';
 import { person } from './vehicle-models.js';
+import { addHumanDetail } from './parts/detail-pass.js';
+import { applyRenderMode } from './render-modes.js';
 import { measure, VARIANTS } from './parts/fleet.js';
 import { FLEET_VERSIONS } from './parts/fleet-versions.js';
 import {
@@ -200,9 +202,12 @@ function partBox(pred) {
   return any ? b : null;
 }
 
-const layerState = { person: true, robots: true, rails: true, racks: true, radiators: true, labels: true };
+const layerState = { person: true, robots: true, rails: true, racks: true, radiators: true, detail: true, livery: false, cutaway: false, labels: true };
 function applyLayers() {
   if (model?.userData.layers) for (const [k, g] of Object.entries(model.userData.layers)) g.visible = layerState[k] !== false;
+  if (model?.userData.detailGroup) model.userData.detailGroup.visible = layerState.detail !== false;
+  if (model?.userData.setCutaway) model.userData.setCutaway(!!layerState.cutaway);
+  if (model?.userData.livery) applyRenderMode(model, 'studio', { livery: !!layerState.livery });
   if (personMesh) personMesh.visible = layerState.person;
   $('labels').style.display = layerState.labels ? '' : 'none';
   for (const b of document.querySelectorAll('#hud button')) b.classList.toggle('on', layerState[b.dataset.layer] !== false);
@@ -211,6 +216,7 @@ function applyLayers() {
 function showShip(id) {
   clearStage();
   model = isV5(id) ? buildRoboticModel(id) : buildCentauriModel(id);
+  addHumanDetail(model, { registration: model.userData.livery?.registration });
   const wrap = new THREE.Group(); wrap.add(model); stage.add(wrap);
   const b = boxOf(wrap);
   personMesh = person(); personMesh.position.set(b.min.x - 1.2, b.min.y, (b.min.z + b.max.z) / 2); personMesh.userData.person = true; stage.add(personMesh);
@@ -417,8 +423,8 @@ async function snapshot(name) {
   renderer.render(scene, camera);
   const url = renderer.domElement.toDataURL('image/png');
   const q = new URLSearchParams(location.search);
-  if (q.get('shot')) {
-    try { await fetch(`http://127.0.0.1:8771/shot?name=${encodeURIComponent(name)}`, { method: 'POST', body: url }); document.title = `shot ${name} sent`; } catch (e) { document.title = `shot ${name} failed`; }
+  if (q.get('shot') || q.get('shots')) {
+    try { await fetch(`http://127.0.0.1:${q.get('rx') ?? '8771'}/shot?name=${encodeURIComponent((q.get('dir') ? `${q.get('dir')}/` : '') + name)}`, { method: 'POST', body: url }); document.title = `shot ${name} sent`; } catch (e) { document.title = `shot ${name} failed`; }
   } else { const a = document.createElement('a'); a.href = url; a.download = `${name}.png`; a.click(); }
 }
 $('shotBtn').addEventListener('click', () => snapshot(`${current()}-${$('view3').value}`));
@@ -431,8 +437,28 @@ $('shotBtn').addEventListener('click', () => snapshot(`${current()}-${$('view3')
   if (q.get('ver') && [...$('ver').options].some((o) => o.value === q.get('ver'))) $('ver').value = q.get('ver');
   if (q.get('view')) $('view3').value = q.get('view');
   if (q.get('off')) for (const k of q.get('off').split(',')) layerState[k] = false;
+  if (q.get('on')) for (const k of q.get('on').split(',')) layerState[k] = true;
   refresh();
   if (q.get('shot')) setTimeout(() => snapshot(q.get('shot')), 1500);
+  /* ?shots=all&views=overview,hangar,ring,deck,drive renders every v5 ship in every view and posts the PNGs */
+  if (q.get('shots')) {
+    const ids = q.get('shots') === 'all' ? DESIGNS.map((d) => d.id) : q.get('shots').split(',');
+    const views = (q.get('views') ?? 'overview,hangar,ring,deck,drive').split(',');
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    (async () => {
+      for (const id of ids) {
+        $('cls').value = designById(id).base; fillVersions(); $('ver').value = id;
+        for (const v of views) {
+          if (v === 'ring' && !designById(id).ring) continue;
+          if (v === 'deck' && designById(id).humans === 0) continue;
+          $('view3').value = v; refresh(); await wait(700);
+          renderer.render(scene, camera); await snapshot(`${id}-${v}`);
+        }
+      }
+      document.title = 'shots done';
+      try { await fetch(`http://127.0.0.1:${q.get('rx') ?? '8771'}/done`, { method: 'POST' }); } catch (e) { /* no receiver */ }
+    })();
+  }
 }
 </script>
 </body>

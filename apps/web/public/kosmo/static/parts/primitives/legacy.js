@@ -14,13 +14,21 @@ export const CO = {
   tank: 0xb9c0c8, accent: 0xc4642a, hatch: 0x8d959e
 };
 
+/* Which surface each legacy colour stands for, so the livery and detail passes can treat a v5 hull like a
+   v4 hull: shells are paintable, tanks are paintable, gold MLI and dark fittings are not. */
+const SURFACE_OF = { [CO.shell]: 'white', [CO.tank]: 'tank', [CO.mli]: 'offwhite', [CO.metal]: 'grey', [CO.hatch]: 'hatch', [CO.gold]: 'gold', [CO.dark]: 'dark', [CO.grey]: 'grey', [CO.rad]: 'radiator', [CO.glass]: 'glass', [CO.array]: 'cell', [CO.film]: 'film', 0xf2f4f7: 'white', 0xdfe6ee: 'white' };
+
 const cache = new Map();
 export function mat(c, o = {}) {
   const k = `${c}|${o.metal ?? ''}|${o.rough ?? ''}|${o.emissive ?? ''}|${o.alpha ?? ''}`;
-  if (!cache.has(k)) cache.set(k, new THREE.MeshStandardMaterial({
-    color: c, metalness: o.metal ?? 0.18, roughness: o.rough ?? 0.5, emissive: o.emissive ?? 0x000000,
-    side: THREE.DoubleSide, transparent: o.alpha != null, opacity: o.alpha ?? 1
-  }));
+  if (!cache.has(k)) {
+    const m = new THREE.MeshStandardMaterial({
+      color: c, metalness: o.metal ?? 0.18, roughness: o.rough ?? 0.5, emissive: o.emissive ?? 0x000000,
+      side: THREE.DoubleSide, transparent: o.alpha != null, opacity: o.alpha ?? 1
+    });
+    m.userData.surface = o.alpha != null ? 'glass' : (SURFACE_OF[c] ?? 'dark');
+    cache.set(k, m);
+  }
   return cache.get(k);
 }
 export const mesh = (g, c, o) => new THREE.Mesh(g, mat(c, o));

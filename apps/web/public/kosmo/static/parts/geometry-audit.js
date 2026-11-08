@@ -219,6 +219,16 @@ export function shapesOf(part) {
     out.push({ type: 'cyl', r: rS, y0: frameL, y1: frameL + storeL });
     if (p.store.kind === 'magazine') { const plateT = Math.max(d * 0.025, 0.02); out.push({ type: 'cyl', r: Math.max((p.plateD ?? d) / 2, rS), y0: L - plateT, y1: L }); out.push({ type: 'cyl', r: rS * 0.5, y0: frameL + storeL, y1: L - plateT }); }
     else out.push({ type: 'cyl', r: rS * 0.94, y0: frameL + storeL, y1: L });
+    /* the drive's radiator panels, as centauri-models.js driveCAD lays them: two per side along the store */
+    const rad = p.radiator;
+    if (rad && rad.areaM2 > 0.02 && storeL > 0.1) {
+      const half = rad.areaM2 / 4; let pLen = Math.min(rad.lengthM, 0.46 * storeL); let pWid = Math.max(half / Math.max(pLen, 1e-6), 0.3);
+      if (pWid > rS * 1.8) { pWid = rS * 1.8; pLen = half / pWid; }
+      for (const sgn of [-1, 1]) for (const k of [-1, 1]) {
+        const yc = frameL + storeL / 2 + k * (pLen / 2 + storeL * 0.03), xIn = sgn * rS * 1.02, xOut = sgn * (rS * 1.02 + pWid);
+        out.push({ type: 'obb', c: [(xIn + xOut) / 2, yc, 0], ax: [[1, 0, 0], [0, 1, 0], [0, 0, 1]], h: [pWid / 2, pLen / 2, Math.max(pWid * 0.006, 0.01)], radiator: true });
+      }
+    }
     return out;
   }
   if (p.kind === 'reactor' || p.kind === 'reactor-fsp') {

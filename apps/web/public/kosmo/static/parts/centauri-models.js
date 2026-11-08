@@ -26,6 +26,7 @@ import {
   accordionStrip, radiatorMesh, solarArrayMesh, dishMesh, bellMesh, rcsQuadMesh, gridFinMesh, landingLegMesh, hatchMesh, portRingMesh, navLights, copvClusterMesh
 } from './primitives/mesh.js';
 import { haackProfile, domeProfile, bellSpec } from './primitives/spec.js';
+import { liveryFor } from './primitives/livery.js';
 
 const Y = new THREE.Vector3(0, 1, 0);
 
@@ -53,7 +54,7 @@ function quadsAround(g, r, y, n = 4, size = null) {
 /* ISS-class laboratory or stores module: pressure hull, racks, MLI, windows, handrails, raceway. */
 function moduleCAD(p) {
   const stores = p.kind === 'stores-module';
-  const g = hullSegmentMesh({ d: p.dims.d, l: p.dims.l, endKind: 'cone', skin: stores ? 'offwhite' : 'white', windows: stores ? 0 : 2, racks: stores ? 2 : 4, hatchSide: stores });
+  const g = hullSegmentMesh({ d: p.dims.d, l: p.dims.l, endKind: 'round', skin: stores ? 'offwhite' : 'white', windows: stores ? 0 : 2, racks: stores ? 2 : 4, hatchSide: stores });
   if (stores) { const h = p.dims.l; for (let i = 0; i < 3; i += 1) { const pallet = box(p.dims.d * 0.5, h * 0.18, p.dims.d * 0.08, 'grey'); put(pallet, 0, h * (0.25 + 0.25 * i), -p.dims.d * 0.5 - p.dims.d * 0.03); g.add(pallet); } }
   return { group: g };
 }
@@ -83,11 +84,11 @@ function airlockCAD(p) {
 }
 
 /* ISS SAW class array and PVR radiator: pleated deployables that fold on the viewer's control. */
-function arrayCAD(p) { const m = solarArrayMesh({ L: p.dims.l, W: p.dims.d, angles: accordionAngles }); return m; }
+function arrayCAD(p) { return solarArrayMesh({ L: p.dims.l, W: p.dims.d, angles: accordionAngles, standoff: p.standoff ?? 1.2 }); }
 function radiatorCAD(p) {
   const rad = p.radiator;
   const panels = rad?.panels ?? 1, panelW = rad ? rad.panelW : p.dims.d, panelL = rad ? rad.panelL : p.dims.l;
-  return radiatorMesh({ panelL, panelW, panels, angles: accordionAngles });
+  return radiatorMesh({ panelL, panelW, panels, angles: accordionAngles, standoff: p.standoff ?? 0.6 });
 }
 
 /* 100 kg class bus (v1) and the 16U / New Horizons buses (v4). */
@@ -247,13 +248,13 @@ function serviceCAD(p) {
 }
 
 /* 1 g habitat ring (v1) and the sized spin ring (v2/v4): a torus deck with a cutaway, floors, windows, spokes, hub. */
-function ringCAD(p) {
+function ringCAD(p, ctx = {}) {
   const R = (p.dims.d) / 2, deck = p.dims.l, tube = deck / 2;
-  return { group: torusDeckMesh({ R: R - tube, D: deck, decks: Math.max(1, Math.floor((deck - 1.2) / 3)), arc: Math.PI * 2, spokes: 6 }) };
+  return { group: torusDeckMesh({ R: R - tube, D: deck, decks: Math.max(1, Math.floor((deck - 1.2) / 3)), arc: Math.PI * 2 * (5 / 6), spokes: 6, hubR: ctx.hubD ? ctx.hubD / 2 + 0.1 : null, hubL: ctx.hubL ?? null }) };
 }
-function centrifugeCAD(p) {
+function centrifugeCAD(p, ctx = {}) {
   const D = Math.max(p.dims.l, 1), tube = D / 2, R = Math.max((p.dims.d - D) / 2, tube);
-  return { group: torusDeckMesh({ R, D, decks: Math.max(1, Math.floor((D - 1.2) / 3)), arc: Math.PI * 2 * (5 / 6), spokes: 6 }) };
+  return { group: torusDeckMesh({ R, D, decks: Math.max(1, Math.floor((D - 1.2) / 3)), arc: Math.PI * 2 * (5 / 6), spokes: 6, hubR: ctx.hubD ? ctx.hubD / 2 + 0.1 : null, hubL: ctx.hubL ?? null }) };
 }
 
 /* v4 bola: two domed pods on lattice spokes around a hub. */
@@ -268,7 +269,7 @@ function bolaCAD(p) {
     const spoke = trussMesh({ lengthM: b.truss.dims.l, widthM: b.truss.widthM, kind: 'grey' }); spoke.rotation.z = s > 0 ? -Math.PI / 2 : Math.PI / 2; spoke.position.set(s * 2.2, 0, 0); g.add(spoke);
     const elevator = box(0.6, 0.6, 0.6, 'white'); elevator.position.set(s * R * 0.5, 0, 0); g.add(elevator);
   }
-  g.add(put(cyl(2.2, 1.2, 'white', { seg: 32 }), 0, -0.6, 0), ringXZ(2.0, 0.08, 'grey', 0.6), ringXZ(2.0, 0.08, 'grey', -0.6));
+  g.add(put(cyl(2.2, 1.0, 'white', { seg: 32 }), 0, -0.5, 0), ringXZ(2.0, 0.08, 'grey', 0.5), ringXZ(2.0, 0.08, 'grey', -0.5));
   return { group: g };
 }
 
@@ -307,9 +308,11 @@ function collarCAD(p) {
 /* Despun hub: non-rotating core with bearing lands, slip-ring bands and berths. */
 function despinCAD(p) {
   const g = new THREE.Group(), L = p.dims.l, D = p.dims.d, r = D / 2;
-  g.add(hullSegmentMesh({ d: D * 0.82, l: L, endKind: 'cone', skin: 'white', windows: 0, racks: 0, bands: 2 }));
-  g.add(ringXZ(r * 0.86, r * 0.045, 'gold', 0.12), ringXZ(r * 0.86, r * 0.045, 'gold', L - 0.12));
-  for (let i = 1; i <= 3; i += 1) g.add(ringXZ(r * 0.9, r * 0.028, 'grey', (L * i) / 4));
+  /* QA pass: the hull is the catalogue's full diameter (it was drawn at 0.82 D, so the mounts on its surface
+     floated 0.9 m off it); the bearing lands and slip-ring bands stand slightly proud */
+  g.add(hullSegmentMesh({ d: D, l: L, endKind: 'round', skin: 'white', windows: 0, racks: 0, bands: 2 }));
+  g.add(ringXZ(r * 1.01, r * 0.045, 'gold', 0.12 + L * 0.06), ringXZ(r * 1.01, r * 0.045, 'gold', L - 0.12 - L * 0.06));
+  for (let i = 1; i <= 3; i += 1) g.add(ringXZ(r * 1.01, r * 0.028, 'grey', (L * i) / 4));
   for (const port of p.ports.filter((q) => q.type === 'cbm')) { const h = hatchMesh(1.27); h.quaternion.setFromUnitVectors(Y, new THREE.Vector3(...port.axis)); h.position.fromArray(port.at); g.add(h); }
   return { group: g };
 }
@@ -471,7 +474,23 @@ const BUILDERS = {
   truss: trussCAD, 'systems-bay': systemsCAD, 'systems-module': systemsCAD, 'trim-stage': trimStageCAD, drive: driveCAD
 };
 
-function centauriPart(p) { return (BUILDERS[p.kind] ?? genericCAD)(p); }
+/** Build one part. `ctx` carries what the builder cannot know from the part alone: `hubD`, the diameter of
+ *  the bearing or hub a ring is mated to, so its collar fits round it. */
+function centauriPart(p, ctx = {}) { return (BUILDERS[p.kind] ?? genericCAD)(p, ctx); }
+
+/** The diameter (and length) of the body a ring's hub port is mated to, from the solved assembly. */
+export function hubContextFor(solved, name) {
+  const mt = solved.mates.find((m) => (m.a.name === name && /^hub/.test(m.a.port)) || (m.b.name === name && /^hub/.test(m.b.port)));
+  if (!mt) return {};
+  const other = mt.a.name === name ? mt.b.name : mt.a.name;
+  const n = solved.nodes.find((x) => x.name === other);
+  return n ? { hubD: n.part.dims.d, hubL: Math.min(n.part.dims.l, Math.max(1, n.part.dims.l * 0.6)) } : {};
+}
+
+/** Show or hide the cutaway variants (ring shells, hangar wedges) a model carries. */
+export function setCutaway(root, on) {
+  root.traverse((o) => { if (o.userData.cutaway === 'cut') o.visible = !!on; else if (o.userData.cutaway === 'full') o.visible = !on; });
+}
 
 /* ------------------------------------------------------------------ *
  * The origami sail film
@@ -534,10 +553,11 @@ export function buildCentauriModel(id) {
   for (const n of m.solved.nodes) {
     const p = n.part;
     if (p.kind === 'sail') continue;
-    const built = centauriPart(p);
+    const built = centauriPart(p, hubContextFor(m.solved, n.name));
     for (const port of p.ports ?? []) addPortRing(built.group, port);
     const frame = new THREE.Group();
     frame.position.fromArray(n.world.position); frame.quaternion.fromArray(n.world.quaternion);
+    frame.userData.partName = n.name; frame.userData.kind = p.kind; frame.userData.part = p;
     frame.add(built.group); hullStage.add(frame);
     if (built.setDeploy) deployers.push(built.setDeploy);
     frame.updateMatrixWorld(true);
@@ -570,7 +590,9 @@ export function buildCentauriModel(id) {
   g.userData.fitAxis = null; g.userData.top = hullSpan;
   g.userData.stages = new Map([[0, hullStage], [1, sailStage]]);
   g.userData.setDeploy = setDeploy;
+  g.userData.setCutaway = (on) => setCutaway(g, on);
   g.userData.measure = m;
+  g.userData.livery = liveryFor(id);
   const pc = m.propulsion ? m.propulsion.beta * 100 : 0;
   const inv = m.inventory;
   g.userData.label = m.propulsion
