@@ -125,6 +125,7 @@
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { boostTrackpadZoom } from './zoom-boost.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { buildCentauriModel } from './parts/centauri-models.js';
 import { buildRoboticModel, buildRobotGallery } from './parts/robotic-models.js';
@@ -158,7 +159,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); view.appendChild(renderer
 renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.95; renderer.outputColorSpace = THREE.SRGBColorSpace;
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(38, 1, 0.05, 50000);
-const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.zoomSpeed = 1.6;
+const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.zoomSpeed = 1.6; boostTrackpadZoom(controls, renderer.domElement, { pinchGain: 0.25, scrollGain: 0.009, maxStep: 0.8 });
 { try { const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; pm.dispose(); } catch { /* unlit fallback */ } }
 scene.add(new THREE.AmbientLight(0xffffff, 0.55)); scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x20242c, 0.6));
 const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(40, 80, 60); scene.add(key);

@@ -27,7 +27,7 @@ export function createCentauriView({ host, modeSelect, rivetsBox, detailBox, liv
   const scene = new THREE.Scene(); scene.background = new THREE.Color(0x070a10);
   const camera = new THREE.PerspectiveCamera(38, 1, 0.01, 1e7);
   const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.zoomSpeed = 2.4;
-  boostTrackpadZoom(controls, renderer.domElement, { pinchGain: 0.06, scrollGain: 0.007, maxStep: 0.45 });
+  boostTrackpadZoom(controls, renderer.domElement, { pinchGain: 0.25, scrollGain: 0.009, maxStep: 0.8 });
   try { const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.5; pm.dispose(); } catch { /* no environment */ }
   scene.add(new THREE.HemisphereLight(0xcfe0ff, 0x151a22, 0.35));
   const key = new THREE.DirectionalLight(0xfff1dc, 2.8); scene.add(key);
