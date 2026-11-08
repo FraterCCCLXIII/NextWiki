@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baton Lab</title>
+<style>
+  :root { --bg: #0d0d0d; --text: #dbe5f3; --muted: #8a9bb8; --accent: #7fc3ff; --amber: #ffb86b; --good: #7fe0a0; --bad: #ff8a8a; --line: rgba(140,170,220,0.14); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 15px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; } ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, rgba(127,195,255,0.55), rgba(255,184,107,0.45)); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+  * { scrollbar-width: thin; scrollbar-color: rgba(127,195,255,0.6) transparent; }
+  .serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+  #navbar { position: absolute; left: 0; right: 0; top: 0; height: 58px; z-index: 6; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: linear-gradient(180deg, rgba(13,13,13,0.95), rgba(13,13,13,0.6)); }
+  #logo .word { font-weight: 500; letter-spacing: 0.3em; font-size: 20px; text-transform: uppercase; color: #fff; }
+  #logo .sub { display: block; font-style: italic; letter-spacing: 0.06em; font-size: 13px; color: #fff; opacity: 0.8; margin-top: 2px; }
+  #menu { display: flex; gap: 20px; align-items: center; letter-spacing: 0.16em; font-size: 14px; text-transform: uppercase; }
+  #menu a { color: rgba(255,255,255,0.72); text-decoration: none; white-space: nowrap; } #menu a:hover { color: #fff; } #menu a.here { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.6); padding-bottom: 2px; }
+  #view { position: absolute; inset: 0; } #scene { display: block; width: 100%; height: 100%; }
+
+  #side { position: absolute; left: 14px; top: 66px; bottom: 184px; width: 336px; z-index: 4; overflow: auto; padding: 4px 8px 12px 4px; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
+  h1 { font-weight: 500; font-size: 28px; margin: 2px 0 4px; }
+  h2 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin: 16px 0 6px; }
+  .dim { color: var(--muted); } .small { font-size: 13px; }
+  .okc { color: var(--good); } .badc { color: var(--bad); }
+  select, input[type=number], input[type=text] { background: rgba(26,26,26,0.85); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 8px; padding: 4px 8px; font: inherit; width: 100%; }
+  input[type=range] { width: 100%; accent-color: #7fc3ff; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 8px; }
+  .f label { display: block; font-size: 12px; color: var(--muted); margin: 0 0 1px; }
+  .f label b { color: var(--text); font-weight: 400; float: right; }
+  .chk { display: flex; align-items: center; gap: 8px; margin: 8px 0 4px; color: #c3d0e2; font-size: 13px; }
+  .seg { display: flex; gap: 6px; }
+  .seg button { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 9px; color: var(--text); font: inherit; font-size: 13px; padding: 7px 6px; cursor: pointer; }
+  .seg button.on { border-color: rgba(127,195,255,0.55); background: rgba(127,195,255,0.16); color: #fff; }
+  table.keys { border-collapse: collapse; font-size: 13px; } table.keys td { padding: 2px 6px 2px 0; color: #c3d0e2; }
+  kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); font: inherit; font-size: 12px; }
+
+  #hud { position: absolute; right: 14px; top: 66px; bottom: 184px; width: 330px; z-index: 4; overflow: auto; text-shadow: 0 1px 6px #000; padding-right: 4px; }
+  #hud .phase { font-size: 21px; color: #fff; margin: 0 0 6px; }
+  .hint { margin: 0 0 8px; padding: 7px 10px; border-radius: 9px; font-size: 13px; background: rgba(255,184,107,0.14); border: 1px solid rgba(255,184,107,0.35); color: #ffd9ac; }
+  table.tele { border-collapse: collapse; width: 100%; } table.tele td { padding: 1px 0; font-variant-numeric: tabular-nums; font-size: 14px; }
+  table.tele td:first-child { color: var(--muted); width: 54%; } table.tele td:last-child { text-align: right; color: #fff; }
+  .card { border: 1px solid var(--line); border-radius: 11px; padding: 9px 11px; margin: 10px 0; background: rgba(18,22,30,0.6); }
+  .authHead { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .tag.ai { color: var(--accent); } .tag.hu { color: var(--amber); }
+  .authBar { display: flex; height: 9px; border-radius: 999px; overflow: hidden; margin: 6px 0 7px; background: rgba(255,255,255,0.06); }
+  .authBar i { display: block; height: 100%; transition: width .09s linear; }
+  #authAI { background: linear-gradient(90deg, #4f9fe0, #7fc3ff); }
+  #authHU { background: linear-gradient(90deg, #ffb86b, #ffd39b); }
+  #ribbon { display: block; width: 100%; height: 52px; margin-top: 8px; border-radius: 8px; background: rgba(8,10,16,0.7); border: 1px solid var(--line); }
+  #result { margin: 6px 0 8px; padding: 9px 11px; border-radius: 11px; border: 1px solid var(--line); background: rgba(18,22,30,0.75); }
+  .resTop { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
+  .grade { font-size: 20px; font-weight: 600; padding: 0 9px; border-radius: 7px; background: rgba(255,255,255,0.07); }
+  .gA, .gB { color: var(--good); } .gC { color: var(--amber); } .gD, .gE, .gF { color: var(--bad); }
+  #log { font-size: 12.5px; max-height: 170px; overflow: auto; border-top: 1px solid var(--line); margin-top: 4px; }
+  #log div { padding: 1px 0; color: #b9c6da; } #log .acc { color: var(--accent); } #log .bad { color: var(--amber); } #log .good { color: var(--good); }
+  #log .t { color: var(--muted); display: inline-block; width: 46px; font-variant-numeric: tabular-nums; }
+
+  #rigWrap { position: absolute; left: 50%; transform: translateX(-50%); bottom: 66px; width: min(600px, 58vw); z-index: 5; }
+  #rig { display: block; width: 100%; height: 96px; border-radius: 14px; background: rgba(12,16,24,0.55); border: 1px solid rgba(255,255,255,0.07); box-shadow: 0 10px 34px rgba(0,0,0,0.45); }
+  .rigLegend { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 4px 10px 0; }
+
+  #bar { position: absolute; left: 0; right: 0; bottom: 10px; z-index: 6; display: flex; justify-content: center; }
+  #bar button { background: rgba(255,255,255,0.075); border: 0; border-radius: 999px; padding: 6px 15px; color: var(--text); font: inherit; cursor: pointer; }
+  #bar button:hover:not(:disabled) { background: rgba(255,255,255,0.15); }
+  #bar button:disabled { opacity: 0.38; cursor: default; }
+  #bar button.primary { background: rgba(127,195,255,0.3); color: #fff; }
+  #bar #batonBtn { background: rgba(255,184,107,0.2); color: #ffe0bd; box-shadow: inset 0 0 0 1px rgba(255,184,107,0.4); min-width: 168px; }
+  #bar #batonBtn:hover:not(:disabled) { background: rgba(255,184,107,0.32); }
+  #bar label { display: inline-flex; align-items: center; gap: 7px; padding: 0 8px; color: #b9c6da; font-size: 13.5px; }
+  #bar label select { width: auto; padding: 3px 8px; }
+  #bar .rail { display: inline-flex; align-items: center; gap: 4px; padding: 5px 8px; border-radius: 999px; flex-wrap: wrap; max-width: 100%;
+    background: rgba(16,22,32,0.6); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07), 0 8px 28px rgba(0,0,0,0.4); }
+  #bar .sep { width: 1px; height: 18px; background: rgba(255,255,255,0.12); margin: 0 4px; }
+
+  html.embedded #side, html.embedded #hud { top: 14px; }
+  @media (max-width: 1180px) { #hud { display: none; } #rigWrap { width: 62vw; } }
+  @media (max-width: 860px) { #side { display: none; } #rigWrap { width: 88vw; } }
+</style>
+  <link rel="stylesheet" href="kosmographica.css?v=15">
+  <script src="atlas-nav.js" defer></script>
+</head>
+<body>
+<div id="view"><canvas id="scene"></canvas></div>
+<div id="navbar"><div id="logo" class="serif"><span class="word">Kosmographica</span><span class="sub">a map of everything, to scale</span></div>
+  <nav id="menu" class="serif"><a href="universe-timeline.html">Kosmographica</a><a href="flight-lab.html">Flight Lab</a><a href="baton-lab.html" class="here">Baton</a></nav><span></span></div>
+
+<aside id="side">
+  <h1 class="serif">Baton</h1>
+  <p class="dim small" id="intro"></p>
+
+  <h2>Who flies</h2>
+  <div class="seg" id="modes">
+    <button data-mode="ai-assisted" class="on">AI-assisted</button>
+    <button data-mode="human-assisted">Human-assisted</button>
+  </div>
+  <div class="small dim" id="modeNote" style="margin-top:6px"></div>
+
+  <h2>Vehicle</h2>
+  <select id="vehicle"></select>
+  <div class="small dim" id="vnote" style="margin-top:4px"></div>
+
+  <h2>Conditions</h2>
+  <div class="f">
+    <label>Wind at 10 m <b id="windV"></b></label><input type="range" id="wind" min="0" max="18" step="1">
+    <label>Gusts <b id="gustV"></b></label><input type="range" id="gust" min="0" max="6" step="0.5">
+  </div>
+  <label class="chk"><input type="checkbox" id="disp" checked> dispersed entry (the stage arrives off target)</label>
+  <div class="grid2 f" style="margin-top:6px"><div><label>Seed</label><input type="number" id="seed" min="1" step="1" value="7"></div><div><label>&nbsp;</label><button id="reseed" style="width:100%;background:rgba(255,255,255,0.07);border:0;border-radius:8px;padding:5px 8px;color:var(--text);font:inherit;cursor:pointer">Random</button></div></div>
+
+  <h2>Hand on the stick</h2>
+  <table class="keys">
+    <tr><td><kbd>space</kbd></td><td>take / hand back the baton</td></tr>
+    <tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>steer across the pad</td></tr>
+    <tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>climb / let it fall</td></tr>
+    <tr><td><kbd>R</kbd></td><td>reset</td></tr>
+  </table>
+  <p class="small dim" style="margin-top:8px">The baton is the rocket: whoever holds it commands the throttle and the tilt. The other pilot keeps flying a cue you can see, so a hand-off is never a step.</p>
+</aside>
+
+<aside id="hud">
+  <p class="phase serif" id="phase">Ready</p>
+  <div id="hint" class="hint" hidden></div>
+  <div id="result" hidden></div>
+  <table class="tele" id="tele"></table>
+
+  <div class="card">
+    <div class="authHead"><span class="tag ai">Autopilot</span><span class="tag hu">You</span></div>
+    <div class="authBar"><i id="authAI"></i><i id="authHU"></i></div>
+    <div class="small dim" id="holderText"></div>
+    <div class="small" id="planText" style="margin-top:3px"></div>
+    <canvas id="ribbon"></canvas>
+  </div>
+
+  <div id="log"></div>
+</aside>
+
+<div id="rigWrap">
+  <canvas id="rig"></canvas>
+  <div class="rigLegend"><span class="tag ai">Autopilot</span><span id="rigState">the baton is not launched</span><span class="tag hu">You</span></div>
+</div>
+
+<div id="bar"><div class="rail">
+  <button id="run" class="primary">▶ Launch</button>
+  <button id="pause" disabled>Pause</button>
+  <button id="ff" disabled>Skip to end</button>
+  <button id="reset">Reset</button>
+  <span class="sep"></span>
+  <label>speed <select id="warp"><option value="0.25">¼×</option><option value="0.5">½×</option><option value="1">1×</option><option value="2">2×</option><option value="5" selected>5×</option><option value="10">10×</option></select></label>
+  <span class="sep"></span>
+  <button id="batonBtn">Take the baton</button>
+</div></div>
+
+<script type="module">
+import { BatonFlight, VEHICLES } from "./baton-sim.js";
+
+const $ = id => document.getElementById(id);
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const AI = [127, 195, 255], HU = [255, 184, 107];
+const mix = (t, alpha = 1) => `rgba(${Math.round(AI[0] + (HU[0] - AI[0]) * t)},${Math.round(AI[1] + (HU[1] - AI[1]) * t)},${Math.round(AI[2] + (HU[2] - AI[2]) * t)},${alpha})`;
+
+const INTRO = {
+  "ai-assisted": "The autopilot is flying the landing. Watch its plan, and take the baton when you think a hand would help — or when it asks.",
+  "human-assisted": "You are flying it. The autopilot is holding a cue: the blue arrow is where it would put the rocket. Follow it, or ignore it.",
+};
+const MODE_NOTE = {
+  "ai-assisted": "The autopilot starts with the baton. Space takes it, space gives it back.",
+  "human-assisted": "You start with the baton. Space hands it to the autopilot, space takes it back.",
+};
+
+let mode = "ai-assisted";
+let flight = null, running = false, last = 0, trail = [], hist = [], flash = null, hudAt = 0, kSmooth = null;
+const keys = new Set();
+let dragging = false, dragUx = 0;
+
+/* ---------------- controls ---------------- */
+$("vehicle").innerHTML = Object.entries(VEHICLES).map(([id, v]) => `<option value="${id}">${esc(v.name)}</option>`).join("");
+
+function config() {
+  return {
+    vehicle: $("vehicle").value,
+    mode,
+    wind: +$("wind").value,
+    gust: +$("gust").value,
+    dispersed: $("disp").checked,
+    seed: +$("seed").value || 7,
+  };
+}
+
+function labels() {
+  const v = VEHICLES[$("vehicle").value];
+  $("windV").textContent = (+$("wind").value).toFixed(0) + " m/s";
+  $("gustV").textContent = "±" + (+$("gust").value).toFixed(1) + " m/s";
+  $("vnote").textContent = v.note;
+  $("intro").textContent = INTRO[mode];
+  $("modeNote").textContent = MODE_NOTE[mode];
+  $("wind").disabled = v.wind === 0;
+}
+
+function onMode(next) {
+  mode = next;
+  for (const b of $("modes").querySelectorAll("button")) b.classList.toggle("on", b.dataset.mode === next);
+  labels();
+  reset();
+}
+$("modes").addEventListener("click", e => {
+  const b = e.target.closest("button[data-mode]");
+  if (b) onMode(b.dataset.mode);
+});
+
+for (const id of ["wind", "gust"]) $(id).addEventListener("input", labels);
+$("vehicle").addEventListener("change", () => {
+  const v = VEHICLES[$("vehicle").value];
+  $("wind").value = v.wind;
+  $("gust").value = Math.min(6, Math.max(0, +(0.35 * v.wind).toFixed(1)));
+  labels();
+  reset();
+});
+for (const id of ["wind", "gust", "disp", "seed"]) $(id).addEventListener("change", reset);
+$("reseed").addEventListener("click", () => {
+  $("seed").value = 1 + Math.floor(Math.random() * 9999);
+  reset();
+});
+
+/* ---------------- flight lifecycle ---------------- */
+function reset() {
+  flight = new BatonFlight(config());
+  running = false;
+  trail = [];
+  hist = [];
+  kSmooth = null;
+  flash = null;
+  last = performance.now();
+  updateButtons();
+  draw();
+  hud();
+}
+
+function launch() {
+  if (!flight || flight.done) reset();
+  running = true;
+  last = performance.now();
+  updateButtons();
+}
+
+function togglePause() {
+  if (!flight || flight.done) return;
+  running = !running;
+  last = performance.now();
+  updateButtons();
+}
+
+function skipToEnd() {
+  if (!flight) return;
+  running = false;
+  let guard = 0;
+  while (!flight.done && guard++ < 40000) {
+    applyInput(1 / 60);
+    flight.advance(0.05);
+    record();
+  }
+  updateButtons();
+  hud();
+  draw();
+}
+
+function toggleBaton() {
+  if (!flight || flight.done) return;
+  const taking = flight.control.target !== 1;
+  if (taking) {
+    flight.setInput({ ux: 0, sink: clamp(-flight.s.vy, 1, 120) });
+    flight.takeBaton();
+  } else {
+    flight.handBack();
+  }
+  flash = { t: performance.now(), to: taking ? "human" : "ai" };
+  updateButtons();
+  hud();
+}
+
+function updateButtons() {
+  const done = !flight || flight.done;
+  $("run").textContent = done ? "↻ Fly again" : "▶ Launch";
+  $("run").disabled = running;
+  $("pause").disabled = done;
+  $("pause").textContent = running ? "Pause" : "Resume";
+  $("ff").disabled = done || running;
+  $("reset").disabled = false;
+  $("batonBtn").disabled = done;
+  $("batonBtn").textContent = flight && flight.control.target === 1 ? "Hand it back  (space)" : "Take the baton  (space)";
+  const h = flight ? flight.control.human : 0;
+  $("rigState").textContent = done
+    ? "on the deck"
+    : h > 0.98
+      ? "the baton is yours"
+      : h < 0.02
+        ? "the baton is with the autopilot"
+        : "passing the baton";
+}
+
+$("run").onclick = launch;
+$("pause").onclick = togglePause;
+$("ff").onclick = skipToEnd;
+$("reset").onclick = reset;
+$("batonBtn").onclick = toggleBaton;
+
+function applyInput(dt) {
+  if (!flight || flight.done) return;
+  if (flight.control.target !== 1) {
+    if (flight.human.ux !== 0) flight.setInput({ ux: 0 });
+    return;
+  }
+  let target = 0;
+  if (keys.has("ArrowRight") || keys.has("KeyD")) target += 1;
+  if (keys.has("ArrowLeft") || keys.has("KeyA")) target -= 1;
+  if (dragging) target = dragUx;
+  const ux = flight.human.ux + (clamp(target, -1, 1) - flight.human.ux) * Math.min(1, dt * 9);
+  let sink = flight.human.sink;
+  if (keys.has("ArrowDown") || keys.has("KeyS")) sink += 30 * dt;
+  if (keys.has("ArrowUp") || keys.has("KeyW")) sink -= 30 * dt;
+  flight.setInput({ ux, sink });
+}
+
+addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA") return;
+  if (e.code === "Space") {
+    e.preventDefault();
+    // Before the first launch Space launches; after that it always passes the baton (P resumes).
+    if (flight && !flight.done && flight.s.t === 0) launch();
+    else toggleBaton();
+    return;
+  }
+  if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "KeyA", "KeyD", "KeyW", "KeyS"].includes(e.code)) {
+    e.preventDefault();
+    keys.add(e.code);
+  }
+  if (e.key === "r" || e.key === "R") reset();
+  if (e.key === "p" || e.key === "P") togglePause();
+});
+addEventListener("keyup", e => keys.delete(e.code));
+
+/* ---------------- recording ---------------- */
+function record() {
+  if (!flight) return;
+  const s = flight.s;
+  if (!trail.length || s.t - trail[trail.length - 1].t >= 0.2) trail.push({ t: s.t, x: s.x, y: s.y });
+  if (!hist.length || s.t - hist[hist.length - 1].t >= 0.08) hist.push({ t: s.t, h: flight.control.human });
+}
+
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dtr = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (flight && running) {
+    applyInput(dtr);
+    flight.advance(dtr * +$("warp").value);
+    record();
+    if (flight.done) {
+      running = false;
+      updateButtons();
+      hud();
+    }
+  }
+  if (flight) {
+    draw();
+    if (now - hudAt > 90) {
+      hudAt = now;
+      hud();
+    }
+  }
+}
+
+/* ---------------- canvas helpers ---------------- */
+const scene = $("scene"), ctx = scene.getContext("2d");
+const rig = $("rig"), rctx = rig.getContext("2d");
+const ribbon = $("ribbon"), nctx = ribbon.getContext("2d");
+
+function fit(cv, g) {
+  const r = Math.min(2, devicePixelRatio || 1);
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if (!w || !h) return null;
+  if (cv.width !== Math.round(w * r) || cv.height !== Math.round(h * r)) {
+    cv.width = Math.round(w * r);
+    cv.height = Math.round(h * r);
+  }
+  g.setTransform(r, 0, 0, r, 0, 0);
+  return { w, h };
+}
+
+/* ---------------- the world ---------------- */
+function draw() {
+  if (!flight) return;
+  const dims = fit(scene, ctx);
+  if (!dims) return;
+  const { w: W, h: H } = dims;
+  const s = flight.s, v = flight.veh;
+  ctx.clearRect(0, 0, W, H);
+
+  const wide = W > 1180;
+  const padL = wide ? 356 : 10, padR = wide ? 344 : 10;
+  const cx = padL + (W - padL - padR) / 2;
+  const groundY = H - 196;
+  const topY = wide ? 70 : 44;
+
+  // vertical zoom: the whole descent fits, then closes in as the stage arrives
+  const yMax = Math.max(s.y + 30, 70);
+  const kTarget = clamp((groundY - topY) / yMax, 0.02, 9);
+  kSmooth = kSmooth == null ? kTarget : kSmooth + (kTarget - kSmooth) * 0.1;
+  const k = kSmooth;
+  const X = x => cx + x * k;
+  const Y = alt => groundY - alt * k;
+  const hw = flight.control.human;
+
+  // sky
+  const alt = clamp(s.y / 12000, 0, 1);
+  const sky = ctx.createLinearGradient(0, 0, 0, groundY);
+  sky.addColorStop(0, `rgb(${Math.round(6 + 18 * (1 - alt))},${Math.round(10 + 46 * (1 - alt))},${Math.round(22 + 96 * (1 - alt))})`);
+  sky.addColorStop(1, `rgb(${Math.round(46 + 44 * (1 - alt))},${Math.round(70 + 52 * (1 - alt))},${Math.round(104 + 46 * (1 - alt))})`);
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, H);
+
+  if (alt > 0.45) {
+    ctx.fillStyle = "#fff";
+    for (let i = 0; i < 120; i++) {
+      const sx = Math.abs((Math.sin(i * 12.9898) * 43758.5453) % 1) * W;
+      const sy = Math.abs((Math.sin(i * 78.233) * 12543.123) % 1) * groundY * 0.92;
+      ctx.globalAlpha = clamp((alt - 0.45) * 2, 0, 0.85) * (0.4 + 0.6 * Math.abs((Math.sin(i * 3.3) * 91) % 1));
+      ctx.fillRect(sx, sy, 1.6, 1.6);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // ground: sea for the drone ship, a pad otherwise
+  ctx.fillStyle = v.deck === "ship" ? "#0e2436" : "#2c3330";
+  ctx.fillRect(0, groundY, W, H - groundY);
+  ctx.strokeStyle = v.deck === "ship" ? "rgba(190,225,255,0.22)" : "rgba(200,220,200,0.18)";
+  ctx.lineWidth = 1.3;
+  ctx.beginPath();
+  for (let px = 0; px <= W; px += 7) {
+    const wx = (px - cx) / Math.max(k, 0.001);
+    const yy = groundY + 5 + Math.sin(wx * 0.05 + s.t * 1.2) * 2.2;
+    px ? ctx.lineTo(px, yy) : ctx.moveTo(px, yy);
+  }
+  ctx.stroke();
+
+  // the deck: a fixed pad, or a ship that heaves a little
+  const deck = v.deck === "ship" ? Math.sin(s.t * 0.7) * 0.6 : 0;
+  const deckY = Y(deck);
+  if (v.deck === "ship") {
+    const half = Math.max(26, 46 * k);
+    ctx.fillStyle = "#2b3138";
+    ctx.fillRect(X(0) - half, deckY, half * 2, Math.max(4, 7 * k * 0.5));
+  }
+  // the tolerance band
+  const r = v.radius * k;
+  ctx.strokeStyle = "rgba(127,224,160,0.9)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(X(0) - Math.max(r, 3), deckY - 1);
+  ctx.lineTo(X(0) + Math.max(r, 3), deckY - 1);
+  ctx.stroke();
+  ctx.fillStyle = "rgba(127,224,160,0.95)";
+  ctx.fillRect(X(0) - Math.max(r, 3) - 1, deckY - 7, 2, 7);
+  ctx.fillRect(X(0) + Math.max(r, 3) - 1, deckY - 7, 2, 7);
+
+  // flight path
+  if (trail.length > 1) {
+    ctx.lineWidth = 1.6;
+    for (let i = 1; i < trail.length; i++) {
+      const a = trail[i - 1], b = trail[i];
+      ctx.strokeStyle = `rgba(200,220,255,${0.12 + 0.5 * (i / trail.length)})`;
+      ctx.beginPath();
+      ctx.moveTo(X(a.x), Y(a.y));
+      ctx.lineTo(X(b.x), Y(b.y));
+      ctx.stroke();
+    }
+  }
+
+  const px = X(s.x), py = Y(s.y);
+  const L = v.length * k;
+
+  // the tether from the console to the rocket: authority flowing one way or the other
+  if (!flight.done) {
+    ctx.strokeStyle = mix(hw, 0.22);
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([4, 6]);
+    ctx.beginPath();
+    ctx.moveTo(W / 2, H - 178);
+    ctx.quadraticCurveTo((W / 2 + px) / 2, (H - 178 + py) / 2 + 30, px, py - Math.min(L * 0.5, 40));
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // what each pilot would do: the autopilot's cue, and your hand
+  if (!flight.done) {
+    const cue = flight.aiPlan();
+    const hand = flight.humanCommand();
+    const oy = py - Math.min(L * 0.55, 60);
+    const arrow = (tilt, col, len) => {
+      const ax = px + Math.sin(tilt) * len, ay = oy - Math.cos(tilt) * len;
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(px, oy);
+      ctx.lineTo(ax, ay);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(ax, ay, 2.4, 0, 7);
+      ctx.fillStyle = col;
+      ctx.fill();
+    };
+    if (cue.throttle > 0 || cue.phase === "burn") arrow(cue.tilt, "rgba(127,195,255,0.75)", 34);
+    if (flight.control.human > 0.02) arrow(hand.tilt, "rgba(255,184,107,0.85)", 34);
+  }
+
+  drawRocket(px, py, k, s);
+
+  // the authority ring: two arcs, one for each pilot
+  if (!flight.done) {
+    const rr = Math.max(20, Math.min(L * 0.62, 74));
+    const ry = py - Math.min(L * 0.5, 50);
+    ctx.lineWidth = 2.6;
+    const start = -Math.PI / 2;
+    ctx.strokeStyle = "rgba(127,195,255,0.85)";
+    ctx.beginPath();
+    ctx.arc(px, ry, rr, start, start + (1 - hw) * Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(255,184,107,0.9)";
+    ctx.beginPath();
+    ctx.arc(px, ry, rr, start + (1 - hw) * Math.PI * 2, start + Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // a hand-off: a ring where the baton crossed
+  if (flash) {
+    const age = (performance.now() - flash.t) / 1000;
+    if (age < 0.8) {
+      const rr = 16 + age * 120;
+      ctx.strokeStyle = flash.to === "human" ? `rgba(255,184,107,${0.75 * (1 - age / 0.8)})` : `rgba(127,195,255,${0.75 * (1 - age / 0.8)})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(px, py - Math.min(L * 0.5, 50), rr, 0, 7);
+      ctx.stroke();
+    } else flash = null;
+  }
+
+  drawRig();
+  drawRibbon();
+}
+
+function drawRocket(px, py, k, s) {
+  const v = flight.veh;
+  const L = v.length * k, D = Math.max(2, v.diameter * k);
+  if (L < 17) {
+    ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.arc(px, py - 3, 3.4, 0, 7);
+    ctx.fill();
+    ctx.font = "12px ui-sans-serif, system-ui, sans-serif";
+    ctx.fillStyle = "rgba(219,229,243,0.85)";
+    ctx.fillText(`${Math.round(s.y)} m · ${Math.round(-s.vy)} m/s`, px + 9, py - 1);
+    return;
+  }
+  ctx.save();
+  ctx.translate(px, py);
+  ctx.rotate(s.th);
+
+  const flame = s.level;
+  if (flame > 0.02) {
+    const fl = L * (0.35 + 0.6 * flame) * (0.9 + 0.1 * Math.sin(s.t * 55));
+    const g = ctx.createLinearGradient(0, 0, 0, fl);
+    g.addColorStop(0, "rgba(255,255,235,0.95)");
+    g.addColorStop(0.35, "rgba(255,195,95,0.8)");
+    g.addColorStop(1, "rgba(255,90,30,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(-D * 0.34, 0);
+    ctx.lineTo(D * 0.34, 0);
+    ctx.lineTo(0, fl);
+    ctx.fill();
+  }
+
+  // legs
+  ctx.strokeStyle = "#c9d2dc";
+  ctx.lineWidth = Math.max(1, 0.5 * k);
+  const lr = Math.max(D * 1.1, (v.legRadius ?? v.diameter) * k * 0.9);
+  ctx.beginPath();
+  ctx.moveTo(-D / 2, -L * 0.06);
+  ctx.lineTo(-lr, 0);
+  ctx.moveTo(D / 2, -L * 0.06);
+  ctx.lineTo(lr, 0);
+  ctx.stroke();
+
+  // body
+  const body = ctx.createLinearGradient(-D / 2, 0, D / 2, 0);
+  body.addColorStop(0, "#97a1ac");
+  body.addColorStop(0.45, "#f2f5f9");
+  body.addColorStop(1, "#88919b");
+  ctx.fillStyle = body;
+  ctx.fillRect(-D / 2, -L, D, L);
+  ctx.fillStyle = "#2a2f36";
+  ctx.fillRect(-D / 2, -L, D, Math.max(1.5, D * 0.22));
+  ctx.fillRect(-D * 0.35, -Math.max(2, L * 0.02), D * 0.7, Math.max(2, L * 0.02));
+
+  // grid fins
+  const fw = Math.max(1.6, D * 0.5);
+  ctx.fillStyle = "#4b535c";
+  ctx.fillRect(-D / 2 - fw, -L + D * 0.5, fw, Math.max(2, D * 0.22));
+  ctx.fillRect(D / 2, -L + D * 0.5, fw, Math.max(2, D * 0.22));
+
+  ctx.restore();
+}
+
+/* ---------------- the baton console ---------------- */
+function drawRig() {
+  const dims = fit(rig, rctx);
+  if (!dims) return;
+  const { w: W, h: H } = dims;
+  rctx.clearRect(0, 0, W, H);
+  if (!flight) return;
+
+  const hw = flight.control.human;
+  const railY = H * 0.56;
+  const x0 = 62, x1 = W - 62;
+  const seatR = 15;
+
+  // the rail
+  rctx.strokeStyle = "rgba(255,255,255,0.16)";
+  rctx.lineWidth = 2;
+  rctx.beginPath();
+  rctx.moveTo(x0, railY);
+  rctx.lineTo(x1, railY);
+  rctx.stroke();
+
+  // filled by authority
+  rctx.strokeStyle = "rgba(255,184,107,0.55)";
+  rctx.lineWidth = 3;
+  rctx.beginPath();
+  rctx.moveTo(x0, railY + 9);
+  rctx.lineTo(x0 + (x1 - x0) * hw, railY + 9);
+  rctx.stroke();
+  rctx.strokeStyle = "rgba(127,195,255,0.5)";
+  rctx.beginPath();
+  rctx.moveTo(x0 + (x1 - x0) * hw, railY + 9);
+  rctx.lineTo(x1, railY + 9);
+  rctx.stroke();
+
+  // the two seats
+  const seat = (x, col, active, label) => {
+    rctx.beginPath();
+    rctx.arc(x, railY, seatR, 0, 7);
+    rctx.fillStyle = active ? col.replace("1)", "0.28)") : "rgba(255,255,255,0.05)";
+    rctx.fill();
+    rctx.strokeStyle = active ? col : "rgba(255,255,255,0.18)";
+    rctx.lineWidth = active ? 2 : 1.2;
+    rctx.stroke();
+    rctx.fillStyle = active ? "#fff" : "rgba(219,229,243,0.5)";
+    rctx.font = "10px ui-sans-serif, system-ui, sans-serif";
+    rctx.textAlign = "center";
+    rctx.fillText(label, x, railY + 34);
+    rctx.textAlign = "left";
+  };
+  seat(x0, "rgba(127,195,255,1)", hw < 0.5, "AUTOPILOT");
+  seat(x1, "rgba(255,184,107,1)", hw >= 0.5, "YOU");
+
+  // the baton itself: the rocket's control stick, at the place authority sits
+  const bx = x0 + (x1 - x0) * hw;
+  const tilt = clamp(flight.s.th, -0.45, 0.45);
+  rctx.save();
+  rctx.translate(bx, railY - 14);
+  rctx.rotate(tilt);
+  // a small rocket: nose, body, fins
+  rctx.fillStyle = mix(hw);
+  rctx.fillRect(-3.6, -16, 7.2, 22);
+  rctx.beginPath();
+  rctx.moveTo(-3.6, -16);
+  rctx.lineTo(0, -24);
+  rctx.lineTo(3.6, -16);
+  rctx.fill();
+  rctx.fillRect(-7, 1, 3.4, 6);
+  rctx.fillRect(3.6, 1, 3.4, 6);
+  rctx.restore();
+
+  // a glow while it is in transit
+  if (hw > 0.02 && hw < 0.98) {
+    rctx.beginPath();
+    rctx.arc(bx, railY - 14, 20, 0, 7);
+    rctx.strokeStyle = mix(hw, 0.5);
+    rctx.lineWidth = 1.4;
+    rctx.stroke();
+  }
+}
+
+/* ---------------- authority ribbon ---------------- */
+function drawRibbon() {
+  const dims = fit(ribbon, nctx);
+  if (!dims) return;
+  const { w: W, h: H } = dims;
+  nctx.clearRect(0, 0, W, H);
+  if (!flight) return;
+  const span = 26;
+  const t1 = Math.max(flight.s.t, span * 0.5);
+  const t0 = t1 - span;
+  const xAt = t => clamp(((t - t0) / span) * W, 0, W);
+  const yAt = h => H - 8 - h * (H - 18);
+
+  nctx.fillStyle = "rgba(127,195,255,0.16)";
+  nctx.fillRect(0, 0, W, H);
+  nctx.beginPath();
+  nctx.moveTo(0, H - 8);
+  for (const p of hist) nctx.lineTo(xAt(p.t), yAt(p.h));
+  nctx.lineTo(W, H - 8);
+  nctx.closePath();
+  const g = nctx.createLinearGradient(0, H, 0, 0);
+  g.addColorStop(0, "rgba(255,184,107,0.12)");
+  g.addColorStop(1, "rgba(255,184,107,0.55)");
+  nctx.fillStyle = g;
+  nctx.fill();
+  nctx.strokeStyle = "rgba(255,184,107,0.9)";
+  nctx.lineWidth = 1.2;
+  nctx.beginPath();
+  let first = true;
+  for (const p of hist) {
+    if (first) {
+      nctx.moveTo(xAt(p.t), yAt(p.h));
+      first = false;
+    } else nctx.lineTo(xAt(p.t), yAt(p.h));
+  }
+  nctx.stroke();
+
+  nctx.strokeStyle = "rgba(255,255,255,0.22)";
+  nctx.beginPath();
+  nctx.moveTo(0, H - 8);
+  nctx.lineTo(W, H - 8);
+  nctx.stroke();
+
+  for (const tr of flight.transfers) {
+    if (tr.t < t0) continue;
+    const x = xAt(tr.t);
+    nctx.strokeStyle = tr.to === "human" ? "rgba(255,184,107,0.85)" : "rgba(127,195,255,0.85)";
+    nctx.lineWidth = 1;
+    nctx.beginPath();
+    nctx.moveTo(x, 3);
+    nctx.lineTo(x, H - 3);
+    nctx.stroke();
+  }
+}
+
+/* ---------------- readouts ---------------- */
+const row = (k, v) => `<tr><td>${k}</td><td>${v}</td></tr>`;
+
+function hud() {
+  if (!flight) return;
+  const s = flight.s, v = flight.veh, o = flight.done ? flight.judge() : null;
+  const p = flight.aiPlan();
+  const hw = flight.control.human;
+  const share = Math.round(hw * 100);
+
+  $("phase").textContent = flight.done
+    ? o.ok
+      ? v.deck === "ship"
+        ? "On the deck"
+        : "Landed"
+      : "Lost"
+    : p.phase === "coast"
+      ? "Entry, engine off"
+      : "Landing burn";
+
+  $("authAI").style.width = `${100 - share}%`;
+  $("authHU").style.width = `${share}%`;
+  const who = flight.done ? "flight over" : hw > 0.98 ? "you hold the baton" : hw < 0.02 ? "the autopilot holds the baton" : "passing the baton…";
+  $("holderText").textContent = `${who} · ${share} % yours`;
+  $("planText").innerHTML = p.feasible
+    ? `<span class="dim">autopilot cue: ${p.phase}</span> · ${Math.round(p.headroom * 100)} % authority in reserve`
+    : `<span class="badc">autopilot: no plan from this state</span>`;
+
+  let hint = "";
+  if (!flight.done) {
+    if (flight.calls > 0 && hw > 0.5) hint = "The autopilot is asking for the baton — press space.";
+    else if (hw > 0.5 && !p.feasible) hint = "No plan from here. This one is yours to fly.";
+    else if (hw < 0.5 && !p.feasible) hint = "The autopilot is out of authority — take the baton.";
+  }
+  $("hint").hidden = !hint;
+  $("hint").textContent = hint;
+
+  $("tele").innerHTML = [
+    row("altitude above the deck", `${Math.max(s.y, 0).toFixed(s.y < 120 ? 1 : 0)} m`),
+    row("descent", `${Math.max(-s.vy, 0).toFixed(1)} m/s`),
+    row("across the pad", `${s.x.toFixed(1)} m`),
+    row("lateral speed", `${s.vx.toFixed(1)} m/s`),
+    row("tilt", `${(s.th / (Math.PI / 180)).toFixed(1)}°`),
+    row("throttle", `${(s.level * 100).toFixed(0)} %${s.lit ? "" : " (out)"}`),
+    row("thrust", s.level > 0.01 ? `${(s.thrust / 1e3).toFixed(0)} kN` : "—"),
+    row("propellant", `${Math.round(s.prop)} kg`),
+    row("wind here", `${flight.windAt(Math.max(s.y, 0)).toFixed(1)} m/s`),
+    row("your hand", `${Math.round(flight.human.ux * 100)} % · ${flight.human.sink.toFixed(0)} m/s sink`),
+  ].join("");
+
+  renderResult(o);
+  renderLog();
+  updateButtons();
+}
+
+function renderResult(o) {
+  const el = $("result");
+  if (!o) {
+    el.hidden = true;
+    return;
+  }
+  el.hidden = false;
+  const pct = Math.round(o.humanShare * 100);
+  el.innerHTML = `<div class="resTop"><b class="${o.ok ? "okc" : "badc"}">${o.ok ? (flight.veh.deck === "ship" ? "On the deck" : "Landed") : "Lost"}</b><span class="grade g${o.grade}">${o.grade}</span></div>
+    <div class="small">${o.ok ? `${o.vv.toFixed(2)} m/s down, ${o.vh.toFixed(2)} m/s sideways, ${o.miss.toFixed(1)} m off · ${Math.round(o.prop)} kg left` : esc(o.reasons.join("; "))}</div>
+    <div class="small dim" style="margin-top:4px">${esc(o.title)} · ${o.score}/100 · ${pct} % of the descent on your hand · ${o.transfers.length} hand-off${o.transfers.length === 1 ? "" : "s"}, ${o.clean} clean${o.calls ? `, ${o.calls} call${o.calls === 1 ? "" : "s"} from the autopilot` : ""}</div>`;
+}
+
+function renderLog() {
+  const el = $("log");
+  const cls = { call: "bad", handoff: "acc", end: "good" };
+  el.innerHTML = flight.events
+    .slice(-9)
+    .map(e => `<div class="${cls[e.kind] || ""}"><span class="t">${e.t.toFixed(1)}s</span>${esc(e.txt)}</div>`)
+    .join("");
+  el.scrollTop = el.scrollHeight;
+}
+
+/* ---------------- pointer steering ---------------- */
+scene.addEventListener("pointerdown", e => {
+  if (!flight || flight.done || flight.control.target !== 1) return;
+  dragging = true;
+  scene.setPointerCapture(e.pointerId);
+  onDrag(e);
+});
+scene.addEventListener("pointermove", e => {
+  if (dragging) onDrag(e);
+});
+scene.addEventListener("pointerup", () => {
+  dragging = false;
+});
+function onDrag(e) {
+  const wide = scene.clientWidth > 1180;
+  const padL = wide ? 356 : 10, padR = wide ? 344 : 10;
+  const cx = padL + (scene.clientWidth - padL - padR) / 2;
+  dragUx = clamp((e.offsetX - cx) / Math.max(80, (scene.clientWidth - padL - padR) * 0.3), -1, 1);
+}
+
+/* ---------------- start ---------------- */
+labels();
+reset();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

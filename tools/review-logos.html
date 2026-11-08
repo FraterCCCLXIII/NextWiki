@@ -122,11 +122,22 @@ function sync() {
 
 async function load(dir) {
   grid.innerHTML = '<p style="color:#8d93a3">loading…</p>';
-  const r = await fetch('/api/brand?dir=' + encodeURIComponent(dir));
-  data = await r.json();
-  hidden = new Set((data.hidden || []).map(String));
-  history.replaceState(null, '', '?brand=' + encodeURIComponent(dir));
-  render();
+  count.textContent = '';
+  try {
+    const r = await fetch('/api/brand?dir=' + encodeURIComponent(dir));
+    const out = await r.json();
+    if (!r.ok) throw new Error(out.error || 'load failed');
+    data = out;
+    hidden = new Set((data.hidden || []).map(String));
+    history.replaceState(null, '', '?brand=' + encodeURIComponent(dir));
+    state.textContent = 'saved'; state.className = 'ok';
+    render();
+  } catch (err) {
+    data = null;
+    grid.innerHTML = '<p style="color:#ff6b6b;padding:8px 4px">' + err.message + '</p>';
+    state.textContent = 'nothing loaded'; state.className = '';
+    log.textContent = err.message;
+  }
 }
 
 document.getElementById('allOn').addEventListener('click', () => { hidden.clear(); render(); });

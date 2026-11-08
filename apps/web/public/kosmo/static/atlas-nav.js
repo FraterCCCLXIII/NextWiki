@@ -37,6 +37,7 @@
     ] },
     { name: "Lab", pages: [
       { href: "flight-lab.html", label: "Flight Lab" },
+      { href: "baton-lab.html", label: "Baton" },
       { href: "warp-lab.html", label: "Warp Drive" },
       { href: "space-access.html", label: "Space Access" },
       { href: "centauri-lab.html", label: "Centauri" },

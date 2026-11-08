@@ -20,6 +20,7 @@ export const KOSMO_TOOLS: Record<
   shipyard: { file: "shipyard.html", title: "Shipyard", group: "atlas" },
   centauri: { file: "centauri-lab.html", title: "Centauri Fleet", group: "atlas" },
   landing: { file: "landing-lab.html", title: "Landing Lab", group: "atlas" },
+  baton: { file: "baton-lab.html", title: "Baton Lab", group: "atlas" },
   flightlab: { file: "flight-lab.html", title: "Flight Lab", group: "atlas" },
   warp: { file: "warp-lab.html", title: "Warp Drive Lab", group: "atlas" },
   "space-access": { file: "space-access.html", title: "Space Access", group: "atlas" },

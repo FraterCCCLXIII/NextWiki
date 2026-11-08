@@ -138,7 +138,7 @@ const controls = new OrbitControls(camera, renderer.domElement); controls.enable
    replaces that handler with an exponential dolly on its own pinch gain; zoomSpeed raises the
    two-finger touch pinch (which OrbitControls handles itself) to match. */
 controls.zoomSpeed = 2.6;
-boostTrackpadZoom(controls, renderer.domElement, { pinchGain: 0.06, scrollGain: 0.007, maxStep: 0.45 });
+boostTrackpadZoom(controls, renderer.domElement, { pinchGain: 0.25, scrollGain: 0.009, maxStep: 0.8 });
 { try { const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; pm.dispose(); } catch { /* no environment: the loader-side metalness cap keeps models lit */ } }   // image-based light so metallic GLB materials are not black
 scene.add(new THREE.AmbientLight(0xffffff, 0.7)); scene.add(new THREE.HemisphereLight(0xbfd8ff, 0x20242c, 0.6));
 const key = new THREE.DirectionalLight(0xffffff, 2.0); key.position.set(40, 80, 60); scene.add(key); const fill = new THREE.DirectionalLight(0x9fd3ff, 0.7); fill.position.set(-50, 20, -40); scene.add(fill);

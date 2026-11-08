@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Assemble sheet.html (single self-contained file) and sheet-numbers.json from .cache/traced/*.json.
+"""Assemble sheet.html (single self-contained viewer), logos.json (the vector payload the logo reel
+loads) and sheet-numbers.json from .cache/traced/*.json.
 Run via build.sh (segment -> trace -> build) or on its own after trace.py."""
 import json, os, re
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -56,9 +57,11 @@ def main():
     sound = open(os.path.join(HERE, '..', 'tools', 'logo-sound.js')).read() + open(os.path.join(HERE, '..', 'tools', 'logo-backdrop.js')).read()
     html = tpl.replace('__SOUND__', sound).replace('__COUNT__', str(n)).replace('__NAV__', ''.join(nav)).replace('__BODY__', ''.join(body)).replace('__DATA__', js)
     open(os.path.join(HERE, 'sheet.html'), 'w').write(html)
+    out = os.path.join(HERE, 'logos.json')
+    json.dump(data, open(out, 'w'), separators=(',', ':'))
     json.dump({'total': n, 'sheets': {k: {'title': t, 'file': 'refs/%s.webp' % k, 'count': sheet_counts[k]} for k, t, _ in SHEETS}, 'logos': numbers},
               open(os.path.join(HERE, 'sheet-numbers.json'), 'w'), indent=1)
-    print('logos', n, 'sheet.html KB', len(html) // 1024)
+    print('logos', n, 'sheet.html KB %d, logos.json KB %d' % (len(html) // 1024, os.path.getsize(out) // 1024))
 
 
 if __name__ == '__main__':

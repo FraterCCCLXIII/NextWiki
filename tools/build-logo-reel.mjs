@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-/* Builds the SpaceRadio, Modern Telepathy and TempleOS parts of the logo reel (apps/web/public/logo-reel/*-reel.js).
-   The Kosmographica half comes from the loader in apps/web/public/logo-loader.
+/* Builds the SpaceRadio, Modern Telepathy, TempleOS and Kosmos parts of the logo reel (apps/web/public/logo-reel/*-reel.js).
+   Every brand's build.py writes logos.json, which is the one vector payload read here; sheet.html stays the
+   review sheet and is never parsed. The Kosmographica half comes from the loader in apps/web/public/logo-loader.
    Change SPACERADIO_PICKS (sheet numbers) to change the reel, and <brand>/hidden.json to keep a logo in the sheet
    but out of the reel while it is being fixed, then run:  node tools/build-logo-reel.mjs */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -36,9 +37,9 @@ if (start < 0 || end < 0) throw new Error("reveal code markers not found in shee
 const reveals = tpl.slice(start, end);
 
 function logosIn(dir) {
-  const m = readFileSync(join(root, dir, "sheet.html"), "utf8").match(/const LOGOS=(\{.*\});/);
-  if (!m) throw new Error(`LOGOS not found in ${dir}/sheet.html`);
-  return JSON.parse(m[1]);
+  const file = join(root, dir, "logos.json");
+  if (!existsSync(file)) throw new Error(`no ${dir}/logos.json yet, run ${dir}/build.py once`);
+  return JSON.parse(readFileSync(file, "utf8"));
 }
 const pickFrom = (all, numbers) => Object.fromEntries(numbers.map((n) => {
   if (!all[n]) throw new Error(`no logo ${n}`);
@@ -92,9 +93,8 @@ emit("modern-telepathy-reel.js", telepathy, "ModernTelepathyReel", "mt", metaFro
 /* Traced brands: build.py in each folder writes logos.json from its sheet, so it goes straight in.
    Until that has run the brand is left out rather than breaking the reel. */
 const emitTraced = (dir, file, globalName, prefix, source, opts) => {
-  const data = join(root, dir, "logos.json");
-  if (!existsSync(data)) return null;
-  const logos = withoutHidden(JSON.parse(readFileSync(data, "utf8")), dir);
+  if (!existsSync(join(root, dir, "logos.json"))) return null;
+  const logos = withoutHidden(logosIn(dir), dir);
   const numbers = JSON.parse(readFileSync(join(root, dir, "sheet-numbers.json"), "utf8")).logos;
   const meta = Object.fromEntries(Object.keys(logos).map((n) => {
     const m = numbers[n] || {};
@@ -108,9 +108,13 @@ const kosmosN = emitTraced("kosmos-logos", "kosmos-reel.js", "KosmosReel", "ko",
 for (const [name, n, dir] of [["TempleOS", templeosN, "templeos-logos"], ["Kosmos", kosmosN, "kosmos-logos"]]) {
   if (n === null) console.log(`${name}: no ${dir}/logos.json yet, run ${dir}/build.sh once refs/ has the sheet`);
 }
-const held = [["SpaceRadio", "spaceradio-logos", SPACERADIO_PICKS.length, spaceradio], ["Modern Telepathy", "modern-telepathy-logos", Object.keys(logosIn("modern-telepathy-logos")).length, telepathy], ["TempleOS", "templeos-logos", null, null], ["Kosmos", "kosmos-logos", null, null]]
-  .map(([name, dir, total, shown]) => ({ name, n: hiddenIn(dir).size, total, shown }))
-  .filter((b) => b.n > 0)
-  .map((b) => `${b.name} ${b.n}${b.total ? ` of ${b.total}` : ""}`);
+/* count only what this reel could actually hold: SpaceRadio has 156 logos on its sheet but 17 picks, and a
+   hidden number outside those picks must not read as "held back" */
+const held = [["SpaceRadio", SPACERADIO_PICKS.length, Object.keys(spaceradio).length],
+  ["Modern Telepathy", Object.keys(logosIn("modern-telepathy-logos")).length, Object.keys(telepathy).length],
+  ["TempleOS", templeosN === null ? null : Object.keys(logosIn("templeos-logos")).length, templeosN],
+  ["Kosmos", kosmosN === null ? null : Object.keys(logosIn("kosmos-logos")).length, kosmosN]]
+  .filter(([, total, shown]) => total != null && shown != null && total > shown)
+  .map(([name, total, shown]) => `${name} ${total - shown} of ${total}`);
 console.log(`${Object.keys(spaceradio).length} SpaceRadio, ${Object.keys(telepathy).length} Modern Telepathy, ${templeosN ?? 0} TempleOS and ${kosmosN ?? 0} Kosmos logos in the reel`);
 if (held.length) console.log(`held back for fixes: ${held.join(", ")}`);

@@ -37,6 +37,9 @@ yarn-error.log*
 .DS_Store
 *.pem
 
+# Agent worktrees (one checkout per branch, never part of the repo)
+.claude/worktrees/
+
 # Local database dumps (contain password hashes and settings - never commit)
 backups/
 tools/.cache/

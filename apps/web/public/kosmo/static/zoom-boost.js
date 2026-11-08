@@ -8,7 +8,7 @@
 //   boostTrackpadZoom(controls, renderer.domElement, { pinchGain, scrollGain, maxStep });
 //
 // It runs in the capture phase on the same element and stops the event there, so OrbitControls' own wheel handler does not also zoom.
-export function boostTrackpadZoom(controls, dom = controls.domElement, { pinchGain = 0.02, scrollGain = 0.0032, maxStep = 0.32 } = {}) {
+export function boostTrackpadZoom(controls, dom = controls.domElement, { pinchGain = 0.12, scrollGain = 0.0032, maxStep = 0.6 } = {}) {
   const off = controls.object.position.clone();
   dom.addEventListener('wheel', e => {
     e.preventDefault();
@@ -26,7 +26,7 @@ export function boostTrackpadZoom(controls, dom = controls.domElement, { pinchGa
 }
 
 // Zoom factor for a wheel event on a 2D canvas (used where there is no OrbitControls): same gains, same cap.
-export function wheelZoomFactor(e, { pinchGain = 0.02, scrollGain = 0.0045, maxStep = 0.32 } = {}) {
+export function wheelZoomFactor(e, { pinchGain = 0.12, scrollGain = 0.0045, maxStep = 0.6 } = {}) {
   let dy = e.deltaY;
   if (e.deltaMode === 1) dy *= 16; else if (e.deltaMode === 2) dy *= 400;
   return Math.exp(-Math.max(-maxStep, Math.min(maxStep, dy * (e.ctrlKey ? pinchGain : scrollGain))));

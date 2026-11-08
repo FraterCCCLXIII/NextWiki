@@ -21,11 +21,13 @@ const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/cs
 
 const brand = (dir) => {
   if (!BRANDS[dir]) throw new Error(`unknown brand: ${dir}`);
-  const m = readFileSync(join(root, dir, "sheet.html"), "utf8").match(/const LOGOS=(\{.*\});/);
-  if (!m) throw new Error(`LOGOS not found in ${dir}/sheet.html`);
+  /* Same single payload the reel reads: every brand's build.py writes logos.json. */
+  const data = join(root, dir, "logos.json");
+  if (!existsSync(data)) throw new Error(`${dir}: no logos.json yet, run ${dir}/build.py once`);
+  const logos = JSON.parse(readFileSync(data, "utf8"));
   const file = join(root, dir, "hidden.json");
   const hidden = existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : [];
-  return { dir, name: BRANDS[dir], logos: JSON.parse(m[1]), hidden };
+  return { dir, name: BRANDS[dir], logos, hidden };
 };
 
 const rebuild = () => new Promise((resolve) => {

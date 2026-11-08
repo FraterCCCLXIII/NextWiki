@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Assemble sheet.html and sheet-numbers.json from .cache/traced/*.json, using the SpaceRadio sheet and viewer as the player.
+"""Assemble sheet.html and sheet-numbers.json, plus logos.json (the vector payload the logo reel
+loads), from .cache/traced/*.json, using the SpaceRadio sheet and viewer as the player.
 Order: segment.py, trace_all.py, fit_fonts.py, build.py. Serve from the repository root, since sound comes from ../spaceradio-logos/audio."""
 import json, os, re, sys
 
@@ -40,8 +41,10 @@ def main():
     sound = open(os.path.join(HERE, '..', 'tools', 'logo-sound.js')).read() + open(os.path.join(HERE, '..', 'tools', 'logo-backdrop.js')).read()
     html = tpl.replace('__SOUND__', sound).replace('__COUNT__', str(len(data))).replace('__NAV__', '').replace('__BODY__', '<section><div class="grid">%s</div></section>' % ''.join(tiles)).replace('__DATA__', json.dumps(data, separators=(',', ':')))
     open(os.path.join(HERE, 'sheet.html'), 'w').write(html)
+    out = os.path.join(HERE, 'logos.json')
+    json.dump(data, open(out, 'w'), separators=(',', ':'))
     json.dump({'total': len(data), 'source': 'refs/sheet.png', 'logos': numbers}, open(os.path.join(HERE, 'sheet-numbers.json'), 'w'), indent=1)
-    print('logos', len(data), 'sheet.html KB', len(html) // 1024)
+    print('logos', len(data), 'sheet.html KB %d, logos.json KB %d' % (len(html) // 1024, os.path.getsize(out) // 1024))
 
 
 if __name__ == '__main__':

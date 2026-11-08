@@ -53,6 +53,7 @@ export const NAV_GROUPS: NavGroup[] = [
     name: "Lab",
     pages: [
       { href: "/kosmo/tools/flightlab", label: "Flight Lab", prefix: "/kosmo/tools/flightlab" },
+      { href: "/kosmo/tools/baton", label: "Baton" },
       { href: "/kosmo/tools/warp", label: "Warp Drive" },
       { href: "/kosmo/tools/space-access", label: "Space Access" },
       { href: "/kosmo/tools/settlement", label: "Settlement" },
