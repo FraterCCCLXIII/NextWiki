@@ -1,17 +1,17 @@
-/* centauri-models.js -- the eight Centauri craft, as CAD built from their solved assemblies.
+/* centauri-models.js -- the Centauri craft, as CAD built from their solved assemblies.
 
    Nothing here is posed by hand. parts/fleet.js solves the assembly from its mates and this module
-   draws what the solver placed: a builder per part kind (a Columbus module is a pressure shell with
-   end cones, external racks, MLI bands and handrails; a 1 g ring is a torus with window strips,
-   spokes and a pressurised hub; a 6U deployer is a four-rail cage with six bays), a mating ring at
-   every structural port so the berthing planes are visible, and the origami deployment from
-   parts/origami.js, which the viewer drives with its unfold control.
+   draws what the solver placed: one builder per part kind, each a thin composition of the primitives
+   in parts/primitives/mesh.js (hull segments, tanks, lofted noses, trusses, radiators, dishes, legs,
+   grid fins, hatches, port rings, instanced windows) in the PBR surfaces of parts/primitives/materials.js
+   (painted steel with panel lines, brushed stainless, black TPS tiles, gold MLI, solar cells, lit
+   glazing). A mating ring stands at every structural port so the berthing planes are visible, and the
+   origami film from parts/origami.js is what the viewer's unfold control drives.
 
    Two scales are in the same picture and both are printed on the label:
      hull   true size, always
-     sail   true size while that stays legible, otherwise 12 hull spans, and the label says by how
-            much it was drawn down -- a colony's film is 171 km on a side against a 1.02 km ring,
-            and scaling the ring up to make the sail "fit" would be a lie about the ring.
+     sail   true size while that stays legible, otherwise 3 hull spans, and the label says by how much
+            it was drawn down -- a colony's film is hundreds of km across against a 142 m ring.
 
    Axes: parts are built in their own frame, +y along the part, base at y = 0, except where the
    catalogue says origin: 'centre'. The solver's quaternion then turns each part onto the craft's
@@ -19,675 +19,438 @@
 
 import * as THREE from 'three';
 import { measure } from './fleet.js';
+import { sailSquareSide, accordionAngles, FLASHER, SECTOR, flasherRadius, deploy, faces, creases, lambdaFor } from './origami.js';
+import { surface } from './primitives/materials.js';
 import {
-  sailSquareSide, accordionAngles, FLASHER, SECTOR, flasherRadius, deploy, faces, creases, lambdaFor
-} from './origami.js';
+  put, cyl, box, tor, sph, lathe, rod, ringXZ, instances, tankMesh, fairingMesh, hullSegmentMesh, torusDeckMesh, trussMesh,
+  accordionStrip, radiatorMesh, solarArrayMesh, dishMesh, bellMesh, rcsQuadMesh, gridFinMesh, landingLegMesh, hatchMesh, portRingMesh, navLights, copvClusterMesh
+} from './primitives/mesh.js';
+import { haackProfile, domeProfile, bellSpec } from './primitives/spec.js';
 
-const CO = {
-  shell: 0xe9edf2, mli: 0xd9cfae, metal: 0xc3c8cf, dark: 0x4a4f57, glass: 0x27435f,
-  film: 0x9fd0ff, array: 0x1d2c55, rad: 0xe4e0d6, gold: 0xc9a24b, grey: 0x9aa3ad,
-  tank: 0xb9c0c8, accent: 0xc4642a, hatch: 0x8d959e
-};
+const Y = new THREE.Vector3(0, 1, 0);
 
-const cache = new Map();
-function mat(c, o = {}) {
-  const k = `${c}|${o.metal ?? ''}|${o.rough ?? ''}|${o.emissive ?? ''}|${o.alpha ?? ''}`;
-  if (!cache.has(k)) cache.set(k, new THREE.MeshStandardMaterial({
-    color: c, metalness: o.metal ?? 0.18, roughness: o.rough ?? 0.5, emissive: o.emissive ?? 0x000000,
-    side: THREE.DoubleSide, transparent: o.alpha != null, opacity: o.alpha ?? 1
-  }));
-  return cache.get(k);
-}
-const mesh = (g, c, o) => new THREE.Mesh(g, mat(c, o));
-
-/* ---- primitives, metres, +y up, base at y = 0 ---- */
-const cyl = (r, h, c, o = {}) => { const g = new THREE.CylinderGeometry(o.r2 ?? r, r, h, o.seg ?? 24, 1, !!o.open); g.translate(0, h / 2, 0); return mesh(g, c, o.mat); };
-const box = (w, h, d, c, o = {}) => mesh(new THREE.BoxGeometry(w, h, d), c, o.mat);
-const tor = (r, tube, c, o = {}) => mesh(new THREE.TorusGeometry(r, tube, o.rad ?? 10, o.tseg ?? 48), c, o.mat);
-const sph = (r, c, o = {}) => mesh(new THREE.SphereGeometry(r, o.seg ?? 20, o.rseg ?? 14), c, o.mat);
-const put = (o, x, y, z, rx = 0, ry = 0, rz = 0) => { o.position.set(x, y, z); o.rotation.set(rx, ry, rz); return o; };
-
-function rod(g, a, b, r, c, o = {}) {
-  const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b), L = A.distanceTo(B) || 1e-6;
-  const m = cyl(r, L, c, { seg: o.seg ?? 8, mat: o.mat });
-  m.position.copy(A);
-  m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.clone().sub(A).normalize());
-  g.add(m);
-  return m;
-}
-
-/* A ring lying in the part's xz plane (normal +y): end domes, hatch frames, ribs. */
-function ringXZ(r, tube, c, y = 0) {
-  const m = tor(r, tube, c, { metal: 0.55, rough: 0.35 });
-  m.rotation.x = Math.PI / 2;
-  m.position.y = y;
-  return m;
-}
-
-/** A visible mating plane at every structural port: CBM, IDSS and the PAF classes. Hinges and
- *  service connectors are not hatches, so they get nothing. */
-const PORT_D = { 'paf-937': 0.937, 'paf-1194': 1.194, 'paf-1575': 1.575, 'idss-1200': 1.2, cbm: 1.27 };
+/** A visible mating plane at every structural port. Hinges and service connectors are not hatches. */
+const PORT_D = { 'paf-937': 0.937, 'paf-1194': 1.194, 'paf-1575': 1.575, 'idss-1200': 1.2, cbm: 1.27, 'lightband-12': 0.298 };
 function addPortRing(g, port) {
   const d = PORT_D[port.type];
-  if (!d || /^(mount|hub|root|sailmount)/.test(port.id)) return;
-  const m = tor(d / 2, Math.max(d * 0.035, 1e-4), CO.metal, { metal: 0.6, rough: 0.3 });
-  m.position.fromArray(port.at);
-  m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), new THREE.Vector3(...port.axis).normalize());
-  g.add(m);
-  const plate = cyl(d * 0.44, d * 0.06, CO.hatch, { seg: 20 });
-  plate.position.set(0, -d * 0.03, 0);
-  const frame = new THREE.Group();
-  frame.add(plate);
-  frame.position.fromArray(port.at);
-  frame.quaternion.copy(m.quaternion);
-  g.add(frame);
+  if (!d || /^(mount|hub|root|sailmount|rtg|hga|bay|berth|legmount|finmount|spinhub)/.test(port.id)) return;
+  const ring = portRingMesh(d);
+  ring.position.fromArray(port.at);
+  ring.quaternion.setFromUnitVectors(Y, new THREE.Vector3(...port.axis).normalize());
+  g.add(ring);
+}
+
+/* RCS quads around a body at height y, radius r: four pods at 45 degrees. */
+function quadsAround(g, r, y, n = 4, size = null) {
+  const d = size ?? Math.max(0.12, Math.min(0.5, r * 0.18));
+  for (let i = 0; i < n; i += 1) { const a = (i / n) * Math.PI * 2 + Math.PI / 4; const q = rcsQuadMesh({ d }); put(q, Math.cos(a) * (r + d * 0.3), y, Math.sin(a) * (r + d * 0.3), 0, -a, 0); g.add(q); }
 }
 
 /* ------------------------------------------------------------------ *
  * Part builders: one per catalogue kind
  * ------------------------------------------------------------------ */
 
-/* Columbus-class laboratory: pressure shell, fore cone, CBM rings, four external racks, MLI
-   bands, handrails, nadir windows. */
+/* ISS-class laboratory or stores module: pressure hull, racks, MLI, windows, handrails, raceway. */
 function moduleCAD(p) {
-  const g = new THREE.Group(), r = (p.dims.d ?? 4.5) / 2, L = p.dims.l ?? 6.9, end = Math.min(0.65, L * 0.1);
-  g.add(cyl(r, L, CO.mli, { seg: 36 }));
-  put(cyl(r * 0.52, end, CO.shell, { r2: r, seg: 36 }), 0, L - end, 0);
-  g.add(ringXZ(r, Math.max(r * 0.03, 0.02), CO.metal, 0.05));
-  g.add(ringXZ(r, Math.max(r * 0.03, 0.02), CO.metal, L - 0.05));
-  for (let i = 0; i < 4; i += 1) {
-    const a = (i / 4) * Math.PI * 2 + Math.PI / 4, x = Math.cos(a), z = Math.sin(a);
-    const rack = box(r * 0.32, L * 0.5, r * 0.62, CO.shell);
-    put(rack, x * (r + r * 0.16), L * 0.5, z * (r + r * 0.16), 0, -a, 0);
-    g.add(rack);
-    for (const y of [L * 0.3, L * 0.7]) rod(g, [x * r * 0.75, y, z * r * 0.75], [x * (r + r * 0.1), y, z * (r + r * 0.1)], r * 0.02, CO.metal);
-    const rail = rod(g, [x * r * 1.03, L * 0.22, z * r * 1.03], [x * r * 1.03, L * 0.78, z * r * 1.03], r * 0.018, CO.metal);
-    rail.userData.handrail = true;
-  }
-  for (let i = 1; i <= 3; i += 1) {
-    const band = cyl(r * 1.012, L * 0.045, CO.gold, { seg: 36, open: true });
-    band.position.y = (L * i) / 4;
-    g.add(band);
-  }
-  for (let i = 0; i < 2; i += 1) {
-    const w = cyl(r * 0.1, r * 0.05, CO.glass, { seg: 16 });
-    put(w, r * 0.34, L * 0.42 + i * r * 0.5, -r * 0.93, Math.PI / 2);
-    g.add(w);
-  }
+  const stores = p.kind === 'stores-module';
+  const g = hullSegmentMesh({ d: p.dims.d, l: p.dims.l, endKind: 'cone', skin: stores ? 'offwhite' : 'white', windows: stores ? 0 : 2, racks: stores ? 2 : 4, hatchSide: stores });
+  if (stores) { const h = p.dims.l; for (let i = 0; i < 3; i += 1) { const pallet = box(p.dims.d * 0.5, h * 0.18, p.dims.d * 0.08, 'grey'); put(pallet, 0, h * (0.25 + 0.25 * i), -p.dims.d * 0.5 - p.dims.d * 0.03); g.add(pallet); } }
   return { group: g };
 }
 
-/* Unity-class node: six berths on a short pressurised drum, plus the grapple fixture. */
+/* Node: short drum, four radial CBM berths with hatches and rings, grapple fixture. */
 function nodeCAD(p) {
-  const g = new THREE.Group(), r = (p.dims.d ?? 4.6) / 2, L = p.dims.l ?? 5.5, mid = L / 2;
-  g.add(cyl(r, L, CO.mli, { seg: 32 }));
-  g.add(ringXZ(r * 0.98, r * 0.035, CO.metal, 0.04), ringXZ(r * 0.98, r * 0.035, CO.metal, L - 0.04));
-  for (const [ax, az] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-    const dir = new THREE.Vector3(ax, 0, az).normalize();
-    const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
-    const stub = cyl(0.635, 0.42, CO.shell, { seg: 22 });
-    stub.quaternion.copy(q);
-    stub.position.set(ax * r * 0.82, mid, az * r * 0.82);
-    g.add(stub);
-    const ring = tor(0.635, 0.05, CO.metal, { metal: 0.6, rough: 0.3 });
-    ring.quaternion.copy(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), dir));
-    ring.position.set(ax * (r * 0.82 + 0.42), mid, az * (r * 0.82 + 0.42));
-    g.add(ring);
-    const hatch = cyl(0.55, 0.04, CO.hatch, { seg: 20 });
-    hatch.quaternion.copy(ring.quaternion);
-    hatch.position.copy(ring.position).addScaledVector(dir, -0.02);
-    g.add(hatch);
+  const g = new THREE.Group(), r = p.dims.d / 2, L = p.dims.l;
+  g.add(hullSegmentMesh({ d: p.dims.d, l: L, endKind: 'cone', skin: 'white', windows: 0, racks: 0, bands: 2 }));
+  for (const port of p.ports.filter((q) => q.type === 'cbm' && !/aft|fore/.test(q.id))) {
+    const dir = new THREE.Vector3(...port.axis).normalize(), q = new THREE.Quaternion().setFromUnitVectors(Y, dir);
+    const stub = cyl(0.75, 0.5, 'white', { seg: 28, repeat: [2, 1] }); stub.quaternion.copy(q); stub.position.set(dir.x * r * 0.8, port.at[1], dir.z * r * 0.8); g.add(stub);
+    const hatch = hatchMesh(1.27); hatch.quaternion.copy(q); hatch.position.copy(dir.clone().multiplyScalar(r * 0.8 + 0.5)).setY(port.at[1]); g.add(hatch);
   }
-  put(cyl(r * 0.06, L * 0.12, CO.metal, { seg: 8 }), 0, L, 0);
-  const cup = tor(r * 0.14, r * 0.02, CO.metal, { metal: 0.6 });
-  put(cup, 0, L + L * 0.12, 0, Math.PI / 2);
-  g.add(cup);
+  put(cyl(r * 0.05, L * 0.1, 'grey', { seg: 8 }), 0, L, 0);
+  g.add(navLights([{ p: [r * 1.02, L * 0.5, 0], kind: 'navGreen', r: r * 0.03 }, { p: [-r * 1.02, L * 0.5, 0], kind: 'navRed', r: r * 0.03 }]));
   return { group: g };
 }
 
-/** A pleated strip: `segments` rigid panels hinged end to end, alternating sign, so k = 1 is flat
- *  and k = 0 is a map fold one panel deep. Used by the solar wings and the radiators. */
-function accordionStrip(len, width, thick, segments, colour, opts = {}) {
-  const g = new THREE.Group(), segL = len / segments, pivots = [];
-  let host = g;
-  for (let i = 0; i < segments; i += 1) {
-    const pivot = new THREE.Group();
-    pivot.position.set(0, i ? segL : 0, 0);
-    const flap = new THREE.Group();
-    pivot.add(flap);
-    host.add(pivot);
-    const panel = box(width, segL, thick, colour, { mat: opts.mat ?? { metal: 0.4, rough: 0.35 } });
-    panel.position.set(0, segL / 2, 0);
-    flap.add(panel);
-    for (let k = 1; k < 4; k += 1) {
-      const rib = box(width * 0.97, thick * 1.8, thick * 2.6, CO.metal, { metal: 0.6, rough: 0.3 });
-      rib.position.set(0, (segL * k) / 4, 0);
-      flap.add(rib);
-    }
-    if (opts.cells) {
-      for (let k = 1; k < 4; k += 1) {
-        const seam = box(width, thick * 0.4, thick * 1.4, CO.gold, { metal: 0.5 });
-        seam.position.set(0, (segL * k) / 4, 0);
-        flap.add(seam);
-      }
-    }
-    pivots.push(pivot);
-    host = flap;
-  }
-  return {
-    group: g,
-    setDeploy: (k) => { const a = accordionAngles(k, segments); for (let i = 0; i < pivots.length; i += 1) pivots[i].rotation.x = a[i]; }
-  };
+/* Quest-class airlock: equipment lock (large drum) and crew lock (smaller), EVA hatch, four HPGTs. */
+function airlockCAD(p) {
+  const g = new THREE.Group(), r = p.dims.d / 2, L = p.dims.l;
+  g.add(hullSegmentMesh({ d: p.dims.d, l: L * 0.6, endKind: 'cone', skin: 'white', windows: 1, racks: 0, bands: 2 }));
+  const crewLock = hullSegmentMesh({ d: p.dims.d * 0.6, l: L * 0.42, endKind: 'cone', skin: 'white', windows: 0, racks: 0, bands: 1, raceway: false }); crewLock.position.y = L * 0.58; g.add(crewLock);
+  const eva = hatchMesh(1.0); put(eva, 0, L, 0); g.add(eva);
+  const tanks = copvClusterMesh({ d: r * 0.55, count: 4, kind: 'chrome' }); put(tanks, 0, L * 0.3, r * 1.05, Math.PI / 2); g.add(tanks);
+  return { group: g };
 }
 
-/* ISS SAW class: blanket box, gimbal, mast and a 34 m blanket that folds to 4.25 m. */
-function arrayCAD(p) {
-  const g = new THREE.Group(), L = p.dims.l ?? 34, W = p.dims.d ?? 11;
-  const boxg = box(W * 0.32, 0.7, 1.1, CO.metal, { metal: 0.5, rough: 0.4 });
-  put(boxg, 0, 0.35, 0);
-  g.add(boxg);
-  const gimbal = tor(W * 0.1, W * 0.02, CO.metal, { metal: 0.6 });
-  put(gimbal, 0, 0.35, 0, Math.PI / 2);
-  g.add(gimbal);
-  const blanket = accordionStrip(L, W, Math.max(W * 0.0035, 0.02), 8, CO.array, { cells: true });
-  blanket.group.position.set(0, 0.7, 0);
-  g.add(blanket.group);
-  /* The blanket spans x, so its edge booms run at x = +/- W/2. On z they stood 11 m off the panel and
-     gave the wing a false 11 m depth, which is what swallowed the radiator and read as a second panel. */
-  rod(g, [W * 0.5, 0.7, 0], [W * 0.5, L + 0.7, 0], Math.max(W * 0.006, 0.02), CO.metal);
-  rod(g, [-W * 0.5, 0.7, 0], [-W * 0.5, L + 0.7, 0], Math.max(W * 0.004, 0.015), CO.metal);
-  return { group: g, setDeploy: blanket.setDeploy };
-}
-
-/* Deployable radiator: eight pleated panels on a fluid loop, folding to 1.9 m. */
+/* ISS SAW class array and PVR radiator: pleated deployables that fold on the viewer's control. */
+function arrayCAD(p) { const m = solarArrayMesh({ L: p.dims.l, W: p.dims.d, angles: accordionAngles }); return m; }
 function radiatorCAD(p) {
-  const g = new THREE.Group(), L = p.dims.l ?? 15.2, W = p.dims.d ?? 6.1;
-  const loop = tor(W * 0.08, W * 0.014, CO.metal, { metal: 0.6 });
-  put(loop, 0, 0.15, 0, Math.PI / 2);
-  g.add(loop);
-  const strip = accordionStrip(L, W, Math.max(W * 0.012, 0.03), 8, CO.rad, { mat: { metal: 0.35, rough: 0.55 } });
-  strip.group.position.set(0, 0.3, 0);
-  g.add(strip.group);
-  for (const s of [-1, 1]) rod(g, [s * W * 0.48, 0.3, 0], [s * W * 0.48, L + 0.3, 0], Math.max(W * 0.006, 0.02), CO.dark);
-  return { group: g, setDeploy: strip.setDeploy };
+  const rad = p.radiator;
+  const panels = rad?.panels ?? 1, panelW = rad ? rad.panelW : p.dims.d, panelL = rad ? rad.panelL : p.dims.l;
+  return radiatorMesh({ panelL, panelW, panels, angles: accordionAngles });
 }
 
-/* 100 kg class bus: octagonal structure, four body-mounted panels, dish, thruster quads. */
+/* 100 kg class bus (v1) and the 16U / New Horizons buses (v4). */
 function busCAD(p) {
-  const g = new THREE.Group(), L = p.dims.l ?? 1.2, D = p.dims.d ?? 1.0, r = D / 2;
-  const oct = cyl(r, L, CO.mli, { seg: 8 });
-  g.add(oct);
-  for (let i = 0; i < 4; i += 1) {
-    const a = (i / 4) * Math.PI * 2, panel = box(r * 1.5, L * 0.78, r * 0.04, CO.array, { metal: 0.4, rough: 0.3 });
-    put(panel, Math.cos(a) * r * 0.94, L / 2, Math.sin(a) * r * 0.94, 0, -a, 0);
-    g.add(panel);
+  const g = new THREE.Group(), L = p.dims.l, D = p.dims.d, r = D / 2;
+  if (/16U/.test(p.name)) {
+    g.add(box(0.23, L, 0.24, 'mli', { repeat: [1, 2] }).translateY(L / 2));
+    for (const [x, z] of [[0.118, 0], [-0.118, 0]]) { const panel = box(0.004, L * 0.9, 0.22, 'cell', { repeat: [1, 2] }); put(panel, x, L / 2, z); g.add(panel); }
+    const st = box(0.05, 0.05, 0.05, 'dark'); put(st, 0.08, L * 0.95, 0.09); g.add(st);
+    const rtg = cyl(0.045, 0.14, 'dark', { seg: 12 }); put(rtg, -0.09, L * 0.1, -0.14, Math.PI / 2); g.add(rtg);
+    const laser = cyl(0.05, 0.08, 'grey', { seg: 16 }); put(laser, 0, L, 0.06); g.add(laser);
+    g.add(navLights([{ p: [0.12, L * 0.5, 0.12], kind: 'navGreen', r: 0.008 }, { p: [-0.12, L * 0.5, 0.12], kind: 'navRed', r: 0.008 }]));
+    return { group: g };
   }
-  put(cyl(r * 0.42, r * 0.12, CO.gold), 0, L, 0);
-  const dish = mesh(new THREE.SphereGeometry(r * 0.6, 24, 10, 0, Math.PI * 2, 0, 0.85), CO.shell, { metal: 0.45, rough: 0.3 });
-  put(dish, r * 0.36, L * 0.72, 0);
-  g.add(dish);
-  rod(g, [0, L, 0], [0, L + L * 0.4, 0], r * 0.03, CO.metal);
-  for (let i = 0; i < 4; i += 1) {
-    const a = (i / 4) * Math.PI * 2;
-    const n = mesh(new THREE.CylinderGeometry(r * 0.06, r * 0.13, r * 0.12, 12, 1, true), CO.dark, { metal: 0.6 });
-    put(n, Math.cos(a) * r * 0.7, -r * 0.04, Math.sin(a) * r * 0.7, Math.PI);
-    g.add(n);
+  if (p.kind === 'bus' && /New Horizons/.test(p.name)) {
+    /* a triangular box bus under an MLI tent, a star-tracker pair and an instrument deck on the +y face */
+    const tri = new THREE.CylinderGeometry(r, r, L, 3); tri.translate(0, L / 2, 0);
+    g.add(new THREE.Mesh(tri, surface('mli', { repeat: [3, 1] })));
+    for (let k = 0; k < 2; k += 1) { const st = cyl(0.06, 0.18, 'dark', { seg: 12 }); put(st, r * 0.5, L, -0.3 + 0.2 * k, -0.4); g.add(st); }
+    const deck = box(r * 0.9, 0.06, r * 0.7, 'white'); put(deck, -r * 0.2, L + 0.03, 0.3); g.add(deck);
+    const cam = cyl(0.12, 0.5, 'dark', { seg: 16 }); put(cam, -r * 0.3, L + 0.06, 0.3); g.add(cam);
+    const spec = cyl(0.09, 0.3, 'grey', { seg: 12 }); put(spec, r * 0.05, L + 0.06, 0.55); g.add(spec);
+    quadsAround(g, r * 0.95, L * 0.5, 4, 0.16);
+    return { group: g };
   }
-  const rad = box(r * 0.5, L * 0.5, r * 0.03, CO.rad, { metal: 0.3 });
-  put(rad, 0, L * 0.5, r * 0.98);
-  g.add(rad);
+  const oct = cyl(r, L, 'mli', { seg: 8 }); g.add(oct);
+  for (let i = 0; i < 4; i += 1) { const a = (i / 4) * Math.PI * 2, panel = box(r * 1.5, L * 0.78, r * 0.04, 'cell'); put(panel, Math.cos(a) * r * 0.94, L / 2, Math.sin(a) * r * 0.94, 0, -a, 0); g.add(panel); }
+  put(cyl(r * 0.42, r * 0.12, 'gold'), 0, L, 0);
+  const dish = dishMesh({ d: r * 1.2 }); put(dish, r * 0.36, L * 0.72, 0); g.add(dish);
+  quadsAround(g, r * 0.7, -r * 0.04, 4, r * 0.18);
+  const rad = box(r * 0.5, L * 0.5, r * 0.03, 'radiator'); put(rad, 0, L * 0.5, r * 0.98); g.add(rad);
   return { group: g };
 }
 
-/* StarChip: a 1 g wafer, 1 cm across, with its grid of cells and four photon-thruster pads. */
+/* StarChip: a 1 g wafer with its cell grid, four photon thrusters and a leading-edge shield stripe. */
 function chipCAD(p) {
-  const g = new THREE.Group(), S = p.dims.d ?? 0.01, t = Math.max(p.dims.l ?? 0.001, S * 0.1);
-  const wafer = box(S, t, S, CO.gold, { metal: 0.75, rough: 0.25 });
-  wafer.position.y = t / 2;
-  g.add(wafer);
-  for (let i = 1; i < 4; i += 1) {
-    const line = box(S * 0.98, t * 1.2, S * 0.02, CO.dark);
-    put(line, 0, t / 2, (i / 4 - 0.5) * S);
-    g.add(line);
-  }
-  for (const [x, z] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
-    const pad = box(S * 0.16, t * 2.2, S * 0.16, CO.accent, { metal: 0.5 });
-    put(pad, x * S * 0.4, t / 2, z * S * 0.4);
-    g.add(pad);
-  }
+  const g = new THREE.Group(), S = p.dims.d, t = Math.max(p.dims.l, S * 0.1);
+  const wafer = box(S, t, S, 'gold', { repeat: [1, 1] }); wafer.position.y = t / 2; g.add(wafer);
+  for (let i = 1; i < 4; i += 1) { const line = box(S * 0.98, t * 1.2, S * 0.02, 'dark'); put(line, 0, t / 2, (i / 4 - 0.5) * S); g.add(line); }
+  for (const [x, z] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) { const pad = box(S * 0.16, t * 2.2, S * 0.16, 'accent'); put(pad, x * S * 0.4, t / 2, z * S * 0.4); g.add(pad); }
+  const shield = box(S, t * 1.4, S * 0.08, 'copper'); put(shield, 0, t / 2, S * 0.5); g.add(shield);
   return { group: g };
 }
 
-/* 6U deployer: four rails, two end plates and six bays, one per unit. */
+/* 6U deployer (v1). */
 function dispenserCAD(p) {
-  const g = new THREE.Group(), L = p.dims.l ?? 0.6, D = p.dims.d ?? 0.4, r = D / 2, t = D * 0.03;
-  for (const [x, z] of [[1, 1], [1, -1], [-1, -1], [-1, 1]]) rod(g, [x * r, 0, z * r], [x * r, L, z * r], t, CO.metal, { seg: 6 });
-  put(box(D, t * 1.6, D, CO.metal), 0, 0, 0);
-  put(box(D, t * 1.6, D, CO.metal), 0, L - t * 1.6, 0);
-  for (let i = 0; i < 6; i += 1) {
-    const bay = box(D * 0.86, (L / 6) * 0.86, D * 0.86, CO.dark);
-    put(bay, 0, ((i + 0.5) * L) / 6, 0);
-    g.add(bay);
-  }
-  for (let i = 0; i < 4; i += 1) {
-    const a = (i / 4) * Math.PI * 2;
-    rod(g, [Math.cos(a) * r * 0.7, L * 0.02, Math.sin(a) * r * 0.7], [Math.cos(a) * r * 0.7, -L * 0.14, Math.sin(a) * r * 0.7], t * 0.5, CO.gold);
-  }
+  const g = new THREE.Group(), L = p.dims.l, D = p.dims.d, r = D / 2, t = D * 0.03;
+  for (const [x, z] of [[1, 1], [1, -1], [-1, -1], [-1, 1]]) rod(g, [x * r, 0, z * r], [x * r, L, z * r], t, 'grey', { seg: 6 });
+  g.add(put(box(D, t * 1.6, D, 'grey'), 0, 0, 0), put(box(D, t * 1.6, D, 'grey'), 0, L - t * 1.6, 0));
+  for (let i = 0; i < 6; i += 1) { const bay = box(D * 0.86, (L / 6) * 0.86, D * 0.86, 'dark'); put(bay, 0, ((i + 0.5) * L) / 6, 0); g.add(bay); }
   return { group: g };
 }
 
-/* 1 t class lander: octagonal deck, four propellant tanks, engine, instrument lockers, hatch. */
+/* Generic adapter ring/cone (lightband, hub adapters). */
+function adapterCAD(p) {
+  const g = new THREE.Group(), L = p.dims.l, r = p.dims.d / 2;
+  const fore = p.ports.find((q) => q.id === 'fore'), rF = (PORT_D[fore?.type] ?? p.dims.d) / 2;
+  g.add(lathe([[r, 0], [r, L * 0.15], [Math.max(rF, r * 0.3), L * 0.85], [Math.max(rF, r * 0.3), L]], 'stainless', { seg: 40 }));
+  g.add(ringXZ(r, Math.max(r * 0.03, 0.01), 'dark', 0.01));
+  return { group: g };
+}
+
+/* 1 t class lander (v1): octagonal deck, tanks, bell, lockers. */
 function landerCAD(p) {
-  const g = new THREE.Group(), D = p.dims.d ?? 3.6, L = p.dims.l ?? 2.5, r = D / 2.7;
-  g.add(put(cyl(r, L * 0.5, CO.gold, { seg: 8 }), 0, L * 0.34, 0));
-  g.add(put(cyl(r * 0.82, L * 0.32, CO.shell, { seg: 8 }), 0, L * 0.84, 0));
-  const bell = mesh(new THREE.CylinderGeometry(r * 0.4, r * 0.16, L * 0.3, 22, 1, true), CO.dark, { metal: 0.65, rough: 0.35 });
-  put(bell, 0, L * 0.17, 0);
-  g.add(bell);
-  for (let i = 0; i < 4; i += 1) {
-    const a = (i / 4) * Math.PI * 2 + Math.PI / 4, x = Math.cos(a), z = Math.sin(a);
-    const tank = sph(r * 0.27, CO.tank, { metal: 0.45, rough: 0.4 });
-    put(tank, x * r * 0.86, L * 0.58, z * r * 0.86);
-    g.add(tank);
-    rod(g, [x * r * 0.86, L * 0.34, z * r * 0.86], [x * r * 0.86, L * 0.48, z * r * 0.86], r * 0.035, CO.metal);
-  }
-  for (let i = 0; i < 4; i += 1) {
-    const a = (i / 4) * Math.PI * 2, locker = box(r * 0.34, L * 0.3, r * 0.14, CO.shell);
-    put(locker, Math.cos(a) * r * 0.95, L * 0.55, Math.sin(a) * r * 0.95, 0, -a, 0);
-    g.add(locker);
-  }
-  const hatch = cyl(r * 0.22, r * 0.03, CO.hatch, { seg: 18 });
-  put(hatch, 0, L * 1.16, 0);
-  g.add(hatch);
-  for (let i = 0; i < 2; i += 1) rod(g, [r * 1.05, L * 0.3, (i ? 1 : -1) * r * 0.4], [r * 1.05, L * 0.95, (i ? 1 : -1) * r * 0.4], r * 0.02, CO.metal);
+  const g = new THREE.Group(), D = p.dims.d, L = p.dims.l, r = D / 2.7;
+  g.add(put(cyl(r, L * 0.5, 'mli', { seg: 8 }), 0, L * 0.34, 0), put(cyl(r * 0.82, L * 0.32, 'white', { seg: 8 }), 0, L * 0.84, 0));
+  const bell = bellMesh(bellSpec({ thrustN: 6000, chamberPa: 1.5e6, expansion: 60 })); bell.rotation.x = Math.PI; bell.position.y = L * 0.34; g.add(bell);
+  for (let i = 0; i < 4; i += 1) { const a = (i / 4) * Math.PI * 2 + Math.PI / 4, x = Math.cos(a), z = Math.sin(a); const tank = sph(r * 0.27, 'tank'); put(tank, x * r * 0.86, L * 0.58, z * r * 0.86); g.add(tank); }
+  for (let i = 0; i < 4; i += 1) { const a = (i / 4) * Math.PI * 2, locker = box(r * 0.34, L * 0.3, r * 0.14, 'white'); put(locker, Math.cos(a) * r * 0.95, L * 0.55, Math.sin(a) * r * 0.95, 0, -a, 0); g.add(locker); }
+  g.add(put(hatchMesh(r * 0.44), 0, L * 1.16, 0));
   return { group: g };
 }
 
-/* Landing gear: four A-frame legs and footpads on the 4.3 m footprint. */
+/* v4 aero lander: stainless cylinder, Haack nose, windward TPS, header tanks, two bells, RCS. */
+function landerAeroCAD(p) {
+  const g = new THREE.Group(), D = p.dims.d, r = D / 2, L = p.dims.l, noseL = 2.4, bodyL = L - noseL;
+  g.add(cyl(r, bodyL, 'tpsHalf', { seg: 56, repeat: [1, Math.max(1, Math.round(bodyL / 1.6))] }));
+  const nose = lathe(haackProfile(r, noseL, 28), 'tpsHalf', { seg: 56, repeat: [1, 2] }); nose.position.y = bodyL; g.add(nose);
+  g.add(ringXZ(r * 0.995, r * 0.02, 'dark', bodyL), ringXZ(r * 0.995, r * 0.02, 'dark', 0.04));
+  const skirt = cyl(r * 1.0, r * 0.35, 'dark', { seg: 48, open: true }); g.add(skirt);
+  for (const s of [-1, 1]) { const bell = bellMesh(bellSpec({ thrustN: 10000, chamberPa: 3e6, expansion: 40 })); bell.rotation.x = Math.PI; bell.position.set(s * r * 0.35, r * 0.4, 0); g.add(bell); }
+  for (let i = 0; i < 4; i += 1) { const a = (i / 4) * Math.PI * 2 + Math.PI / 4; const t = sph(r * 0.22, 'chrome'); put(t, Math.cos(a) * r * 0.55, r * 0.7, Math.sin(a) * r * 0.55); g.add(t); }
+  quadsAround(g, r, bodyL * 0.85, 4, 0.3);
+  const hatch = hatchMesh(0.8); put(hatch, r * 0.98, bodyL * 0.45, 0, 0, 0, -Math.PI / 2); g.add(hatch);
+  g.add(navLights([{ p: [0, bodyL * 0.95, r * 1.01], kind: 'navWhite', r: 0.04 }, { p: [r * 1.01, bodyL * 0.3, 0], kind: 'navGreen', r: 0.04 }, { p: [-r * 1.01, bodyL * 0.3, 0], kind: 'navRed', r: 0.04 }]));
+  return { group: g };
+}
+
+/* Landing gear: v1 A-frames, or the Falcon-style legs for the v4 lander (posed deployed). */
 function legsCAD(p) {
-  const g = new THREE.Group(), span = (p.dims.d ?? 4.3) / 2, h = p.dims.l ?? 1;
+  if (p.legs) {
+    const s = p.legs, R0 = s.spanM / 2.45 / 2;
+    const g = landingLegMesh({ count: s.count, R0, hingeH: s.hingeHM, spanM: s.spanM, footY: -s.heightM * 0.05 });
+    /* legs hang from the hinge; the part's datum is the hinge plane, so shift so the pads sit at y = -heightM */
+    g.position.y = -s.hingeHM + s.heightM * 0.1;
+    return { group: g };
+  }
+  const g = new THREE.Group(), span = p.dims.d / 2, h = p.dims.l;
   for (let i = 0; i < 4; i += 1) {
     const a = (i / 4) * Math.PI * 2 + Math.PI / 4, x = Math.cos(a), z = Math.sin(a);
-    rod(g, [x * span * 0.16, h, z * span * 0.16], [x * span, h * 0.02, z * span], span * 0.014, CO.metal);
-    rod(g, [x * span * 0.16, h, z * span * 0.16], [x * span, h * 0.02, z * span], span * 0.014, CO.metal);
-    rod(g, [x * span * 0.22, h * 0.4, z * span * 0.22], [x * span * 0.72, h * 0.02, z * span * 0.72], span * 0.008, CO.metal);
-    const pad = cyl(span * 0.09, h * 0.04, CO.dark, { seg: 16 });
-    pad.position.set(x * span, 0, z * span);
-    g.add(pad);
-    rod(g, [x * span * 0.3, h * 0.55, z * span * 0.3], [x * span * 0.62, h * 0.1, z * span * 0.62], span * 0.006, CO.gold);
+    rod(g, [x * span * 0.16, h, z * span * 0.16], [x * span, h * 0.02, z * span], span * 0.014, 'grey');
+    rod(g, [x * span * 0.22, h * 0.4, z * span * 0.22], [x * span * 0.72, h * 0.02, z * span * 0.72], span * 0.008, 'grey');
+    const pad = cyl(span * 0.09, h * 0.04, 'dark', { seg: 16 }); pad.position.set(x * span, 0, z * span); g.add(pad);
   }
   return { group: g };
 }
 
-/* Crewed capsule: heat shield, frustum shell, windows, hatch and docking tunnel. */
+/* Grid fins (v4 lander). */
+function finsCAD(p) {
+  const s = p.fins, R = (s.dims.d - 2 * s.finW) / 2;
+  return { group: gridFinMesh({ finW: s.finW, finH: s.finH, finT: s.finT, count: s.count, R, y: 0 }) };
+}
+
+/* Crewed capsule: ablative heat shield, frustum in painted steel or TPS quilt, windows, hatch, docking tunnel; the v4 capsule adds the hinged ogive nose cone. */
 function capsuleCAD(p) {
-  const g = new THREE.Group(), L = p.dims.l ?? 4.4, D = p.dims.d ?? 4.0, r = D / 2;
-  const shield = mesh(new THREE.CylinderGeometry(r, r * 0.8, L * 0.08, 34), CO.dark, { metal: 0.4, rough: 0.7 });
-  put(shield, 0, L * 0.04, 0);
-  g.add(shield);
-  g.add(put(mesh(new THREE.CylinderGeometry(r * 0.5, r, L * 0.6, 34), CO.shell), 0, L * 0.08, 0));
-  g.add(put(cyl(r * 0.5, L * 0.1, CO.shell, { seg: 28 }), 0, L * 0.08 + L * 0.6, 0));
-  const tunnel = cyl(r * 0.3, L * 0.16, CO.shell, { seg: 22 });
-  put(tunnel, 0, L * 0.78, 0);
-  g.add(tunnel);
-  g.add(put(ringXZ(r * 0.32, r * 0.02, CO.metal), 0, L * 0.94, 0));
-  for (let i = 0; i < 4; i += 1) {
-    const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
-    const w = cyl(r * 0.075, r * 0.02, CO.glass, { seg: 14 });
-    const y = L * 0.34 + (i % 2) * L * 0.1;
-    put(w, Math.cos(a) * r * 0.46, y, Math.sin(a) * r * 0.46, 0, -a, Math.PI / 2.6);
-    g.add(w);
+  const g = new THREE.Group(), L = p.dims.l, D = p.dims.d, r = D / 2, v4 = /TPS/.test(p.name);
+  const shield = lathe([[r * 0.2, 0], [r * 0.85, L * 0.02], [r, L * 0.08]], 'tps', { seg: 48 }); g.add(shield);
+  g.add(ringXZ(r * 0.995, r * 0.025, 'dark', L * 0.08));
+  const body = lathe([[r, L * 0.08], [r * 0.98, L * 0.14], [r * 0.52, L * 0.68], [r * 0.5, L * 0.72]], 'white', { seg: 48 }); g.add(body);
+  if (v4) {
+    const cone = lathe(haackProfile(r * 0.5, L * 0.28, 20), 'white', { seg: 48, repeat: [4, 1] }); cone.position.y = L * 0.72; g.add(cone);
+    g.add(ringXZ(r * 0.5, r * 0.015, 'dark', L * 0.72));
+    quadsAround(g, r * 0.9, L * 0.2, 4, 0.3);
+    quadsAround(g, r * 0.62, L * 0.58, 4, 0.25);
+  } else {
+    g.add(put(cyl(r * 0.3, L * 0.16, 'white', { seg: 24 }), 0, L * 0.78, 0), ringXZ(r * 0.32, r * 0.02, 'grey', L * 0.94));
   }
-  const hatch = cyl(r * 0.09, r * 0.03, CO.hatch, { seg: 16 });
-  put(hatch, -r * 0.28, L * 0.3, r * 0.36, Math.PI / 2.4);
-  g.add(hatch);
+  const frame = new THREE.CylinderGeometry(r * 0.09, r * 0.09, r * 0.03, 16), glass = new THREE.CylinderGeometry(r * 0.075, r * 0.075, r * 0.02, 16);
+  const fr = [], gl = [];
+  for (let i = 0; i < 4; i += 1) {
+    const a = (i / 4) * Math.PI * 2 + Math.PI / 4, y = L * 0.34 + (i % 2) * L * 0.1, rr = r * (1 - 0.52 * ((y - L * 0.14) / (L * 0.54)));
+    const n = new THREE.Vector3(Math.cos(a), 0.45, Math.sin(a)).normalize(), q = new THREE.Quaternion().setFromUnitVectors(Y, n);
+    fr.push({ p: [Math.cos(a) * rr * 0.99, y, Math.sin(a) * rr * 0.99], q }); gl.push({ p: [Math.cos(a) * rr * 1.0, y, Math.sin(a) * rr * 1.0], q });
+  }
+  g.add(instances(frame, 'dark', fr), instances(glass, 'glass', gl));
+  const hatch = hatchMesh(r * 0.4); const n = new THREE.Vector3(-0.6, 0.45, 0.76).normalize(); hatch.quaternion.setFromUnitVectors(Y, n); hatch.position.set(-r * 0.5, L * 0.32, r * 0.62); g.add(hatch);
   return { group: g };
 }
 
-/* Service module / trunk: shell, four spherical tanks, RCS quads, main engine, body radiator. */
+/* Service module / trunk: open shell with body-mounted cells on one half and radiator on the other. */
 function serviceCAD(p) {
-  const g = new THREE.Group(), L = p.dims.l ?? 3.7, D = p.dims.d ?? 4.0, r = D / 2;
-  g.add(cyl(r, L, CO.shell, { seg: 30, open: true }));
-  for (let i = 0; i < 4; i += 1) {
-    const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
-    const tank = sph(r * 0.3, CO.tank, { metal: 0.5, rough: 0.35 });
-    put(tank, Math.cos(a) * r * 0.6, L * 0.45, Math.sin(a) * r * 0.6);
-    g.add(tank);
+  const g = new THREE.Group(), L = p.dims.l, D = p.dims.d, r = D / 2, solar = /solar/.test(p.name);
+  g.add(cyl(r, L, solar ? 'white' : 'white', { seg: 40, open: true }));
+  if (solar) {
+    const half = new THREE.CylinderGeometry(r * 1.005, r * 1.005, L * 0.9, 24, 1, true, 0, Math.PI); half.translate(0, L / 2, 0);
+    g.add(new THREE.Mesh(half, surface('cell', { repeat: [6, 2] })));
+    const rad = new THREE.CylinderGeometry(r * 1.005, r * 1.005, L * 0.9, 24, 1, true, Math.PI, Math.PI); rad.translate(0, L / 2, 0);
+    g.add(new THREE.Mesh(rad, surface('radiator', { repeat: [6, 2] })));
+  } else {
+    for (let i = 0; i < 4; i += 1) { const a = (i / 4) * Math.PI * 2 + Math.PI / 4; const tank = sph(r * 0.3, 'tank'); put(tank, Math.cos(a) * r * 0.6, L * 0.45, Math.sin(a) * r * 0.6); g.add(tank); }
+    quadsAround(g, r * 0.96, L * 0.5, 4, r * 0.15);
+    const engine = bellMesh(bellSpec({ thrustN: 25000, chamberPa: 1e6, expansion: 150 })); engine.rotation.x = Math.PI; engine.position.y = L * 0.25; g.add(engine);
+    for (const s of [-1, 1]) { const rad = box(r * 0.12, L * 0.7, r * 0.9, 'radiator'); put(rad, s * r * 1.02, L * 0.5, 0); g.add(rad); }
   }
-  for (let i = 0; i < 8; i += 1) {
-    const a = (i / 8) * Math.PI * 2, nozzle = mesh(new THREE.CylinderGeometry(r * 0.03, r * 0.06, r * 0.08, 10, 1, true), CO.dark, { metal: 0.6 });
-    put(nozzle, Math.cos(a) * r * 0.96, L * (i % 2 ? 0.75 : 0.25), Math.sin(a) * r * 0.96, Math.PI / 2, 0, -a);
-    g.add(nozzle);
-  }
-  const engine = mesh(new THREE.CylinderGeometry(r * 0.26, r * 0.1, L * 0.22, 22, 1, true), CO.dark, { metal: 0.65 });
-  put(engine, 0, L * 0.03, 0, Math.PI);
-  g.add(engine);
-  for (const s of [-1, 1]) {
-    const rad = box(r * 0.12, L * 0.7, r * 0.9, CO.rad, { metal: 0.3, rough: 0.55 });
-    put(rad, s * r * 1.02, L * 0.5, 0);
-    g.add(rad);
-  }
+  g.add(ringXZ(r * 0.99, r * 0.02, 'dark', 0.03), ringXZ(r * 0.99, r * 0.02, 'dark', L - 0.03));
   return { group: g };
 }
 
-/* 1 g habitat ring: torus deck, window strips on the outer face, six spokes and a hub. */
+/* 1 g habitat ring (v1) and the sized spin ring (v2/v4): a torus deck with a cutaway, floors, windows, spokes, hub. */
 function ringCAD(p) {
-  const g = new THREE.Group(), R = (p.dims.d ?? 111.8) / 2, deck = p.dims.l ?? 20, tube = deck / 2;
-  const belt = mesh(new THREE.TorusGeometry(R, tube, 20, 160), CO.shell, { metal: 0.25, rough: 0.5 });
-  belt.rotation.x = -Math.PI / 2;
-  g.add(belt);
-  const win = Math.max(deck * 0.05, 0.4);
-  for (let i = 0; i < 64; i += 1) {
-    const a = (i / 64) * Math.PI * 2;
-    const glass = box(tube * 0.5, win, tube * 0.06, CO.glass);
-    put(glass, Math.cos(a) * (R + tube * 0.86), 0, Math.sin(a) * (R + tube * 0.86), 0, -a, 0);
-    g.add(glass);
-  }
-  for (let i = 0; i < 6; i += 1) {
-    const a = (i / 6) * Math.PI * 2;
-    rod(g, [Math.cos(a) * R * 0.97, 0, Math.sin(a) * R * 0.97], [Math.cos(a) * R * 0.3, 0, Math.sin(a) * R * 0.3], tube * 0.16, CO.metal);
-  }
-  const hub = cyl(tube * 0.95, tube * 1.3, CO.shell, { seg: 28 });
-  put(hub, 0, -tube * 0.65, 0);
-  g.add(hub);
-  for (let i = 0; i < 6; i += 1) {
-    const a = (i / 6) * Math.PI * 2 + Math.PI / 6;
-    const port = tor(tube * 0.22, tube * 0.03, CO.metal, { metal: 0.6 });
-    port.rotation.x = Math.PI / 2;
-    port.position.y = tube * 0.65;
-    g.add(port);
-    break;
-  }
-  return { group: g };
+  const R = (p.dims.d) / 2, deck = p.dims.l, tube = deck / 2;
+  return { group: torusDeckMesh({ R: R - tube, D: deck, decks: Math.max(1, Math.floor((deck - 1.2) / 3)), arc: Math.PI * 2, spokes: 6 }) };
+}
+function centrifugeCAD(p) {
+  const D = Math.max(p.dims.l, 1), tube = D / 2, R = Math.max((p.dims.d - D) / 2, tube);
+  return { group: torusDeckMesh({ R, D, decks: Math.max(1, Math.floor((D - 1.2) / 3)), arc: Math.PI * 2 * (5 / 6), spokes: 6 }) };
 }
 
-/* Pressurised cargo can: ribbed shell, cargo door, CBM rings at both ends. */
-function cargoCAD(p) {
-  const g = new THREE.Group(), L = p.dims.l ?? 5, D = p.dims.d ?? 5, r = D / 2;
-  g.add(cyl(r, L, CO.mli, { seg: 26 }));
-  for (let i = 1; i < 5; i += 1) g.add(ringXZ(r * 0.995, Math.max(D * 0.008, 0.02), CO.metal, (L * i) / 5));
-  const door = cyl(r * 0.55, D * 0.02, CO.hatch, { seg: 20 });
-  put(door, 0, L * 0.5, r * 0.98, Math.PI / 2);
-  g.add(door);
-  for (let i = 0; i < 4; i += 1) {
-    const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
-    const pallet = box(r * 0.5, L * 0.25, r * 0.1, CO.shell);
-    put(pallet, Math.cos(a) * r * 1.02, L * 0.28, Math.sin(a) * r * 1.02, 0, -a, 0);
-    g.add(pallet);
-  }
-  return { group: g };
-}
-
-/* Deployable sail mast: three CFRP longerons on a triangular section, battens and diagonals, and the
-   deployer can at the base. Stations are capped at 40 so a 215 m mast does not become 500 meshes. */
-function mastCAD(p) {
-  const g = new THREE.Group(), L = p.dims.l ?? 1, r = Math.max((p.dims.d ?? 0.3) / 2, 0.02);
-  g.add(cyl(r * 1.7, Math.min(L * 0.07, 0.6), CO.metal, { seg: 16 }));
-  const n = Math.max(3, Math.min(40, Math.round(L / Math.max(1.2, L / 40))));
-  const step = L / n;
-  for (let k = 0; k < 3; k += 1) {
-    const a = (k / 3) * Math.PI * 2;
-    rod(g, [Math.cos(a) * r, 0, Math.sin(a) * r], [Math.cos(a) * r, L, Math.sin(a) * r], r * 0.11, CO.metal, { seg: 6 });
-  }
-  for (let i = 1; i <= n; i += 1) {
-    const y = i * step;
-    for (let k = 0; k < 3; k += 1) {
-      const a0 = (k / 3) * Math.PI * 2, a1 = ((k + 1) / 3) * Math.PI * 2;
-      rod(g, [Math.cos(a0) * r, y, Math.sin(a0) * r], [Math.cos(a1) * r, y, Math.sin(a1) * r], r * 0.07, CO.grey, { seg: 4 });
-      if (i < n) rod(g, [Math.cos(a0) * r, y, Math.sin(a0) * r], [Math.cos(a1) * r, y + step, Math.sin(a1) * r], r * 0.045, CO.grey, { seg: 4 });
-    }
-  }
-  return { group: g };
-}
-
-/* Sail-mast thrust collar: ring frame on the berthing plane, four struts up to the bolted mast root. */
-function collarCAD(p) {
-  const g = new THREE.Group(), D = p.dims.d ?? 4.6, L = p.dims.l ?? 1.2, r = D / 2;
-  g.add(ringXZ(r, Math.max(D * 0.03, 0.02), CO.metal, L * 0.92));
-  g.add(ringXZ(r * 0.99, Math.max(D * 0.02, 0.015), CO.gold, L * 0.02));
-  g.add(put(cyl(r * 0.13, L, CO.metal, { seg: 16 }), 0, 0, 0));
-  for (let i = 0; i < 4; i += 1) {
-    const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
-    rod(g, [0, L * 0.92, 0], [Math.cos(a) * r * 0.95, L * 0.12, Math.sin(a) * r * 0.95], D * 0.012, CO.metal);
-  }
-  return { group: g };
-}
-
-/* Despun hub: the non-rotating core the ring turns on -- bearing lands, slip-ring bands, conduits. */
-function despinCAD(p) {
-  const g = new THREE.Group(), L = p.dims.l ?? 8, D = p.dims.d ?? 10, r = D / 2;
-  g.add(cyl(r * 0.82, L, CO.shell, { seg: 32 }));
-  g.add(ringXZ(r * 0.86, r * 0.045, CO.gold, 0.12), ringXZ(r * 0.86, r * 0.045, CO.gold, L - 0.12));
-  for (let i = 1; i <= 3; i += 1) g.add(ringXZ(r * 0.9, r * 0.028, CO.metal, (L * i) / 4));
-  for (let i = 0; i < 6; i += 1) {
-    const a = (i / 6) * Math.PI * 2;
-    rod(g, [Math.cos(a) * r * 0.82, 0.2, Math.sin(a) * r * 0.82], [Math.cos(a) * r * 0.82, L - 0.2, Math.sin(a) * r * 0.82], r * 0.02, CO.metal, { seg: 5 });
-  }
-  put(cyl(r * 0.2, L * 0.25, CO.dark, { seg: 18 }), 0, L, 0);
-  return { group: g };
-}
-
-/* Fission surface power module: shield cone, core drum, heat-pipe radiator wings. */
-function reactorCAD(p) {
-  const g = new THREE.Group(), L = p.dims.l ?? 14, D = p.dims.d ?? 6, r = D / 2;
-  const cone = mesh(new THREE.CylinderGeometry(r * 0.32, r * 0.95, L * 0.22, 26), CO.dark, { metal: 0.4, rough: 0.6 });
-  put(cone, 0, L * 0.11, 0);
-  g.add(cone);
-  g.add(put(cyl(r * 0.5, L * 0.34, CO.metal, { seg: 20 }), 0, L * 0.22, 0));
-  g.add(put(cyl(r * 0.34, L * 0.1, CO.accent, { seg: 18 }), 0, L * 0.56, 0));
+/* v4 bola: two domed pods on lattice spokes around a hub. */
+function bolaCAD(p) {
+  const g = new THREE.Group(), b = p.bola, R = b.R, pod = b.pod;
   for (const s of [-1, 1]) {
-    const wing = box(L * 0.5, Math.max(L * 0.012, 0.05), r * 1.4, CO.rad, { metal: 0.35, rough: 0.5 });
-    put(wing, 0, L * 0.66, s * r * 0.8);
-    g.add(wing);
-    for (let i = 1; i < 4; i += 1) {
-      const pipe = cyl(Math.max(r * 0.012, 0.01), L * 0.5, CO.gold, { seg: 6 });
-      put(pipe, (i / 4 - 0.5) * r * 1.2, L * 0.66, s * r * 0.8, Math.PI / 2, 0, 0);
-      g.add(pipe);
-    }
+    const pm = hullSegmentMesh({ d: pod.dims.d, l: pod.dims.l, endKind: 'dome', skin: 'white', windows: 4, racks: 0, bands: 2 });
+    pm.rotation.z = Math.PI / 2; pm.position.set(s * (R + pod.dims.l / 2) * (s > 0 ? 1 : 1) - (s > 0 ? pod.dims.l / 2 : -pod.dims.l / 2) * 0, 0, 0);
+    /* hullSegmentMesh grows along +y; turned to lie along the spoke with its inner end at R - l/2 */
+    pm.position.set(s * (R - pod.dims.l / 2) * 1, 0, 0); pm.rotation.z = s > 0 ? -Math.PI / 2 : Math.PI / 2;
+    g.add(pm);
+    const spoke = trussMesh({ lengthM: b.truss.dims.l, widthM: b.truss.widthM, kind: 'grey' }); spoke.rotation.z = s > 0 ? -Math.PI / 2 : Math.PI / 2; spoke.position.set(s * 2.2, 0, 0); g.add(spoke);
+    const elevator = box(0.6, 0.6, 0.6, 'white'); elevator.position.set(s * R * 0.5, 0, 0); g.add(elevator);
   }
-  rod(g, [0, L * 0.56, 0], [0, L, 0], Math.max(r * 0.05, 0.03), CO.metal);
+  g.add(put(cyl(2.2, 1.2, 'white', { seg: 32 }), 0, -0.6, 0), ringXZ(2.0, 0.08, 'grey', 0.6), ringXZ(2.0, 0.08, 'grey', -0.6));
   return { group: g };
 }
 
-/* Pressurised mating adapter: CBM ring at the base, docking tunnel and IDSS petals at the top. */
+/* Cargo can (v1). */
+function cargoCAD(p) { return { group: hullSegmentMesh({ d: p.dims.d, l: p.dims.l, skin: 'offwhite', windows: 0, racks: 2, hatchSide: true }) }; }
+
+/* Deployable sail mast: triangular lattice (v1 law) or the thrust-sized square truss (v4), with the deployer can at the base. */
+function mastCAD(p) {
+  const g = new THREE.Group(), L = p.dims.l, w = Math.max(p.dims.d / Math.SQRT2, 0.02);
+  g.add(cyl(w * 1.2, Math.min(L * 0.07, 0.6), 'stainless', { seg: 16 }));
+  g.add(trussMesh({ lengthM: L, widthM: w, bays: Math.max(3, Math.min(60, Math.round(L / Math.max(w, 0.05)))), kind: 'grey', section: p.truss ? 'square' : 'tri' }));
+  return { group: g };
+}
+
+/* Sail canister (v4): stainless drum with MLI lid, hub ring and six winding motors. */
+function canisterCAD(p) {
+  const g = new THREE.Group(), r = p.dims.d / 2, L = p.dims.l;
+  g.add(cyl(r, L, 'stainless', { seg: 48 }));
+  const lid = lathe(domeProfile(r, r * 0.15, 8), 'mli', { seg: 48 }); lid.position.y = L; g.add(lid);
+  g.add(ringXZ(r * 0.99, Math.max(r * 0.03, 0.004), 'dark', 0.02), ringXZ(r * 0.99, Math.max(r * 0.03, 0.004), 'dark', L - 0.02));
+  g.add(ringXZ(r * 0.5, Math.max(r * 0.04, 0.004), 'gold', L + r * 0.15));
+  for (let k = 0; k < 6; k += 1) { const a = (k / 6) * Math.PI * 2; const m = cyl(r * 0.08, r * 0.2, 'dark', { seg: 10 }); put(m, Math.cos(a) * r * 0.7, L + r * 0.1, Math.sin(a) * r * 0.7); g.add(m); }
+  for (let k = 0; k < 3; k += 1) { const a = (k / 3) * Math.PI * 2; const latch = box(r * 0.1, L * 0.5, r * 0.06, 'grey'); put(latch, Math.cos(a) * r * 1.02, L / 2, Math.sin(a) * r * 1.02, 0, -a, 0); g.add(latch); }
+  return { group: g };
+}
+
+/* Thrust collar: ring frame, struts, bolted mast root. */
+function collarCAD(p) {
+  const g = new THREE.Group(), D = p.dims.d, L = p.dims.l, r = D / 2;
+  g.add(ringXZ(r, Math.max(D * 0.03, 0.02), 'grey', L * 0.92), ringXZ(r * 0.99, Math.max(D * 0.02, 0.015), 'gold', L * 0.02));
+  g.add(put(cyl(r * 0.13, L, 'stainless', { seg: 16 }), 0, 0, 0));
+  for (let i = 0; i < 4; i += 1) { const a = (i / 4) * Math.PI * 2 + Math.PI / 4; rod(g, [0, L * 0.92, 0], [Math.cos(a) * r * 0.95, L * 0.12, Math.sin(a) * r * 0.95], D * 0.012, 'grey'); }
+  return { group: g };
+}
+
+/* Despun hub: non-rotating core with bearing lands, slip-ring bands and berths. */
+function despinCAD(p) {
+  const g = new THREE.Group(), L = p.dims.l, D = p.dims.d, r = D / 2;
+  g.add(hullSegmentMesh({ d: D * 0.82, l: L, endKind: 'cone', skin: 'white', windows: 0, racks: 0, bands: 2 }));
+  g.add(ringXZ(r * 0.86, r * 0.045, 'gold', 0.12), ringXZ(r * 0.86, r * 0.045, 'gold', L - 0.12));
+  for (let i = 1; i <= 3; i += 1) g.add(ringXZ(r * 0.9, r * 0.028, 'grey', (L * i) / 4));
+  for (const port of p.ports.filter((q) => q.type === 'cbm')) { const h = hatchMesh(1.27); h.quaternion.setFromUnitVectors(Y, new THREE.Vector3(...port.axis)); h.position.fromArray(port.at); g.add(h); }
+  return { group: g };
+}
+
+/* Fission reactor: shadow shield cone, core drum, conversion, heat-pipe radiator wings sized from the spec. */
+function reactorCAD(p) {
+  const g = new THREE.Group(), L = p.dims.l, D = p.dims.d, r = D / 2, rad = p.reactor?.radiator;
+  const shield = lathe([[r * 0.3, 0], [r * 0.95, L * 0.2], [r * 0.95, L * 0.24]], 'dark', { seg: 32 }); g.add(shield);
+  g.add(put(cyl(r * 0.5, L * 0.3, 'stainless', { seg: 24 }), 0, L * 0.24, 0), put(cyl(r * 0.34, L * 0.1, 'accent', { seg: 18 }), 0, L * 0.54, 0));
+  const wingL = rad ? rad.panelL : L * 0.5, wingW = rad ? rad.panelW * rad.perSide : r * 1.4;
+  for (const s of [-1, 1]) {
+    const wing = box(wingL, Math.max(wingL * 0.012, 0.05), wingW, 'radiator', { repeat: [Math.max(1, Math.round(wingL / 2)), Math.max(1, Math.round(wingW / 2))] });
+    put(wing, 0, L * 0.66, s * (r * 0.5 + wingW / 2)); g.add(wing);
+    for (let i = 1; i < 6; i += 1) { const pipe = cyl(Math.max(r * 0.012, 0.01), wingW, 'gold', { seg: 6 }); put(pipe, (i / 6 - 0.5) * wingL, L * 0.66, s * r * 0.5, Math.PI / 2 * (s > 0 ? 1 : -1), 0, 0); g.add(pipe); }
+  }
+  rod(g, [0, L * 0.64, 0], [0, L, 0], Math.max(r * 0.05, 0.03), 'grey');
+  return { group: g };
+}
+
+/* MMRTG: finned cylinder on a short boom. */
+function rtgCAD(p) {
+  const g = new THREE.Group(), L = p.dims.l, r = p.dims.d / 2;
+  g.add(cyl(r * 0.45, L, 'dark', { seg: 16 }));
+  const fin = new THREE.BoxGeometry(r * 1.1, L * 0.9, r * 0.03);
+  const list = []; for (let k = 0; k < 8; k += 1) list.push({ p: [0, L / 2, 0], q: new THREE.Quaternion().setFromAxisAngle(Y, (k / 8) * Math.PI) });
+  g.add(instances(fin, 'grey', list));
+  return { group: g };
+}
+
+/* HGA: dish facing +y of the part (the mount axis). */
+function dishCAD(p) { return { group: dishMesh({ d: p.dims.d, fD: p.dish?.fD ?? 0.4 }) }; }
+
+/* Bow dust shield: beryllium disc with ribs and a standoff frame. */
+function dustShieldCAD(p) {
+  const g = new THREE.Group(), r = p.dims.d / 2, L = p.dims.l;
+  g.add(put(cyl(r, Math.max(L - 0.3, 0.02), 'copper', { seg: 48 }), 0, 0.3, 0));
+  for (let k = 0; k < 8; k += 1) { const a = (k / 8) * Math.PI * 2; rod(g, [Math.cos(a) * r * 0.9, 0.02, Math.sin(a) * r * 0.9], [Math.cos(a) * r * 0.9, 0.3, Math.sin(a) * r * 0.9], Math.max(r * 0.02, 0.01), 'grey'); }
+  g.add(ringXZ(r * 0.98, Math.max(r * 0.02, 0.01), 'dark', L - 0.01));
+  return { group: g };
+}
+
+/* PMA: CBM ring at the base, docking tunnel, IDSS petals. */
 function pmaCAD(p) {
-  const g = new THREE.Group(), L = p.dims.l ?? 2, D = p.dims.d ?? 2.2, r = D / 2;
-  g.add(cyl(r, L * 0.86, CO.mli, { seg: 26 }));
-  g.add(ringXZ(r * 0.96, Math.max(D * 0.035, 0.02), CO.metal, 0.04));
-  g.add(ringXZ(r * 0.62, Math.max(D * 0.03, 0.02), CO.metal, L * 0.9));
-  for (let i = 0; i < 3; i += 1) {
-    const a = (i / 3) * Math.PI * 2;
-    const petal = box(D * 0.1, D * 0.05, D * 0.26, CO.hatch);
-    put(petal, Math.cos(a) * D * 0.28, L * 0.93, Math.sin(a) * D * 0.28, 0, -a, 0);
-    g.add(petal);
-  }
+  const g = new THREE.Group(), L = p.dims.l, D = p.dims.d, r = D / 2;
+  g.add(lathe([[r, 0], [r, L * 0.4], [r * 0.62, L * 0.86]], 'mli', { seg: 32 }));
+  g.add(ringXZ(r * 0.96, D * 0.035, 'grey', 0.04), ringXZ(r * 0.62, D * 0.03, 'grey', L * 0.9));
+  for (let i = 0; i < 3; i += 1) { const a = (i / 3) * Math.PI * 2; const petal = box(D * 0.1, D * 0.05, D * 0.26, 'hatch'); put(petal, Math.cos(a) * D * 0.28, L * 0.93, Math.sin(a) * D * 0.28, 0, -a, 0); g.add(petal); }
   return { group: g };
 }
 
-/* Jettisonable sail stage: IDSS ring on the capsule side, mast root on the other, three struts. */
+/* Jettisonable sail stage: IDSS ring, three struts, mast root. */
 function sailStageCAD(p) {
-  const g = new THREE.Group(), L = p.dims.l ?? 0.9, D = p.dims.d ?? 1.6, r = D / 2;
-  g.add(ringXZ(r * 0.95, Math.max(D * 0.04, 0.015), CO.metal, 0.02));
-  g.add(ringXZ(r * 0.34, Math.max(D * 0.05, 0.02), CO.gold, L));
-  for (let i = 0; i < 3; i += 1) {
-    const a = (i / 3) * Math.PI * 2;
-    rod(g, [Math.cos(a) * r * 0.9, 0.02, Math.sin(a) * r * 0.9], [Math.cos(a) * r * 0.3, L, Math.sin(a) * r * 0.3], Math.max(D * 0.02, 0.01), CO.metal);
-    const petal = box(D * 0.14, D * 0.04, D * 0.1, CO.hatch);
-    put(petal, Math.cos(a) * r * 0.86, 0.04, Math.sin(a) * r * 0.86, 0, -a, 0);
-    g.add(petal);
-  }
+  const g = new THREE.Group(), L = p.dims.l, D = p.dims.d, r = D / 2;
+  g.add(ringXZ(r * 0.95, D * 0.04, 'grey', 0.02), ringXZ(r * 0.34, D * 0.05, 'gold', L));
+  for (let i = 0; i < 3; i += 1) { const a = (i / 3) * Math.PI * 2; rod(g, [Math.cos(a) * r * 0.9, 0.02, Math.sin(a) * r * 0.9], [Math.cos(a) * r * 0.3, L, Math.sin(a) * r * 0.3], D * 0.02, 'grey'); const petal = box(D * 0.14, D * 0.04, D * 0.1, 'hatch'); put(petal, Math.cos(a) * r * 0.86, 0.04, Math.sin(a) * r * 0.86, 0, -a, 0); g.add(petal); }
   return { group: g };
 }
 
-/* Drive module: the stage a driven class carries instead of a sail. It is bolted to the hull through a
-   conical thrust frame, carries its propellant in a tank or a pulse-unit magazine sized from its bulk
-   density, and ends in an engine bay -- nozzle bells for a rocket, a pusher plate on its shock
-   absorbers for a pulse drive -- with four radiator panels on booms for the heat the drive cannot send
-   out of the nozzle. Every dimension is read from the plan, so the drawing cannot disagree with the
-   rocket equation. The first cut drew a tank 3.6x the propellant's volume with two 25 m slabs on its
-   flanks, which is what those plates were. */
+/* Spin bearing: fixed hub, rotating collar, slip-ring band. */
+function spinBearingCAD(p) {
+  const g = new THREE.Group(), L = p.dims.l, D = p.dims.d, r = D / 2;
+  g.add(cyl(r * 0.55, L, 'stainless', { seg: 32 }), ringXZ(r * 0.95, D * 0.04, 'gold', L * 0.5), ringXZ(r * 0.7, D * 0.03, 'dark', L * 0.05), ringXZ(r * 0.7, D * 0.03, 'dark', L * 0.95));
+  return { group: g };
+}
+
+/* Truss boom (v4). */
+function trussCAD(p) { return { group: trussMesh({ lengthM: p.dims.l, widthM: p.truss?.widthM ?? p.dims.d / Math.SQRT2, kind: 'grey' }) }; }
+
+/* Systems bay / module (v4): a pallet or drum with CMG spheres, battery boxes, antennas and quads. */
+function systemsCAD(p) {
+  const g = new THREE.Group(), r = p.dims.d / 2, L = p.dims.l, pressurised = p.kind === 'systems-module';
+  if (pressurised) g.add(hullSegmentMesh({ d: p.dims.d, l: L, skin: 'offwhite', windows: 0, racks: 4, bands: 2 }));
+  else { g.add(cyl(r, L, 'white', { seg: 24 })); g.add(ringXZ(r * 0.99, Math.max(r * 0.03, 0.005), 'dark', 0.01), ringXZ(r * 0.99, Math.max(r * 0.03, 0.005), 'dark', L - 0.01)); }
+  const n = Math.min(4, Math.max(1, Math.round(r * 2)));
+  for (let k = 0; k < n; k += 1) { const a = (k / n) * Math.PI * 2; const cmg = sph(r * 0.18, 'chrome'); put(cmg, Math.cos(a) * r * 0.75, L * 0.5, Math.sin(a) * r * 0.75); g.add(cmg); }
+  quadsAround(g, r, L * 0.5, 4, Math.max(0.1, Math.min(0.6, r * 0.25)));
+  const st = cyl(r * 0.08, r * 0.3, 'dark', { seg: 10 }); put(st, 0, L, r * 0.5, -0.5); g.add(st);
+  return { group: g };
+}
+
+/* Trim/braking stage (v4): a tank from its spec, the engine bell, a magsail coil drum where the ship stops. */
+function trimStageCAD(p) {
+  const g = new THREE.Group(), s = p.stage, L = p.dims.l, r = p.dims.d / 2;
+  const tank = tankMesh(s.tank, 'tank'); tank.position.y = L - s.tank.dims.l; g.add(tank);
+  const bell = bellMesh(s.engine); bell.rotation.x = Math.PI; bell.position.y = L - s.tank.dims.l; g.add(bell);
+  const skirt = lathe([[Math.max(r * 0.6, s.engine.dims.d * 0.6), 0], [r, L * 0.3], [r, L - s.tank.dims.l]], 'stainless', { seg: 40 }); g.add(skirt);
+  if (p.inventory.some((i) => /magsail/.test(i.item))) { const coil = tor(r * 1.15, Math.max(r * 0.08, 0.02), 'copper'); coil.rotation.x = Math.PI / 2; coil.position.y = L * 0.55; g.add(coil); }
+  quadsAround(g, r, L * 0.8, 4, Math.max(0.1, Math.min(0.5, r * 0.2)));
+  return { group: g };
+}
+
+/* Drive module (v3): thrust frame, tank or magazine, bells or pusher plate, radiator panels -- all read from the plan. */
 function driveCAD(p) {
   const g = new THREE.Group();
   const L = Math.max(p.dims?.l ?? 1, 0.05), D = Math.max(p.dims?.d ?? 1, 0.05);
-  const store = p.store ?? { kind: 'tank', l: L, d: D, unitKg: null, unitCount: null };
-  const magazine = store.kind === 'magazine';
-  const frameL = Math.max(p.frame?.l ?? 0, 0);
-  const bayL = Math.max(p.bayL ?? 0, 0);
-  const rS = Math.max(store.d / 2, 0.02);
-  const rI = Math.max((p.interfaceD ?? Math.min(1.2, D)) / 2, 0.015);
-  const storeL = Math.max(Math.min(store.l || L, L - frameL - bayL), 0.04);
-  const yS = frameL, yE = frameL + storeL;
-
+  const store = p.store ?? { kind: 'tank', l: L, d: D };
+  const magazine = store.kind === 'magazine', frameL = Math.max(p.frame?.l ?? 0, 0), bayL = Math.max(p.bayL ?? 0, 0);
+  const rS = Math.max(store.d / 2, 0.02), rI = Math.max((p.interfaceD ?? Math.min(1.2, D)) / 2, 0.015);
+  const storeL = Math.max(Math.min(store.l || L, L - frameL - bayL), 0.04), yS = frameL, yE = frameL + storeL;
   if (p.driveKind === 'beamed') {
-    /* No propellant and no engine: the accelerator stays home, so the craft carries a catching coil,
-       its struts and a beacon, and nothing that burns. */
     const coilR = Math.max(D / 2, 0.02), coilY = L * 0.72;
-    g.add(ringXZ(coilR, Math.max(coilR * 0.07, 0.002), CO.gold, coilY));
-    g.add(ringXZ(coilR * 0.76, Math.max(coilR * 0.04, 0.0015), CO.metal, coilY - coilR * 0.14));
-    for (let i = 0; i < 8; i += 1) {
-      const a = (i / 8) * Math.PI * 2;
-      rod(g, [Math.cos(a) * coilR * 0.2, coilY, Math.sin(a) * coilR * 0.2], [Math.cos(a) * coilR * 0.92, coilY, Math.sin(a) * coilR * 0.92], Math.max(coilR * 0.02, 0.001), CO.metal, { seg: 5 });
-    }
-    g.add(put(cyl(coilR * 0.2, L * 0.7, CO.dark, { seg: 18 }), 0, 0, 0));
-    g.add(ringXZ(coilR * 0.52, Math.max(coilR * 0.03, 0.001), CO.grey, L * 0.05));
+    g.add(ringXZ(coilR, Math.max(coilR * 0.07, 0.002), 'copper', coilY), ringXZ(coilR * 0.76, Math.max(coilR * 0.04, 0.0015), 'grey', coilY - coilR * 0.14));
+    for (let i = 0; i < 8; i += 1) { const a = (i / 8) * Math.PI * 2; rod(g, [Math.cos(a) * coilR * 0.2, coilY, Math.sin(a) * coilR * 0.2], [Math.cos(a) * coilR * 0.92, coilY, Math.sin(a) * coilR * 0.92], Math.max(coilR * 0.02, 0.001), 'grey', { seg: 5 }); }
+    g.add(put(cyl(coilR * 0.2, L * 0.7, 'dark', { seg: 18 }), 0, 0, 0));
     return { group: g };
   }
-
-  /* 1. Thrust frame: the mount ring on the hull's face, a cone out to the store's fore ring, five
-     longerons carrying the compression, and a load-spreading ring at the store end. */
   if (frameL > 0.01) {
-    g.add(put(mesh(new THREE.CylinderGeometry(rS * 0.94, rI, frameL, 28, 1, true), CO.metal, { metal: 0.5, rough: 0.4 }), 0, frameL / 2, 0));
-    g.add(ringXZ(rI, Math.max(rI * 0.12, 0.008), CO.gold, 0.01));
-    g.add(ringXZ(rS * 0.96, Math.max(rS * 0.035, 0.008), CO.metal, frameL - Math.max(rS * 0.02, 0.004)));
-    for (let i = 0; i < 5; i += 1) {
-      const a = (i / 5) * Math.PI * 2;
-      rod(g, [Math.cos(a) * rI * 1.05, 0.01, Math.sin(a) * rI * 1.05], [Math.cos(a) * rS * 0.92, frameL, Math.sin(a) * rS * 0.92], Math.max(rS * 0.012, 0.004), CO.grey, { seg: 5 });
-    }
+    g.add(put(lathe([[rI, 0], [rS * 0.94, frameL]], 'grey', { seg: 28 }), 0, 0, 0));
+    g.add(ringXZ(rI, Math.max(rI * 0.12, 0.008), 'gold', 0.01));
+    const tr = trussMesh({ lengthM: frameL, widthM: rS * 1.2, bays: 2, kind: 'grey' }); g.add(tr);
   }
-
-  /* 2. The store. A tank is a barrel with two domes, MLI bands and a feed line; a magazine is a ribbed
-     drum with bays and doors, because its contents are discrete. */
   if (magazine) {
-    g.add(put(cyl(rS, storeL, CO.mli, { seg: 30 }), 0, yS, 0));
+    g.add(put(cyl(rS, storeL, 'stainless', { seg: 40 }), 0, yS, 0));
     const ribs = Math.max(2, Math.min(10, Math.round(storeL / Math.max(rS, 0.4))));
-    for (let i = 1; i < ribs; i += 1) g.add(ringXZ(rS * 1.004, Math.max(rS * 0.018, 0.004), CO.metal, yS + (storeL * i) / ribs));
-    for (let i = 0; i < 4; i += 1) {
-      const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
-      const door = box(rS * 0.05, storeL * 0.6, rS * 0.68, CO.hatch, { metal: 0.45, rough: 0.5 });
-      put(door, Math.cos(a) * rS * 1.02, yS + storeL * 0.5, Math.sin(a) * rS * 1.02, 0, -a, 0);
-      g.add(door);
-      rod(g, [Math.cos(a) * rS * 1.03, yS, Math.sin(a) * rS * 1.03], [Math.cos(a) * rS * 1.03, yE, Math.sin(a) * rS * 1.03], Math.max(rS * 0.012, 0.004), CO.metal, { seg: 5 });
-    }
+    for (let i = 1; i < ribs; i += 1) g.add(ringXZ(rS * 1.004, Math.max(rS * 0.018, 0.004), 'dark', yS + (storeL * i) / ribs));
+    for (let i = 0; i < 4; i += 1) { const a = (i / 4) * Math.PI * 2 + Math.PI / 4; const door = box(rS * 0.05, storeL * 0.6, rS * 0.68, 'hatch'); put(door, Math.cos(a) * rS * 1.02, yS + storeL * 0.5, Math.sin(a) * rS * 1.02, 0, -a, 0); g.add(door); }
   } else {
     const dome = Math.min(rS * 0.6, storeL * 0.16);
-    g.add(put(cyl(rS, storeL - 2 * dome, CO.tank, { seg: 34 }), 0, yS + dome, 0));
-    g.add(put(cyl(rS * 0.42, dome, CO.tank, { r2: rS, seg: 34 }), 0, yS, 0));
-    g.add(put(cyl(rS, dome, CO.tank, { r2: rS * 0.42, seg: 34 }), 0, yE - dome, 0));
-    for (let i = 1; i <= 3; i += 1) g.add(ringXZ(rS * 1.006, Math.max(rS * 0.022, 0.005), CO.gold, yS + dome + ((storeL - 2 * dome) * i) / 4));
-    for (const s of [-1, 1]) {
-      rod(g, [s * rS * 1.02, yS + dome * 0.6, 0], [s * rS * 1.02, yE - dome * 0.6, 0], Math.max(rS * 0.014, 0.005), CO.metal, { seg: 5 });
-    }
+    g.add(put(cyl(rS, storeL - 2 * dome, 'tank', { seg: 40 }), 0, yS + dome, 0));
+    const d1 = lathe(domeProfile(rS, dome, 10), 'tank', { seg: 40 }); d1.position.y = yE - dome; g.add(d1);
+    const d0 = lathe(domeProfile(rS, dome, 10), 'tank', { seg: 40 }); d0.rotation.x = Math.PI; d0.position.y = yS + dome; g.add(d0);
+    for (let i = 1; i <= 3; i += 1) g.add(ringXZ(rS * 1.006, Math.max(rS * 0.022, 0.005), 'gold', yS + dome + ((storeL - 2 * dome) * i) / 4));
   }
-
-  /* 3. The aft end. A magazine needs no nozzle: its plate is the structure the pulses act on, so it
-     stands off the store on eight shock absorbers. Anything else ends in a thrust structure and a
-     cluster of bells that open away from the hull. */
   if (magazine) {
-    const plateR = Math.max((p.plateD ?? D) / 2, rS * 1.02);
-    const plateT = Math.max(D * 0.025, 0.02);
-    const yPlate = L - plateT;
-    g.add(put(cyl(plateR, plateT, CO.dark, { seg: 40 }), 0, yPlate, 0));
-    const rim = tor(plateR * 0.97, Math.max(plateR * 0.025, 0.008), CO.metal, { metal: 0.5, rough: 0.45 });
-    put(rim, 0, yPlate + plateT * 0.5, 0, Math.PI / 2);
-    g.add(rim);
-    for (let i = 0; i < 8; i += 1) {
-      const a = (i / 8) * Math.PI * 2;
-      rod(g, [Math.cos(a) * rS * 0.82, yE, Math.sin(a) * rS * 0.82], [Math.cos(a) * plateR * 0.7, yPlate, Math.sin(a) * plateR * 0.7], Math.max(rS * 0.03, 0.006), CO.metal, { seg: 6 });
-    }
-    rod(g, [0, yE, 0], [0, yPlate, 0], Math.max(rS * 0.07, 0.01), CO.grey, { seg: 10 });
+    const plateR = Math.max((p.plateD ?? D) / 2, rS * 1.02), plateT = Math.max(D * 0.025, 0.02), yPlate = L - plateT;
+    g.add(put(cyl(plateR, plateT, 'dark', { seg: 48 }), 0, yPlate, 0));
+    for (let i = 0; i < 8; i += 1) { const a = (i / 8) * Math.PI * 2; rod(g, [Math.cos(a) * rS * 0.82, yE, Math.sin(a) * rS * 0.82], [Math.cos(a) * plateR * 0.7, yPlate, Math.sin(a) * plateR * 0.7], Math.max(rS * 0.03, 0.006), 'chrome', { seg: 8 }); }
+    rod(g, [0, yE, 0], [0, yPlate, 0], Math.max(rS * 0.07, 0.01), 'grey', { seg: 12 });
   } else {
-    g.add(put(cyl(rS * 0.94, Math.max(bayL * 0.55, 0.04), CO.shell, { seg: 30 }), 0, yE, 0));
-    const nR = Math.max(rS * 0.2, 0.008), yExit = L - Math.max(bayL * 0.05, 0.008);
-    for (let i = 0; i < 4; i += 1) {
-      const a = (i / 4) * Math.PI * 2 + Math.PI / 4, rr = rS * 0.44;
-      const bell = mesh(new THREE.CylinderGeometry(nR, nR * 0.45, Math.max(bayL * 0.7, 0.03), 18, 1, true), CO.dark, { metal: 0.6, rough: 0.4 });
-      put(bell, Math.cos(a) * rr, yExit - Math.max(bayL * 0.35, 0.015), Math.sin(a) * rr);
-      g.add(bell);
-    }
-    g.add(ringXZ(rS * 0.72, Math.max(rS * 0.028, 0.005), CO.gold, Math.min(yE + rS * 0.06, L - 0.01)));
+    g.add(put(cyl(rS * 0.94, Math.max(bayL * 0.55, 0.04), 'white', { seg: 32 }), 0, yE, 0));
+    for (let i = 0; i < 4; i += 1) { const a = (i / 4) * Math.PI * 2 + Math.PI / 4; const bell = bellMesh(bellSpec({ thrustN: Math.max(100, (p.thrustN ?? 1e5) / 4), chamberPa: 3e6, expansion: 100 })); const sc = Math.min(1, (bayL * 0.8) / Math.max(bell.children[0].geometry.boundingBox?.max.y ?? bayL, 1e-6)); bell.position.set(Math.cos(a) * rS * 0.44, yE + Math.max(bayL * 0.55, 0.04), Math.sin(a) * rS * 0.44); g.add(bell); }
   }
-
-  /* 4. Radiators on booms, two panels a side, sized from the heat the drive rejects. They hang in the
-     plane of the stack like a solar wing rather than standing off it as a slab. */
   const rad = p.radiator;
   if (rad && rad.areaM2 > 0.02 && storeL > 0.1) {
-    const half = rad.areaM2 / 4;
-    let pLen = Math.min(rad.lengthM, 0.46 * storeL);
-    let pWid = Math.max(half / Math.max(pLen, 1e-6), 0.3);
+    const half = rad.areaM2 / 4; let pLen = Math.min(rad.lengthM, 0.46 * storeL); let pWid = Math.max(half / Math.max(pLen, 1e-6), 0.3);
     if (pWid > rS * 1.8) { pWid = rS * 1.8; pLen = half / pWid; }
-    const thick = Math.max(pWid * 0.012, 0.006);
-    for (const s of [-1, 1]) {
-      for (const k of [-1, 1]) {
-        const yc = yS + storeL / 2 + k * (pLen / 2 + storeL * 0.03);
-        const xIn = s * rS * 1.02, xOut = s * (rS * 1.02 + pWid);
-        const panel = box(pWid, pLen, thick, CO.rad, { mat: { metal: 0.3, rough: 0.55 } });
-        put(panel, (xIn + xOut) / 2, yc, 0);
-        g.add(panel);
-        for (let i = 1; i < 4; i += 1) {
-          const rib = box(pWid * 0.98, thick * 1.6, thick * 2.2, CO.metal, { metal: 0.6, rough: 0.3 });
-          put(rib, (xIn + xOut) / 2, yc - pLen / 2 + (pLen * i) / 4, 0);
-          g.add(rib);
-        }
-        rod(g, [xOut, yc - pLen / 2, 0], [xOut, yc + pLen / 2, 0], Math.max(pWid * 0.02, 0.004), CO.metal, { seg: 5 });
-        rod(g, [xIn, yc, 0], [xOut, yc, 0], Math.max(pWid * 0.03, 0.005), CO.metal, { seg: 5 });
-      }
+    for (const s of [-1, 1]) for (const k of [-1, 1]) {
+      const yc = yS + storeL / 2 + k * (pLen / 2 + storeL * 0.03), xIn = s * rS * 1.02, xOut = s * (rS * 1.02 + pWid);
+      const panel = box(pWid, pLen, Math.max(pWid * 0.012, 0.006), 'radiator'); put(panel, (xIn + xOut) / 2, yc, 0); g.add(panel);
+      rod(g, [xIn, yc, 0], [xOut, yc, 0], Math.max(pWid * 0.03, 0.005), 'grey', { seg: 5 });
     }
-  }
-  return { group: g };
-}
-
-/* Spin ring: a 300 degree shell so the interior shows, one annular floor per deck alternating living
-   (warm) and working (blue), six spokes and the de-spun hub. This is the drawing that carries the
-   internal layout: the wedge that is missing is the cutaway. */
-function centrifugeCAD(p) {
-  const g = new THREE.Group();
-  const D = Math.max(p.dims.l ?? 10, 1), tube = D / 2;
-  const R = Math.max(((p.dims.d ?? 40) - D) / 2, tube);
-  const arc = Math.PI * 2 * (5 / 6), gap = Math.PI * 2 - arc;
-  /* The cutaway is a missing 60 degree wedge, not a tilt: the ring has to stay in its own plane or
-     it stands up out of the deck and the hull envelope swallows it (a 114.8 m ring read 144 m). The
-     torus lies in its own xy plane with the wedge at the end of the arc, so one -90 degree turn
-     about x lays it flat and nothing else may be rotated at the same time. */
-  const shellFrame = new THREE.Group();
-  shellFrame.rotation.x = -Math.PI / 2;
-  shellFrame.add(mesh(new THREE.TorusGeometry(R, tube, 16, 96, arc), CO.shell, { metal: 0.25, rough: 0.5 }));
-  g.add(shellFrame);
-  const decks = Math.max(1, Math.floor((D - 1.2) / 3));
-  for (let i = 0; i < decks; i += 1) {
-    const floor = mesh(new THREE.RingGeometry(R - tube * 0.82, R + tube * 0.82, 96, 1, 0, arc), i % 2 ? CO.array : CO.rad, { metal: 0.2, rough: 0.7 });
-    floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -tube + 1.8 + i * 3;
-    g.add(floor);
-  }
-  for (let i = 0; i < 6; i += 1) {
-    const a = (i / 6) * Math.PI * 2;
-    rod(g, [Math.cos(a) * Math.max(tube * 0.9, 0.4), 0, Math.sin(a) * Math.max(tube * 0.9, 0.4)], [Math.cos(a) * R, 0, Math.sin(a) * R], Math.max(tube * 0.05, 0.08), CO.metal);
-  }
-  g.add(put(cyl(tube * 0.85, tube * 1.1, CO.shell, { seg: 24 }), 0, -tube * 0.55, 0));
-  g.add(ringXZ(tube * 0.55, Math.max(tube * 0.03, 0.02), CO.metal, tube * 0.55));
-  return { group: g };
-}
-
-/* Spin-ring bearing: fixed hub, rotating collar, slip-ring band between them. */
-function spinBearingCAD(p) {
-  const g = new THREE.Group(), L = p.dims.l ?? 1, D = p.dims.d ?? 4, r = D / 2;
-  g.add(cyl(r * 0.55, L, CO.metal, { seg: 26 }));
-  g.add(ringXZ(r * 0.95, Math.max(D * 0.04, 0.02), CO.gold, L * 0.5));
-  g.add(ringXZ(r * 0.7, Math.max(D * 0.03, 0.015), CO.dark, L * 0.05));
-  g.add(ringXZ(r * 0.7, Math.max(D * 0.03, 0.015), CO.dark, L * 0.95));
-  for (let i = 0; i < 4; i += 1) {
-    const a = (i / 4) * Math.PI * 2;
-    rod(g, [Math.cos(a) * r * 0.5, L * 0.05, Math.sin(a) * r * 0.5], [Math.cos(a) * r * 0.5, L * 0.95, Math.sin(a) * r * 0.5], Math.max(D * 0.012, 0.01), CO.grey, { seg: 5 });
   }
   return { group: g };
 }
@@ -695,230 +458,123 @@ function spinBearingCAD(p) {
 /** A cylinder with an end ring: the honest fallback for a kind with no builder of its own. */
 function genericCAD(p) {
   const g = new THREE.Group(), r = Math.max((p.dims?.d ?? 0) / 2, 1e-4), L = Math.max(p.dims?.l ?? 0, 1e-4);
-  const body = cyl(r, L, p.kind === 'radiator' ? CO.rad : CO.shell, { seg: 24 });
-  if (p.origin === 'centre') body.position.y = -L / 2;
-  g.add(body);
+  const body = cyl(r, L, 'white', { seg: 24 }); if (p.origin === 'centre') body.position.y = -L / 2; g.add(body);
   return { group: g };
 }
 
 const BUILDERS = {
-  'pressurised-module': moduleCAD,
-  node: nodeCAD,
-  radiator: radiatorCAD,
-  'solar-array': arrayCAD,
-  bus: busCAD,
-  payload: chipCAD,
-  adapter: dispenserCAD,
-  lander: landerCAD,
-  'landing-gear': legsCAD,
-  'crew-capsule': capsuleCAD,
-  'service-module': serviceCAD,
-  'habitat-ring': ringCAD,
-  cargo: cargoCAD,
-  mast: mastCAD,
-  'thrust-collar': collarCAD,
-  'despin-hub': despinCAD,
-  reactor: reactorCAD,
-  pma: pmaCAD,
-  'dock-adapter': sailStageCAD,
-  centrifuge: centrifugeCAD,
-  'spin-bearing': spinBearingCAD,
-  drive: driveCAD
+  'pressurised-module': moduleCAD, 'stores-module': moduleCAD, node: nodeCAD, airlock: airlockCAD, radiator: radiatorCAD, 'solar-array': arrayCAD,
+  bus: busCAD, payload: chipCAD, adapter: (p) => (/6U/.test(p.name) ? dispenserCAD(p) : adapterCAD(p)), lander: landerCAD, 'lander-aero': landerAeroCAD,
+  'landing-gear': legsCAD, 'grid-fins': finsCAD, 'crew-capsule': capsuleCAD, 'service-module': serviceCAD, 'habitat-ring': ringCAD, cargo: cargoCAD,
+  mast: mastCAD, 'sail-canister': canisterCAD, 'thrust-collar': collarCAD, 'despin-hub': despinCAD, reactor: reactorCAD, rtg: rtgCAD, dish: dishCAD,
+  'dust-shield': dustShieldCAD, pma: pmaCAD, 'dock-adapter': sailStageCAD, centrifuge: centrifugeCAD, 'spin-bola': bolaCAD, 'spin-bearing': spinBearingCAD,
+  truss: trussCAD, 'systems-bay': systemsCAD, 'systems-module': systemsCAD, 'trim-stage': trimStageCAD, drive: driveCAD
 };
 
-function centauriPart(p) {
-  const build = BUILDERS[p.kind] ?? genericCAD;
-  return build(p);
-}
+function centauriPart(p) { return (BUILDERS[p.kind] ?? genericCAD)(p); }
 
 /* ------------------------------------------------------------------ *
  * The origami sail film
  * ------------------------------------------------------------------ */
 
-/** The film as a hexagonal flasher carrying `side * side` of area: six gores, a pinwheel shoulder
- *  ring, a hub opening and six rim booms. `setDeploy(k)` recomputes the vertex positions from
- *  parts/flasher.js, so the drawn film is the fold law rather than a decoration of it. */
+/** The film as a hexagonal flasher: six gores, a pinwheel shoulder ring, a hub opening and six rim
+ *  tip masses. `setDeploy(k)` recomputes the vertices from parts/flasher.js. */
 function sailFilm(side, opts = {}) {
-  const g = new THREE.Group();
-  const detail = opts.detail !== false;
-  const R = flasherRadius(side * side);
-  const filmMat = mat(0xa8d4ff, { metal: 0.45, rough: 0.34, emissive: 0x2b4c70, alpha: 0.5 });
+  const g = new THREE.Group(), detail = opts.detail !== false, R = flasherRadius(side * side);
+  const filmMat = surface('film');
   const creaseMat = new THREE.LineBasicMaterial({ color: 0xcfeaff, transparent: true, opacity: 0.32 });
   const pattern = faces();
-
-  /* 18 vertices (hub, shoulder, rim per sector) and 24 triangles: the film mesh is one buffer that
-     the deployment rewrites, because a flasher is a mechanism, not a set of hinges on pivots. */
-  const geo = new THREE.BufferGeometry();
-  const pos = new Float32Array(pattern.vertices.length * 3);
+  const geo = new THREE.BufferGeometry(), pos = new Float32Array(pattern.vertices.length * 3);
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const tri = [];
-  for (const q of pattern.quads) { const c = q.corners; tri.push(c[0], c[1], c[2], c[0], c[2], c[3]); }
+  const tri = []; for (const q of pattern.quads) { const c = q.corners; tri.push(c[0], c[1], c[2], c[0], c[2], c[3]); }
   geo.setIndex(tri);
-  const film = new THREE.Mesh(geo, filmMat);
-  film.frustumCulled = false;
-  g.add(film);
-
+  const film = new THREE.Mesh(geo, filmMat); film.frustumCulled = false; g.add(film);
   const creaseList = creases().filter((c) => c.kind !== 'cut');
-  const lp = new Float32Array(creaseList.length * 6);
-  const lgeo = new THREE.BufferGeometry();
+  const lp = new Float32Array(creaseList.length * 6), lgeo = new THREE.BufferGeometry();
   lgeo.setAttribute('position', new THREE.BufferAttribute(lp, 3));
-  const lines = new THREE.LineSegments(lgeo, creaseMat);
-  lines.frustumCulled = false;
-  if (detail) g.add(lines);
-
-  /* The hub is the interface the film winds onto, so it stays put while the film contracts to it:
-     at full stow the pack is 0.161 R across and the hub is 0.14 R, which is the tight fit the fold
-     law predicts rather than a coincidence. */
-  const hub = tor(Math.max(R * FLASHER.hubFrac, 1e-6), Math.max(side * 0.0015, 1e-8), CO.metal, { metal: 0.6, rough: 0.3 });
-  hub.rotation.x = Math.PI / 2;
-  g.add(hub);
-
-  /* Six rim booms to the corners with a steering vane at each: a 100 nm film cannot hold its own
-     shape, and a beam-rider trims with vanes rather than thrusters. They scale with the film. */
+  const lines = new THREE.LineSegments(lgeo, creaseMat); lines.frustumCulled = false; if (detail) g.add(lines);
+  const hub = tor(Math.max(R * FLASHER.hubFrac, 1e-6), Math.max(side * 0.0015, 1e-8), 'grey'); hub.rotation.x = Math.PI / 2; g.add(hub);
   const arms = new THREE.Group();
   for (let i = 0; i < FLASHER.sectors; i += 1) {
-    const arm = new THREE.Group();
-    arm.rotation.y = -(SECTOR * i);
-    rod(arm, [R * FLASHER.hubFrac, 0, 0], [R, 0, 0], Math.max(side * 0.0022, 1e-8), CO.metal, { seg: 5 });
-    const vane = box(Math.max(side * 0.03, 1e-7), Math.max(side * 0.0015, 1e-9), Math.max(side * 0.008, 1e-8), CO.gold, { metal: 0.75, rough: 0.2 });
-    put(vane, R * 0.94, 0, Math.max(side * 0.006, 1e-8));
-    arm.add(vane);
+    const arm = new THREE.Group(); arm.rotation.y = -(SECTOR * i);
+    const tip = sph(Math.max(side * 0.004, 1e-8), 'gold'); tip.position.set(R * 0.98, 0, 0); arm.add(tip);
+    const vane = box(Math.max(side * 0.03, 1e-7), Math.max(side * 0.0015, 1e-9), Math.max(side * 0.008, 1e-8), 'gold'); put(vane, R * 0.94, 0, Math.max(side * 0.006, 1e-8)); arm.add(vane);
     arms.add(arm);
   }
   if (detail) g.add(arms);
-
+  let n = 0;
   const write = (k) => {
-    const lam = lambdaFor(k);
-    const d = deploy(lam, { radiusM: R });
-    const idx = pattern.index;
-    for (let i = 0; i < FLASHER.sectors; i += 1) {
-      for (const ring of ['H', 'S', 'O']) {
-        const v = idx[ring][i], p = d.points[ring][i];
-        pos[v * 3] = p[0]; pos[v * 3 + 1] = p[1]; pos[v * 3 + 2] = p[2];
-      }
-    }
-    geo.attributes.position.needsUpdate = true;
-    geo.computeVertexNormals();
+    const lam = lambdaFor(k), d = deploy(lam, { radiusM: R }), idx = pattern.index;
+    for (let i = 0; i < FLASHER.sectors; i += 1) for (const ring of ['H', 'S', 'O']) { const v = idx[ring][i], p = d.points[ring][i]; pos[v * 3] = p[0]; pos[v * 3 + 1] = p[1]; pos[v * 3 + 2] = p[2]; }
+    geo.attributes.position.needsUpdate = true; geo.computeVertexNormals();
     n = 0;
-    for (const c of creaseList) {
-      const p = d.points[c.a[0]][c.a[1]], q = d.points[c.b[0]][c.b[1]];
-      lp[n] = p[0]; lp[n + 1] = p[1]; lp[n + 2] = p[2];
-      lp[n + 3] = q[0]; lp[n + 4] = q[1]; lp[n + 5] = q[2];
-      n += 6;
-    }
+    for (const c of creaseList) { const p = d.points[c.a[0]][c.a[1]], q = d.points[c.b[0]][c.b[1]]; lp[n] = p[0]; lp[n + 1] = p[1]; lp[n + 2] = p[2]; lp[n + 3] = q[0]; lp[n + 4] = q[1]; lp[n + 5] = q[2]; n += 6; }
     lgeo.attributes.position.needsUpdate = true;
     arms.scale.set(d.scale, 1, d.scale);
-    g.userData.lambda = lam;
-    g.userData.stage = d.stage;
+    g.userData.lambda = lam; g.userData.stage = d.stage;
   };
-  let n = 0;
   g.userData.setDeploy = write;
   write(1);
   return g;
 }
 
 /* ------------------------------------------------------------------ *
- * The eight craft
+ * The craft
  * ------------------------------------------------------------------ */
 
-const span = (v) => {
-  const n = (x) => String(Number(x.toPrecision(3)));
-  if (v >= 1000) return `${n(v / 1000)} km`;
-  if (v >= 1) return `${n(v)} m`;
-  return `${n(v * 100)} cm`;
-};
+const span = (v) => { const n = (x) => String(Number(x.toPrecision(3))); if (v >= 1000) return `${n(v / 1000)} km`; if (v >= 1) return `${n(v)} m`; return `${n(v * 100)} cm`; };
 
 /** Build one class from its solved assembly. Returns a Group with the viewer's hooks:
  *  fitAxis null (true size), label, setDeploy, and a two-stage explode map. */
 export function buildCentauriModel(id) {
   const m = measure(id, {});
-  const g = new THREE.Group();
-  const hullStage = new THREE.Group();
-  const sailStage = new THREE.Group();
-  hullStage.userData.stage = 0;
-  sailStage.userData.stage = 1;
-  g.add(hullStage, sailStage);
-
-  const deployers = [];
-  const box3 = new THREE.Box3();
+  const g = new THREE.Group(), hullStage = new THREE.Group(), sailStage = new THREE.Group();
+  hullStage.userData.stage = 0; sailStage.userData.stage = 1; g.add(hullStage, sailStage);
+  const deployers = [], box3 = new THREE.Box3();
   for (const n of m.solved.nodes) {
     const p = n.part;
     if (p.kind === 'sail') continue;
     const built = centauriPart(p);
     for (const port of p.ports ?? []) addPortRing(built.group, port);
     const frame = new THREE.Group();
-    frame.position.fromArray(n.world.position);
-    frame.quaternion.fromArray(n.world.quaternion);
-    frame.add(built.group);
-    hullStage.add(frame);
+    frame.position.fromArray(n.world.position); frame.quaternion.fromArray(n.world.quaternion);
+    frame.add(built.group); hullStage.add(frame);
     if (built.setDeploy) deployers.push(built.setDeploy);
     frame.updateMatrixWorld(true);
-    /* The mast is structure, not hull: counting it made the capsule read "hull 19.9 m" for a 9 m
-       craft and squeezed the drawn sail against a length that is mostly standoff. */
     if (p.kind !== 'mast') box3.expandByObject(frame);
   }
-
-  const span3 = box3.getSize(new THREE.Vector3());
-  const hullSpan = Math.max(span3.x, span3.y, span3.z, 1e-6);
-
-  /* The driven versions have no film at all: same hull, no sail stage, and the label reports the
-     drive and its cruise instead of the sail and its draw-down ratio. */
+  const span3 = box3.getSize(new THREE.Vector3()), hullSpan = Math.max(span3.x, span3.y, span3.z, 1e-6);
   const sailNode = m.solved.nodes.find((n) => n.part.kind === 'sail');
   const trueSide = sailNode ? sailSquareSide(sailNode.part.sail.areaM2) : 0;
-  /* Three hull spans keeps the craft itself a third of the picture -- at twelve it was a dot in the
-     middle of a grey square, at five barely better; the 5 m floor keeps the wafer's 1.71 m film at
-     true size next to the 1.8 m person, which is the point of that model. The ratio is on the label. */
   const drawnSide = sailNode ? Math.min(trueSide, Math.max(3 * hullSpan, 5)) : 0;
   const ratio = sailNode ? trueSide / drawnSide : 1;
   let film = null;
   if (sailNode) {
     film = sailFilm(drawnSide, { detail: ratio < 2 });
     film.position.fromArray(sailNode.world.position);
-    /* The mate solver leaves the roll of a one-axis hinge free, so a square film comes out diamond-wise
-       to the craft. That roll is a free degree of freedom -- the film turns on its hub -- so it is taken
-       out about the sail's own normal and the square sits square to the frame. */
     const q = new THREE.Quaternion().fromArray(sailNode.world.quaternion);
     const normal = new THREE.Vector3(0, 1, 0).applyQuaternion(q).normalize();
     const edge = new THREE.Vector3(1, 0, 0).applyQuaternion(q).projectOnPlane(normal).normalize();
-    const ref = new THREE.Vector3(1, 0, 0).projectOnPlane(normal);
-    if (ref.lengthSq() < 1e-9) ref.set(0, 0, 1).projectOnPlane(normal);
-    ref.normalize();
+    const ref = new THREE.Vector3(1, 0, 0).projectOnPlane(normal); if (ref.lengthSq() < 1e-9) ref.set(0, 0, 1).projectOnPlane(normal); ref.normalize();
     const roll = Math.atan2(new THREE.Vector3().crossVectors(ref, edge).dot(normal), ref.dot(edge));
     film.quaternion.copy(q).premultiply(new THREE.Quaternion().setFromAxisAngle(normal, -roll));
     sailStage.add(film);
   }
-
-  /* The assembly's thrust axis is +y and the film's normal is +y; turn the craft so the film faces
-     the default camera, then a little off-axis so the hull is not hidden behind its own disc. */
   g.rotation.set(-Math.PI / 2, -0.42, 0);
-
-  const setDeploy = (k) => {
-    if (film) film.userData.setDeploy(k);
-    for (const d of deployers) d(k);
-  };
+  const setDeploy = (k) => { if (film) film.userData.setDeploy(k); for (const d of deployers) d(k); };
   setDeploy(1);
-
-  /* CG, thrust axis and hub datum: the three annotations a real drawing carries, drawn at the hull's
-     own scale. The axis runs from the aft face through the film's hub, so a mis-mounted sail shows. */
   const datum = new THREE.Group();
-  const cgMark = sph(Math.max(hullSpan * 0.012, 1e-4), CO.accent, { metal: 0.2, rough: 0.4 });
-  cgMark.position.fromArray(m.geometry.cgHull);
-  datum.add(cgMark);
-  const axisR = Math.max(hullSpan * 0.002, 1e-5);
-  /* The thrust-axis annotation runs from the mast root to the film hub. It used to start a mast
-     length below the hull's top, which drew a line straight through the craft and out the bottom. */
-  if (m.geometry.sailAt) rod(datum, [m.geometry.sailAt[0], m.geometry.hullTopY, m.geometry.sailAt[2]], [m.geometry.sailAt[0], m.geometry.sailAt[1], m.geometry.sailAt[2]], axisR, CO.accent, { seg: 5 });
+  const cgMark = sph(Math.max(hullSpan * 0.012, 1e-4), 'accent'); cgMark.position.fromArray(m.geometry.cgHull); datum.add(cgMark);
+  if (m.geometry.sailAt) rod(datum, [m.geometry.sailAt[0], m.geometry.hullTopY, m.geometry.sailAt[2]], [m.geometry.sailAt[0], m.geometry.sailAt[1], m.geometry.sailAt[2]], Math.max(hullSpan * 0.002, 1e-5), 'accent', { seg: 5 });
   hullStage.add(datum);
-
-  g.userData.fitAxis = null;
-  g.userData.top = hullSpan;
+  g.userData.fitAxis = null; g.userData.top = hullSpan;
   g.userData.stages = new Map([[0, hullStage], [1, sailStage]]);
   g.userData.setDeploy = setDeploy;
-  /* A percent with one decimal is right for 9.9 % and useless for the ion ship's 0.039 %, which came
-     out of the first cut as "0.0 % c". Below one percent the label switches to two significant digits. */
+  g.userData.measure = m;
   const pc = m.propulsion ? m.propulsion.beta * 100 : 0;
+  const inv = m.inventory;
   g.userData.label = m.propulsion
     ? `stack ${span(hullSpan)} · ${m.propulsion.drive.short} · ${pc >= 1 ? pc.toFixed(1) : pc.toPrecision(2)} % c · ${m.propulsion.closes ? `${m.propulsion.tripYears.toFixed(0)} yr` : 'no route'}`
-    : `hull ${span(hullSpan)}${m.geometry.mastLenM > 0 ? ` · mast ${span(m.geometry.mastLenM)}` : ' · hub-mounted'} · sail ${span(2 * flasherRadius(trueSide * trueSide))} flasher${ratio > 1.02 ? ` · drawn 1:${Math.round(ratio)}` : ' · true size'}`;
+    : `hull ${span(hullSpan)}${m.geometry.mastLenM > 0 ? ` · mast ${span(m.geometry.mastLenM)}` : ' · hub-mounted'} · sail ${span(2 * flasherRadius(trueSide * trueSide))} flasher${ratio > 1.02 ? ` · drawn 1:${Math.round(ratio)}` : ' · true size'}${inv && inv.crew ? ` · ${inv.crew} crew x ${(inv.days / 365.25).toFixed(0)} yr` : ''}`;
   return g;
 }

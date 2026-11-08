@@ -48,9 +48,19 @@
   ul.checks li.warn:before { content: "\26A0"; color: var(--accent2); }
   ul.checks li.info:before { content: "\00B7"; color: var(--muted); }
   svg.ruler { width: 100%; height: auto; display: block; margin: 10px 0 4px; }
+  #view3d { position: relative; height: 560px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #070a10; margin: 14px 0 6px; }
+  #view3d canvas { display: block; width: 100% !important; height: 100% !important; }
+  #viewbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; font-size: 13px; color: #c3d0e2; margin: 6px 0 2px; }
+  #viewbar select { max-width: 18em; } #viewbar label { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 13px; color: #c3d0e2; }
+  #viewbar input[type=range] { -webkit-appearance: none; width: 140px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, rgba(127,195,255,0.6), rgba(255,184,107,0.6)); }
+  #viewbar input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #eaf3ff; border: 2px solid #7fc3ff; }
+  #viewbar button { background: rgba(26,26,26,0.85); color: var(--text); border: 1px solid rgba(127,195,255,0.22); border-radius: 8px; padding: 4px 10px; font: inherit; font-size: 13px; cursor: pointer; } #viewbar button:hover { border-color: var(--accent); }
+  #viewlabel { position: absolute; left: 14px; bottom: 10px; font-size: 13px; color: #dbe5f3; text-shadow: 0 1px 6px #000; pointer-events: none; } #viewlabel b { color: #fff; display: block; font-weight: 500; } #viewlabel span { color: var(--accent2); font-variant-numeric: tabular-nums; }
+  .inv tr.grp td { color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px; padding-top: 10px; }
   @media (max-width: 760px) { #menu { display: none; } main { padding: 8px 14px 60px; } }
 </style>
   <link rel="stylesheet" href="kosmographica.css?v=15">
+  <script type="importmap">{ "imports": { "three": "./vendor/three-0.160.0/build/three.module.js", "three/addons/": "./vendor/three-0.160.0/examples/jsm/" } }</script>
   <script src="atlas-nav.js" defer></script>
 </head>
 <body>
@@ -63,6 +73,19 @@
     from those parts, not typed in from a concept table.</div>
 
   <div class="verdict" id="verdict">&mdash;</div>
+
+  <div id="viewbar">
+    <label>Model <select id="viewId"></select></label>
+    <label>Render <select id="render"></select></label>
+    <label><input type="checkbox" id="rivets" checked> rivets</label>
+    <label>Sail <input type="range" id="unfold" min="0" max="1" step="0.01" value="1"></label><button id="unfoldplay" title="sweep the fold">&#9654; unfold</button>
+    <label><input type="checkbox" id="spin"> spin</label>
+    <button id="shot" title="save a PNG of the view">screenshot</button>
+  </div>
+  <div id="view3d"><div id="viewlabel"></div></div>
+  <p class="small dim">The model is the solved assembly the tables below measure, drawn at true size with a 1.8 m person; the film is
+    drawn down where it would otherwise fill the frame and the label says by how much. Every surface is a primitive from
+    <code>parts/primitives/</code> with its PBR preset; the render menu swaps the look without touching the geometry.</p>
 
   <div class="row" id="controls">
     <div><label>Craft class</label><select id="cls"></select></div>
@@ -109,7 +132,14 @@
   <h2 class="serif">5 &middot; What the checks say</h2>
   <ul class="checks" id="checks"></ul>
 
-  <h2 class="serif">6 &middot; The eight, side by side</h2>
+  <h2 class="serif">6 &middot; Systems inventory (v4)</h2>
+  <p>The realism pass sizes every system from the mission &mdash; crew &times; days, stop or fly by, closure &mdash; with
+    NASA-STD-3001 / BVAD rates and flown hardware masses. Each row names its law; the roll-up is what the node checks hold.
+    See <code>CENTAURI-INVENTORY.md</code>.</p>
+  <div class="stats" id="invStats"></div>
+  <div class="tw"><table id="inventory" class="inv"></table></div>
+
+  <h2 class="serif">7 &middot; The eight, side by side</h2>
   <p>Same parts, same physics, same station model. A class closes when the beam can be focused on its sail and the
     station stays inside the buildability caps; the cells say which constraint failed when it does not.</p>
   <div class="tw"><table id="fleet"></table></div>
@@ -125,9 +155,10 @@
     unchanged in <code>static/parts/fleet.js</code> so the comparison cannot drift.</p>
 </main>
 <script type="module">
-import { measure, measureFleet, CLASSES, ROUTE_LY, COAST_YR } from './parts/fleet.js';
+import { measure, measureFleet, CLASSES, VARIANTS, PROPELLED, REALISM, ROUTE_LY, COAST_YR } from './parts/fleet.js';
 import { fmtPower, fmtEnergy, fmtLength, fmtArea, fmtMass, apertureForCoupling, EARTH_ORBITS } from './parts/beam.js';
 import { SAIL_AREAL } from './parts/parts.js';
+import { createCentauriView } from './centauri-view.js';
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -141,8 +172,25 @@ function fmtDuration(s) {
   return `${num(s, 1)} s`;
 }
 
-$('cls').innerHTML = CLASSES.map((c) => `<option value="${c.id}">${esc(c.name)} &middot; ${esc(c.payloadLabel)}</option>`).join('');
-$('cls').value = 'wafer';
+const SAIL_CLASSES = [...CLASSES, ...VARIANTS, ...REALISM];
+$('cls').innerHTML = `<optgroup label="v1 -- sail classes">${CLASSES.map((c) => `<option value="${c.id}">${esc(c.name)} &middot; ${esc(c.payloadLabel)}</option>`).join('')}</optgroup>`
+  + `<optgroup label="v2 -- spin rings">${VARIANTS.map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join('')}</optgroup>`
+  + `<optgroup label="v4 -- realism pass">${REALISM.map((c) => `<option value="${c.id}">${esc(c.name)} &middot; ${esc(c.mission.label)}</option>`).join('')}</optgroup>`;
+$('cls').value = 'habitat-v4';
+/* the viewer shows every version, the v3 drives included; the tables below follow the sail classes */
+$('viewId').innerHTML = [['v1 -- sail', CLASSES], ['v2 -- spin rings', VARIANTS], ['v3 -- drives', PROPELLED], ['v4 -- realism pass', REALISM]].map(([l, list]) => `<optgroup label="${l}">${list.map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join('')}</optgroup>`).join('');
+const view = createCentauriView({ host: $('view3d'), modeSelect: $('render'), rivetsBox: $('rivets'), unfoldRange: $('unfold'), spinBox: $('spin') });
+function showModel(id) {
+  $('viewId').value = id;
+  const u = view.show(id);
+  const c = SAIL_CLASSES.find((x) => x.id === id) ?? PROPELLED.find((x) => x.id === id);
+  $('viewlabel').innerHTML = `<b>${esc(c?.name ?? id)}</b><span>${esc(u.label ?? '')}</span>`;
+  location.hash = id;
+}
+$('viewId').addEventListener('change', () => showModel($('viewId').value));
+$('unfoldplay').onclick = () => view.unfold();
+$('shot').onclick = () => { const a = document.createElement('a'); a.href = view.screenshot(); a.download = `centauri-${$('viewId').value}.png`; a.click(); };
+window.centauriView = view; window.showCentauri = showModel;
 $('tboost').value = CLASSES[0].boostS;
 $('beta').value = 0.1;
 $('lambda').value = 1.06;
@@ -185,7 +233,7 @@ function ruler(items) {
 function render() {
   const o = options();
   const id = $('cls').value;
-  if (id !== lastClass) { $('tboost').value = Math.round(CLASSES.find((c) => c.id === id).boostS); lastClass = id; }
+  if (id !== lastClass) { $('tboost').value = Math.round(SAIL_CLASSES.find((c) => c.id === id).boostS); lastClass = id; if ($('viewId').value !== id) showModel(id); }
   const opts = options();
   const m = measure(id, opts);
   const best = m.trade.best;
@@ -240,8 +288,8 @@ function render() {
 
   $('drive').innerHTML = `<tr><th class="l">Quantity</th><th>Source table</th><th>Measured</th><th class="l">Why</th></tr>` +
     [
-      ['Peak laser', fmtPower(m.cls.peakW), fmtPower(m.powerW), `${num(m.ratios.power, 2)}x the table; momentum needs 2P/c`],
-      ['Beam energy', fmtEnergy(m.cls.energyJ), fmtEnergy(m.energyJ), `${num(m.ratios.energy, 2)}x the table`],
+      ['Peak laser', m.cls.peakW ? fmtPower(m.cls.peakW) : '\u2014', fmtPower(m.powerW), m.ratios.power ? `${num(m.ratios.power, 2)}x the table; momentum needs 2P/c` : 'momentum needs 2P/c'],
+      ['Beam energy', m.cls.energyJ ? fmtEnergy(m.cls.energyJ) : '\u2014', fmtEnergy(m.energyJ), m.ratios.energy ? `${num(m.ratios.energy, 2)}x the table` : 'sized from the vehicle'],
       ['Boost time', fmtDuration(m.cls.boostS), fmtDuration(opts.tBoost), 'the table\u2019s own figure, used as the target'],
       ['Vehicle mass', 'payload only', fmtMass(m.massKg), 'sail, bus, modules and cargo included'],
       ['Kinetic energy at cruise', '\u2014', fmtEnergy(m.kineticJ), '(gamma - 1) m c^2'],
@@ -273,9 +321,37 @@ function render() {
   for (const c of m.loads) items.push(['warn', `${c.code}: ${c.message} &mdash; an in-orbit mate, not a launch interface`]);
   items.push(['info', `Sail area ${fmtArea(m.sail.sail.areaM2)} for ${fmtMass(m.sail.mass)} of film: ${num(m.sail.sail.areaM2 / Math.max(m.sail.mass, 1e-12), 0)} m\u00b2/kg`]);
   items.push(['info', `The beam spends ${fmtEnergy(m.energyJ)} to put ${fmtEnergy(m.kineticJ)} into the vehicle (${(100 * m.kineticJ / Math.max(m.energyJ, 1e-30)).toFixed(1)} % coupling into motion at most).`]);
+  if (m.ratios.payload > 1.5) items.push(['info', `The sized vehicle is ${num(m.ratios.payload, 1)}x the source table's payload: a full systems inventory is what the table left out.`]);
+  if (m.inventory?.film && !m.inventory.film.ok) items.push(['warn', `Film temperature ${m.inventory.film.tempK.toFixed(0)} K under the boost flux, over the ${m.inventory.film.limitK} K limit.`]);
   if (m.ratios.power > 1.5) items.push(['warn', `The source table's peak laser is ${num(m.ratios.power, 2)}x below what this boost needs from photon momentum.`]);
   if (m.summary.power.margin < 0) items.push(['warn', `On-board power: ${fmtPower(m.summary.power.gen)} generated against ${fmtPower(m.summary.power.load)} of load.`]);
   $('checks').innerHTML = items.map(([k, t]) => `<li class="${k}">${t}</li>`).join('');
+
+  /* section 6: the v4 inventory, item by item, with the roll-up the checks hold */
+  const inv = m.inventory;
+  if (inv) {
+    const r = inv;
+    $('invStats').innerHTML = [
+      ['Mission', r.crew ? `${r.crew} crew` : 'uncrewed', r.crew ? `${(r.days / 365.25) >= 1 ? `${(r.days / 365.25).toFixed(0)} years` : `${r.days.toFixed(0)} days`}, ${m.cls.mission.stop ? 'stops' : 'flyby'}` : m.cls.mission.label],
+      ['Consumables', fmtMass(r.consumablesKg), r.consumablesPerPersonDay ? `${r.consumablesPerPersonDay.toFixed(2)} kg per person-day` : '\u2014'],
+      ['Pressurised volume', r.pressurisedPerPerson ? `${r.pressurisedPerPerson.toFixed(0)} m\u00b3 / person` : `${r.pressurisedM3.toFixed(0)} m\u00b3`, r.crew ? `needs ${(r.volumeNeededM3 / r.crew).toFixed(0)} m\u00b3 (NASA-STD-3001)` : ''],
+      ['Stores', `${r.storesM3.toFixed(0)} m\u00b3`, `for ${r.storesNeededM3.toFixed(0)} m\u00b3 of consumables`],
+      ['Power', fmtPower(r.powerGenW), `against ${fmtPower(r.powerLoadW)} of load`],
+      ['Trim / braking', `${r.deltaV ? r.deltaV.totalMs.toFixed(0) : 0} m/s`, `${fmtMass(r.trimPropKg)} of propellant`],
+      ['Film', `${r.film.tempK.toFixed(0)} K`, `${r.film.ok ? 'under' : 'over'} the ${r.film.limitK} K limit at ${fmtPower(r.film.fluxWm2)}/m\u00b2`],
+      ['Stow', r.stow.fits ? 'fits' : 'does not fit', `${r.stow.filmM3.toExponential(1)} m\u00b3 of film in ${r.stow.canisterM3.toExponential(1)} m\u00b3`]
+    ].map(([k, v, sub]) => `<div class="stat"><span>${k}</span><b>${v}</b><i>${esc(sub)}</i></div>`).join('');
+    let rows = `<tr><th class="l">Part</th><th class="l">Item</th><th>Mass</th><th>Volume</th><th>Power</th><th class="l">Law / source</th></tr>`;
+    for (const n of m.solved.nodes) {
+      if (!n.part.inventory?.length) continue;
+      rows += `<tr class="grp"><td colspan="6">${esc(n.name)} &middot; ${esc(n.part.name)} &middot; ${fmtMass(n.part.mass)}</td></tr>`;
+      for (const i of n.part.inventory) rows += `<tr><td class="l dim"></td><td class="l">${esc(i.item)}</td><td>${fmtMass(i.kg)}</td><td>${i.m3 ? `${num(i.m3, 1)} m\u00b3` : ''}</td><td>${i.W ? fmtPower(i.W) : ''}</td><td class="l dim small">${esc(i.source ?? '')}</td></tr>`;
+    }
+    $('inventory').innerHTML = rows;
+  } else {
+    $('invStats').innerHTML = '';
+    $('inventory').innerHTML = `<tr><td class="l dim">This version has no systems inventory; pick a v4 class. The audit (CENTAURI-AUDIT.md F6) records what v1-v3 leave out.</td></tr>`;
+  }
 
   /* Each class keeps its own tabulated boost time: only the shared physics inputs (speed, wavelength,
      reflectivity, sail areal density, thermal limit) apply across the fleet. */
@@ -299,6 +375,7 @@ for (const el of ['cls', 'areal', 'tboost', 'beta', 'lambda', 'eta', 'thermal'])
   $(el).addEventListener('change', schedule);
 }
 render();
+{ const want = location.hash.slice(1); if (want && SAIL_CLASSES.concat(PROPELLED).some((c) => c.id === want)) { if (SAIL_CLASSES.some((c) => c.id === want)) { $('cls').value = want; render(); } else showModel(want); } else showModel($('cls').value); }
 </script>
 </body>
 </html>
