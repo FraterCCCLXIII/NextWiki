@@ -115,7 +115,8 @@ function paintPattern(ctx, W, H, N, M, pattern, L, seedN, stencilText) {
     const [j0, j1] = bandRows(0.55, 0.8);
     for (let i = 0; i < N; i += 1) for (let j = 0; j < M; j += 1) cell(i, j, j >= j0 && j < j1 ? prim : base);
     /* a vertical accent stripe two cells wide and tape lines at the block edges */
-    for (let j = 0; j < M; j += 1) cell(Math.floor(N * 0.12), j, acc), cell(Math.floor(N * 0.12) + 1, j, acc);
+    /* a vertical accent stripe: one cell on a small body, two on a big one */
+    for (let j = 0; j < M; j += 1) { cell(Math.floor(N * 0.12), j, acc); if (N > 12) cell(Math.floor(N * 0.12) + 1, j, acc); }
     ctx.fillStyle = trim; ctx.fillRect(0, j0 * ch - ch * 0.06, W, ch * 0.12); ctx.fillRect(0, j1 * ch - ch * 0.06, W, ch * 0.12);
     ctx.fillStyle = acc; ctx.fillRect(0, Math.max(0, j0 * ch - ch * 0.3), W, ch * 0.1);
     /* small hazard squares on the lower block edge */
