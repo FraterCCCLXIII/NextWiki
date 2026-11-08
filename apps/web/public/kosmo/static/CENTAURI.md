@@ -21,7 +21,7 @@ the atlas **Lab** group.
 | `parts/centrifuge.js` | The spin-ring laws: radius from gravity and rpm, deck area from crew, the rpm/radius trade and the deck layout. No DOM. |
 | `parts/fleet-versions.js` | The pinned v1 fleet and v2 ring variants, compared against `measure()` by the checks, so a published ship cannot be re-written by accident. No DOM. |
 | `parts/centauri-models.js` | The catalogue CAD: one builder per part kind, a mating ring at every structural port, and the foldable film, all placed from the solver. Imports three. |
-| `centauri-fleet.test.mjs` | 354 node checks. Run by `run-tests.mjs`, or `node public/kosmo/static/centauri-fleet.test.mjs`. |
+| `centauri-fleet.test.mjs` | 698 node checks. Run by `run-tests.mjs`, or `node public/kosmo/static/centauri-fleet.test.mjs`. |
 
 ## The catalogue models
 
@@ -30,8 +30,10 @@ models cannot drift from the lab's numbers (`centauri-fleet.test.mjs` fails if `
 Every part kind has its own builder — pressure shell with external racks, MLI bands and handrails
 for a module; six berths on a node; a four-rail cage with six bays for a 6U deployer; tanks, engine
 bell, lockers and hatch on a lander; torus deck with 64 window strips, six spokes and a pressurised
-hub for the 1 g ring — and every CBM, IDSS and PAF mating plane gets a ring, so the berthing
-compartments are visible rather than implied.
+hub for the 1 g ring; a driven ship gets a conical thrust frame, its tank or pulse-unit magazine, a
+nozzle cluster or a pusher plate on eight shock absorbers, and four radiator panels on booms — and
+every CBM, IDSS and PAF mating plane gets a ring, so the berthing compartments are visible rather
+than implied.
 
 Two scales are printed on each label. The hull is always true size. The sail is true size while
 that stays readable (a wafer's 1.71 m square next to the 1.8 m person) and otherwise 3 hull spans
@@ -81,8 +83,10 @@ The same eight hulls also fly without a film. `parts/propulsion.js` holds seven 
 drives -- pellet beam, NEXT-C ion, NERVA, Orion, direct fusion, Daedalus and the Dyson fusion pulse --
 with their exhaust velocity, thrust, engine mass and tank fraction, and sizes one drive per class with
 the relativistic rocket equation at a 20:1 mass-ratio cap. The sail and mast come off, the drive
-module goes on the same axial mount and carries its own propellant, and because the module's mass is
-part of the ship the hull is measured first and the drive sized from it, not the other way round.
+stage is bolted through a rigid hardpoint and a thrust frame where the mast root was, and it carries
+its own propellant in a tank or a pulse-unit magazine sized from its bulk density, with radiators
+sized from the heat it rejects. Because the module's mass is part of the ship the hull is measured
+first and the drive sized from it, not the other way round.
 Four of the eight close the 4.37 ly route inside a century: both beamed-pellet classes (no propellant
 at all), the Daedalus seed at 9.85 % c in 46 years and the Dyson colony at 8.96 % c in 76. The ion,
 nuclear-thermal, fission-pulse and direct-fusion versions are reported as inner-system ships, which

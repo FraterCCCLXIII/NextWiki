@@ -1,0 +1,149 @@
+{
+ "total": 9,
+ "logos": {
+  "1": {
+   "sheet": "templeos",
+   "position": 1,
+   "row": 1,
+   "col": 1,
+   "cropBox": [
+    79,
+    26,
+    471,
+    294
+   ],
+   "mode": "flat",
+   "iou": 0.9846,
+   "parts": 18,
+   "exactGeometryParts": 0
+  },
+  "2": {
+   "sheet": "templeos",
+   "position": 2,
+   "row": 1,
+   "col": 2,
+   "cropBox": [
+    554,
+    25,
+    982,
+    293
+   ],
+   "mode": "flat",
+   "iou": 0.9807,
+   "parts": 23,
+   "exactGeometryParts": 6
+  },
+  "3": {
+   "sheet": "templeos",
+   "position": 3,
+   "row": 1,
+   "col": 3,
+   "cropBox": [
+    1063,
+    42,
+    1486,
+    287
+   ],
+   "mode": "flat",
+   "iou": 0.9836,
+   "parts": 10,
+   "exactGeometryParts": 0
+  },
+  "4": {
+   "sheet": "templeos",
+   "position": 4,
+   "row": 2,
+   "col": 1,
+   "cropBox": [
+    52,
+    436,
+    495,
+    576
+   ],
+   "mode": "flat",
+   "iou": 0.9812,
+   "parts": 11,
+   "exactGeometryParts": 1
+  },
+  "5": {
+   "sheet": "templeos",
+   "position": 5,
+   "row": 2,
+   "col": 2,
+   "cropBox": [
+    549,
+    344,
+    983,
+    632
+   ],
+   "mode": "flat",
+   "iou": 0.9889,
+   "parts": 9,
+   "exactGeometryParts": 0
+  },
+  "6": {
+   "sheet": "templeos",
+   "position": 6,
+   "row": 2,
+   "col": 3,
+   "cropBox": [
+    1099,
+    359,
+    1448,
+    616
+   ],
+   "mode": "flat",
+   "iou": 0.9886,
+   "parts": 12,
+   "exactGeometryParts": 0
+  },
+  "7": {
+   "sheet": "templeos",
+   "position": 7,
+   "row": 3,
+   "col": 1,
+   "cropBox": [
+    93,
+    683,
+    458,
+    991
+   ],
+   "mode": "flat",
+   "iou": 0.9915,
+   "parts": 12,
+   "exactGeometryParts": 2
+  },
+  "8": {
+   "sheet": "templeos",
+   "position": 8,
+   "row": 3,
+   "col": 2,
+   "cropBox": [
+    587,
+    684,
+    950,
+    991
+   ],
+   "mode": "flat",
+   "iou": 0.9861,
+   "parts": 17,
+   "exactGeometryParts": 7
+  },
+  "9": {
+   "sheet": "templeos",
+   "position": 9,
+   "row": 3,
+   "col": 3,
+   "cropBox": [
+    1077,
+    683,
+    1460,
+    993
+   ],
+   "mode": "flat",
+   "iou": 0.9855,
+   "parts": 11,
+   "exactGeometryParts": 0
+  }
+ }
+}

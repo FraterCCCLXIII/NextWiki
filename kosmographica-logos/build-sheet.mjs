@@ -78,6 +78,8 @@ writeFileSync(
   `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Kosmographica Logo Sheet</title>
 <link href="${fontLink}" rel="stylesheet">
 <style>
+*::-webkit-scrollbar{width:10px;height:10px}*::-webkit-scrollbar-track,*::-webkit-scrollbar-corner{background:transparent}*::-webkit-scrollbar-thumb{background:rgba(128,128,128,.45);background-clip:padding-box;border:2px solid transparent;border-radius:8px}*::-webkit-scrollbar-thumb:hover{background:rgba(128,128,128,.7);background-clip:padding-box;border:2px solid transparent}
+@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:rgba(128,128,128,.45) transparent}}
 *{box-sizing:border-box;margin:0}
 body{background:#15151b;color:#ececf1;font:14px/1.4 system-ui,sans-serif;padding:20px 16px 48px}
 h1{font-size:20px;font-weight:600}

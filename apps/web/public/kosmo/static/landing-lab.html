@@ -74,6 +74,7 @@
   <h2>Vehicle</h2>
   <select id="vehicle"></select>
   <div id="vnote" class="small dim" style="margin-top:4px"></div>
+  <div id="flownNote" class="small" style="margin-top:4px;color:var(--accent)" hidden></div>
   <div id="dsrc" class="small dim" style="margin-top:2px"></div>
   <table class="an" id="van"></table>
 
@@ -125,7 +126,11 @@ import { createView3D, mountViewControls } from './view3d.js';
 import { wheelZoomFactor } from './zoom-boost.js?v=1';
 import { telemetryHTML, drawPlots, createEventLog } from './flight-hud.js';
 import { createFlightStrip } from './flight-strip.js';
-import { vehicleFromStage, loadFlightData, createLanding, VEHICLES, GUIDANCE, analyzeVehicle, resolveVehicle, mcRun, summarizeMC, trainPolicy, Policy } from './landing-sim.js';
+import { vehicleFromStage, loadFlightData, createLanding, VEHICLES, GUIDANCE, analyzeVehicle, resolveVehicle, mcRun, summarizeMC, trainPolicy, Policy, stopHeight } from './landing-sim.js';
+import { telemetryPayload, postTelemetry } from './telemetry.js?v=1';
+// the flown-state hand-off from the Shipyard and the landing result going back (lab-store.js, see LAB-STORE.md)
+import { snapshotToLandingVehicle, landingResult, landingLimits, saveLandingResult, describeFlown } from './lab-store.js?v=1';
+let flownInfo = null;   // the last hand-off's flown state: { vehicle, assumed, warnings, flown, id, stage } or { error, stage } or null (design values)
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const DEG = Math.PI / 180, clamp = (x, a, b) => Math.min(b, Math.max(a, x));
@@ -156,6 +161,7 @@ function syncLabels() {
 function onVehicle() {
   const id = $('vehicle').value, v = VEHICLES[id], rv = resolveVehicle({ vehicle: id }), a = analyzeVehicle(rv);
   $('vnote').textContent = v.note; $('dsrc').textContent = 'vehicle data: ' + dataSource;
+  $('flownNote').hidden = id !== 'shipyard'; $('flownNote').textContent = id === 'shipyard' ? flownNoteText() : '';
   $('wind').value = v.wind; $('gust').value = +(0.35 * v.wind).toFixed(1); $('sea').value = v.target.heave; $('prop').value = 1;
   $('wind').disabled = $('gust').disabled = v.world !== 'earth'; $('sea').disabled = v.target.kind !== 'ship'; $('seaL').style.opacity = v.target.kind === 'ship' ? 1 : 0.4;
   $('van').innerHTML = `<tr><td>Engines</td><td>${v.engines} × ${esc(rv.eng.name)}</td></tr>
@@ -236,6 +242,17 @@ function frame(now) {
 }
 
 /* ---------------- HUD ---------------- */
+// time to go: the burn solver's time to touchdown while the engine is lit, else the time to the ignition window.
+// suicide-burn margin: height above the sim's own ignition point (the sim lights when this reaches 0); negative once it is lit.
+const tmGate = { last: -Infinity };
+function tgoText() {
+  const g = sim.G, tgo = sim.E.on ? g.lastTgo : (g.fc ? Math.max(0, g.fc.t - (sim.s.t - g.fcAt)) : null);
+  return Number.isFinite(tgo) ? tgo.toFixed(1) + ' s' + (sim.E.on ? '' : ' to ignition') : '--';
+}
+function marginText() {
+  const m = (sim.est.y - sim.veh.yf) - stopHeight(sim.veh, sim.est, 0.97);
+  return Number.isFinite(m) ? m.toFixed(0) + ' m' : '--';
+}
 function hud() {
   if (!sim) return;
   if (sim.s.t >= headT - 1e-9) { headT = sim.s.t; if ((sim.s.q || 0) > maxQ.q) maxQ = { q: sim.s.q, t: sim.s.t }; if (sim.done) endT = sim.s.t; }
@@ -246,9 +263,12 @@ function hud() {
   $('tele').innerHTML = telemetryHTML([['time', s.t.toFixed(1) + ' s'], ['height above deck', Math.max(h, 0).toFixed(h < 100 ? 1 : 0) + ' m'], ['descent speed', (-s.vy).toFixed(1) + ' m/s'], ['lateral speed', s.vx.toFixed(1) + ' m/s'],
     ['offset from target', s.x.toFixed(1) + ' m'], ['tilt', (s.th / DEG).toFixed(1) + '°'], ['throttle', (s.lvl * 100).toFixed(0) + ' %' + (sim.E.on ? '' : ' (off)')],
     ['thrust', (s.thrust / 1e3).toFixed(0) + ' kN'], ['propellant left', Math.round(fuel) + ' kg'], ['dynamic pressure', ((s.q || 0) / 1e3).toFixed(1) + ' kPa'], ['load', (s.gload || 0).toFixed(1) + ' g'],
-    ['navigation error', Math.hypot(e.x - s.x, e.y - s.y).toFixed(1) + ' m']]);
+    ['navigation error', Math.hypot(e.x - s.x, e.y - s.y).toFixed(1) + ' m'],
+    ['time to go', tgoText()], ['suicide-burn margin', marginText()], ['wind at this height', sim.windAt(Math.max(h, 0)).toFixed(1) + ' m/s']]);
+  postTelemetry(window, telemetryPayload(sim), performance.now(), tmGate);
   elog.sync(sim.events);
   if (sim.done) {
+    reportLanding();
     const lim = `limits: ${v.vMaxV ?? 3} m/s down, ${v.vMaxH ?? 3} m/s sideways, ${v.target.kind === 'catch' ? 4 : 8}° tilt, within ${v.target.radius} m`;
     $('result').hidden = false;
     $('result').innerHTML = o.ok ? `<b class="okc">${v.target.kind === 'catch' ? 'Caught.' : 'Touchdown.'}</b> ${o.vv.toFixed(2)} m/s down, ${o.vh.toFixed(2)} m/s sideways, ${o.tilt.toFixed(1)}° tilt, ${o.miss.toFixed(1)} m from the centre; ${Math.round(o.fuel)} kg of propellant left (${Math.round(o.fuelUsed)} kg burned). <span class="dim small">${lim}</span>`
@@ -408,10 +428,30 @@ $('train').onclick = async () => {
 
 $('guidance').value = 'optimal';
 // a stage handed over from the Shipyard becomes the vehicle "from the Shipyard" and is selected
+// With the flown state of the craft (msg.snapshot) the vehicle is built from that flight; without it, from the design, as before.
 function receiveStage(msg) {
-  if (!msg?.stage) return; VEHICLES.shipyard = vehicleFromStage(msg.stage, msg.world);
+  if (!msg?.stage) return;
+  flownInfo = null;
+  if (msg.snapshot) {
+    try { const r = snapshotToLandingVehicle(msg.snapshot); VEHICLES.shipyard = r.vehicle; flownInfo = { ...r, id: msg.snapshot.id, stage: msg.stage.name }; }
+    catch (e) { VEHICLES.shipyard = vehicleFromStage(msg.stage, msg.world); flownInfo = { error: e.message, stage: msg.stage.name }; }
+  } else VEHICLES.shipyard = vehicleFromStage(msg.stage, msg.world);
   if (![...$('vehicle').options].some(o => o.value === 'shipyard')) $('vehicle').insertAdjacentHTML('afterbegin', '<option value="shipyard"></option>');
   $('vehicle').querySelector('option[value="shipyard"]').textContent = VEHICLES.shipyard.name; $('vehicle').value = 'shipyard'; onVehicle(); onGuidance();
+}
+function flownNoteText() {
+  if (!flownInfo) return 'Design values, not flown: the Shipyard hands over the real flight once this stage has separated in its sim.';
+  if (flownInfo.error) return `The flown state could not be used (${flownInfo.error}); the design values are used instead.`;
+  return describeFlown(flownInfo.flown, flownInfo.assumed) + (flownInfo.warnings?.length ? `. Note: ${flownInfo.warnings.join('; ')}` : '');
+}
+// the landing of a stage handed over from the Shipyard goes back to it: sessionStorage (read there on focus and on storage events) and a message
+function reportLanding() {
+  if (!sim || !sim.done || sim.__reported || $('vehicle').value !== 'shipyard') return;
+  sim.__reported = true;
+  const v = VEHICLES.shipyard;
+  const r = landingResult(sim.out, { handoffId: flownInfo?.id ?? null, stage: flownInfo?.stage ?? v.name, vehicle: v.name, target: v.target.kind, limits: landingLimits(v) });
+  saveLandingResult(r);
+  try { if (parent !== window) parent.postMessage({ type: 'flightlab:landing-result', result: r }, location.origin); } catch {}
 }
 addEventListener('message', e => { if (e.origin === location.origin && e.data?.type === 'flightlab:landing') receiveStage(e.data); });
 onVehicle(); onGuidance(); requestAnimationFrame(frame);

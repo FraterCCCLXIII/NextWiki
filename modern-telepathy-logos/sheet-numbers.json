@@ -1,0 +1,1438 @@
+{
+ "total": 100,
+ "source": "refs/sheet.png",
+ "logos": {
+  "1": {
+   "cropBoxInSheet": [
+    8,
+    38,
+    143,
+    134
+   ],
+   "mode": "flat",
+   "iou": 0.9764,
+   "colourErrorDE": 9.53,
+   "parts": 19,
+   "wordmarkFont": null
+  },
+  "2": {
+   "cropBoxInSheet": [
+    147,
+    46,
+    278,
+    120
+   ],
+   "mode": "flat",
+   "iou": 0.9679,
+   "colourErrorDE": 11.88,
+   "parts": 29,
+   "wordmarkFont": null
+  },
+  "3": {
+   "cropBoxInSheet": [
+    286,
+    31,
+    412,
+    136
+   ],
+   "mode": "flat",
+   "iou": 0.9236,
+   "colourErrorDE": 19.43,
+   "parts": 65,
+   "wordmarkFont": null
+  },
+  "4": {
+   "cropBoxInSheet": [
+    418,
+    44,
+    541,
+    122
+   ],
+   "mode": "flat",
+   "iou": 0.9668,
+   "colourErrorDE": 12.91,
+   "parts": 18,
+   "wordmarkFont": null
+  },
+  "5": {
+   "cropBoxInSheet": [
+    545,
+    56,
+    679,
+    115
+   ],
+   "mode": "flat",
+   "iou": 0.9639,
+   "colourErrorDE": 16.41,
+   "parts": 18,
+   "wordmarkFont": null
+  },
+  "6": {
+   "cropBoxInSheet": [
+    687,
+    45,
+    811,
+    124
+   ],
+   "mode": "flat",
+   "iou": 0.9768,
+   "colourErrorDE": 8.9,
+   "parts": 22,
+   "wordmarkFont": null
+  },
+  "7": {
+   "cropBoxInSheet": [
+    822,
+    15,
+    938,
+    150
+   ],
+   "mode": "flat",
+   "iou": 0.9392,
+   "colourErrorDE": 17.95,
+   "parts": 25,
+   "wordmarkFont": null
+  },
+  "8": {
+   "cropBoxInSheet": [
+    950,
+    36,
+    1063,
+    137
+   ],
+   "mode": "flat",
+   "iou": 0.9676,
+   "colourErrorDE": 12.28,
+   "parts": 5,
+   "wordmarkFont": null
+  },
+  "9": {
+   "cropBoxInSheet": [
+    1074,
+    32,
+    1177,
+    137
+   ],
+   "mode": "flat",
+   "iou": 0.9775,
+   "colourErrorDE": 9.6,
+   "parts": 35,
+   "wordmarkFont": null
+  },
+  "10": {
+   "cropBoxInSheet": [
+    1182,
+    32,
+    1285,
+    123
+   ],
+   "mode": "flat",
+   "iou": 0.9718,
+   "colourErrorDE": 11.76,
+   "parts": 28,
+   "wordmarkFont": {
+    "file": "Archivo-VariableFont_wdth,wght.ttf",
+    "wght": 600,
+    "wdth": 62,
+    "text": [
+     "ModernTelepathy"
+    ]
+   }
+  },
+  "11": {
+   "cropBoxInSheet": [
+    7,
+    181,
+    143,
+    270
+   ],
+   "mode": "flat",
+   "iou": 0.9855,
+   "colourErrorDE": 5.96,
+   "parts": 15,
+   "wordmarkFont": null
+  },
+  "12": {
+   "cropBoxInSheet": [
+    147,
+    209,
+    278,
+    253
+   ],
+   "mode": "flat",
+   "iou": 0.9628,
+   "colourErrorDE": 16.01,
+   "parts": 10,
+   "wordmarkFont": null
+  },
+  "13": {
+   "cropBoxInSheet": [
+    280,
+    178,
+    414,
+    277
+   ],
+   "mode": "flat",
+   "iou": 0.9163,
+   "colourErrorDE": 15.5,
+   "parts": 3,
+   "wordmarkFont": null
+  },
+  "14": {
+   "cropBoxInSheet": [
+    421,
+    173,
+    542,
+    264
+   ],
+   "mode": "flat",
+   "iou": 0.8987,
+   "colourErrorDE": 21.86,
+   "parts": 11,
+   "wordmarkFont": null
+  },
+  "15": {
+   "cropBoxInSheet": [
+    547,
+    192,
+    678,
+    260
+   ],
+   "mode": "flat",
+   "iou": 0.9789,
+   "colourErrorDE": 8.02,
+   "parts": 24,
+   "wordmarkFont": null
+  },
+  "16": {
+   "cropBoxInSheet": [
+    684,
+    187,
+    813,
+    264
+   ],
+   "mode": "flat",
+   "iou": 0.9648,
+   "colourErrorDE": 11.65,
+   "parts": 29,
+   "wordmarkFont": null
+  },
+  "17": {
+   "cropBoxInSheet": [
+    822,
+    173,
+    939,
+    264
+   ],
+   "mode": "flat",
+   "iou": 0.9531,
+   "colourErrorDE": 18.86,
+   "parts": 18,
+   "wordmarkFont": null
+  },
+  "18": {
+   "cropBoxInSheet": [
+    944,
+    180,
+    1067,
+    267
+   ],
+   "mode": "flat",
+   "iou": 0.9841,
+   "colourErrorDE": 6.72,
+   "parts": 16,
+   "wordmarkFont": null
+  },
+  "19": {
+   "cropBoxInSheet": [
+    1070,
+    187,
+    1179,
+    270
+   ],
+   "mode": "flat",
+   "iou": 0.9878,
+   "colourErrorDE": 5.47,
+   "parts": 10,
+   "wordmarkFont": null
+  },
+  "20": {
+   "cropBoxInSheet": [
+    1182,
+    194,
+    1285,
+    259
+   ],
+   "mode": "flat",
+   "iou": 0.9601,
+   "colourErrorDE": 14.22,
+   "parts": 22,
+   "wordmarkFont": null
+  },
+  "21": {
+   "cropBoxInSheet": [
+    18,
+    306,
+    134,
+    426
+   ],
+   "mode": "flat",
+   "iou": 0.9849,
+   "colourErrorDE": 6.55,
+   "parts": 16,
+   "wordmarkFont": {
+    "file": "Archivo-VariableFont_wdth,wght.ttf",
+    "wght": 500,
+    "wdth": 100,
+    "text": [
+     "MODERN",
+     "TELEPATHY"
+    ]
+   }
+  },
+  "22": {
+   "cropBoxInSheet": [
+    147,
+    331,
+    278,
+    402
+   ],
+   "mode": "flat",
+   "iou": 0.9702,
+   "colourErrorDE": 10.55,
+   "parts": 12,
+   "wordmarkFont": null
+  },
+  "23": {
+   "cropBoxInSheet": [
+    294,
+    307,
+    407,
+    426
+   ],
+   "mode": "flat",
+   "iou": 0.986,
+   "colourErrorDE": 6.84,
+   "parts": 15,
+   "wordmarkFont": null
+  },
+  "24": {
+   "cropBoxInSheet": [
+    416,
+    353,
+    542,
+    385
+   ],
+   "mode": "flat",
+   "iou": 0.9598,
+   "colourErrorDE": 17.25,
+   "parts": 15,
+   "wordmarkFont": {
+    "file": "Archivo-VariableFont_wdth,wght.ttf",
+    "wght": 700,
+    "wdth": 62,
+    "text": [
+     "ModernTelepathy"
+    ]
+   }
+  },
+  "25": {
+   "cropBoxInSheet": [
+    561,
+    307,
+    668,
+    426
+   ],
+   "mode": "flat",
+   "iou": 0.9765,
+   "colourErrorDE": 11.21,
+   "parts": 20,
+   "wordmarkFont": null
+  },
+  "26": {
+   "cropBoxInSheet": [
+    684,
+    311,
+    813,
+    419
+   ],
+   "mode": "flat",
+   "iou": 0.9887,
+   "colourErrorDE": 4.65,
+   "parts": 9,
+   "wordmarkFont": null
+  },
+  "27": {
+   "cropBoxInSheet": [
+    819,
+    320,
+    941,
+    406
+   ],
+   "mode": "flat",
+   "iou": 0.9613,
+   "colourErrorDE": 13.92,
+   "parts": 41,
+   "wordmarkFont": null
+  },
+  "28": {
+   "cropBoxInSheet": [
+    945,
+    306,
+    1066,
+    428
+   ],
+   "mode": "flat",
+   "iou": 0.9909,
+   "colourErrorDE": 4.17,
+   "parts": 21,
+   "wordmarkFont": null
+  },
+  "29": {
+   "cropBoxInSheet": [
+    1069,
+    331,
+    1179,
+    406
+   ],
+   "mode": "flat",
+   "iou": 0.9769,
+   "colourErrorDE": 8.62,
+   "parts": 18,
+   "wordmarkFont": {
+    "file": "Archivo-VariableFont_wdth,wght.ttf",
+    "wght": 650,
+    "wdth": 62,
+    "text": [
+     "ModernTelepathy"
+    ]
+   }
+  },
+  "30": {
+   "cropBoxInSheet": [
+    1187,
+    305,
+    1284,
+    419
+   ],
+   "mode": "flat",
+   "iou": 0.9822,
+   "colourErrorDE": 8.71,
+   "parts": 17,
+   "wordmarkFont": null
+  },
+  "31": {
+   "cropBoxInSheet": [
+    4,
+    454,
+    143,
+    543
+   ],
+   "mode": "flat",
+   "iou": 0.9862,
+   "colourErrorDE": 7.79,
+   "parts": 7,
+   "wordmarkFont": null
+  },
+  "32": {
+   "cropBoxInSheet": [
+    149,
+    466,
+    277,
+    545
+   ],
+   "mode": "flat",
+   "iou": 0.9861,
+   "colourErrorDE": 6.66,
+   "parts": 7,
+   "wordmarkFont": null
+  },
+  "33": {
+   "cropBoxInSheet": [
+    281,
+    467,
+    414,
+    532
+   ],
+   "mode": "flat",
+   "iou": 0.983,
+   "colourErrorDE": 8.04,
+   "parts": 7,
+   "wordmarkFont": null
+  },
+  "34": {
+   "cropBoxInSheet": [
+    420,
+    456,
+    541,
+    539
+   ],
+   "mode": "flat",
+   "iou": 0.9399,
+   "colourErrorDE": 13.08,
+   "parts": 26,
+   "wordmarkFont": {
+    "file": "Archivo-VariableFont_wdth,wght.ttf",
+    "wght": 650,
+    "wdth": 68,
+    "text": [
+     "ModernTelepathy"
+    ]
+   }
+  },
+  "35": {
+   "cropBoxInSheet": [
+    544,
+    463,
+    679,
+    537
+   ],
+   "mode": "flat",
+   "iou": 0.9874,
+   "colourErrorDE": 5.94,
+   "parts": 10,
+   "wordmarkFont": null
+  },
+  "36": {
+   "cropBoxInSheet": [
+    695,
+    447,
+    802,
+    555
+   ],
+   "mode": "flat",
+   "iou": 0.9839,
+   "colourErrorDE": 7.5,
+   "parts": 16,
+   "wordmarkFont": null
+  },
+  "37": {
+   "cropBoxInSheet": [
+    816,
+    457,
+    941,
+    544
+   ],
+   "mode": "flat",
+   "iou": 0.971,
+   "colourErrorDE": 11.49,
+   "parts": 7,
+   "wordmarkFont": null
+  },
+  "38": {
+   "cropBoxInSheet": [
+    947,
+    453,
+    1065,
+    542
+   ],
+   "mode": "flat",
+   "iou": 0.9831,
+   "colourErrorDE": 7.07,
+   "parts": 10,
+   "wordmarkFont": null
+  },
+  "39": {
+   "cropBoxInSheet": [
+    1069,
+    465,
+    1179,
+    528
+   ],
+   "mode": "flat",
+   "iou": 0.984,
+   "colourErrorDE": 9.76,
+   "parts": 15,
+   "wordmarkFont": null
+  },
+  "40": {
+   "cropBoxInSheet": [
+    1181,
+    448,
+    1285,
+    544
+   ],
+   "mode": "flat",
+   "iou": 0.9607,
+   "colourErrorDE": 14.68,
+   "parts": 19,
+   "wordmarkFont": {
+    "file": "Archivo-VariableFont_wdth,wght.ttf",
+    "wght": 600,
+    "wdth": 62,
+    "text": [
+     "ModernTelepathy"
+    ]
+   }
+  },
+  "41": {
+   "cropBoxInSheet": [
+    4,
+    594,
+    143,
+    652
+   ],
+   "mode": "flat",
+   "iou": 0.9654,
+   "colourErrorDE": 12.97,
+   "parts": 9,
+   "wordmarkFont": null
+  },
+  "42": {
+   "cropBoxInSheet": [
+    149,
+    588,
+    277,
+    666
+   ],
+   "mode": "flat",
+   "iou": 0.9806,
+   "colourErrorDE": 7.38,
+   "parts": 5,
+   "wordmarkFont": null
+  },
+  "43": {
+   "cropBoxInSheet": [
+    283,
+    606,
+    414,
+    646
+   ],
+   "mode": "flat",
+   "iou": 0.9488,
+   "colourErrorDE": 16.53,
+   "parts": 15,
+   "wordmarkFont": {
+    "file": "Archivo-VariableFont_wdth,wght.ttf",
+    "wght": 400,
+    "wdth": 125,
+    "text": [
+     "MODERN",
+     "TELEPATHY"
+    ]
+   }
+  },
+  "44": {
+   "cropBoxInSheet": [
+    417,
+    605,
+    542,
+    645
+   ],
+   "mode": "flat",
+   "iou": 0.9605,
+   "colourErrorDE": 14.8,
+   "parts": 16,
+   "wordmarkFont": {
+    "file": "Archivo-VariableFont_wdth,wght.ttf",
+    "wght": 700,
+    "wdth": 62,
+    "text": [
+     "ModernTelepathy"
+    ]
+   }
+  },
+  "45": {
+   "cropBoxInSheet": [
+    561,
+    591,
+    673,
+    668
+   ],
+   "mode": "flat",
+   "iou": 0.9773,
+   "colourErrorDE": 7.84,
+   "parts": 18,
+   "wordmarkFont": null
+  },
+  "46": {
+   "cropBoxInSheet": [
+    684,
+    591,
+    813,
+    668
+   ],
+   "mode": "flat",
+   "iou": 0.9836,
+   "colourErrorDE": 6.93,
+   "parts": 9,
+   "wordmarkFont": null
+  },
+  "47": {
+   "cropBoxInSheet": [
+    817,
+    593,
+    941,
+    660
+   ],
+   "mode": "flat",
+   "iou": 0.9526,
+   "colourErrorDE": 16.04,
+   "parts": 17,
+   "wordmarkFont": null
+  },
+  "48": {
+   "cropBoxInSheet": [
+    947,
+    580,
+    1065,
+    671
+   ],
+   "mode": "flat",
+   "iou": 0.9669,
+   "colourErrorDE": 13.35,
+   "parts": 14,
+   "wordmarkFont": null
+  },
+  "49": {
+   "cropBoxInSheet": [
+    1070,
+    593,
+    1179,
+    667
+   ],
+   "mode": "flat",
+   "iou": 0.9773,
+   "colourErrorDE": 8.84,
+   "parts": 18,
+   "wordmarkFont": null
+  },
+  "50": {
+   "cropBoxInSheet": [
+    1181,
+    592,
+    1285,
+    647
+   ],
+   "mode": "flat",
+   "iou": 0.9633,
+   "colourErrorDE": 11.6,
+   "parts": 4,
+   "wordmarkFont": null
+  },
+  "51": {
+   "cropBoxInSheet": [
+    24,
+    702,
+    137,
+    789
+   ],
+   "mode": "flat",
+   "iou": 0.9764,
+   "colourErrorDE": 9.74,
+   "parts": 17,
+   "wordmarkFont": {
+    "file": "Inter-V.ttf",
+    "wght": 500,
+    "wdth": null,
+    "text": [
+     "Modern",
+     "Telepathy"
+    ]
+   }
+  },
+  "52": {
+   "cropBoxInSheet": [
+    149,
+    712,
+    276,
+    781
+   ],
+   "mode": "flat",
+   "iou": 0.9684,
+   "colourErrorDE": 15.04,
+   "parts": 16,
+   "wordmarkFont": null
+  },
+  "53": {
+   "cropBoxInSheet": [
+    280,
+    708,
+    414,
+    768
+   ],
+   "mode": "flat",
+   "iou": 0.9817,
+   "colourErrorDE": 7.22,
+   "parts": 16,
+   "wordmarkFont": null
+  },
+  "54": {
+   "cropBoxInSheet": [
+    419,
+    700,
+    542,
+    775
+   ],
+   "mode": "flat",
+   "iou": 0.9543,
+   "colourErrorDE": 8.92,
+   "parts": 17,
+   "wordmarkFont": {
+    "file": "Archivo-VariableFont_wdth,wght.ttf",
+    "wght": 500,
+    "wdth": 82,
+    "text": [
+     "Modern Telepathy"
+    ]
+   }
+  },
+  "55": {
+   "cropBoxInSheet": [
+    548,
+    708,
+    679,
+    775
+   ],
+   "mode": "flat",
+   "iou": 0.9654,
+   "colourErrorDE": 17.66,
+   "parts": 17,
+   "wordmarkFont": null
+  },
+  "56": {
+   "cropBoxInSheet": [
+    686,
+    694,
+    813,
+    785
+   ],
+   "mode": "flat",
+   "iou": 0.9796,
+   "colourErrorDE": 9.15,
+   "parts": 8,
+   "wordmarkFont": null
+  },
+  "57": {
+   "cropBoxInSheet": [
+    821,
+    701,
+    941,
+    770
+   ],
+   "mode": "flat",
+   "iou": 0.963,
+   "colourErrorDE": 13.93,
+   "parts": 21,
+   "wordmarkFont": {
+    "file": "Archivo-Italic-VariableFont_wdth,wght.ttf",
+    "wght": 650,
+    "wdth": 68,
+    "text": [
+     "Modern",
+     "Telepathy"
+    ]
+   }
+  },
+  "58": {
+   "cropBoxInSheet": [
+    947,
+    703,
+    1066,
+    778
+   ],
+   "mode": "flat",
+   "iou": 0.9428,
+   "colourErrorDE": 13.11,
+   "parts": 8,
+   "wordmarkFont": null
+  },
+  "59": {
+   "cropBoxInSheet": [
+    1071,
+    706,
+    1179,
+    778
+   ],
+   "mode": "flat",
+   "iou": 0.9774,
+   "colourErrorDE": 8.63,
+   "parts": 9,
+   "wordmarkFont": null
+  },
+  "60": {
+   "cropBoxInSheet": [
+    1183,
+    692,
+    1285,
+    774
+   ],
+   "mode": "flat",
+   "iou": 0.9629,
+   "colourErrorDE": 12.11,
+   "parts": 20,
+   "wordmarkFont": {
+    "file": "Archivo-Italic-VariableFont_wdth,wght.ttf",
+    "wght": 600,
+    "wdth": 62,
+    "text": [
+     "ModernTelepathy"
+    ]
+   }
+  },
+  "61": {
+   "cropBoxInSheet": [
+    11,
+    817,
+    141,
+    896
+   ],
+   "mode": "flat",
+   "iou": 0.961,
+   "colourErrorDE": 13.06,
+   "parts": 12,
+   "wordmarkFont": null
+  },
+  "62": {
+   "cropBoxInSheet": [
+    150,
+    820,
+    274,
+    889
+   ],
+   "mode": "flat",
+   "iou": 0.9709,
+   "colourErrorDE": 19.09,
+   "parts": 27,
+   "wordmarkFont": null
+  },
+  "63": {
+   "cropBoxInSheet": [
+    283,
+    808,
+    414,
+    898
+   ],
+   "mode": "flat",
+   "iou": 0.9668,
+   "colourErrorDE": 13.67,
+   "parts": 14,
+   "wordmarkFont": null
+  },
+  "64": {
+   "cropBoxInSheet": [
+    418,
+    820,
+    542,
+    894
+   ],
+   "mode": "flat",
+   "iou": 0.9673,
+   "colourErrorDE": 15.05,
+   "parts": 32,
+   "wordmarkFont": null
+  },
+  "65": {
+   "cropBoxInSheet": [
+    544,
+    812,
+    679,
+    889
+   ],
+   "mode": "flat",
+   "iou": 0.984,
+   "colourErrorDE": 7.2,
+   "parts": 21,
+   "wordmarkFont": null
+  },
+  "66": {
+   "cropBoxInSheet": [
+    696,
+    807,
+    808,
+    901
+   ],
+   "mode": "flat",
+   "iou": 0.9738,
+   "colourErrorDE": 12.75,
+   "parts": 18,
+   "wordmarkFont": null
+  },
+  "67": {
+   "cropBoxInSheet": [
+    815,
+    819,
+    941,
+    890
+   ],
+   "mode": "flat",
+   "iou": 0.9814,
+   "colourErrorDE": 12.3,
+   "parts": 23,
+   "wordmarkFont": null
+  },
+  "68": {
+   "cropBoxInSheet": [
+    947,
+    817,
+    1067,
+    895
+   ],
+   "mode": "flat",
+   "iou": 0.9618,
+   "colourErrorDE": 17.38,
+   "parts": 26,
+   "wordmarkFont": {
+    "file": "Archivo-VariableFont_wdth,wght.ttf",
+    "wght": 650,
+    "wdth": 62,
+    "text": [
+     "ModernTelepathy"
+    ]
+   }
+  },
+  "69": {
+   "cropBoxInSheet": [
+    1078,
+    813,
+    1179,
+    891
+   ],
+   "mode": "flat",
+   "iou": 0.9722,
+   "colourErrorDE": 13.67,
+   "parts": 22,
+   "wordmarkFont": null
+  },
+  "70": {
+   "cropBoxInSheet": [
+    1183,
+    821,
+    1285,
+    888
+   ],
+   "mode": "flat",
+   "iou": 0.9403,
+   "colourErrorDE": 14.11,
+   "parts": 21,
+   "wordmarkFont": {
+    "file": "Archivo-VariableFont_wdth,wght.ttf",
+    "wght": 650,
+    "wdth": 62,
+    "text": [
+     "ModernTelepathy"
+    ]
+   }
+  },
+  "71": {
+   "cropBoxInSheet": [
+    9,
+    930,
+    141,
+    1016
+   ],
+   "mode": "flat",
+   "iou": 0.9904,
+   "colourErrorDE": 5.7,
+   "parts": 23,
+   "wordmarkFont": null
+  },
+  "72": {
+   "cropBoxInSheet": [
+    153,
+    926,
+    278,
+    1010
+   ],
+   "mode": "flat",
+   "iou": 0.9833,
+   "colourErrorDE": 7.99,
+   "parts": 6,
+   "wordmarkFont": null
+  },
+  "73": {
+   "cropBoxInSheet": [
+    286,
+    938,
+    412,
+    994
+   ],
+   "mode": "flat",
+   "iou": 0.9662,
+   "colourErrorDE": 14.49,
+   "parts": 15,
+   "wordmarkFont": null
+  },
+  "74": {
+   "cropBoxInSheet": [
+    419,
+    928,
+    542,
+    1007
+   ],
+   "mode": "flat",
+   "iou": 0.9799,
+   "colourErrorDE": 10.55,
+   "parts": 13,
+   "wordmarkFont": null
+  },
+  "75": {
+   "cropBoxInSheet": [
+    547,
+    926,
+    677,
+    1010
+   ],
+   "mode": "flat",
+   "iou": 0.9625,
+   "colourErrorDE": 14.99,
+   "parts": 9,
+   "wordmarkFont": null
+  },
+  "76": {
+   "cropBoxInSheet": [
+    684,
+    934,
+    812,
+    1009
+   ],
+   "mode": "flat",
+   "iou": 0.9787,
+   "colourErrorDE": 9.07,
+   "parts": 8,
+   "wordmarkFont": null
+  },
+  "77": {
+   "cropBoxInSheet": [
+    820,
+    924,
+    941,
+    1008
+   ],
+   "mode": "flat",
+   "iou": 0.9787,
+   "colourErrorDE": 10.11,
+   "parts": 7,
+   "wordmarkFont": null
+  },
+  "78": {
+   "cropBoxInSheet": [
+    951,
+    928,
+    1066,
+    1003
+   ],
+   "mode": "flat",
+   "iou": 0.9697,
+   "colourErrorDE": 14.49,
+   "parts": 18,
+   "wordmarkFont": null
+  },
+  "79": {
+   "cropBoxInSheet": [
+    1070,
+    923,
+    1179,
+    1009
+   ],
+   "mode": "flat",
+   "iou": 0.9656,
+   "colourErrorDE": 13.13,
+   "parts": 11,
+   "wordmarkFont": null
+  },
+  "80": {
+   "cropBoxInSheet": [
+    1183,
+    923,
+    1285,
+    1009
+   ],
+   "mode": "flat",
+   "iou": 0.9693,
+   "colourErrorDE": 10.2,
+   "parts": 10,
+   "wordmarkFont": null
+  },
+  "81": {
+   "cropBoxInSheet": [
+    17,
+    1046,
+    143,
+    1088
+   ],
+   "mode": "flat",
+   "iou": 0.9675,
+   "colourErrorDE": 18.15,
+   "parts": 26,
+   "wordmarkFont": {
+    "file": "Inter-V.ttf",
+    "wght": 500,
+    "wdth": null,
+    "text": [
+     "Modern",
+     "Telepathy"
+    ]
+   }
+  },
+  "82": {
+   "cropBoxInSheet": [
+    154,
+    1030,
+    274,
+    1096
+   ],
+   "mode": "flat",
+   "iou": 0.9679,
+   "colourErrorDE": 12.52,
+   "parts": 17,
+   "wordmarkFont": null
+  },
+  "83": {
+   "cropBoxInSheet": [
+    292,
+    1033,
+    414,
+    1091
+   ],
+   "mode": "flat",
+   "iou": 0.9541,
+   "colourErrorDE": 17.82,
+   "parts": 28,
+   "wordmarkFont": {
+    "file": "Inter-V.ttf",
+    "wght": 450,
+    "wdth": null,
+    "text": [
+     "Modern",
+     "Telepathy"
+    ]
+   }
+  },
+  "84": {
+   "cropBoxInSheet": [
+    421,
+    1037,
+    539,
+    1093
+   ],
+   "mode": "flat",
+   "iou": 0.9591,
+   "colourErrorDE": 15.8,
+   "parts": 16,
+   "wordmarkFont": null
+  },
+  "85": {
+   "cropBoxInSheet": [
+    550,
+    1032,
+    674,
+    1096
+   ],
+   "mode": "flat",
+   "iou": 0.9829,
+   "colourErrorDE": 7.24,
+   "parts": 16,
+   "wordmarkFont": null
+  },
+  "86": {
+   "cropBoxInSheet": [
+    689,
+    1032,
+    809,
+    1097
+   ],
+   "mode": "flat",
+   "iou": 0.9733,
+   "colourErrorDE": 11.1,
+   "parts": 16,
+   "wordmarkFont": null
+  },
+  "87": {
+   "cropBoxInSheet": [
+    822,
+    1038,
+    940,
+    1091
+   ],
+   "mode": "flat",
+   "iou": 0.9513,
+   "colourErrorDE": 16.05,
+   "parts": 16,
+   "wordmarkFont": null
+  },
+  "88": {
+   "cropBoxInSheet": [
+    950,
+    1030,
+    1064,
+    1096
+   ],
+   "mode": "flat",
+   "iou": 0.9593,
+   "colourErrorDE": 13.44,
+   "parts": 14,
+   "wordmarkFont": null
+  },
+  "89": {
+   "cropBoxInSheet": [
+    1063,
+    1018,
+    1185,
+    1107
+   ],
+   "mode": "flat",
+   "iou": 0.9795,
+   "colourErrorDE": 3.97,
+   "parts": 14,
+   "wordmarkFont": null
+  },
+  "90": {
+   "cropBoxInSheet": [
+    1186,
+    1033,
+    1284,
+    1096
+   ],
+   "mode": "flat",
+   "iou": 0.9733,
+   "colourErrorDE": 12.81,
+   "parts": 6,
+   "wordmarkFont": null
+  },
+  "91": {
+   "cropBoxInSheet": [
+    4,
+    1116,
+    143,
+    1202
+   ],
+   "mode": "flat",
+   "iou": 0.9834,
+   "colourErrorDE": 7.05,
+   "parts": 15,
+   "wordmarkFont": null
+  },
+  "92": {
+   "cropBoxInSheet": [
+    149,
+    1131,
+    278,
+    1191
+   ],
+   "mode": "flat",
+   "iou": 0.9719,
+   "colourErrorDE": 12.95,
+   "parts": 21,
+   "wordmarkFont": {
+    "file": "Archivo-VariableFont_wdth,wght.ttf",
+    "wght": 500,
+    "wdth": 75,
+    "text": [
+     "Modern Telepathy"
+    ]
+   }
+  },
+  "93": {
+   "cropBoxInSheet": [
+    286,
+    1106,
+    412,
+    1193
+   ],
+   "mode": "flat",
+   "iou": 0.9418,
+   "colourErrorDE": 13.28,
+   "parts": 24,
+   "wordmarkFont": {
+    "file": "Archivo-VariableFont_wdth,wght.ttf",
+    "wght": 700,
+    "wdth": 62,
+    "text": [
+     "ModernTelepathy"
+    ]
+   }
+  },
+  "94": {
+   "cropBoxInSheet": [
+    416,
+    1133,
+    542,
+    1186
+   ],
+   "mode": "flat",
+   "iou": 0.9735,
+   "colourErrorDE": 10.05,
+   "parts": 16,
+   "wordmarkFont": null
+  },
+  "95": {
+   "cropBoxInSheet": [
+    557,
+    1115,
+    666,
+    1204
+   ],
+   "mode": "flat",
+   "iou": 0.981,
+   "colourErrorDE": 7.88,
+   "parts": 17,
+   "wordmarkFont": null
+  },
+  "96": {
+   "cropBoxInSheet": [
+    684,
+    1118,
+    813,
+    1196
+   ],
+   "mode": "flat",
+   "iou": 0.9651,
+   "colourErrorDE": 12.49,
+   "parts": 10,
+   "wordmarkFont": null
+  },
+  "97": {
+   "cropBoxInSheet": [
+    819,
+    1124,
+    941,
+    1192
+   ],
+   "mode": "flat",
+   "iou": 0.9746,
+   "colourErrorDE": 11.09,
+   "parts": 17,
+   "wordmarkFont": null
+  },
+  "98": {
+   "cropBoxInSheet": [
+    945,
+    1106,
+    1067,
+    1190
+   ],
+   "mode": "flat",
+   "iou": 0.9493,
+   "colourErrorDE": 17.52,
+   "parts": 18,
+   "wordmarkFont": null
+  },
+  "99": {
+   "cropBoxInSheet": [
+    1080,
+    1119,
+    1179,
+    1203
+   ],
+   "mode": "flat",
+   "iou": 0.971,
+   "colourErrorDE": 13.1,
+   "parts": 23,
+   "wordmarkFont": null
+  },
+  "100": {
+   "cropBoxInSheet": [
+    1182,
+    1123,
+    1285,
+    1189
+   ],
+   "mode": "flat",
+   "iou": 0.9674,
+   "colourErrorDE": 13.69,
+   "parts": 7,
+   "wordmarkFont": null
+  }
+ }
+}

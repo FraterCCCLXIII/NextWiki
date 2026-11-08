@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Logo reel review</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root { --bg:#0e0f13; --panel:#16181f; --line:#262a35; --ink:#e8eaf0; --dim:#8d93a3; --on:#3ddc84; --off:#ff6b6b; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.45 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+  header { position:sticky; top:0; z-index:5; display:flex; gap:14px; align-items:center; flex-wrap:wrap; padding:14px 20px; background:rgba(14,15,19,.94); border-bottom:1px solid var(--line); backdrop-filter:blur(6px); }
+  h1 { margin:0; font-size:15px; font-weight:600; letter-spacing:.01em; }
+  select, button { font:inherit; color:var(--ink); background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:6px 10px; cursor:pointer; }
+  button:hover { border-color:#3a4050; }
+  button.ghost { background:transparent; }
+  .spacer { flex:1; }
+  .count { color:var(--dim); font-variant-numeric:tabular-nums; }
+  .count b { color:var(--ink); }
+  #state { color:var(--dim); min-width:120px; text-align:right; }
+  #state.ok { color:var(--on); } #state.busy { color:#ffc857; }
+  main { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; padding:18px 20px 90px; }
+  .tile { position:relative; border:1px solid var(--line); border-radius:12px; background:var(--panel); overflow:hidden; cursor:pointer; transition:border-color .12s,opacity .12s; }
+  .tile:hover { border-color:#3a4050; }
+  .tile .art { aspect-ratio:4/3; background:#fff; display:flex; align-items:center; justify-content:center; padding:14px; }
+  .tile .art svg { width:100%; height:100%; }
+  .tile .bar { display:flex; align-items:center; gap:8px; padding:8px 10px; }
+  .tile .num { font-variant-numeric:tabular-nums; font-weight:600; }
+  .tile .tag { margin-left:auto; font-size:12px; color:var(--off); }
+  .tile.off { opacity:.42; }
+  .tile.off .art { background:#e9eaee; }
+  .tile.off .tag { color:var(--deny,#8d93a3); }
+  .tile:focus-visible { outline:2px solid #5b8cff; outline-offset:2px; }
+  footer { position:fixed; inset:auto 0 0 0; display:flex; gap:12px; align-items:center; padding:10px 20px; background:rgba(14,15,19,.94); border-top:1px solid var(--line); backdrop-filter:blur(6px); }
+  #log { color:var(--dim); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  a { color:#7aa2ff; }
+</style>
+<header>
+  <h1>Logo reel review</h1>
+  <select id="brand" aria-label="Brand"></select>
+  <button id="allOn" class="ghost">All on</button>
+  <button id="allOff" class="ghost">All off</button>
+  <span class="spacer"></span>
+  <span class="count" id="count"></span>
+  <span id="state">saved</span>
+</header>
+<main id="grid" role="list"></main>
+<footer>
+  <span id="log">click a tile to hold it back from the reel; changes save to hidden.json and rebuild the reel</span>
+  <span class="spacer"></span>
+  <a href="/logo-reel/index.html" target="_blank" rel="noopener">open reel</a>
+</footer>
+<script>
+const BRANDS = __BRANDS__;
+const grid = document.getElementById('grid'), brandSel = document.getElementById('brand');
+const state = document.getElementById('state'), count = document.getElementById('count'), log = document.getElementById('log');
+let data = null, hidden = new Set(), timer = null, seq = 0;
+const params = new URLSearchParams(location.search);
+
+for (const [dir, name] of Object.entries(BRANDS)) {
+  const o = document.createElement('option');
+  o.value = dir; o.textContent = name; brandSel.appendChild(o);
+}
+const startBrand = BRANDS[params.get('brand')] ? params.get('brand') : Object.keys(BRANDS)[0];
+brandSel.value = startBrand;
+
+const svgFor = (L) => {
+  const body = L.p.map((p) => {
+    if (p.L) return p.L.filter(([, d]) => d).map(([c, d]) => `<path fill="${c}" d="${d}"/>`).join('');
+    if (p.k === 'p' || !p.d) return '';
+    return `<path fill="${p.f || '#000000'}" d="${p.d}"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${L.w} ${L.h}" preserveAspectRatio="xMidYMid meet"><rect x="0" y="0" width="${L.w}" height="${L.h}" fill="#ffffff"/>${body}</svg>`;
+};
+
+function render() {
+  grid.innerHTML = '';
+  const ids = Object.keys(data.logos).map(Number).sort((a, b) => a - b);
+  for (const n of ids) {
+    const t = document.createElement('figure');
+    t.className = 'tile' + (hidden.has(String(n)) ? ' off' : '');
+    t.setAttribute('role', 'listitem');
+    t.setAttribute('tabindex', '0');
+    t.dataset.n = n;
+    t.title = hidden.has(String(n)) ? 'not in the reel' : 'in the reel';
+    t.innerHTML = `<div class="art">${svgFor(data.logos[n])}</div>
+      <div class="bar"><span class="num">${n}</span><span class="tag">${hidden.has(String(n)) ? 'held back' : 'in reel'}</span></div>`;
+    const flip = () => {
+      const k = String(n);
+      const nowHidden = !hidden.has(k);
+      nowHidden ? hidden.add(k) : hidden.delete(k);
+      t.classList.toggle('off', nowHidden);
+      t.querySelector('.tag').textContent = nowHidden ? 'held back' : 'in reel';
+      t.title = nowHidden ? 'not in the reel' : 'in the reel';
+      sync();
+    };
+    t.addEventListener('click', flip);
+    t.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); } });
+    grid.appendChild(t);
+  }
+  sync();
+}
+
+function sync() {
+  const total = Object.keys(data.logos).length;
+  count.innerHTML = `<b>${total - hidden.size}</b> of ${total} in the reel`;
+  state.textContent = 'saving…'; state.className = 'busy';
+  const mine = ++seq;
+  clearTimeout(timer);
+  timer = setTimeout(async () => {
+    try {
+      const r = await fetch('/api/hidden', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ dir: data.dir, hidden: [...hidden].map(Number).sort((a, b) => a - b) }) });
+      const out = await r.json();
+      if (mine !== seq) return;
+      if (!r.ok) throw new Error(out.error || 'save failed');
+      state.textContent = 'saved'; state.className = 'ok';
+      log.textContent = out.log.trim().split('\n').slice(-2).join('  ·  ');
+    } catch (err) {
+      state.textContent = 'not saved'; state.className = '';
+      log.textContent = err.message;
+    }
+  }, 350);
+}
+
+async function load(dir) {
+  grid.innerHTML = '<p style="color:#8d93a3">loading…</p>';
+  const r = await fetch('/api/brand?dir=' + encodeURIComponent(dir));
+  data = await r.json();
+  hidden = new Set((data.hidden || []).map(String));
+  history.replaceState(null, '', '?brand=' + encodeURIComponent(dir));
+  render();
+}
+
+document.getElementById('allOn').addEventListener('click', () => { hidden.clear(); render(); });
+document.getElementById('allOff').addEventListener('click', () => { hidden = new Set(Object.keys(data.logos)); render(); });
+brandSel.addEventListener('change', () => load(brandSel.value));
+load(brandSel.value);
+</script>
+</html>

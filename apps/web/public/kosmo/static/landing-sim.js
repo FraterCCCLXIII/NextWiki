@@ -331,7 +331,7 @@ function hoverslam(v, e, drag) {
 }
 
 /** How far below the engine's ceiling do we stop?  Used by the simple ignition rule. */
-function stopHeight(v, e, margin) {
+export function stopHeight(v, e, margin) {
   const L = limits(v, e), speed = hyp(e.vx, e.vy);
   const aNet = margin * L.aMax - L.g;
   if (aNet <= 0.5) return Infinity;

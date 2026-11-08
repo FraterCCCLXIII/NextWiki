@@ -1,14 +1,15 @@
 # Centauri fleet -- versions
 
-Two versions of the fleet exist, and both are pinned. `parts/fleet-versions.js` holds the numbers;
-`centauri-fleet.test.mjs` measures the fleet and fails if a part's mass, a mate, a mast or a sail
-moves away from them. A version is therefore either reproduced exactly or re-cut on purpose -- a
+Three versions of the fleet exist, and all three are pinned. `parts/fleet-versions.js` holds the
+numbers; `centauri-fleet.test.mjs` measures the fleet and fails if a part's mass, a mate, a mast or a
+sail moves away from them. A version is therefore either reproduced exactly or re-cut on purpose -- a
 published ship cannot be re-written by a later edit to the catalogue.
 
 | Version | What it is | Classes |
 | --- | --- | --- |
 | v1 | The parts-and-physics rebuild of the source table: real catalogue parts, an axial mast, a square sail sized from the payload, a despun hub on the colony. | 8 |
 | v2 | The three crewed classes with a spin ring sized from the crew, giving 1 g in the living and working quarters. | 3 |
+| v3 | The same eight classes flown by their own engines: sail and mast off, a drive stage bolted to a rigid hardpoint, with a propellant store, an engine bay or pusher plate, and radiators sized from the heat it rejects. | 8 |
 
 Everything below is measured by `measure()` in `parts/fleet.js` (see `CENTAURI.md` for the lab and
 `CENTAURI-CAD-REVIEW.md` for the placement review that v1 closes with).
@@ -117,6 +118,31 @@ v1 and v2 were both re-cut once after a CAD review of the assembled models, for 
 overlap and the boom axis above. No mass or sail changed; v1's mast and clearance reproduce exactly
 (37.419 m, 212.341 m, 23.0 m), so the v1 table above stands. The v2 masts and masses moved by the
 amounts shown, and the pins were regenerated deliberately rather than edited by hand.
+
+## v3 -- the driven ships, re-cut
+
+A driven ship is the v1 hull with the sail and mast removed and a drive stage bolted where the mast
+root was. The stage is sized by the rocket equation (mass ratio, propellant, crossing time) and then
+built: a thrust frame from the hull's hardpoint out to the store, the store itself, the aft end and
+the radiators. The 2026-11-08 re-cut replaced the first cut's hinge mount, its 3.65x-oversized tank,
+its hydrogen tank standing in for a pulse-unit magazine and its invented heat rejection. Every v3
+mass moved, so these pins are the re-cut.
+
+| Variant | Wet | Propellant | Store | Aft end | Radiator | Cruise | Crossing | Closes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| wafer-pellet | 1 g | 0 (1 g of pellets) | coil | -- | -- | 0.10 c | 44 yr | yes |
+| smallsat-pellet | 15 kg | 0 (15 kg of pellets) | coil | -- | -- | 0.10 c | 44 yr | yes |
+| instrument-ion | 34.1 t | 32 t xenon | tank, 2.2 x 6.6 m | four bells | 0.02 m2 | 0.038 % c | 11,800 yr | no |
+| lander-ntr | 548 t | 521 t LH2 | tank, 11.9 x 71.7 m | four bells | 259 m2 | 0.0088 % c | 49,500 yr | no |
+| capsule-orion | 1,032 t | 981 t of pulse units | magazine, 8.8 x 17.5 m | 12.7 m plate | 86 m2 | 0.039 % c | 11,200 yr | no |
+| habitat-dfd | 3,990 t | 3,790 t D-He3 | tank, 20.6 x 123 m | four bells | 8.7 m2 | 0.098 % c | 4,640 yr | no |
+| seed-daedalus | 34,250 t | 32,530 t of pellets | magazine, 24.6 x 148 m | 36 m plate | 6,540 m2 | 9.85 % c | 46 yr | yes |
+| colony-pulse | 326,000 t | 309,700 t of pulse units | magazine, 65.7 x 197 m | 95 m plate | 3,970 m2 | 8.96 % c | 76 yr | yes |
+
+The laws behind the table are in `CENTAURI-PROPULSION.md` ("The stage, as built"): the store diameter
+from bulk density and a stated length/diameter ratio with 8 % ullage, the frame at 1 kg per 500 N of
+thrust (50 kg floor), the radiator from a stated share of jet power rejected at 1000 K two-sided, and
+a pusher plate 1.45x the magazine's diameter on eight shock absorbers for a pulse drive.
 
 ## Open items
 

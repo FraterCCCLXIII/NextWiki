@@ -3096,6 +3096,10 @@ function updateScene() {
     if (L.cosmic && L.obj.material) { const cu = L.obj.material.userData.cosU, c0 = atRaw(L.centre); if (cu) { cu.centre.value.set((c0[0] - SUN[0]) / COS_R0, (c0[2] - SUN[2]) / COS_R0, -(c0[1] - SUN[1]) / COS_R0); cu.unit.value = at(L.unit) * grow / COS_R0; } }
     const off = toScene(L.cosmic ? atRaw(L.centre) : at(L.centre), focus, k), far = Math.hypot(off[0], off[1], off[2]) / 2;   // in view widths
     L.obj.visible = cover > 1e-4 && cover < (L.key === 'solar' ? 1e12 : 1e8) &&   /* the Solar level stays drawn down to ~60 m so a ringed planet's particle tier can be flown through */  far < cover * 1.5 + 3e3 && !(L.key === 'stars' && CONST.active) && !(CENSUS.key && CENSUS_DEFS[CENSUS.key] && CENSUS_DEFS[CENSUS.key].solo);   // the generated 50 pc star cloud is not real data: hide it while a constellation's real stars are shown
+    if (L.key === 'desi' && DESI.pts) {   // fade the survey footprint (two caps + Galactic-plane gap read as a hard-edged X/slab) as the view pulls out past it
+      const t = Math.min(1, Math.max(0, (cover - 0.2) / 0.6)), f = t * t * (3 - 2 * t);
+      DESI.pts.material.opacity = 0.8 * f; if (f < 0.01) L.obj.visible = false;
+    }
     if (!L.obj.visible) continue;
     L.obj.scale.setScalar(at(L.unit) * k * grow); L.obj.position.set(off[0], off[1], off[2]);
     if (L.comoving) updateUniverse(L.obj, a);

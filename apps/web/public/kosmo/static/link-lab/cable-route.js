@@ -1,0 +1,3 @@
+import * as T from 'three';
+// Rounded polyline: every bend stays within adjacent waypoints, unlike a free spline.
+export function cableRoute(points,radius){const p=points.map(v=>v.isVector3?v.clone():new T.Vector3(...v)),path=new T.CurvePath();let cursor=p[0];for(let i=1;i<p.length-1;i++){const c=p[i],cut=Math.min(radius,c.distanceTo(p[i-1])*.3,c.distanceTo(p[i+1])*.3),a=c.clone().lerp(p[i-1],cut/c.distanceTo(p[i-1])),b=c.clone().lerp(p[i+1],cut/c.distanceTo(p[i+1]));if(cursor.distanceTo(a)>1e-9)path.add(new T.LineCurve3(cursor,a));path.add(new T.QuadraticBezierCurve3(a,c,b));cursor=b;}path.add(new T.LineCurve3(cursor,p.at(-1)));return path;}

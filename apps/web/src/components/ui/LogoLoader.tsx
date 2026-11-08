@@ -3,11 +3,22 @@
 import { useEffect, useRef } from "react";
 import { cn } from "@repo/ui";
 
-type LoaderInstance = { id: string | null; setCrt(on?: boolean): void; destroy(): void };
+type CrtSetting = boolean | { blur?: number; bloom?: number; blurCurve?: number; bloomCurve?: number; bloomSize?: number };
+type LoaderInstance = { id: string | null; setCrt(on?: CrtSetting): void; destroy(): void };
 type LoaderRuntime = {
   mount(
     el: HTMLElement,
-    opts: { id?: string; tone?: "auto" | "dark" | "light"; crt?: boolean; sound?: boolean; soundButton?: boolean; delay?: number }
+    opts: {
+      id?: string;
+      tone?: "auto" | "dark" | "light";
+      crt?: CrtSetting;
+      sound?: boolean;
+      soundButton?: boolean;
+      delay?: number;
+      starfield?: boolean;
+      matchBg?: boolean;
+      backdropEl?: HTMLElement | null;
+    }
   ): LoaderInstance;
   setCrt(on: boolean): void;
   getCrt(): boolean;
@@ -57,14 +68,18 @@ export type LogoLoaderProps = {
   logoId?: string;
   /** Black parts turn white on dark backgrounds. "auto" reads the background behind the loader. */
   tone?: "auto" | "dark" | "light";
-  /** Slight blur and bloom. Leave unset to follow the saved setting (on by default). */
-  crt?: boolean;
+  /** Slight blur and bloom, together or as separate levels ({ blur: 1, bloom: 0 }). Leave unset to follow the saved setting (on by default). */
+  crt?: CrtSetting;
   /** Play the logo's jingle. Leave unset to follow the saved setting (on by default). Browsers stay silent until the visitor has interacted with the page. */
   sound?: boolean;
   /** Show the small speaker button that switches sound on and off. */
   soundButton?: boolean;
-  /** Background colour. Defaults to navy. Pass "transparent" to sit on whatever is behind the loader. */
+  /** Background colour until the logo loads, and for good if `matchBackground` is off. Pass "transparent" to sit on whatever is behind the loader. */
   background?: string;
+  /** Use a dark background chosen to complement each logo's own colours. */
+  matchBackground?: boolean;
+  /** Fly stars behind the logo. */
+  starfield?: boolean;
   /** Cover the nearest positioned parent. Otherwise it centres itself in a block at least half the screen tall. */
   fill?: boolean;
   /** Wait before showing, so fast loads don't flash a logo. */
@@ -80,6 +95,8 @@ export function LogoLoader({
   sound,
   soundButton = true,
   background = LOGO_LOADER_NAVY,
+  matchBackground = true,
+  starfield = false,
   fill = false,
   delayMs = 150,
   label = "Loading",
@@ -93,7 +110,17 @@ export function LogoLoader({
     void loadRuntime()
       .then((r) => {
         if (cancelled || !box.current) return;
-        instance.current = r.mount(box.current, { id: logoId, tone, crt: crtRef.current, sound, soundButton, delay: delayMs });
+        instance.current = r.mount(box.current, {
+          id: logoId,
+          tone,
+          crt: crtRef.current,
+          sound,
+          soundButton,
+          delay: delayMs,
+          starfield,
+          matchBg: matchBackground,
+          backdropEl: box.current.parentElement,
+        });
       })
       .catch(() => {
         /* the loader is decoration: the status text below still reports loading */
@@ -105,7 +132,7 @@ export function LogoLoader({
     };
     // the logo stays the same for the life of this loading screen, so a crt change is applied below instead of remounting
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [logoId, tone, delayMs]);
+  }, [logoId, tone, delayMs, starfield, matchBackground]);
 
   const crtRef = useRef(crt);
   crtRef.current = crt;
@@ -120,11 +147,11 @@ export function LogoLoader({
       style={{ background }}
       className={cn(
         "flex items-center justify-center",
-        fill ? "absolute inset-0 z-10" : "min-h-[50vh] w-full",
+        fill ? "absolute inset-0 z-10 overflow-hidden" : "relative min-h-[50vh] w-full overflow-hidden",
         className
       )}
     >
-      <div ref={box} aria-hidden="true" style={{ width: "min(72%, 460px)", height: "min(46vh, 320px)" }} />
+      <div ref={box} aria-hidden="true" style={{ width: "min(52%, 340px)", height: "min(34vh, 240px)" }} />
       <span className="sr-only">{label}</span>
     </div>
   );

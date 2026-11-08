@@ -18,13 +18,45 @@ const JINGLES = {
   13: { file: "system-ready.mp3", name: "System Ready", word: NO_WORD },
   14: { file: "warm-corporate-jingle.mp3", name: "Warm Corporate Jingle", word: NO_WORD },
   15: { file: "warm-felted-piano.mp3", name: "Warm Felted Piano", word: NO_WORD },
+  /* Ambient set, from tools/make-ambient-sounds.py. Long, slow and beatless, so they crossfade instead of cutting. */
+  16: { file: "ambient-entrance.m4a", name: "Entrance, stretched", word: NO_WORD, fade: 2 },
+  17: { file: "ambient-chime.m4a", name: "Chime, stretched", word: NO_WORD, fade: 2 },
+  18: { file: "ambient-felt.m4a", name: "Felt piano, stretched", word: NO_WORD, fade: 2 },
+  19: { file: "ambient-swell.m4a", name: "Swell, stretched", word: NO_WORD, fade: 2 },
+  20: { file: "ambient-arp.m4a", name: "Arp, stretched", word: NO_WORD, fade: 2 },
+  21: { file: "ambient-digital.m4a", name: "Digital chime, stretched", word: NO_WORD, fade: 2 },
+  22: { file: "ambient-deep-space.m4a", name: "Deep Space", word: NO_WORD, fade: 2 },
+  23: { file: "ambient-nebula.m4a", name: "Nebula", word: NO_WORD, fade: 2 },
+  24: { file: "ambient-glass.m4a", name: "Glass", word: NO_WORD, fade: 2 },
+  25: { file: "ambient-dark-pad.m4a", name: "Dark Pad", word: NO_WORD, fade: 2 },
+  26: { file: "ambient-orbit.m4a", name: "Orbit", word: NO_WORD, fade: 2 },
+  27: { file: "ambient-horizon.m4a", name: "Horizon", word: NO_WORD, fade: 2 },
 };
-/* Every sound with no voice in it, so it suits any brand. */
-const MUSIC_SOUNDS = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-const KOSMO_SOUNDS = [1, 2, 3, 4, ...MUSIC_SOUNDS];
+/* Only the ambient set is in rotation. Clips 1 to 15 were too upbeat; they stay defined here but nothing plays them. */
+const MUSIC_SOUNDS = [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27];
+const KOSMO_SOUNDS = MUSIC_SOUNDS;
 const JINGLE_FADE = 0.3;
 
 function createJinglePlayer(base) {
+  let master = null, volume = 1, analyser = null, bins = null;
+  /* sound passes through an analyser before the volume control, so the visuals respond the same at any volume */
+  const masterOf = (c) => {
+    if (!master) {
+      analyser = c.createAnalyser(); analyser.fftSize = 1024; analyser.smoothingTimeConstant = 0.82; analyser.minDecibels = -85; analyser.maxDecibels = -20;
+      bins = new Uint8Array(analyser.frequencyBinCount);
+      master = c.createGain(); master.gain.value = volume;
+      analyser.connect(master); master.connect(c.destination);
+    }
+    return analyser;
+  };
+  /* how much sound is playing right now, 0 to 1: overall, low end (under about 260 Hz) and high end (about 2 to 10 kHz) */
+  const levels = () => {
+    if (!analyser) return { all: 0, low: 0, high: 0 };
+    analyser.getByteFrequencyData(bins);
+    const avg = (a, b) => { let t = 0; for (let i = a; i < b; i++) t += bins[i]; return t / (b - a) / 255; };
+    const low = avg(1, 6), mid = avg(6, 46), high = avg(46, 230);
+    return { all: Math.max(low, mid, high), low, high };
+  };
   let ctx = null, cur = null;
   const buffers = {};
   const getCtx = () => {
@@ -51,11 +83,12 @@ function createJinglePlayer(base) {
     if (pos < 0) { playing.src.stop(); return 0; }
     if (pos >= playing.len) return 0;
     // before the word, with room for a whole fade: fade now. Otherwise the word finishes first.
-    const fadeAt = pos + JINGLE_FADE + 0.02 <= a || pos >= b ? now : playing.at + b;
+    const fade = JINGLES[playing.n].fade || JINGLE_FADE;
+    const fadeAt = pos + fade + 0.02 <= a || pos >= b ? now : playing.at + b;
     const g = playing.gain.gain;
     g.setValueAtTime(1, fadeAt);
-    g.linearRampToValueAtTime(0, fadeAt + JINGLE_FADE);
-    playing.src.stop(fadeAt + JINGLE_FADE + 0.02);
+    g.linearRampToValueAtTime(0, fadeAt + fade);
+    playing.src.stop(fadeAt + fade + 0.02);
     return fadeAt - now;
   };
   /* Browsers block sound until the visitor has interacted with the page. If blocked, this stays silent rather than playing late. */
@@ -70,7 +103,7 @@ function createJinglePlayer(base) {
     const wait = release();
     const src = c.createBufferSource(), gain = c.createGain();
     src.buffer = buffer;
-    src.connect(gain).connect(c.destination);
+    src.connect(gain).connect(masterOf(c));
     const at = c.currentTime + wait + 0.01;
     src.start(at);
     const me = { n, src, gain, at, len: buffer.duration, owner };
@@ -79,6 +112,7 @@ function createJinglePlayer(base) {
     return true;
   };
   /* Only for the visitor switching sound off: that is their call, so it stops right away. */
+  const setVolume = (v) => { volume = v; if (master) master.gain.value = v; };
   const mute = () => {
     if (!cur) return;
     const now = ctx.currentTime;
@@ -86,7 +120,7 @@ function createJinglePlayer(base) {
     cur.src.stop(now + 0.1);
     cur = null;
   };
-  return { load, play, release, mute, unlock: () => { const c = getCtx(); if (c) c.resume().catch(() => {}); }, info: () => (cur && ctx ? { n: cur.n, pos: ctx.currentTime - cur.at } : null) };
+  return { levels, setVolume, load, play, release, mute, unlock: () => { const c = getCtx(); if (c) c.resume().catch(() => {}); }, info: () => (cur && ctx ? { n: cur.n, pos: ctx.currentTime - cur.at } : null) };
 }
 
 /* Shuffled turns: every sound plays once, in random order, before any repeats. */

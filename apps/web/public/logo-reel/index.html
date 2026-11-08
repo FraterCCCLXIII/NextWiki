@@ -1,0 +1,1139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logo Reel</title>
+<style>
+*::-webkit-scrollbar{width:10px;height:10px}*::-webkit-scrollbar-track,*::-webkit-scrollbar-corner{background:transparent}*::-webkit-scrollbar-thumb{background:rgba(128,128,128,.45);background-clip:padding-box;border:2px solid transparent;border-radius:8px}*::-webkit-scrollbar-thumb:hover{background:rgba(128,128,128,.7);background-clip:padding-box;border:2px solid transparent}
+@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:rgba(128,128,128,.45) transparent}}
+
+  :root { --bg: #0a1a40; --fg: #ececf1; --dim: #a9afc4; --accent: #8c9bff; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--fg); font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; overflow: hidden; }
+  body.light { --fg: #17171b; --dim: #55586a; }
+  #reel { position: fixed; inset: 0; }
+  #screen { position: absolute; inset: 0; overflow: hidden; }
+  #backdrop { position: absolute; inset: 0; background: var(--bg); transition: background-color .45s linear; }
+  #stars { position: absolute; inset: 0; width: 100%; height: 100%; display: none; transition: opacity .3s linear; }
+  #stage { position: absolute; inset: calc((1 - var(--logo, .6)) * 50%); }
+  #stage svg { display: block; width: 100%; height: 100%; overflow: visible; }
+  #stage .pt, #stage .pt path { fill-rule: evenodd; }
+  #scan { position: absolute; inset: -8px; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,var(--lines, .2)) 0 1px, transparent 1px 3px); }
+  /* the UI shader: lines sit over the controls but under the open panels, and the glow is applied to each control */
+  #uiscan { position: absolute; inset: -8px; z-index: 4; display: none; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,var(--lines, .2)) 0 calc(1px * var(--ls, 1)), transparent calc(1px * var(--ls, 1)) calc(3px * var(--ls, 1))); }
+  #pixel { position: absolute; inset: 0; background: #000; overflow: hidden; }
+  #vp { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; transform-origin: 0 0; }
+  /* The button keeps one position, shape and type for every logo. Only its colours and background style change. */
+  #waitlist { color: #fff; position: absolute; z-index: 2; left: 50%; top: calc(100% - (1 - var(--logo, .6)) * 50% + clamp(32px, 6vh, 64px)); transform: translateX(-50%); box-sizing: border-box; height: 44px; min-width: 164px; padding: 0 24px; display: flex; align-items: center; justify-content: center; border: 1.5px solid transparent; border-radius: 22px; font: 600 15px/1 system-ui, -apple-system, "Segoe UI", sans-serif; text-decoration: none; white-space: nowrap; transition: background-color .45s linear, border-color .45s linear, color .45s linear; }
+  #waitlist { cursor: pointer; }
+  #waitlist:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  /* beside the button, so the button itself stays dead centre */
+  #soon { position: absolute; z-index: 2; left: calc(50% + 82px + 10px); top: calc(100% - (1 - var(--logo, .6)) * 50% + clamp(32px, 6vh, 64px) + 9px); height: 26px; padding: 0 12px; display: flex; align-items: center; border-radius: 13px; font: 600 12px/1 system-ui, -apple-system, "Segoe UI", sans-serif; white-space: nowrap; transition: background-color .45s linear, color .45s linear; }
+  /* the station's mark: white on its own black plate, so it reads on any scene */
+  #brandmark { position: absolute; z-index: 2; left: 20px; top: 16px; width: clamp(110px, 16vw, 200px); aspect-ratio: 524 / 470; padding: 6px; box-sizing: content-box; background: #000; border-radius: 6px; pointer-events: none; }
+  #brandmark > div { width: 100%; height: 100%; }
+  #brandmark svg { display: block; width: 100%; height: 100%; overflow: visible; }
+  #brandmark .pt, #brandmark .pt path { fill-rule: evenodd; }
+  #rail-left { position: absolute; z-index: 2; right: calc(50% + 82px + 10px); top: calc(100% - (1 - var(--logo, .6)) * 50% + clamp(32px, 6vh, 64px) + 5px); display: flex; align-items: center; gap: 8px; }
+  .rail-btn { height: 34px; padding: 0 14px; display: inline-flex; align-items: center; gap: 6px; border: 0; border-radius: 17px; font: 600 12px/1 system-ui, -apple-system, "Segoe UI", sans-serif; color: inherit; background: transparent; text-decoration: none; white-space: nowrap; cursor: pointer; transition: background-color .45s linear, color .45s linear; }
+  .rail-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .rail-btn:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+  #demo { margin: auto; width: min(1200px, calc(100vw - 32px)); height: calc(100vh - 32px); padding: 0; overflow: hidden; border: 1px solid #ffffff2e; border-radius: 14px; background: #0b0b10; color: #ececf1; font: 13px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  #demo[open] { display: flex; flex-direction: column; }
+  #demo::backdrop { background: rgba(4,5,12,.6); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .demo-head { display: flex; align-items: center; gap: 12px; padding: 8px 12px; flex: none; }
+  .demo-head h2 { margin: 0 auto 0 0; font-size: 14px; font-weight: 650; }
+  .demo-head a { color: #b4b4c2; }
+  .demo-head button { min-height: 32px; padding: 0 14px; font: 600 12px system-ui, sans-serif; color: #ececf1; background: #ffffff14; border: 0; border-radius: 16px; cursor: pointer; }
+  #demo-frame { flex: 1; width: 100%; min-height: 0; border: 0; background: #000; filter: var(--demofx, none); }
+  /* optional shader on windows and modals. Dialogs sit above the page's line overlay, so they carry their own. */
+  body.uimodal #join, body.uimodal #pop, body.uimodal #playlist, body.uimodal .demo-head { filter: var(--modalfx, none); }
+  body.uimodal #join { text-shadow: 0 0 calc(4px * var(--uibloom, 1)) currentColor; }
+  body.uimodal.uilines #join::after, body.uilines #demo::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,var(--lines, .2)) 0 1px, transparent 1px 3px); }
+  body.uimodal.uilines #uiscan { z-index: 6; }
+  #join { position: fixed; }
+  #demo { position: fixed; }
+  @media (max-width: 720px) { #rail-left .rail-btn span { display: none; } #rail-left .rail-btn { padding: 0 9px; } #rail-demo span { display: inline !important; } #soon { display: none; } }
+  #join { margin: auto; width: min(420px, calc(100vw - 32px)); padding: 24px; border: 1px solid #ffffff2e; border-radius: 16px; background: #14141c; color: #ececf1; box-shadow: 0 20px 60px rgba(0,0,0,.6); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  #join::backdrop { background: rgba(4,5,12,.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  #join h2 { margin: 0 0 6px; font-size: 20px; font-weight: 650; }
+  #join p { margin: 0 0 16px; color: #b4b4c2; }
+  #join label { display: block; margin: 0 0 4px; font-size: 13px; font-weight: 600; }
+  #join input { display: block; width: 100%; margin: 0 0 14px; padding: 10px 12px; font: inherit; color: #ececf1; background: #ffffff12; border: 1px solid #ffffff2e; border-radius: 8px; }
+  #join input:focus-visible, #join button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  #join-error { color: #ffb86b !important; margin-top: -4px !important; }
+  #join-error[hidden], #join-done[hidden], #join-form[hidden] { display: none; }
+  .join-actions { display: flex; justify-content: flex-end; gap: 8px; }
+  .join-actions button { min-height: 40px; padding: 0 16px; font: 600 14px system-ui, sans-serif; color: #ececf1; background: #ffffff14; border: 0; border-radius: 20px; cursor: pointer; }
+  #join-submit { background: var(--accent); color: #0b0b10; }
+  #caption { position: absolute; z-index: 3; left: 20px; bottom: 84px; max-width: calc(100% - 40px); font-size: 13px; line-height: 1.4; color: var(--dim); pointer-events: none; }
+  #caption .now-song { display: block; color: var(--fg); }
+  #caption b { color: var(--fg); font-weight: 650; }
+  #bar { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 10px; padding: 14px 16px; color: #ececf1; pointer-events: none; }
+  #bar > * { pointer-events: auto; }
+  #bar button, #bar select { font: 500 13px system-ui, sans-serif; color: #ececf1; background: #ffffff14; border: 1px solid #ffffff2e; border-radius: 8px; padding: 8px 12px; min-height: 38px; cursor: pointer; }
+  #bar select option { color: #111; }
+  #bar button:hover { background: #ffffff26; }
+  #bar button.ic { width: 46px; height: 46px; min-height: 0; padding: 0; display: inline-grid; place-items: center; flex: none; border: 0; border-radius: 50%; background: transparent; transition: background-color .15s linear; }
+  /* just the icon at rest; the blurred circle appears on hover and keyboard focus */
+  #bar button.ic:hover, #bar button.ic:focus-visible { background: rgba(16,18,28,.5); -webkit-backdrop-filter: blur(14px) saturate(1.3); backdrop-filter: blur(14px) saturate(1.3); }
+  #bar .ic svg { filter: drop-shadow(0 1px 3px rgba(0,0,0,.55)); }
+  #pop, #playlist { color: #ececf1; }
+  body.light #bar button.ic { color: #17171b; }
+  body.light #bar .ic svg { filter: none; }
+  body.uifx #bar .ic svg, body.uifx #waitlist, body.uifx #soon, body.uifx #rail-left, body.uifx #brandmark { filter: var(--uifx, none); }
+  /* text and the meter redraw constantly, and a real filter on them cost 50 ms a frame, so they glow with shadows instead */
+  body.uiglow #count, body.uiglow #meter-text, body.uiglow #caption { filter: blur(var(--uiblur, 0)); text-shadow: 0 0 calc(5px * var(--uibloom, 1)) currentColor, 0 0 calc(14px * var(--uibloom, 1)) currentColor; }
+  body.uiglow #meter-fill { box-shadow: 0 0 calc(10px * var(--uihud, 1)) var(--accent); }
+  body.uiglow #pop, body.uiglow #playlist { box-shadow: 0 10px 30px rgba(0,0,0,.5), 0 0 0 1px rgba(140,155,255,var(--uihuda, .35)), 0 0 calc(6px * var(--uihud, 1)) rgba(140,155,255,var(--uihuda, .35)); }
+  /* the blur sits on the track, not the fill, because the fill is stretched to show progress and would smear its blur sideways */
+  body.uiglow #meter { overflow: visible; filter: blur(var(--uihudblur, 0)); }
+  body.light #bar button.ic:hover, body.light #bar button.ic:focus-visible { background: rgba(0,0,0,.1); }
+  body.light #count, body.light #meter-text { color: #17171b; text-shadow: none; }
+  body.light #meter { background: rgba(0,0,0,.14); }
+  #bar button.ic.pri { width: 56px; height: 56px; }
+  #bar .ic.pri svg { width: 24px; height: 24px; }
+  .snd { position: relative; display: inline-grid; flex: none; }
+  .snd-vol { position: absolute; left: 50%; bottom: 100%; padding-bottom: 8px; transform: translateX(-50%); display: none; }
+  .snd:hover .snd-vol, .snd:focus-within .snd-vol { display: block; }
+  .snd-vol input { display: block; width: 110px; padding: 8px 10px; box-sizing: content-box; border-radius: 16px; background: rgba(16,18,28,.55); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); accent-color: #fff; }
+  #bar .ic svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  #bar button[aria-pressed=true], #bar button[aria-expanded=true] { background: #ffffffe6; color: #0b0b10; border-color: transparent; }
+  #pop { position: absolute; right: 14px; bottom: calc(100% + 8px); z-index: 5; width: min(320px, calc(100vw - 28px)); max-height: calc(100vh - 100px); overflow-y: auto; display: none; padding: 14px; background: #14141c; border: 1px solid #ffffff2e; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+  #pop.open { display: grid; gap: 12px; }
+  .prow { display: grid !important; grid-template-columns: 84px 1fr; gap: 10px; }
+  #pop select, #pop input[type=range] { width: 100%; min-width: 0; }
+  .pchecks { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+  .pgroup { border-top: 1px solid #ffffff22; padding: 10px 0 0; }
+  .pgroup summary { cursor: pointer; font-size: 13px; font-weight: 600; }
+  .pgroup[open] summary { margin-bottom: 10px; }
+  .pgroup summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  #star-now { margin: 8px 0; font-size: 12px; color: #b4b4c2; }
+  #star-over { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; min-width: 0; }
+  #star-over[disabled] { display: none; }
+  #playlist { position: absolute; left: 14px; bottom: calc(100% + 8px); z-index: 5; width: min(520px, calc(100vw - 28px)); max-height: calc(100vh - 100px); overflow-y: auto; display: none; padding: 12px; background: #14141c; border: 1px solid #ffffff2e; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+  #playlist.open { display: block; }
+  #pl-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 13px; font-weight: 600; }
+  #pl-title { margin-right: auto; }
+  #playlist.list { width: min(980px, calc(100vw - 28px)); }
+  #playlist.list #pl-grid { display: block; }
+  #playlist.list .pl { display: grid; grid-template-columns: 132px minmax(170px, 1fr) minmax(240px, 1.6fr); gap: 8px 12px; align-items: start; margin-bottom: 8px; padding: 8px; }
+  #playlist.list .pl-ctl { grid-column: 1 / -1; padding: 0; }
+  #playlist.list .pl-art { border-radius: 6px; overflow: hidden; }
+  #playlist.list .pl-name { padding: 4px 6px; font-size: 12px; font-weight: 600; white-space: normal; }
+  .pl-meta, .pl-layers { display: none; }
+  #playlist.list .pl-meta, #playlist.list .pl-layers { display: block; font-size: 11px; line-height: 1.5; color: #b4b4c2; }
+  .pl-meta b { color: #ececf1; font-weight: 500; }
+  .sw { display: flex; align-items: center; gap: 6px; font: 11px ui-monospace, Menlo, monospace; color: #ececf1; }
+  .sw i { width: 14px; height: 14px; flex: none; border-radius: 3px; box-shadow: inset 0 0 0 1px #ffffff40; }
+  .sw em { font: 11px system-ui, sans-serif; color: #b4b4c2; }
+  .sw .low { color: #ffb86b; }
+  #pl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+  .pl { position: relative; border-radius: 8px; background: #ffffff0a; }
+  .pl[aria-current=true] { outline: 2px solid var(--accent); outline-offset: 1px; }
+  #bar button.pl-open { display: block; width: 100%; min-height: 0; padding: 0; overflow: hidden; border: 0; border-radius: 8px; background: #0a1a40; text-align: left; }
+  #bar button.pl-open:hover { outline: 2px solid #ffffff55; background: #0a1a40; }
+  .pl.off .pl-open, .pl.off .pl-text, .pl.off .pl-layers { opacity: .35; }
+  .pl.off .pl-open { cursor: not-allowed; }
+  .pl.dragging { opacity: .4; }
+  .pl.drop-before::before, .pl.drop-after::after { content: ""; position: absolute; z-index: 2; background: var(--accent); border-radius: 2px; left: -4px; top: 0; bottom: 0; width: 3px; }
+  .pl.drop-after::after { left: auto; right: -4px; }
+  #playlist.list .pl.drop-before::before { left: 0; right: 0; top: -5px; bottom: auto; width: auto; height: 3px; }
+  #playlist.list .pl.drop-after::after { left: 0; right: 0; top: auto; bottom: -5px; width: auto; height: 3px; }
+  .pl[draggable=true] { cursor: grab; }
+  .pl-ctl { display: flex; align-items: center; gap: 6px; padding: 6px; flex-wrap: wrap; }
+  #bar .pl-ctl button { min-height: 28px; padding: 2px 9px; font-size: 12px; }
+  #bar .pl-ctl .pl-eye[aria-pressed=true] { background: #ffffff14; color: #ececf1; }
+  #bar .pl-ctl .pl-eye[aria-pressed=false] { background: #ffb86b2e; color: #ffcf99; }
+  .pl-move { display: inline-flex; gap: 2px; }
+  .pl-sound { flex: 1; min-width: 150px; display: flex !important; align-items: center; gap: 6px; font-size: 12px !important; color: #b4b4c2; }
+  #bar .pl-sound select { flex: 1; min-width: 0; min-height: 28px; padding: 2px 6px; font-size: 12px; }
+  #playlist:not(.list) .pl-move, #playlist:not(.list) .pl-sound, #playlist:not(.list) .pl-preview { display: none; }
+  #playlist.shuffled .pl-move { display: none; }
+  .pl-art { display: block; position: relative; aspect-ratio: 3 / 2; padding: 10px; pointer-events: none; }
+  .pl-art svg { display: block; width: 100%; height: 100%; overflow: visible; }
+  .pl-art .pt, .pl-art .pt path { fill-rule: evenodd; }
+  .pl-art > div { width: 100%; height: 100%; }
+  .pl-text { display: block; min-width: 0; }
+  .pl-name { display: block; padding: 4px 8px; font: 500 11px system-ui, sans-serif; color: #ececf1; background: rgba(8,10,20,.82); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #res-custom[hidden], #res-note[hidden] { display: none !important; }
+  .res-nums { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .res-nums input { width: 76px; font: 13px system-ui, sans-serif; color: #ececf1; background: #ffffff14; border: 1px solid #ffffff2e; border-radius: 8px; padding: 6px; }
+  .pfields { display: grid; gap: 8px; margin-top: 8px; }
+  .pnote { margin: 8px 0 0; font-size: 12px; color: #b4b4c2; }
+  #px-over { display: grid; gap: 8px; margin-top: 8px; }
+  .crt-row.c3 { grid-template-columns: 84px 1fr 44px; }
+  .curve { width: 44px; height: 44px; background: #ffffff0f; border-radius: 6px; cursor: crosshair; display: block; }
+  .curve-line { fill: none; stroke: var(--accent); stroke-width: 6; }
+  .curve-diag { fill: none; stroke: #ffffff33; stroke-width: 2; }
+  .sub { padding-left: 22px; font-size: 13px; color: #b4b4c2; }
+  .crt-row { display: grid; grid-template-columns: 84px 1fr; align-items: center; gap: 10px; margin-top: 8px; }
+  #bar button:focus-visible, #bar select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  #bar label { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+  #bar input[type=range] { accent-color: var(--accent); }
+  #meter { flex: 1; min-width: 40px; max-width: 260px; height: 6px; margin-left: 6px; border-radius: 3px; background: rgba(16,18,28,.42); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); overflow: hidden; }
+  #meter-fill { display: block; width: 100%; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+  #meter-text { margin-right: auto; min-width: 44px; font: 12px ui-monospace, Menlo, monospace; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.8); white-space: nowrap; }
+  #count { margin: 0 0 0 8px; white-space: nowrap; font: 12px ui-monospace, Menlo, monospace; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.8); }
+  #track { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; height: 3px; pointer-events: none; }
+  #fill { height: 100%; width: 0; background: var(--accent); }
+  #reel.bare #bar, #reel.bare #track, #reel.bare #caption { display: none; }
+  #reel.bare { cursor: none; }
+  @media (max-width: 640px) { #bar { gap: 4px; } #meter-text { display: none; } #meter { margin-right: auto; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="pxf" x="0" y="0" width="100%" height="100%" primitiveUnits="userSpaceOnUse"></filter><filter id="uifx" x="-100%" y="-400%" width="300%" height="900%" color-interpolation-filters="sRGB"></filter></svg>
+<dialog id="demo" aria-labelledby="demo-title">
+  <div class="demo-head"><h2 id="demo-title">Demo</h2><a href="https://kosmographica.com" target="_blank" rel="noopener">Open in a new tab</a><button type="button" id="demo-close">Close</button></div>
+  <iframe id="demo-frame" title="Kosmographica demo" referrerpolicy="no-referrer-when-downgrade"></iframe>
+</dialog>
+<dialog id="join" aria-labelledby="join-title">
+  <form id="join-form" novalidate>
+    <h2 id="join-title">Join Waitlist</h2>
+    <p>We're not open yet. Leave your name and email and we'll let you know when it's ready.</p>
+    <label for="join-name">Name</label>
+    <input id="join-name" name="name" type="text" autocomplete="name" required>
+    <label for="join-email">Email</label>
+    <input id="join-email" name="email" type="email" autocomplete="email" required>
+    <p id="join-error" role="alert" hidden></p>
+    <div class="join-actions">
+      <button type="button" id="join-cancel">Not now</button>
+      <button type="submit" id="join-submit">Join Waitlist</button>
+    </div>
+  </form>
+  <div id="join-done" hidden>
+    <h2>You're on the list</h2>
+    <p>Thanks. We'll email you when it's ready.</p>
+    <div class="join-actions"><button type="button" id="join-close">Close</button></div>
+  </div>
+</dialog>
+<div id="reel">
+  <div id="screen">
+    <div id="pixel"><div id="vp">
+    <div id="backdrop"></div>
+    <canvas id="stars" aria-hidden="true"></canvas>
+    <div id="stage" role="img" aria-live="polite"></div>
+    <div id="brandmark" role="img" aria-label="SpaceRadio"></div>
+    <button id="waitlist" type="button" aria-haspopup="dialog">Start</button>
+    <span id="soon">Coming Soon</span>
+    <div id="rail-left">
+      <button id="rail-sound" class="rail-btn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sound"/></svg><span>Sound On</span></button>
+      <a id="rail-demo" class="rail-btn" href="https://kosmographica.com" target="_blank" rel="noopener" aria-haspopup="dialog"><span>Demo</span></a>
+    </div>
+    <div id="scan"></div>
+    </div></div>
+    <div id="caption"></div>
+  </div>
+  <div id="uiscan" aria-hidden="true"></div>
+  <div id="track"><div id="fill"></div></div>
+  <div id="bar">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <symbol id="i-prev" viewBox="0 0 24 24"><path d="M19 5 9 12l10 7zM5 5v14"/></symbol>
+      <symbol id="i-next" viewBox="0 0 24 24"><path d="m5 5 10 7-10 7zM19 5v14"/></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="m7 4 13 8-13 8z"/></symbol>
+      <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+      <symbol id="i-replay" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.5-5.8L4 8.5M4 4v4.5h4.5"/></symbol>
+      <symbol id="i-random" viewBox="0 0 24 24"><path d="M3 7h3.5c5 0 6 10 11 10H21M3 17h3.5c1.6 0 2.8-1 3.8-2.4M13.7 9.4C14.7 8 15.9 7 17.5 7H21M18 4l3 3-3 3M18 14l3 3-3 3"/></symbol>
+      <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+      <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9.5v5h4l5 4.500V5L8 9.5zM16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></symbol>
+      <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9.5v5h4l5 4.500V5L8 9.5zM17 9.5l5 5M22 9.5l-5 5"/></symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+      <symbol id="i-full" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+    </svg>
+    <button class="ic" data-a="prev" title="Back (left arrow)" aria-label="Back"><svg><use href="#i-prev"/></svg></button>
+    <button class="ic pri" data-a="play" title="Pause (Space)" aria-label="Pause"><svg><use href="#i-pause"/></svg></button>
+    <button class="ic" data-a="next" title="Next (right arrow)" aria-label="Next"><svg><use href="#i-next"/></svg></button>
+    <button class="ic" data-a="random" title="Random order (S)" aria-label="Random order" aria-pressed="false"><svg><use href="#i-random"/></svg></button>
+    <button class="ic" data-a="playlist" title="Playlist (L)" aria-label="Playlist" aria-expanded="false" aria-controls="playlist"><svg><use href="#i-list"/></svg></button>
+    <span id="count"></span>
+    <span id="meter" title="Time until the next logo" aria-hidden="true"><span id="meter-fill"></span></span>
+    <span id="meter-text" title="Time until the next logo"></span>
+    <span class="snd"><span class="snd-vol"><input type="range" id="volume" min="0" max="1" step="0.02" aria-label="Volume"></span><button class="ic" data-a="sound" title="Sound (M)" aria-label="Turn sound off"><svg><use href="#i-sound"/></svg></button></span>
+    <button class="ic" data-a="settings" title="Settings (C)" aria-label="Settings" aria-expanded="false" aria-controls="pop"><svg><use href="#i-settings"/></svg></button>
+    <button class="ic" data-a="fs" title="Full screen (F)" aria-label="Full screen"><svg><use href="#i-full"/></svg></button>
+    <div id="playlist" role="group" aria-label="Playlist"><div id="pl-head"><span id="pl-title"></span><button type="button" data-a="plshowall" id="pl-showall">Show all</button><button type="button" data-a="plreset" id="pl-reset">Reset order</button><button type="button" data-a="plview" id="pl-view">List view</button><button type="button" data-a="plexport" id="pl-export">Export colors</button></div><div id="pl-grid"></div></div>
+    <div id="pop" role="group" aria-label="Reel settings">
+      <label class="prow"><span>Logos</span><select id="brand"><option value="all">All brands</option><option value="k">Kosmographica only</option><option value="s">SpaceRadio only</option><option value="m">Modern Telepathy only</option><option value="t">TempleOS only</option><option value="z">Kosmos only</option></select></label>
+      <label class="prow"><span>Background</span><select id="bg"><option value="match">Match each logo</option><option value="#0a1a40">Navy</option><option value="#08080c">Black</option><option value="#fdf7ee">Paper</option><option value="#ffffff">White</option></select></label>
+      <label class="prow"><span>Logo size</span><input type="range" id="logoSize" min="0.25" max="1" step="0.01" aria-label="Logo size"></label>
+      <label class="prow"><span>Resolution</span><select id="res"><option value="0x0">Full window</option><option value="1920x1080">1920 × 1080</option><option value="1280x720">1280 × 720</option><option value="854x480">854 × 480</option><option value="640x480">640 × 480</option><option value="320x240">320 × 240</option><option value="160x120">160 × 120</option><option value="custom">Custom</option></select></label>
+      <div class="prow" id="res-custom" hidden><span>Pixels</span><span class="res-nums"><input type="number" id="resW" min="16" max="7680" aria-label="Width in pixels"> × <input type="number" id="resH" min="16" max="4320" aria-label="Height in pixels"></span></div>
+      <p class="pnote" id="res-note" hidden></p>
+      <label class="prow"><span>Frame rate</span><select id="fps"><option value="0">Display rate</option><option value="60">60 fps</option><option value="30">30 fps</option><option value="24">24 fps</option><option value="15">15 fps</option><option value="12">12 fps</option><option value="8">8 fps</option><option value="4">4 fps</option></select></label>
+      <label class="prow"><span id="hold-label">Hold</span><input type="range" id="hold" min="0.5" max="15" step="0.5" aria-label="Seconds to hold each logo"></label>
+      <div class="pchecks">
+        <label><input type="checkbox" id="loop"> Loop</label>
+        <label><input type="checkbox" id="showWaitlist"> Start button</label>
+        <label><input type="checkbox" id="showBrand"> SpaceRadio logo</label>
+      </div>
+      <details id="shim-group" class="pgroup" open>
+        <summary>Shimmer</summary>
+        <div class="pchecks">
+          <label><input type="checkbox" id="shimmer"> Shimmer</label>
+          <label><input type="checkbox" id="rainbow"> Rainbow</label>
+          <label><input type="checkbox" id="shimOnce"> Once per play</label>
+        </div>
+        <div class="pfields">
+          <label class="prow"><span>Strength</span><input type="range" id="shimAmt" min="0.1" max="1" step="0.05" aria-label="Shimmer strength"></label>
+          <label class="prow"><span>Starts at</span><input type="range" id="shimAt" min="0.2" max="1" step="0.02" aria-label="Point in the reveal where the shimmer starts"></label>
+          <label class="prow"><span>Repeat</span><input type="range" id="shimEvery" min="2" max="10" step="0.5" aria-label="Seconds between shimmers"></label>
+        </div>
+      </details>
+      <details id="pulse-group" class="pgroup">
+        <summary>End pulse</summary>
+        <div class="pchecks"><label><input type="checkbox" id="pulse"> End pulse</label><label><input type="checkbox" id="pulseWhite"> White</label></div>
+        <div class="pfields">
+          <label class="prow"><span>Bloom</span><input type="range" id="pulseAmt" min="0.3" max="3" step="0.1" aria-label="Pulse bloom"></label>
+          <label class="prow"><span>Length</span><input type="range" id="pulseTime" min="0.3" max="3" step="0.1" aria-label="Pulse length in seconds"></label>
+        </div>
+      </details>
+      <details id="trail-group" class="pgroup">
+        <summary>Trails</summary>
+        <div class="pchecks"><label><input type="checkbox" id="trail"> Rainbow trail</label><label><input type="checkbox" id="introTrail"> Intro trail</label></div>
+        <p class="pnote">Colours follow the Rainbow switch under Shimmer.</p>
+        <div class="pfields">
+          <label class="prow"><span>Copies</span><input type="range" id="trailN" min="2" max="12" step="1" aria-label="Trail copies"></label>
+          <label class="prow"><span>Spread</span><input type="range" id="trailLen" min="2" max="30" step="1" aria-label="Trail spread"></label>
+          <label class="prow"><span>Direction</span><input type="range" id="trailAngle" min="0" max="359" step="1" aria-label="Trail direction"></label>
+          <label class="prow"><span>Decay</span><input type="range" id="trailDecay" min="0.2" max="5" step="0.1" aria-label="Trail decay in seconds"></label>
+          <label class="prow"><span>Intro copies</span><input type="range" id="ptN" min="2" max="12" step="1" aria-label="Intro trail copies"></label>
+          <label class="prow"><span>Intro lag</span><input type="range" id="ptLag" min="20" max="200" step="5" aria-label="Intro trail lag in milliseconds"></label>
+        </div>
+      </details>
+      <details id="star-group" class="pgroup">
+        <summary>Starfield</summary>
+        <label class="prow"><span>Mode</span><select id="starMode"><option value="reel">Set by the reel</option><option value="override">Override, same for all</option><option value="off">Off</option></select></label>
+        <p id="star-now"></p>
+        <fieldset id="star-over">
+          <label class="prow"><span>Trail</span><input type="range" id="starTrail" min="0.2" max="12" step="0.2" aria-label="Star trail length"></label>
+          <label class="prow"><span>Speed</span><input type="range" id="starSpeed" min="0.2" max="3" step="0.1" aria-label="Star speed"></label>
+          <label class="prow"><span>Density</span><input type="range" id="starDensity" min="0.2" max="2" step="0.1" aria-label="Star density"></label>
+          <label class="prow"><span>Colors</span><select id="starColors"><option value="logo">Logo colors</option><option value="rainbow">Rainbow</option><option value="white">White</option><option value="ice">Ice</option><option value="ember">Ember</option></select></label>
+        </fieldset>
+      </details>
+      <details id="px-group" class="pgroup">
+        <summary>Parallax</summary>
+        <div class="pchecks"><label><input type="checkbox" id="parallax"> Put parts on separate planes</label></div>
+        <div id="px-over">
+          <label class="prow"><span>Planes</span><select id="pxSplit"><option value="color">Text, then each color</option><option value="text">Text and shapes</option></select></label>
+          <label class="prow"><span>Camera</span><select id="pxCamera"><option value="drift">Slow drift</option><option value="pointer">Follow pointer</option><option value="push">Push in</option></select></label>
+          <label class="prow"><span>Depth</span><input type="range" id="pxDepth" min="0.2" max="2" step="0.1" aria-label="Parallax depth"></label>
+          <label class="prow"><span>Speed</span><input type="range" id="pxSpeed" min="0.2" max="3" step="0.1" aria-label="Camera speed"></label>
+        </div>
+      </details>
+      <details id="react-group" class="pgroup">
+        <summary>Sound reactive</summary>
+        <div class="pchecks"><label><input type="checkbox" id="reactive"> Animate to the sound</label></div>
+        <div class="pfields">
+          <label class="prow"><span>Glow</span><input type="range" id="reactGlow" min="0" max="2.5" step="0.05" aria-label="How much sound drives bloom and shimmer"></label>
+          <label class="prow"><span>Camera</span><input type="range" id="reactCam" min="0" max="2.5" step="0.05" aria-label="How much low end drives the camera and parallax"></label>
+          <label class="prow"><span>Stars</span><input type="range" id="reactStars" min="0" max="2.5" step="0.05" aria-label="How much sound drives the stars"></label>
+        </div>
+      </details>
+      <details id="ui-group" class="pgroup">
+        <summary>UI shader</summary>
+        <div class="pchecks"><label><input type="checkbox" id="uiShader"> Apply the CRT look to the UI</label><label><input type="checkbox" id="uiModals"> Also on windows and modals</label></div>
+        <div class="pfields">
+          <label class="prow"><span>Text</span><input type="range" id="uiText" min="0" max="2.5" step="0.05" aria-label="Shader impact on text"></label>
+          <label class="prow"><span>HUD</span><input type="range" id="uiHud" min="0" max="2.5" step="0.05" aria-label="Shader impact on windows and buttons"></label>
+        </div>
+      </details>
+      <details id="crt-group" class="pgroup">
+        <summary id="crt-btn">CRT</summary>
+        <div class="crt-row"><label><input type="checkbox" id="blur"> Blur</label><input type="range" id="blurAmt" min="0.2" max="4" step="0.1" aria-label="Blur strength"></div>
+        <div class="crt-row c3"><span class="sub">Curve</span><input type="range" id="blurCurve" min="0.3" max="2.5" step="0.05" aria-label="Blur curve"><svg class="curve" id="blurPad" aria-hidden="true"></svg></div>
+        <div class="crt-row"><label><input type="checkbox" id="bloom"> Bloom</label><input type="range" id="bloomAmt" min="0.2" max="3" step="0.1" aria-label="Bloom strength"></div>
+        <div class="crt-row"><span class="sub">Size</span><input type="range" id="bloomSize" min="0.3" max="3" step="0.1" aria-label="Bloom size"></div>
+        <div class="crt-row c3"><span class="sub">Curve</span><input type="range" id="bloomCurve" min="0.3" max="2.5" step="0.05" aria-label="Bloom curve"><svg class="curve" id="bloomPad" aria-hidden="true"></svg></div>
+        <div class="crt-row"><label><input type="checkbox" id="lines"> Lines</label></div>
+        <div class="crt-row"><span class="sub">Opacity</span><input type="range" id="linesAmt" min="0.05" max="1" step="0.01" aria-label="Lines opacity"></div>
+        <div class="crt-row"><span class="sub">Blur</span><input type="range" id="linesBlur" min="0" max="2" step="0.1" aria-label="Lines blur"></div>
+      </details>
+      <button data-a="bare" title="Hide controls (H)">Hide controls</button>
+    </div>
+  </div>
+</div>
+<script src="../logo-loader/logo-loader.js"></script>
+<script src="spaceradio-reel.js"></script>
+<script src="modern-telepathy-reel.js"></script>
+<script src="templeos-reel.js"></script>
+<script src="kosmos-reel.js"></script>
+<script>
+(async function () {
+  const $ = (s) => document.querySelector(s);
+  const reel = $("#reel"), stage = $("#stage"), caption = $("#caption"), fill = $("#fill"), countEl = $("#count"), playBtn = $('[data-a="play"]'), pop = $("#pop"), setBtn = $('[data-a="settings"]'), randBtn = $('[data-a="random"]');
+  const KEY = "logo-reel-v2";
+  const DEF = { brand: "all", bg: "match", starMode: "reel", starTrail: 2, starSpeed: 1, starDensity: 1, starColors: "logo", shimmer: true, rainbow: true, shimOnce: true, shimAmt: 0.9, shimAt: 0.82, shimEvery: 3.5, pulse: false, pulseWhite: false, pulseAmt: 1, pulseTime: 1.1, trail: false, introTrail: false, trailN: 6, trailLen: 10, trailAngle: 0, trailDecay: 1.5, ptN: 6, ptLag: 70, plOrder: [], plHidden: {}, plSound: {}, reactive: true, reactGlow: 1, reactCam: 1, reactStars: 1, showBrand: true, uiShader: true, uiModals: true, uiText: 1, uiHud: 1, plView: "grid", volume: 1, resW: 0, resH: 0, showWaitlist: true, fps: 0, logoSize: 0.6, parallax: false, pxSplit: "color", pxCamera: "drift", pxDepth: 1, pxSpeed: 1, sound: true, blur: true, bloom: true, lines: false, blurAmt: 0.5, blurV: 2, bloomAmt: 1, blurCurve: 1, bloomCurve: 0.7, bloomSize: 1, linesAmt: 0.2, linesBlur: 0, loop: true, shuffle: false, hold: 4, holdV: 2 };
+  let S = { ...DEF };
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+    /* saved before lines became opt-in */
+    if (saved.linesBlur === undefined) delete saved.lines;
+    /* saved before the longer default hold */
+    if (saved.holdV === undefined) delete saved.hold;
+    /* saved before the lighter default blur */
+    if (saved.blurV === undefined) delete saved.blurAmt;
+    /* someone who had turned the old starfield switch off keeps it off */
+    if (saved.starMode === undefined && saved.starfield === false) saved.starMode = "off";
+    S = { ...DEF, ...saved };
+  } catch { /* defaults are fine */ }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch { /* still works without memory */ } };
+
+  const K = window.KosmoLogoLoader, SR = window.SpaceRadioReel, MT = window.ModernTelepathyReel, TO = window.TempleOSReel || null, KO = window.KosmosReel || null, player = K.player;
+  const REEL = { s: SR, m: MT, ...(TO ? { t: TO } : {}), ...(KO ? { z: KO } : {}) };
+  const kIds = await K.ids();
+  const BRAND = { k: "Kosmographica", s: "SpaceRadio", m: "Modern Telepathy", ...(TO ? { t: "TempleOS" } : {}), ...(KO ? { z: "Kosmos" } : {}) };
+  /* a brand row only appears once its reel file has been built; a saved filter for a missing one falls back to all brands */
+  for (const [code, reel] of [["t", TO], ["z", KO]]) {
+    if (reel) continue;
+    document.querySelector(`#brand option[value="${code}"]`)?.remove();
+    if (S.brand === code) { S.brand = "all"; save(); }
+  }
+  const shuffled = (a) => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+  /* Each logo owns one sound, picked from its id so it keeps it, and never the same as the logo before it. */
+  const sceneSound = new Map();
+  function assignSounds() {
+    const ids = K.soundIds;
+    let prev = null;
+    full.forEach((it) => {
+      let h = 7;
+      for (const ch of it.brand + it.id) h = (Math.imul(h, 31) + ch.charCodeAt(0)) >>> 0;
+      let id = ids[(h >>> 2) % ids.length];
+      if (id === prev) id = ids[(ids.indexOf(id) + 1) % ids.length];
+      prev = id;
+      /* a sound chosen in the playlist wins; 0 means this logo plays silently */
+      const chosen = S.plSound[keyOf(it)];
+      sceneSound.set(it, chosen !== undefined ? chosen : id);
+    });
+  }
+
+  /* The brands are spaced evenly through the reel, each in proportion to its size, starting on Kosmographica. */
+  const interleave = (...lists) => lists.flatMap((l, b) => l.map((it, i) => ({ it, at: i / l.length, b }))).sort((x, y) => x.at - y.at || x.b - y.b).map((x) => x.it);
+  const KLIST = kIds.map((id) => ({ brand: "k", id })), SLIST = SR.ids.map((id) => ({ brand: "s", id })), MLIST = MT.ids.map((id) => ({ brand: "m", id })), TLIST = TO ? TO.ids.map((id) => ({ brand: "t", id })) : [], ZLIST = KO ? KO.ids.map((id) => ({ brand: "z", id })) : [];
+  let list = [], pos = 0, inst = null, timers = [], playing = true, progress = 0, ticket = 0, unlocked = false, ended = false, frozen = [];
+  /* only the ones actually running get paused, because play() on a finished animation would replay it from the start */
+  function paintPlay() {
+    const name = ended ? "replay" : playing ? "pause" : "play", label = { replay: "Replay", pause: "Pause", play: "Play" }[name];
+    playBtn.querySelector("use").setAttribute("href", "#i-" + name);
+    playBtn.setAttribute("aria-label", label);
+    playBtn.title = label + " (Space)";
+  }
+  /* The running order: every logo in saved order (or the random order), then the brand filter. full is what the playlist shows; list is what plays. */
+  const keyOf = (it) => `${it.brand}:${it.id}`;
+  const allItems = () => interleave(KLIST, SLIST, MLIST, TLIST, ZLIST);
+  let full = [], shuffleRank = new Map();
+  function computeLists() {
+    const items = allItems();
+    let ordered = items;
+    if (S.shuffle) ordered = [...items].sort((a, b) => (shuffleRank.get(keyOf(a)) ?? 0) - (shuffleRank.get(keyOf(b)) ?? 0));
+    else if (S.plOrder.length) {
+      const rank = new Map(S.plOrder.map((k, i) => [k, i]));
+      ordered = [...items].sort((a, b) => (rank.get(keyOf(a)) ?? 1e6) - (rank.get(keyOf(b)) ?? 1e6));
+    }
+    full = ordered.filter((it) => S.brand === "all" || it.brand === S.brand);
+    list = full.filter((it) => !S.plHidden[keyOf(it)]);
+    if (!list.length) list = [...full];        // a filter whose logos are all hidden still has something to play
+    assignSounds();
+  }
+  function buildList() {
+    if (S.shuffle) { shuffleRank = new Map(shuffled(allItems()).map((it, i) => [keyOf(it), i])); }
+    computeLists();
+    if (pos >= list.length) pos = 0;
+    renderPlaylist();
+  }
+  /* the whole running order, with each logo's thumbnail drawn only as it scrolls into view */
+  const plGrid = $("#pl-grid"), plBox = $("#playlist");
+  let plThumbs = [], plSeen = null;
+  function drawThumb(btn) {
+    const item = full.find((it) => keyOf(it) === btn.dataset.key), art = btn.querySelector(".pl-art");
+    if (!item) return;
+    const settle = () => { art.getAnimations({ subtree: true }).forEach((a) => { try { a.finish(); } catch { a.cancel(); } }); fillRow(btn, item, art); };
+    if (item.brand === "k") {
+      if (S.bg !== "match") art.style.backgroundColor = S.bg;
+      plThumbs.push(K.mount(art, { ...fixedTone(), id: item.id, crt: false, sound: false, soundButton: false, matchBg: S.bg === "match", backdropEl: art, onReady: settle }));
+    } else {
+      const color = S.bg === "match" ? REEL[item.brand].backdrop(item.id) : S.bg;
+      art.style.backgroundColor = color;
+      plThumbs.push(REEL[item.brand].mount(art, item.id, { bg: color, crt: false }));
+      settle();
+    }
+  }
+  /* ---- a scene's colours: every painted colour in the logo, by how much of the logo it covers, checked against its backdrop ---- */
+  const rgbTxt = (t) => { const m = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(t || ""); return m ? [+m[1], +m[2], +m[3]] : rgbOf(t); };
+  function readScene(item, art) {
+    const svg = art.querySelector("svg"), bg = rgbTxt(getComputedStyle(art).backgroundColor) || [10, 26, 64], map = new Map();
+    let total = 0;
+    if (svg) svg.querySelectorAll("path").forEach((p) => {
+      if (p.closest("defs")) return;
+      const fill = getComputedStyle(p).fill, c = rgbTxt(fill), key = c ? hexOf(c) : "gradient";
+      const role = p.closest(".paps, .pp") ? "paper" : p.closest(".inks") ? "text" : p.closest(".cols") ? "shape" : "layer";
+      let area = 0;
+      try { const b = p.getBBox(); area = b.width * b.height; } catch { /* not drawn yet */ }
+      const got = map.get(key) || { color: key, role, parts: 0, area: 0 };
+      got.parts++; got.area += area; total += area;
+      map.set(key, got);
+    });
+    const layers = [...map.values()].sort((a, b) => b.area - a.area).map((l) => {
+      const c = rgbOf(l.color), ratio = c ? contrast(c, bg) : null;
+      return { color: l.color, role: l.role, parts: l.parts, coverage: total ? +(l.area / total).toFixed(3) : 0, contrastOnBackdrop: ratio ? +ratio.toFixed(2) : null, lowContrast: ratio !== null && ratio < 3 && l.role !== "paper", fix: null };
+    });
+    const m = item.brand === "k" ? {} : (REEL[item.brand].meta[item.id] || {}), plan = starsFor(item, hexOf(bg));
+    const ends = logoEnd(art);
+    return { sound: K.soundName(sceneSound.get(item)) || null, brand: BRAND[item.brand], logo: item.id, backdrop: hexOf(bg), backdropFix: null, background: S.bg === "match" ? "chosen per logo" : "fixed", layers, parts: svg ? svg.querySelectorAll("path").length : 0, revealMs: ends, stars: S.starMode === "off" ? null : S.starMode === "override" ? "override" : plan, waitlistStyle: waitlistStyleOf(item), wordmarkFont: m.font || null, traceMatch: m.traceMatch ?? null, source: m.source || null };
+  }
+  const logoEnd = (art) => Math.round(Math.max(0, ...art.getAnimations({ subtree: true }).map((a) => { const t = a.effect.getTiming(); return t.delay + t.duration; })));
+  function fillRow(btn, item, art) {
+    const d = readScene(item, art), meta = btn.querySelector(".pl-meta"), lay = btn.querySelector(".pl-layers");
+    if (!meta) return;
+    const starsText = !d.stars ? "none" : d.stars === "override" ? "override" : `trail ${d.stars.trail}, speed ${d.stars.speed}, density ${d.stars.density}, ${d.stars.colors}`;
+    const row = (k, v) => (v === null || v === undefined ? "" : `<span style="display:block">${k}: <b>${v}</b></span>`);
+    meta.innerHTML = row("Sound", d.sound) + row("Backdrop", `${d.backdrop} (${d.background})`) + row("Parts", d.parts) + row("Stars", starsText) + row("Waitlist", d.waitlistStyle) + row("Wordmark font", d.wordmarkFont) + row("Trace match", d.traceMatch) + row("Source", d.source);
+    lay.innerHTML = d.layers.map((l) => `<span class="sw"><i style="background:${l.color === "gradient" ? "linear-gradient(90deg,#888,#ddd)" : l.color}"></i>${l.color}<em>${l.role}, ${Math.round(l.coverage * 100)}%${l.contrastOnBackdrop ? `, ${l.contrastOnBackdrop}:1` : ""}</em>${l.lowContrast ? '<em class="low">low contrast</em>' : ""}</span>`).join("");
+  }
+  /* every scene's colours as JSON, with empty fix fields to fill in */
+  async function exportColors() {
+    const out = [], host = document.createElement("div"), btn = $("#pl-export");
+    host.style.cssText = "position:fixed;left:-9999px;top:0;width:300px;height:200px";
+    document.body.appendChild(host);
+    for (let i = 0; i < list.length; i++) {
+      btn.textContent = `Reading ${i + 1} of ${list.length}`;
+      const item = list[i], art = document.createElement("div");
+      art.style.cssText = "width:300px;height:200px";
+      host.appendChild(art);
+      let t;
+      if (item.brand === "k") {
+        if (S.bg !== "match") art.style.backgroundColor = S.bg;
+        await new Promise((res) => { t = K.mount(art, { ...fixedTone(), id: item.id, crt: false, sound: false, soundButton: false, matchBg: S.bg === "match", backdropEl: art, onReady: res }); });
+      } else {
+        const color = S.bg === "match" ? REEL[item.brand].backdrop(item.id) : S.bg;
+        art.style.backgroundColor = color;
+        t = REEL[item.brand].mount(art, item.id, { bg: color, crt: false });
+      }
+      out.push({ position: i + 1, ...readScene(item, art) });
+      t.destroy(); art.remove();
+    }
+    host.remove();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify({ exported: new Date().toISOString(), scenes: out }, null, 2)], { type: "application/json" }));
+    a.download = "logo-reel-colors.json";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    btn.textContent = "Export colors";
+    window.lastColorExport = out;
+    return out;
+  }
+  const paintPlView = () => { plBox.classList.toggle("list", S.plView === "list"); $("#pl-view").textContent = S.plView === "list" ? "Grid view" : "List view"; };
+  /* ---- playlist editing: visibility, audio and order, all saved ---- */
+  let plDragging = false, soundOptions = "";
+  function buildSoundOptions() {
+    const sounds = K.allSounds(), ambient = sounds.filter((x) => K.soundIds.includes(x.id)), other = sounds.filter((x) => !K.soundIds.includes(x.id));
+    const opt = (x) => `<option value="${x.id}">${x.name}</option>`;
+    soundOptions = `<option value="auto">Automatic</option><option value="0">No audio</option><optgroup label="Ambient">${ambient.map(opt).join("")}</optgroup><optgroup label="Earlier clips">${other.map(opt).join("")}</optgroup>`;
+  }
+  const rowItem = (row) => full.find((it) => keyOf(it) === row.dataset.key);
+  function paintRow(row) {
+    const key = row.dataset.key, off = !!S.plHidden[key], eye = row.querySelector(".pl-eye"), item = rowItem(row), name = item ? `${BRAND[item.brand]} ${item.id}` : key;
+    row.classList.toggle("off", off);
+    eye.textContent = off ? "Hidden" : "Visible";
+    eye.setAttribute("aria-pressed", String(!off));
+    eye.setAttribute("aria-label", `${name}: ${off ? "hidden, turn on" : "visible, turn off"}`);
+    row.querySelector(".pl-open").setAttribute("aria-disabled", String(off));
+    row.querySelector(".pl-open").title = off ? "Hidden: turn it on to play it" : "Play this logo";
+    const chosen = S.plSound[key];
+    row.querySelector(".pl-sound select").value = chosen === undefined ? "auto" : String(chosen);
+  }
+  function relabel() {
+    const hidden = full.filter((it) => S.plHidden[keyOf(it)]).length;
+    $("#pl-title").textContent = `Playlist: ${list.length} of ${full.length} logos` + (hidden ? `, ${hidden} hidden` : "");
+    plBox.classList.toggle("shuffled", !!S.shuffle);
+    const playing = new Map(list.map((it, i) => [keyOf(it), i + 1]));
+    plGrid.querySelectorAll(".pl").forEach((row) => {
+      const it = rowItem(row), n = playing.get(row.dataset.key);
+      if (it) row.querySelector(".pl-name").textContent = `${n && !S.plHidden[row.dataset.key] ? n + ". " : ""}${BRAND[it.brand]} ${it.id}`;
+    });
+  }
+  /* after any edit: rebuild the lists, keep what's on screen playing, and only move rows, so thumbnails aren't redrawn */
+  function playlistChanged() {
+    const cur = list[pos];
+    computeLists();
+    const rows = new Map([...plGrid.children].map((r) => [r.dataset.key, r]));
+    full.forEach((it) => { const r = rows.get(keyOf(it)); if (r) plGrid.appendChild(r); });
+    plGrid.querySelectorAll(".pl").forEach(paintRow);
+    relabel();
+    const at = list.indexOf(cur);
+    if (at >= 0) { pos = at; countEl.textContent = `${pos + 1} / ${list.length}`; setProgress(); paintPlaylist(); }
+    else show(Math.min(pos, list.length - 1));
+    save();
+  }
+  /* moves within the filtered view, written back into the order of every logo so other brands keep their places */
+  function moveKey(key, beforeKey) {
+    const order = allItems().map(keyOf);
+    const base = S.plOrder.length ? [...S.plOrder, ...order.filter((k) => !S.plOrder.includes(k))] : order;
+    const from = base.indexOf(key);
+    if (from < 0) return;
+    base.splice(from, 1);
+    const to = beforeKey ? base.indexOf(beforeKey) : base.length;
+    base.splice(to < 0 ? base.length : to, 0, key);
+    S.plOrder = base;
+    playlistChanged();
+  }
+  function moveStep(row, dir) {
+    const rows = [...plGrid.children], i = rows.indexOf(row), target = i + dir;
+    if (target < 0 || target >= rows.length) return;
+    const before = dir < 0 ? rows[target] : rows[target + 1];
+    moveKey(row.dataset.key, before ? before.dataset.key : null);
+    row.querySelector(dir < 0 ? ".pl-up" : ".pl-down").focus();
+  }
+  plGrid.addEventListener("click", (e) => {
+    const row = e.target.closest(".pl");
+    if (!row) return;
+    const key = row.dataset.key, it = rowItem(row);
+    if (e.target.closest(".pl-eye")) {
+      if (S.plHidden[key]) delete S.plHidden[key];
+      else {
+        if (list.filter((x) => !S.plHidden[keyOf(x)]).length <= 1) { $("#pl-title").textContent = "At least one logo has to stay visible"; return; }
+        S.plHidden[key] = true;
+      }
+      playlistChanged();
+    } else if (e.target.closest(".pl-up")) moveStep(row, -1);
+    else if (e.target.closest(".pl-down")) moveStep(row, 1);
+    else if (e.target.closest(".pl-preview")) { const id = sceneSound.get(it); if (id && S.sound) { player.unlock(); player.play(id).catch(() => {}); } }
+    else if (e.target.closest(".pl-open") && !S.plHidden[key]) { const at = list.indexOf(it); if (at >= 0) show(at); }
+  });
+  plGrid.addEventListener("change", (e) => {
+    const sel = e.target.closest(".pl-sound select");
+    if (!sel) return;
+    const row = sel.closest(".pl"), key = row.dataset.key, it = rowItem(row);
+    if (sel.value === "auto") delete S.plSound[key]; else S.plSound[key] = +sel.value;
+    assignSounds();
+    save();
+    fillRowIfDrawn(row, it);
+    if (it === list[pos]) { paintNowSong(it); if (playing) { clearTimers(); holdThenAdvance(ticket, Math.max(0, nextAt - performance.now())); playScene(it, ticket); } }
+  });
+  const fillRowIfDrawn = (row, it) => { const art = row.querySelector(".pl-art"); if (art.querySelector("svg")) fillRow(row, it, art); };
+  /* drag to reorder */
+  let dragKey = null;
+  const clearMarks = () => plGrid.querySelectorAll(".drop-before,.drop-after").forEach((r) => r.classList.remove("drop-before", "drop-after"));
+  plGrid.addEventListener("dragstart", (e) => { const row = e.target.closest(".pl"); if (!row || S.shuffle || e.target.closest("select")) { e.preventDefault(); return; } dragKey = row.dataset.key; plDragging = true; row.classList.add("dragging"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", dragKey); });
+  const dropSide = (row, e) => { const b = row.getBoundingClientRect(); return plBox.classList.contains("list") ? e.clientY > b.top + b.height / 2 : e.clientX > b.left + b.width / 2; };
+  plGrid.addEventListener("dragover", (e) => { const row = e.target.closest(".pl"); if (!row || !dragKey) return; e.preventDefault(); clearMarks(); if (row.dataset.key !== dragKey) row.classList.add(dropSide(row, e) ? "drop-after" : "drop-before"); });
+  plGrid.addEventListener("drop", (e) => {
+    const row = e.target.closest(".pl");
+    if (!row || !dragKey) return;
+    e.preventDefault();
+    if (row.dataset.key !== dragKey) { const after = dropSide(row, e); const before = after ? row.nextElementSibling : row; moveKey(dragKey, before ? (before.dataset.key === dragKey ? (before.nextElementSibling ? before.nextElementSibling.dataset.key : null) : before.dataset.key) : null); }
+  });
+  plGrid.addEventListener("dragend", () => { plDragging = false; dragKey = null; clearMarks(); plGrid.querySelectorAll(".dragging").forEach((r) => r.classList.remove("dragging")); });
+  function renderPlaylist() {
+    if (!soundOptions) buildSoundOptions();
+    plThumbs.forEach((t) => t.destroy());
+    plThumbs = [];
+    if (plSeen) plSeen.disconnect();
+    plGrid.innerHTML = full.map((it) => `<div class="pl" data-key="${keyOf(it)}" draggable="${S.shuffle ? "false" : "true"}">
+      <button class="pl-open" type="button" aria-label="Play ${BRAND[it.brand]} logo ${it.id}"><span class="pl-art"></span><span class="pl-name"></span></button>
+      <span class="pl-text"><span class="pl-meta"></span></span><span class="pl-layers"></span>
+      <div class="pl-ctl">
+        <button type="button" class="pl-eye" aria-pressed="true"></button>
+        <span class="pl-move"><button type="button" class="pl-up" aria-label="Move ${BRAND[it.brand]} ${it.id} up" title="Move up">\u2191</button><button type="button" class="pl-down" aria-label="Move ${BRAND[it.brand]} ${it.id} down" title="Move down">\u2193</button></span>
+        <label class="pl-sound"><span>Audio</span><select aria-label="Audio for ${BRAND[it.brand]} ${it.id}">${soundOptions}</select></label>
+        <button type="button" class="pl-preview" aria-label="Preview audio" title="Preview audio">\u25B6</button>
+      </div>
+    </div>`).join("");
+    plGrid.querySelectorAll(".pl").forEach(paintRow);
+    relabel();
+    paintPlView();
+    plSeen = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { plSeen.unobserve(e.target); drawThumb(e.target); } }), { root: plBox, rootMargin: "160px" });
+    plGrid.querySelectorAll(".pl").forEach((b) => plSeen.observe(b));
+    plGrid.scrollTop = 0;
+    paintPlaylist();
+  }
+  function paintPlaylist() {
+    const now = list[pos] ? keyOf(list[pos]) : null;
+    plGrid.querySelectorAll(".pl").forEach((b) => b.setAttribute("aria-current", String(b.dataset.key === now)));
+    if (plBox.classList.contains("open") && !plDragging) { const b = plGrid.querySelector('[aria-current="true"]'); if (b) b.scrollIntoView({ block: "nearest" }); }
+  }
+  /* with a fixed background, black or white lettering is chosen from it directly */
+  const isLightBg = () => S.bg === "#fdf7ee" || S.bg === "#ffffff";
+  const fixedTone = () => (S.bg === "match" ? { tone: "auto" } : { tone: isLightBg() ? "light" : "dark", paper: S.bg });
+  const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+  const stageAnims = () => stage.getAnimations({ subtree: true });
+  const setProgress = () => { fill.style.width = (list.length ? (pos + 1) / list.length * 100 : 0) + "%"; };
+  let pxBlock = 0, pxFit = 1;
+  /* the controls get the same blur, bloom, lines and pixels as the picture, sized for small UI parts */
+  function paintUiFx() {
+    const on = S.uiShader, dark = !document.body.classList.contains("light"), body = document.body, scan = $("#uiscan");
+    body.classList.toggle("uifx", on);
+    scan.style.display = on && S.lines ? "block" : "none";
+    scan.style.setProperty("--lines", S.linesAmt);
+    scan.style.setProperty("--ls", pxFit);
+    scan.style.filter = S.linesBlur ? `blur(${S.linesBlur}px)` : "none";
+    const hud = S.uiHud, txt = S.uiText;
+    let prims = `<feGaussianBlur in="SourceGraphic" stdDeviation="${S.blur ? 0.35 * S.blurAmt * hud : 0}" result="s0"/><feComponentTransfer in="s0" result="soft"><feFuncA type="gamma" amplitude="1" exponent="${S.blur ? S.blurCurve : 1}" offset="0"/></feComponentTransfer>`, nodes = "";
+    if (S.bloom) [[2.6, 0.5], [1, 0.65], [0.35, 0.6]].forEach(([f, w], i) => {
+      prims += `<feGaussianBlur in="SourceGraphic" stdDeviation="${(6 * S.bloomSize * Math.sqrt(hud) * f).toFixed(2)}" result="w${i}"/><feComponentTransfer in="w${i}" result="h${i}"><feFuncA type="gamma" amplitude="${((dark ? 0.95 : 0.55) * S.bloomAmt * Math.min(1.5, hud) * w).toFixed(3)}" exponent="${S.bloomCurve}" offset="0"/></feComponentTransfer>`;
+      nodes += `<feMergeNode in="h${i}"/>`;
+    });
+    $("#uifx").innerHTML = `${prims}<feMerge>${nodes}<feMergeNode in="soft"/></feMerge>`;
+    const parts = [];
+    if ((S.blur || S.bloom) && hud > 0) parts.push("url(#uifx)");
+    if (pxBlock) parts.push("url(#pxf)");
+    document.documentElement.style.setProperty("--uifx", parts.join(" ") || "none");
+    body.classList.toggle("uiglow", on && (S.blur || S.bloom));
+    document.documentElement.style.setProperty("--uiblur", S.blur ? (0.25 * S.blurAmt * txt).toFixed(2) + "px" : "0px");
+    document.documentElement.style.setProperty("--uibloom", S.bloom ? (S.bloomAmt * S.bloomSize * txt).toFixed(2) : "0");
+    document.documentElement.style.setProperty("--uihud", S.bloom ? (S.bloomAmt * S.bloomSize * hud).toFixed(2) : "0");
+    document.documentElement.style.setProperty("--uihudblur", S.blur ? (0.6 * S.blurAmt * hud).toFixed(2) + "px" : "0px");
+    const windowBlur = S.blur ? `blur(${(0.6 * S.blurAmt * hud).toFixed(2)}px)` : "none";
+    body.classList.toggle("uimodal", on && S.uiModals);
+    body.classList.toggle("uilines", !!S.lines);
+    document.documentElement.style.setProperty("--modalfx", windowBlur);
+    document.documentElement.style.setProperty("--lines", S.linesAmt);
+    document.documentElement.style.setProperty("--demofx", S.blur ? `blur(${(0.6 * S.blurAmt).toFixed(2)}px)` : "none");
+    document.documentElement.style.setProperty("--uihuda", Math.min(0.8, 0.35 * hud).toFixed(2));
+  }
+  const crtNow = () => ({ blur: S.blur ? S.blurAmt : 0, bloom: S.bloom ? S.bloomAmt : 0, blurCurve: S.blurCurve, bloomCurve: S.bloomCurve, bloomSize: S.bloomSize });
+  const starCanvas = $("#stars"), stars = K.createStarfield(starCanvas);
+  const STAR_SETS = { white: ["#ffffff"], ice: ["#ffffff", "#cfe4ff", "#8fb8ff"], ember: ["#ffe2b0", "#ffb35c", "#ff7d5c"] };
+  const COLOR_NAMES = { logo: "logo colors", rainbow: "rainbow", white: "white", ice: "ice", ember: "ember" };
+  /* The reel decides each logo's stars from its id, so a logo always gets the same look. Some have none. */
+  function reelStars(item) {
+    let h = 7;
+    for (const ch of item.brand + item.id) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    const pick = (a) => { h = (Math.imul(h, 1664525) + 1013904223) >>> 0; return a[(h >>> 16) % a.length]; };
+    if (pick([0, 1]) === 0) return null;
+    return { trail: pick([0.5, 1, 2, 4, 8]), speed: pick([0.4, 0.7, 1, 1.4, 2]), density: pick([0.4, 0.7, 1, 1.4]), colors: pick(["logo", "logo", "rainbow", "white", "ice", "ember"]) };
+  }
+  /* The backdrop has the say first: space always has stars, white and black stay clean, and period colours follow the logo's plan. */
+  function starsFor(item, bgHex) {
+    const c = rgbOf(bgHex) || [10, 26, 64];
+    if (bgHex === "#05060f") return reelStars(item) || { trail: 1, speed: 0.7, density: 1, colors: "white" };
+    if (bgHex === "#000000" || lumOf(c) > 0.4) return null;
+    return reelStars(item);
+  }
+  /* the logo's own bright colors, read from what's on the stage, lifted so dark ones still show against the background */
+  function logoStarColors() {
+    const out = new Set();
+    stage.querySelectorAll("[fill]").forEach((e) => {
+      const m = /^#([\da-f]{2})([\da-f]{2})([\da-f]{2})/i.exec(e.getAttribute("fill") || "");
+      if (!m) return;
+      const c = [1, 2, 3].map((i) => parseInt(m[i], 16)), hi = Math.max(...c);
+      if (hi - Math.min(...c) < 60) return;
+      const t = hi < 190 ? 0.4 : 0;
+      out.add(`rgb(${c.map((v) => Math.round(v + (255 - v) * t)).join(",")})`);
+    });
+    return out.size ? [...out] : ["#ffffff"];
+  }
+  const rigNow = () => ({ fps: S.fps, on: S.parallax, split: S.pxSplit, camera: S.pxCamera, depth: S.pxDepth, speed: S.pxSpeed });
+  const rig = K.createParallax(stage, rigNow());
+  const clock = K.createFrameClock(stage);
+  const paintSize = () => document.documentElement.style.setProperty("--logo", S.logoSize);
+  /* Join Waitlist: position, shape and type never change. Each logo picks a background style and takes its colours from the logo and backdrop. */
+  const waitlist = $("#waitlist");
+  let curBg = "#0a1a40", toggleSound = () => {};
+  const lumOf = (c) => { const f = c.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * f[0] + 0.7152 * f[1] + 0.0722 * f[2]; };
+  const rgbOf = (h) => { const m = /^#?([\da-f]{2})([\da-f]{2})([\da-f]{2})/i.exec(h || ""); return m ? [1, 2, 3].map((i) => parseInt(m[i], 16)) : null; };
+  const contrast = (a, b) => { const x = lumOf(a), y = lumOf(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  const readable = (bg) => (contrast([255, 255, 255], bg) >= contrast([11, 11, 16], bg) ? "#ffffff" : "#0b0b10");
+  const hexOf = (c) => "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
+  function waitlistStyleOf(item) {
+    let h = 7;
+    for (const ch of item.brand + item.id) h = (Math.imul(h, 31) + ch.charCodeAt(0)) >>> 0;
+    return ["solid", "outline", "gradient", "glass"][(h >>> 3) % 4];
+  }
+  function paintWaitlist(item) {
+    const bgCol = rgbOf(S.bg === "match" ? (item.brand === "k" && inst && inst.backdrop) || curBg : S.bg) || [10, 26, 64];
+    const seen = new Map();
+    stage.querySelectorAll("[fill]").forEach((e) => {
+      const c = rgbOf(e.getAttribute("fill"));
+      if (!c || Math.max(...c) - Math.min(...c) < 60) return;
+      const k = hexOf(c.map((v) => v & 0xe0)), got = seen.get(k);
+      seen.set(k, { c: got ? got.c : c, n: (got ? got.n : 0) + 1 });
+    });
+    const cols = [...seen.values()].sort((a, b) => b.n - a.n).map((x) => x.c).filter((c) => contrast(c, bgCol) >= 1.6);
+    const ink = rgbOf(readable(bgCol)), a = cols[0] || ink, b = cols[1] || a;
+    const style = waitlistStyleOf(item), s = waitlist.style;
+    s.backgroundImage = "none"; s.borderColor = "transparent";
+    if (style === "solid") { s.backgroundColor = hexOf(a); s.color = readable(a); }
+    else if (style === "outline") { s.backgroundColor = "transparent"; s.borderColor = contrast(a, bgCol) >= 3 ? hexOf(a) : hexOf(ink); s.color = hexOf(ink); }
+    else if (style === "gradient") { s.backgroundColor = hexOf(a); s.backgroundImage = `linear-gradient(90deg, ${hexOf(a)}, ${hexOf(b)})`; s.color = readable(a); }
+    else { s.backgroundColor = lumOf(bgCol) < 0.18 ? "rgba(255,255,255,.16)" : "rgba(0,0,0,.08)"; s.color = hexOf(ink); }
+    waitlist.dataset.style = style;
+    /* the pill stays quiet: the scene's ink on a faint wash of it */
+    const pill = $("#soon").style, wash = lumOf(bgCol) < 0.18 ? "rgba(255,255,255,.14)" : "rgba(0,0,0,.08)";
+    pill.color = hexOf(ink); pill.backgroundColor = wash;
+    document.querySelectorAll(".rail-btn").forEach((b) => { b.style.color = hexOf(ink); b.style.backgroundColor = wash; });
+  }
+  let starT = 0, curPlan = null;
+  function applyStars() {
+    const item = list[pos];
+    const plan = S.starMode === "off" ? null : S.starMode === "override" ? { trail: S.starTrail, speed: S.starSpeed, density: S.starDensity, colors: S.starColors } : starsFor(item, curBg);
+    $("#star-now").textContent = S.starMode === "off" ? "No stars on any logo." : !plan ? "This logo: no stars." : `${S.starMode === "override" ? "Every logo" : "This logo"}: trail ${plan.trail}, speed ${plan.speed}, density ${plan.density}, ${COLOR_NAMES[plan.colors]}.`;
+    curPlan = plan;
+    clearTimeout(starT);
+    if (!plan) { starCanvas.style.opacity = 0; starT = setTimeout(() => stars.stop(), 300); return; }
+    const colors = plan.colors === "logo" ? logoStarColors() : plan.colors === "rainbow" ? null : STAR_SETS[plan.colors];
+    stars.set({ fps: S.fps, trail: plan.trail, speed: plan.speed, density: plan.density, colors, rainbow: plan.colors === "rainbow" });
+    stars.start();
+    starCanvas.style.opacity = 1;
+  }
+  const backdrop = $("#backdrop");
+  const applyBg = () => {
+    const fixed = S.bg === "match" ? "#0a1a40" : S.bg;
+    document.documentElement.style.setProperty("--bg", fixed);
+    if (S.bg !== "match") curBg = S.bg;
+    document.body.classList.toggle("light", lumOf(rgbOf(curBg) || [10, 26, 64]) > 0.4);
+    if (S.bg !== "match") backdrop.style.backgroundColor = "";
+    $("#scan").style.display = S.lines && !S.uiShader ? "block" : "none";
+    paintUiFx();
+    $("#scan").style.setProperty("--lines", S.linesAmt);
+    $("#scan").style.filter = S.linesBlur ? `blur(${S.linesBlur}px)` : "none";
+  };
+
+  function remove() {
+    clearTimers();
+    if (inst) { inst.destroy(); inst = null; }
+    stage.innerHTML = "";
+    stage.style.opacity = 1;
+  }
+  /* the meter runs from the start of a logo to the moment the next one begins */
+  const meterFill = $("#meter-fill"), meterText = $("#meter-text");
+  let nextAt = 0, nextTotal = 0, nextLeft = null, meterRaf = 0;
+  function paintMeter(left, total) {
+    meterFill.style.transform = `scaleX(${total ? 1 - left / total : 0})`;
+    meterText.textContent = (left / 1000).toFixed(1) + " s";
+  }
+  function runMeter() {
+    cancelAnimationFrame(meterRaf);
+    const f = () => { paintMeter(Math.max(0, nextAt - performance.now()), nextTotal); meterRaf = requestAnimationFrame(f); };
+    f();
+  }
+  function paintNowSong(item) {
+    const el = caption.querySelector(".now-song");
+    if (el) el.textContent = !S.sound ? "Sound off" : sceneSound.get(item) ? `Now playing: ${K.soundName(sceneSound.get(item))}` : "No audio on this logo";
+  }
+  /* Starting a sound fades the last one out, which is the crossfade. A logo held past its clip crossfades into the clip again before it ends. */
+  const SCENE_RETRIGGER = 7500;
+  function playScene(item, t) {
+    if (!S.sound) return;
+    const id = sceneSound.get(item);
+    if (!id) { player.release(); return; }
+    player.play(id).catch(() => {});
+    /* only the long ambient clips loop; a short jingle plays once */
+    if (K.soundIds.includes(id)) timers.push(setTimeout(() => { if (t === ticket && playing) playScene(item, t); }, SCENE_RETRIGGER));
+  }
+  function holdThenAdvance(t, left) {
+    /* wait out the whole reveal, hold on the finished logo, then a plain fade to the next one. left resumes a paused wait. */
+    const ends = stageAnims().map((a) => { const c = a.effect.getTiming(); return Math.max(0, c.delay + c.duration - (a.currentTime || 0)); });
+    const reveal = ends.length ? Math.max(...ends) : 0;
+    const wait = left != null ? left : reveal + S.hold * 1000;
+    if (left == null) nextTotal = wait;
+    nextAt = performance.now() + wait;
+    nextLeft = null;
+    runMeter();
+    timers.push(setTimeout(() => {
+      if (t !== ticket) return;
+      const fade = stage.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: "linear", fill: "forwards" });
+      fade.finished.then(() => { fade.cancel(); if (t === ticket) advance(1, true); }).catch(() => {});
+    }, wait));
+  }
+  function show(i) {
+    const t = ++ticket;
+    ended = false; frozen = []; paintPlay();
+    cancelAnimationFrame(meterRaf); nextLeft = null; nextTotal = 0; paintMeter(0, 0); meterText.textContent = "";
+    remove();
+    pos = (i + list.length) % list.length;
+    const item = list[pos];
+    caption.innerHTML = `<b>${BRAND[item.brand]}</b> · logo ${item.id}<span class="now-song"></span>`;
+    paintNowSong(item);
+    stage.setAttribute("aria-label", `${BRAND[item.brand]} logo ${item.id}`);
+    countEl.textContent = `${pos + 1} / ${list.length}`;
+    paintPlaylist();
+    setProgress();
+    const started = () => {
+      if (t !== ticket) return;
+      if (S.bg !== "match") curBg = S.bg; else if (item.brand === "k" && inst && inst.backdrop) curBg = inst.backdrop;
+      document.body.classList.toggle("light", lumOf(rgbOf(curBg) || [10, 26, 64]) > 0.4);
+      paintUiFx();
+      applyStars();
+      paintWaitlist(item);
+      K.addLogoTrails(stage, S);
+      rig.attach();
+      K.addLogoGlints(stage, S);
+      rig.pause(!playing);
+      clock.setHold(!playing);
+      if (playing) playScene(item, t);
+      /* stepping while paused shows the finished logo instead of an empty frame */
+      if (playing) holdThenAdvance(t); else stageAnims().forEach((a) => { try { a.finish(); } catch { a.pause(); } });
+    };
+    if (item.brand === "k") {
+      inst = K.mount(stage, { ...fixedTone(), id: item.id, crt: crtNow(), sound: false, soundButton: false, matchBg: S.bg === "match", backdropEl: backdrop, onReady: started });
+    } else {
+      const color = S.bg === "match" ? REEL[item.brand].backdrop(item.id) : S.bg;
+      curBg = color;
+      if (S.bg === "match") backdrop.style.backgroundColor = color;
+      inst = REEL[item.brand].mount(stage, item.id, { bg: color, crt: crtNow() });
+      started();
+    }
+    /* get the next Kosmographica logo ready so it starts on time */
+    const nxt = list[(pos + 1) % list.length];
+    if (nxt && nxt.brand === "k") fetch(`../logo-loader/logos/${encodeURIComponent(nxt.id)}.json`).catch(() => {});
+  }
+  function advance(d, auto) {
+    if (auto && d > 0 && pos === list.length - 1 && !S.loop) { playing = false; ended = true; paintPlay(); cancelAnimationFrame(meterRaf); meterText.textContent = "End"; return; }
+    show(pos + d);
+  }
+  function setPlaying(on) {
+    if (on && ended) { playing = true; show(0); return; }
+    playing = on;
+    rig.pause(!on);
+    clock.setHold(!on);
+    paintPlay();
+    if (on) {
+      frozen.forEach((a) => a.play());
+      frozen = [];
+      clearTimers();
+      const t = ticket;
+      holdThenAdvance(t, nextLeft);
+      playScene(list[pos], t);
+    } else {
+      clearTimers();
+      cancelAnimationFrame(meterRaf);
+      if (nextTotal) nextLeft = Math.max(0, nextAt - performance.now());
+      frozen = stageAnims().filter((a) => a.playState === "running");
+      frozen.forEach((a) => a.pause());
+      player.release();
+    }
+  }
+  const unlock = () => { if (!unlocked) { unlocked = true; player.unlock(); } };
+  addEventListener("pointerdown", unlock, true);
+  addEventListener("keydown", unlock, true);
+
+  const fsToggle = () => { if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); else if (reel.requestFullscreen) reel.requestFullscreen().catch(() => {}); };
+  const listBtn = $('[data-a="playlist"]');
+  const listOpen = (on) => { plBox.classList.toggle("open", on); listBtn.setAttribute("aria-expanded", String(on)); if (on) { pop.classList.remove("open"); setBtn.setAttribute("aria-expanded", "false"); paintPlaylist(); } };
+  const popOpen = (on) => { pop.classList.toggle("open", on); setBtn.setAttribute("aria-expanded", String(on)); if (on) { plBox.classList.remove("open"); listBtn.setAttribute("aria-expanded", "false"); } };
+  const paintRandom = () => randBtn.setAttribute("aria-pressed", String(S.shuffle));
+  function toggleRandom() {
+    S.shuffle = !S.shuffle; save(); paintRandom();
+    const at = list[pos];
+    buildList();
+    if (S.shuffle) show(0); else show(Math.max(0, list.findIndex((x) => x.brand === at.brand && x.id === at.id)));
+  }
+  const actions = { prev: () => show(pos - 1), next: () => show(pos + 1), play: () => setPlaying(!playing), plview: () => { S.plView = S.plView === "list" ? "grid" : "list"; save(); paintPlView(); paintPlaylist(); }, plexport: () => exportColors(), plshowall: () => { S.plHidden = {}; playlistChanged(); }, plreset: () => { S.plOrder = []; playlistChanged(); }, random: toggleRandom, sound: () => toggleSound(), playlist: () => listOpen(!plBox.classList.contains("open")), settings: () => popOpen(!pop.classList.contains("open")), fs: fsToggle, bare: () => { popOpen(false); listOpen(false); reel.classList.toggle("bare"); } };
+  $("#bar").addEventListener("click", (e) => { if (e.target.closest(".pl")) return; const b = e.target.closest("[data-a]"); if (b) actions[b.dataset.a](); });
+  $("#screen").addEventListener("click", () => { popOpen(false); listOpen(false); if (reel.classList.contains("bare")) reel.classList.remove("bare"); });
+  const bindCheck = (id, fn) => { const c = $("#" + id); c.checked = S[id]; c.addEventListener("change", () => { S[id] = c.checked; save(); fn(c.checked); }); };
+  /* stars take the main controls: the same blur, and bloom from the same strength, size and curve */
+  const starBlur = () => (S.blur ? `blur(${(0.6 * S.blurAmt).toFixed(2)}px)` : "");
+  const paintStarsFx = () => { starCanvas.style.filter = starBlur() || "none"; stars.set({ glow: S.bloom ? S.bloomAmt * S.bloomSize : 0, glowCurve: S.bloomCurve }); };
+  const crtChanged = () => { if (inst) inst.setCrt(crtNow()); applyBg(); paintCrtBtn(); paintStarsFx(); };
+  paintStarsFx();
+  const crtBtn = $("#crt-btn");
+  const paintCrtBtn = () => { const on = [S.blur, S.bloom, S.lines].filter(Boolean).length; crtBtn.textContent = `CRT (${on} of 3 on)`; };
+  bindCheck("uiShader", crtChanged);
+  bindCheck("uiModals", crtChanged);
+  ["uiText", "uiHud"].forEach((k) => { const r = $("#" + k); r.value = S[k]; r.addEventListener("input", () => { S[k] = +r.value; save(); paintUiFx(); }); });
+  ["blur", "bloom", "lines"].forEach((k) => {
+    bindCheck(k, crtChanged);
+    const r = $("#" + k + "Amt");
+    r.value = S[k + "Amt"];
+    r.addEventListener("input", () => { S[k + "Amt"] = +r.value; if (!S[k]) { S[k] = true; $("#" + k).checked = true; } save(); crtChanged(); });
+  });
+  [["blurCurve", "blurPad"], ["bloomCurve", "bloomPad"], ["bloomSize", null]].forEach(([k, pad]) => {
+    const r = $("#" + k);
+    r.value = S[k];
+    r.addEventListener("input", () => { S[k] = +r.value; save(); crtChanged(); });
+    if (pad) K.createCurvePad($("#" + pad), r);
+  });
+  const linesBlur = $("#linesBlur");
+  linesBlur.value = S.linesBlur;
+  linesBlur.addEventListener("input", () => { S.linesBlur = +linesBlur.value; if (!S.lines) { S.lines = true; $("#lines").checked = true; } save(); crtChanged(); });
+  paintCrtBtn();
+  bindCheck("loop", () => {});
+  paintRandom();
+  /* sound */
+  const sndBtn = $('[data-a="sound"]'), vol = $("#volume");
+  const paintSound = () => { const on = S.sound; sndBtn.querySelector("use").setAttribute("href", on ? "#i-sound" : "#i-mute"); sndBtn.setAttribute("aria-label", on ? "Turn sound off" : "Turn sound on");
+    const rs = $("#rail-sound"); rs.querySelector("use").setAttribute("href", on ? "#i-sound" : "#i-mute"); rs.querySelector("span").textContent = on ? "Sound On" : "Sound Off"; rs.setAttribute("aria-label", on ? "Sound on. Turn off" : "Sound off. Turn on"); rs.setAttribute("aria-pressed", String(on)); };
+  toggleSound = () => { S.sound = !S.sound; save(); if (S.sound) { player.unlock(); if (playing) playScene(list[pos], ticket); } else player.mute(); paintSound(); paintNowSong(list[pos]); };
+  vol.value = S.volume;
+  player.setVolume(S.volume);
+  vol.addEventListener("input", () => { S.volume = +vol.value; player.setVolume(S.volume); if (!S.sound && S.volume > 0) toggleSound(); save(); });
+  paintSound();
+  /* a simulated screen: the picture is laid out at the chosen size, scaled to fit, and shown in blocks of real pixels */
+  const screen = $("#screen"), vp = $("#vp"), pixel = $("#pixel"), resSel = $("#res"), resNote = $("#res-note");
+  function applyRes() {
+    const W = S.resW, H = S.resH, sw = screen.clientWidth, sh = screen.clientHeight;
+    if (!W || !H) { vp.style.cssText = ""; pixel.style.filter = "none"; resNote.hidden = true; pxBlock = 0; pxFit = 1; paintUiFx(); return; }
+    const fit = Math.min(sw / W, sh / H), block = fit >= 1.5 ? Math.round(fit) : 0;
+    vp.style.width = W + "px"; vp.style.height = H + "px";
+    vp.style.transform = `translate(${(sw - W * fit) / 2}px,${(sh - H * fit) / 2}px) scale(${fit})`;
+    if (block) {
+      $("#pxf").innerHTML = `<feFlood x="${Math.floor(block / 2)}" y="${Math.floor(block / 2)}" width="1" height="1"/><feComposite width="${block}" height="${block}"/><feTile result="dots"/><feComposite in="SourceGraphic" in2="dots" operator="in"/><feMorphology operator="dilate" radius="${Math.ceil((block - 1) / 2)}"/>`;
+      pixel.style.filter = "url(#pxf)";
+    } else pixel.style.filter = "none";
+    pxBlock = block; pxFit = Math.max(1, fit); paintUiFx();
+    resNote.hidden = false;
+    resNote.textContent = fit < 1 ? `${W} × ${H} is larger than this window, so it is shrunk to fit and shows no pixels.` : `${W} × ${H}, shown at ${fit.toFixed(1)}×${block ? ` with ${block}-pixel blocks` : ""}.`;
+  }
+  const known = [...resSel.options].some((x) => x.value === `${S.resW}x${S.resH}`);
+  resSel.value = known ? `${S.resW}x${S.resH}` : "custom";
+  const resW = $("#resW"), resH = $("#resH"), resCustom = $("#res-custom");
+  resW.value = S.resW || 640; resH.value = S.resH || 480; resCustom.hidden = resSel.value !== "custom";
+  resSel.addEventListener("change", () => {
+    resCustom.hidden = resSel.value !== "custom";
+    const [w, h] = resSel.value === "custom" ? [+resW.value, +resH.value] : resSel.value.split("x").map(Number);
+    S.resW = w; S.resH = h; save(); applyRes();
+  });
+  [resW, resH].forEach((c) => c.addEventListener("change", () => { S.resW = Math.max(16, +resW.value || 16); S.resH = Math.max(16, +resH.value || 16); save(); applyRes(); }));
+  if ("ResizeObserver" in window) new ResizeObserver(applyRes).observe(screen);
+  applyRes();
+  /* the SpaceRadio mark stays in the top left through every scene, drawn finished */
+  const brandEl = $("#brandmark");
+  SR.mount(brandEl, 26, { bg: "#000000", crt: false });
+  brandEl.getAnimations({ subtree: true }).forEach((a) => { try { a.finish(); } catch { a.cancel(); } });
+  const paintBrand = () => { brandEl.style.display = S.showBrand ? "" : "none"; };
+  bindCheck("showBrand", paintBrand);
+  paintBrand();
+  const paintWaitlistShown = () => { waitlist.style.display = $("#soon").style.display = $("#rail-left").style.display = S.showWaitlist ? "" : "none"; };
+  /* Demo: kosmographica.com inside a modal, under the blur and lines. The reel pauses behind it and picks up on close. */
+  const demo = $("#demo"), demoFrame = $("#demo-frame");
+  let resumeAfterDemo = false;
+  $("#rail-demo").addEventListener("click", (e) => { e.preventDefault(); resumeAfterDemo = playing; if (playing) setPlaying(false); demoFrame.src = "https://kosmographica.com"; demo.showModal(); $("#demo-close").focus(); });
+  $("#demo-close").addEventListener("click", () => demo.close());
+  demo.addEventListener("close", () => { demoFrame.removeAttribute("src"); if (resumeAfterDemo) setPlaying(true); });
+  $("#rail-sound").addEventListener("click", () => toggleSound());
+  /* Waitlist modal. No server yet: signups stay in this browser under "waitlist-signups" and go out as a "waitlist-signup" event to connect later. */
+  const join = $("#join"), joinForm = $("#join-form"), joinDone = $("#join-done"), joinErr = $("#join-error");
+  const openJoin = () => { joinForm.hidden = false; joinDone.hidden = true; joinErr.hidden = true; joinForm.reset(); join.showModal(); $("#join-name").focus(); };
+  waitlist.addEventListener("click", openJoin);
+  $("#join-cancel").addEventListener("click", () => join.close());
+  $("#join-close").addEventListener("click", () => join.close());
+  join.addEventListener("click", (e) => { if (e.target === join) join.close(); });
+  joinForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = $("#join-name").value.trim(), email = $("#join-email").value.trim();
+    const fail = (msg, el) => { joinErr.textContent = msg; joinErr.hidden = false; el.focus(); };
+    if (!name) return fail("Please add your name.", $("#join-name"));
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail("Please add a valid email address.", $("#join-email"));
+    const entry = { name, email, at: new Date().toISOString() };
+    try { const all = JSON.parse(localStorage.getItem("waitlist-signups") || "[]"); all.push(entry); localStorage.setItem("waitlist-signups", JSON.stringify(all)); } catch { /* the event below still fires */ }
+    window.dispatchEvent(new CustomEvent("waitlist-signup", { detail: entry }));
+    joinForm.hidden = true; joinDone.hidden = false;
+    $("#join-close").focus();
+  });
+  bindCheck("showWaitlist", paintWaitlistShown);
+  paintWaitlistShown();
+  /* effects are built when a logo starts, so a change replays the current logo */
+  ["shimmer", "rainbow", "shimOnce", "pulse", "pulseWhite", "trail", "introTrail"].forEach((k) => bindCheck(k, () => show(pos)));
+  ["shimAmt", "shimAt", "shimEvery", "pulseAmt", "pulseTime", "trailN", "trailLen", "trailAngle", "trailDecay", "ptN", "ptLag"].forEach((k) => {
+    const c = $("#" + k);
+    c.value = S[k];
+    c.addEventListener("input", () => { S[k] = +c.value; save(); });
+    c.addEventListener("change", () => show(pos));
+  });
+  const fpsSel = $("#fps");
+  fpsSel.value = String(S.fps);
+  const applyFps = () => { clock.set(S.fps); rig.set(rigNow()); stars.set({ fps: S.fps }); };
+  fpsSel.addEventListener("change", () => { S.fps = +fpsSel.value; save(); applyFps(); });
+  applyFps();
+  /* ---- sound reactive: what is playing now drives the picture ----
+     Ambient clips hold a nearly steady level, so each band is measured against its own recent range: a small swell still moves things.
+     A minimum range keeps near-silent bands from turning noise into flicker, and bloom only re-renders when it changes by a visible step. */
+  let lastBloom = null, reactRaf = 0, reactLast = 0;
+  const bands = { all: { lo: 1, hi: 0, out: 0 }, low: { lo: 1, hi: 0, out: 0 }, high: { lo: 1, hi: 0, out: 0 } };
+  const follow = (name, v) => {
+    const b = bands[name];
+    b.lo = v < b.lo ? v : b.lo + (v - b.lo) * 0.004;
+    b.hi = v > b.hi ? v : b.hi + (v - b.hi) * 0.004;
+    const target = v < 0.01 ? 0 : Math.min(1, Math.max(0, (v - b.lo) / Math.max(0.06, b.hi - b.lo)));
+    b.out += (target - b.out) * 0.18;
+    return b.out;
+  };
+  function reactApply(raw) {
+    const all = follow("all", raw.all), low = follow("low", raw.low), high = follow("high", raw.high);
+    if (inst && S.bloom && S.reactGlow > 0) {
+      const b = Math.round(S.bloomAmt * (1 + all * 1.2 * S.reactGlow) * 25) / 25;
+      if (b !== lastBloom) { lastBloom = b; inst.setCrt({ ...crtNow(), bloom: b }); }
+    }
+    stage.style.transform = S.reactCam > 0 ? `scale(${(1 + low * 0.035 * S.reactCam).toFixed(4)})` : "";
+    if (S.parallax) rig.set({ ...rigNow(), depth: S.pxDepth * (1 + low * S.reactCam) });
+    stage.querySelectorAll(".lgshim").forEach((g) => g.setAttribute("opacity", Math.min(1, S.shimAmt * (0.6 + 0.8 * high * S.reactGlow)).toFixed(3)));
+    if (curPlan) {
+      stars.set({ speed: curPlan.speed * (1 + all * 1.5 * S.reactStars), trail: curPlan.trail * (1 + all * S.reactStars) });
+      starCanvas.style.filter = `${starBlur()} brightness(${(1 + high * S.reactStars).toFixed(2)})`.trim();
+    }
+    return { all, low, high };
+  }
+  function reactReset() {
+    lastBloom = null;
+    stage.style.transform = "";
+    if (inst) inst.setCrt(crtNow());
+    if (S.parallax) rig.set(rigNow());
+    if (curPlan) stars.set({ speed: curPlan.speed, trail: curPlan.trail });
+    paintStarsFx();
+  }
+  function reactLoop(now) {
+    reactRaf = requestAnimationFrame(reactLoop);
+    if (now - reactLast < 33) return;
+    reactLast = now;
+    reactApply(player.levels());
+  }
+  const paintReactive = () => { cancelAnimationFrame(reactRaf); if (S.reactive) reactRaf = requestAnimationFrame(reactLoop); else reactReset(); };
+  bindCheck("reactive", paintReactive);
+  ["reactGlow", "reactCam", "reactStars"].forEach((k) => { const r = $("#" + k); r.value = S[k]; r.addEventListener("input", () => { S[k] = +r.value; save(); }); });
+  paintReactive();
+  const logoSize = $("#logoSize");
+  logoSize.value = S.logoSize;
+  logoSize.addEventListener("input", () => { S.logoSize = +logoSize.value; save(); paintSize(); });
+  paintSize();
+  bindCheck("parallax", () => { rig.set(rigNow()); });
+  ["pxSplit", "pxCamera", "pxDepth", "pxSpeed"].forEach((k) => {
+    const c = $("#" + k);
+    c.value = S[k];
+    c.addEventListener("input", () => { S[k] = c.type === "range" ? +c.value : c.value; save(); rig.set(rigNow()); });
+  });
+  const starMode = $("#starMode"), starOver = $("#star-over");
+  starMode.value = S.starMode;
+  starOver.disabled = S.starMode !== "override";
+  starMode.addEventListener("change", () => { S.starMode = starMode.value; starOver.disabled = S.starMode !== "override"; save(); applyStars(); });
+  ["starTrail", "starSpeed", "starDensity", "starColors"].forEach((k) => {
+    const c = $("#" + k);
+    c.value = S[k];
+    c.addEventListener("input", () => { S[k] = c.type === "range" ? +c.value : c.value; save(); applyStars(); });
+  });
+  const brand = $("#brand"), bg = $("#bg"), hold = $("#hold");
+  brand.value = S.brand; bg.value = S.bg; hold.value = S.hold;
+  brand.addEventListener("change", () => { S.brand = brand.value; save(); pos = 0; buildList(); show(0); });
+  bg.addEventListener("change", () => { S.bg = bg.value; save(); applyBg(); show(pos); });
+  const paintHold = () => { $("#hold-label").textContent = `Hold ${S.hold} s`; };
+  paintHold();
+  hold.addEventListener("input", () => { S.hold = +hold.value; save(); paintHold(); });
+  addEventListener("keydown", (e) => {
+    if ($("#join").open || $("#demo").open) return;
+    if (e.target.matches && e.target.matches("input,select") && e.target.type !== "checkbox") return;
+    const k = e.key.toLowerCase();
+    /* a control reached by keyboard keeps its own Space */
+    if (k === " " && e.target.closest && e.target.closest("button,summary,input") && e.target.matches(":focus-visible")) return;
+    if (k === "arrowright") { show(pos + 1); e.preventDefault(); }
+    else if (k === "arrowleft") { show(pos - 1); e.preventDefault(); }
+    else if (k === " ") { setPlaying(!playing); e.preventDefault(); }
+    else if (k === "f") fsToggle();
+    else if (k === "h") actions.bare();
+    else if (k === "s") toggleRandom();
+    else if (k === "c") actions.settings();
+    else if (k === "l") actions.playlist();
+    else if (k === "m") toggleSound();
+    else if (k === "escape") { if (plBox.classList.contains("open")) { listOpen(false); listBtn.focus(); } else if (pop.classList.contains("open")) { popOpen(false); setBtn.focus(); } else reel.classList.remove("bare"); }
+  });
+
+  applyBg();
+  buildList();
+  show(0);
+  window.LogoReel = { full: () => full, reactApply, sceneSound: (i) => sceneSound.get(list[i]), starsFor, exportColors, clock, rig, reelStars, list: () => list, pos: () => pos, show, playing: () => playing, state: () => S, setPlaying };
+})();
+</script>
+</body>
+</html>

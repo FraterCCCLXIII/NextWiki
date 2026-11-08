@@ -1,0 +1,101 @@
+{
+ "total": 6,
+ "logos": {
+  "1": {
+   "sheet": "kosmos",
+   "position": 1,
+   "row": 1,
+   "col": 1,
+   "cropBox": [
+    117,
+    34,
+    708,
+    309
+   ],
+   "mode": "flat",
+   "iou": 0.9949,
+   "parts": 8,
+   "exactGeometryParts": 0
+  },
+  "2": {
+   "sheet": "kosmos",
+   "position": 2,
+   "row": 1,
+   "col": 2,
+   "cropBox": [
+    785,
+    61,
+    1419,
+    301
+   ],
+   "mode": "flat",
+   "iou": 0.9887,
+   "parts": 11,
+   "exactGeometryParts": 0
+  },
+  "3": {
+   "sheet": "kosmos",
+   "position": 3,
+   "row": 2,
+   "col": 1,
+   "cropBox": [
+    169,
+    352,
+    654,
+    717
+   ],
+   "mode": "flat",
+   "iou": 0.9916,
+   "parts": 13,
+   "exactGeometryParts": 2
+  },
+  "4": {
+   "sheet": "kosmos",
+   "position": 4,
+   "row": 2,
+   "col": 2,
+   "cropBox": [
+    882,
+    355,
+    1353,
+    717
+   ],
+   "mode": "flat",
+   "iou": 0.9915,
+   "parts": 16,
+   "exactGeometryParts": 6
+  },
+  "5": {
+   "sheet": "kosmos",
+   "position": 5,
+   "row": 3,
+   "col": 1,
+   "cropBox": [
+    113,
+    771,
+    715,
+    984
+   ],
+   "mode": "flat",
+   "iou": 0.9857,
+   "parts": 11,
+   "exactGeometryParts": 4
+  },
+  "6": {
+   "sheet": "kosmos",
+   "position": 6,
+   "row": 3,
+   "col": 2,
+   "cropBox": [
+    801,
+    768,
+    1430,
+    990
+   ],
+   "mode": "flat",
+   "iou": 0.991,
+   "parts": 10,
+   "exactGeometryParts": 0
+  }
+ }
+}

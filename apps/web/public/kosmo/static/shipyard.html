@@ -54,7 +54,33 @@
   #banner { position: absolute; left: 388px; top: 66px; z-index: 4; font-size: 13px; color: var(--muted); text-shadow: 0 1px 6px #000; max-width: 520px; }
   kbd { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; padding: 0 5px; color: var(--text); }
   html.embedded #build, html.embedded #hud, html.embedded #banner { top: 12px; }
-  @media (max-width: 1100px) { #hud { display: none; } #bar { right: 14px; } }
+  @media (max-width: 1100px) { #hud { display: block; } #hud > :not(#vblocks) { display: none; } #banner { display: none; } #bar { right: 14px; } }
+  @media (max-width: 699px) { #hud { width: min(330px, calc(100vw - 28px)); } }
+  #vblocks { margin: 0 0 8px; }
+  #vblocks .vhd { display: flex; align-items: flex-start; gap: 8px; }
+  #vblocks .vstatus { flex: 1; min-width: 0; margin: 0; font-size: 13px; color: #fff; }
+  #vblocks .dic { margin: 0; padding: 2px 6px; line-height: 0; flex: none; }
+  #vblocks .dic svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .15s ease; }
+  #vblocks.closed #vbody { display: none; } #vblocks.closed .dic svg { transform: rotate(-90deg); }
+  #vblocks h2 { margin: 10px 0 4px; }
+  #vblocks .vbr { display: grid; grid-template-columns: 62px 1fr 40px; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin: 3px 0; font-variant-numeric: tabular-nums; }
+  #vblocks .vpc { text-align: right; color: #fff; }
+  #vblocks .vtrk { display: block; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.22); overflow: hidden; }
+  #vblocks .vtrk b { display: block; height: 100%; background: #fff; border-radius: 2px; }
+  .dbar { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; margin: 6px 0 2px; }
+  .dbar button.dic { margin: 0; padding: 4px 7px; line-height: 0; }
+  .dbar button.dic svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .dbar .dname { margin-left: 6px; max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dmenu, .dbanner { margin: 6px 0; padding: 8px 9px; border: 1px solid var(--line); border-radius: 10px; background: rgba(18,22,30,0.88); font-size: 13px; }
+  .dbanner { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+  .dbanner div { flex: 1 0 100%; }
+  .dmenu .dm-h { color: var(--muted); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; margin: 6px 0 3px; }
+  .dmenu .dm-r { display: flex; align-items: center; gap: 6px; }
+  .dmenu .dm-r button:first-child { flex: 1; min-width: 0; text-align: left; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .dmenu button[data-preset] { display: block; width: 100%; text-align: left; margin: 2px 0; }
+  #landingOut { margin-top: 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: rgba(18,22,30,0.7); font-size: 14px; }
+  #labToast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 30; max-width: min(640px, 92vw); padding: 9px 14px; border-radius: 10px; border: 1px solid var(--accent); background: rgba(12,16,24,0.95); color: var(--text); font-size: 13px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  #labToast.on { opacity: 1; }
 </style>
 <script type="importmap">{ "imports": { "three": "./vendor/three-0.160.0/build/three.module.js", "three/addons/": "./vendor/three-0.160.0/examples/jsm/" } }</script>
   <link rel="stylesheet" href="kosmographica.css?v=15">
@@ -75,6 +101,15 @@
   <div class="dim small">Design a vehicle, then fly it: launch, stage, recover the boosters, rendezvous and dock, return and land. Planar physics with real engine data.</div>
   <h2>Start from</h2>
   <select id="preset"></select>
+  <div class="dbar" id="dbar" role="toolbar" aria-label="Design">
+    <button class="dic" id="dSave" title="Save this design in this browser" aria-label="Save design"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v15H5zM8 3v5h7V3M8 21v-6h8v6"/></svg></button>
+    <button class="dic" id="dLoad" title="Load a saved design or a preset" aria-label="Load design"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h6l2 2h10v10H3zM3 11h18"/></svg></button>
+    <button class="dic" id="dShare" title="Copy a link to this design" aria-label="Share design"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button>
+    <button class="dic" id="dExport" title="Download this design as a JSON file" aria-label="Export design as JSON"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 19h16"/></svg></button>
+    <button class="dic" id="dImport" title="Open a design from a JSON file" aria-label="Import design from JSON"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M4 19h16"/></svg></button>
+    <span class="dname dim small" id="dName"></span>
+    <input type="file" id="dFile" accept="application/json,.json" hidden>
+  </div>
   <h2>Mission</h2>
   <div class="grid2 f">
     <div><label>World</label><select id="world"><option value="earth">Earth</option><option value="moon">Moon</option><option value="mars">Mars</option></select></div>
@@ -101,12 +136,22 @@
   <div id="analysis"></div>
   <div style="margin-top:8px"><button id="tune">Tune ascent</button><button id="findReserve">Find landing reserve</button></div>
   <div id="tuneOut" class="small dim"></div>
+  <div id="landingOut" class="small" hidden></div>
 </div>
 
+<div id="labToast" role="status" aria-live="polite"></div>
 <div id="banner">drag · orbit &nbsp; wheel · zoom &nbsp; <kbd>space</kbd> play / pause</div>
 <div id="hud">
   <div class="card f" style="margin:0 0 8px"><label>Scene <select id="sceneMode" aria-label="Scene background"><option value="space">Space &amp; planet</option><option value="black">Black studio</option></select></label></div>
   <div class="card f" style="margin:0 0 8px"><label>Aperture <b id="fstopV">f/8.0</b></label><input type="range" id="fstop" min="1.4" max="22" step="0.1" value="8"><label>Focal length <b id="focalV">35 mm</b></label><input type="range" id="focal" min="14" max="800" step="1" value="35"></div>
+  <section id="vblocks" aria-label="Orbit and vehicle">
+    <div class="vhd"><p class="vstatus" id="vstatus" aria-live="polite"></p><button type="button" class="dic" id="vToggle" aria-expanded="true" aria-controls="vbody" title="Hide orbit and vehicle readouts" aria-label="Hide orbit and vehicle readouts"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
+    <div id="vbody">
+      <h2>Orbit</h2><table class="tele" id="vOrbit"></table>
+      <h2>Vehicle <span class="dim small" style="text-transform:none;letter-spacing:0">(est. = rocket equation)</span></h2><table class="tele" id="vVeh"></table>
+      <div id="vProp"></div>
+    </div>
+  </section>
   <p class="phase serif" id="phase">Ready</p>
   <div id="result" hidden></div>
   <table id="tele"></table>
@@ -139,7 +184,11 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadEngines, notFlyableReason } from './engines.js';
 import { telemetryHTML, createEventLog } from './flight-hud.js';
 import { createFlightStrip } from './flight-strip.js';
+import { telemetryPayload, postTelemetry, statusLine, fmt, orbitFromState, stageDeltaV, attitude, maxQFromSamples, handoffIndex, isHandoffRequest } from './telemetry.js?v=1';
+import { createPlume } from './plume.js?v=1';
 import { createSim, analyze, tuneAscent, planDock, ENGINES, WORLDS, elements, G0, completeStage, runAscent } from './ship-sim.js';
+// designs (save / load / share / JSON), the flown-state hand-off and the landing result coming back: see LAB-STORE.md
+import { designToJSON, designToState, designFromJSON, saveDesign, listDesigns, loadDesign, deleteDesign, saveLast, loadLast, decodeShare, shareURL, readDesignHash, flightSnapshot, normalizeName, saveHandoff, loadLandingResult, LANDING_RESULT_KEY } from './lab-store.js?v=1';
 // the engine table is shared with the Landing Lab; flight-data.json (served from the database) overrides the built-in rows
 // optional real vehicle models (models/spacex/manifest.json); without the files the procedural models below are used
 let GLBM = null; try { GLBM = await import('./vehicle-glb.js?v=1'); const man = await GLBM.loadManifest(); await Promise.all([...Object.values(man.labs?.shipyard || {}).map(id => GLBM.preloadVehicleModel(id)), ...[...new Set(Object.values(GLBM.ENGINE_GLB))].map(id => GLBM.preloadEngineModel(id))]); } catch { GLBM = null; }
@@ -195,6 +244,7 @@ const PRESETS = {
     payload: { mass: 1000, fairing: 0 }, mission: { start: 'pad', orbitAlt: 200e3, dock: false, land: false, stationAlt: 420e3, gLimit: 4.5 } },
 };
 let state = null;
+let designName = '', armedLast = false, lastTimer = 0, shownLanding = null;   // the working design's name; auto-save only after the user has changed something
 const clone = o => JSON.parse(JSON.stringify(o));
 function loadPreset(key) {
   const p = PRESETS[key]; state = { world: p.world, stages: clone(p.stages), payload: clone(p.payload), mission: { kickDeg: 4, kickSpeed: 45, ...clone(p.mission) }, autoKick: true };
@@ -205,7 +255,7 @@ function loadPreset(key) {
 // ---------------- builder UI ----------------
 const ENG_OPTS = Object.entries(ENGINES).filter(([, e]) => !notFlyableReason(e)).map(([k, e]) => `<option value="${k}">${esc(e.name)}</option>`).join('');
 $('preset').innerHTML = Object.entries(PRESETS).map(([k, p]) => `<option value="${k}">${esc(p.label)}</option>`).join('');
-$('preset').onchange = () => { stop(); loadPreset($('preset').value); };
+$('preset').onchange = () => { stop(); setDesignName(''); loadPreset($('preset').value); };
 
 function stageCard(s, i) {
   const n = state.stages.length, top = i === n - 1, L = s.landing, hasCraft = !!s.craft;
@@ -258,16 +308,50 @@ $('stages').addEventListener('input', e => {
   renderAnalysis(); drawPreview();
 });
 $('stages').addEventListener('click', e => {
-  const b = e.target.closest('button[data-act]'); if (!b) return; const i = +b.closest('.card').dataset.i, act = b.dataset.act; stop();
-  if (act === 'tune') { handoff(i); return; }
+  const b = e.target.closest('button[data-act]'); if (!b) return; const i = +b.closest('.card').dataset.i, act = b.dataset.act;
+  if (act === 'tune') { handoff(i); stop(); return; }   // the flown state is read before stop() ends the sim
+  stop();
   if (act === 'del') state.stages.splice(i, 1); if (act === 'up' && i < state.stages.length - 1) [state.stages[i], state.stages[i + 1]] = [state.stages[i + 1], state.stages[i]]; if (act === 'down' && i > 0) [state.stages[i], state.stages[i - 1]] = [state.stages[i - 1], state.stages[i]];
   renderBuilder();
 });
 // hand a landing stage to the Landing Lab (inside the Flight Lab shell via postMessage, standalone via sessionStorage)
+// The Landing Lab models terminal descent.  The Shipyard's booster lights its landing burn high up (near 40 km) and glides on
+// aerodynamics first, which the Landing Lab does not model; a sweep of the real flight lands in the Landing Lab only from below
+// about 5 km.  So a replayed stage is handed over in its landing burn at the first point below this height (see LAB-STORE.md).
+const BURN_PHASE = 'landing', HAND_OVER_ALT = 5000;
+// The state a stage is handed over in.  A craft still in flight is read as it is now.  One that has already come down (the flight was
+// run to its end) is replayed: the sim is deterministic (the timeline scrubber relies on that), so a fresh run of the same mission,
+// stopped at that craft's landing burn, is the same flight.
+function handoffSnapshot(name) {
+  const find = s => s.crafts.find(x => x.role === 'booster' && x.parts[0]?.name === name) || s.crafts.find(x => x.parts[0]?.name === name);
+  const c = find(sim);
+  if (!c) return { snapshot: null, why: 'the stage has not separated in this flight', replayed: false };
+  if (c.alive) return { snapshot: flightSnapshot(sim, c), why: '', replayed: false };
+  if (!mission) return { snapshot: null, why: 'there is no flight to replay', replayed: false };
+  const probe = createSim(clone(mission));
+  for (let guard = 0; !probe.done && guard < 20000; guard++) {
+    probe.advance(1, 400000);
+    const p = find(probe);
+    if (p && p.ap.phase === BURN_PHASE && probe.env(p).h <= HAND_OVER_ALT) return { snapshot: flightSnapshot(probe, p), why: '', replayed: true };
+  }
+  return { snapshot: null, why: `no landing burn below ${HAND_OVER_ALT / 1e3} km was found in a replay of the flight`, replayed: false };
+}
+// The message carries the design stage (as before) and, when the stage has flown in this sim, the flown state of its craft at this moment.
 function handoff(i) {
-  const msg = { type: 'flightlab:landing', stage: clone(state.stages[i]), world: state.world };
-  if (parent !== window) parent.postMessage(msg, location.origin);
-  else { try { sessionStorage.setItem('flightlab.handoff', JSON.stringify(msg)); } catch {} location.href = 'landing-lab.html?handoff=1'; }
+  const st = state.stages[i];
+  let snapshot = null, why = '', replayed = false;
+  if (sim) { try { ({ snapshot, why, replayed } = handoffSnapshot(st.name)); } catch (e) { why = errText(e); } }
+  const msg = { type: 'flightlab:landing', stage: clone(st), world: state.world, snapshot };
+  if (parent !== window) {
+    parent.postMessage(msg, location.origin);
+    notify(snapshot
+      ? `Handed the flown ${st.name} to the Landing Lab: ${Math.round(snapshot.speed)} m/s at ${(snapshot.alt / 1e3).toFixed(1)} km, T+${fmtT(snapshot.t)}${replayed ? ' (replayed to its landing burn)' : ''}`
+      : `${st.name} has not flown in this sim yet, so the Landing Lab gets the design values${why ? ` (${why})` : ''}. Fly the ascent to its separation first.`, 7000);
+  } else {
+    try { sessionStorage.setItem('flightlab.handoff', JSON.stringify(msg)); } catch {}
+    saveHandoff(msg);
+    location.href = 'landing-lab.html?handoff=1';
+  }
 }
 $('addStage').onclick = () => { stop(); state.stages.push({ name: `Stage ${state.stages.length + 1}`, engine: 'merlin-vac', count: 1, prop: 20000, diameter: state.stages.at(-1)?.diameter ?? 3.7, landing: { mode: 'none', reserve: 0, site: 'downrange', engines: 1 } }); renderBuilder(); };
 for (const [id, fn] of Object.entries({
@@ -285,6 +369,7 @@ function buildCfg() { const c = { world: state.world, stages: clone(state.stages
 // ---------------- analysis ----------------
 const NEED = { earth: 9400, moon: 1900, mars: 4100 };
 function renderAnalysis() {
+  scheduleLastSave();
   let a; try { a = analyze(buildCfg()); } catch (e) { $('analysis').innerHTML = `<div class="warn">${esc(e.message)}</div>`; return; }
   const W = WORLDS[state.world], g = W.mu / (W.R * W.R), warns = [];
   const rows = a.stages.map((s, i) => `<tr><td>${esc(s.name)}</td><td>${(s.dry / 1e3).toFixed(1)}</td><td>${(s.prop / 1e3).toFixed(1)}</td><td>${(s.dv / 1e3).toFixed(2)}</td><td>${s.twrSL.toFixed(2)}</td><td>${s.burn.toFixed(0)} s</td></tr>`).join('');
@@ -444,8 +529,8 @@ function craftModel(c, sim) {
   const nPre = grp.children.length, gid = !GLBM ? null : c.parts[0].engineId === 'merlin-1d' && c.parts[0].count === 9 && Math.abs(D0 - 3.7) < 0.5 ? 'falcon9-block5' : c.parts[0].engineId === 'rutherford' && c.parts[0].count === 9 && Math.abs(D0 - 1.2) < 0.3 ? 'electron' : null,
     gm = gid && GLBM.hasVehicleModel(gid) ? GLBM.vehicleModel(gid, { mode: 'tank', length: L0, diameter: gid === 'electron' ? D0 : undefined, hide: ['legs', 'gridFins'] }) : null;   // Falcon 9 first stage: real tank, engines and octaweb; legs and grid fins stay procedural so they animate
   // engine bells: a centre engine and a ring, like the real engine bay
-  const nE = Math.min(c.parts[0].count || 1, 9), bell = MAT(0x2b2420, { m: 0.9, r: 0.35, cc: 0 }), bellMeshes = [];
-  for (let i = 0; i < nE; i++) { const a = (i - 1) * 2 * Math.PI / Math.max(nE - 1, 1), rr = nE > 1 && i > 0 ? R0 * 0.58 : 0, b = new THREE.Mesh(new THREE.CylinderGeometry(R0 * (nE > 1 ? 0.1 : 0.14), R0 * (nE > 1 ? 0.19 : 0.4), R0 * 0.5, 20, 1, true).translate(0, -R0 * 0.25, 0), bell); b.position.set(Math.cos(a) * rr, 0, Math.sin(a) * rr); grp.add(b); bellMeshes.push(b); }
+  const nE = Math.min(c.parts[0].count || 1, 9), bell = MAT(0x2b2420, { m: 0.9, r: 0.35, cc: 0 }), bellMeshes = [], nozzles = [];
+  for (let i = 0; i < nE; i++) { const a = (i - 1) * 2 * Math.PI / Math.max(nE - 1, 1), rr = nE > 1 && i > 0 ? R0 * 0.58 : 0, b = new THREE.Mesh(new THREE.CylinderGeometry(R0 * (nE > 1 ? 0.1 : 0.14), R0 * (nE > 1 ? 0.19 : 0.4), R0 * 0.5, 20, 1, true).translate(0, -R0 * 0.25, 0), bell); b.position.set(Math.cos(a) * rr, 0, Math.sin(a) * rr); grp.add(b); bellMeshes.push(b); nozzles.push([Math.cos(a) * rr, Math.sin(a) * rr]); }
   // aft skirt: the side wall only (open ended), plus a separate base disc a hair below the stage's own bottom face. A closed skirt put a second disc exactly on top
   // of the stage's bottom cap, and the two coplanar discs (one dark, one white) z-fought into the black-and-white wedges seen from behind.
   const skirt = new THREE.Mesh(new THREE.CylinderGeometry(R0 * 1.02, R0 * 1.02, R0 * 0.5, 48, 1, true).translate(0, R0 * 0.25, 0), dark); grp.add(skirt);
@@ -489,10 +574,8 @@ function craftModel(c, sim) {
       pivot.position.set(Math.cos(ang) * R0, L0 - R0 * 1.5, Math.sin(ang) * R0); pivot.rotation.y = -ang; grp.add(pivot);
     }
   }
-  // exhaust plume: three nested additive lathe shells (glow, flame, core) starting at the nozzle exit; length and width are set each frame
-  const prof = (r0, bulge) => { const pts = []; for (let i = 0; i <= 14; i++) { const t = i / 14; pts.push(new THREE.Vector2(r0 * (0.55 + bulge * Math.sin(Math.PI * Math.min(1, t * 1.15)) * (1 - t * 0.2)) * (1 - t) + 0.001, -t)); } return pts; };
-  const plume = new THREE.Group(); plume.name = 'plume'; plume.visible = false; plume.position.y = -R0 * 0.5;
-  for (const [r, bulge, col, op] of [[R0 * 0.62, 0.55, 0xff5a1a, 0.28], [R0 * 0.5, 0.35, 0xffaa40, 0.5], [R0 * 0.3, 0.2, 0xfff4d0, 0.9]]) { const m = new THREE.Mesh(new THREE.LatheGeometry(prof(r, bulge), 24), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false })); m.material.color.multiplyScalar(3); plume.add(m); }
+  // exhaust plume (plume.js): a shader flame on the nozzle exit plane, with one jet per engine; length, width, throttle and the air are set each frame
+  const plume = createPlume(THREE, { R0, engines: nozzles }); plume.position.y = -R0 * 0.5; plume.visible = false;
   grp.add(plume);
   // rotate the whole model so +y is the nose in the sim plane
   grp.userData.D0 = D0; grp.userData.length = g.userData.length; return grp;
@@ -510,7 +593,7 @@ function resetCamera(L) { const d = Math.max(L * 2.3, 30); controls.target.set(0
 
 // ---------------- running a mission ----------------
 function setStatus(t) { $('tuneOut').textContent = t; }
-function stop(redraw = true) { running = false; if (sim) { sim = null; $('run').textContent = '▶ Launch'; $('pause').disabled = $('ff').disabled = $('reset').disabled = true; $('result').hidden = true; $('phase').textContent = 'Ready'; $('tele').innerHTML = ''; $('log').innerHTML = ''; clearScene(); } if (redraw) drawPreview(); }
+function stop(redraw = true) { running = false; if (sim) { sim = null; $('run').textContent = '▶ Launch'; $('pause').disabled = $('ff').disabled = $('reset').disabled = true; $('result').hidden = true; $('phase').textContent = 'Ready'; $('tele').innerHTML = ''; $('log').innerHTML = ''; clearVehicleBlocks(); clearScene(); } if (redraw) drawPreview(); }
 function fillFollow() { const cur = $('follow').value || 'main'; const opts = [['main', 'Vehicle']]; for (const c of sim?.crafts ?? []) if (c.role === 'booster') opts.push([`c${c.id}`, c.name]); if (sim?.station) opts.push(['station', 'Station']); $('follow').innerHTML = opts.map(o => `<option value="${o[0]}">${esc(o[1])}</option>`).join(''); $('follow').value = opts.some(o => o[0] === cur) ? cur : 'main'; }
 $('follow').onchange = () => { followUserSet = true; };
 let followUserSet = false;
@@ -614,8 +697,10 @@ function updateScene() {
     const cr = o.craft, obj = o.obj, off = 0.35 * obj.userData.length; obj.position.set(cr.pos[0] - Math.cos(cr.th) * off, cr.pos[1] - Math.sin(cr.th) * off, 0); obj.rotation.z = cr.th - Math.PI / 2;
     const thrust = cr.thrust > 0 && cr.alive !== false, pl = obj.getObjectByName('plume'), legs = obj.getObjectByName('legs');
     if (pl) {
-      const e = sim.env(cr), vac = e.rho <= 1e-3, k = 0.85 + 0.15 * Math.sin(sim.t * 70 + cr.id) + 0.07 * Math.sin(sim.t * 173), len = thrust ? Math.min(obj.userData.D0 * 4.2 * (0.7 + 0.5 * cr.throttleCmd) * k * (vac ? 0.7 : 1), 400) : 0;
-      pl.visible = thrust; pl.children.forEach((m, i) => { m.scale.set((1 + (vac ? 1.6 + 0.4 * i : 0.12 * i)) * (1 + 0.05 * Math.sin(sim.t * 90 + i)), len * (1 - 0.18 * i), 1 + (vac ? 1.6 : 0)); m.rotation.y = sim.t * 3 + i; });
+      const e = sim.env(cr), vac = e.rho <= 1e-3, D0 = obj.userData.D0, throttle = Math.max(0, Math.min(1, cr.throttleCmd ?? 0)),
+        k = 0.90 + 0.10 * Math.sin(sim.t * 70 + cr.id) + 0.05 * Math.sin(sim.t * 173);
+      pl.visible = thrust;
+      if (thrust) pl.userData.update({ time: sim.t, throttle, length: Math.min(D0 * (3.6 + 2.6 * throttle) * k * (vac ? 1.45 : 0.85), 400), width: D0 * (vac ? 2.5 : 1.75), density: Math.min(1, e.rho / 1.225), vacuum: vac });
     }
     if (legs) { const want = cr.ap.phase === 'landing' || cr.ap.phase === 'coast' && sim.env(cr).h < 3e3 ? 1 : 0, ud = obj.userData, dtl = Math.abs(sim.t - (ud.legT ?? sim.t)); ud.legT = sim.t; const k0 = ud.legK ?? want, k1 = k0 + Math.max(-dtl / 3, Math.min(dtl / 3, want - k0)); if (k1 !== ud.legK) { ud.legK = k1; legs.userData.update(k1); } }   // stowed (visible, folded up the body) until the landing burn, then swing out over ~3 s
     if (o.label) { speck(o.label, cr.pos, obj.userData.length || 30); tmp.set(cr.pos[0], cr.pos[1], 0).applyMatrix4(world.matrixWorld).project(camera); const w = view.clientWidth, h = view.clientHeight; o.label.style.display = tmp.z < 1 && tmp.z > -1 && cr.alive !== false ? '' : 'none'; o.label.style.left = ((tmp.x + 1) / 2 * w) + 'px'; o.label.style.top = ((1 - tmp.y) / 2 * h - 24) + 'px'; }
@@ -664,9 +749,40 @@ function hud() {
   if (c.heat > 1e4) rows.push(['Stagnation heating', (c.heat / 1e3).toFixed(0) + ' kW/m²']);
   if (sim.station && c.role === 'main') { const st = sim.stationState(), D = [c.pos[0] - st.pos[0], c.pos[1] - st.pos[1]]; rows.push(['Range to station', fmtD(Math.hypot(...D))]); if (c.ap.phase === 'approach') { rows.push(['Gap to port', fmtD(c.ap.gapY)], ['Lateral offset', c.ap.lat.toFixed(2) + ' m'], ['Closing speed', c.ap.closing.toFixed(3) + ' m/s'], ['RCS propellant', c.parts.at(-1).craft.rcsProp.toFixed(0) + ' kg']); } }
   $('tele').innerHTML = telemetryHTML(rows);
+  renderVehicleBlocks();
   updateStrip(c, e);
   elog.sync(sim.events);
   if (sim.done && $('result').hidden) showResult();
+}
+// ---- orbit and vehicle readouts (telemetry.js): the main vehicle, the same numbers the telemetry stream carries ----
+const VB = { gate: { last: -Infinity }, userSet: false, html: {}, key: '', statusT: -1e9 };
+const narrowQ = matchMedia('(max-width: 699px)');          // collapsed by default on narrow screens, open on desktop
+function setVehicleBlocks(open) {
+  $('vblocks').classList.toggle('closed', !open); const b = $('vToggle'), lbl = open ? 'Hide orbit and vehicle readouts' : 'Show orbit and vehicle readouts';
+  b.setAttribute('aria-expanded', String(open)); b.title = lbl; b.setAttribute('aria-label', lbl);
+}
+setVehicleBlocks(!narrowQ.matches);
+narrowQ.addEventListener('change', e => { if (!VB.userSet) setVehicleBlocks(!e.matches); });
+$('vToggle').onclick = () => { VB.userSet = true; setVehicleBlocks($('vblocks').classList.contains('closed')); };
+function putHTML(id, html) { if (VB.html[id] !== html) { VB.html[id] = html; $(id).innerHTML = html; } }
+function clearVehicleBlocks() { for (const id of ['vOrbit', 'vVeh', 'vProp']) putHTML(id, ''); $('vstatus').textContent = ''; VB.key = ''; }
+function renderVehicleBlocks() {
+  const c = sim.crafts[0], e = sim.env(c), live = c.alive && !c.onPad, o = orbitFromState(sim.W, c.pos, c.vel), na = '--';
+  const p = telemetryPayload(sim); postTelemetry(window, p, performance.now(), VB.gate);
+  const N = sim.cfg.stages.length, stage = N - c.parts.length + 1, dv = stageDeltaV(c), at = attitude(c, e), mq = maxQFromSamples(sim.samples, sim.t, { q: e.q, t: sim.t }), b0 = dv.perStage[0] || {};
+  // status line for screen readers: updated when the stage or phase changes, and every 10 s, not every frame
+  const key = `${p.twr > 0}|${c.ap.phase}|${stage}`;
+  if (key !== VB.key || p.t - VB.statusT >= 10 || p.t < VB.statusT) { VB.key = key; VB.statusT = p.t; $('vstatus').textContent = statusLine(p, PH[c.ap.phase] || c.ap.phase); }
+  putHTML('vOrbit', telemetryHTML([['Apoapsis', !live ? na : o.escape ? 'escape' : fmt.km(o.apo)],
+    ['Periapsis', !live ? na : fmt.km(o.peri) + (o.belowSurface ? ' <span class="badc">below surface</span>' : '')],
+    ['Period (min:s)', !live ? na : fmt.minsec(o.period)], ['Eccentricity', !live || o.ecc == null ? na : o.ecc.toFixed(4)],
+    ['To apoapsis', !live ? na : fmt.minsec(o.tApo)], ['To periapsis', !live ? na : fmt.minsec(o.tPeri)]]));
+  putHTML('vVeh', telemetryHTML([['Stage', `${stage} of ${N}`], ['Thrust-to-weight now', p.twr != null ? p.twr.toFixed(2) : na],
+    ['Δv this stage (est.)', fmt.kmps(b0.dv)], ['Δv total (est.)', fmt.kmps(dv.total)], ['Burn left, full thrust (est.)', fmt.minsec(b0.burnTime)],
+    ['Pitch / flight path', `${fmt.deg(at.pitch)} / ${fmt.deg(at.fpa)}`], ['Mach', e.mach.toFixed(2)],
+    ['Max-Q', mq.t == null ? na : `${(mq.q / 1e3).toFixed(1)} kPa at ${fmt.minsec(mq.t)}`]]));
+  putHTML('vProp', c.parts.map(s => { const pc = s.propMax > 0 ? Math.round(s.prop / s.propMax * 100) : 0;
+    return `<div class="vbr"><span>${esc(s.name)}</span><span class="vtrk" role="meter" aria-label="${esc(s.name)} propellant" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pc}"><b style="width:${pc}%"></b></span><span class="vpc">${pc}%</span></div>`; }).join(''));
 }
 function showResult() {
   const o = sim.outcome, M = sim.M, items = [];
@@ -712,7 +828,128 @@ function frame(now) {
 }
 function renderNow() { if (!sim) return; syncCrafts(); fillFollow(); autoCamera(); updateScene(); hud(); plots(); drawMap(); controls.update(); renderFrame(); }
 window.__shipyard = { get three() { return { camera, controls, world, scene }; }, get sim() { return sim; }, step(sec) { if (sim) { running = false; sim.advance(sec, 800000); renderNow(); } }, renderNow, state: () => state };
-loadPreset('f9dock');
+// ---------------- designs: save / load / share / JSON, the working design, and the landing result coming back ----------------
+const notify = (msg, ms = 3600) => { const t = $('labToast'); t.textContent = msg; t.classList.add('on'); clearTimeout(notify.timer); notify.timer = setTimeout(() => t.classList.remove('on'), ms); };
+const errText = e => (e && e.errors?.length ? e.errors.join('; ') : (e && e.message) || String(e));
+function setDesignName(n) { designName = n || ''; $('dName').textContent = designName; $('dName').title = designName; }
+function currentDesign(name = designName) { return designToJSON(state, { name, pad: $('preset').value, scene: sceneMode, createdAt: new Date().toISOString() }); }
+// the working design is kept as "last" after each change, once the user has made one (so an unopened page never overwrites it)
+function scheduleLastSave() { if (!armedLast || !state) return; clearTimeout(lastTimer); lastTimer = setTimeout(() => { try { saveLast(currentDesign()); } catch {} }, 400); }
+// a validated design becomes the working state; the preset select shows its template, the scene its background
+function applyDesign(d, msg, { arm = true, name } = {}) {
+  const { state: st, meta } = designToState(d);
+  state = st; stop(); setDesignName(name ?? meta.name);   // state first: stop() redraws the preview from it (and at page start there is no state yet)
+  $('preset').value = PRESETS[meta.pad] ? meta.pad : 'blank';
+  sceneMode = meta.scene === 'black' ? 'black' : 'space'; $('sceneMode').value = sceneMode; try { localStorage.setItem('kosmo.shipyard.scene', sceneMode); } catch {}
+  renderBuilder(); applyScene();
+  if (arm) armedLast = true;
+  if (msg) notify(msg);
+}
+function saveUI() {
+  let name = null; try { name = prompt('Name this design (saving under a name that exists replaces that design)', designName || 'My design'); } catch {}
+  if (name == null) return;
+  let n; try { n = normalizeName(name); } catch (e) { notify(e.message); return; }
+  const r = saveDesign(n, currentDesign(n));
+  if (!r.ok) { notify(`Not saved: ${r.error}`, 6000); return; }
+  setDesignName(r.name); notify(`Saved "${r.name}" in this browser`);
+}
+function paintLoadMenu(m) {
+  const saved = listDesigns();
+  m.innerHTML = '<div class="dm-h">Saved in this browser</div>'
+    + (saved.length ? saved.map(d => `<div class="dm-r"><button data-load="${esc(d.name)}"${d.broken ? ' disabled title="This saved design no longer validates"' : ''}>${esc(d.name)}</button><span class="dim small">${d.stages} stage${d.stages === 1 ? '' : 's'}</span><button data-del="${esc(d.name)}" title="Delete this saved design" aria-label="Delete ${esc(d.name)}">✕</button></div>`).join('')
+      : '<div class="dim small">Nothing saved yet: use Save.</div>')
+    + '<div class="dm-h">Start from a preset</div>' + Object.entries(PRESETS).map(([k, p]) => `<button data-preset="${k}">${esc(p.label)}</button>`).join('');
+}
+function toggleLoadMenu() {
+  const old = $('dMenu'); if (old) { old.remove(); return; }
+  const m = document.createElement('div'); m.id = 'dMenu'; m.className = 'dmenu'; paintLoadMenu(m);
+  m.onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.load) {
+      try { const d = loadDesign(b.dataset.load); if (!d) { notify(`"${b.dataset.load}" is no longer saved`); return; } applyDesign(d, `Loaded "${b.dataset.load}"`, { name: b.dataset.load }); m.remove(); }
+      catch (err) { notify(`Could not load "${b.dataset.load}": ${errText(err)}`, 9000); }
+    } else if (b.dataset.del) {
+      if (!confirm(`Delete the saved design "${b.dataset.del}"? This cannot be undone.`)) return;
+      deleteDesign(b.dataset.del); paintLoadMenu(m); notify(`Deleted "${b.dataset.del}"`);
+    } else if (b.dataset.preset) {
+      stop(); setDesignName(''); $('preset').value = b.dataset.preset; loadPreset(b.dataset.preset); armedLast = true; m.remove();
+    }
+  };
+  $('dbar').after(m);
+}
+async function shareUI() {
+  try {
+    const url = await shareURL(currentDesign(), location.href);
+    try { await navigator.clipboard.writeText(url); notify(`Link copied (${url.length} characters): open it in another tab to see this design`, 5000); }
+    catch { prompt('Copy this link', url); }
+  } catch (e) { notify(`Could not make a link: ${errText(e)}`, 8000); }
+}
+function exportUI() {
+  const json = currentDesign();
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(json, null, 2) + '\n'], { type: 'application/json' }));
+  a.download = `${(json.name || 'design').replace(/[^\w.-]+/g, '_')}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  notify('Design downloaded as JSON');
+}
+$('dSave').onclick = saveUI;
+$('dLoad').onclick = toggleLoadMenu;
+$('dShare').onclick = shareUI;
+$('dExport').onclick = exportUI;
+$('dImport').onclick = () => $('dFile').click();
+$('dFile').onchange = async () => {
+  const f = $('dFile').files?.[0]; $('dFile').value = ''; if (!f) return;
+  try { const d = designFromJSON(JSON.parse(await f.text())); applyDesign(d, `Imported "${d.name || f.name}"`, { name: d.name }); }
+  catch (e) { notify(`Not imported: ${e instanceof SyntaxError ? 'the file is not JSON' : errText(e)}`, 9000); }
+};
+// any change the user makes arms the auto-save
+for (const ev of ['input', 'change', 'click']) $('build').addEventListener(ev, () => { armedLast = true; }, true);   // capture: arms before the stage handlers run
+
+// the design a link carries wins; otherwise the default preset, with a non-blocking offer to restore the last working design
+async function startDesigns() {
+  $('preset').value = 'f9dock';   // the default template (loadPreset does not move the select)
+  const share = readDesignHash(location.hash);
+  if (share) {
+    try { applyDesign(await decodeShare(share), 'Opened the design from the link', { arm: false }); }
+    catch (e) { loadPreset('f9dock'); notify(`The design in this link is not valid (${errText(e)}). Showing the default preset.`, 10000); }
+  } else loadPreset('f9dock');
+  const last = share ? null : loadLast();
+  if (last) {
+    const banner = document.createElement('div'); banner.className = 'dbanner'; banner.id = 'dRestore';
+    banner.innerHTML = `<div>Restore your last design${last.name ? ` “${esc(last.name)}”` : ''}?</div><button data-r="yes">Restore</button><button data-r="no">Keep the preset</button>`;
+    banner.onclick = e => {
+      const k = e.target.closest('button')?.dataset.r; if (!k) return;
+      if (k === 'yes') applyDesign(last, 'Restored your last design');
+      armedLast = true; banner.remove();
+    };
+    $('dbar').after(banner);
+  }
+  showLandingResult(loadLandingResult(), false);
+}
+// the landing result: the Landing Lab writes it to sessionStorage (shared by the frames of this tab) and posts it; a storage event or a return to this tab shows it
+function showLandingResult(r, toast = true) {
+  if (!r || r.kind !== 'landing-result' || r.key === shownLanding) return;
+  shownLanding = r.key;
+  const f = (x, d) => (Number.isFinite(x) ? x.toFixed(d) : '—');
+  const word = r.ok ? (r.status === 'caught' ? 'Caught' : 'Landed') : 'Failed';
+  const detail = r.ok ? `${f(r.touchdownMs, 2)} m/s down, ${f(r.lateralMs, 2)} m/s sideways, ${f(r.tiltDeg, 1)}° tilt, ${f(r.missM, 1)} m from the centre` : esc(r.reason || 'no touchdown');
+  const el = $('landingOut'); el.hidden = false;
+  el.innerHTML = `<div class="${r.ok ? 'okc' : 'badc'}">Landing Lab: ${word}${r.stage ? ` · ${esc(r.stage)}` : ''}</div><div class="dim small">${detail} · ${Number.isFinite(r.fuelLeftKg) ? Math.round(r.fuelLeftKg) : '—'} kg of propellant left</div>`;
+  if (toast) notify(`Landing Lab: ${word.toLowerCase()}${r.ok ? '' : ': see the panel for why'}`, 5000);
+}
+addEventListener('storage', e => { if (e.key === LANDING_RESULT_KEY && e.newValue) { try { showLandingResult(JSON.parse(e.newValue)); } catch {} } });
+addEventListener('message', e => { if (e.origin === location.origin && e.data?.type === 'flightlab:landing-result') showLandingResult(e.data.result); });
+// the Flight Lab shell asks for a stage hand-off ('Send booster to Landing'): same origin and from the parent only; the stage is an index or a name
+addEventListener('message', e => {
+  if (!isHandoffRequest(e, window)) return;
+  const i = handoffIndex(state?.stages, e.data.stage);
+  if (i < 0) { notify(`No stage ${String(e.data.stage).slice(0, 40)} to hand off`); return; }
+  handoff(i);
+});
+addEventListener('pageshow', () => showLandingResult(loadLandingResult()));
+addEventListener('focus', () => showLandingResult(loadLandingResult()));
+await startDesigns();
 requestAnimationFrame(frame);
 
 // ---------------- tuning tools ----------------

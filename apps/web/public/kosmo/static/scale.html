@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if (window.top !== window.self) document.documentElement.classList.add("embedded");</script>
+<script src="kosmo-theme.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scale of things · Kosmographica</title>
+<link rel="stylesheet" href="kosmographica.css?v=15">
+<style>
+  /* Layout only. Type, colour and the "no boxes" rule come from kosmographica.css. */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; overflow: hidden; }
+  body { font-size: 15px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  #app {
+    height: 100%; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+    background: radial-gradient(120% 95% at 50% 34%, #11151b 0%, #0c0d10 52%, #08090b 100%);
+  }
+
+  /* ── header ──────────────────────────────────────────────────────────────────────────────── */
+  #top { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; padding: 12px 20px 6px; }
+  .eyebrow { display: block; font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--dim2); }
+  #top h1 { margin: 1px 0 0; font-size: 19px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; line-height: 1.1; }
+  .topright { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  #counts { font-size: 11px; color: var(--dim); letter-spacing: .04em; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  #timeToggle {
+    flex: none; border: 1px solid var(--line2); background: transparent; color: var(--dim);
+    border-radius: 999px; padding: 5px 13px; font: inherit; font-size: 12px; letter-spacing: .06em;
+    cursor: pointer; transition: color .15s, border-color .15s;
+  }
+  #timeToggle:hover, #timeToggle[aria-expanded="true"] { color: var(--accent); border-color: var(--accent); }
+
+  /* ── timeline ────────────────────────────────────────────────────────────────────────────── */
+  #timePanel { padding: 0 20px 8px; border-bottom: 1px solid var(--line); display: grid; gap: 5px; }
+  #timePanel[hidden] { display: none; }
+  .tl-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--dim); }
+  .tl-head > div:first-child { white-space: nowrap; }
+  #timeReadout { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .lab { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--dim2); }
+  .presets { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .presets button {
+    border: 1px solid transparent; background: transparent; color: var(--dim2); border-radius: 999px;
+    padding: 1px 9px; font: inherit; font-size: 11px; letter-spacing: .04em; cursor: pointer; transition: color .15s, border-color .15s;
+  }
+  .presets button:hover { color: var(--text); }
+  .presets button.on { color: var(--accent); border-color: var(--line2); }
+  #tl { display: block; width: 100%; height: 54px; cursor: crosshair; touch-action: none; }
+  #time { display: block; width: 100%; height: 18px; margin: 0; padding: 0; border: 0; background: transparent; accent-color: var(--accent); cursor: pointer; }
+  #time::-webkit-slider-runnable-track { height: 2px; border-radius: 2px; background: linear-gradient(90deg, rgba(255,255,255,.12), rgba(169,192,180,.7)); }
+  #time::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 12px; height: 12px; margin-top: -5px; border-radius: 50%;
+    background: var(--text); border: 2px solid #0d0d0d; box-shadow: 0 0 0 1px var(--accent);
+  }
+  #time::-moz-range-track { height: 2px; border-radius: 2px; background: rgba(169,192,180,.5); }
+  #time::-moz-range-thumb { width: 10px; height: 10px; border-radius: 50%; background: var(--text); border: 2px solid #0d0d0d; }
+  .note { margin: 0; font-size: 11px; line-height: 1.35; color: var(--dim2); }
+
+  /* ── stage ───────────────────────────────────────────────────────────────────────────────── */
+  #stageWrap { position: relative; min-height: 0; overflow: hidden; }
+  #stage { position: absolute; inset: 0; display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+  #stageWrap.drag #stage { cursor: grabbing; }
+  #hud {
+    position: absolute; left: 20px; right: 84px; bottom: 14px; max-width: 620px; z-index: 2; pointer-events: none;
+    text-shadow: 0 1px 14px rgba(0,0,0,.85);
+  }
+  #hud::before {
+    content: ''; position: absolute; inset: -36px -60px -18px -24px; z-index: -1; pointer-events: none;
+    background: radial-gradient(75% 100% at 16% 100%, rgba(8,9,11,.94), rgba(8,9,11,.55) 55%, transparent 78%);
+  }
+  .hud-top { display: flex; align-items: center; gap: 10px; }
+  .tag { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+  .index { font-size: 10px; letter-spacing: .12em; color: var(--dim2); font-variant-numeric: tabular-nums; }
+  #hudName { margin: 2px 0 3px; font-size: clamp(25px, 3.2vw, 42px); font-weight: 600; letter-spacing: -.015em; line-height: 1; color: var(--text); }
+  #hudBlurb { margin: 0 0 6px; max-width: 54ch; font-size: 13.5px; line-height: 1.45; color: var(--dim); }
+  .facts { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; color: var(--text); font-variant-numeric: tabular-nums; }
+  .facts span { white-space: nowrap; }
+  #hudSource { margin-top: 5px; font-size: 10.5px; line-height: 1.5; color: var(--dim2); pointer-events: auto; }
+  #hudSource a { color: var(--dim); text-decoration: none; }
+  #hudSource a:hover { color: var(--accent); text-decoration: underline; }
+  .nav {
+    position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; padding: 0;
+    border-radius: 50%; border: 1px solid var(--line2); background: rgba(10,11,13,.55); color: var(--text);
+    font-size: 26px; line-height: 1; display: grid; place-items: center; cursor: pointer; z-index: 3;
+    -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); transition: color .15s, border-color .15s, opacity .15s;
+  }
+  #prev { left: 14px; }
+  #next { right: 14px; }
+  .nav:hover { color: var(--accent); border-color: var(--accent); }
+  .nav[disabled] { opacity: .22; cursor: default; }
+  .hint {
+    position: absolute; right: 16px; bottom: 10px; pointer-events: none;
+    font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim2); text-align: right; line-height: 1.6;
+  }
+  #loading {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    background: rgba(8,9,11,.52); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+    color: var(--dim); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; transition: opacity .2s;
+  }
+  #loading[hidden] { display: none; }
+  .spin { width: 18px; height: 18px; border: 1.5px solid var(--line2); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #stageWrap.failed #stage { opacity: .3; }
+
+  /* ── size ladder ─────────────────────────────────────────────────────────────────────────── */
+  #ladderWrap { position: relative; padding: 2px 20px 0; }
+  #ladder { display: block; width: 100%; height: 58px; cursor: crosshair; touch-action: none; }
+
+  /* ── fluctuating ruler ───────────────────────────────────────────────────────────────────── */
+  #rulerWrap { padding: 3px 20px 12px; border-top: 1px solid var(--line); background: linear-gradient(180deg, rgba(255,255,255,.018), transparent); }
+  .ruler-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  #rulerNote { text-align: right; }
+  #ruler { display: block; width: 100%; height: 88px; }
+
+  @media (max-width: 720px) {
+    #top { padding: 9px 12px 4px; }
+    #top h1 { font-size: 15px; letter-spacing: .12em; }
+    #counts { display: none; }
+    #timePanel { padding: 0 12px 6px; }
+    .tl-head { flex-direction: column; align-items: flex-start; gap: 3px; }
+    .presets { justify-content: flex-start; flex-wrap: nowrap; overflow-x: auto; max-width: 100%; padding-bottom: 2px; scrollbar-width: none; }
+    .presets::-webkit-scrollbar { display: none; }
+    #tl { height: 42px; }
+    #hud { left: 12px; right: 64px; bottom: 10px; max-width: none; }
+    #hudBlurb { display: none; }
+    #hudName { font-size: 26px; }
+    .nav { width: 38px; height: 38px; font-size: 23px; }
+    #prev { left: 8px; }
+    #next { right: 8px; }
+    .hint { display: none; }
+    #ladderWrap, #rulerWrap { padding-left: 12px; padding-right: 12px; }
+    #ladder { height: 46px; }
+    #ruler { height: 76px; }
+  }
+  @media (max-height: 640px) {
+    #hudBlurb { display: none; }
+    #tl { height: 38px; }
+    #ruler { height: 70px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spin { animation: none; }
+  }
+</style>
+<script type="importmap">{ "imports": { "three": "./vendor/three-0.160.0/build/three.module.js", "three/addons/": "./vendor/three-0.160.0/examples/jsm/" } }</script>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div>
+      <span class="eyebrow">Kosmographica</span>
+      <h1>Scale of things</h1>
+    </div>
+    <div class="topright">
+      <span id="counts" aria-live="polite"></span>
+      <button id="timeToggle" type="button" aria-expanded="true" aria-controls="timePanel">Timeline filter</button>
+    </div>
+  </header>
+
+  <section id="timePanel" aria-label="Timeline filter">
+    <div class="tl-head">
+      <div><span class="lab">Time</span> <b id="timeReadout">today</b></div>
+      <div id="presets" class="presets"></div>
+    </div>
+    <canvas id="tl" aria-label="Timeline: number of indexed objects that existed at each time"></canvas>
+    <label>
+      <span class="sr">Filter objects by when they existed</span>
+      <input id="time" type="range" min="0" max="1000" step="1" value="1000">
+    </label>
+    <p class="note">Objects that existed at the chosen time. Windows are approximate; the line above the bars marks the current object’s span.</p>
+  </section>
+
+  <main id="stageWrap">
+    <canvas id="stage" aria-label="3D view of the selected object"></canvas>
+    <div id="loading" role="status" aria-live="polite"><span class="spin"></span><span id="loadingText">Preparing the scale</span></div>
+    <div id="hud" aria-live="polite">
+      <div class="hud-top"><span id="hudGroup" class="tag"></span><span id="hudIndex" class="index"></span></div>
+      <h2 id="hudName"></h2>
+      <p id="hudBlurb"></p>
+      <div class="facts"><span id="hudExtent"></span><span id="hudWhen"></span></div>
+      <div id="hudSource"></div>
+    </div>
+    <button id="prev" class="nav" type="button" aria-label="Previous, larger object">‹</button>
+    <button id="next" class="nav" type="button" aria-label="Next, smaller object">›</button>
+    <div class="hint">drag to orbit · scroll or ← → to move</div>
+  </main>
+
+  <section id="ladderWrap" aria-label="Size ladder of the objects that pass the time filter">
+    <canvas id="ladder"></canvas>
+  </section>
+
+  <section id="rulerWrap" aria-label="Measured extent of the current object">
+    <div class="ruler-head"><span class="lab">Measured extent</span><span id="rulerNote" class="note"></span></div>
+    <canvas id="ruler"></canvas>
+  </section>
+</div>
+<script type="module" src="scale.js"></script>
+</body>
+</html>

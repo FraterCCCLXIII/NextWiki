@@ -60,15 +60,20 @@ function lightOrder(pts) {
 }
 
 function gauge(parent, label, unit) {
-  const box = document.createElement('div'); box.className = 'gauge';
-  box.innerHTML = `<svg viewBox="0 0 100 100"><path class="trk" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="3.2" stroke-linecap="round"/><path class="fil" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></svg>
+  const box = document.createElement('div'); box.className = 'gauge'; box.setAttribute('role', 'img');
+  box.innerHTML = `<svg viewBox="0 0 100 100" aria-hidden="true"><path class="trk" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="3.2" stroke-linecap="round"/><path class="fil" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></svg>
     <div class="lab">${label}</div><div class="val">0</div><div class="unit">${unit}</div>`;
   parent.appendChild(box);
   const a0 = 135, sweep = 270, pt = (a, r = 44) => [50 + r * Math.cos(a * Math.PI / 180), 50 + r * Math.sin(a * Math.PI / 180)];
   const arc = f => { const [x0, y0] = pt(a0), [x1, y1] = pt(a0 + sweep * f); return `M${x0.toFixed(2)},${y0.toFixed(2)} A44,44 0 ${sweep * f > 180 ? 1 : 0} 1 ${x1.toFixed(2)},${y1.toFixed(2)}`; };
   const trk = box.querySelector('.trk'), fil = box.querySelector('.fil'), val = box.querySelector('.val'), un = box.querySelector('.unit');
   trk.setAttribute('d', arc(0.999));
-  return { set(frac, text, u) { fil.setAttribute('d', frac > 0.002 ? arc(clamp(frac, 0.002, 0.999)) : ''); val.textContent = text; val.style.fontSize = text.length > 5 ? '17px' : text.length > 4 ? '20px' : ''; if (u) un.textContent = u; } };
+  let curUnit = unit;
+  return { set(frac, text, u) {
+    fil.setAttribute('d', frac > 0.002 ? arc(clamp(frac, 0.002, 0.999)) : ''); val.textContent = text; val.style.fontSize = text.length > 5 ? '17px' : text.length > 4 ? '20px' : '';
+    if (u) { un.textContent = u; curUnit = u; }
+    box.setAttribute('aria-label', `${label.toLowerCase()} ${text} ${curUnit.toLowerCase()}`);
+  } };
 }
 
 export function createFlightStrip(host, opts = {}) {

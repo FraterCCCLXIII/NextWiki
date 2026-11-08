@@ -543,8 +543,8 @@
     1094
    ],
    "mode": "bw",
-   "iou": 0.9662,
-   "colourErrorDE": 8.45,
+   "iou": 0.9889,
+   "colourErrorDE": 5.22,
    "parts": 25,
    "exactGeometryParts": 0
   },

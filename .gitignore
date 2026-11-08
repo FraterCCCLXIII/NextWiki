@@ -44,3 +44,10 @@ tools/.cache/
 # Downloaded Sketchfab dinosaur models (large binaries, re-download with tools/sketchfab-download.mjs); credits stay tracked
 apps/web/public/kosmo/static/models/dinosaurs/*.glb
 apps/web/public/kosmo/static/models/dinosaurs/_quarantine/
+
+# Python tooling in the logo labs
+__pycache__/
+*-logos/venv/
+
+# Root-level render checks (scratch screenshots)
+/*.png

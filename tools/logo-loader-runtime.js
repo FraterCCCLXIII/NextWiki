@@ -73,19 +73,41 @@ function injectStyle() {
   document.head.appendChild(s);
 }
 
-/* Slight CRT look: a touch of softness plus a coloured bloom, sized to the logo. */
+/* CRT look, sized to the logo. Blur softens the art. Bloom is three halos, tight, medium and wide, stacked behind it.
+   blur and bloom are strengths, 0 being off. bloomSize scales the halos. The curves are response exponents on the alpha:
+   below 1 lifts faint glow so it spreads and looks hotter, above 1 tightens it. A plain true or false means the defaults. */
+const CRT_DEFAULTS = { blur: 0.5, bloom: 1, blurCurve: 1, bloomCurve: 0.7, bloomSize: 1 };
+const crtLevels = (v) => (v && typeof v === "object" ? { ...CRT_DEFAULTS, blur: 0, bloom: 0, ...v } : v ? { ...CRT_DEFAULTS } : { ...CRT_DEFAULTS, blur: 0, bloom: 0 });
+const BLOOM_LAYERS = [[2.6, 0.5], [1, 0.65], [0.35, 0.6]];
 function addCrtFilter(svg, fid, tone, strength = 1) {
-  const vb = svg.viewBox.baseVal, m = vb.width * 0.08;
+  const vb = svg.viewBox.baseVal, m = vb.width * 0.25;
   const f = svgEl("filter", { id: fid, filterUnits: "userSpaceOnUse", x: vb.x - m, y: vb.y - m, width: vb.width + 2 * m, height: vb.height + 2 * m, "color-interpolation-filters": "sRGB" });
-  const a = tone === "dark" ? 0.5 : 0.3;
-  f.appendChild(svgEl("feGaussianBlur", { in: "SourceGraphic", stdDeviation: vb.width * 0.0012 * strength, result: "soft" }));
-  f.appendChild(svgEl("feGaussianBlur", { in: "SourceGraphic", stdDeviation: vb.width * 0.012 * Math.sqrt(strength), result: "wide" }));
-  f.appendChild(svgEl("feColorMatrix", { in: "wide", values: `1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 ${a} 0`, result: "bloom" }));
   const merge = svgEl("feMerge");
-  merge.appendChild(svgEl("feMergeNode", { in: "bloom" }));
+  const halos = BLOOM_LAYERS.map(([size, weight], i) => {
+    const blur = svgEl("feGaussianBlur", { in: "SourceGraphic", stdDeviation: 0, result: `w${i}` });
+    const shape = svgEl("feComponentTransfer", { in: `w${i}`, result: `h${i}` }), a = svgEl("feFuncA", { type: "gamma", amplitude: 0, exponent: 1, offset: 0 });
+    shape.appendChild(a);
+    f.appendChild(blur); f.appendChild(shape);
+    merge.appendChild(svgEl("feMergeNode", { in: `h${i}` }));
+    return { size, weight, blur, a };
+  });
+  const soft = svgEl("feGaussianBlur", { in: "SourceGraphic", stdDeviation: 0, result: "s0" });
+  const softShape = svgEl("feComponentTransfer", { in: "s0", result: "soft" }), softA = svgEl("feFuncA", { type: "gamma", amplitude: 1, exponent: 1, offset: 0 });
+  softShape.appendChild(softA);
+  f.appendChild(soft); f.appendChild(softShape);
   merge.appendChild(svgEl("feMergeNode", { in: "soft" }));
   f.appendChild(merge);
   svg.querySelector("defs").appendChild(f);
+  return (lv) => {
+    soft.setAttribute("stdDeviation", vb.width * 0.0012 * strength * lv.blur);
+    softA.setAttribute("exponent", lv.blur ? lv.blurCurve : 1);
+    const r = vb.width * 0.012 * Math.sqrt(strength) * lv.bloomSize, base = (tone === "dark" ? 0.95 : 0.55) * lv.bloom;
+    halos.forEach((h) => {
+      h.blur.setAttribute("stdDeviation", r * h.size);
+      h.a.setAttribute("amplitude", base * h.weight);
+      h.a.setAttribute("exponent", lv.bloomCurve);
+    });
+  };
 }
 
 const live = new Set();
@@ -99,10 +121,12 @@ function mount(el, opts) {
   el.appendChild(root);
   let dead = false, mine = [], timer = 0, inst;
   const n = ++uid, fid = `klcrt${n}`;
+  let setLevels = null;
   const applyCrt = (on) => {
     const g = root.querySelector("g.kl-fx");
     if (!g) return;
-    if (on) g.setAttribute("filter", `url(#${fid})`);
+    const lv = crtLevels(on);
+    if (lv.blur || lv.bloom) { if (setLevels) setLevels(lv); g.setAttribute("filter", `url(#${fid})`); }
     else g.removeAttribute("filter");
   };
   const soundOn = () => (inst.sound === undefined ? soundDefault() : inst.sound);
@@ -118,6 +142,7 @@ function mount(el, opts) {
       dead = true;
       clearTimeout(timer);
       mine.forEach((a) => a.cancel());
+      if (stars) { stars.stop(); starCanvas.remove(); }
       player.release(inst); // the jingle outlives the loader if it is mid-word
       root.remove();
       live.delete(inst);
@@ -125,6 +150,20 @@ function mount(el, opts) {
   };
   live.add(inst);
 
+  /* starfield: behind the logo, on backdropEl (or the mount element) */
+  let stars = null, starCanvas = null;
+  if (o.starfield) {
+    const host = o.backdropEl || el;
+    if (getComputedStyle(host).position === "static") host.style.position = "relative";
+    starCanvas = document.createElement("canvas");
+    starCanvas.setAttribute("aria-hidden", "true");
+    starCanvas.style.cssText = "position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0";
+    host.insertBefore(starCanvas, host.firstChild);
+    if (host !== el && getComputedStyle(el).position === "static") el.style.position = "relative";
+    el.style.zIndex = el.style.zIndex || "1";
+    stars = createStarfield(starCanvas);
+    stars.start();
+  }
   const button = o.soundButton === false ? null : document.createElement("button");
   function paintButton() {
     if (!button) return;
@@ -151,7 +190,17 @@ function mount(el, opts) {
     // give the jingle a moment to arrive so it starts with the reveal, but never hold the logo back for it
     if (soundOn()) await Promise.race([player.load(inst.jingle).catch(() => {}), new Promise((r) => setTimeout(r, 400))]);
     if (dead) return;
-    const { tone, paper } = resolveTone(el, o.tone);
+    /* matchBg: a dark background chosen from this logo's own colors, painted on backdropEl */
+    let picked = null;
+    if (o.matchBg) {
+      const fills = [];
+      L.comps.forEach((c) => { if (c.k === "pap") return; if (c.g) c.g.s.forEach((st) => fills.push({ hex: st[1], weight: (c.a || 1) / c.g.s.length })); else if (c.f && c.f[0] === "#") fills.push({ hex: c.f, weight: c.a || 1 }); });
+      picked = pickBackdrop(fills, id);
+      if (o.backdropEl) o.backdropEl.style.backgroundColor = picked;
+      inst.backdrop = picked;
+    }
+    /* o.paper: the caller knows the background, which is safer than reading one that may still be fading to its new colour */
+    const { tone, paper } = picked ? { tone: backdropLum(backdropHsl(picked).rgb) > 0.4 ? "light" : "dark", paper: picked } : o.paper ? { tone: o.tone, paper: o.paper } : resolveTone(el, o.tone);
     root.style.setProperty("--kl-ink", tone === "dark" ? "#ffffff" : "#0d0d10");
     root.style.setProperty("--kl-paper", paper);
     root.dataset.logo = id;
@@ -165,7 +214,7 @@ function mount(el, opts) {
     const fx = svgEl("g", { class: "kl-fx" });
     [...svg.children].forEach((ch) => { if (ch.tagName !== "defs") fx.appendChild(ch); });
     svg.appendChild(fx);
-    addCrtFilter(svg, fid, tone, L.crt);
+    setLevels = addCrtFilter(svg, fid, tone, L.crt);
     applyCrt(inst.crt === undefined ? crtDefault() : inst.crt);
     inst.id = id;
     const fn = (TR[id] || DEFAULT_REVEAL)[2];
@@ -191,7 +240,7 @@ function setSound(on) {
   live.forEach((i) => { if (i.sound === undefined || i.sound !== on) { i.sound = undefined; i.soundChanged(on); } });
 }
 
-window.KosmoLogoLoader = { mount, setCrt, getCrt: crtDefault, setSound, getSound: soundDefault, player, ids: () => loadManifest().then((m) => m.ids) };
+window.KosmoLogoLoader = { addCrtFilter, crtLevels, pickBackdrop, createStarfield, createParallax, soundIds: MUSIC_SOUNDS, allSounds: () => Object.keys(JINGLES).map((n) => ({ id: +n, name: JINGLES[n].name })), soundName: (n) => JINGLES[n] && JINGLES[n].name, createCurvePad, createFrameClock, addLogoTrails, addLogoGlints, mount, setCrt, getCrt: crtDefault, setSound, getSound: soundDefault, player, ids: () => loadManifest().then((m) => m.ids) };
 
 const auto = () => document.querySelectorAll("[data-kosmo-logo-loader]").forEach((el) => {
   if (el.dataset.klMounted) return;

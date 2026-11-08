@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SpaceRadio Logo Sheet</title>
 <style>
+*::-webkit-scrollbar{width:10px;height:10px}*::-webkit-scrollbar-track,*::-webkit-scrollbar-corner{background:transparent}*::-webkit-scrollbar-thumb{background:rgba(128,128,128,.45);background-clip:padding-box;border:2px solid transparent;border-radius:8px}*::-webkit-scrollbar-thumb:hover{background:rgba(128,128,128,.7);background-clip:padding-box;border:2px solid transparent}
+@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:rgba(128,128,128,.45) transparent}}
+
 :root{--bg:#121216;--ink:#ececf1;--mute:#9a9aa8;--paper:#fffefb;--accent:#8c9bff}
 *{box-sizing:border-box;margin:0}
 html{background:var(--bg)}
@@ -36,15 +39,31 @@ h3 small{font-weight:400;color:var(--mute);margin-left:8px;letter-spacing:0}
 .exp{position:absolute;right:6px;top:6px;z-index:3;width:30px;height:30px;padding:6px;border:0;border-radius:7px;background:rgba(0,0,0,.06);color:#17171c;cursor:pointer}
 .exp:hover,.exp:focus-visible{background:var(--accent);outline:none}
 .exp svg{width:100%;height:100%;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#radio{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:14px;margin:-20px -16px 16px;padding:8px 16px;background:rgba(20,20,28,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#ececf1}
+#radio .r-art{width:84px;height:52px;flex:none;border-radius:8px;background:#14141c;overflow:hidden;padding:4px;box-sizing:border-box}
+#radio .r-art svg{display:block;width:100%;height:100%}
+#radio .r-art .pt,#radio .r-art .pt path{fill-rule:evenodd}
+#radio .r-text{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0;font-size:12px;color:#b4b4c2}
+#radio .r-text b{font-size:14px;color:#fff}
+#radio .r-now{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#radio .r-bar{display:block;height:3px;max-width:320px;border-radius:2px;background:#ffffff24;overflow:hidden}
+#radio .r-bar i{display:block;height:100%;background:var(--accent);transform-origin:left;transform:scaleX(0)}
+#radio .r-btns{display:flex;align-items:center;gap:2px;flex:none}
+#radio button{width:40px;height:40px;padding:0;display:inline-grid;place-items:center;border:0;border-radius:50%;background:transparent;color:#ececf1;cursor:pointer}
+#radio button:hover,#radio button[aria-pressed=true]{background:#ffffff1f}
+#radio button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+#radio button.r-main{width:48px;height:48px}
+#radio svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#radio button svg{width:20px;height:20px}
+#radio .r-vol{width:90px;flex:none;accent-color:var(--accent)}
+@media (max-width:600px){#radio .r-vol{display:none}#radio{gap:8px}#radio .r-art{width:60px}}
 #viewer{position:fixed;inset:0;z-index:50;display:none;background:var(--vbg,#0a1a40);color:#ececf1;overflow:hidden}
 #viewer.on{display:block}
 #viewer.hideui{cursor:none}
 #viewer.hideui .vbar,#viewer.hideui .vpanel{display:none}
-.vscreen{position:absolute;inset:0;bottom:var(--barh,64px);overflow:hidden}
+.vscreen{position:absolute;inset:0;overflow:hidden}
 #viewer.hideui .vscreen{bottom:0}
-#viewer.panel-open .vscreen{right:320px}
-#viewer.hideui.panel-open .vscreen{right:0}
-.vstack{position:absolute;inset:6% 7%;transform:translateZ(0)}
+.vstack{position:absolute;inset:calc((1 - var(--logo,.6))*50%);transform:translateZ(0)}
 .vbgc{position:absolute;inset:0;width:100%;height:100%;display:none}
 .vlayer{position:absolute;inset:0;pointer-events:none}
 .vlayer svg{width:100%;height:100%;display:block;overflow:visible}
@@ -52,24 +71,57 @@ h3 small{font-weight:400;color:var(--mute);margin-left:8px;letter-spacing:0}
 .vlayer .pp{fill:var(--vpaper,#0a1a40)}
 .vtrail .pp{display:none}
 .vover{position:absolute;inset:0;pointer-events:none;display:none}
-.vscan{background:repeating-linear-gradient(0deg,rgba(0,0,0,var(--a,.3)) 0 1px,transparent 1px 3px)}
+.vscan{inset:-8px;background:repeating-linear-gradient(0deg,rgba(0,0,0,var(--a,.3)) 0 1px,transparent 1px 3px)}
 .vvig{background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,var(--a,.5)) 100%)}
 .vgrain{inset:-100px;opacity:var(--a,.15);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E")}
 .vroll{inset:auto 0 auto 0;top:0;height:22%;background:linear-gradient(180deg,transparent,rgba(255,255,255,var(--a,.07)),transparent)}
-.vbar{position:absolute;left:0;right:0;bottom:0;min-height:64px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 14px;background:rgba(10,10,16,.88);border-top:1px solid #ffffff22}
+.vbar{position:absolute;left:0;right:0;bottom:0;min-height:64px;display:flex;align-items:center;gap:8px;padding:10px 14px;pointer-events:none}
+.vbar>*{pointer-events:auto}
 .vbar button,.vpanel button{font:500 13px system-ui,sans-serif;color:#ececf1;background:#ffffff14;border:1px solid #ffffff2e;border-radius:8px;padding:8px 12px;cursor:pointer;min-height:38px}
 .vbar button:hover,.vpanel button:hover{background:#ffffff26}
-.vbar button.pri{background:var(--accent);color:#0b0b10;border-color:transparent;font-weight:650}
-.vbar input[type=number]{width:70px;font:600 14px system-ui,sans-serif;color:#ececf1;background:#ffffff14;border:1px solid #ffffff2e;border-radius:8px;padding:8px;min-height:38px}
-.vbar label{display:flex;align-items:center;gap:6px;font-size:13px}
-.vchips{flex-basis:100%;display:flex;flex-wrap:wrap;gap:4px}
-#viewer.nochips .vchips{display:none}
-.vbar button.vchip{min-height:26px;padding:2px 9px;font-size:12px;border-radius:99px;background:transparent;color:#b4b4c2}
-.vbar button.vchip:hover{background:#ffffff14}
-.vbar button.vchip[aria-pressed=true]{background:#ffffffe6;color:#0b0b10;border-color:transparent;font-weight:600}
-.vbar button.vchip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.vinfo{margin-left:auto;font-size:12px;color:#b4b4c2;white-space:nowrap}
-.vpanel{position:absolute;top:0;right:0;bottom:var(--barh,64px);width:320px;overflow-y:auto;background:rgba(14,14,22,.96);border-left:1px solid #ffffff22;padding:14px 16px 28px;display:none;font-size:13px}
+.vbar button.vic{width:46px;height:46px;min-height:0;padding:0;display:inline-grid;place-items:center;flex:none;border:0;border-radius:50%;background:transparent;transition:background-color .15s linear}
+.vbar button.vic:hover,.vbar button.vic:focus-visible{background:rgba(16,18,28,.5);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3)}
+.vbar button.vic.pri{width:56px;height:56px}
+.vic svg{filter:drop-shadow(0 1px 3px rgba(0,0,0,.55))}
+#viewer.vlight .vbar button.vic{color:#17171b}
+#viewer.vlight:not(.uifx) .vic svg{filter:none}
+#viewer.vlight .vbar button.vic:hover,#viewer.vlight .vbar button.vic:focus-visible{background:rgba(0,0,0,.1)}
+#viewer.vlight .vinfo,#viewer.vlight .vmtext{color:#17171b!important;text-shadow:none}
+#viewer.vlight .vmeter{background:rgba(0,0,0,.14)}
+.vinfo,.vmtext{text-shadow:0 1px 4px rgba(0,0,0,.8);color:#fff!important}
+.vic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.vbar button[aria-pressed=true],.vbar button[aria-expanded=true]{background:#ffffffe6;color:#0b0b10;border-color:transparent}
+.vbar button:focus-visible,.vpanel button:focus-visible,.vpanel summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.vgap{width:8px;flex:none}
+.vuiscan{inset:-8px;background:repeating-linear-gradient(0deg,rgba(0,0,0,var(--a,.3)) 0 1px,transparent 1px 3px)}
+#viewer.uifx .vic svg{filter:var(--vuf,none)}
+#viewer.uiglow .vinfo,#viewer.uiglow .vmtext{text-shadow:0 0 calc(5px*var(--vub,1)) currentColor,0 0 calc(14px*var(--vub,1)) currentColor}
+#viewer.uiglow .vmeter i{box-shadow:0 0 calc(10px*var(--vuh,1)) var(--accent)}
+#viewer.uiglow .vpanel{box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 0 1px rgba(140,155,255,var(--vuha,.35)),0 0 calc(6px*var(--vuh,1)) rgba(140,155,255,var(--vuha,.35))}
+#viewer.uiglow .vmeter{overflow:visible;filter:blur(var(--vuhb,0))}
+.vcurve{display:grid;grid-template-columns:1fr 44px;gap:8px;align-items:center;margin-bottom:10px}
+.vcurve .vrow{margin:0}
+.curve{width:44px;height:44px;background:#ffffff0f;border-radius:6px;cursor:crosshair;display:block}
+.curve-line{fill:none;stroke:var(--accent);stroke-width:6}
+.curve-diag{fill:none;stroke:#ffffff33;stroke-width:2}
+.vmeter{flex:1;min-width:40px;max-width:220px;height:6px;border-radius:3px;background:#ffffff24;overflow:hidden}
+.vmeter i{display:block;width:100%;height:100%;background:var(--accent);transform-origin:left;transform:scaleX(0)}
+.vmtext{min-width:44px;font:12px ui-monospace,Menlo,monospace;color:#b4b4c2;white-space:nowrap}
+#viewer:not(.timed) .vmeter,#viewer:not(.timed) .vmtext{display:none}
+.vquick{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding-bottom:12px}
+.vquick label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.vquick input[type=number]{width:70px;font:600 14px system-ui,sans-serif;color:#ececf1;background:#ffffff14;border:1px solid #ffffff2e;border-radius:8px;padding:6px 8px}
+.vgroup{border-top:1px solid #ffffff22;padding:10px 0}
+.vgroup summary{cursor:pointer;font-weight:600}
+.vgroup[open] summary{margin-bottom:10px}
+.vgroup .vrow{grid-template-columns:62px 1fr 34px;margin-bottom:10px}
+.vbody{border-top:1px solid #ffffff22;padding-top:14px}
+.vchips{display:flex;flex-wrap:wrap;gap:4px}
+.vpanel button.vchip{min-height:26px;padding:2px 9px;font-size:12px;border-radius:99px;background:transparent;color:#b4b4c2}
+.vpanel button.vchip:hover{background:#ffffff14}
+.vpanel button.vchip[aria-pressed=true]{background:#ffffffe6;color:#0b0b10;border-color:transparent;font-weight:600}
+.vinfo{margin:0 auto 0 8px;font-size:12px;color:#b4b4c2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.vpanel{position:absolute;right:14px;bottom:calc(var(--barh,64px) + 8px);width:min(360px,calc(100% - 28px));max-height:calc(100% - var(--barh,64px) - 24px);overflow-y:auto;background:rgba(14,14,22,.97);border:1px solid #ffffff2e;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.5);padding:14px 16px 20px;display:none;font-size:13px}
 #viewer.panel-open .vpanel{display:block}
 .vpanel h4{font-size:12px;font-weight:650;letter-spacing:.06em;color:#c9c9d6;margin:18px 0 8px}
 .vpanel h4:first-child{margin-top:0}
@@ -83,11 +135,12 @@ h3 small{font-weight:400;color:var(--mute);margin-left:8px;letter-spacing:0}
 .vpanel select{width:100%;font:13px system-ui,sans-serif;color:#ececf1;background:#1c1c26;border:1px solid #ffffff2e;border-radius:8px;padding:7px}
 .vpresets{display:flex;flex-wrap:wrap;gap:6px}
 @media (max-width:760px){
-  #viewer.panel-open .vscreen{right:0;bottom:calc(52% + var(--barh,64px))}
-  .vpanel{width:auto;left:0;top:auto;border-left:0;border-top:1px solid #ffffff22;height:52%}
   .vinfo{display:none}
-  .vchips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}
-  .vbar button.vchip{flex:none}
+  .vbar{gap:4px;justify-content:space-between;padding:10px}
+  .vbar button.vic{width:38px;height:38px}
+  .vbar button.vic.pri{width:44px;height:44px}
+  .vgap{display:none}
+  .vmtext{display:none}
 }
 </style>
 </head>
@@ -113,13 +166,19 @@ let anims=[],mid=0,TS=1;   // TS: whole-reveal time scale (busy logos are sped u
 const rad=d=>d*Math.PI/180;
 function an(el,kf,o){const a=el.animate(kf,{duration:Math.max(1,o.d*TS),delay:(o.t||0)*TS,easing:o.e||E.out,fill:'both'});anims.push(a);return a}
 
+/* A logo with both solid black and solid white, like white letters on a black panel, draws its own contrast. It keeps those as they are. */
+function isPanelLogo(L){let dk=0,lt=0,all=0;L.p.forEach(p=>{if(p.k==='p'||!p.f)return;const m=/^#(..)(..)(..)/.exec(p.f);if(!m)return;const c=[1,2,3].map(i=>parseInt(m[i],16)),hi=Math.max(...c),lo=Math.min(...c),a=p.a||0;all+=a;if(hi<60)dk+=a;else if(lo>225)lt+=a});return all>0&&dk/all>.15&&lt/all>.03}
 function markup(L){
-  let b='';
+  let b='',defs='';
   L.p.forEach((p,i)=>{
+    /* a part may carry its own gradient: g = [from, to], gd = [x1,y1,x2,y2] in viewBox units */
+    let fill=null;
+    if(p.g){const id='lg'+(++mid),g=p.gd||[p.b[0],p.b[1],p.b[2],p.b[3]];fill=`url(#${id})`;
+      defs+=`<linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="${g[0]}" y1="${g[1]}" x2="${g[2]}" y2="${g[3]}"><stop offset="0" stop-color="${p.g[0]}"/><stop offset="1" stop-color="${p.g[1]}"/></linearGradient>`;}
     if(p.L)b+=`<g class="pt" data-i="${i}">`+p.L.map(l=>`<path fill="${l[0]}" d="${l[1]}"/>`).join('')+'</g>';
-    else b+=`<path class="pt${p.k==='p'?' pp':''}" data-i="${i}"${p.k==='p'?'':` fill="${p.f}"`} d="${p.d}"/>`;
+    else b+=`<path class="pt${p.k==='p'?' pp':''}" data-i="${i}"${p.k==='p'?'':` fill="${fill||p.f}"`} d="${p.d}"/>`;
   });
-  return `<svg viewBox="0 0 ${L.w} ${L.h}" preserveAspectRatio="xMidYMid meet" xmlns="${NS}" role="img" aria-hidden="true"><defs></defs>${b}</svg>`;
+  return `<svg viewBox="0 0 ${L.w} ${L.h}" preserveAspectRatio="xMidYMid meet" xmlns="${NS}" role="img" aria-hidden="true"${isPanelLogo(L)?' data-panel="1"':''}><defs>${defs}</defs>${b}</svg>`;
 }
 
 /* ---- parts as the planner sees them ---- */
@@ -165,6 +224,23 @@ function wipeC(c,t,d,e){
   return a;
 }
 const fade=(c,t,d,e)=>an(c.el,[{opacity:0},{opacity:1}],{t,d,e:e||E.io});
+/* A line fills along its own length instead of behind a straight front: the part's centre line is
+   sampled (each outline point paired with the one half a perimeter away, exact for a constant-width
+   stripe) and drawn in as a stroke, which uncovers the part behind it, so a bend fills along the bend. */
+function drawAlong(c,t,d,e){
+  let L=0;try{L=c.el.getTotalLength()}catch{}
+  if(!L)return wipe(c,0,null,t,d,e);
+  const n=Math.max(12,Math.min(64,Math.round(L/6))),half=L/2,pts=[];
+  for(let i=0;i<=n;i++){const s=half*i/n,a=c.el.getPointAtLength(s),b=c.el.getPointAtLength((s+half)%L);pts.push((a.x+b.x)/2+','+(a.y+b.y)/2)}
+  const id='dm'+(++mid),m=svgEl('mask',{id,maskUnits:'userSpaceOnUse'});
+  const sp=svgEl('path',{d:'M'+pts.join('L'),fill:'none',stroke:'#fff','stroke-width':Math.max(1.5,(c.p.t||2)*1.8),'stroke-linecap':'round','stroke-linejoin':'round',pathLength:1,'stroke-dasharray':'1 1','stroke-dashoffset':1});
+  m.appendChild(sp);c.svg.querySelector('defs').appendChild(m);c.el.setAttribute('mask',`url(#${id})`);
+  const a=an(sp,[{strokeDashoffset:1},{strokeDashoffset:0}],{t,d,e:e||E.io});
+  const keepMask=OUTRO;a.finished.then(()=>{if(keepMask)return;c.el.removeAttribute('mask');m.remove()}).catch(()=>{});
+  return a;
+}
+/* marks that bend: a long stripe whose outline fills much less than its box (a straight bar fills it) */
+const isCurved=c=>Math.max(c.w,c.h)/Math.max(1,Math.min(c.w,c.h))>2.2&&c.p.a/Math.max(1,c.w*c.h)<.82;
 /* Radial sweep around (cx,cy), starting at startDeg and going clockwise just far enough to cover the part. */
 function conic(c,cx,cy,startDeg,t,d,e){
   const pad=6,pts=[[c.x0-pad,c.y0-pad],[c.x1+pad,c.y0-pad],[c.x1+pad,c.y1+pad],[c.x0-pad,c.y1+pad],[c.cx,c.y0-pad],[c.cx,c.y1+pad],[c.x0-pad,c.cy],[c.x1+pad,c.cy]];
@@ -245,6 +321,7 @@ function markKind(M,L){
 }
 
 /* ---- plans ---- */
+const curveFill=typeof CURVE_FILL!=='undefined'&&CURVE_FILL;
 function plan(P,L,n){
   const words=P.filter(c=>c.p.r==='w'&&c.p.k!=='p'),
         marks=P.filter(c=>c.p.r!=='w'&&c.p.k!=='p'&&!c.p.rule),
@@ -267,7 +344,9 @@ function plan(P,L,n){
     byY(longs).sort((a,b)=>perp(a)-perp(b)).forEach((c,i)=>{
       let u=horiz?(v===1&&i%2?180:0):90;
       const fr=c.p.fr!=null?c.p.fr:null;
-      wipe(c,u,fr,i*85,760,E.io);tMarks=Math.max(tMarks,i*85+760);
+      if(curveFill&&isCurved(c))drawAlong(c,i*85,760,E.io);
+      else wipe(c,u,fr,i*85,760,E.io);
+      tMarks=Math.max(tMarks,i*85+760);
     });
     byX(rest).forEach((c,i)=>{wipe(c,0,null,tMarks*.4+i*70,520,E.io)});
     if(rest.length)tMarks=Math.max(tMarks,tMarks*.4+rest.length*70+520);
@@ -291,7 +370,8 @@ function plan(P,L,n){
       else{
         const ang=c.p.fr!=null&&c.p.ang!=null&&Math.max(c.w,c.h)/Math.max(1,Math.min(c.w,c.h))>2?c.p.fr:null;
         const u=(L.w>=L.h*1.1)?(v===1&&i%2?180:0):(v===1&&i%2?-90:90);
-        wipe(c,u,ang,t,d,E.io);
+        if(curveFill&&isCurved(c))drawAlong(c,t,d,E.io);
+        else wipe(c,u,ang,t,d,E.io);
       }
       tMarks=Math.max(tMarks,t+d);
     });
@@ -353,8 +433,8 @@ window.SR={LOGOS,play:n=>play(document.querySelector(`.tile[data-n="${n}"]`)),dr
 (function(){
 const NUMS=Object.keys(LOGOS).map(Number).sort((a,b)=>a-b);
 const BGS=[['Navy','#0a1a40'],['Black','#08080c'],['Space','#090b1f','radial-gradient(ellipse at 50% 35%,#27306e 0%,#101640 42%,#05060f 100%)'],['Plum','#1c0f33'],['Teal','#06262b'],['Paper','#fdf7ee'],['White','#ffffff'],['Sunset','#2a0f3a','linear-gradient(180deg,#1a0b3a 0%,#4a1548 55%,#a8324a 100%)']];
-const DEF={bg:0,custom:'#123456',colours:'auto',speed:1,auto:false,hold:2,shuffle:false,
-  crt:true,crtAmt:1,chroma:false,chromaAmt:2,scan:true,scanAmt:.22,vig:true,vigAmt:.45,grain:false,grainAmt:.12,roll:false,rollAmt:.08,flicker:false,flickerAmt:.5,
+const DEF={bg:'match',custom:'#123456',colours:'auto',speed:1,auto:false,hold:4,holdV:2,shuffle:false,
+  crt:true,crtAmt:1,crtBlur:true,crtBloom:true,uiFx:true,uiText:1,uiHud:1,crtBlurAmt:.5,blurV:2,crtBloomAmt:1,crtBlurCurve:1,crtBloomCurve:.7,crtBloomSize:1,chroma:false,chromaAmt:2,scanBlur:0,scan:false,scanAmt:.22,vig:true,vigAmt:.45,grain:false,grainAmt:.12,roll:false,rollAmt:.08,flicker:false,flickerAmt:.5,
   shimmer:true,shimAmt:.9,rainbow:true,shimOnce:true,shimAt:.82,shimEvery:3.5,
   trail:false,trailN:7,trailLen:14,trailAngle:135,trailDecay:1.4,trailOpacity:.55,
   backlit:false,backAmt:1,backColour:'own',backOutline:false,
@@ -367,6 +447,7 @@ const DEF={bg:0,custom:'#123456',colours:'auto',speed:1,auto:false,hold:2,shuffl
   feedback:false,fbN:9,fbZoom:.13,fbTwist:3,fbOp:.55,tunIn:false,tunOut:false,tunInDir:'shrink',tunOutDir:'grow',tunLogo:true,tunTime:1.4,tunSpread:3,slit:false,slitN:12,slitLen:.5,slitDir:'h',slitTime:1.6,
   kaleido:false,kalN:8,kalTime:3,kalHold:false,
   step:false,stepFps:10,ripple:false,rippleAmt:10,key:false,keyBands:14,keyDir:'diag',
+  fps:0,logoSize:.6,parallax:false,pxSplit:'color',pxCamera:'drift',pxDepth:1,pxSpeed:1,
   synth:false,liquid:false,starfield:false,bgfxOp:.8,bgfxSpeed:1,
   pulse:false,pulseAmt:1,pulseTime:1.1,pulseColour:'own',chipsOpen:true,
   introTrail:false,outroTrail:false,ptN:7,ptLag:70,outroHold:1.5};
@@ -382,41 +463,65 @@ const PRESETS={Clean:{...FX_OFF,crt:false,chroma:false,scan:false,vig:false,grai
   Tunnel:{...FX_OFF,crt:true,crtAmt:1,scan:true,scanAmt:.16,vig:true,vigAmt:.5,shimmer:false,trail:false,chroma:false,grain:false,roll:false,flicker:false,tunIn:true,tunOut:true,rainbow:true},
   '70s TV':{...FX_OFF,crt:true,crtAmt:1,chroma:false,scan:true,scanAmt:.16,vig:true,vigAmt:.4,grain:false,roll:false,flicker:false,shimmer:false,trail:false,backlit:true,backAmt:1.2,backColour:'own',backOutline:false,streak:true,streakLen:40,streakDir:'h',stars:true,starN:4,scanimate:true,solar:false}};
 /* always-visible on/off buttons: setting, label */
-const CHIPS=[['crt','CRT glow'],['scan','Scanlines'],['vig','Vignette'],['shimmer','Shimmer'],['shimOnce','Shimmer once'],['rainbow','Rainbow'],['trail','Trails'],['pulse','End pulse'],['introTrail','Intro trail'],['outroTrail','Outro trail'],['backlit','Backlit'],['streak','Streaks'],['stars','Star filter'],['scanimate','Scanimate'],['solar','Solarize'],['falsec','False color'],['poster','Posterize'],['prism','Prism'],['expo','Double exposure'],['feedback','Feedback'],['tunIn','Tunnel in'],['tunOut','Tunnel out'],['slit','Slit-scan'],['kaleido','Kaleidoscope'],['step','Step print'],['ripple','Ripple'],['key','Pattern key'],['synth','Video synth'],['liquid','Liquid light'],['starfield','Starfield'],['chroma','Color split'],['grain','Grain'],['flicker','Flicker'],['roll','Rolling bar']];
+const CHIPS=[['vig','Vignette'],['shimmer','Shimmer'],['shimOnce','Shimmer once'],['rainbow','Rainbow'],['trail','Trails'],['pulse','End pulse'],['introTrail','Intro trail'],['outroTrail','Outro trail'],['backlit','Backlit'],['streak','Streaks'],['stars','Star filter'],['scanimate','Scanimate'],['solar','Solarize'],['falsec','False color'],['poster','Posterize'],['prism','Prism'],['expo','Double exposure'],['feedback','Feedback'],['tunIn','Tunnel in'],['tunOut','Tunnel out'],['slit','Slit-scan'],['kaleido','Kaleidoscope'],['step','Step print'],['ripple','Ripple'],['key','Pattern key'],['synth','Video synth'],['liquid','Liquid light'],['starfield','Starfield'],['chroma','Color split'],['grain','Grain'],['flicker','Flicker'],['roll','Rolling bar']];
 const KEY='spaceradio-viewer';
-let S={...DEF};try{S={...DEF,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch{}
+let S={...DEF};try{const saved=JSON.parse(localStorage.getItem(KEY)||'{}');/* saved before lines became opt-in */
+if(saved.scanBlur===undefined)delete saved.scan;
+/* saved before the longer default hold */
+if(saved.holdV===undefined)delete saved.hold;
+/* saved before the lighter default blur */
+if(saved.blurV===undefined)delete saved.crtBlurAmt;S={...DEF,...saved}}catch{}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch{}};
+const ICP={sound:'M4 9.5v5h4l5 4.5V5L8 9.5zM16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12',mute:'M4 9.5v5h4l5 4.5V5L8 9.5zM17 9.5l5 5M22 9.5l-5 5',close:'M6 6l12 12M18 6 6 18',prev:'M19 5 9 12l10 7zM5 5v14',next:'m5 5 10 7-10 7zM19 5v14',play:'m7 4 13 8-13 8z',pause:'M8 5v14M16 5v14',random:'M3 7h3.5c5 0 6 10 11 10H21M3 17h3.5c1.6 0 2.8-1 3.8-2.4M13.7 9.4C14.7 8 15.9 7 17.5 7H21M18 4l3 3-3 3M18 14l3 3-3 3',repeat:'M4 12a8 8 0 1 0 2.5-5.8L4 8.5M4 4v4.5h4.5',full:'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5'};
+const IC=Object.fromEntries(Object.entries(ICP).map(([k,d])=>[k,`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>`]));
+IC.settings='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>';
 const V=document.createElement('div');V.id='viewer';V.setAttribute('role','dialog');V.setAttribute('aria-modal','true');V.setAttribute('aria-label','Logo viewer');V.tabIndex=-1;
 V.innerHTML=`<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="vdefs"></defs></svg>
 <div class="vscreen"><canvas class="vbgc" width="160" height="90"></canvas><div class="vstack"></div><div class="vover vscan"></div><div class="vover vvig"></div><div class="vover vgrain"></div><div class="vover vroll"></div></div>
-<div class="vpanel"></div>
-<div class="vbar"><button data-a="close" title="Back to the sheet (Esc)">Close</button><button data-a="prev" title="Previous (left arrow)">Prev</button><button class="pri" data-a="repeat" title="Repeat (R or Space)">Repeat</button><button class="pri" data-a="next" title="Next (right arrow)">Next</button><input type="number" min="1" max="${NUMS[NUMS.length-1]}" aria-label="Go to logo number"><label><input type="checkbox" data-s="auto"> Auto-advance</label><label><input type="checkbox" data-s="shuffle"> Shuffle</label><label><input type="checkbox" data-sound-box> Sound</label><button data-a="chips" title="Show or hide the effect buttons (E)">Effects</button><button data-a="panel" title="Controls (C)">Controls</button><button data-a="fs" title="Full screen (F)">Full screen</button><button data-a="hide" title="Hide controls (H)">Hide UI</button><span class="vinfo"></span><div class="vchips" role="group" aria-label="Effects">${CHIPS.map(c=>`<button class="vchip" data-chip="${c[0]}" aria-pressed="false">${c[1]}</button>`).join('')}</div></div>`;
+<div class="vbar"><button class="vic" data-a="close" title="Back to the sheet (Esc)" aria-label="Close viewer">${IC.close}</button><span class="vgap"></span><button class="vic" data-a="prev" title="Back (left arrow)" aria-label="Back">${IC.prev}</button><button class="vic pri" data-a="play" title="Pause (Space)" aria-label="Pause">${IC.pause}</button><button class="vic" data-a="next" title="Next (right arrow)" aria-label="Next">${IC.next}</button><button class="vic" data-a="shuffle" title="Random order (S)" aria-label="Random order" aria-pressed="false">${IC.random}</button><button class="vic" data-a="repeat" title="Play this logo again (R)" aria-label="Play this logo again">${IC.repeat}</button><span class="vinfo"></span><span class="vmeter" title="Time until the next logo" aria-hidden="true"><i></i></span><span class="vmtext" title="Time until the next logo"></span><button class="vic" data-a="sound" title="Sound (M)" aria-label="Turn sound off"></button><button class="vic" data-a="panel" title="Settings (C)" aria-label="Settings" aria-expanded="false" aria-controls="vpanel">${IC.settings}</button><button class="vic" data-a="fs" title="Full screen (F)" aria-label="Full screen">${IC.full}</button></div>
+<div class="vover vuiscan" aria-hidden="true"></div><div class="vpanel" id="vpanel" role="group" aria-label="Viewer settings"><div class="vquick"><label>Logo <input type="number" min="1" max="${NUMS[NUMS.length-1]}" aria-label="Go to logo number"></label><label><input type="checkbox" data-s="auto"> Auto-advance</label><button data-a="hide" title="Hide controls (H)">Hide controls</button></div>
+<details class="vgroup"><summary>UI shader</summary><div id="vuimenu" role="group" aria-label="UI shader"><label class="vcheck"><input type="checkbox" data-k="uiFx"> Apply the CRT look to the UI</label><label class="vrow"><span>Text</span><input type="range" data-k="uiText" min="0" max="2.5" step=".05" aria-label="Shader impact on text"><output data-o="uiText"></output></label><label class="vrow"><span>HUD</span><input type="range" data-k="uiHud" min="0" max="2.5" step=".05" aria-label="Shader impact on windows and buttons"><output data-o="uiHud"></output></label></div></details>
+<details class="vgroup"><summary id="vcrtbtn">CRT</summary><div id="vcrtmenu" role="group" aria-label="CRT effects">
+<label class="vcheck"><input type="checkbox" data-k="crtBlur"> Blur</label><label class="vrow"><span>Strength</span><input type="range" data-k="crtBlurAmt" min=".2" max="4" step=".1" aria-label="Blur strength"><output data-o="crtBlurAmt"></output></label><div class="vcurve"><label class="vrow"><span>Curve</span><input type="range" data-k="crtBlurCurve" min=".3" max="2.5" step=".05" aria-label="Blur curve"><output data-o="crtBlurCurve"></output></label><svg class="curve" data-pad="crtBlurCurve" aria-hidden="true"></svg></div>
+<label class="vcheck"><input type="checkbox" data-k="crtBloom"> Bloom</label><label class="vrow"><span>Strength</span><input type="range" data-k="crtBloomAmt" min=".2" max="3" step=".1" aria-label="Bloom strength"><output data-o="crtBloomAmt"></output></label><label class="vrow"><span>Size</span><input type="range" data-k="crtBloomSize" min=".3" max="3" step=".1" aria-label="Bloom size"><output data-o="crtBloomSize"></output></label><div class="vcurve"><label class="vrow"><span>Curve</span><input type="range" data-k="crtBloomCurve" min=".3" max="2.5" step=".05" aria-label="Bloom curve"><output data-o="crtBloomCurve"></output></label><svg class="curve" data-pad="crtBloomCurve" aria-hidden="true"></svg></div>
+<label class="vcheck"><input type="checkbox" data-k="scan"> Lines</label><label class="vrow"><span>Opacity</span><input type="range" data-k="scanAmt" min=".05" max="1" step=".01" aria-label="Lines opacity"><output data-o="scanAmt"></output></label><label class="vrow"><span>Blur</span><input type="range" data-k="scanBlur" min="0" max="2" step=".1" aria-label="Lines blur"><output data-o="scanBlur"></output></label></div></details>
+<details class="vgroup vfx"><summary>Effects</summary><div class="vchips" role="group" aria-label="Effects">${CHIPS.map(c=>`<button class="vchip" data-chip="${c[0]}" aria-pressed="false">${c[1]}</button>`).join('')}</div></details>
+<div class="vbody"></div></div>`;
 document.body.appendChild(V);
-const $=s=>V.querySelector(s),stack=$('.vstack'),screen_=$('.vscreen'),panel=$('.vpanel'),defs=$('#vdefs'),numIn=$('.vbar input[type=number]'),info=$('.vinfo');
+const $=s=>V.querySelector(s),stack=$('.vstack'),screen_=$('.vscreen'),panel=$('.vbody'),defs=$('#vdefs'),numIn=$('.vquick input[type=number]'),info=$('.vinfo');
 let cur=NUMS[0],moved=[],fx=[],autoT=0,flick=null,roll=null,grainA=null,lastFocus=null;
 
 const rgb=h=>{const m=/^#?([\da-f]{2})([\da-f]{2})([\da-f]{2})/i.exec(h);return m?[parseInt(m[1],16),parseInt(m[2],16),parseInt(m[3],16)]:null};
 const lum=c=>(.2126*c[0]+.7152*c[1]+.0722*c[2])/255;
-const bgInfo=()=>S.bg==='custom'?{base:S.custom,css:S.custom}:{base:BGS[S.bg][1],css:BGS[S.bg][2]||BGS[S.bg][1]};
+/* 'match': a dark background chosen from the current logo's own colors */
+const matchColour=n=>{const fills=[];LOGOS[n].p.forEach(p=>{if(p.k==='p')return;if(p.L)p.L.forEach(l=>fills.push({hex:l[0],weight:(p.a||1)/p.L.length}));else if(p.f)fills.push({hex:p.f,weight:p.a||1})});return pickBackdrop(fills,'sr'+n)};
+const bgInfo=()=>{if(S.bg==='match'){const c=matchColour(cur);return {base:c,css:c}}return S.bg==='custom'?{base:S.custom,css:S.custom}:{base:BGS[S.bg][1],css:BGS[S.bg][2]||BGS[S.bg][1]}};
+const paintBg=()=>{const b=bgInfo();V.style.setProperty('--vbg',b.base);V.style.background=b.css;V.style.setProperty('--vpaper',b.base)};
 const darkBg=()=>lum(rgb(bgInfo().base))<.45;
 function recolour(svg){
-  if(S.colours!=='auto')return;
+  if(S.colours!=='auto'||svg.hasAttribute('data-panel'))return;
   const dark=darkBg(),bgc=rgb(bgInfo().base),rel=c=>{const f=c.map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*f[0]+.7152*f[1]+.0722*f[2]},bl=rel(bgc);
   /* anything too close to the background to read flips to white on dark, or near-black on light */
   svg.querySelectorAll('[fill]').forEach(e=>{const c=rgb(e.getAttribute('fill'));if(!c)return;const chroma=Math.max(...c)-Math.min(...c),l=lum(c),fl=rel(c),contrast=(Math.max(fl,bl)+.05)/(Math.min(fl,bl)+.05);
-    if(dark&&((l<.16&&(chroma<70||l<.09))||contrast<1.7))e.setAttribute('fill','#ffffff');
+    if(dark&&((l<.16&&chroma<70)||contrast<1.3))e.setAttribute('fill','#ffffff');
     else if(!dark&&contrast<1.25)e.setAttribute('fill','#111116');});
 }
 let lastDefs=null,lastNative=null;
 /* CRT glow uses the browser's own blur, which the GPU handles steadily. The SVG filter chain repaints the whole picture on every change,
    and those uneven repaints read as flicker, so it's only used when a colour effect has to process the glow itself. */
-const nativeGlow=()=>S.crt&&!(S.chroma||S.solar||S.poster||S.falsec);
+const nativeGlow=()=>(S.crtBlur||S.crtBloom)&&!(S.chroma||S.solar||S.poster||S.falsec)&&!(S.crtBlur&&S.crtBlurCurve!==1);
+/* bloom: tight, medium and wide halos, each shaped by the curve */
+const haloPrims=(src,k)=>{const r=11*S.crtBloomSize*k,base=(darkBg()?1:.6)*S.crtBloomAmt;let prims='',nodes='';[[2.6,.5],[1,.65],[.35,.6]].forEach(([f,w],i)=>{prims+=`<feGaussianBlur in="${src}" stdDeviation="${(r*f).toFixed(2)}" result="vw${i}"/><feComponentTransfer in="vw${i}" result="vh${i}"><feFuncA type="gamma" amplitude="${(base*w).toFixed(3)}" exponent="${S.crtBloomCurve}" offset="0"/></feComponentTransfer>`;nodes+=`<feMergeNode in="vh${i}"/>`});return{prims,nodes}};
+/* presets speak of CRT as one thing; it maps onto the separate blur and bloom settings */
+const normCrt=o=>{if('crt' in o){S.crtBlur=S.crtBloom=o.crt}if('crtAmt' in o){S.crtBlurAmt=S.crtBloomAmt=o.crtAmt}};
 function buildFilters(){
   const k=Math.min(screen_.clientWidth,screen_.clientHeight)/800||1;let g='',last='SourceGraphic';
   if(S.chroma){const o=S.chromaAmt*k;
     g+=`<feColorMatrix in="SourceGraphic" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" result="r0"/><feOffset in="r0" dx="${-o}" result="r"/><feColorMatrix in="SourceGraphic" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0" result="g"/><feColorMatrix in="SourceGraphic" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0" result="b0"/><feOffset in="b0" dx="${o}" result="b"/><feBlend in="r" in2="g" mode="screen" result="rg"/><feBlend in="rg" in2="b" mode="screen" result="ca"/>`;last='ca';}
-  if(S.crt&&!nativeGlow()){const a=S.crtAmt;
-    g+=`<feGaussianBlur in="${last}" stdDeviation="${.9*a*k}" result="soft"/><feGaussianBlur in="${last}" stdDeviation="${11*Math.sqrt(a)*k}" result="wide"/><feColorMatrix in="wide" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 ${darkBg()?Math.min(.75,.45*a):Math.min(.5,.25*a)} 0" result="bloom"/><feMerge result="crtout"><feMergeNode in="bloom"/><feMergeNode in="soft"/></feMerge>`;last='crtout';}
+  if((S.crtBlur||S.crtBloom)&&!nativeGlow()){
+    g+=`<feGaussianBlur in="${last}" stdDeviation="${S.crtBlur?.9*S.crtBlurAmt*k:0}" result="soft0"/><feComponentTransfer in="soft0" result="soft"><feFuncA type="gamma" amplitude="1" exponent="${S.crtBlur?S.crtBlurCurve:1}" offset="0"/></feComponentTransfer>`;
+    if(S.crtBloom){const b=haloPrims(last,k);g+=b.prims+`<feMerge result="crtout">${b.nodes}<feMergeNode in="soft"/></feMerge>`}else g+=`<feMerge result="crtout"><feMergeNode in="soft"/></feMerge>`;
+    last='crtout';}
   if(S.solar){ /* Sabattier: mid tones peak, highlights fold back, so glows gain metallic contour rings */
     const a=S.solarAmt,c=[0,.2,.4,.6,.8,1].map(x=>{const v=[0,.72,1,.38,.92,.8][Math.round(x*5)];return ((1-a)*x+a*v).toFixed(3)}).join(' ');
     g+=`<feComponentTransfer in="${last}"><feFuncR type="table" tableValues="${c}"/><feFuncG type="table" tableValues="${c}"/><feFuncB type="table" tableValues="${c}"/><feFuncA type="table" tableValues="${[0,.16,.32,.5,.66,.83,1].map(x=>{const v=[0,.85,.25,.95,.35,.9,1][Math.round(x*6)];return ((1-a)*x+a*v).toFixed(3)}).join(' ')}"/></feComponentTransfer>`.replace('<feComponentTransfer in=','<feComponentTransfer result="sol" in=');last='sol';}
@@ -441,14 +546,20 @@ function buildFilters(){
   if(S.feedback||S.tunIn||S.tunOut||S.slit||S.kaleido||S.introTrail||S.outroTrail){for(let i=0;i<12;i++)h+=`<filter id="vhu${i}" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB"><feFlood flood-color="${S.rainbow?`hsl(${Math.round(i/12*330)} 100% 60%)`:'#ffffff'}"/><feComposite in2="SourceAlpha" operator="in"/></filter>`}
   if(S.scanimate||S.ripple){const w=stack.clientWidth||1,hh=stack.clientHeight||1;
     h+=`<filter id="vsc" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" x="${-w*.15}" y="${-hh*.05}" width="${w*1.3}" height="${hh*1.1}" color-interpolation-filters="sRGB"><feImage id="vscmap" x="${-w*.15}" y="${-hh*.05}" width="${w*1.3}" height="${hh*1.1}" preserveAspectRatio="none" result="map"/><feDisplacementMap id="vscd" in="SourceGraphic" in2="map" scale="0" xChannelSelector="R" yChannelSelector="B"/></filter>`;}
+  if(nativeGlow()&&S.crtBloom){const b=haloPrims('SourceGraphic',k);h+=`<filter id="vbf" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">${b.prims}<feMerge>${b.nodes}</feMerge></filter>`}
+  /* the same glow for the controls, sized for small UI parts */
+  if(S.uiFx&&S.uiHud>0&&(S.crtBlur||S.crtBloom)){const b=S.crtBloom?haloPrims('SourceGraphic',.55*Math.sqrt(S.uiHud)):{prims:'',nodes:''};h+=`<filter id="vuf" x="-100%" y="-400%" width="300%" height="900%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceGraphic" stdDeviation="${S.crtBlur?.55*S.crtBlurAmt*S.uiHud:0}" result="vu0"/><feComponentTransfer in="vu0" result="vus"><feFuncA type="gamma" amplitude="1" exponent="${S.crtBlur?S.crtBlurCurve:1}" offset="0"/></feComponentTransfer>${b.prims}<feMerge>${b.nodes}<feMergeNode in="vus"/></feMerge></filter>`;V.style.setProperty('--vuf','url(#vuf)')}else V.style.setProperty('--vuf','none');
   if(h!==lastDefs){defs.innerHTML=h;lastDefs=h}
-  stack.style.filter=g?'url(#vfx)':nativeGlow()?`blur(${(.9*S.crtAmt*k).toFixed(2)}px)`:'none';
-  stack.querySelectorAll('.vbloom').forEach(b=>{b.style.filter=`blur(${(11*Math.sqrt(S.crtAmt)*k).toFixed(2)}px)`;b.getAnimations().forEach(a=>{const fr=a.effect.getKeyframes();a.effect.setKeyframes([{opacity:0},{opacity:Math.min(.75,(darkBg()?.45:.25)*S.crtAmt)}])})});
+  stack.style.filter=g?'url(#vfx)':nativeGlow()&&S.crtBlur?`blur(${(.9*S.crtBlurAmt*k).toFixed(2)}px)`:'none';
+  
 }
 function applyOverlays(){
-  const b=bgInfo();V.style.setProperty('--vbg',b.base);V.style.background=b.css;V.style.setProperty('--vpaper',b.base);
+  paintBg();
   const set=(sel,on,a)=>{const e=$(sel);e.style.display=on?'block':'none';e.style.setProperty('--a',a)};
-  set('.vscan',S.scan,S.scanAmt);set('.vvig',S.vig,S.vigAmt);set('.vgrain',S.grain,S.grainAmt);set('.vroll',S.roll,S.rollAmt);
+  bgc.style.filter=bgFilter();
+  V.style.setProperty('--logo',S.logoSize);V.classList.toggle('vlight',!darkBg());
+  set('.vscan',S.scan&&!S.uiFx,S.scanAmt);$('.vscan').style.filter=S.scanBlur?`blur(${S.scanBlur}px)`:'none';
+  set('.vuiscan',S.scan&&S.uiFx,S.scanAmt);$('.vuiscan').style.filter=S.scanBlur?`blur(${S.scanBlur}px)`:'none';V.classList.toggle('uifx',!!S.uiFx);V.classList.toggle('uiglow',!!S.uiFx&&(S.crtBlur||S.crtBloom));V.style.setProperty('--vub',S.crtBloom?(S.crtBloomAmt*S.crtBloomSize*S.uiText).toFixed(2):0);V.style.setProperty('--vuh',S.crtBloom?(S.crtBloomAmt*S.crtBloomSize*S.uiHud).toFixed(2):0);V.style.setProperty('--vuhb',S.crtBlur?(.6*S.crtBlurAmt*S.uiHud).toFixed(2)+'px':'0px');V.style.setProperty('--vuha',Math.min(.8,.35*S.uiHud).toFixed(2));set('.vvig',S.vig,S.vigAmt);set('.vgrain',S.grain,S.grainAmt);set('.vroll',S.roll,S.rollAmt);
   if(grainA){grainA.cancel();grainA=null}
   if(S.grain){grainA=$('.vgrain').animate([{transform:'translate(0,0)'},{transform:'translate(-60px,40px)'},{transform:'translate(30px,-70px)'},{transform:'translate(-80px,-30px)'},{transform:'translate(50px,60px)'}],{duration:420,iterations:Infinity,easing:'steps(1)'})}
   if(roll){roll.cancel();roll=null}
@@ -457,8 +568,9 @@ function applyOverlays(){
   if(S.flicker){const a=S.flickerAmt*.1,kf=[];for(let i=0;i<14;i++)kf.push({opacity:1-Math.abs(Math.sin(i*12.9898)*43758.5453%1)*a});flick=screen_.animate(kf,{duration:900,iterations:Infinity,easing:'steps(1)'})}
   buildFilters();
   startBg();
-  if(lastNative!==null&&lastNative!==nativeGlow()&&stack.firstChild){lastNative=nativeGlow();refresh();return}
-  lastNative=nativeGlow();
+  const glowKey=nativeGlow()+':'+S.crtBloom;
+  if(lastNative!==null&&lastNative!==glowKey&&stack.firstChild){lastNative=glowKey;refresh();return}
+  lastNative=glowKey;
 }
 function silhouette(L){return L.p.map(p=>p.L?p.L.map(l=>`<path fill="#fff" fill-rule="evenodd" d="${l[1]}"/>`).join(''):`<path fill="${p.k==='p'?'#000':'#fff'}" fill-rule="evenodd" d="${p.d}"/>`).join('')}
 function addShimmer(svg,L,start){
@@ -530,19 +642,21 @@ function startStep(){
 }
 /* backgrounds drawn behind the logo at low resolution and scaled up, so they stay light */
 let bgRaf=0;const bgc=$('.vbgc');
+/* the starfield takes the main blur and bloom */
+const bgFilter=()=>S.liquid?'blur(10px) saturate(1.3)':S.synth?'blur(1.5px)':[S.crtBlur?`blur(${(.6*S.crtBlurAmt).toFixed(2)}px)`:'',S.crtBloom?`drop-shadow(0 0 ${(3*S.crtBloomAmt*S.crtBloomSize).toFixed(1)}px rgba(255,255,255,${Math.min(.9,.5*S.crtBloomAmt).toFixed(2)}))`:''].filter(Boolean).join(' ')||'none';
 const bgHue=(h,s,l)=>{const a=s*Math.min(l,1-l),f=n=>{const k=(n+h/30)%12;return 255*(l-a*Math.max(-1,Math.min(k-3,9-k,1)))};return [f(0),f(8),f(4)]};
 let starsD=null,farStars=null,bgSize='';
 function startBg(){
   cancelAnimationFrame(bgRaf);
   const on=S.synth||S.liquid||S.starfield;bgc.style.display=on?'block':'none';
   if(!on)return;
-  bgc.style.opacity=S.bgfxOp;bgc.style.filter=S.liquid?'blur(10px) saturate(1.3)':S.synth?'blur(1.5px)':'none';
+  bgc.style.opacity=S.bgfxOp;bgc.style.filter=bgFilter();
   const star=S.starfield;bgc.width=star?screen_.clientWidth||1280:160;bgc.height=star?screen_.clientHeight||720:90;
   const ctx=bgc.getContext('2d'),W=bgc.width,H=bgc.height;let img=star?null:ctx.createImageData(W,H),last=0;
   /* flying stars keep the screen filled: one that leaves the frame starts again far away. A still layer of distant stars sits behind them */
   const newStar=z=>[(Math.random()-.5)*1.6,(Math.random()-.5)*1.6,z];
   if(star){starsD=[...Array(520)].map(()=>newStar(.05+Math.random()*.95));farStars=[...Array(420)].map(()=>[Math.random()*W,Math.random()*H,.25+Math.random()*.6,Math.random()<.12?1.8:1.1])}
-  const f=now=>{bgRaf=requestAnimationFrame(f);if(now-last<33)return;const dt=Math.min(100,now-last);last=now;const t=now*.001*S.bgfxSpeed;
+  const f=now=>{bgRaf=requestAnimationFrame(f);if(now-last<(+S.fps?1000/+S.fps:33))return;const dt=Math.min(+S.fps?1000:100,now-last);last=now;const t=now*.001*S.bgfxSpeed;
     if(star){ctx.clearRect(0,0,W,H);ctx.lineCap='round';
       farStars.forEach(p=>{ctx.fillStyle=`rgba(255,255,255,${p[2]})`;ctx.fillRect(p[0],p[1],p[3],p[3])});
       const D=Math.max(W,H)*.5,hue=(x,y)=>(Math.atan2(y,x)*57.3+360)%360;
@@ -602,7 +716,7 @@ function runPlan(layer,L,n,ts){
 }
 function endOf(a){return a.length?Math.max(...a.map(x=>{const t=x.effect.getTiming();return t.delay+t.duration})):0}
 function show(n,withSound){
-  cur=n;numIn.value=n;clearTimeout(autoT);
+  cur=n;if(S.bg==='match')paintBg();V.classList.toggle('vlight',!darkBg());numIn.value=n;clearTimeout(autoT);pend={};frozen=[];
   [...moved,...fx].forEach(a=>a.cancel());moved=[];fx=[];stack.innerHTML='';cancelAnimationFrame(scanRaf);cancelAnimationFrame(keyRaf);clearInterval(stepT);clearTimeout(outroT);
   const warp=document.createElement('div');warp.className='vlayer';stack.appendChild(warp);
   const L=LOGOS[n],main=document.createElement('div');main.className='vlayer';
@@ -642,9 +756,9 @@ function show(n,withSound){
   if(S.streak){const t=under('vst');moved.push(t.animate([{opacity:1},{opacity:S.streakRest}],{duration:S.streakDecay*1000,delay:e*.5,easing:'cubic-bezier(.2,.6,.4,1)',fill:'both'}))}
   addCopies(warp,L,e);
   if(S.tunIn)tunnelIn(warp,main,L);
-  if(nativeGlow()){const k=Math.min(stack.clientWidth,stack.clientHeight)/800||1,t=copyOf(L);t.classList.add('vbloom');t.style.willChange='opacity';t.style.filter=`blur(${(11*Math.sqrt(S.crtAmt)*k).toFixed(2)}px)`;warp.insertBefore(t,main);
+  if(nativeGlow()&&S.crtBloom){const k=Math.min(stack.clientWidth,stack.clientHeight)/800||1,t=copyOf(L);t.classList.add('vbloom');t.style.willChange='opacity';t.style.filter='url(#vbf)';warp.insertBefore(t,main);
     /* the finished logo blurred once and held: only its opacity changes, so it costs almost nothing per frame */
-    const peak=Math.min(.75,(darkBg()?.45:.25)*S.crtAmt);moved.push(t.animate([{opacity:0},{opacity:peak}],{duration:Math.max(350,e*.3),delay:e*.78,easing:'linear',fill:'both'}))}
+    const peak=1;moved.push(t.animate([{opacity:0},{opacity:peak}],{duration:Math.max(350,e*.3),delay:e*.78,easing:'linear',fill:'both'}))}
   /* end pulse: one swell of glow as the reveal lands, quick up and slower down, then gone */
   if(S.pulse){const t=copyOf(L);t.style.filter='url(#vpl)';t.style.opacity=0;warp.appendChild(t);
     moved.push(t.animate([{opacity:0,easing:'cubic-bezier(.3,0,.5,1)'},{opacity:1,offset:.28,easing:'cubic-bezier(.3,.6,.4,1)'},{opacity:0}],{duration:S.pulseTime*1000,delay:Math.max(0,e-S.pulseTime*280),fill:'both'}))}
@@ -654,16 +768,50 @@ function show(n,withSound){
   if(S.shimmer)addShimmer(r.svg,L,e*S.shimAt);
   moved.concat(fx).forEach(a=>{a.playbackRate=S.speed});
   startStep();
-  if(withSound)ring();
+  if(withSound&&!paused)ring();
   info.textContent=`Logo ${n} of ${NUMS.length}`+(soundOn&&lastSound?` · ${lastSound}`:'');
   const total=Math.max(...moved.map(a=>{const t=a.effect.getTiming();return t.delay+t.duration}),e);
   const outroLen=S.outroTrail?(S.outroHold*1000+(e+placeCount(L)*S.ptLag)/S.speed):S.tunOut?(S.outroHold*1000+S.tunTime*1000+S.fbN*55):0;
-  if(S.outroTrail)outroT=setTimeout(()=>runOutro(L,n,ts),total/S.speed+S.outroHold*1000);
-  else if(S.tunOut)outroT=setTimeout(()=>runTunnelOut(L),total/S.speed+S.outroHold*1000);
-  if(S.auto)autoT=setTimeout(()=>step(1),total/S.speed+outroLen+S.hold*1000);
+  if(S.outroTrail)outroT=sched('o',()=>{runOutro(L,n,ts);rig.attach(true)},total/S.speed+S.outroHold*1000);
+  else if(S.tunOut)outroT=sched('o',()=>{runTunnelOut(L);rig.attach(true)},total/S.speed+S.outroHold*1000);
+  if(S.auto)autoT=sched('a',()=>step(1),total/S.speed+outroLen+S.hold*1000);
+  syncClock();rig.set(rigNow());rig.attach();rig.pause(paused);clock.setHold(paused);
+  afterShow();
 }
 /* outro trail: the reveal runs backwards, the logo goes first and its rainbow copies follow it out, all in the same position */
 let outroT=0;
+/* ---- play and pause: the timers and the running animations stop where they are, and pick up from there ---- */
+let paused=false,frozen=[],pend={};
+const clock=createFrameClock(V);
+const syncClock=()=>clock.set(S.step?0:+S.fps);
+const rigNow=()=>({fps:+S.fps,on:S.parallax,split:S.pxSplit,camera:S.pxCamera,depth:S.pxDepth,speed:S.pxSpeed});
+const rig=createParallax(stack,rigNow());
+function sched(k,fn,ms,total){pend[k]={fn,at:performance.now()+ms,total:total||ms};return setTimeout(()=>{delete pend[k];fn();paintPlay()},ms)}
+const idle=()=>moved.every(a=>a.playState==='finished')&&!pend.o&&!pend.a;
+function paintPlay(){const b=$('[data-a="play"]'),go=paused||idle(),label=go?'Play':'Pause';b.innerHTML=go?IC.play:IC.pause;b.setAttribute('aria-label',label);b.title=label+' (Space)'}
+function freeze(){const now=performance.now();Object.values(pend).forEach(p=>{p.left=Math.max(0,p.at-now)});clearTimeout(autoT);clearTimeout(outroT);clearInterval(stepT);cancelAnimationFrame(scanRaf);
+  /* only the running ones: play() on a finished animation would replay it from the start */
+  frozen=V.getAnimations({subtree:true}).filter(a=>a.playState==='running');frozen.forEach(a=>a.pause());player.release()}
+function setPaused(on){
+  rig.pause(on);clock.setHold(on);
+  if(on){paused=true;freeze();paintPlay();return}
+  paused=false;
+  /* nothing left to resume, or an effect driven by its own clock: start this logo again */
+  if(idle()||S.scanimate||S.step){show(cur,1);return}
+  frozen.forEach(a=>a.play());frozen=[];
+  const p=pend;pend={};if(p.o)outroT=sched('o',p.o.fn,p.o.left);if(p.a)autoT=sched('a',p.a.fn,p.a.left,p.a.total);
+  paintPlay();
+}
+/* the meter shows the time until auto-advance moves on, and only appears when it is on */
+let meterRaf=0;
+function runMeter(){cancelAnimationFrame(meterRaf);const fill=$('.vmeter i'),txt=$('.vmtext');
+  const f=()=>{meterRaf=requestAnimationFrame(f);const p=pend.a;V.classList.toggle('timed',!!p);if(!p)return;const left=paused?(p.left??p.total):Math.max(0,p.at-performance.now());fill.style.transform=`scaleX(${1-left/p.total})`;txt.textContent=(left/1000).toFixed(1)+' s'};f()}
+/* stepping while paused shows the finished logo instead of an empty frame */
+function afterShow(){
+  if(paused){moved.concat(fx).forEach(a=>{try{a.finish()}catch{}});freeze()}
+  paintPlay();
+  const m=moved;Promise.all(m.map(a=>a.finished)).then(()=>{if(m===moved)paintPlay()}).catch(()=>{});
+}
 function placeCount(L){return L.p.length>40?3:L.p.length>22?4:S.ptN}
 function runOutro(L,n,ts){
   [...moved,...fx].forEach(a=>a.cancel());moved=[];fx=[];cancelAnimationFrame(scanRaf);cancelAnimationFrame(keyRaf);clearInterval(stepT);stack.innerHTML='';
@@ -681,25 +829,35 @@ function step(d){
   if(S.shuffle&&d>0){let m=cur;while(m===cur&&NUMS.length>1)m=NUMS[Math.floor(Math.random()*NUMS.length)];show(m,1);return}
   const i=NUMS.indexOf(cur);show(NUMS[(i+d+NUMS.length)%NUMS.length],1);
 }
-function open(n){lastFocus=document.activeElement;V.classList.add('on');document.documentElement.style.overflow='hidden';V.focus({preventScroll:true});applyOverlays();show(n||cur,1)}
-function close(){clearTimeout(outroT);cancelAnimationFrame(scanRaf);cancelAnimationFrame(keyRaf);cancelAnimationFrame(bgRaf);clearInterval(stepT);bgc.style.display='none';player.release();clearTimeout(autoT);[...moved,...fx].forEach(a=>a.cancel());moved=[];fx=[];stack.innerHTML='';[flick,roll,grainA].forEach(a=>a&&a.cancel());flick=roll=grainA=null;V.classList.remove('on','hideui');document.documentElement.style.overflow='';if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});if(lastFocus&&lastFocus.focus)lastFocus.focus({preventScroll:true})}
+function open(n){lastFocus=document.activeElement;V.classList.add('on');document.documentElement.style.overflow='hidden';V.focus({preventScroll:true});paused=false;applyOverlays();show(n||cur,1);runMeter()}
+function close(){clock.set(0);cancelAnimationFrame(meterRaf);rig.set({on:false});paused=false;frozen=[];pend={};panelOpen(false);clearTimeout(outroT);cancelAnimationFrame(scanRaf);cancelAnimationFrame(keyRaf);cancelAnimationFrame(bgRaf);clearInterval(stepT);bgc.style.display='none';player.release();clearTimeout(autoT);[...moved,...fx].forEach(a=>a.cancel());moved=[];fx=[];stack.innerHTML='';[flick,roll,grainA].forEach(a=>a&&a.cancel());flick=roll=grainA=null;V.classList.remove('on','hideui');document.documentElement.style.overflow='';if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});if(lastFocus&&lastFocus.focus)lastFocus.focus({preventScroll:true})}
 const fsToggle=()=>{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else if(V.requestFullscreen)V.requestFullscreen().catch(()=>{})};
-const syncChips=()=>V.classList.toggle('nochips',!S.chipsOpen);syncChips();
-const actions={chips:()=>{S.chipsOpen=!S.chipsOpen;syncChips();save()},close,prev:()=>step(-1),next:()=>step(1),repeat:()=>show(cur,1),panel:()=>{V.classList.toggle('panel-open');applyOverlays();show(cur)},fs:fsToggle,hide:()=>V.classList.toggle('hideui')};
-V.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b)actions[b.dataset.a]();else if(V.classList.contains('hideui')&&e.target.closest('.vscreen'))V.classList.remove('hideui')});
+const fxGroup=$('.vfx');fxGroup.open=S.chipsOpen;fxGroup.addEventListener('toggle',()=>{S.chipsOpen=fxGroup.open;save()});
+const paintCrtBtn=()=>{$('#vcrtbtn').textContent=`CRT (${[S.crtBlur,S.crtBloom,S.scan].filter(Boolean).length} of 3 on)`};
+function panelOpen(on){V.classList.toggle('panel-open',on);$('[data-a="panel"]').setAttribute('aria-expanded',String(on))}
+const panelIsOpen=()=>V.classList.contains('panel-open');
+const toggleRandom=()=>{S.shuffle=!S.shuffle;save();syncPanel();if(S.shuffle)step(1)};
+const paintSoundBtn=()=>{const b=$('[data-a="sound"]');b.innerHTML=soundOn?IC.sound:IC.mute;b.setAttribute('aria-label',soundOn?'Turn sound off':'Turn sound on')};
+paintSoundBtn();
+const actions={sound:()=>{player.unlock();setSound(!soundOn);paintSoundBtn();if(soundOn){ring()}},close,prev:()=>step(-1),next:()=>step(1),play:()=>setPaused(!(paused||idle())),shuffle:toggleRandom,repeat:()=>{paused=false;show(cur,1)},panel:()=>panelOpen(!panelIsOpen()),fs:fsToggle,hide:()=>{panelOpen(false);V.classList.toggle('hideui')}};
+V.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b)actions[b.dataset.a]();else if(e.target.closest('.vscreen')){panelOpen(false);V.classList.remove('hideui')}});
 numIn.addEventListener('change',()=>{const v=+numIn.value;if(LOGOS[v])show(v,1);else numIn.value=cur});
 V.querySelectorAll('[data-sound-box]').forEach(c=>{c.checked=soundOn;c.addEventListener('change',()=>{player.unlock();setSound(c.checked);if(c.checked)ring();show(cur)})});
-V.querySelectorAll('.vbar [data-s]').forEach(c=>{c.checked=S[c.dataset.s];c.addEventListener('change',()=>{S[c.dataset.s]=c.checked;save();show(cur)})});
+V.querySelectorAll('[data-s]').forEach(c=>{c.checked=S[c.dataset.s];c.addEventListener('change',()=>{S[c.dataset.s]=c.checked;save();show(cur)})});
 document.addEventListener('keydown',e=>{
   if(!V.classList.contains('on'))return;
-  if(e.key==='Escape'){if(V.classList.contains('hideui'))V.classList.remove('hideui');else if(!document.fullscreenElement)close();return}
+  if(e.key==='Escape'){if(panelIsOpen()){panelOpen(false);$('[data-a="panel"]').focus();return}if(V.classList.contains('hideui'))V.classList.remove('hideui');else if(!document.fullscreenElement)close();return}
   if(e.target.matches&&e.target.matches('input,select')&&e.target.type!=='checkbox')return;
   const k=e.key.toLowerCase();
+  /* a control reached by keyboard keeps its own Space */
+  if(k===' '&&e.target.closest&&e.target.closest('button,summary,input')&&e.target.matches(':focus-visible'))return;
   if(k==='arrowright'||k==='n'){step(1);e.preventDefault()}
   else if(k==='arrowleft'||k==='p'){step(-1);e.preventDefault()}
-  else if(k==='r'||k===' '){show(cur,1);e.preventDefault()}
-  else if(k==='m')setSound(!soundOn);
-  else if(k==='e')actions.chips();
+  else if(k===' '){actions.play();e.preventDefault()}
+  else if(k==='r')actions.repeat();
+  else if(k==='s')toggleRandom();
+  else if(k==='m'){setSound(!soundOn);paintSoundBtn()}
+  else if(k==='e'){panelOpen(true);fxGroup.open=true}
   else if(k==='f')fsToggle();else if(k==='h')actions.hide();else if(k==='c')actions.panel();
 });
 const bar=$('.vbar');
@@ -712,13 +870,14 @@ document.addEventListener('fullscreenchange',refit);
 function row(key,label,min,max,step,fmt){const f=fmt||(v=>v);return `<label class="vrow"><span>${label}</span><input type="range" data-k="${key}" min="${min}" max="${max}" step="${step}" aria-label="${label}"><output data-o="${key}"></output></label>`}
 const chk=(key,label)=>`<label class="vcheck"><input type="checkbox" data-k="${key}"> ${label}</label>`;
 panel.innerHTML=`<h4>PRESETS</h4><div class="vpresets">${Object.keys(PRESETS).map(p=>`<button data-p="${p}">${p}</button>`).join('')}</div>
-<h4>BACKGROUND</h4><div class="vswatches">${BGS.map((b,i)=>`<button class="vswatch" data-bg="${i}" title="${b[0]}" aria-label="${b[0]} background" style="background:${b[2]||b[1]}"></button>`).join('')}<input type="color" data-custom aria-label="Custom background colour" style="width:44px;height:34px;padding:0;border:0;background:none;cursor:pointer"></div>
+<h4>BACKGROUND</h4><div class="vswatches"><button data-bg="match" title="Match each logo" style="min-height:34px;padding:4px 10px">Match logo</button>${BGS.map((b,i)=>`<button class="vswatch" data-bg="${i}" title="${b[0]}" aria-label="${b[0]} background" style="background:${b[2]||b[1]}"></button>`).join('')}<input type="color" data-custom aria-label="Custom background colour" style="width:44px;height:34px;padding:0;border:0;background:none;cursor:pointer"></div>
 <h4>LOGO COLOURS</h4><select data-k="colours" aria-label="Logo colours"><option value="auto">Black turns white on dark</option><option value="orig">Original colours</option></select>
-<h4>PLAYBACK</h4>${row('speed','Speed',.25,2,.25)}${row('hold','Auto hold (s)',.5,8,.5)}
-<h4>CRT GLOW</h4>${chk('crt','Blur and bloom')}${row('crtAmt','Amount',.25,3,.05)}
-<h4>CRT SCREEN</h4>${chk('scan','Scanlines')}${row('scanAmt','Amount',.05,.6,.01)}${chk('vig','Vignette')}${row('vigAmt','Amount',.1,.9,.01)}${chk('flicker','Flicker')}${row('flickerAmt','Amount',.1,1,.05)}
-<h4>VHS</h4>${chk('chroma','Colour split')}${row('chromaAmt','Amount',.5,8,.5)}${chk('grain','Film grain')}${row('grainAmt','Amount',.03,.4,.01)}${chk('roll','Rolling bar')}${row('rollAmt','Amount',.02,.3,.01)}
 <h4>SHIMMER</h4>${chk('shimmer','Shimmer with bloom')}${row('shimAmt','Strength',.1,1,.05)}${chk('rainbow','Rainbow (off: white bloom)')}${chk('shimOnce','Only once per play')}${row('shimAt','Starts at',.2,1,.02)}${row('shimEvery','Repeat every (s)',2,10,.5)}
+<h4>LOGO</h4>${row('logoSize','Size',.25,1,.01)}
+<h4>PARALLAX</h4>${chk('parallax','Put parts on separate planes')}<select data-k="pxSplit" aria-label="Planes"><option value="color">Text, then each color</option><option value="text">Text and shapes</option></select><div style="height:6px"></div><select data-k="pxCamera" aria-label="Camera"><option value="drift">Slow drift</option><option value="pointer">Follow pointer</option><option value="push">Push in</option></select>${row('pxDepth','Depth',.2,2,.1)}${row('pxSpeed','Camera speed',.2,3,.1)}
+<h4>PLAYBACK</h4><label class="vrow" style="grid-template-columns:96px 1fr"><span>Frame rate</span><select data-k="fps" aria-label="Frame rate"><option value="0">Display rate</option><option value="60">60 fps</option><option value="30">30 fps</option><option value="24">24 fps</option><option value="15">15 fps</option><option value="12">12 fps</option><option value="8">8 fps</option><option value="4">4 fps</option></select></label>${row('speed','Speed',.25,2,.25)}${row('hold','Auto hold (s)',.5,15,.5)}
+<h4>CRT SCREEN</h4>${chk('vig','Vignette')}${row('vigAmt','Amount',.1,.9,.01)}${chk('flicker','Flicker')}${row('flickerAmt','Amount',.1,1,.05)}
+<h4>VHS</h4>${chk('chroma','Colour split')}${row('chromaAmt','Amount',.5,8,.5)}${chk('grain','Film grain')}${row('grainAmt','Amount',.03,.4,.01)}${chk('roll','Rolling bar')}${row('rollAmt','Amount',.02,.3,.01)}
 <h4>TRAILS</h4>${chk('trail','Trails with decay')}${row('trailN','Copies',2,12,1)}${row('trailLen','Spread',2,30,1)}${row('trailAngle','Direction',0,359,1)}${row('trailDecay','Decay (s)',.2,5,.1)}${row('trailOpacity','Strength',.1,1,.05)}
 <h4>END PULSE</h4>${chk('pulse','End pulse')}${row('pulseAmt','Bloom',.3,3,.1)}${row('pulseTime','Length (s)',.3,3,.1)}<select data-k="pulseColour" aria-label="Pulse colour"><option value="own">Logo's own colors</option><option value="white">White</option></select>
 <h4>INTRO AND OUTRO TRAILS</h4>${chk('introTrail','Intro trail')}${chk('outroTrail','Outro trail')}${row('ptN','Copies',2,12,1)}${row('ptLag','Lag (ms)',20,200,5)}${row('outroHold','Hold (s)',0,8,.5)}
@@ -739,9 +898,11 @@ panel.innerHTML=`<h4>PRESETS</h4><div class="vpresets">${Object.keys(PRESETS).ma
 <h4>PATTERN KEY</h4>${chk('key','Stripes inside logo')}${row('keyBands','Bands',4,40,1)}<select data-k="keyDir" aria-label="Stripe direction"><option value="diag">Diagonal</option><option value="h">Vertical bars</option><option value="v">Horizontal bars</option></select>
 <h4>BACKGROUND EFFECTS</h4>${chk('synth','Video synth')}${chk('liquid','Liquid light')}${chk('starfield','Starfield')}${row('bgfxOp','Strength',.1,1,.05)}${row('bgfxSpeed','Speed',.2,3,.1)}
 <div style="margin-top:16px"><button data-reset>Reset all</button></div>`;
+const pads=[...V.querySelectorAll('[data-pad]')].map(svg=>createCurvePad(svg,V.querySelector(`[data-k="${svg.dataset.pad}"]`)));
 function syncPanel(){
-  panel.querySelectorAll('[data-k]').forEach(c=>{const k=c.dataset.k;if(c.type==='checkbox')c.checked=!!S[k];else c.value=S[k];const o=panel.querySelector(`[data-o="${k}"]`);if(o)o.textContent=S[k]});
-  panel.querySelectorAll('[data-bg]').forEach(b=>b.classList.toggle('on',S.bg===+b.dataset.bg));
+  V.querySelectorAll('[data-k]').forEach(c=>{const k=c.dataset.k;if(c.type==='checkbox')c.checked=!!S[k];else c.value=S[k];const o=V.querySelector(`[data-o="${k}"]`);if(o)o.textContent=S[k]});
+  pads.forEach(p=>p.paint());paintCrtBtn();$('[data-a="shuffle"]').setAttribute('aria-pressed',String(!!S.shuffle));
+  panel.querySelectorAll('[data-bg]').forEach(b=>b.classList.toggle('on',String(S.bg)===b.dataset.bg));
   panel.querySelector('[data-custom]').value=S.custom;
   V.querySelectorAll('[data-chip]').forEach(b=>{b.setAttribute('aria-pressed',String(!!S[b.dataset.chip]))});
 }
@@ -754,19 +915,20 @@ function refresh(){
 V.addEventListener('click',e=>{const b=e.target.closest('[data-chip]');if(!b)return;const k=b.dataset.chip;S[k]=!S[k];
   if(['synth','liquid','starfield'].includes(k)&&S[k])['synth','liquid','starfield'].forEach(o=>{if(o!==k)S[o]=false});
   syncPanel();save();applyOverlays();if(['pulse','shimmer','shimOnce','rainbow','trail','backlit','streak','stars','prism','expo','feedback','kaleido','key'].includes(k))refresh();if(['introTrail','outroTrail','tunIn','tunOut'].includes(k))show(cur);else if(['scanimate','slit','step','ripple'].includes(k)&&S[k])show(cur);else if(k==='ripple'||k==='step')refresh()});
-const LIVE=new Set(['solar','solarAmt','scan','scanAmt','vig','vigAmt','grain','grainAmt','roll','rollAmt','flicker','flickerAmt','crt','crtAmt','chroma','chromaAmt','hold']);
+const LIVE=new Set(['fps','crtBlurCurve','crtBloomCurve','crtBloomSize','logoSize','parallax','pxSplit','pxCamera','pxDepth','pxSpeed','scanBlur','crtBlur','crtBloom','crtBlurAmt','crtBloomAmt','solar','solarAmt','scan','scanAmt','vig','vigAmt','grain','grainAmt','roll','rollAmt','flicker','flickerAmt','crt','crtAmt','chroma','chromaAmt','hold']);
+['#vcrtmenu','#vuimenu'].forEach(m=>$(m).addEventListener('input',e=>{const c=e.target,k=c.dataset.k;if(!k)return;S[k]=c.type==='checkbox'?c.checked:+c.value;syncPanel();save();applyOverlays()}));
 panel.addEventListener('input',e=>{const c=e.target,k=c.dataset.k;
   if(c.hasAttribute('data-custom')){S.custom=c.value;S.bg='custom'}
   else if(!k)return;
   else S[k]=c.type==='checkbox'?c.checked:(c.type==='range'?+c.value:c.value);
   if(k==='speed'){[...moved,...fx].forEach(a=>{a.playbackRate=S.speed})}
-  syncPanel();save();applyOverlays();
+  syncPanel();save();applyOverlays();syncClock();rig.set(rigNow());
   if(c.hasAttribute('data-custom')||(k&&!LIVE.has(k)&&k!=='speed'&&c.type!=='range'))show(cur);
 });
 panel.addEventListener('change',e=>{const k=e.target.dataset.k;if(k&&!LIVE.has(k)&&k!=='speed'&&e.target.type==='range')show(cur)});
 panel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  if(b.dataset.bg!=null)S.bg=+b.dataset.bg;else if(b.dataset.p)S={...S,...PRESETS[b.dataset.p]};else if(b.hasAttribute('data-reset'))S={...DEF};else return;
-  syncPanel();save();V.querySelectorAll('.vbar [data-s]').forEach(c=>{c.checked=S[c.dataset.s]});applyOverlays();show(cur)});
+  if(b.dataset.bg!=null)S.bg=b.dataset.bg==='match'?'match':+b.dataset.bg;else if(b.dataset.p){S={...S,...PRESETS[b.dataset.p]};normCrt(PRESETS[b.dataset.p])}else if(b.hasAttribute('data-reset'))S={...DEF};else return;
+  syncPanel();save();V.querySelectorAll('[data-s]').forEach(c=>{c.checked=S[c.dataset.s]});applyOverlays();show(cur)});
 syncPanel();
 
 /* ---- ways in ---- */
@@ -774,8 +936,49 @@ const EXP='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h
 tiles.forEach(t=>{const n=+t.dataset.n,b=document.createElement('button');b.className='exp';b.type='button';b.innerHTML=EXP;b.title='View full screen';b.setAttribute('aria-label','View logo '+n+' full screen');
   b.addEventListener('click',e=>{e.stopPropagation();open(n)});b.addEventListener('keydown',e=>e.stopPropagation());t.appendChild(b)});
 const openBtn=document.querySelector('.open-viewer');if(openBtn)openBtn.addEventListener('click',()=>open(NUMS[0]));
+/* ---- top player: SpaceRadio's reveals and station sounds, one after another. Only on the SpaceRadio sheet. ---- */
+if(document.title.startsWith('SpaceRadio')){
+  const R=document.createElement('div');R.id='radio';R.setAttribute('role','region');R.setAttribute('aria-label','SpaceRadio player');
+  const icon=d=>`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>`,ICO={prev:'M19 5 9 12l10 7zM5 5v14',next:'m5 5 10 7-10 7zM19 5v14',play:'m7 4 13 8-13 8z',pause:'M8 5v14M16 5v14',random:'M3 7h3.5c5 0 6 10 11 10H21M3 17h3.5c1.6 0 2.8-1 3.8-2.4M13.7 9.4C14.7 8 15.9 7 17.5 7H21M18 4l3 3-3 3M18 14l3 3-3 3'};
+  R.innerHTML=`<div class="r-art"></div><div class="r-text"><b>SpaceRadio</b><span class="r-now">Press play to tune in</span><span class="r-bar"><i></i></span></div><div class="r-btns"><button data-r="prev" aria-label="Back" title="Back">${icon(ICO.prev)}</button><button data-r="play" class="r-main" aria-label="Play" title="Play">${icon(ICO.play)}</button><button data-r="next" aria-label="Next" title="Next">${icon(ICO.next)}</button><button data-r="random" aria-label="Random order" title="Random order" aria-pressed="false">${icon(ICO.random)}</button></div><input class="r-vol" type="range" min="0" max="1" step=".02" value="1" aria-label="Volume">`;
+  document.body.insertBefore(R,document.body.firstChild);
+  const art=R.querySelector('.r-art'),now=R.querySelector('.r-now'),fill=R.querySelector('.r-bar i'),playB=R.querySelector('[data-r="play"]'),randB=R.querySelector('[data-r="random"]');
+  let idx=-1,on=false,random=false,timer=0,raf=0,own=[],startAt=0,waitMs=0,leftMs=0;
+  const paint=()=>{playB.innerHTML=icon(on?ICO.pause:ICO.play);playB.setAttribute('aria-label',on?'Pause':'Play');playB.title=on?'Pause':'Play'};
+  const meter=()=>{raf=requestAnimationFrame(meter);fill.style.transform=`scaleX(${waitMs?Math.min(1,(performance.now()-startAt+(waitMs-leftMs))/waitMs):0})`};
+  const schedule=ms=>{leftMs=ms;startAt=performance.now();clearTimeout(timer);timer=setTimeout(()=>tune(1),ms);cancelAnimationFrame(raf);meter()};
+  function tune(d){
+    idx=random&&d>0?Math.floor(Math.random()*NUMS.length):(idx+d+NUMS.length)%NUMS.length;
+    const n=NUMS[idx],L=LOGOS[n];
+    own.forEach(a=>a.cancel());
+    art.innerHTML=markup(L);
+    const svg=art.firstChild;
+    if(!svg.hasAttribute('data-panel'))svg.querySelectorAll('[fill]').forEach(e=>{const c=rgb(e.getAttribute('fill'));if(c&&Math.max(...c)<60)e.setAttribute('fill','#ffffff')});
+    svg.querySelectorAll('.pp').forEach(p=>p.setAttribute('fill','#14141c'));
+    TS=1;anims=[];plan(collect(svg,L),L,n);own=anims;anims=[];
+    const end=own.reduce((m,a)=>{const t=a.effect.getTiming();return Math.max(m,t.delay+t.duration)},0);
+    const id=nextSound(),name=JINGLES[id].name;
+    if(soundOn){player.unlock();player.play(id).catch(()=>{})}
+    now.textContent=`Logo ${n} · ${soundOn?name:'sound off'}`;
+    const started=performance.now();
+    waitMs=end+2500;schedule(waitMs);
+    /* wait out the sound as well, once its length is known */
+    setTimeout(()=>{const i=player.info&&player.info();if(on&&i&&i.len){const need=Math.max(end,i.len*1000)+900;if(need>waitMs){waitMs=need;schedule(need-(performance.now()-started))}}},400);
+  }
+  function toggle(){
+    on=!on;paint();
+    if(on){if(idx<0)tune(1);else{own.forEach(a=>{if(a.playState==='paused')a.play()});schedule(leftMs)}}
+    else{leftMs=Math.max(0,leftMs-(performance.now()-startAt));clearTimeout(timer);cancelAnimationFrame(raf);own.forEach(a=>{if(a.playState==='running')a.pause()});player.release()}
+  }
+  R.addEventListener('click',e=>{const b=e.target.closest('[data-r]');if(!b)return;const k=b.dataset.r;
+    if(k==='play')toggle();
+    else if(k==='random'){random=!random;randB.setAttribute('aria-pressed',String(random))}
+    else{if(!on){on=true;paint()}tune(k==='next'?1:-1)}});
+  R.querySelector('.r-vol').addEventListener('input',e=>player.setVolume(+e.target.value));
+  window.SR.radio={toggle,on:()=>on,index:()=>idx,box:R};
+}
 window.SR.sound={player,info:()=>player.info(),last:()=>lastSound,on:()=>soundOn,set:setSound};
-window.SR.viewer={open,close,show,step,state:()=>S,set:o=>{S={...S,...o};syncPanel();applyOverlays();show(cur)},anims:()=>moved,fx:()=>fx};
+window.SR.viewer={open,close,show,step,state:()=>S,set:o=>{S={...S,...o};normCrt(o);syncPanel();applyOverlays();show(cur)},anims:()=>moved,fx:()=>fx,rig:()=>rig};
 })();
 </script>
 </body>

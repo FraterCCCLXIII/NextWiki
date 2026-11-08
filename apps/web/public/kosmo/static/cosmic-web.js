@@ -147,8 +147,15 @@ export function makeTiledCloud(web, { n = 150000, R = 1000, seed = 99, observer 
   const off = observer || [L / 2, L / 2, L / 2];   // the Sun sits at this place inside the home tile
   let i = 0, guard = 0;
   const permOf = (tx, ty, tz) => { let h = (tx * 73856093) ^ (ty * 19349663) ^ (tz * 83492791); h = Math.abs(h) % 48; return h; };
-  while (i < n && guard++ < n * 400) {
-    const tx = Math.floor(r() * (2 * tiles + 1)) - tiles, ty = Math.floor(r() * (2 * tiles + 1)) - tiles, tz = Math.floor(r() * (2 * tiles + 1)) - tiles, j = Math.floor(r() * n3), pm = permOf(tx, ty, tz);
+  // Only tiles that reach into the sphere are drawn from: a tile wholly outside R could only ever be rejected, and for a small R (the 300 Mpc local level
+  // fits inside the home tile) those were 124 of the 125 candidates, which starved the sampler (it hit its guard short of n after seconds of rejections).
+  // Drawing uniformly from the reaching tiles leaves the accepted distribution unchanged.
+  const gap = (t, ax) => { const lo = t * L - off[ax], hi = lo + L; return lo > 0 ? lo : hi < 0 ? -hi : 0; };   // distance from the observer to the tile along one axis
+  const cand = [];
+  for (let tz = -tiles; tz <= tiles; tz++) for (let ty = -tiles; ty <= tiles; ty++) for (let tx = -tiles; tx <= tiles; tx++) { const gx = gap(tx, 0), gy = gap(ty, 1), gz = gap(tz, 2); if (gx * gx + gy * gy + gz * gz <= R * R) cand.push(tx, ty, tz); }
+  const nc = cand.length / 3;
+  while (i < n && nc && guard++ < n * 400) {
+    const c = 3 * Math.floor(r() * nc), tx = cand[c], ty = cand[c + 1], tz = cand[c + 2], j = Math.floor(r() * n3), pm = permOf(tx, ty, tz);
     if (bias > 0 && r() > Math.min(1, Math.pow(Math.max(web.rho[j], 0.02), bias) / 4)) continue;   // galaxies trace mass with a bias: thin the voids, keep the nodes
     const tsh = tileShift(tx, ty, tz, L), p = permuted(web, j, pm, 1, L, tsh), X = tx * L + p[0] - off[0], Y = ty * L + p[1] - off[1], Z = tz * L + p[2] - off[2];
     if (X * X + Y * Y + Z * Z > R * R) continue;

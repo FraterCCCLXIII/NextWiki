@@ -1,0 +1,1 @@
+export function dishMount(D,angle,radiusFraction,rear=false){const r=D*.5*radiusFraction,f=D*.4,x=r*Math.cos(angle),y=r*Math.sin(angle),z=r*r/(4*f),l=Math.hypot(x/(2*f),y/(2*f),1),normal=[-x/(2*f)/l,-y/(2*f)/l,1/l],offset=D*(rear?-.018:.01);return {position:[x+normal[0]*offset,y+normal[1]*offset,z+normal[2]*offset],normal};}

@@ -53,7 +53,7 @@ def main():
         nav.append('<a href="#s%s">%s<span>%d–%d</span></a>' % (key, title, first, n))
     tpl = open(os.path.join(HERE, 'sheet.template.html')).read()
     js = json.dumps(data, separators=(',', ':'))
-    sound = open(os.path.join(HERE, '..', 'tools', 'logo-sound.js')).read()
+    sound = open(os.path.join(HERE, '..', 'tools', 'logo-sound.js')).read() + open(os.path.join(HERE, '..', 'tools', 'logo-backdrop.js')).read()
     html = tpl.replace('__SOUND__', sound).replace('__COUNT__', str(n)).replace('__NAV__', ''.join(nav)).replace('__BODY__', ''.join(body)).replace('__DATA__', js)
     open(os.path.join(HERE, 'sheet.html'), 'w').write(html)
     json.dump({'total': n, 'sheets': {k: {'title': t, 'file': 'refs/%s.webp' % k, 'count': sheet_counts[k]} for k, t, _ in SHEETS}, 'logos': numbers},

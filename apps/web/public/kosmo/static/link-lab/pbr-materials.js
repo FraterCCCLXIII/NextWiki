@@ -1,0 +1,22 @@
+import * as T from 'three';
+// All normal/roughness maps are linear data. Color maps alone use sRGB.
+function rng(seed){return()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};}
+function maps(kind){const n=512,random=rng(kind==='foil'?73:31),height=new Float32Array(n*n),rough=new Uint8Array(n*n*4);for(let y=0;y<n;y++)for(let x=0;x<n;x++){const u=x/n,v=y/n;let h,r;if(kind==='foil'){h=.25*Math.sin(23*u+8*Math.sin(v*7))+.15*Math.sin(41*v+4*Math.sin(17*u))+.07*Math.sin(95*(u+v))+.02*(random()-.5);r=.46+.04*(random()-.5);}else if(kind==='metal'){h=.018*Math.sin(y*1.4)+.006*Math.sin(y*.23+x*.013)+.002*(random()-.5);r=.46+.04*(random()-.5);}else{h=.006*(random()-.5);r=.67+.08*(random()-.5);}height[y*n+x]=h;const i=(y*n+x)*4,val=Math.round(r*255);rough[i]=rough[i+1]=rough[i+2]=val;rough[i+3]=255;}
+const normal=new Uint8Array(n*n*4);for(let y=0;y<n;y++)for(let x=0;x<n;x++){const dx=(height[y*n+(x+1)%n]-height[y*n+(x+n-1)%n])*3,dy=(height[((y+1)%n)*n+x]-height[((y+n-1)%n)*n+x])*3,l=Math.sqrt(dx*dx+dy*dy+1),i=(y*n+x)*4;normal[i]=Math.round((-dx/l*.5+.5)*255);normal[i+1]=Math.round((-dy/l*.5+.5)*255);normal[i+2]=Math.round((1/l*.5+.5)*255);normal[i+3]=255;}
+const make=data=>{const t=new T.DataTexture(data,n,n,T.RGBAFormat);t.wrapS=t.wrapT=T.RepeatWrapping;t.magFilter=T.LinearFilter;t.minFilter=T.LinearMipmapLinearFilter;t.generateMipmaps=true;t.needsUpdate=true;return t;};return{normal:make(normal),roughness:make(rough)};}
+function solarMap(){const c=document.createElement('canvas');c.width=512;c.height=512;const x=c.getContext('2d');x.fillStyle='#0c0c0c';x.fillRect(0,0,512,512);x.fillStyle='#212121';x.beginPath();x.moveTo(25,8);x.lineTo(487,8);x.lineTo(504,25);x.lineTo(504,487);x.lineTo(487,504);x.lineTo(25,504);x.lineTo(8,487);x.lineTo(8,25);x.closePath();x.fill();for(let a=16;a<512;a+=12){x.fillStyle='rgba(189,189,189,.36)';x.fillRect(a,12,.8,488);}for(let a of[120,256,392]){x.fillStyle='#a5a5a5';x.fillRect(a,10,3,492);}const tex=new T.CanvasTexture(c);tex.colorSpace=T.SRGBColorSpace;return tex;}
+export function createPBRMaterials(renderer){const brushed=maps('metal'),foil=maps('foil'),ceramic=maps('ceramic'),cell=solarMap(),anis=renderer.capabilities.getMaxAnisotropy();for(const a of[brushed,foil,ceramic])for(const t of Object.values(a))t.anisotropy=anis;cell.anisotropy=anis;const physical=(color,metalness,roughness,extra={})=>new T.MeshPhysicalMaterial({color,metalness,roughness,...extra});return{
+ al:physical(0xc2c2c2,1,1,{normalMap:brushed.normal,normalScale:new T.Vector2(.24,.24),roughnessMap:brushed.roughness,anisotropy:.2}),
+ edge:physical(0x818181,.95,.35,{normalMap:brushed.normal,normalScale:new T.Vector2(.1,.1)}),
+ dark:physical(0x292929,.65,.4,{roughnessMap:ceramic.roughness}),
+ black:physical(0x1a1a1a,.05,.65,{normalMap:ceramic.normal,normalScale:new T.Vector2(.2,.2)}),
+ foil:physical(0xbcbcbc,.95,1,{normalMap:foil.normal,normalScale:new T.Vector2(.55,.55),roughnessMap:foil.roughness}),
+ white:physical(0xcacaca,.02,.7,{normalMap:ceramic.normal,normalScale:new T.Vector2(.2,.2)}),
+ pcb:physical(0x3f3f3f,.12,.45,{clearcoat:.3,clearcoatRoughness:.4}),
+ chip:physical(0x1b1b1b,.05,.55),copper:physical(0x868686,.95,.28,{normalMap:brushed.normal,normalScale:new T.Vector2(.15,.15)}),
+ solar:physical(0xffffff,.2,.28,{map:cell,clearcoat:.7,clearcoatRoughness:.22,ior:1.5}),
+ lens:physical(0x343434,.3,.08,{clearcoat:1,clearcoatRoughness:.02}),
+ led:new T.MeshStandardMaterial({color:0xcdcdcd,emissive:0xcdcdcd,emissiveIntensity:2}),
+ radio:physical(0xd1d1d1,.08,.42,{normalMap:ceramic.normal,normalScale:new T.Vector2(.2,.2),roughnessMap:ceramic.roughness})};}
+export function makeSunEnvironment(renderer,direction){const w=1024,h=512,data=new Float32Array(w*h*4),sun=direction.clone().normalize();for(let y=0;y<h;y++){const phi=(y+.5)/h*Math.PI;for(let x=0;x<w;x++){const theta=((x+.5)/w-.5)*2*Math.PI,dir=new T.Vector3(-Math.sin(phi)*Math.cos(theta),Math.cos(phi),Math.sin(phi)*Math.sin(theta)),dot=dir.dot(sun),i=(y*w+x)*4;// Smooth, resolved source avoids a one-texel square flashing in reflections.
+const disk=.15+1.8*Math.exp((dot-1)/(.22*.22));data[i]=disk;data[i+1]=disk*.98;data[i+2]=disk*.94;data[i+3]=1;}}const e=new T.DataTexture(data,w,h,T.RGBAFormat,T.FloatType);e.magFilter=T.LinearFilter;e.minFilter=T.LinearFilter;e.mapping=T.EquirectangularReflectionMapping;e.needsUpdate=true;const pm=new T.PMREMGenerator(renderer),target=pm.fromEquirectangular(e);e.dispose();pm.dispose();return target.texture;}

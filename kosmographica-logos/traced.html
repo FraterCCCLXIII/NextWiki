@@ -7,6 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+*::-webkit-scrollbar{width:10px;height:10px}*::-webkit-scrollbar-track,*::-webkit-scrollbar-corner{background:transparent}*::-webkit-scrollbar-thumb{background:rgba(128,128,128,.45);background-clip:padding-box;border:2px solid transparent;border-radius:8px}*::-webkit-scrollbar-thumb:hover{background:rgba(128,128,128,.7);background-clip:padding-box;border:2px solid transparent}
+@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:rgba(128,128,128,.45) transparent}}
+
 :root{--paper:#fcf7ee;--ink:#0d0d10;--nav:#15151b;--line:#2a2a33}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}

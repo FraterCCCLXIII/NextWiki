@@ -127,7 +127,12 @@ def main():
             crop[other] = 255
             idx = k
             name = f"{sh['key']}_{idx:02d}"
-            Image.fromarray(crop).save(os.path.join(CROPS, name + '.png'))
+            # a sharper source for this one logo, supplied by hand, replaces the sheet crop
+            override = os.path.join(REFS, 'overrides', name + '.png')
+            if os.path.exists(override):
+                Image.open(override).save(os.path.join(CROPS, name + '.png'))
+            else:
+                Image.fromarray(crop).save(os.path.join(CROPS, name + '.png'))
             r, c = divmod(k - 1, sh['cols'])
             out.append({'sheet': sh['key'], 'pos': idx, 'row': r + 1, 'col': c + 1, 'box': [int(x0), int(y0), int(x1), int(y1)],
                         'decade': DECADES[r] if sh.get('label_col') else None, 'name': name})

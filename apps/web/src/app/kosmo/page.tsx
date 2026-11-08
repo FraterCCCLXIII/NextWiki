@@ -30,6 +30,12 @@ const ROWS: { title: string; items: Section[] }[] = [
       { href: "/kosmo/tools/flightlab", label: "Flight Lab", blurb: "Design a vehicle, fly it to orbit, and tune its landing in detail.", img: `${TEX}/2k_sun.jpg`, tag: "Lab" },
       { href: "/kosmo/tools/warp", label: "Warp Drive", blurb: "Alcubierre, Natário and Van den Broeck metrics: the Einstein tensor, the energy bill and light through the bubble.", img: `${TEX}/2k_neptune.jpg`, tag: "Lab" },
       { href: "/kosmo/tools/contraption", label: "Simulator", blurb: "Build and run small physical contraptions.", img: `${TEX}/2k_uranus.jpg`, tag: "Tool" },
+      { href: "/kosmo/tools/link-lab", label: "Link Lab", blurb: "Size a relay, price the link, and watch the signal cross interstellar distance.", img: `${TEX}/2k_jupiter.jpg`, tag: "Lab" },
+      { href: "/kosmo/tools/relay-map", label: "Relay Atlas", blurb: "A radio backbone from Mercury to the Kuiper belt, routed around the Sun.", img: `${TEX}/2k_saturn.jpg`, tag: "Lab" },
+      { href: "/kosmo/tools/solar-lens", label: "Solar Lens", blurb: "Use the Sun as a telescope: resolution, exposure and mission cost for a focal-line observatory.", img: `${TEX}/2k_uranus.jpg`, tag: "Lab" },
+      { href: "/kosmo/tools/solar-lens-imaging", label: "Lens Imaging", blurb: "Reconstruct a synthetic exoplanet from an Einstein ring, with the sampling limits made explicit.", img: `${TEX}/2k_neptune.jpg`, tag: "Lab" },
+      { href: "/kosmo/tools/lightspeed", label: "Lightspeed", blurb: "Fly at fractions of light speed: proper time, aberration and the fuel bill.", img: `${TEX}/2k_pluto.jpg`, tag: "Lab" },
+      { href: "/kosmo/tools/cosmic-atlas", label: "Cosmic Atlas", blurb: "Change the assumptions behind life in the galaxy and watch the map answer.", img: `${TEX}/2k_saturn.jpg`, tag: "Lab" },
     ],
   },
 ];
