@@ -53,3 +53,6 @@ __pycache__/
 
 # Root-level render checks (scratch screenshots)
 /*.png
+
+# Vendored three.js keeps its ESM bundle in a directory named build
+!apps/web/public/kosmo/static/vendor/three-0.160.0/build/
