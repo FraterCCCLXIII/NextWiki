@@ -44,8 +44,7 @@ yarn-error.log*
 backups/
 tools/.cache/
 
-# Downloaded Sketchfab dinosaur models (large binaries, re-download with tools/sketchfab-download.mjs); credits stay tracked
-apps/web/public/kosmo/static/models/dinosaurs/*.glb
+# Rejected dinosaur models (game rips, non-dinosaurs) are never shipped; credits stay tracked
 apps/web/public/kosmo/static/models/dinosaurs/_quarantine/
 
 # Python tooling in the logo labs
