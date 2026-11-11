@@ -18,8 +18,8 @@ export async function Header({
 }) {
   noStore();
   // Get site title and logo from settings
-  const siteLogo = await getSettingValue("site.logo");
-  const aiEnabled = await getSetting("ai.enabled");
+  const siteLogo = await getSettingValue("site.logo").catch(() => undefined);
+  const aiEnabled = await getSetting("ai.enabled").catch(() => false);
 
   return (
     <header

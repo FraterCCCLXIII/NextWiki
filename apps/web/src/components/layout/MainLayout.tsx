@@ -23,7 +23,7 @@ interface MainLayoutProps {
 }
 
 export async function MainLayout({ children, pageMetadata }: MainLayoutProps) {
-  const aiEnabled = await getSetting("ai.enabled");
+  const aiEnabled = await getSetting("ai.enabled").catch(() => false);
   return (
     <div className="flex h-screen">
       {/* Sidebar hidden - kept for potential later use */}

@@ -92,7 +92,11 @@ function Poster({ s, index }: { s: Section; index: number }) {
 }
 
 export default async function KosmoHomePage() {
-  const [kinds, recent] = await Promise.all([countsByKind(), recentPages(8)]);
+  // The home page must render even if the catalogue database is unreachable.
+  const [kinds, recent] = await Promise.all([
+    countsByKind().catch(() => [] as Awaited<ReturnType<typeof countsByKind>>),
+    recentPages(8).catch(() => [] as Awaited<ReturnType<typeof recentPages>>),
+  ]);
   const total = kinds.reduce((sum, k) => sum + k.count, 0);
 
   return (
@@ -102,12 +106,12 @@ export default async function KosmoHomePage() {
         <p className="mb-8 text-lg text-kosmo-dim">
           A map of everything, to scale. Pick a section to begin.
         </p>
-        <StatTotals
+        {total > 0 && <StatTotals
           items={[
             { label: "entries", value: total },
             ...kinds.map((k) => ({ label: k.kind, value: k.count })),
           ]}
-        />
+        />}
       </div>
 
       {/* billboard: the one place to begin */}
